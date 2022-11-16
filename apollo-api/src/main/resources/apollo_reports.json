@@ -171,7 +171,9 @@
         "chassis": "cid.CHASIS_NUMBER",
         "verified": "cid.APPROVE_STATUS",
         "assigned_to": "cdd.ASSIGNED_INSPECTION_OFFICER",
-        "assigned_by": "cdd.ASSIGNER",
+        "owner_id": "cdd.ASSIGNED_INSPECTION_OFFICER",
+        "assigner": "cdd.ASSIGNER",
+        "req_assigner_id": "cdd.ASSIGNER",
         "line_number": "cid.SHIPMENT_LINE_NUMBER",
         "date__range": "cdd.CREATED_ON"
       },

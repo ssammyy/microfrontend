@@ -260,3 +260,11 @@ export interface VotesTally {
 
 }
 
+export interface VotesNwiTally {
+    approved: number;
+    notapproved: number;
+    nwi_ID: number;
+    nwiname: string;
+    status: string
+}
+

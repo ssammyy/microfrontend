@@ -200,6 +200,11 @@ class StandardRequestController(
         return standardRequestService.getTCTasks()
     }
 
+    @GetMapping("standard/getAllNwis")
+    fun getAllNwiS(): List<StandardNWI> {
+        return standardRequestService.getAllNwiSUnderVote()
+    }
+
 
     @PostMapping("standard/decisionOnNWI")
     @ResponseBody
@@ -210,6 +215,43 @@ class StandardRequestController(
             standardRequestService.decisionOnNWI(voteOnNWI)
         )
     }
+
+    @GetMapping("standard/getUserLoggedInBallots")
+    fun getUserLoggedInBallots(): List<VoteOnNWI> {
+        return standardRequestService.getUserLoggedInBallots()
+    }
+
+    @GetMapping("standard/getAllVotesTally")
+    fun getAllVotesTally(): List<NwiVotesTally> {
+        return standardRequestService.getAllVotesTally()
+    }
+
+    @GetMapping("standard/getAllVotesOnNwi")
+    fun getAllVotesOnNwi(@RequestParam("nwiId") nwiId: Long): List<VotesWithNWIId> {
+        return standardRequestService.getAllVotesOnNwi(nwiId)
+    }
+
+    @PostMapping("/approveNwi")
+    fun approveNwi(@RequestParam("nwiId") nwiId: Long)
+            : ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "New Work Item Approved.",
+            standardRequestService.approveNWI(nwiId)
+        )
+    }
+
+    @PostMapping("/rejectNwi")
+    fun rejectNwi(@RequestParam("nwiId") nwiId: Long)
+            : ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "New Work Item Approved.",
+            standardRequestService.rejectNWI(nwiId)
+        )
+    }
+
+
 
 
     @GetMapping("standard/tc-sec/tasks")
@@ -525,7 +567,7 @@ class StandardRequestController(
     @PostMapping("/standard/uploadNWIDocs")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDocs(
-        @RequestParam("nwiId") nwiId: Long,
+        @RequestParam("nwiId") nwiId: String,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         @RequestParam("type") type: String,
         @RequestParam("docDescription") docDescription: String,
@@ -534,7 +576,7 @@ class StandardRequestController(
     ): CommonDaoServices.MessageSuccessFailDTO {
 
 
-        val nwi = standardNWIRepository.findByIdOrNull(nwiId)
+        val nwi = standardNWIRepository.findByIdOrNull(nwiId.toLong())
             ?: throw Exception("APPLICATION DOES NOT EXIST")
         docFile.forEach { u ->
             val upload = DatKebsSdStandardsEntity()

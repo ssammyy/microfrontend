@@ -27,6 +27,7 @@
                                                 -{{d.category}}</option>
                                         </select>
                                         <select *ngIf="supervisorCharge && activeStatus=='my-tasks'" id="filter-tasks"
+                                                [(ngModel)]="personalTasks"
                                                 (change)="onSupervisorChange($event)" class="search-form-input">
                                             <option value="" selected>Task Owner</option>
                                             <option value="true">Personal Tasks</option>
