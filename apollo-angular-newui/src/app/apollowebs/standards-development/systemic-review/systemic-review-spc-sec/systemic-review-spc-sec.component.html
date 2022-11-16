@@ -43,7 +43,7 @@
                                         <td>{{i+1}}</td>
                                         <td>{{task.taskData.standardNumber}}</td>
                                         <td>{{task.taskData.standardType}}</td>
-                                        <td>{{task.taskData.datePrepared}}</td>
+                                        <td>{{task.taskData.recommendationTime}}</td>
                                         <td>{{task.taskData.title}}</td>
                                         <td>{{task.taskData.scope}}</td>
                                         <td *ngIf="task.name==='viewRecommendations'"><a  (click)="onOpenModal(task,'comment')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve">Decision On Recommendation</a></td>
@@ -51,7 +51,7 @@
                                     </tbody>
                                 </table>
                                 <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentLabel" aria-hidden="true">a
-                                    <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-dialog modal-xl" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h3 class="modal-title" id="commentLabel">Recommendations on Proposal</h3>
@@ -68,6 +68,7 @@
                                                                 <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                                                                     <a class="nav-item nav-link active" id="nav-proposal-tab" data-toggle="tab" href="#nav-proposal" role="tab" aria-controls="nav-proposal" aria-selected="true">Proposal</a>
                                                                     <a class="nav-item nav-link" id="nav-proposal-comments-tab" (click)=toggleStandardsProposalCommentsTab(actionRequest?.taskData?.reviewID) data-toggle="tab" href="#nav-proposal-comments" role="tab" aria-controls="nav-proposal-comments" aria-selected="false">Stakeholders Comments</a>
+                                                                    <a class="nav-item nav-link" id="nav-proposal-officer-comments-tab" (click)=toggleDisplayCommentsTab(actionRequest?.taskData?.reviewID) data-toggle="tab" href="#nav-proposal-officer-comments" role="tab" aria-controls="nav-proposal-officer-comments" aria-selected="false">Other Comments</a>
                                                                     <a class="nav-item nav-link" id="nav-approve-proposal-tab" (click)=toggleDisplayRecommendationsTab() data-toggle="tab" href="#nav-approve-proposal" role="tab" aria-controls="nav-approve-proposal" aria-selected="false">Approve</a>
                                                                     <a class="nav-item nav-link" id="nav-reject-proposal-tab" (click)=toggleDisplayRecommendationsTab() data-toggle="tab" href="#nav-reject-proposal" role="tab" aria-controls="nav-reject-proposal" aria-selected="false">Reject</a>
                                                                 </div>
@@ -156,6 +157,27 @@
                                                                                     </tr>
                                                                                     </tbody>
                                                                                 </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="tab-pane fade" id="nav-proposal-officer-comments" role="tabpanel" aria-labelledby="nav-proposal-officer-comments-tab">
+                                                                    <div class="modal-body">
+                                                                        <div class="col-12">
+                                                                            <div class="card" *ngFor="let reviewStandardsComment of reviewStandardsComments">
+                                                                                <div class="card-header">
+                                                                                    <span class="badge badge-info">Comment By</span>{{reviewStandardsComment.remarkBy}} On {{reviewStandardsComment.dateOfRemark }}
+                                                                                </div>
+                                                                                <div class="card-body">
+                                                                                    <blockquote class="blockquote mb-0">
+                                                                                        <p>Remark: {{reviewStandardsComment.remarks}}.</p>
+                                                                                    </blockquote>
+                                                                                </div>
+
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -258,7 +280,7 @@
                                                                                         <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
                                                                                         <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
                                                                                         <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
-                                                                                        <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.taskData?.reviewID}}" >
+                                                                                        <input type="hidden" formControlName="reviewID" name="reviewID" value="{{actionRequest?.taskData?.reviewID}}" >
                                                                                     </div>
                                                                                 </div>
 
@@ -364,7 +386,7 @@
                                                                                             <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
                                                                                             <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >
                                                                                             <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >
-                                                                                            <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.taskData?.reviewID}}" >
+                                                                                            <input type="hidden" formControlName="reviewID" name="reviewID" value="{{actionRequest?.taskData?.reviewID}}" >
                                                                                         </div>
                                                                                     </div>
 

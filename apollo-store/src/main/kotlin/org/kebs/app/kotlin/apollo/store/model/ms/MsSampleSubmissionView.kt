@@ -13,7 +13,7 @@ class MsSampleSubmissionView : Serializable {
 
     @Column(name = "CREATED_USER_ID")
     @Basic
-    var createdUserId: Long? = null
+    var createdUserId: String? = null
 
     @Basic
     @Column(name = "NAME_PRODUCT")

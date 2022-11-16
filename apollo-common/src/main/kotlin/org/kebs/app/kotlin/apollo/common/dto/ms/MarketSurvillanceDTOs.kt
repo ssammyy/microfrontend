@@ -513,6 +513,19 @@ data class DataReportParamsDto(
         var remarks: String? = null,
 )
 
+data class FieldReportBackDto(
+        var actionOnSeizedGoodsDetails: String? = null,
+)
+
+data class FieldReportAdditionalInfo(
+        var performanceOnTestSamples: String? = null,
+        var actionOnSeizedGoods: List<FieldReportBackDto>? = null,
+        var actionOnSeizedGoodsRemarks: String? = null,
+        var actionsOnRecommendationGiven: String? = null,
+        var followUpActivities: String? = null,
+        var others: String? = null,
+)
+
 data class InspectionInvestigationReportDto(
         var id: Long?= 0,
         var reportReference: String? = null,
@@ -536,6 +549,8 @@ data class InspectionInvestigationReportDto(
         var statusActivity: String? = null,
         var finalRemarkHod: String? = null,
         var remarks: String? = null,
+        var additionalInformation: FieldReportAdditionalInfo? = null,
+        var additionalInformationStatus: Boolean,
 )
 
 data class KebsOfficersName (
@@ -1050,6 +1065,28 @@ data class MsRecommendationDto(
         var recommendationName: String? = null,
         var description: String? = null,
         var status: Boolean? = null,
+)
+
+data class NotificationBodyDto(
+        var taskRefNumber: String? = null,
+        var fromName: String? = null,
+        var toName: String? = null,
+        var batchReferenceNoFound: String? = null,
+        var referenceNoFound: String? = null,
+        var dateAssigned: Date? = null,
+        var bsNumberFound: String? = null,
+        var processType: String? = null,
+)
+
+data class MsNotificationTaskDto(
+        var id: Long?= 0,
+        var notificationBody: NotificationBodyDto? = null,
+        var notificationMsg: String? = null,
+        var notificationName: String? = null,
+        var notificationType: String? = null,
+        var fromUserId: Long? = null,
+        var toUserId: Long? = null,
+        var readStatus: Boolean? = null,
 )
 
 data class MsUsersDto(

@@ -163,7 +163,7 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
         ) {
             this.error = true;
             this.spinnerService.hide();
-
+            this.spinnerService.hide();
             swal.fire({
                 title: 'Please Select At Least One Filter.',
                 buttonsStyling: false,
@@ -222,6 +222,7 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
                 (error: HttpErrorResponse) => {
                     alert(error.message);
                     this.SpinnerService.hide();
+                    this.spinnerService.hide();
                 }
             );
         }
@@ -250,8 +251,8 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
         });
     }
     dateRangeChange(dateRangeStart: HTMLInputElement, dateRangeEnd: HTMLInputElement) {
-        console.log(dateRangeStart.value);
-        console.log(dateRangeEnd.value);
+        //console.log(dateRangeStart.value);
+       // console.log(dateRangeEnd.value);
         this.startDate = dateRangeStart.value
         this.endDate = dateRangeEnd.value
 
@@ -285,7 +286,7 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
         },
         error => {
           this.SpinnerService.hide();
-          console.log(error);
+            this.spinnerService.hide();
           this.levyService.showError('AN ERROR OCCURRED');
         },
     );

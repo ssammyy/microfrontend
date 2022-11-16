@@ -19,6 +19,10 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var referenceNumber: String? = null
 
+    @Column(name = "FINAL_ACTION_ON_SIZED")
+    @Basic
+    var finalActionOnSized: Int? = 0
+
     @Column(name = "INSPECTION_DATE")
     @Basic
     var inspectionDate: Date? = null

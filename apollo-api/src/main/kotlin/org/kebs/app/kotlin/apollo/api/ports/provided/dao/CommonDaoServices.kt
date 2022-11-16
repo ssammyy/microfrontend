@@ -63,7 +63,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEnt
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
-import org.kebs.app.kotlin.apollo.common.dto.ms.SampleCollectionItemsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -73,7 +72,6 @@ import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationPropertie
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.MsCollectionParametersEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocComplaintsEmailVerificationEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocPartnersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
@@ -402,6 +400,8 @@ class CommonDaoServices(
         val gson = Gson()
         return gson.toJson(classToConvert)
     }
+
+
 
     fun getUserTypeDetails(usertypeID: Long): UserTypesEntity {
         userTypesRepo.findByIdOrNull(usertypeID)
@@ -988,6 +988,13 @@ class CommonDaoServices(
                 return userProfile
             }
             ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
+    }
+    fun findAllUsersByDesignation(
+        map: ServiceMapsEntity,
+        designationID: Long
+    ): List<UserProfilesEntity> {
+        val designation = findDesignationByID(designationID)
+        return findAllUsersProfileWithDesignationAndStatus(designation, map.activeStatus)
     }
 
     fun findAllUsersProfileWithDesignationAndStatus(
@@ -1613,7 +1620,7 @@ class CommonDaoServices(
 
     }
 
-    private fun composeMessage(data: Any?, notification: NotificationsEntity): String? {
+    fun composeMessage(data: Any?, notification: NotificationsEntity): String? {
         val p = notification.notificationType?.let { notifier ->
             notifier.delimiter?.let {
                 notification.spelProcessor?.split(it)?.replacePrefixedItemsWithObjectValues(

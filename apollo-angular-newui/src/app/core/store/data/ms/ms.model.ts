@@ -129,6 +129,28 @@ export class NewComplaintDto {
     locationDetails: ComplaintLocationDto;
 }
 
+export class MsNotificationTaskDto {
+    id: number;
+    notificationBody: NotificationBodyDto;
+    notificationMsg: string;
+    notificationName: string;
+    notificationType: string;
+    fromUserId: number;
+    toUserId: number;
+    readStatus: boolean;
+}
+
+export class NotificationBodyDto {
+    taskRefNumber: string;
+    fromName: string;
+    toName: string;
+    batchReferenceNoFound: string;
+    referenceNoFound: string;
+    dateAssigned: Date;
+    bsNumber: string;
+    processType: string;
+}
+
 export class ApiResponseModel {
     totalCount: number;
     extras: any;
@@ -314,6 +336,10 @@ export class FindWithRefNumber {
 
 export class WorkPlanFeedBackDto {
     hodFeedBackRemarks: string;
+}
+
+export class FieldReportBackDto {
+    actionOnSeizedGoodsDetails: string;
 }
 
 export class DestructionNotificationDto {
@@ -510,7 +536,18 @@ export class InspectionInvestigationReportDto {
     recommendations: string;
     statusActivity: string;
     finalRemarkHod: string;
-    // remarks: string;
+    remarks: string;
+    additionalInformation: FieldReportAdditionalInfo;
+    additionalInformationStatus: boolean;
+}
+
+export class FieldReportAdditionalInfo {
+    performanceOnTestSamples: String;
+    actionOnSeizedGoods: FieldReportBackDto[];
+    actionOnSeizedGoodsRemarks: String;
+    actionsOnRecommendationGiven: String;
+    followUpActivities: String;
+    others: String;
 }
 
 export class ComplaintLocationDto {

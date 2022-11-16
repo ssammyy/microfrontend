@@ -264,6 +264,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var chargeSheetStatus: Int? = 0
 
+    @Column(name = "FIELD_REPORT_STATUS")
+    @Basic
+    var fieldReportStatus: Int? = 0
+
     @Column(name = "INVEST_INSPECT_REPORT_STATUS")
     @Basic
     var investInspectReportStatus: Int? = 0

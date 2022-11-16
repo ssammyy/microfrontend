@@ -494,6 +494,7 @@ export class ApiEndpointService {
         SR_SD_HOP_TASKS: `${ApiEndpointService.SD_SR_CONTEXT}/getHopTasks`,
         SR_SD_SPC_SEC_TASKS: `${ApiEndpointService.SD_SR_CONTEXT}/getSpcSecTasks`,
         SR_SD_GAZETTE_TASKS: `${ApiEndpointService.SD_SR_CONTEXT}/getHoSicTasks`,
+        SR_SD_USER_COMMENTS: `${ApiEndpointService.SD_SR_CONTEXT}/getUserComments`,
 
         // SD NATIONAL ENQUIRY POINT
         NEP_ENQUIRY_NEP_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/tasks`,
@@ -623,6 +624,7 @@ export class ApiEndpointService {
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
         VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
+        VIEW_PDF_FIELD_REPORT: `${ApiEndpointService.MS_CONTEXT}/report/ms-field-report`,
     }
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
@@ -675,6 +677,8 @@ export class ApiEndpointService {
         MS_PREDEFINED_RESOURCES_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/predefinedResourcesRequired`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
+        MS_NOTIFICATIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/notification-list`,
+        MS_NOTIFICATIONS_READ: `${ApiEndpointService.MS_COMMON_CONTEXT}/notification-read`,
     };
 
     public static MARKET_SURVEILLANCE_REPORTS = {
@@ -742,6 +746,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_NOTIFICATION_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-notice-upload`,
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_REPORT_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-report-upload`,
         UPLOAD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/file/save`,
+        UPDATE_FIELD_REPORT_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/additional-info-field-report/save`,
         INSPECTION_SCHEDULED_ADD_CHARGE_SHEET: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/charge-sheet`,
         INSPECTION_SCHEDULED_ADD_DATA_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/data-report`,
         INSPECTION_SCHEDULED_ADD_SEIZURE_DECLARATION: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/seizure-declaration`,

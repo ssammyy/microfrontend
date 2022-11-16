@@ -129,6 +129,14 @@ interface IComplaintLocationRepository : HazelcastRepository<ComplaintLocationEn
 }
 
 @Repository
+interface IMsTaskNotificationsRepository : HazelcastRepository<MsTaskNotificationsEntity, Long>{
+    fun findAllByNotificationType(notificationType: String):  List<MsTaskNotificationsEntity>?
+    fun findAllByReadStatus(readStatus: Int): List<MsTaskNotificationsEntity>?
+    fun findAllByReadStatusAndToUserId(readStatus: Int, toUserID:Long): List<MsTaskNotificationsEntity>?
+    fun findByTaskRefNumber(taskRefNumber: String): MsTaskNotificationsEntity?
+}
+
+@Repository
 interface IPredefinedResourcesRequiredRepository : HazelcastRepository<PredefinedResourcesRequiredEntity, Long>{
     fun findAllByStatus(status: Long): PredefinedResourcesRequiredEntity?
 }

@@ -13,11 +13,36 @@ import {Moment} from "moment";
 import {OverlayService} from "../../../shared/loader/overlay.service";
 import {formatDate} from "@angular/common";
 import swal from "sweetalert2";
+import {DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter} from "@angular/material/core";
+
+export const PICK_FORMATS = {
+  parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
+  display: {
+    dateInput: 'input',
+    monthYearLabel: {year: 'numeric', month: 'short'},
+    dateA11yLabel: {year: 'numeric', month: 'long', day: 'numeric'},
+    monthYearA11yLabel: {year: 'numeric', month: 'long'}
+  }
+};
+
+class PickDateAdapter extends NativeDateAdapter {
+  format(date: Date, displayFormat: Object): string {
+    if (displayFormat === 'input') {
+      return formatDate(date, "yyyy-MM-dd'T'HH:mm:ss", this.locale);
+    } else {
+      return date.toDateString();
+    }
+  }
+}
 
 @Component({
   selector: 'app-standard-levy-active-firms',
   templateUrl: './standard-levy-active-firms.component.html',
-  styleUrls: ['./standard-levy-active-firms.component.css']
+  styleUrls: ['./standard-levy-active-firms.component.css'],
+  providers: [
+    {provide: DateAdapter, useClass: PickDateAdapter},
+    {provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS}
+  ]
 })
 export class StandardLevyActiveFirmsComponent implements OnInit {
 
@@ -142,7 +167,7 @@ export class StandardLevyActiveFirmsComponent implements OnInit {
     if (this.filterFormGroup.get("startDate").value != '') {
       if (this.filterFormGroup.get("endDate").value == '') {
         this.spinnerService.hide();
-
+        this.spinnerService.hide();
         swal.fire({
           title: 'Please Select The End Date.',
           buttonsStyling: false,
@@ -188,6 +213,7 @@ export class StandardLevyActiveFirmsComponent implements OnInit {
           (error: HttpErrorResponse) => {
             alert(error.message);
             this.SpinnerService.hide();
+            this.spinnerService.hide();
           }
       );
     }

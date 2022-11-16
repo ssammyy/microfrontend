@@ -221,7 +221,7 @@ class StandardRequestService(
 
 
     fun getAllStandardRequests(): List<StandardsDto> {
-        val standardRequest: List<StandardRequest> = standardRequestRepository.findByStatus("Review By HOD")!!
+        val standardRequest: List<StandardRequest> = standardRequestRepository.findAllByStatus("Review By HOD")
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,
@@ -319,7 +319,7 @@ class StandardRequestService(
     }
 
     fun getAllStandardRequestsToPrepareNWI(): List<StandardsDto> {
-        val standardRequest: List<StandardRequest> = standardRequestRepository.findByStatus("Assigned To TC Sec")!!
+        val standardRequest: List<StandardRequest> = standardRequestRepository.findAllByStatus("Assigned To TC Sec")
 
         return standardRequest.map { p ->
             StandardsDto(
@@ -361,7 +361,7 @@ class StandardRequestService(
     }
 
     fun getAllRejectedStandardRequestsToPrepareNWI(): List<StandardsDto> {
-        val standardRequest: List<StandardRequest> = standardRequestRepository.findByStatus("Rejected For Review")!!
+        val standardRequest: List<StandardRequest> = standardRequestRepository.findAllByStatus("Rejected For Review")!!
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,

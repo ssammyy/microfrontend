@@ -1460,7 +1460,7 @@ class StdLevyController(
         val standardLevyOperationsClosure= StandardLevyOperationsClosure().apply {
             companyId = closeCompanyDto.id
             reason = closeCompanyDto.reason
-            dateOfClosure = closeCompanyDto.dateOfClosure.toString()
+            dateOfClosure = closeCompanyDto.dateOfClosure
         }
 
         return ServerResponse(HttpStatus.OK,"Details Submitted for Verification",standardLevyService.closeCompanyOperations(standardLevyOperationsClosure))

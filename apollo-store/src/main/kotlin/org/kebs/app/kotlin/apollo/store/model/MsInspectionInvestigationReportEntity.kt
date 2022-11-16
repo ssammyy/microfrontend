@@ -20,6 +20,10 @@ class MsInspectionInvestigationReportEntity: Serializable {
     @Basic
     var reportReference: String? = null
 
+    @Column(name = "CREATED_USER_ID")
+    @Basic
+    var createdUserId: Long? = null
+
     @Column(name = "REPORT_TO")
     @Basic
     var reportTo: String? = null
@@ -59,6 +63,14 @@ class MsInspectionInvestigationReportEntity: Serializable {
     @Column(name = "BACKGROUND_INFORMATION")
     @Basic
     var backgroundInformation: String? = null
+
+    @Column(name = "ADDITIONAL_INFORMATION")
+    @Basic
+    var additionalInformation: String? = null
+
+    @Column(name = "ADDITIONAL_INFORMATION_STATUS")
+    @Basic
+    var additionalInformationStatus: Int? = 0
 
     @Column(name = "OBJECTIVE_INVESTIGATION")
     @Basic
