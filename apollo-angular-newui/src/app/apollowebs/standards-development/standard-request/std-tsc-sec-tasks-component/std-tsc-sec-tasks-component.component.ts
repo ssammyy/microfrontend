@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {LiaisonOrganization, StandardRequestB, Stdtsectask} from "../../../../core/store/data/std/request_std.model";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
@@ -11,6 +11,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {ErrorStateMatcher} from "@angular/material/core";
 import swal from "sweetalert2";
+import {formatDate} from "@angular/common";
+import {VotesNwiTally} from "../../../../core/store/data/std/commitee-model";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -26,18 +28,31 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class StdTscSecTasksComponentComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
-    dtTrigger: Subject<any> = new Subject<any>();
-    @ViewChild(DataTableDirective, {static: false})
-    dtElement: DataTableDirective;
-    isDtInitialized: boolean = false
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger1: Subject<any> = new Subject<any>();
+    dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
+    dtTrigger4: Subject<any> = new Subject<any>();
+    dtTrigger5: Subject<any> = new Subject<any>();
+    dtTrigger6: Subject<any> = new Subject<any>();
     p = 1;
     p2 = 1;
+
+
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
+
     public itemId: string = "";
     public filePurposeAnnex: string = "FilePurposeAnnex";
     public relevantDocumentsNWI: string = "RelevantDocumentsNWI";
 
     public secTasks: StandardRequestB[] = [];
     public tscsecRequest !: Stdtsectask | undefined;
+
+    public nwiForVotes: VotesNwiTally[] = [];
+
+
 
 
     @Input() errorMsg: string;
@@ -95,6 +110,8 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
     ngOnInit(): void {
         this.getTCSECTasks();
+        this.getAllNwisUnderVote();
+
         this.getLiasisonOrganization();
         this.dropdownSettings = {
             singleSelection: false,
@@ -164,16 +181,20 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         this.standardDevelopmentService.getTCSECTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.secTasks = response;
+                this.rerender()
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
 
-                if (this.isDtInitialized) {
-                    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                        dtInstance.destroy();
-                        this.dtTrigger.next();
-                    });
-                } else {
-                    this.isDtInitialized = true
-                    this.dtTrigger.next();
-                }
+
+    public getAllNwisUnderVote(): void {
+        this.standardDevelopmentService.getAllVotesTally().subscribe(
+            (response: VotesNwiTally[]) => {
+                this.nwiForVotes = response;
+                this.rerender()
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -203,17 +224,18 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
         this.standardDevelopmentService.uploadNWI(secTask).subscribe(
             (response) => {
-                console.log(response);
+                console.log(response.body.savedRowID);
                 this.showToasterSuccess(response.httpStatus, `New Work Item Uploaded`);
 
                 if (this.uploadedFiles.length > 0) {
-                    this.uploadDocuments(response.body, "Annex Documents")
+                    this.uploadDocuments(response.body.savedRowID, "Annex Documents")
                 }
                 if (this.uploadedFilesB.length > 0) {
-                    this.uploadDocuments(response.body, "Relevant Documents")
+                    this.uploadDocuments(response.body.savedRowID
+                        , "Relevant Documents")
                 }
                 if (this.uploadedFilesC.length > 0) {
-                    this.uploadDocuments(response.body, "Reference Documents")
+                    this.uploadDocuments(response.body.savedRowID, "Reference Documents")
                 } else {
                     this.hideModel();
                     this.SpinnerService.hide();
@@ -316,6 +338,40 @@ export class StdTscSecTasksComponentComponent implements OnInit {
                 },
             );
         }
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger1.next();
+            this.dtTrigger2.next();
+            this.dtTrigger3.next();
+            this.dtTrigger4.next();
+            this.dtTrigger5.next();
+            this.dtTrigger6.next();
+
+        });
+
+    }
+
+    ngOnDestroy(): void {
+        // Do not forget to unsubscribe the event
+        this.dtTrigger1.unsubscribe();
+        this.dtTrigger2.unsubscribe();
+        this.dtTrigger3.unsubscribe();
+        this.dtTrigger4.unsubscribe();
+        this.dtTrigger5.unsubscribe();
+        this.dtTrigger6.unsubscribe();
+
+    }
+
+    formatFormDate(date: Date) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 
 

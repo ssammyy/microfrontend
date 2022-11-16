@@ -19,10 +19,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
-import org.kebs.app.kotlin.apollo.common.dto.std.ID
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
-import org.kebs.app.kotlin.apollo.common.dto.std.StandardsDto
-import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
@@ -33,6 +30,7 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRolesRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.stereotype.Service
@@ -221,7 +219,8 @@ class StandardRequestService(
 
 
     fun getAllStandardRequests(): List<StandardsDto> {
-        val standardRequest: List<StandardRequest> = standardRequestRepository.findAllByStatus("Review By HOD")
+        val standardRequest: List<StandardRequest> =
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("Review By HOD")
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,
@@ -319,7 +318,8 @@ class StandardRequestService(
     }
 
     fun getAllStandardRequestsToPrepareNWI(): List<StandardsDto> {
-        val standardRequest: List<StandardRequest> = standardRequestRepository.findAllByStatus("Assigned To TC Sec")
+        val standardRequest: List<StandardRequest> =
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("Assigned To TC Sec")
 
         return standardRequest.map { p ->
             StandardsDto(
@@ -361,7 +361,8 @@ class StandardRequestService(
     }
 
     fun getAllRejectedStandardRequestsToPrepareNWI(): List<StandardsDto> {
-        val standardRequest: List<StandardRequest> = standardRequestRepository.findAllByStatus("Rejected For Review")!!
+        val standardRequest: List<StandardRequest> =
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("Rejected For Review")
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,
@@ -440,22 +441,80 @@ class StandardRequestService(
         return getTaskDetails(tasks)
     }
 
-    fun decisionOnNWI(voteOnNWI: VoteOnNWI) {
-        voteOnNWIRepository.save(voteOnNWI)
+    fun getAllNwiSUnderVote(): List<StandardNWI> {
+        return standardNWIRepository.findAllByStatus("Vote ON NWI")
+    }
 
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["approved"] = voteOnNWI.decision.toBoolean()
-        val u: StandardNWI = standardNWIRepository.findById(voteOnNWI.nwiId).orElse(null);
+    fun decisionOnNWI(voteOnNWI: VoteOnNWI): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        voteOnNWI.userId = loggedInUser.id!!
+
+        //        //check if person has voted
+        voteOnNWIRepository.findByUserIdAndNwiIdAndStatus(voteOnNWI.userId, voteOnNWI.nwiId, 1)
+            ?.let {
+                // throw InvalidValueException("You Have Already Voted")
+                return ServerResponse(
+                    HttpStatus.OK,
+                    "Voted", "You Have Already Voted"
+                )
+
+            }
+            ?: run {
+                voteOnNWI.createdOn = Timestamp(System.currentTimeMillis())
+                voteOnNWI.status = 1
+                voteOnNWIRepository.save(voteOnNWI)
+                return ServerResponse(
+                    HttpStatus.OK,
+                    "Voted", "You Have Voted"
+                )
+
+            }
+    }
+
+
+    fun getUserLoggedInBallots(): List<VoteOnNWI> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return loggedInUser.id?.let { voteOnNWIRepository.findByUserIdAndStatus(it, 1) }!!
+    }
+
+    fun getAllVotesTally(): List<NwiVotesTally> {
+        return voteOnNWIRepository.getVotesTally()
+
+    }
+
+    fun getAllVotesOnNwi(nwiId: Long): List<VotesWithNWIId> {
+        return voteOnNWIRepository.getVotesByTcMembers(nwiId)
+    }
+
+
+    fun approveNWI(nwiId: Long): ServerResponse {
+        val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null);
         u.status = "Upload Justification";
         standardNWIRepository.save(u)
-        taskService.complete(voteOnNWI.taskId, variables)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Approved", "NWI Approved. Prepare Justification"
+        )
     }
+
+    fun rejectNWI(nwiId: Long): ServerResponse {
+        val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null);
+        u.status = "NWI Rejected";
+        standardNWIRepository.save(u)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Rejected", "NWI Rejected."
+        )
+    }
+
 
     fun getTCSecTasks(): List<TaskDetails> {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_TC_SEC).list()
 
         return getTaskDetails(tasks)
     }
+
 
     fun uploadJustification(standardJustification: StandardJustification) {
         val variable: MutableMap<String, Any> = HashMap()
