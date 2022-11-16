@@ -819,6 +819,37 @@ alter table SD_STANDARD_REVIEW
     add STANDARD_TYPE VARCHAR(350 char) ;
 /
 
+create  table DAT_KEBS_REVIEW_STD_REMARKS
+(
+    id                   number   not null primary key,
+    PROPOSAL_ID            NUMBER,
+    REMARKS           varchar(350 char),
+    STATUS           varchar(350 char),
+    REMARK_BY            varchar(350),
+    ROLE          VARCHAR2(350 CHAR),
+    DESCRIPTION          VARCHAR2(350 CHAR),
+    DATE_OF_REMARK          TIMESTAMP
+)
+/
+create sequence DAT_KEBS_REVIEW_STD_REMARKS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger DAT_KEBS_REVIEW_STD_REMARKS_trg
+    before
+        insert
+    on DAT_KEBS_REVIEW_STD_REMARKS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_REVIEW_STD_REMARKS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+/
+
 
 
 

@@ -46,7 +46,7 @@ class StandardReviewController(
 
     //********************************************************** get SAC SEC Tasks **********************************************************
     @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/getSACSECTasks")
+    @GetMapping("/getSacSecTasks")
     fun getSacSecTasks():List<StandardReviewTasks>
     {
         return standardReviewService.getSacSecTasks()
@@ -151,25 +151,31 @@ class StandardReviewController(
         )
     }
 
+    @GetMapping("/getUserComments")
+    fun getUserComments(@RequestParam("id") id: Long):MutableIterable<ReviewStandardRemarks>?
+    {
+        return standardReviewService.getUserComments(id)
+    }
+
     //decision on Adoption Recommendation
     // @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnRecommendation")
     fun decisionOnRecommendation(@RequestBody reviewDecision: ReviewDecision,
-                                 internationalStandardRemarks: InternationalStandardRemarks) : List<StandardReviewTasks>
+                                 reviewStandardRemarks: ReviewStandardRemarks) : List<StandardReviewTasks>
     {
-        return standardReviewService.decisionOnRecommendation(reviewDecision,internationalStandardRemarks)
+        return standardReviewService.decisionOnRecommendation(reviewDecision,reviewStandardRemarks)
     }
 
     //Level Two Decision
     @PostMapping("/levelUpDecisionOnRecommendations")
     fun levelUpDecisionOnRecommendations(
         @RequestBody reviewDecision: ReviewDecision,
-        internationalStandardRemarks: InternationalStandardRemarks,
+        reviewStandardRemarks: ReviewStandardRemarks,
         standard: Standard
     ): List<StandardReviewTasks> {
         return standardReviewService.levelUpDecisionOnRecommendations(
             reviewDecision,
-            internationalStandardRemarks,
+            reviewStandardRemarks,
             standard
         )
     }
@@ -178,10 +184,10 @@ class StandardReviewController(
     //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/updateGazette")
     @ResponseBody
-    fun updateGazette(@RequestBody internationalStandardRemarks: InternationalStandardRemarks,
+    fun updateGazette(@RequestBody reviewStandardRemarks: ReviewStandardRemarks,
                       standard:Standard,reviewDecision: ReviewDecision): ServerResponse
     {
-        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.updateGazette(internationalStandardRemarks,standard,reviewDecision))
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted Comments",standardReviewService.updateGazette(reviewStandardRemarks,standard,reviewDecision))
     }
 
     @PostMapping("/updateGazettementDate")
@@ -202,11 +208,11 @@ class StandardReviewController(
     @PostMapping("/checkRequirements")
     fun checkRequirements(
         @RequestBody reviewDecision: ReviewDecision,
-        internationalStandardRemarks: InternationalStandardRemarks
+        reviewStandardRemarks: ReviewStandardRemarks
     ): List<StandardReviewTasks> {
         return standardReviewService.checkRequirements(
             reviewDecision,
-            internationalStandardRemarks
+            reviewStandardRemarks
         )
     }
 
@@ -237,11 +243,11 @@ class StandardReviewController(
     @PostMapping("/checkStandardDraft")
     fun checkStandardDraft(
         @RequestBody reviewDecision: ReviewDecision,
-        internationalStandardRemarks: InternationalStandardRemarks
+        reviewStandardRemarks: ReviewStandardRemarks
     ): List<StandardReviewTasks> {
         return standardReviewService.checkStandardDraft(
             reviewDecision,
-            internationalStandardRemarks
+            reviewStandardRemarks
         )
     }
 
