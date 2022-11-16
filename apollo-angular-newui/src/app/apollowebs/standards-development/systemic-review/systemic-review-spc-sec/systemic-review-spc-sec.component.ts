@@ -1,12 +1,17 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {ReviewProposalComments, StandardReviewTasks} from "../../../../core/store/data/std/std.model";
+import {
+
+    ReviewProposalComments, ReviewStandardsComments,
+    StandardReviewTasks
+} from "../../../../core/store/data/std/std.model";
 import {StdReviewService} from "../../../../core/store/data/std/std-review.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
+import {SiteVisitRemarks} from "../../../../core/store/data/levy/levy.model";
 
 @Component({
   selector: 'app-systemic-review-spc-sec',
@@ -31,6 +36,7 @@ export class SystemicReviewSpcSecComponent implements OnInit {
   taskTypeZero:number;
   public isShowRecommendationsTab=true;
   public isShowProposalCommentsTab=true;
+    reviewStandardsComments: ReviewStandardsComments[] = [];
 
   constructor(
       private stdReviewService : StdReviewService,
@@ -46,7 +52,6 @@ export class SystemicReviewSpcSecComponent implements OnInit {
     this.taskTypeOne=1;
     this.taskTypeZero=0;
     this.approveRecommendationFormGroup= this.formBuilder.group({
-      proposalId:[],
       summaryOfRecommendations:[],
       feedback:[],
       processId:[],
@@ -58,7 +63,6 @@ export class SystemicReviewSpcSecComponent implements OnInit {
     });
 
     this.rejectRecommendationFormGroup= this.formBuilder.group({
-      proposalId:[],
       summaryOfRecommendations:[],
       feedback:[],
       processId:[],
@@ -85,9 +89,11 @@ export class SystemicReviewSpcSecComponent implements OnInit {
     this.SpinnerService.show();
     this.stdReviewService.getSpcSecTasks().subscribe(
         (response: StandardReviewTasks[])=> {
+          this.tasks = response;
+          console.log(this.tasks);
           this.SpinnerService.hide();
           this.rerender();
-          this.tasks = response;
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -109,7 +115,7 @@ export class SystemicReviewSpcSecComponent implements OnInit {
             accentTo: this.approve,
             taskId: this.actionRequest.taskId,
             processId: this.actionRequest.processId,
-            proposalId: this.actionRequest.taskData.reviewID
+              reviewID: this.actionRequest.taskData.reviewID
 
 
           }
@@ -119,7 +125,7 @@ export class SystemicReviewSpcSecComponent implements OnInit {
             accentTo: this.reject,
             taskId: this.actionRequest.taskId,
             processId: this.actionRequest.processId,
-            proposalId: this.actionRequest.taskData.reviewID
+              reviewID: this.actionRequest.taskData.reviewID
 
           }
       );
@@ -211,5 +217,24 @@ export class SystemicReviewSpcSecComponent implements OnInit {
     this.isShowRecommendationsTab = !this.isShowRecommendationsTab;
     this.isShowProposalCommentsTab= true;
   }
+
+
+    toggleDisplayCommentsTab(id: number){
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.stdReviewService.getUserComments(id).subscribe(
+            (response: ReviewStandardsComments[]) => {
+                this.reviewStandardsComments = response;
+                this.SpinnerService.hide();
+                console.log(this.reviewStandardsComments)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+
+
+    }
 
 }

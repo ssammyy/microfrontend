@@ -295,7 +295,7 @@ interface StandardReviewProposalCommentsRepository : JpaRepository<StandardRevie
     @Query(
         value = "SELECT ID as id,USER_NAME as userName,ADOPTION_COMMENT as adoptionComment,COMMENT_TIME as commentTime,PROPOSAL_ID as proposalId,TITLE as title," +
                 "DOCUMENT_TYPE as documentType,CLAUSE as clause,PARAGRAPH as paragraph,TYPE_OF_COMMENT as typeOfComment,PROPOSED_CHANGE as proposedChange " +
-                "FROM SD_REVIEW_PROPOSAL_COMMENTS  ",
+                "FROM SD_REVIEW_PROPOSAL_COMMENTS  WHERE PROPOSAL_ID=:id",
         nativeQuery = true
     )
     fun getStandardsProposalComments(id: Long): MutableList<ReviewStandards>
@@ -435,6 +435,9 @@ interface StandardComRemarksRepository : JpaRepository<StandardComRemarks, Long>
 }
 interface InternationalStandardRemarksRepository : JpaRepository<InternationalStandardRemarks, Long> {
     fun findAllByProposalIdOrderByIdDesc(id: Long): MutableIterable<InternationalStandardRemarks>?
+}
+interface ReviewStandardRemarksRepository : JpaRepository<ReviewStandardRemarks, Long> {
+    fun findAllByProposalIdOrderByIdDesc(id: Long): MutableIterable<ReviewStandardRemarks>?
 }
 
 

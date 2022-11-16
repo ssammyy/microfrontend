@@ -39,7 +39,7 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
       paragraph:[],
       typeOfComment:[],
       proposedChange:[],
-      proposalID:[]
+      proposalId:[]
     });
   }
   ngOnDestroy(): void {
@@ -81,7 +81,7 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
       this.commentFormGroup.patchValue(
           {
             title: this.actionRequest.title,
-            proposalID: this.actionRequest.id
+            proposalId: this.actionRequest.id
           });
     }
 
@@ -108,6 +108,7 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
         }
     );
     this.hideModelCDetails();
+    this.commentFormGroup.reset();
   }
   @ViewChild('closeModalCDetails') private closeModalCDetails: ElementRef | undefined;
 

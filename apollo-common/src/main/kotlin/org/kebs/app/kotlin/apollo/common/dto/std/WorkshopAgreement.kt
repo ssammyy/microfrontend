@@ -152,5 +152,29 @@ class ISDraftStdUpload(
 {
 
 }
+class ReviewDecision(
+    @JsonProperty("comments") var comments: String,
+    @JsonProperty("taskId") var taskId: String,
+    @JsonProperty("processId")  var processId: String,
+    @JsonProperty("assignedTo")  var assignedTo: Long,
+    @JsonProperty("reviewID")  var reviewID: Long,
+    @JsonProperty("taskType")  var taskType: Long,
+    @JsonProperty("standardID")  val standardID: Long,
+    @JsonProperty("accentTo")  var accentTo: Boolean
+) {
+}
+
+class GazzettementDecision(
+    @JsonProperty("comments") var comments: String,
+    @JsonProperty("taskId") var taskId: String,
+    @JsonProperty("processId")  var processId: String,
+    @JsonProperty("assignedTo")  var assignedTo: Long,
+    @JsonProperty("reviewID")  var reviewID: Long,
+    @JsonProperty("taskType")  var taskType: Long,
+    @JsonProperty("standardID")  val standardID: Long,
+    @JsonProperty("accentTo")  var accentTo: Boolean,
+    @JsonProperty("description")  var description: String
+) {
+}
 
 
