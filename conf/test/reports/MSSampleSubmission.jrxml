@@ -8,8 +8,8 @@
 		</box>
 	</style>
 	<parameter name="imagePath" class="java.lang.String"/>
-	<parameter name="signaturePath" class="java.lang.String"/>
-	<parameter name="recieversSignaturePath" class="java.lang.String"/>
+	<parameter name="signaturePath" class="java.io.InputStream"/>
+	<parameter name="recieversSignaturePath" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>

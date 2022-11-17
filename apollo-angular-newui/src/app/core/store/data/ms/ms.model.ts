@@ -233,6 +233,8 @@ export class WorkPlanEntityDto {
     complaintDepartment: number;
     divisionId: number;
     nameActivity: string;
+    rationale: string;
+    scopeOfCoverage: string;
     timeActivityDate: Date;
     county: number;
     townMarketCenter: number;
@@ -279,6 +281,7 @@ export class ComplaintDetailsDto {
     complainantPhoneNumber: string;
     complainantPostalAddress: string;
     complainantPhysicalAddress: string;
+    complaintIdNumber: string;
     complaintSampleDetails: string;
     remedySought: string;
     email: string;
@@ -468,6 +471,7 @@ export class ComplaintCustomersDto {
     emailAddress: string;
     postalAddress: string;
     physicalAddress: string;
+    idNumber: string;
 }
 
 export class PreliminaryReportItemsDto {
@@ -591,6 +595,8 @@ export class WorkPlanInspectionDto {
     division: string;
     officerName: string;
     nameActivity: string;
+    rationale: string;
+    scopeOfCoverage: string;
     targetedProducts: string;
     resourcesRequired: PredefinedResourcesRequired[];
     budget: string;

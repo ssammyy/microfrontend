@@ -58,6 +58,14 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var uuid: String? = null
 
+    @Column(name = "RATIONALE")
+    @Basic
+    var rationale: String? = null
+
+  @Column(name = "SCOPE_OF_COVERAGE")
+    @Basic
+    var scopeOfCoverage: String? = null
+
     @Column(name = "MS_TYPE_ID")
     @Basic
     var msTypeId: Long? = null

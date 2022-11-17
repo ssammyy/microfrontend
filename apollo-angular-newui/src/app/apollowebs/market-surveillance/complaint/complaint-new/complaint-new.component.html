@@ -821,7 +821,8 @@
                 <div class="container-fluid">
                     <div class="row">
                         <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
-                        <hr>
+                    </div>
+                    <div class="row">
                         <h4 class="welcome">Step 1/4: Particulars Of Complainant</h4>
                     </div>
                     <div class="row input-row">
@@ -849,7 +850,7 @@
                         <div class="col">
 
                             <div class="form-group">
-                                <label class="input-placeholder"><b>Surname name</b></label>
+                                <label class="input-placeholder"><b>Surname</b></label>
                                 <input style="color: white;font-size: 14px;"
                                        [ngClass]="{ 'is-invalid': submitted && formStepOneForm.lastName.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -935,6 +936,31 @@
 
                     </div>
                     <div class="row input-row">
+
+                        <div class="col">
+
+                            <div class="form-group">
+                                <label class="input-placeholder"><b>ID Number</b></label>
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.idNumber.errors }"
+                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                       class="form-control two-column-input" formControlName="idNumber" id="idNumber"
+                                       name="idNumber"
+                                       placeholder="ID Number" required="required" type="text">
+                                <div *ngIf="submitted && formStepOneForm.idNumber.errors" class="invalid-feedback">
+                                    <div *ngIf="formStepOneForm.idNumber.errors.required">The Id Number is required</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row input-row">
                         <div class="col">
                             <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                         </div>
@@ -955,7 +981,8 @@
                 <div class="container">
                     <div class="row">
                         <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
-                        <hr>
+                    </div>
+                    <div class="row">
                         <h4 class="welcome">Step 2/4: Complaint Details</h4>
                     </div>
 
@@ -1078,7 +1105,8 @@
             <div class="container">
                 <div class="row">
                     <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
-                    <hr>
+                </div>
+                <div class="row">
                     <h4 class="welcome">Step 3/4: Particulars of Outlets/Business Complained about</h4>
                 </div>
                 <div class="row input-row">
@@ -1268,11 +1296,16 @@
             <div class="container">
                 <div class="row">
                     <h2 class="welcome">CONSUMER/USER COMPLAINT FORM</h2>
-                    <hr>
+                </div>
+                <div class="row">
                     <h4 class="welcome">Step 4/4: Upload Supporting Documents Here</h4>
                 </div>
-
-<!--                <div class="row input-row">-->
+                <ul>
+                    <li>Purchase documents</li>
+                    <li>Warranty documents</li>
+                    <li>Pictures</li>
+                    <li>Others (Mention and Upload)</li>
+                </ul>
                     <form #demoForm="ngForm">
                         <file-upload [(ngModel)]="uploadedFiles" name="files"
                                      fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
@@ -1300,7 +1333,7 @@
     <!-- Sample Submit Modal -->
     <div class="modal fade" id="complaintModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Filled Complainant Information Details</h4>
@@ -1337,6 +1370,11 @@
                             <div class="list-title-accordion">Physical Address</div>
                             <div class="list-text-accordion">
                                 {{customerDetails?.physicalAddress}}</div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Physical Address</div>
+                            <div class="list-text-accordion">
+                                {{customerDetails?.idNumber}}</div>
                         </li>
                     </ul>
                     <b class="text-primary">Complaint Information Details</b>

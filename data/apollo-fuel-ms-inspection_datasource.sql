@@ -574,7 +574,7 @@ alter table DAT_KEBS_MS_WORKPLAN_GENARATED
 
 /***************************CREATED VIEWS FOR DOWNLOAD*****************************************/
 
-create OR REPLACE view MS_SAMPLE_SUBMISSION as
+-- create OR REPLACE view MS_SAMPLE_SUBMISSION as
 SELECT nvl(TO_CHAR(samp.id),'N/A') AS id,nvl(samp.name_product,'N/A') AS name_product,nvl(samp.packaging,'N/A') AS packaging,nvl(samp.labelling_identification,'N/A') AS labelling_identification,nvl(samp.file_ref_number,'N/A') AS file_ref_number,nvl(samp.references_standards,'N/A') AS references_standards,nvl(samp.size_test_sample,'N/A') AS size_test_sample,
        nvl(samp.size_ref_sample,'N/A') AS size_ref_sample,nvl(samp.condition,'N/A') AS condition,nvl(samp.sample_references,'N/A') AS sample_references,nvl(samp.senders_name,'N/A') AS senders_name,nvl(samp.designation,'N/A') AS designation,nvl(samp.address,'N/A') AS address,nvl(TO_CHAR(TRUNC(samp.senders_date),'DD/MM/YYYY'),'N/A') AS senders_date,
        nvl(samp.receivers_name,'N/A') AS receivers_name,nvl(TO_CHAR(samp.test_charges_ksh),'N/A') AS test_charges_ksh,nvl(samp.receipt_lpo_number,'N/A') AS receipt_lpo_number,nvl(samp.invoice_number,'N/A') AS invoice_number,nvl(samp.disposal,'N/A') AS disposal,nvl(samp.remarks,'N/A') AS remarks,

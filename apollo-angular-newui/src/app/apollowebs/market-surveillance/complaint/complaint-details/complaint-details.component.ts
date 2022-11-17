@@ -319,6 +319,8 @@ export class ComplaintDetailsComponent implements OnInit {
       complaintDepartment: null,
       divisionId: null,
       nameActivity: ['', Validators.required],
+      rationale: ['', Validators.required],
+      scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
       county: null,
       townMarketCenter: null,

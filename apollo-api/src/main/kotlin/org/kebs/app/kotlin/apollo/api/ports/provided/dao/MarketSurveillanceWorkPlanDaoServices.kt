@@ -60,7 +60,6 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val msTaskNotificationsRepo: IMsTaskNotificationsRepository,
 
     private val msTypesRepo: IMsTypesRepository,
-    private val complaintsRepo: IComplaintRepository,
     private val complaintCustomersRepo: IComplaintCustomersRepository,
     private val complaintLocationRepo: IComplaintLocationRepository,
     private val remarksRepo: IMsRemarksComplaintRepository,
@@ -90,6 +89,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val commonDaoServices: CommonDaoServices,
     private val notificationsRepo: INotificationsRepository,
     private val msFuelDaoServices: MarketSurveillanceFuelDaoServices,
+    private val complaintsRepo: IComplaintRepository,
     private val msComplaintDaoServices: MarketSurveillanceComplaintProcessDaoServices
 ) {
     final var complaintSteps: Int = 6
@@ -3149,6 +3149,73 @@ class MarketSurveillanceWorkPlanDaoServices(
         return Pair(sr, taskNotify)
     }
 
+    fun checkAllOverdueTasks(
+        uuid: String,
+        map: ServiceMapsEntity,
+        userFrom: String?,
+        userFromDB: UsersEntity,
+        userSendTo: UsersEntity?
+    ): Pair<ServiceRequestsEntity, MsTaskNotificationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        val mapNotifications = notificationsRepo.findByUuid(applicationMapProperties.mapMsNotificationOverDueTask)
+        var taskNotify = MsTaskNotificationsEntity()
+        try {
+            val complaintList = complaintsRepo.findAllByMsComplaintEndedStatusOrderByIdDesc(map.inactiveStatus)
+//            complaintList?.forEach { cp->
+//                if(cp.timelineEndDate!=null){
+//                    if(cp.timelineEndDate!! >commonDaoServices.getCurrentDate()){
+//                        val task = NotificationBodyDto().apply {
+//                            fromName = "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
+//                            toName = hd.userId?.let { commonDaoServices.concatenateName(it) }
+//                            referenceNoFound = complaint.second.referenceNumber
+//                            dateAssigned = commonDaoServices.getCurrentDate()
+//                            processType = "COMPLAINT"
+//                        }
+//
+//                        with(taskNotify) {
+//                            taskRefNumber = "TASK#${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+//                            task.taskRefNumber = taskRefNumber
+//                            notificationType = mapNotifications?.notificationType?.typeCode
+//                            notificationName = mapNotifications?.notificationType?.description
+//                            notificationMsg = mapNotifications?.let { commonDaoServices.composeMessage(task, it) }
+//                            notificationBody = commonDaoServices.convertClassToJson(task)
+//                            fromUserId = userFromDB.id
+//                            toUserId = userSendTo?.id
+//                            readStatus = map.inactiveStatus
+//                            createdBy = userFrom ?: commonDaoServices.concatenateName(userFromDB)
+//                            createdOn = commonDaoServices.getTimestamp()
+//                        }
+//                        taskNotify = msTaskNotificationsRepo.save(taskNotify)
+//                    }
+//                }
+//
+//            }
+
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(taskNotify)}"
+            sr.names = "Notification Details"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+//            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, taskNotify)
+    }
+
     fun updateNotificationTask(
         taskBody: MsTaskNotificationsEntity,
         map: ServiceMapsEntity,
@@ -3612,6 +3679,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
+            createdUserId = user.id
             conclusion = body.conclusion
             recommendations = body.recommendations
             statusActivity = body.statusActivity
@@ -3905,6 +3973,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             complaintDepartment = body.complaintDepartment
             divisionId = body.divisionId
             nameActivity = body.nameActivity
+            rationale = body.rationale
+            scopeOfCoverage = body.scopeOfCoverage
             timeActivityDate = body.timeActivityDate
             county = body.county
             townMarketCenter = body.townMarketCenter
@@ -3970,6 +4040,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             divisionId = comp.division
             nameActivity = body.nameActivity
             timeActivityDate = body.timeActivityDate
+            rationale = body.rationale
+            scopeOfCoverage = body.scopeOfCoverage
             county = complaintLocationDetails.county
             townMarketCenter = complaintLocationDetails.town
             locationActivityOther = complaintLocationDetails.marketCenter
@@ -4520,6 +4592,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     wkp.complaintDepartment,
                     wkp.divisionId,
                     wkp.nameActivity,
+                    wkp.rationale,
+                    wkp.scopeOfCoverage,
                     wkp.timeActivityDate,
                     wkp.county,
                     wkp.townMarketCenter,
@@ -4575,6 +4649,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.division,
             wKP.officerName,
             wKP.nameActivity,
+            wKP.rationale,
+            wKP.scopeOfCoverage,
             wKP.targetedProducts,
             wKP.resourcesRequired?.let { mapPredefinedResourcesRequiredListDto(it) },
             wKP.budget,

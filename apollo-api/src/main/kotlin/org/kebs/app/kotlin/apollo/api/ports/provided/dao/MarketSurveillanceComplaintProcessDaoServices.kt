@@ -1258,6 +1258,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             emailAddress = complaintCustomersDto.emailAddress
             postalAddress = complaintCustomersDto.postalAddress
             physicalAddress = complaintCustomersDto.physicalAddress
+            idNumber = complaintCustomersDto.idNumber
             transactionDate = commonDaoServices.getCurrentDate()
             status = map.activeStatus
             createdBy = complaintCustomersDto.firstName?.let { complaintCustomersDto.lastName?.let { it1 -> commonDaoServices.concatenateName(it, it1) } }
@@ -1495,6 +1496,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             complaintCustomersDetails.mobilePhoneNumber,
             complaintCustomersDetails.postalAddress,
             complaintCustomersDetails.physicalAddress,
+            complaintCustomersDetails.idNumber,
             comp.complaintSampleDetails,
             comp.remedySought,
             complaintLocationDetails.email,

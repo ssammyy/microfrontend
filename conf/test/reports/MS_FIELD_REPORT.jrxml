@@ -13,7 +13,6 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="imagePath" class="java.lang.String"/>
 	<parameter name="imageFooterPath" class="java.lang.String"/>
-	<parameter name="outletVsitedReport" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -61,11 +60,11 @@
 		<band height="946" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout"/>
 			<staticText>
-				<reportElement x="168" y="3" width="172" height="30" forecolor="#0070C0" uuid="1e7c202d-c5f5-4a05-99fe-43d71f7407c5">
+				<reportElement x="173" y="3" width="172" height="30" forecolor="#0070C0" uuid="1e7c202d-c5f5-4a05-99fe-43d71f7407c5">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="22" isBold="true"/>
+					<font fontName="Times New Roman" size="22" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FIELD REPORT]]></text>
 			</staticText>
@@ -74,7 +73,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[To                        : ]]></text>
 			</staticText>
@@ -84,7 +83,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportTo}]]></textFieldExpression>
 			</textField>
@@ -94,7 +93,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportThrough}]]></textFieldExpression>
 			</textField>
@@ -103,7 +102,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Through               :]]></text>
 			</staticText>
@@ -112,7 +111,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[From                    :]]></text>
 			</staticText>
@@ -122,7 +121,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportFrom}]]></textFieldExpression>
 			</textField>
@@ -131,7 +130,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Subject                :]]></text>
 			</staticText>
@@ -141,7 +140,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportSubject}]]></textFieldExpression>
 			</textField>
@@ -150,7 +149,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Title                      :]]></text>
 			</staticText>
@@ -160,7 +159,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportTitle}]]></textFieldExpression>
 			</textField>
@@ -169,7 +168,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Date                     :]]></text>
 			</staticText>
@@ -179,7 +178,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportDate}]]></textFieldExpression>
 			</textField>
@@ -191,7 +190,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Background Information]]></text>
 			</staticText>
@@ -200,7 +199,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{backgroundInformation}]]></textFieldExpression>
 			</textField>
@@ -209,7 +208,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[1.]]></text>
 			</staticText>
 			<staticText>
@@ -217,7 +218,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[2.]]></text>
 			</staticText>
 			<staticText>
@@ -225,7 +228,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Objective of the Investigation]]></text>
 			</staticText>
@@ -234,7 +237,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{objectiveInvestigation}]]></textFieldExpression>
 			</textField>
@@ -243,7 +246,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Region                 :]]></text>
 			</staticText>
@@ -253,7 +256,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportRegion}]]></textFieldExpression>
 			</textField>
@@ -263,7 +266,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportDepartment}]]></textFieldExpression>
 			</textField>
@@ -272,7 +275,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Department        :]]></text>
 			</staticText>
@@ -281,7 +284,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Function              :]]></text>
 			</staticText>
@@ -291,7 +294,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportFunction}]]></textFieldExpression>
 			</textField>
@@ -300,7 +303,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[3.]]></text>
 			</staticText>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
@@ -308,7 +313,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dateInvestigationInspection}]]></textFieldExpression>
 			</textField>
@@ -317,7 +322,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Date of Investigation]]></text>
 			</staticText>
@@ -326,7 +331,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[4.]]></text>
 			</staticText>
 			<staticText>
@@ -334,7 +341,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[KEBS Inspectors]]></text>
 			</staticText>
@@ -343,7 +350,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{kebsInspectors}]]></textFieldExpression>
 			</textField>
@@ -352,7 +359,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[5.]]></text>
 			</staticText>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
@@ -360,7 +369,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{methodologyEmployed}]]></textFieldExpression>
 			</textField>
@@ -369,7 +378,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Methodology Employed]]></text>
 			</staticText>
@@ -378,7 +387,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[6.]]></text>
 			</staticText>
 			<staticText>
@@ -386,7 +397,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Findings]]></text>
 			</staticText>
@@ -395,7 +406,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[7.]]></text>
 			</staticText>
 			<staticText>
@@ -403,7 +416,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Conclusion]]></text>
 			</staticText>
@@ -412,7 +425,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{conclusion}]]></textFieldExpression>
 			</textField>
@@ -421,7 +434,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Recommendations]]></text>
 			</staticText>
@@ -430,7 +443,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{recommendations}]]></textFieldExpression>
 			</textField>
@@ -439,7 +452,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[8.]]></text>
 			</staticText>
 			<staticText>
@@ -447,7 +462,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="12" isBold="false" isUnderline="true"/>
+					<font fontName="Times New Roman" size="12" isBold="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Status of activity]]></text>
 			</staticText>
@@ -456,7 +471,9 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
 				<text><![CDATA[9.]]></text>
 			</staticText>
 			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
@@ -464,7 +481,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{statusActivity}]]></textFieldExpression>
 			</textField>
@@ -474,7 +491,7 @@
 				</reportElement>
 				<box topPadding="0" leftPadding="10" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14"/>
+					<font fontName="Times New Roman" size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportReference}]]></textFieldExpression>
 			</textField>
@@ -483,7 +500,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Franklin Gothic Medium" size="14" isBold="true"/>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Report reference : ]]></text>
 			</staticText>
@@ -492,7 +509,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
-					<font fontName="Arial Narrow" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{findings}]]></textFieldExpression>
 			</textField>
@@ -505,20 +522,20 @@
 				<imageExpression><![CDATA[$P{imageFooterPath}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="63" y="24" width="55" height="15" uuid="96df96d3-27b5-49ee-9c22-bc7a234ab5ee">
+				<reportElement x="63" y="25" width="55" height="15" uuid="96df96d3-27b5-49ee-9c22-bc7a234ab5ee">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
-					<font fontName="Calibri" size="11" isItalic="true"/>
+					<font fontName="Times New Roman" size="11" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="120" y="24" width="55" height="15" uuid="83156fae-b5e3-48fa-8a06-5e5c29c7d1fb">
+				<reportElement x="120" y="25" width="55" height="15" uuid="83156fae-b5e3-48fa-8a06-5e5c29c7d1fb">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left">
-					<font fontName="Calibri" size="11" isItalic="true"/>
+					<font fontName="Times New Roman" size="11" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
