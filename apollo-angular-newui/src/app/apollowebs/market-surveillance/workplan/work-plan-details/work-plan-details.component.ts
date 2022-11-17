@@ -190,6 +190,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   blob: Blob;
   uploadedFilesOnly: FileList;
   uploadedFilesDestination: FileList;
+  uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
   fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
@@ -3194,7 +3195,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
-            this.uploadedFiles = this.resetUploadedFiles;
+            this.uploadedFilesOnly = this.resetUploadedFiles;
             console.log(data);
             this.loadStandards();
             this.SpinnerService.hide();
@@ -3214,7 +3215,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
 
   onClickSaveUploadedDestructionReport(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadDestructionReportFiles.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
@@ -3226,9 +3227,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   saveUploadedDestructionReport(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadDestructionReportFiles.length > 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFiles;
+      const file = this.uploadDestructionReportFiles;
       const formData = new FormData();
       formData.append('productReferenceNo', this.selectedProductRecommendation?.referenceNo );
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
@@ -3241,7 +3242,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanDestructionReportFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
-            this.uploadedFiles = null;
+            this.uploadDestructionReportFiles = null;
             console.log(data);
             this.recommendationDetailsLoad();
             this.SpinnerService.hide();
@@ -3288,7 +3289,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanDestructionNotificationFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
-            this.uploadedFiles = null;
+            this.uploadedFilesDestination = null;
             console.log(data);
             this.clientEmailNotificationForm.reset();
             this.recommendationDetailsLoad();
