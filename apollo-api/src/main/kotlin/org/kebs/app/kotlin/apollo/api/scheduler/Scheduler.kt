@@ -90,7 +90,7 @@ class SchedulerDevelopment(
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updateFirmTypeStatus()
-        schedulerImpl.updateOverDuetask()
+//        schedulerImpl.updateOverDuetask()
         schedulerImpl.updatePaidDemandNotesStatus()
 //        standardLevyService.sendLevyPaymentReminders()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
