@@ -2513,7 +2513,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val sampleSubmission = findSampleSubmissionDetailByWorkPlanGeneratedIDAndSSFID(workPlanScheduled.id,body.ssfID)?: throw ExpectedDataNotFound("MISSING SAMPLE SUBMITTED FOR WORK-PLAN SCHEDULED WITH REF NO $referenceNo")
-        sampleSubmissionLabRepo.findByBsNumber(body.bsNumber.uppercase(Locale.getDefault()))
+        sampleSubmissionLabRepo.findByBsNumber(body.bsNumber.uppercase())
             ?.let {
                 throw ExpectedDataNotFound("BS NUMBER ALREADY EXIST")
             } ?: kotlin.run {
