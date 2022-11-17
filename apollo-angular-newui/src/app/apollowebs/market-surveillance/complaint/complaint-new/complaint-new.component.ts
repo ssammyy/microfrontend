@@ -154,6 +154,7 @@ export class ComplaintNewComponent implements OnInit {
       phoneNumber: new FormControl('', [Validators.required]),
       postalAddress: new FormControl('', [Validators.required]),
       physicalAddress: new FormControl('', [Validators.required]),
+      idNumber: new FormControl(),
     });
 
     this.stepTwoForm = new FormGroup({
@@ -175,7 +176,7 @@ export class ComplaintNewComponent implements OnInit {
       email: new FormControl('', [Validators.required]),
       nameContactPerson: new FormControl('', [Validators.required]),
       phoneNumber: new FormControl('', [Validators.required]),
-      telephoneNumber: new FormControl('', [Validators.nullValidator]),
+      telephoneNumber: new FormControl(),
       businessAddress: new FormControl('', [Validators.required]),
     });
 
@@ -309,7 +310,19 @@ export class ComplaintNewComponent implements OnInit {
 
   async onSubmitComplaint() {
     this.submitted = true;
-    this.msService.showSuccessWith2Message('By Clicking Yes', 'You hereby certify that the information provided above is true !',
+    this.msService.showSuccessWith2Message('By Clicking Yes', 'The information I have availed to the Kenya Bureau of Standards in' +
+        ' support of this complaint is true and correct to the best of my ' +
+        'knowledge and is made available on the understanding that the Kenya Bureau ' +
+        'of Standards, its employees and agents take no responsibility for the accuracy,' +
+        ' currency, reliability and correctness of this information and shall have no ' +
+        'liability for any loss, damage, cost or expense incurred or arising by reason of ' +
+        'any person using or relying on this information and whether caused by reason of any ' +
+        'error, negligent act, omission or misrepresentation in this information or otherwise.' +
+        ' I have consented to the collection and processing of my personal data by the Kenya ' +
+        'Bureau of Standards for the purposes of investigation of this complaint and feedback ' +
+        'on the findings of investigation. Without prejudice to my constitutional rights, ' +
+        'I shall not, unless with lawful authority, disclose any information provided to me ' +
+        'by the Kenya Bureau of Standards in relation to this complaint!',
         // tslint:disable-next-line:max-line-length
         'You can go back and click the \'PREV\' buttons to Update Details Before Saving', 'COMPLAINT SUBMITTED SUCCESSFUL', () => {
           this.saveDetailsFirst();

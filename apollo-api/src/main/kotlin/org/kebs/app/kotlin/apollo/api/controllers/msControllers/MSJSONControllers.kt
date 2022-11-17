@@ -29,14 +29,12 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("/api/v1/migration/ms")
 class MSJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
-    private val marketSurveillanceDaoServices: MarketSurveillanceFuelDaoServices,
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
     private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
     private val iFieldReportViewRepo: IMsFieldReportViewRepository,
     private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
-    private val msDaoService: MarketSurveillanceFuelDaoServices,
     private val reportsDaoService: ReportsDaoService,
     private val investInspectReportRepo: IMSInvestInspectReportRepository,
     private val marketSurveillanceDaoComplaintServices: MarketSurveillanceComplaintProcessDaoServices,
@@ -328,7 +326,7 @@ class MSJSONControllers(
         response: HttpServletResponse,
         @RequestParam("fileID") fileID: String
     ) {
-        val fileUploaded = marketSurveillanceDaoServices.findUploadedFileBYId(fileID.toLong())
+        val fileUploaded = msFuelDaoService.findUploadedFileBYId(fileID.toLong())
         val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
         commonDaoServices.downloadFile(response, mappedFileClass)
     }
@@ -418,9 +416,19 @@ class MSJSONControllers(
         map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
 //        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
-        val fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
+        var fieldReport = iFieldReportViewRepo.findByMsWorkplanGeneratedId(workPlanGeneratedID)
 
         val user = fieldReport[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
+
+        var officersList = fieldReport[0].kebsInspectors?.let { msWorkPlanDaoService.mapKEBSOfficersNameListDto(it) }
+        var officersNames:String? = null
+        var numberTest = 1
+        officersList?.forEach { of->
+            officersNames = " $numberTest. ${of.inspectorName}, ${of.designation}; "
+            numberTest++
+        }
+
+        fieldReport[0].kebsInspectors = officersNames
 
 //        if (user != null) {
 //            val mySignature: ByteArray?
@@ -466,7 +474,7 @@ class MSJSONControllers(
         map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
 
         val invoiceRemediationDetails = fuelRemediationInvoiceRepo.findFirstByFuelInspectionId(fuelInspectionId)
-        val fuelRemediationDetailsDto = msDaoService.mapFuelRemediationDetails(invoiceRemediationDetails)
+        val fuelRemediationDetailsDto = msFuelDaoService.mapFuelRemediationDetails(invoiceRemediationDetails)
         val pdfReportStream = reportsDaoService.extractReport(
             map,
             applicationMapProperties.mapMSFuelInvoiceRemediationPath,

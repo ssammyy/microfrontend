@@ -175,6 +175,31 @@ export interface Stdtsectask {
 }
 
 
+export interface NWIsForVoting {
+    taskId: string;
+    name: string;
+    purpose: string;
+    nameOfProposer: string;
+    proposalTitle: string;
+    scope: string;
+    targetDate: string;
+    similarStandards: string;
+    liaisonOrganisation: string;
+    draftAttached: string;
+    outlineAttached: string;
+    draftOutlineImpossible: string;
+    outlineSentLater: string;
+    organization: string;
+    circulationDate: string;
+    closingDate: string;
+    referenceNumber: string;
+    dateOfPresentation: string;
+    nameOfTC: string;
+    id: string;
+}
+
+
+
 export interface StdJustification {
     taskId: string;
     spcMeetingDate: string;
