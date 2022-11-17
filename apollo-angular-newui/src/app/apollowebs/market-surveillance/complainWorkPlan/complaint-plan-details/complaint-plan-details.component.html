@@ -65,6 +65,13 @@
                                                 <div class="list-text-accordion">
                                                     {{workPlanInspection?.batchDetails?.yearName}}</div>
                                             </li>
+                                            <b class="text-secondary">Rationale</b>
+                                            <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.rationale}}</span></p>
+                                            <br/>
+                                            <b class="text-secondary">Scope Of Coverage</b>
+                                            <p class="list-paragraph-accordion"><span>
+                                                    {{workPlanInspection?.scopeOfCoverage}}</span></p>
                                             <br/>
                                             <div *ngIf="workPlanInspection?.updateWorkPlan?.remarks!=null">
                                                 <b class="text-secondary">Reason For Updating WorkPlan Details</b>

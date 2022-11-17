@@ -6022,20 +6022,58 @@
 
                                 </div>
                                 <div class="row">
-
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label><b>Budget</b> </label>
-                                            <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
-                                                   class="form-control two-column-input" formControlName="budget" name="budget" required type="text">
-                                        </div>
-                                        <div *ngIf="submitted && formNewScheduleForm.budget.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required</div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Rationale</b></label>
+                                        <input [class.is-invalid]="formNewScheduleForm.rationale.invalid && formNewScheduleForm.rationale.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="rationale"
+                                               name="rationale" required type="text">
+                                        <div *ngIf="submitted && formNewScheduleForm.rationale.errors"
+                                             class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.rationale.errors.required">Rationale
+                                                required
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
 
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Budget</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
+                                               class="form-control two-column-input" formControlName="budget"
+                                               name="budget" required type="text">
+                                    </div>
+                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors"
+                                         class="invalid-feedback">
+                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Scope Of Coverage</b> </label>
+                                        <textarea [class.is-invalid]="formNewScheduleForm.scopeOfCoverage.invalid && formNewScheduleForm.scopeOfCoverage.errors"
+                                                  class="form-control two-column-input" formControlName="scopeOfCoverage"
+                                                  name="scopeOfCoverage" required type="text"></textarea>
+                                    </div>
+                                    <div *ngIf="submitted && formNewScheduleForm.scopeOfCoverage.errors"
+                                         class="invalid-feedback">
+                                        <div *ngIf="formNewScheduleForm.scopeOfCoverage.errors.required">The Scope Of Coverage is required
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                                <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="row">
                                     <div class="col">
-                                        <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="form-group">
+                                        <div  class="form-group">
                                             <label><b style="color: red">Reason For Updating WorkPlan</b> </label>
                                             <textarea class="form-control two-column-input" formControlName="remarks" name="remarks" required type="text"></textarea>
                                         </div>
