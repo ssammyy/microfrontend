@@ -40,12 +40,12 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
         },
         noDataMessage: 'No data found',
         columns: {
-            refNum: {
+            ucrNo: {
                 title: "UCR Number",
                 type: "string",
                 filter: false
             },
-            declarationRefNo: {
+            baseDocRefNo: {
                 title: 'IDF NUMBER',
                 type: 'string',
                 filter: false
@@ -55,11 +55,23 @@ export class IncompleteIDFDocumentsComponent implements OnInit {
                 type: 'string',
                 filter: false
             },
+            consigneeBusinessName: {
+                title: 'Business Name',
+                type: 'string'
+            },
+            consignorBusinessName: {
+                title: 'Exporter Name',
+                type: 'string'
+            },
             officeCode: {
                 title: 'Office Code',
                 type: 'string'
             },
-            officeSubCode: {
+            officeSubDivisionCode: {
+                title: 'Division Code',
+                type: 'string'
+            },
+            delivTermsSub1: {
                 title: 'Office Code Division',
                 type: 'string'
             },

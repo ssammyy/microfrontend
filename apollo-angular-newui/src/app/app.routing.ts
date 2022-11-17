@@ -224,36 +224,16 @@ import {CocCertificatesComponent} from "./apollowebs/certificates/coc-certificat
 import {CoiCertificatesComponent} from "./apollowebs/certificates/coi-certificates/coi-certificates.component";
 import {NcrCertificatesComponent} from "./apollowebs/certificates/ncr-certificates/ncr-certificates.component";
 import {ManifestDocumentsComponent} from "./apollowebs/di/other-documents/manifest-documents/manifest-documents.component";
-import {
-    FuelListTeamsCountyComponent
-} from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
-import {
-    ApplicationsReceivedComponent
-} from "./apollowebs/quality-assurance/reports/applications-received/applications-received.component";
-import {
-    PermitsGrantedComponent
-} from "./apollowebs/quality-assurance/reports/permits-granted/permits-granted.component";
-import {
-    ComplaintPlanBatchListComponent
-} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
-import {
-    ComplaintPlanListComponent
-} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
-import {
-    ComplaintPlanDetailsComponent
-} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
-import {
-    PermitsDeferredComponent
-} from "./apollowebs/quality-assurance/reports/permits-deferred/permits-deferred.component";
-import {
-    PermitsRenewedComponent
-} from "./apollowebs/quality-assurance/reports/permits-renewed/permits-renewed.component";
-import {
-    SamplesSubmittedComponent
-} from "./apollowebs/quality-assurance/reports/samples-submitted/samples-submitted.component";
-import {
-    StandardLevyRejectedChangesComponent
-} from "./apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component";
+import {FuelListTeamsCountyComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
+import {ApplicationsReceivedComponent} from "./apollowebs/quality-assurance/reports/applications-received/applications-received.component";
+import {PermitsGrantedComponent} from "./apollowebs/quality-assurance/reports/permits-granted/permits-granted.component";
+import {ComplaintPlanBatchListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
+import {ComplaintPlanListComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
+import {ComplaintPlanDetailsComponent} from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
+import {PermitsDeferredComponent} from "./apollowebs/quality-assurance/reports/permits-deferred/permits-deferred.component";
+import {PermitsRenewedComponent} from "./apollowebs/quality-assurance/reports/permits-renewed/permits-renewed.component";
+import {SamplesSubmittedComponent} from "./apollowebs/quality-assurance/reports/samples-submitted/samples-submitted.component";
+import {StandardLevyRejectedChangesComponent} from "./apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component";
 import {StandardsForReviewComponent} from "./apollowebs/standards-development/systemic-review/standards-for-review/standards-for-review.component";
 import {SystemicReviewTcSecComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-tc-sec/systemic-review-tc-sec.component";
 import {SystemicReviewSpcSecComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-spc-sec/systemic-review-spc-sec.component";
@@ -267,6 +247,7 @@ import {SystemReviewUpdateGazetteComponent} from "./apollowebs/standards-develop
 import {NotificationsComponent} from './apollowebs/system/notifications/notifications.component';
 import {AcknowledgementComponent} from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
 import {FeedbackTimelineComponent} from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
+import {DeclarationDocumentsComponent} from "./apollowebs/di/other-documents/declaration-documents/declaration-documents.component";
 
 export const routes: Routes = [
     {
@@ -822,6 +803,11 @@ export const routes: Routes = [
                 path: 'kentrade/idf/documents',
                 canActivate: [RouteGuard],
                 component: IncompleteIDFDocumentsComponent,
+            },
+            {
+                path: 'kentrade/declaration/documents',
+                canActivate: [RouteGuard],
+                component: DeclarationDocumentsComponent,
             },
             {
                 path: 'kentrade/manifest/documents',

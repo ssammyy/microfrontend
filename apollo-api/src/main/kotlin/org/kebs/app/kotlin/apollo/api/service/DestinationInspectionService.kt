@@ -94,11 +94,87 @@ class DestinationInspectionService(
     private val privilegesRepository: IUserPrivilegesRepository,
     private val userEntityRepository: IUserRepository,
     private val searchService: SearchInitialization,
-    private val iIDFDetailsEntityRepository: IDeclarationDetailsEntityRepository,
+    private val declarationDetailsEntityRepository: IDeclarationDetailsEntityRepository,
     private val manifestRepository: IManifestDetailsEntityRepository,
+    private val iIDFDetailsEntityRepository: IIDFDetailsEntityRepository
 
-    ) {
+) {
     val dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    fun listDeclarationDocuments(
+        category: String?,
+        date: String?,
+        page: PageRequest,
+        keywords: String?
+    ): ApiResponseModel {
+        var referenceDate = LocalDate.now()
+        if (!date.isNullOrEmpty()) {
+            referenceDate = LocalDate.from(dateFormat.parse(date))
+        }
+        val response = ApiResponseModel()
+        try {
+            KotlinLogging.logger { }.info("Document status: ${category} Date: $referenceDate")
+            val data = when (category) {
+                "complete" -> date?.let {
+                    KotlinLogging.logger { }.info("Completed status: ${category} Date: $referenceDate")
+                    declarationDetailsEntityRepository.findByStatusAndCreatedOnBetween(
+                        1,
+                        Timestamp.valueOf(referenceDate.atStartOfDay()),
+                        Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
+                        page
+                    )
+                } ?: declarationDetailsEntityRepository.findByStatus(1, page)
+                "incomplete" -> date?.let {
+                    KotlinLogging.logger { }.info("Incomplete status: ${category} Date: $referenceDate")
+                    declarationDetailsEntityRepository.findByStatusAndCreatedOnBetween(
+                        0,
+                        Timestamp.valueOf(referenceDate.atStartOfDay()),
+                        Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
+                        page
+                    )
+                } ?: declarationDetailsEntityRepository.findByStatus(0, page)
+                else -> {
+                    date?.let {
+                        KotlinLogging.logger { }.info("Other status: ${category} Date: $referenceDate")
+                        when {
+                            !keywords.isNullOrEmpty() -> declarationDetailsEntityRepository.findByCreatedOnBetweenAndDeclarationRefNoContains(
+                                Timestamp.valueOf(referenceDate.atStartOfDay()),
+                                Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
+                                keywords,
+                                page
+                            )
+                            else -> declarationDetailsEntityRepository.findByCreatedOnBetween(
+                                Timestamp.valueOf(referenceDate.atStartOfDay()),
+                                Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
+                                page
+                            )
+                        }
+                    } ?: run {
+                        when {
+                            !keywords.isNullOrEmpty() -> declarationDetailsEntityRepository.findByDeclarationRefNoContainsOrRefNum(
+                                keywords,
+                                keywords,
+                                page
+                            )
+                            else -> declarationDetailsEntityRepository.findAll(page)
+                        }
+                    }
+                }
+            }
+            response.data = data.toList()
+            response.totalCount = data.totalElements
+            response.totalPages = data.totalPages
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to load data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Failed, could not retrieve Declaration data"
+        }
+
+        return response
+    }
+
     fun listManifestDocuments(
         category: String?,
         date: String?,
@@ -207,7 +283,7 @@ class DestinationInspectionService(
                     date?.let {
                         KotlinLogging.logger { }.info("Other status: ${category} Date: $referenceDate")
                         when {
-                            !keywords.isNullOrEmpty() -> iIDFDetailsEntityRepository.findByCreatedOnBetweenAndDeclarationRefNoContains(
+                            !keywords.isNullOrEmpty() -> iIDFDetailsEntityRepository.findByCreatedOnBetweenAndBaseDocRefNoContains(
                                 Timestamp.valueOf(referenceDate.atStartOfDay()),
                                 Timestamp.valueOf(referenceDate.plusDays(1).atStartOfDay()),
                                 keywords,
@@ -221,7 +297,8 @@ class DestinationInspectionService(
                         }
                     } ?: run {
                         when {
-                            !keywords.isNullOrEmpty() -> iIDFDetailsEntityRepository.findByDeclarationRefNoContains(
+                            !keywords.isNullOrEmpty() -> iIDFDetailsEntityRepository.findByBaseDocRefNoContainsOrUcrNo(
+                                keywords,
                                 keywords,
                                 page
                             )
@@ -237,9 +314,9 @@ class DestinationInspectionService(
             response.message = "Success"
 
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("Failed to load data", ex)
+            KotlinLogging.logger { }.error("IDF Failed to load data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
-            response.message = "Failed, could not retrieve data"
+            response.message = "Failed, could not retrieve IDF data"
         }
 
         return response
