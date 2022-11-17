@@ -3117,7 +3117,9 @@ class MarketSurveillanceWorkPlanDaoServices(
                 notificationName = mapNotifications?.notificationType?.description
                 notificationMsg = mapNotifications?.let { commonDaoServices.composeMessage(body, it) }
                 notificationBody = commonDaoServices.convertClassToJson(body)
-                fromUserId = userFromDB.id
+                if(userFrom==null){
+                    fromUserId = userFromDB.id
+                }
                 toUserId = userSendTo?.id
                 readStatus = map.inactiveStatus
                 createdBy = userFrom ?: commonDaoServices.concatenateName(userFromDB)
