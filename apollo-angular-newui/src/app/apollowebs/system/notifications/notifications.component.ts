@@ -72,16 +72,22 @@ export class NotificationsComponent implements OnInit {
       notificationName: {
         title: 'NAME',
         type: 'string',
-        filter: false,
+        filter: true,
       },
       notificationMsg: {
         title: 'MESSAGE',
         type: 'string',
-        filter: true,
+        filter: false,
       },
       readStatus: {
         title: 'READ STATUS',
-        type: 'boolean',
+        type: 'string',
+        valuePrepareFunction: (dataTest) => {
+          if (dataTest) {
+            return 'YES';
+          }
+          return 'NO';
+        },
         filter: false,
       },
     },

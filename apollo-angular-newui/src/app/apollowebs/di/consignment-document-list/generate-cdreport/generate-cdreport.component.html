@@ -87,12 +87,12 @@
             <input id="hs_code" class="waiver-form-input-master" formControlName="hs_code">
         </div>
         <div class="col-sm-6 col-md-4" *ngIf="data.is_supervisor">
-            <label for="owner" class="waiver-form-label">Owner</label>
+            <label for="owner" class="waiver-form-label">Owner (Assigner/Approver)</label>
             <select id="owner" name="doc_type" class="waiver-form-input-master"
                     formControlName="owner">
                 <option value="" disabled selected>Select One</option>
-                <option value="yes" disabled selected>Assigned by me</option>
-                <option value="no" disabled selected>Assigned by anyone</option>
+                <option value="yes" disabled selected>Approved by me</option>
+                <option value="no" disabled selected>Approved by others</option>
             </select>
         </div>
         <div class="col-sm-6 col-md-4" *ngIf="data.is_admin">

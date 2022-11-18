@@ -169,7 +169,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
                     processType = "COMPLAINT"
                 }
 
-                msWorkPlanDaoServices.createNotificationTask(taskNotify,applicationMapProperties.mapMsNotificationNewTask,map,taskNotify.fromName,null,hd.userId)
+                hd.userId?.let {
+                    msWorkPlanDaoServices.createNotificationTask(taskNotify,applicationMapProperties.mapMsNotificationNewTask,map,taskNotify.fromName,
+                        it,hd.userId)
+                }
 
                 val complaintReceivedEmailComposed = hd.userId?.let { complaintReceivedDTOEmailCompose(updatedComplaint, it) }
                     hd.userId?.let {
@@ -568,6 +571,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             rejectedBy = commonDaoServices.getUserName(loggedInUser)
             rejectedDate = commonDaoServices.getCurrentDate()
         }
+
 
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
@@ -1254,6 +1258,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             emailAddress = complaintCustomersDto.emailAddress
             postalAddress = complaintCustomersDto.postalAddress
             physicalAddress = complaintCustomersDto.physicalAddress
+            idNumber = complaintCustomersDto.idNumber
             transactionDate = commonDaoServices.getCurrentDate()
             status = map.activeStatus
             createdBy = complaintCustomersDto.firstName?.let { complaintCustomersDto.lastName?.let { it1 -> commonDaoServices.concatenateName(it, it1) } }
@@ -1491,6 +1496,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             complaintCustomersDetails.mobilePhoneNumber,
             complaintCustomersDetails.postalAddress,
             complaintCustomersDetails.physicalAddress,
+            complaintCustomersDetails.idNumber,
             comp.complaintSampleDetails,
             comp.remedySought,
             complaintLocationDetails.email,

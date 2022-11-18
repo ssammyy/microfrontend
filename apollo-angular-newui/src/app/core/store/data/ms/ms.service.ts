@@ -664,7 +664,7 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_NOTIFICATIONS_READ);
         const params = new HttpParams()
             .set('taskRefNumber', taskRefNumber);
-        return this.http.get<MsNotificationTaskDto[]>(url, {params}).pipe(
+        return this.http.put<MsNotificationTaskDto[]>(url, null, {params}).pipe(
             map(function (response: MsNotificationTaskDto[]) {
                 return response;
             }),

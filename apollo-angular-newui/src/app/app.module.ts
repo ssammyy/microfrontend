@@ -417,6 +417,7 @@ import {SystemReviewUpdateGazetteComponent} from './apollowebs/standards-develop
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {SpinnerComponent} from './shared/loader/spinner/spinner/spinner.component';
 import {GenerateDnReportComponent} from './apollowebs/di/transaction-view/generate-dn-report/generate-dn-report.component';
+import {DeclarationDocumentsComponent} from './apollowebs/di/other-documents/declaration-documents/declaration-documents.component';
 import { NotificationsComponent } from './apollowebs/system/notifications/notifications.component';
 import { AcknowledgementComponent } from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
 import { FeedbackTimelineComponent } from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
@@ -882,6 +883,7 @@ import {MatPaginatorModule} from "@angular/material/paginator";
         ReportSubmittedTimelineComponent,
         SampleSubmittedTimelineComponent,
         GenerateDnReportComponent,
+        DeclarationDocumentsComponent,
 
     ],
     entryComponents: [LoaderComponent],

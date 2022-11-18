@@ -278,6 +278,12 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['DI_ADMIN', 'DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_DIRECTOR_READ'],
             },
             {
+                path: 'kentrade/declaration/documents',
+                title: 'Declaration Documents',
+                ab: 'DD',
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_DIRECTOR_READ'],
+            },
+            {
                 path: 'kentrade/manifest/documents',
                 title: 'Manifest Documents',
                 ab: 'MD',

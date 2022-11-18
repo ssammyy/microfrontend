@@ -66,6 +66,11 @@
                                                 <div class="list-text-accordion">
                                                     {{complaintInspection?.complaintsDetails?.complainantPhysicalAddress}}</div>
                                             </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">ID Number</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.complaintIdNumber}}</div>
+                                            </li>
                                         </ul>
                                     </mat-tab>
                                     <mat-tab *ngIf="complaintInspection?.complaintsDetails.refNumber" label="2">
@@ -818,7 +823,7 @@
                                                 class="form-control two-column-input"
                                                 formControlName="nameActivity" name="nameActivity" required type="text">
                                             <!--                                            <option [value]="" selected>Please select</option>-->
-                                            <option [value]="'Complaint'" selected>Complaint</option>
+                                            <option [value]="'Complaints Handling'" selected>Complaints Handling</option>
                                         </select>
                                         <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid"
                                              class="invalid-feedback">
@@ -849,7 +854,21 @@
 
                             </div>
                             <div class="row">
-
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Rationale</b></label>
+                                        <input [class.is-invalid]="formNewScheduleForm.rationale.invalid && formNewScheduleForm.rationale.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="rationale"
+                                               name="rationale" required type="text">
+                                        <div *ngIf="submitted && formNewScheduleForm.rationale.errors"
+                                             class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.rationale.errors.required">Rationale
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="col">
                                     <div class="form-group">
@@ -865,8 +884,22 @@
                                     </div>
                                 </div>
 
-                                <div class="col">
+                            </div>
+                            <div class="row">
 
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Scope Of Coverage</b> </label>
+                                        <textarea [class.is-invalid]="formNewScheduleForm.scopeOfCoverage.invalid && formNewScheduleForm.scopeOfCoverage.errors"
+                                               class="form-control two-column-input" formControlName="scopeOfCoverage"
+                                                  name="scopeOfCoverage" required type="text"></textarea>
+                                    </div>
+                                    <div *ngIf="submitted && formNewScheduleForm.scopeOfCoverage.errors"
+                                         class="invalid-feedback">
+                                        <div *ngIf="formNewScheduleForm.scopeOfCoverage.errors.required">The Scope Of Coverage is required
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>

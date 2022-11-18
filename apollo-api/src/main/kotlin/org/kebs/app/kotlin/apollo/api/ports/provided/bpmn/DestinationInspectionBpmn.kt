@@ -457,6 +457,7 @@ class DestinationInspectionBpmn(
             .taskAssignee(loggedInUser.userName)
             .taskOwner(loggedInUser.userName)
             .taskCandidateGroupIn(codes)
+            .ignoreAssigneeValue()
             .endOr()
             .list()
         return getTaskDetails(consignmentActions)

@@ -163,6 +163,8 @@ data class WorkPlanInspectionDto(
         var division: String? = null,
         var officerName: String? = null,
         var nameActivity: String? = null,
+        var rationale: String? = null,
+        var scopeOfCoverage: String? = null,
         var targetedProducts: String? = null,
         var resourcesRequired: List<PredefinedResourcesRequiredEntityDto>? = null,
         var budget: String? = null,
@@ -323,6 +325,8 @@ data class WorkPlanEntityDto(
         var complaintDepartment: Long? = null,
         var divisionId: Long? = null,
         var nameActivity: String? = null,
+        var rationale: String? = null,
+        var scopeOfCoverage: String? = null,
         var timeActivityDate: Date? = null,
         var county: Long? = null,
         var townMarketCenter: Long? = null,
@@ -1003,6 +1007,7 @@ data class ComplaintsDetailsDto(
         var complainantPhoneNumber: String? = null,
         var complainantPostalAddress: String? = null,
         var complainantPhysicalAddress: String? = null,
+        var complaintIdNumber: String? = null,
         var complaintSampleDetails: String? = null,
         var remedySought: String? = null,
         var email: String? = null,
@@ -1187,7 +1192,8 @@ data class ComplaintCustomersDto(
         var phoneNumber: String? = null,
         var emailAddress: String? = null,
         var postalAddress: String? = null,
-        var physicalAddress: String? = null
+        var physicalAddress: String? = null,
+        var idNumber: String? = null
 )
 
 data class ComplaintLocationDto(

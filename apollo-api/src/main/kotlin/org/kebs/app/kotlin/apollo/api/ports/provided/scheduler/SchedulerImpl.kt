@@ -475,10 +475,12 @@ class SchedulerImpl(
                                                         }
                                                     }
 
-                                                    marketSurveillanceWorkPlanDaoServices.createNotificationTask(taskNotify,
-                                                        applicationMapProperties.mapMsNotificationLabResultsTask,
-                                                        map,"LIMS-SYSTEM",null,inspectionOfficer
-                                                    )
+                                                    if (inspectionOfficer != null) {
+                                                        marketSurveillanceWorkPlanDaoServices.createNotificationTask(taskNotify,
+                                                            applicationMapProperties.mapMsNotificationLabResultsTask,
+                                                            map,"LIMS-SYSTEM",inspectionOfficer,inspectionOfficer
+                                                        )
+                                                    }
                                                     if (inspectionOfficer != null) {
                                                         commonDaoServices.sendEmailWithUserEntity(
                                                             inspectionOfficer, applicationMapProperties.mapMsLabResultNotificationEmail, fileInspectionDetail, map, sr)
