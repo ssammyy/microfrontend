@@ -65,6 +65,7 @@ import {Observable, throwError} from 'rxjs';
 export class WorkPlanDetailsComponent implements OnInit {
 
   active: Number = 0;
+  selectedFile: File;
   selectedRefNo: string;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
@@ -135,7 +136,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveSeizureDeclaration: SeizureDto;
   dataSaveSeizureDeclarationList: SeizureDto[] = [];
   dataSaveInvestInspectReport: InspectionInvestigationReportDto;
-  dataSavePreliminaryReport: PreliminaryReportDto;
+  dataSavePreliminaryReport: PreliminaryReportDto | undefined;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
@@ -187,7 +188,11 @@ export class WorkPlanDetailsComponent implements OnInit {
   userLoggedInID: number;
   userProfile: LoggedInUser;
   blob: Blob;
+  uploadedFilesOnly: FileList;
+  uploadedFilesDestination: FileList;
+  uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
+  fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
   selectedTown = 0;
@@ -218,6 +223,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   public productsDestructionRecommendation = 0;
   public productsCountRecommendationHOD = 0;
   public productsCountRecommendationDirector = 0;
+
 
   public settingsResourceRequierd = {
     selectMode: 'single',  // single|multi
@@ -1778,7 +1784,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     });
 
     this.actionOnSiezedGoodsForm = this.formBuilder.group({
-      actionOnSeizedGoodsDetails: ['', Validators.required]
+      actionOnSeizedGoodsDetails: ['', Validators.required],
     });
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -1786,6 +1792,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       complaintDepartment: ['', Validators.required],
       divisionId: ['', Validators.required],
       nameActivity: ['', Validators.required],
+      rationale: ['', Validators.required],
+      scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
       county: ['', Validators.required],
       townMarketCenter: ['', Validators.required],
@@ -2116,6 +2124,18 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.remediationForm.controls;
   }
 
+  onFileSelected(event: any) {
+    if (event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+    }
+  }
+
+  // public onFileSelected(event: EventEmitter<File[]>) {
+  //   const file: File = event[0];
+  //   console.log(file);
+  //
+  // }
+
   updateSelectedRecommendation() {
     this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
     // this.selectedRecommendationName = ;
@@ -2130,6 +2150,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickAddDataRecommendationDetails() {
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
+    // tslint:disable-next-line:max-line-length
     const  resourceName = this.dataSaveFinalRecommendationList.filter(x => String(this.dataSaveFinalRecommendationDetails.recommendationName) === String(x.recommendationName)).length;
     if (resourceName > 0) {
       this.msService.showWarning('You have already added ' + this.dataSaveFinalRecommendationDetails.recommendationName);
@@ -2225,6 +2246,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       }
       this.dataSavePreliminaryReportParamList = [];
       for (let prod = 0; prod < this.workPlanInspection?.preliminaryReport?.parametersList.length; prod++) {
+        // tslint:disable-next-line:no-non-null-assertion
+        this.workPlanInspection!.preliminaryReport!.parametersList[prod].id = -1;
         this.dataSavePreliminaryReportParamList.push(this.workPlanInspection?.preliminaryReport?.parametersList[prod]);
       }
     }
@@ -2452,7 +2475,30 @@ export class WorkPlanDetailsComponent implements OnInit {
           let downloadURL = window.URL.createObjectURL(this.blob);
           const link = document.createElement('a');
           link.href = downloadURL;
-          link.download = fileName;
+          link.download = `Sample-Submission-${fileName}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  viewFieldReportPdfFile(workPlanGeneratedID: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadFieldReportDetailsPDF(String(workPlanGeneratedID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Field-Report-${fileName}`;
           link.click();
           // this.pdfUploadsView = dataPdf;
         },
@@ -3121,7 +3167,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveFilesResults(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesOnly.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
@@ -3134,9 +3180,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   saveFilesResults(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesOnly.length > 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFiles;
+      const file = this.uploadedFilesOnly;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
@@ -3149,7 +3195,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
-            this.uploadedFiles = this.resetUploadedFiles;
+            this.uploadedFilesOnly = this.resetUploadedFiles;
             console.log(data);
             this.loadStandards();
             this.SpinnerService.hide();
@@ -3169,7 +3215,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
 
   onClickSaveUploadedDestructionReport(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadDestructionReportFiles.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
@@ -3181,9 +3227,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   saveUploadedDestructionReport(docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadDestructionReportFiles.length > 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFiles;
+      const file = this.uploadDestructionReportFiles;
       const formData = new FormData();
       formData.append('productReferenceNo', this.selectedProductRecommendation?.referenceNo );
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
@@ -3196,7 +3242,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanDestructionReportFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
-            this.uploadedFiles = null;
+            this.uploadDestructionReportFiles = null;
             console.log(data);
             this.recommendationDetailsLoad();
             this.SpinnerService.hide();
@@ -3215,7 +3261,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
 
   onClickSaveFilesDestructionNotification(valid: boolean, docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesDestination.length > 0) {
     this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
         // tslint:disable-next-line:max-line-length
         'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
@@ -3227,9 +3273,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   saveFilesDestructionNotification(valid: boolean, docTypeName: string) {
-    if (this.uploadedFiles.length > 0) {
+    if (this.uploadedFilesDestination.length > 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFiles;
+      const file = this.uploadedFilesDestination;
       this.dataSaveDestructionNotification = {...this.dataSaveDestructionNotification, ...this.clientEmailNotificationForm.value};
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection?.referenceNumber);
@@ -3243,7 +3289,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.saveWorkPlanDestructionNotificationFiles(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
-            this.uploadedFiles = null;
+            this.uploadedFilesDestination = null;
             console.log(data);
             this.clientEmailNotificationForm.reset();
             this.recommendationDetailsLoad();
@@ -4095,7 +4141,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       if (!this.workPlanInspection?.finalReportGenerated) {
         // @ts-ignore
         this.dataSavePreliminaryReport?.id = -1;
+        for (let i = 0; i < this.dataSavePreliminaryReport.parametersList.length; i++) {
+          // tslint:disable-next-line:no-non-null-assertion
+          this.dataSavePreliminaryReport!.parametersList[i]!.id = -1;
+        }
       }
+
       this.msService.msWorkPlanScheduleSaveFinalPreliminaryReport(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
@@ -4249,4 +4300,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
 }

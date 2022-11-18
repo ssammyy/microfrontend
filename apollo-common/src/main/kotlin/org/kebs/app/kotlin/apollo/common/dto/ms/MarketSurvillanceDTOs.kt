@@ -163,6 +163,8 @@ data class WorkPlanInspectionDto(
         var division: String? = null,
         var officerName: String? = null,
         var nameActivity: String? = null,
+        var rationale: String? = null,
+        var scopeOfCoverage: String? = null,
         var targetedProducts: String? = null,
         var resourcesRequired: List<PredefinedResourcesRequiredEntityDto>? = null,
         var budget: String? = null,
@@ -323,6 +325,8 @@ data class WorkPlanEntityDto(
         var complaintDepartment: Long? = null,
         var divisionId: Long? = null,
         var nameActivity: String? = null,
+        var rationale: String? = null,
+        var scopeOfCoverage: String? = null,
         var timeActivityDate: Date? = null,
         var county: Long? = null,
         var townMarketCenter: Long? = null,
@@ -1003,6 +1007,7 @@ data class ComplaintsDetailsDto(
         var complainantPhoneNumber: String? = null,
         var complainantPostalAddress: String? = null,
         var complainantPhysicalAddress: String? = null,
+        var complaintIdNumber: String? = null,
         var complaintSampleDetails: String? = null,
         var remedySought: String? = null,
         var email: String? = null,
@@ -1065,6 +1070,28 @@ data class MsRecommendationDto(
         var recommendationName: String? = null,
         var description: String? = null,
         var status: Boolean? = null,
+)
+
+data class NotificationBodyDto(
+        var taskRefNumber: String? = null,
+        var fromName: String? = null,
+        var toName: String? = null,
+        var batchReferenceNoFound: String? = null,
+        var referenceNoFound: String? = null,
+        var dateAssigned: Date? = null,
+        var bsNumberFound: String? = null,
+        var processType: String? = null,
+)
+
+data class MsNotificationTaskDto(
+        var id: Long?= 0,
+        var notificationBody: NotificationBodyDto? = null,
+        var notificationMsg: String? = null,
+        var notificationName: String? = null,
+        var notificationType: String? = null,
+        var fromUserId: Long? = null,
+        var toUserId: Long? = null,
+        var readStatus: Boolean? = null,
 )
 
 data class MsUsersDto(
@@ -1165,7 +1192,8 @@ data class ComplaintCustomersDto(
         var phoneNumber: String? = null,
         var emailAddress: String? = null,
         var postalAddress: String? = null,
-        var physicalAddress: String? = null
+        var physicalAddress: String? = null,
+        var idNumber: String? = null
 )
 
 data class ComplaintLocationDto(

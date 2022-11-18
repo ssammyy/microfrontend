@@ -36,6 +36,7 @@ interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>, Jpa
     override fun findAll(): List<ComplaintEntity>
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<ComplaintEntity>
     fun findAllByMsComplaintEndedStatusOrderByIdDesc(msComplaintEndedStatus: Int, pageable: Pageable): Page<ComplaintEntity>
+    fun findAllByMsComplaintEndedStatusOrderByIdDesc(msComplaintEndedStatus: Int): List<ComplaintEntity>?
     fun findByHodAssigned(hodAssigned: Long): List<ComplaintEntity>
     fun findByHodAssigned(hodAssigned: Long,pageable: Pageable): Page<ComplaintEntity>
     fun findByHodAssignedAndUserTaskId(hodAssigned: Long,userTaskID: Long,pageable: Pageable): Page<ComplaintEntity>
@@ -126,6 +127,14 @@ interface IComplaintWitnessRepository : HazelcastRepository<ComplaintWitnessEnti
 @Repository
 interface IComplaintLocationRepository : HazelcastRepository<ComplaintLocationEntity, Long>{
     fun findByComplaintId(complaintId: Long): ComplaintLocationEntity?
+}
+
+@Repository
+interface IMsTaskNotificationsRepository : HazelcastRepository<MsTaskNotificationsEntity, Long>{
+    fun findAllByNotificationType(notificationType: String):  List<MsTaskNotificationsEntity>?
+    fun findAllByReadStatus(readStatus: Int): List<MsTaskNotificationsEntity>?
+    fun findAllByReadStatusAndToUserId(readStatus: Int, toUserID:Long): List<MsTaskNotificationsEntity>?
+    fun findByTaskRefNumber(taskRefNumber: String): MsTaskNotificationsEntity?
 }
 
 @Repository

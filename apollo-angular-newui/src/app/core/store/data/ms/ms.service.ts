@@ -72,7 +72,7 @@ import {
     RegionReAssignDto,
     PredefinedResourcesRequired,
     SeizureDto,
-    SeizureListDto, LaboratoryEntityDto, KebsStandardsDto, AllWorkPlanDetails, AcknowledgementDto,
+    SeizureListDto, LaboratoryEntityDto, KebsStandardsDto, AllWorkPlanDetails, AcknowledgementDto, MsNotificationTaskDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -641,14 +641,31 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public loadNotificationList(page: string, records: string): Observable<ApiResponseModel> {
+    public loadNotificationList(page: string, records: string): Observable<MsNotificationTaskDto[]> {
         // console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_NOTIFICATION);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_NOTIFICATIONS);
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);
-        return this.http.get<ApiResponseModel>(url, {params}).pipe(
-            map(function (response: ApiResponseModel) {
+        return this.http.get<MsNotificationTaskDto[]>(url, {params}).pipe(
+            map(function (response: MsNotificationTaskDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadNotificationRead(taskRefNumber: string): Observable<MsNotificationTaskDto[]> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_NOTIFICATIONS_READ);
+        const params = new HttpParams()
+            .set('taskRefNumber', taskRefNumber);
+        return this.http.put<MsNotificationTaskDto[]>(url, null, {params}).pipe(
+            map(function (response: MsNotificationTaskDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -2297,6 +2314,23 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_PDF_ENDPOINT.VIEW_PDF_SSF);
         const params = new HttpParams()
             .set('ssfID', ssfID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadFieldReportDetailsPDF(workPlanGeneratedID: string): Observable<any> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_PDF_ENDPOINT.VIEW_PDF_FIELD_REPORT);
+        const params = new HttpParams()
+            .set('workPlanGeneratedID', workPlanGeneratedID);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {

@@ -6,11 +6,14 @@ import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {
     DecisionFeedback,
-    Department, Document,
+    Department,
+    Document,
     HOFFeedback,
     LiaisonOrganization,
+    NwiItem,
     ProductCategory,
-    ProductSubCategoryB, StandardRequestB,
+    ProductSubCategoryB,
+    StandardRequestB,
     StandardTasks,
     StdJustification,
     StdJustificationDecision,
@@ -23,7 +26,7 @@ import {
     StdWorkPlan,
     TechnicalCommitteeb
 } from './request_std.model';
-import {StandardDocuments} from "./commitee-model";
+import {Ballot_Draft, Vote, VoteNwiRetrieved, VoteRetrieved, VotesNwiTally} from "./commitee-model";
 
 @Injectable({
     providedIn: 'root'
@@ -99,7 +102,6 @@ export class StandardDevelopmentService {
     }
 
     public decisionOnApplications(decisionFeedback: DecisionFeedback): Observable<DecisionFeedback> {
-        console.log(decisionFeedback);
         return this.http.post<DecisionFeedback>(`${this.apiMembershipToTCUrl}` + 'decisionOnApplicantRecommendation', decisionFeedback)
     }
 
@@ -131,6 +133,130 @@ export class StandardDevelopmentService {
     public getTCSECTasks(): Observable<StandardRequestB[]> {
         return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllStdsForNwi')
     }
+
+    public getAllNwisForVoting(): Observable<Stdtsectask[]> {
+        return this.http.get<Stdtsectask[]>(`${this.apiServerUrl}` + 'getAllNwis')
+    }
+
+
+    //retrieve vote for logged in user
+    public retrieveVote(): Observable<any> {
+        return this.http.get<VoteRetrieved>(`${this.apiServerUrl}` + 'getUserLoggedInBallots')
+
+    }
+
+    //get Votes Analysis
+    public getAllVotesTally(): Observable<any> {
+        const url = `${this.apiServerUrl}getAllVotesTally`;
+
+        return this.http.get<VotesNwiTally>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    //get Specific Nwi
+
+    public getNwiById(nwiId: string): Observable<any> {
+
+        const url = `${this.apiServerUrl}getANwiById`;
+        const params = new HttpParams().set('nwiId', nwiId)
+        return this.http.get<NwiItem>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getRequestById(requestId: string): Observable<StandardRequestB[]> {
+        const url = `${this.apiServerUrl}getRequestById`;
+        const params = new HttpParams().set('requestId', requestId)
+        return this.http.get<StandardRequestB>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );    }
+
+
+    public getApprovedNwiS(): Observable<any> {
+
+        const url = `${this.apiServerUrl}getAllApprovedNwiS`;
+        return this.http.get<NwiItem>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getRejectedNwiS(): Observable<any> {
+
+        const url = `${this.apiServerUrl}getAllRejectedNwiS`;
+        return this.http.get<NwiItem>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    //get All Votes On New Work Item
+    public getAllVotesOnNwi(nwiId: any): Observable<any> {
+        const url = `${this.apiServerUrl}getAllVotesOnNwi`;
+        const params = new HttpParams()
+            .set('nwiId', nwiId)
+        return this.http.get<VoteNwiRetrieved>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+
+    public approveNwi(nwiId: string): Observable<any> {
+        const url = `${this.apiServerUrl}approveNwi`;
+        return this.http.post<any>(url, nwiId, {
+            params: {'nwiId': nwiId}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public rejectNwi(nwiId: string): Observable<any> {
+        const url = `${this.apiServerUrl}rejectNwi`;
+        return this.http.post<any>(url, nwiId, {
+            params: {'nwiId': nwiId}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
     public getRejectedReviewsForStandards(): Observable<StandardRequestB[]> {
         return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllRejectedStdsForNwi')
     }
@@ -147,7 +273,7 @@ export class StandardDevelopmentService {
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'requestId': draftStandardID, 'type': doctype, 'requesterName': nomineeName}
+            }, params: {'nwiId': draftStandardID, 'type': doctype, 'docDescription': nomineeName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -164,8 +290,20 @@ export class StandardDevelopmentService {
         return this.http.get<StdTCTask[]>(`${this.apiServerUrl}` + 'getTCTasks')
     }
 
-    public decisionOnNWI(reviewTask: StdTCDecision): Observable<any> {
-        return this.http.post<StandardTasks>(`${this.apiServerUrl}` + 'decisionOnNWI', reviewTask)
+
+    public decisionOnNWI(vote: StdTCDecision): Observable<any> {
+        const url = `${this.apiServerUrl}` + 'decisionOnNWI';
+
+        return this.http.post<Vote>(url, vote).pipe(
+            map(function (response: Vote) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+
     }
 
     public uploadJustification(stdJustification: StdJustification): Observable<any> {
@@ -299,8 +437,24 @@ export class StandardDevelopmentService {
     public getAdditionalDocuments(standardId: string): Observable<any> {
 
         const url = `${this.apiServerUrl}getAdditionalDocuments`;
+        const params = new HttpParams().set('standardId', standardId)
+        return this.http.get<Document>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getAdditionalDocumentsByProcess(standardId: string, processName: string): Observable<any> {
+
+        const url = `${this.apiServerUrl}getAdditionalDocumentsByProcess`;
         const params = new HttpParams()
             .set('standardId', standardId)
+            .set('processName', processName)
+
         return this.http.get<Document>(url, {params}).pipe(
             map(function (response: any) {
                 return response;

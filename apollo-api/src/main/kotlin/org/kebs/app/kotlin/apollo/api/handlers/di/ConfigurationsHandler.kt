@@ -45,7 +45,7 @@ class ConfigurationsHandler(
         return ServerResponse.ok().body(response)
     }
 
-    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN','PVOC_ADMIN')")
     fun listBillLimits(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         return ServerResponse.ok().body(configService.listBillTypes(page))
@@ -157,7 +157,7 @@ class ConfigurationsHandler(
         return ServerResponse.ok().body(configService.removeCfsStation(cfsId))
     }
 
-    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DI_ADMIN_WRITE','DI_ADMIN','PVOC_ADMIN')")
     fun listCfsStations(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         return ServerResponse.ok().body(configService.listCfsStations(page))

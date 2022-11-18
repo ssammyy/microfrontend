@@ -129,6 +129,28 @@ export class NewComplaintDto {
     locationDetails: ComplaintLocationDto;
 }
 
+export class MsNotificationTaskDto {
+    id: number;
+    notificationBody: NotificationBodyDto;
+    notificationMsg: string;
+    notificationName: string;
+    notificationType: string;
+    fromUserId: number;
+    toUserId: number;
+    readStatus: boolean;
+}
+
+export class NotificationBodyDto {
+    taskRefNumber: string;
+    fromName: string;
+    toName: string;
+    batchReferenceNoFound: string;
+    referenceNoFound: string;
+    dateAssigned: Date;
+    bsNumber: string;
+    processType: string;
+}
+
 export class ApiResponseModel {
     totalCount: number;
     extras: any;
@@ -211,6 +233,8 @@ export class WorkPlanEntityDto {
     complaintDepartment: number;
     divisionId: number;
     nameActivity: string;
+    rationale: string;
+    scopeOfCoverage: string;
     timeActivityDate: Date;
     county: number;
     townMarketCenter: number;
@@ -257,6 +281,7 @@ export class ComplaintDetailsDto {
     complainantPhoneNumber: string;
     complainantPostalAddress: string;
     complainantPhysicalAddress: string;
+    complaintIdNumber: string;
     complaintSampleDetails: string;
     remedySought: string;
     email: string;
@@ -446,6 +471,7 @@ export class ComplaintCustomersDto {
     emailAddress: string;
     postalAddress: string;
     physicalAddress: string;
+    idNumber: string;
 }
 
 export class PreliminaryReportItemsDto {
@@ -569,6 +595,8 @@ export class WorkPlanInspectionDto {
     division: string;
     officerName: string;
     nameActivity: string;
+    rationale: string;
+    scopeOfCoverage: string;
     targetedProducts: string;
     resourcesRequired: PredefinedResourcesRequired[];
     budget: string;

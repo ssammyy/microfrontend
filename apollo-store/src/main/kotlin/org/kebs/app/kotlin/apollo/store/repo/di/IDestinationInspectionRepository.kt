@@ -735,8 +735,26 @@ interface IIDFDetailsEntityRepository : HazelcastRepository<IDFDetailsEntity, Lo
     fun findByBaseDocRefNo(baseDocRefNo: String): IDFDetailsEntity?
     fun findFirstByUcrNo(ucrNo: String): IDFDetailsEntity?
     fun findByStatus(status: Long, page: Pageable): Page<IDFDetailsEntity>
-    fun findByStatusAndCreatedOnBetween(status: Long,startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<IDFDetailsEntity>
+    fun findByStatusAndCreatedOnBetween(
+        status: Long,
+        startDate: Timestamp,
+        endDate: Timestamp,
+        page: Pageable
+    ): Page<IDFDetailsEntity>
+
     fun findByCreatedOnBetween(startDate: Timestamp, endDate: Timestamp, page: Pageable): Page<IDFDetailsEntity>
+    fun findByCreatedOnBetweenAndBaseDocRefNoContains(
+        startDate: Timestamp,
+        endDate: Timestamp,
+        keywords: String,
+        page: Pageable
+    ): Page<IDFDetailsEntity>
+
+    fun findByBaseDocRefNoContainsOrUcrNo(
+        keywords: String,
+        ucrn: String,
+        page: Pageable
+    ): Page<IDFDetailsEntity>
 }
 
 @Repository
@@ -767,7 +785,11 @@ interface IDeclarationDetailsEntityRepository : HazelcastRepository<DeclarationD
         page: Pageable
     ): Page<DeclarationDetailsEntity>
 
-    fun findByDeclarationRefNoContains(keywords: String, page: Pageable): Page<DeclarationDetailsEntity>
+    fun findByDeclarationRefNoContainsOrRefNum(
+        keywords: String,
+        keywords2: String,
+        page: Pageable
+    ): Page<DeclarationDetailsEntity>
 }
 
 @Repository

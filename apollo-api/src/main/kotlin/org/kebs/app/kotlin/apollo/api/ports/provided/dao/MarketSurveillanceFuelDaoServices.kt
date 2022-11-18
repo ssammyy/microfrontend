@@ -1846,7 +1846,7 @@ class MarketSurveillanceFuelDaoServices(
             nameProduct = body.nameProduct
             packaging = body.packaging
             labellingIdentification = body.labellingIdentification
-
+            createdUserId = user.id
             referencesStandards = body.referencesStandards
             sizeTestSample = body.sizeTestSample
             sizeRefSample = body.sizeRefSample

@@ -19,6 +19,9 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
     @Query(value = "SELECT max(ID)  FROM DAT_KEBS_SD_STANDARDS_UPLOADS", nativeQuery = true)
     fun getMaxUploadedID(): Long
     fun findBySdDocumentId(id: Long): Collection<DatKebsSdStandardsEntity?>?
+
+
+    fun findBySdDocumentIdAndDocumentType(id:Long, documentType: String) :Collection<DatKebsSdStandardsEntity?>?
     fun findBySdDocumentIdAndDocumentTypeDef(id: Long, documentTypeDef: String): DatKebsSdStandardsEntity
 
     //retrieve PD Drafts Doc

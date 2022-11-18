@@ -36,14 +36,14 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'dashboard',
         privilege: ['USER', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
     },
-    // {
-    //     path: '/notifications',
-    //     title: 'Notifications',
-    //     type: 'link',
-    //     collapse: 'notifications',
-    //     privilege: ['USER'],
-    //     icontype: 'business',
-    // },
+    {
+        path: '/notifications',
+        title: 'Notifications',
+        type: 'link',
+        collapse: 'notifications',
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
+        icontype: 'business',
+    },
 
     {
         path: '/admin',
@@ -275,6 +275,12 @@ export const ROUTES: RouteInfo[] = [
                 path: 'kentrade/idf/documents',
                 title: 'IDF Documents',
                 ab: 'ID',
+                privilege: ['DI_ADMIN', 'DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_DIRECTOR_READ'],
+            },
+            {
+                path: 'kentrade/declaration/documents',
+                title: 'Declaration Documents',
+                ab: 'DD',
                 privilege: ['DI_ADMIN', 'DI_ADMIN_READ', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_DIRECTOR_READ'],
             },
             {

@@ -445,6 +445,58 @@ end;
 create index DAT_MS_SEIZURE_seq_idx on DAT_MS_SEIZURE (STATUS) TABLESPACE qaimssdb_idx;
 /
 
+create table DAT_MS_TASK_NOTIFICATIONS
+(
+    ID                       NUMBER PRIMARY KEY,
+    NOTIFICATION_MSG         VARCHAR2(200),
+    NOTIFICATION_BODY       VARCHAR2(200),
+    NOTIFICATION_NAME       VARCHAR2(200),
+    NOTIFICATION_TYPE       VARCHAR2(200),
+    FROM_USER_ID              NUMBER REFERENCES DAT_KEBS_USERS(ID),
+    TO_USER_ID              NUMBER REFERENCES DAT_KEBS_USERS(ID),
+    READ_STATUS              NUMBER(2, 0),
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_MS_TASK_NOTIFICATIONS_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_MS_TASK_NOTIFICATIONS_SEQ_trg
+    before
+        insert
+    on DAT_MS_TASK_NOTIFICATIONS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_MS_TASK_NOTIFICATIONS_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+
+create index DAT_MS_TASK_NOTIFICATIONS_SEQ_IDX on DAT_MS_TASK_NOTIFICATIONS (STATUS,TO_USER_ID,FROM_USER_ID,READ_STATUS, NOTIFICATION_TYPE) TABLESPACE qaimssdb_idx;
+/
+
 
 create table DAT_KEBS_MS_WORKPLAN_PRODUCTS
 (
@@ -522,7 +574,7 @@ alter table DAT_KEBS_MS_WORKPLAN_GENARATED
 
 /***************************CREATED VIEWS FOR DOWNLOAD*****************************************/
 
-create OR REPLACE view MS_SAMPLE_SUBMISSION as
+-- create OR REPLACE view MS_SAMPLE_SUBMISSION as
 SELECT nvl(TO_CHAR(samp.id),'N/A') AS id,nvl(samp.name_product,'N/A') AS name_product,nvl(samp.packaging,'N/A') AS packaging,nvl(samp.labelling_identification,'N/A') AS labelling_identification,nvl(samp.file_ref_number,'N/A') AS file_ref_number,nvl(samp.references_standards,'N/A') AS references_standards,nvl(samp.size_test_sample,'N/A') AS size_test_sample,
        nvl(samp.size_ref_sample,'N/A') AS size_ref_sample,nvl(samp.condition,'N/A') AS condition,nvl(samp.sample_references,'N/A') AS sample_references,nvl(samp.senders_name,'N/A') AS senders_name,nvl(samp.designation,'N/A') AS designation,nvl(samp.address,'N/A') AS address,nvl(TO_CHAR(TRUNC(samp.senders_date),'DD/MM/YYYY'),'N/A') AS senders_date,
        nvl(samp.receivers_name,'N/A') AS receivers_name,nvl(TO_CHAR(samp.test_charges_ksh),'N/A') AS test_charges_ksh,nvl(samp.receipt_lpo_number,'N/A') AS receipt_lpo_number,nvl(samp.invoice_number,'N/A') AS invoice_number,nvl(samp.disposal,'N/A') AS disposal,nvl(samp.remarks,'N/A') AS remarks,
@@ -531,11 +583,44 @@ FROM DAT_KEBS_MS_SAMPLE_SUBMISSION samp
          INNER JOIN DAT_KEBS_MS_LABORATORY_PARAMETERS param ON samp.ID = param.SAMPLE_SUBMISSION_ID;
 /
 
+create OR REPLACE view MS_FIELD_REPORT as
+SELECT  nvl(TO_CHAR(rep.MS_WORKPLAN_GENERATED_ID),'N/A') AS MS_WORKPLAN_GENERATED_ID,
+        nvl(TO_CHAR(rep.CREATED_USER_ID),'N/A') AS CREATED_USER_ID,
+        nvl(TO_CHAR(rep.ID),'N/A') AS ID,
+        nvl(rep.REPORT_REFERENCE,'N/A') AS REPORT_REFERENCE,
+        nvl(rep.REPORT_TO,'N/A') AS REPORT_TO,
+        nvl(rep.REPORT_THROUGH,'N/A') AS REPORT_THROUGH,
+        nvl(rep.REPORT_FROM,'N/A') AS REPORT_FROM,
+        nvl(rep.REPORT_SUBJECT,'N/A') AS REPORT_SUBJECT,
+        nvl(rep.REPORT_TITLE,'N/A') AS REPORT_TITLE,
+        nvl(TO_CHAR(TRUNC(rep.REPORT_DATE),'DD/MM/YYYY'),'N/A') AS REPORT_DATE,
+        nvl(rep.REPORT_REGION,'N/A') AS REPORT_REGION,
+        nvl(rep.REPORT_DEPARTMENT,'N/A') AS REPORT_DEPARTMENT,
+        nvl(rep.REPORT_FUNCTION,'N/A') AS REPORT_FUNCTION,
+        nvl(rep.BACKGROUND_INFORMATION,'N/A') AS BACKGROUND_INFORMATION,
+        nvl(rep.OBJECTIVE_INVESTIGATION,'N/A') AS OBJECTIVE_INVESTIGATION,
+        nvl(TO_CHAR(TRUNC(rep.DATE_INVESTIGATION_INSPECTION),'DD/MM/YYYY'),'N/A') AS DATE_INVESTIGATION_INSPECTION,
+        nvl(rep.METHODOLOGY_EMPLOYED,'N/A') AS METHODOLOGY_EMPLOYED,
+        nvl(rep.ADDITIONAL_INFORMATION,'N/A') AS ADDITIONAL_INFORMATION,
+        nvl(rep.CONCLUSION,'N/A') AS CONCLUSION,
+        nvl(rep.RECOMMENDATIONS,'N/A') AS RECOMMENDATIONS,
+        nvl(rep.STATUS_ACTIVITY,'N/A') AS STATUS_ACTIVITY,
+        nvl(rep.FINAL_REMARK_HOD,'N/A') AS FINAL_REMARK_HOD,
+        nvl(rep.FINDINGS,'N/A') AS FINDINGS,
+        nvl(rep.KEBS_INSPECTORS,'N/A') AS KEBS_INSPECTORS,
+        nvl(rep.VAR_FIELD_1,'N/A') AS VAR_FIELD_1,
+        nvl(TO_CHAR(TRUNC(rep.CREATED_ON),'DD/MM/YYYY'),'N/A') AS CREATED_ON,
+        nvl(rep.CREATED_BY,'N/A') AS CREATED_BY,
+        nvl(rep.MODIFIED_BY,'N/A') AS MODIFIED_BY,
+        nvl(TO_CHAR(TRUNC(rep.MODIFIED_ON),'DD/MM/YYYY'),'N/A') AS MODIFIED_ON
+FROM DAT_KEBS_MS_INSPECTION_INVESTIGATION_REPORT rep;
+/
+
 
 /***************************TABLES TO GENERATE MS REPORTS MS REPORTS*****************************************/
 /******4.	Timeliness of activities ***/
 
-create OR REPLACE view MS_ACKNOWLEDGEMENT_TIMELINE_VIEW as
+-- create OR REPLACE view MS_ACKNOWLEDGEMENT_TIMELINE_VIEW as
 SELECT a.REFERENCE_NUMBER,a.COMPLAINT_TITLE,a.TARGETED_PRODUCTS,a.TRANSACTION_DATE,a.APPROVED_DATE,a.REJECTED_DATE,a.ASSIGNED_IO,
        CASE
            WHEN a.APPROVED = 1 THEN 'APPROVED'
@@ -630,5 +715,12 @@ SELECT a.REFERENCE_NUMBER,a.COMPLAINT_TITLE,a.TARGETED_PRODUCTS,a.TRANSACTION_DA
            ELSE TO_CHAR(ROUND((CURRENT_DATE - a.TRANSACTION_DATE)))
            END AS TIME_TAKEN_FOR_FEEDBACK_SENT
 FROM DAT_KEBS_MS_COMPLAINT a
+         JOIN  DAT_KEBS_MS_COMPLAINT_LOCATION b ON a.id= b.COMPLAINT_ID
+         JOIN DAT_KEBS_MS_WORKPLAN_GENARATED c ON c.COMPLAINT_ID = a.ID;
+
+
+-- create OR REPLACE view MS_REPORT_SUBMITTED_CP_VIEW as
+SELECT a.REFERENCE_NUMBER
+FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
          JOIN  DAT_KEBS_MS_COMPLAINT_LOCATION b ON a.id= b.COMPLAINT_ID
          JOIN DAT_KEBS_MS_WORKPLAN_GENARATED c ON c.COMPLAINT_ID = a.ID;

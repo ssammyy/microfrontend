@@ -558,6 +558,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.kebs.logo.path}")
     val mapKebsLogoPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.kebs.ms.logo.path}")
+    val mapKebsMSLogoPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.kebs.ms.footer.path}")
+    val mapKebsMSFooterPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.kebs.testSignature.path}")
     val mapKebsTestSignaturePath: String = ""
 
@@ -650,6 +656,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.submission.path}")
     val mapMSSampleSubmissionPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.path}")
+    val mapMSFieldReportPath: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.payment.collection.path}")
     val mapSLPaymentPath: String = ""
@@ -1026,6 +1035,15 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.submit.notification.hod}")
     val mapMsComplaintSubmittedHodNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.newTask.notification}")
+    val mapMsNotificationNewTask: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.overDue.task.notification}")
+    val mapMsNotificationOverDueTask: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.labResults.task.notification}")
+    val mapMsNotificationLabResultsTask: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.assigned.notification.io}")
     val mapMsComplaintAssignedIONotification: String = ""

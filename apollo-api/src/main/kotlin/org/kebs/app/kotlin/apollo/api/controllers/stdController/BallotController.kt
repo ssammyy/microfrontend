@@ -7,11 +7,9 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.CommitteeService
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.BallotingRepository
-import org.kebs.app.kotlin.apollo.store.repo.std.CommitteeCDRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.PublicReviewDraftRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
@@ -48,7 +46,7 @@ class BallotController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = publicReviewDraftRepository.findByIdOrNull(prdId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -88,7 +86,7 @@ class BallotController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = publicReviewDraftRepository.findByIdOrNull(prdId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -139,7 +137,7 @@ class BallotController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = ballotingRepository.findByIdOrNull(ballotId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -233,7 +231,7 @@ class BallotController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = ballotingRepository.findByIdOrNull(ballotId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -273,7 +271,7 @@ class BallotController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = ballotingRepository.findByIdOrNull(ballotId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")

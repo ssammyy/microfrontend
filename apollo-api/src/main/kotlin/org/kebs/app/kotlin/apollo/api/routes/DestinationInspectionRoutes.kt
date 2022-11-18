@@ -37,6 +37,7 @@ class DestinationInspectionRoutes {
     fun otherDocuments(handler: OtherDocumentHandler) = router {
         "/api/v1/di/documents".nest {
             GET("/idf", handler::listIdfDocuments)
+            GET("/declaration", handler::listDeclarationDocuments)
             GET("/manifest", handler::listManifestDocuments)
         }
     }

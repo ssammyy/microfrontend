@@ -12,6 +12,9 @@ import {MatSelect} from "@angular/material/select";
 import {MatOption} from "@angular/material/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {formatDate} from "@angular/common";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
     selector: 'app-standard-task',
@@ -60,6 +63,15 @@ export class StandardTaskComponent implements OnInit {
     approvedTasks: StandardRequestB[] = [];
     rejectedTasks: StandardRequestB[] = [];
 
+
+    displayedColumns: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions'];
+    dataSource!: MatTableDataSource<StandardRequestB>;
+    dataSourceB!: MatTableDataSource<StandardRequestB>;
+    dataSourceC!: MatTableDataSource<StandardRequestB>;
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
+
+
     public actionRequest: StandardRequestB;
 
     public hofFeedback: HOFFeedback | undefined;
@@ -94,21 +106,9 @@ export class StandardTaskComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.dtOptions = {
-            pagingType: 'full_numbers',
-            processing: true,
-            deferRender: true,
-            destroy:true
-        };
-        this.dtOptionsB = {
-            searching: false,
-            paging: false, info: false,
-            destroy:true
-
-        };
-
-        this.sdOutput = this.selectSeason;
-        this.sdResult = this.selectDesiredResult;
+        this.getHOFTasks();
+        this.getApprovedTasks();
+        this.getRejectedTasks();
 
         this.stdDepartmentChange = this.formBuilder.group({
             departmentId: ['', Validators.required],
@@ -125,9 +125,15 @@ export class StandardTaskComponent implements OnInit {
             reason: ['', Validators.required],
 
         });
-        this.getHOFTasks();
-        this.getApprovedTasks();
-        this.getRejectedTasks();
+
+
+    }
+
+    ngAfterViewInit(): void {
+
+
+        this.sdOutput = this.selectSeason;
+        this.sdResult = this.selectDesiredResult;
 
 
     }
@@ -156,7 +162,10 @@ export class StandardTaskComponent implements OnInit {
         this.standardDevelopmentService.getHOFTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.tasks = response;
-                this.rerender()
+                this.dataSource = new MatTableDataSource(this.tasks);
+
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -168,7 +177,10 @@ export class StandardTaskComponent implements OnInit {
         this.standardDevelopmentService.getTCSECTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.approvedTasks = response;
-                this.rerender()
+                this.dataSourceB = new MatTableDataSource(this.approvedTasks);
+
+                this.dataSourceB.paginator = this.paginator;
+                this.dataSourceB.sort = this.sort;
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -180,7 +192,10 @@ export class StandardTaskComponent implements OnInit {
         this.standardDevelopmentService.getRejectedReviewsForStandards().subscribe(
             (response: StandardRequestB[]) => {
                 this.rejectedTasks = response;
-                this.rerender()
+                this.dataSourceC = new MatTableDataSource(this.rejectedTasks);
+
+                this.dataSourceC.paginator = this.paginator;
+                this.dataSourceC.sort = this.sort;
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -304,6 +319,7 @@ export class StandardTaskComponent implements OnInit {
         this.dtElements.forEach((dtElement: DataTableDirective) => {
             if (dtElement.dtInstance)
                 dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.clear();
                     dtInstance.destroy();
                 });
         });
@@ -397,6 +413,24 @@ export class StandardTaskComponent implements OnInit {
     formatFormDate(date: Date) {
         return formatDate(date, this.dateFormat, this.language);
     }
+
+    applyFilter(event: Event) {
+        const filterValue = (event.target as HTMLInputElement).value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
+        this.dataSourceB.filter = filterValue.trim().toLowerCase();
+        this.dataSourceC.filter = filterValue.trim().toLowerCase();
+
+        if (this.dataSource.paginator) {
+            this.dataSource.paginator.firstPage();
+        }
+        if (this.dataSourceB.paginator) {
+            this.dataSourceB.paginator.firstPage();
+        }
+        if (this.dataSourceC.paginator) {
+            this.dataSourceC.paginator.firstPage();
+        }
+    }
+
 
 }
 

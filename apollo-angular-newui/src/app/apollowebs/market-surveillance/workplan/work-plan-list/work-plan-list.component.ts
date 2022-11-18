@@ -208,6 +208,8 @@ export class WorkPlanListComponent implements OnInit {
       complaintDepartment: ['', Validators.required],
       divisionId: ['', Validators.required],
       nameActivity: ['', Validators.required],
+      rationale: ['', Validators.required],
+      scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
       county: ['', Validators.required],
       townMarketCenter: ['', Validators.required],
@@ -389,7 +391,7 @@ export class WorkPlanListComponent implements OnInit {
   get formNewScheduleForm(): any {
     return this.addNewScheduleForm.controls;
   }
-
+  // loadNotificationRead
   onClickAddResource() {
     this.dataSaveResourcesRequired = this.addResourceRequiredForm.value;
     console.log(this.dataSaveResourcesRequired);

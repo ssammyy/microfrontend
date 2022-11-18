@@ -31,11 +31,11 @@
 
                             <div class="material-datatables">
                                 <table class="table table-striped table-bordered table-hover" datatable
-                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
                                     <thead>
                                     <tr>
-                                        <th class="task">Id</th>
-                                        <th class="task">Task</th>
+                                        <th class="task">Title</th>
+                                        <th class="task">Technical Committee</th>
                                         <th class="task">Request Number</th>
                                         <th class="task">Closing Date</th>
 
@@ -44,11 +44,11 @@
                                     </thead>
                                     <tbody>
                                     <tr *ngFor="let tcTask of tcTasks let i= index; ">
-                                        <td>{{i + 1}}</td>
 
-                                        <td>{{tcTask.name}}</td>
-                                        <td>{{tcTask.taskData.referenceNumber}}</td>
-                                        <td>{{tcTask.taskData.closingDate}}</td>
+                                        <td>{{tcTask.proposalTitle}}</td>
+                                        <td>{{tcTask.nameOfTC}}</td>
+                                        <td>{{tcTask.referenceNumber}}</td>
+                                        <td>{{tcTask.closingDate}}</td>
                                         <td><a (click)="onOpenModal(tcTask,'edit')" class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Vote on NWI</a></td>
@@ -58,10 +58,11 @@
                                 </table>
                             </div>
 
+
                             <div class="modal fade" id="voteDecisionModal" tabindex="-1" role="dialog"
                                  aria-labelledby="updateExampleModalLabel"
                                  aria-hidden="true">
-                                <div class="modal-dialog" role="document">
+                                <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="updateExampleModalLabel">VOTE ON NEW WORK
@@ -70,213 +71,184 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form #editForm="ngForm">
-                                            <div class="modal-body">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class=" col-12">
+                                                    <ul class="list-group">
+                                                        <li class="list-group-item active">New Work Item Details</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Proposal Title: " + actionRequest?.proposalTitle}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Scope: " + actionRequest?.scope}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Purpose: " + actionRequest?.purpose}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Target Date: " + actionRequest?.targetDate}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Similar Standards: " + actionRequest?.similarStandards}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Liaison Organization: " + actionRequest?.liaisonOrganisation}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Preparatory Work-A draft is attached: " + actionRequest?.draftAttached}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"An outline is attached: " + actionRequest?.outlineAttached}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"It is not possible to attach either a draft or outline: " + actionRequest?.outlineAttached}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"An outline will be sent later: " + actionRequest?.outlineSentLater}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Name of proposer: " + actionRequest?.nameOfProposer}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Organization: " + actionRequest?.organization}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Date of Circulation: " + actionRequest?.circulationDate}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Closing Date: " + actionRequest?.closingDate}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Date of Presentation: " + actionRequest?.dateOfPresentation}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Name of TC: " + actionRequest?.nameOfTC}}</li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">{{"Reference Number given by Secretariat: " + actionRequest?.id}}</li>
 
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <h5>Please tick and fill your preference of the listed
-                                                            option.</h5>
-                                                    </div>
-                                                    <!--                                                    <div class="col-sm-5 checkbox-radios">-->
-                                                    <!--&lt;!&ndash;                                                        <input&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                name="decision"&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                ngModel="{{formActionRequest?.decision}}"&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                class="form-check-input" type="radio" value="true"&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                id="yesVote">&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                        <label class="form-check-label" for="yesVote">&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                            Proposal acceptable&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                        </label>&ndash;&gt;-->
-                                                    <!--                                                        <mat-radio-button name="decision"-->
-                                                    <!--                                                                          ngModel="{{formActionRequest?.decision}}"-->
-                                                    <!--                                                                          class="form-check-input"  value="true"-->
-                                                    <!--                                                                          id="yesVote">Proposal acceptable</mat-radio-button>-->
+                                                        <br><br>
+                                                        <li style="background: lightgray">
+                                                            <div class="material-datatables">
+                                                                <table class="table table-striped table-bordered table-hover"
+                                                                       datatable
+                                                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger5">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th class="task">Document Name</th>
+                                                                        <th class="task">Descritpion</th>
 
-                                                    <!--                                                    </div>-->
-                                                    <!--                                                    <br><br>-->
-                                                    <!--                                                    <div class="col-sm-5 checkbox-radios">-->
-                                                    <!--&lt;!&ndash;                                                        <input&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                aria-describedby="inputGroup-sizing-sm"&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                aria-label="Small"&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                name="decision"&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                ngModel="{{formActionRequest?.decision}}"&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                class="form-check-input" type="radio" value="false"&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                                id="noVote">&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                        <label class="form-check-label" for="noVote">&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                            Proposal not acceptable&ndash;&gt;-->
-                                                    <!--&lt;!&ndash;                                                        </label>&ndash;&gt;-->
-                                                    <!--                                                        <mat-radio-button name="decision"-->
-                                                    <!--                                                                          ngModel="{{formActionRequest?.decision}}"-->
-                                                    <!--                                                                          class="form-check-input"  value="true"-->
-                                                    <!--                                                                          id="noVote">Proposal not acceptable</mat-radio-button>-->
-                                                    <!--                                                    </div>-->
-                                                    <!--                                                    <br><br>-->
-                                                    <div class="col-sm-12 checkbox-radios">
+                                                                        <th class="task">Action</th>
 
-                                                        <mat-radio-group
-                                                                aria-labelledby="example-radio-group-label"
-                                                                class="example-radio-group"
-                                                                ngModel="{{formActionRequest?.decision}}"
-                                                                name="decision"
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                                                                                        <tr *ngFor="let doc of docs let i= index; ">
 
-                                                        >
-                                                            <div class="col-sm-6">
+                                                                                                                                            <td>{{doc.name}}</td>
+                                                                                                                                            <td>{{doc.description}}</td>
 
-                                                                <mat-radio-button
-                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                        aria-label="Small"
-                                                                        [value]="true">
-                                                                    Proposal acceptable
+                                                                                                                                            <td>
+                                                                                                                                                <button class="btn btn-info tooltips"
+                                                                                                                                                        style="width: inherit"
+                                                                                                                                                        (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                                                                                                        data-placement="top"
+                                                                                                                                                ><i
+                                                                                                                                                        class="fa fa-eye"></i> View
+                                                                                                                                                </button>
+                                                                                                                                            </td>
 
-                                                                </mat-radio-button>
+                                                                                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
                                                             </div>
 
-                                                            <div class="col-sm-6">
+                                                        </li>
 
-                                                                <mat-radio-button
-                                                                        aria-describedby="inputGroup-sizing-sm"
-                                                                        aria-label="Small"
-                                                                        [value]="false">
-                                                                    Proposal not acceptable
-
-                                                                </mat-radio-button>
-                                                            </div>
-                                                        </mat-radio-group>
-
-
-                                                        <!--                                                    <div class="col-sm-5 checkbox-radios">-->
-                                                        <!--&lt;!&ndash;                                                        <input&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                name="decision"&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                ngModel="{{formActionRequest?.decision}}"&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                class="form-check-input" type="radio" value="true"&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                id="yesVote">&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                        <label class="form-check-label" for="yesVote">&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                            Proposal acceptable&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                        </label>&ndash;&gt;-->
-                                                        <!--                                                        <mat-radio-button name="decision"-->
-                                                        <!--                                                                          ngModel="{{formActionRequest?.decision}}"-->
-                                                        <!--                                                                          class="form-check-input"  value="true"-->
-                                                        <!--                                                                          id="yesVote">Proposal acceptable</mat-radio-button>-->
-
-                                                        <!--                                                    </div>-->
-                                                        <!--                                                    <br><br>-->
-                                                        <!--                                                    <div class="col-sm-5 checkbox-radios">-->
-                                                        <!--&lt;!&ndash;                                                        <input&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                aria-describedby="inputGroup-sizing-sm"&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                aria-label="Small"&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                name="decision"&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                ngModel="{{formActionRequest?.decision}}"&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                class="form-check-input" type="radio" value="false"&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                                id="noVote">&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                        <label class="form-check-label" for="noVote">&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                            Proposal not acceptable&ndash;&gt;-->
-                                                        <!--&lt;!&ndash;                                                        </label>&ndash;&gt;-->
-                                                        <!--                                                        <mat-radio-button name="decision"-->
-                                                        <!--                                                                          ngModel="{{formActionRequest?.decision}}"-->
-                                                        <!--                                                                          class="form-check-input"  value="false"-->
-                                                        <!--                                                                          id="noVote">Proposal not acceptable</mat-radio-button>-->
-                                                        <!--                                                    </div>-->
-                                                        <!--                                                    <br><br>-->
-
-
-
-
-                                                    </div>
-
-
-
-                                                        <div class="form-group col-12">
-                                                        <label><b>Reasons</b></label>
-                                                        <textarea
-                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                aria-label="Small"
-                                                                class="form-control one-column-input" name="reason"
-                                                                ngModel="{{formActionRequest?.reason}}"
-                                                                placeholder="Reasons for the vote"
-                                                                type="text"></textarea>
-
-
-                                                    </div>
-
-
-
-                                                    <div class="form-group col-6">
-                                                        <label><b>Position</b></label>
-                                                        <input
-                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                aria-label="Small"
-                                                                class="form-control one-column-input"
-                                                                ngModel="{{formActionRequest?.position}}" value="TC"
-                                                                name="position"
-                                                                placeholder="Enter position" type="text">
-                                                    </div>
-                                                    <div class="form-group col-6">
-                                                        <label><b>On Behalf of</b></label>
-                                                        <input
-                                                                aria-describedby="inputGroup-sizing-sm"
-                                                                aria-label="Small"
-                                                                class="form-control one-column-input" value=""
-                                                                ngModel="{{formActionRequest?.organization}}"
-                                                                name="organization"
-                                                                placeholder="Enter name of organization" type="text">
-                                                    </div>
-
-                                                    <div class="col-12">
-                                                        <hr/>
-                                                    </div>
-
-
+                                                    </ul>
                                                 </div>
-
-                                                <div class="row">
-                                                    <div class="card-body">
-                                                        <ul class="list-group">
-                                                            <h2>New Work Item Details</h2>
-                                                            <li class="list-group-item active">{{actionRequest?.taskData?.proposalTitle}}</li>
-                                                            <li class="list-group-item">{{"Scope: " + actionRequest?.taskData?.name}}</li>
-                                                            <li class="list-group-item">{{"Purpose: " + actionRequest?.taskData?.purpose}}</li>
-                                                            <li class="list-group-item">{{"Target Date: " + actionRequest?.taskData?.targetDate}}</li>
-                                                            <li class="list-group-item">{{"Similar Standards: " + actionRequest?.taskData?.similarStandards}}</li>
-                                                            <li class="list-group-item">{{"Liaison Organization: " + actionRequest?.taskData?.liaisonOrganisation}}</li>
-                                                            <li class="list-group-item">{{"Preparatory Work-A draft is attached: " + actionRequest?.taskData?.draftAttached}}</li>
-                                                            <li class="list-group-item">{{"An outline is attached: " + actionRequest?.taskData?.outlineAttached}}</li>
-                                                            <li class="list-group-item">{{"It is not possible to attach either a draft or outline: " + actionRequest?.taskData?.outlineAttached}}</li>
-                                                            <li class="list-group-item">{{"An outline will be sent later: " + actionRequest?.taskData?.outlineSentLater}}</li>
-                                                            <li class="list-group-item">{{"Name of proposer: " + actionRequest?.taskData?.nameOfProposer}}</li>
-                                                            <li class="list-group-item">{{"Organization: " + actionRequest?.taskData?.organization}}</li>
-                                                            <li class="list-group-item">{{"Date of Circulation: " + actionRequest?.taskData?.circulationDate}}</li>
-                                                            <li class="list-group-item">{{"Closing Date: " + actionRequest?.taskData?.closingDate}}</li>
-                                                            <li class="list-group-item">{{"Date of Presentation: " + actionRequest?.taskData?.dateOfPresentation}}</li>
-                                                            <li class="list-group-item">{{"Name of TC: " + actionRequest?.taskData?.nameOfTC}}</li>
-                                                            <li class="list-group-item">{{"Reference Number given by Secretariat: " + actionRequest?.taskData?.id}}</li>
-                                                            <!--                                                                            <li class="list-group-item"><label><b>Relevant-->
-                                                            <!--                                                                                Documents</b></label>-->
-                                                            <!--                                                                                <app-list-files [itemId]="itemId"-->
-                                                            <!--                                                                                                [type]="relevantDocumentsNWI"></app-list-files>-->
-                                                            <!--                                                                            </li>-->
-                                                            <!--                                                                            <li class="list-group-item"><label><b>Annex-->
-                                                            <!--                                                                                for Purpose & application</b></label>-->
-                                                            <!--                                                                                <app-list-files [itemId]="itemId"-->
-                                                            <!--                                                                                                [type]="filePurposeAnnex"></app-list-files>-->
-                                                            <!--                                                                            </li>-->
-                                                        </ul>
-                                                    </div>
-                                                </div>
-
-
                                             </div>
-                                            <input hidden ngModel="{{actionRequest?.taskId}}"
-                                                   value="{{actionRequest?.taskId}}" name="taskId" id="taskId">
-                                            <input hidden ngModel="{{actionRequest?.taskData.id}}"
-                                                   value="{{actionRequest?.taskData.id}}" name="nwiId" id="id">
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" #closeModal (click)="hideModel()" data-dismiss="modal">Close</button>
 
-                                                <button class="btn btn-info" (click)="decisionOnNWI(editForm.value)">
-                                                    Complete
+                                            <br>
+                                            <form (ngSubmit)="onReviewTask()" [formGroup]="stdHOFReview">
+
+
+                                                <div class="col-md-12">
+                                                    <div class="card ">
+                                                        <div class="card-header card-header-rose card-header-text">
+                                                            <div class="card-text">
+                                                                <h4 class="card-title">Vote</h4>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body ">
+                                                            <div class="row">
+                                                                <div class="col-12">
+                                                                    <h5>Please tick and fill your preference of the
+                                                                        listed
+                                                                        option.</h5>
+                                                                </div>
+
+                                                                <div class="col-sm-12 checkbox-radios">
+
+                                                                    <mat-radio-group
+                                                                            aria-labelledby="example-radio-group-label"
+                                                                            class="example-radio-group"
+                                                                            formControlName="decision"
+                                                                            name="decision">
+                                                                        <div class="col-sm-6">
+
+                                                                            <mat-radio-button
+                                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                                    aria-label="Small"
+                                                                                    [value]="true">
+                                                                                Proposal acceptable
+
+                                                                            </mat-radio-button>
+                                                                        </div>
+
+                                                                        <div class="col-sm-6">
+
+                                                                            <mat-radio-button
+                                                                                    aria-describedby="inputGroup-sizing-sm"
+                                                                                    aria-label="Small"
+                                                                                    [value]="false">
+                                                                                Proposal not acceptable
+
+                                                                            </mat-radio-button>
+                                                                        </div>
+                                                                    </mat-radio-group>
+                                                                </div>
+
+
+                                                                <div class="form-group col-12">
+                                                                    <label><b>Reasons</b></label>
+                                                                    <textarea
+                                                                            aria-describedby="inputGroup-sizing-sm"
+                                                                            aria-label="Small"
+                                                                            class="form-control one-column-input"
+                                                                            name="reason"
+                                                                            formControlName="reason"
+                                                                            placeholder="Reasons for the vote"
+                                                                            type="text"></textarea>
+
+
+                                                                </div>
+
+
+                                                                <div class="col-12">
+                                                                    <hr/>
+                                                                </div>
+
+
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input hidden formControlName="nwiId"
+                                                       [ngModel]="selectedNwi" name="nwiId">
+
+                                                <br><br>
+                                                <button class="btn btn-info" type="submit">
+                                                    Vote
                                                 </button>
-                                            </div>
-                                        </form>
+
+                                            </form>
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" #closeModal
+                                                    (click)="hideModel()"
+                                                    data-dismiss="modal">Close
+                                            </button>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>

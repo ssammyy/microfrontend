@@ -21,6 +21,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.util.*
 import java.util.stream.Collectors
 
 @RestController
@@ -200,17 +201,64 @@ class StandardRequestController(
         return standardRequestService.getTCTasks()
     }
 
+    @GetMapping("standard/getAllNwis")
+    fun getAllNwiS(): List<StandardNWI> {
+        return standardRequestService.getAllNwiSUnderVote()
+    }
+
+    @GetMapping("standard/getAllApprovedNwiS")
+    fun getAllApprovedNwiS(): List<StandardNWI> {
+        return standardRequestService.getAllNwiSApproved()
+    }
+
+
+    @GetMapping("standard/getAllRejectedNwiS")
+    fun getAllRejectedNwiS(): List<StandardNWI> {
+        return standardRequestService.getAllNwiSRejected()
+    }
+
+
 
     @PostMapping("standard/decisionOnNWI")
     @ResponseBody
     fun decisionOnNWI(@RequestBody voteOnNWI: VoteOnNWI): ServerResponse {
+        return (standardRequestService.decisionOnNWI(voteOnNWI))
+    }
+
+    @GetMapping("standard/getUserLoggedInBallots")
+    fun getUserLoggedInBallots(): List<VoteOnNWI> {
+        return standardRequestService.getUserLoggedInBallots()
+    }
+
+    @GetMapping("standard/getAllVotesTally")
+    fun getAllVotesTally(): List<NwiVotesTally> {
+        return standardRequestService.getAllVotesTally()
+    }
+
+    @GetMapping("standard/getAllVotesOnNwi")
+    fun getAllVotesOnNwi(@RequestParam("nwiId") nwiId: Long): List<VotesWithNWIId> {
+        return standardRequestService.getAllVotesOnNwi(nwiId)
+    }
+
+    @PostMapping("standard/approveNwi")
+    fun approveNwi(@RequestParam("nwiId") nwiId: Long)
+            : ServerResponse {
         return ServerResponse(
             HttpStatus.OK,
-            "Decision on New Work Item by the TC",
-            standardRequestService.decisionOnNWI(voteOnNWI)
+            "New Work Item Approved.",
+            standardRequestService.approveNWI(nwiId)
         )
     }
 
+    @PostMapping("standard/rejectNwi")
+    fun rejectNwi(@RequestParam("nwiId") nwiId: Long)
+            : ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "New Work Item Rejected.",
+            standardRequestService.rejectNWI(nwiId)
+        )
+    }
 
     @GetMapping("standard/tc-sec/tasks")
     fun getTCSecTasks(): List<TaskDetails> {
@@ -521,11 +569,39 @@ class StandardRequestController(
         return standardRequestService.getDocuments(standardId)
     }
 
+
+    @GetMapping("standard/getAdditionalDocumentsByProcess")
+    fun getAdditionalDocumentsByProcess(
+        @RequestParam("standardId") standardId: Long,
+        @RequestParam("processName") processName: String,
+
+        ): Collection<DatKebsSdStandardsEntity?>? {
+        return standardRequestService.getDocumentsByProcessName(standardId, processName)
+    }
+
+
+    @GetMapping("standard/getANwiById")
+    fun getANwiById(
+        @RequestParam("nwiId") nwiId: Long,
+
+        ): List<StandardNWI> {
+        return standardRequestService.getANwiById(nwiId)
+    }
+
+    @GetMapping("standard/getRequestById")
+    fun getRequestById(
+        @RequestParam("requestId") requestId: Long,
+
+        ): List<StandardsDto> {
+        return standardRequestService.getRequestById(requestId)
+    }
+
+
     //NWI Upload Documents
     @PostMapping("/standard/uploadNWIDocs")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDocs(
-        @RequestParam("nwiId") nwiId: Long,
+        @RequestParam("nwiId") nwiId: String,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         @RequestParam("type") type: String,
         @RequestParam("docDescription") docDescription: String,
@@ -534,7 +610,7 @@ class StandardRequestController(
     ): CommonDaoServices.MessageSuccessFailDTO {
 
 
-        val nwi = standardNWIRepository.findByIdOrNull(nwiId)
+        val nwi = standardNWIRepository.findByIdOrNull(nwiId.toLong())
             ?: throw Exception("APPLICATION DOES NOT EXIST")
         docFile.forEach { u ->
             val upload = DatKebsSdStandardsEntity()

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -38,5 +39,22 @@ class VoteOnNWI {
     @Column(name = "ORGANIZATION")
     @Basic
     var organization: String?= null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = 0
+
+
+    @Column(name = "CREATED_ON")
+    @Basic
+    var createdOn: Timestamp? = null
+
+    @Column(name = "MODIFIED_ON")
+    @Basic
+    var modifiedOn: Timestamp? = null
+
+    @Column(name = "DELETED_ON")
+    @Basic
+    var deletedOn: Timestamp? = null
 }
 

@@ -1,7 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
-import java.sql.Timestamp
-
 
 //class DataHolder {
 //    @NotNull
@@ -239,8 +237,8 @@ interface VotesWithBallotId {
     fun getUSER_id(): Long?
 
 
-
 }
+
 interface VotesTally {
     fun getBALLOT_ID(): Long?
     fun getBALLOTNAME(): String?
@@ -253,8 +251,35 @@ interface VotesTally {
     fun getSTATUS(): String?
 
 
+}
+
+
+interface VotesWithNWIId {
+    fun getNwiId(): Long?
+    fun getDecision(): String?
+    fun getOrganization(): Long?
+    fun getPosition(): String?
+    fun getStatus(): String?
+    fun getProposal_Title(): String?
+    fun getCreated_On(): String?
+    fun getVote_By(): String?
+    fun getReason(): String?
+
+    fun getUser_Id(): Long?
+
 
 }
+
+interface NwiVotesTally {
+    fun getNWI_ID(): Long?
+    fun getNWINAME(): String?
+    fun getAPPROVED(): Long?
+    fun getNOTAPPROVED(): Long?
+    fun getSTATUS(): String?
+
+
+}
+
 interface SampleSubmissionDTO {
     fun getSSF_SUBMISSION_DATE(): String?
     fun getFIRM_NAME(): String?

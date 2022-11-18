@@ -110,6 +110,23 @@ export class DestinationInspectionService {
         })
     }
 
+    loadDeclarationDocuments(status: string, page: number, size: number, startDate?: string, keywords?: string): Observable<any> {
+        let params = {
+            status: status,
+            page: String(page),
+            size: String(size)
+        }
+        if (startDate) {
+            params["date"] = startDate ? startDate : ""
+        }
+        if (keywords) {
+            params['keywords'] = keywords
+        }
+        return this.client.get(ApiEndpointService.getEndpoint("/api/v1/di/documents/declaration"), {
+            params: params
+        })
+    }
+
     loadManifestDocuments(status: string, startDate?: string, keywords?: string): Observable<any> {
         let params = {
             status: status,

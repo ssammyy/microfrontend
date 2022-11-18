@@ -86,15 +86,34 @@
             <label for="hs_code" class="waiver-form-label">HS Code</label>
             <input id="hs_code" class="waiver-form-input-master" formControlName="hs_code">
         </div>
-        <div class="col-sm-6 col-md-4">
+        <div class="col-sm-6 col-md-4" *ngIf="data.is_supervisor">
+            <label for="owner" class="waiver-form-label">Owner (Assigner/Approver)</label>
+            <select id="owner" name="doc_type" class="waiver-form-input-master"
+                    formControlName="owner">
+                <option value="" disabled selected>Select One</option>
+                <option value="yes" disabled selected>Approved by me</option>
+                <option value="no" disabled selected>Approved by others</option>
+            </select>
+        </div>
+        <div class="col-sm-6 col-md-4" *ngIf="data.is_admin">
             <label for="assigner" class="waiver-form-label">Assigned By</label>
             <select id="assigner" name="doc_type" class="waiver-form-input-master"
+                    formControlName="assigner">
+                <option value="" disabled selected>Select One</option>
+                <option *ngFor="let station of data.supervisors" [value]="station.id">{{station.firstName}}
+                    -{{station.lastName}}</option>
+            </select>
+        </div>
+        <div class="col-sm-6 col-md-4" *ngIf="data.is_supervisor || data.is_admin">
+            <label for="assigned_to" class="waiver-form-label">Assigned To</label>
+            <select id="assigned_to" name="doc_type" class="waiver-form-input-master"
                     formControlName="assigner">
                 <option value="" disabled selected>Select One</option>
                 <option *ngFor="let station of data.users" [value]="station.id">{{station.firstName}}
                     -{{station.lastName}}</option>
             </select>
         </div>
+
     </div>
     <mat-error *ngIf="message">{{message}}</mat-error>
 </mat-dialog-content>
