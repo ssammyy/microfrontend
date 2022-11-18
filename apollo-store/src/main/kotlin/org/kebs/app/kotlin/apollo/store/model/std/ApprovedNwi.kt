@@ -262,7 +262,7 @@ interface VotesWithNWIId {
     fun getStatus(): String?
     fun getProposal_Title(): String?
     fun getCreated_On(): String?
-    fun getComments_By(): String?
+    fun getVote_By(): String?
     fun getReason(): String?
 
     fun getUser_Id(): Long?

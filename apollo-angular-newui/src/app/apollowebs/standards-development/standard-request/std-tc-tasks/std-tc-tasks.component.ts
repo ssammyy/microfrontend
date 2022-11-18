@@ -1,5 +1,5 @@
 import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {NWIsForVoting, StdTCDecision, VoteOnNWI} from "../../../../core/store/data/std/request_std.model";
+import {Document, NWIsForVoting, StdTCDecision, VoteOnNWI} from "../../../../core/store/data/std/request_std.model";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
@@ -10,6 +10,7 @@ import {selectUserInfo, UserEntityService} from "../../../../core/store";
 import {Store} from "@ngrx/store";
 import {formatDate} from "@angular/common";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {CommitteeService} from "../../../../core/store/data/std/committee.service";
 
 @Component({
     selector: 'app-std-tc-tasks',
@@ -28,6 +29,8 @@ export class StdTcTasksComponent implements OnInit {
     dtTrigger6: Subject<any> = new Subject<any>();
     p = 1;
     p2 = 1;
+    docs !: Document[];
+    blob: Blob;
 
 
     dateFormat = "yyyy-MM-dd";
@@ -61,6 +64,7 @@ export class StdTcTasksComponent implements OnInit {
         private store$: Store<any>,
         private service: UserEntityService,
         private formBuilder: FormBuilder,
+        private committeeService: CommitteeService,
     ) {
     }
 
@@ -83,8 +87,6 @@ export class StdTcTasksComponent implements OnInit {
         });
         this.stdHOFReview = this.formBuilder.group({
             decision: ['', Validators.required],
-            position: ['', Validators.required],
-            organization: ['', Validators.required],
             nwiId: ['', Validators.required],
             reason: ['', Validators.required],
 
@@ -117,9 +119,12 @@ export class StdTcTasksComponent implements OnInit {
 
         this.itemId = task.id;
         if (mode === 'edit') {
-            this.actionRequest = task;
+            this.stdHOFReview.reset();
 
+            this.actionRequest = task;
             this.selectedNwi = this.actionRequest.id
+            this.stdHOFReview.controls.nwiId.setValue(this.selectedNwi);
+            this.getAllDocs(String(this.actionRequest.id))
 
             button.setAttribute('data-target', '#voteDecisionModal');
         }
@@ -218,19 +223,33 @@ export class StdTcTasksComponent implements OnInit {
 
     }
 
-    // viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
-    //     this.SpinnerService.show();
-    //     this.committeeService.viewDocsById(pdfId).subscribe(
-    //         (dataPdf: any) => {
-    //             this.SpinnerService.hide();
-    //             this.blob = new Blob([dataPdf], {type: applicationType});
-    //
-    //             // tslint:disable-next-line:prefer-const
-    //             let downloadURL = window.URL.createObjectURL(this.blob);
-    //             window.open(downloadURL, '_blank');
-    //
-    //             // this.pdfUploadsView = dataPdf;
-    //         },
-    //     );
-    // }
+    public getAllDocs(nwiId: string): void {
+        this.standardDevelopmentService.getAdditionalDocumentsByProcess(nwiId, "NWI Documents").subscribe(
+            (response: Document[]) => {
+                this.docs = response;
+                this.rerender()
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.committeeService.viewDocsById(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                window.open(downloadURL, '_blank');
+
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
 }

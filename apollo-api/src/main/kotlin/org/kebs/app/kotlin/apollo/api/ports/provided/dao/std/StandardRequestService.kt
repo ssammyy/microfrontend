@@ -444,6 +444,57 @@ class StandardRequestService(
     fun getAllNwiSUnderVote(): List<StandardNWI> {
         return standardNWIRepository.findAllByStatus("Vote ON NWI")
     }
+    fun getAllNwiSApproved(): List<StandardNWI> {
+        return standardNWIRepository.findAllByStatus("Upload Justification")
+    }
+
+    fun getAllNwiSRejected(): List<StandardNWI> {
+        return standardNWIRepository.findAllByStatus("NWI Rejected")
+    }
+    fun getANwiById(nwiId: Long): List<StandardNWI> {
+      return standardNWIRepository.findAllById(nwiId)
+    }
+
+    fun getRequestById(requestId: Long): List<StandardsDto> {
+        val standardRequest: List<StandardRequest> =
+            standardRequestRepository.findAllById(requestId)
+        return standardRequest.map { p ->
+            StandardsDto(
+                p.id,
+                p.requestNumber,
+                p.rank,
+                p.name,
+                p.phone,
+                p.email,
+                p.submissionDate,
+                p.departmentId,
+                p.tcId,
+                p.organisationName,
+                p.subject,
+                p.description,
+                p.economicEfficiency,
+                p.healthSafety,
+                p.environment,
+                p.integration,
+                p.exportMarkets,
+                p.levelOfStandard,
+                p.status,
+                departmentRepository.findNameById(p.departmentId?.toLong()),
+                //Feedback Segment From Review
+                p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.lastName,
+
+                returnUsername(p.id.toString()),
+                p.id.let { findHofFeedbackDetails(it.toString())?.createdOn },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdOutput },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdResult },
+                p.id.let { findHofFeedbackDetails(it.toString())?.reason },
+
+
+                )
+        }
+    }
 
     fun decisionOnNWI(voteOnNWI: VoteOnNWI): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -1009,6 +1060,10 @@ class StandardRequestService(
     fun getDocuments(standardId: Long): Collection<DatKebsSdStandardsEntity?>? {
 
         return draftDocumentService.findUploadedDIFileBYId(standardId)
+    }
+    fun getDocumentsByProcessName(standardId: Long, processName: String): Collection<DatKebsSdStandardsEntity?>? {
+
+        return draftDocumentService.findUploadedDIFileBYIdAndType(standardId,processName)
     }
 
     fun findHofFeedbackDetails(sdRequestNumber: String): HOFFeedback? {

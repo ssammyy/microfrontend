@@ -268,3 +268,14 @@ export interface VotesNwiTally {
     status: string
 }
 
+export interface VoteNwiRetrieved {
+    vote_By: string
+    created_On: Date
+    decision: string
+    organization: string
+    position: string
+    proposal_Title: string
+    reason: string
+
+}
+

@@ -173,6 +173,29 @@ export interface Stdtsectask {
     id: string;
     taskData: StandardRequestB;
 }
+export interface NwiItem {
+    taskId: string;
+    name: string;
+    purpose: string;
+    nameOfProposer: string;
+    proposalTitle: string;
+    scope: string;
+    targetDate: string;
+    similarStandards: string;
+    liaisonOrganisation: string;
+    draftAttached: string;
+    outlineAttached: string;
+    draftOutlineImpossible: string;
+    outlineSentLater: string;
+    organization: string;
+    circulationDate: string;
+    closingDate: string;
+    referenceNumber: string;
+    dateOfPresentation: string;
+    nameOfTC: string;
+    id: string;
+    standardId:string;
+}
 
 
 export interface NWIsForVoting {
@@ -617,6 +640,8 @@ export interface Document {
     name: string;
     fileType: string;
     document: string;
+    description:string
+
     createdOn: string;
     createdBy: string;
 

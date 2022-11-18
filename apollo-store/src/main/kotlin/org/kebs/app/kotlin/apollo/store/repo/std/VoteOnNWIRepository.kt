@@ -20,7 +20,7 @@ interface VoteOnNWIRepository : JpaRepository<VoteOnNWI, Long> {
 
 
     @Query(
-        "SELECT v.NWI_ID, B.PROPOSAL_TITLE AS NwiName,B.STATUS, count(case when v.DECISION = 'true' then NWI_ID end) as Approved, count(case when v.DECISION = 'false' then NWI_ID end) as NotApproved from SD_VOTE_ON_NWI v join SD_NWI B on v.NWI_ID = B.ID group by v.NWI_ID, B.PROPOSAL_TITLE,B.STATUS",
+        "SELECT v.NWI_ID, B.PROPOSAL_TITLE AS NwiName,B.STATUS, count(case when v.DECISION = 'true' then NWI_ID end) as Approved, count(case when v.DECISION = 'false' then NWI_ID end) as NotApproved from SD_VOTE_ON_NWI v join SD_NWI B on v.NWI_ID = B.ID  group by v.NWI_ID, B.PROPOSAL_TITLE,B.STATUS ",
         nativeQuery = true
     )
     fun getVotesTally(): List<NwiVotesTally>

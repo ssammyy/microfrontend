@@ -422,6 +422,8 @@ import { AcknowledgementComponent } from './apollowebs/market-surveillance/repor
 import { FeedbackTimelineComponent } from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
 import { ReportSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
 import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
+import {MatSortModule} from "@angular/material/sort";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -492,6 +494,8 @@ import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillan
         MatBadgeModule,
         NgbRatingModule,
         MatDatepickerModule,
+        MatSortModule,
+        MatPaginatorModule,
 
         // NgxDocViewerModule
     ],
