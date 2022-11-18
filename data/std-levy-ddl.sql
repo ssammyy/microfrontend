@@ -1846,6 +1846,9 @@ create  table DAT_KEBS_NWA_REMARKS
     DATE_OF_REMARK          VARCHAR2(350 CHAR)
 )
 /
+alter table DAT_KEBS_NWA_REMARKS
+    add JUSTIFICATION_ID int default 0
+/
 alter table DAT_KEBS_COMPANY_PROFILE
     add TYPE_OF_MANUFACTURE int default 0
 /

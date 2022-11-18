@@ -488,6 +488,40 @@ interface RejectedComDetails{
     fun getStatus(): Long?
 }
 
+interface KnwaJustification{
+    fun getId(): Long?
+    fun getDateOfMeeting(): String?
+    fun getKnwSec(): String?
+    fun getSlNumber(): String?
+    fun getRequestNumber(): String?
+    fun getRequestedBy(): String?
+    fun getIssuesAddressed(): String?
+    fun getAcceptanceDate(): String?
+    fun getReferenceMaterial(): String?
+    fun getRemarks(): String?
+    fun getSubmissionDate(): String?
+    fun getKnwCommittee(): String?
+    fun getDepartmentName(): String?
+}
+
+interface NwaPDraft{
+    fun getId(): Long?
+    fun getTitle(): String?
+    fun getDiJNumber(): String?
+    fun getRemarks(): String?
+    fun getScope(): String?
+    fun getNormativeReference(): String?
+    fun getSymbolsAbbreviatedTerms(): String?
+    fun getClause(): String?
+    fun getDatePdPrepared(): String?
+    fun getWorkShopDate(): String?
+    fun getSpecial(): String?
+    fun getCdAppNumber(): String?
+    fun getPreparedBy(): String?
+    fun getJustificationNumber(): Long?
+
+}
+
 
 
 

@@ -20,6 +20,10 @@ class NWAJustification : Serializable {
     @Basic
     var meetingDate: String? = null
 
+    @Column(name = "DATE_OF_MEETING")
+    @Basic
+    var dateOfMeeting: Timestamp? = null
+
     @Column(name = "KNW")
     @Basic
     var knw: String? = null
@@ -48,6 +52,10 @@ class NWAJustification : Serializable {
     @Basic
     var knwAcceptanceDate: String? = null
 
+    @Column(name = "ACCEPTANCE_DATE")
+    @Basic
+    var acceptanceDate: Timestamp? = null
+
     @Column(name = "REFERENCE_MATERIAL")
     @Basic
     var referenceMaterial: String? = null
@@ -59,6 +67,10 @@ class NWAJustification : Serializable {
     @Column(name = "STATUS")
     @Basic
     var status: String? = null
+
+    @Column(name = "JUSTIFICATION_STATUS")
+    @Basic
+    var justificationStatus: Long? = null
 
     @Column(name = "REMARKS")
     @Basic
@@ -81,7 +93,7 @@ class NWAJustification : Serializable {
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    var accentTo: Boolean = false
+    var accentTo: String? = null
 
     @Column(name = "TASKID")
     @Basic
@@ -90,6 +102,16 @@ class NWAJustification : Serializable {
     @Column(name = "ASSIGNED_TO")
     @Basic
     var assignedTo: Long? = null
+
+    @Column(name = "CD_NUMBER")
+    @Basic
+    var cdNumber: String? = null
+
+    @Column(name = "CDN")
+    @Basic
+    var cdn: Long? = 0
+
+
 
 
 }
