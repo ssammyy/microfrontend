@@ -191,6 +191,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   userProfile: LoggedInUser;
   blob: Blob;
   uploadedFilesOnly: FileList;
+  uploadedFinalRemarks: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
@@ -2761,20 +2762,37 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveFinalRemarksHOD(valid: boolean) {
-    if (valid) {
+  onClickSaveFinalRemarksHOD() {
+    this.submitted = true;
+    if (this.finalRemarkHODForm.valid && this.uploadedFinalRemarks.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD FINAL REMARKS\' button to update details Before Saving', 'FIELD REPORT DETAILS SAVED SUCCESSFUL', () => {
+            this.saveFinalRemarksHOD();
+          });
+    }
+  }
+
+  saveFinalRemarksHOD() {
       this.SpinnerService.show();
       this.dataSaveFinalRemarks = {...this.dataSaveFinalRemarks, ...this.finalRemarkHODForm.value};
-      this.msService.msWorkPlanScheduleDetailsFinalRemarksHOD(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-          this.dataSaveFinalRemarks,
-      ).subscribe(
+      const file = this.uploadedFinalRemarks;
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+      formData.append('docTypeName', 'COMPLAINT_FEED_BACK_UPLOAD');
+      formData.append('data', JSON.stringify(this.dataSaveFinalRemarks));
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+
+      this.msService.saveFinalFeedBackComplaint(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('FINAL REMARKS REAMRKS AND STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FINAL REMARKS AND STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -2782,7 +2800,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.msService.showError('AN ERROR OCCURRED');
           },
       );
-    }
   }
 
   onClickSaveApprovePreliminaryHOD(valid: boolean) {

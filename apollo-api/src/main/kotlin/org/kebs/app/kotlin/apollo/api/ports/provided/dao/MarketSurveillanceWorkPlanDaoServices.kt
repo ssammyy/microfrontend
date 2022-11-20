@@ -90,6 +90,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val notificationsRepo: INotificationsRepository,
     private val msFuelDaoServices: MarketSurveillanceFuelDaoServices,
     private val complaintsRepo: IComplaintRepository,
+    private val complaintsCustomerRepo: IComplaintCustomersRepository,
     private val msComplaintDaoServices: MarketSurveillanceComplaintProcessDaoServices
 ) {
     final var complaintSteps: Int = 6
@@ -1839,18 +1840,20 @@ class MarketSurveillanceWorkPlanDaoServices(
     }
 
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun addWorkPlanScheduleFeedBackByHOD(
         referenceNo: String,
         batchReferenceNo: String,
-        body: WorkPlanFeedBackDto
+        body: WorkPlanFeedBackDto,
+        docFile: MultipartFile? = null
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var complaintDetailsFound: ComplaintEntity? = null
 
         with(workPlanScheduled){
+            msProcessEndedOn = commonDaoServices.getCurrentDate()
             msProcessEndedStatus = map.activeStatus
             msEndProcessRemarks = body.hodFeedBackRemarks
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionMSProcessEnded
@@ -1867,7 +1870,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     msProcessId = applicationMapProperties.mapMSWorkPlanInspectionMSProcessEnded
                     userTaskId = null
                 }
-                msComplaintDaoServices.updateComplaintDetailsInDB(cp,map,loggedInUser)
+                    complaintDetailsFound= msComplaintDaoServices.updateComplaintDetailsInDB(cp,map,loggedInUser).second
             }
         }
 
@@ -1885,6 +1888,16 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
                         runBlocking {
+                            if(complaintDetailsFound!=null){
+                                val compliant = complaintDetailsFound!!.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
+                                compliant.emailAddress?.let {
+                                    commonDaoServices.sendEmailWithUserEmail(it,
+                                        applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
+                                        complaintDetailsFound!!, map, remarksSaved.first,
+                                        docFile?.let {doc-> commonDaoServices.convertMultipartFileToFile(doc).absolutePath })
+                                }
+                            }
+
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val scheduleEmailDetails =  WorkPlanScheduledDTO()
                             with(scheduleEmailDetails){
@@ -3986,6 +3999,11 @@ class MarketSurveillanceWorkPlanDaoServices(
             productCategory = body.productCategory
             product = body.product
             productSubCategory = body.productSubCategory
+            standardCategoryString = body.standardCategoryString
+            broadProductCategoryString = body.broadProductCategoryString
+            productCategoryString = body.productCategoryString
+            productString = body.productString
+            productSubCategoryString = body.productSubCategoryString
             resourcesRequired = body.resourcesRequired?.let { commonDaoServices.convertClassToJson(it) }
             budget = body.budget
             msProcessEndedStatus = map.inactiveStatus
@@ -4053,6 +4071,11 @@ class MarketSurveillanceWorkPlanDaoServices(
             product = comp.product
             productSubCategory = comp.productSubCategory
             resourcesRequired = body.resourcesRequired?.let { commonDaoServices.convertClassToJson(it) }
+            standardCategoryString = comp.standardCategoryString
+            broadProductCategoryString = comp.broadProductCategoryString
+            productCategoryString = comp.productCategoryString
+            productString = comp.productString
+            productSubCategoryString = comp.productSubCategoryString
             budget = body.budget
             uuid = commonDaoServices.generateUUIDString()
             msTypeId = msType.id
@@ -4638,12 +4661,18 @@ class MarketSurveillanceWorkPlanDaoServices(
         ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
             wKP.id,
-            wKP.productCategory?.let { commonDaoServices.findProductCategoryByID(it).name },
-            wKP.broadProductCategory?.let { commonDaoServices.findBroadCategoryByID(it).category },
-            wKP.product?.let { commonDaoServices.findProductByID(it).name },
-            wKP.standardCategory?.let { commonDaoServices.findStandardCategoryByID(it).standardCategory },
-            wKP.productSubCategory?.let { commonDaoServices.findProductSubCategoryByID(it).name },
+            wKP.productCategoryString,
+//            wKP.productCategory?.let { commonDaoServices.findProductCategoryByID(it).name },
+            wKP.broadProductCategoryString,
+//            wKP.broadProductCategory?.let { commonDaoServices.findBroadCategoryByID(it).category },
+            wKP.productString,
+//            wKP.product?.let { commonDaoServices.findProductByID(it).name },
+            wKP.standardCategoryString,
+//            wKP.standardCategory?.let { commonDaoServices.findStandardCategoryByID(it).standardCategory },
+            wKP.productSubCategoryString,
+//            wKP.productSubCategory?.let { commonDaoServices.findProductSubCategoryByID(it).name },
             wKP.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+            wKP.msProcessEndedOn,
             wKP.timelineStartDate,
             wKP.timelineEndDate,
             timelineOverDue,

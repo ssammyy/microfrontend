@@ -143,14 +143,14 @@
                                                 <div class="list-title-accordion">Product Sub-Category</div>
                                                 <div class="list-text-accordion" >{{workPlanInspection?.productSubCategory}}</div>
                                             </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Standard Title</div>
-                                                <div class="list-text-accordion" >{{workPlanInspection?.ksApplicable?.standardTitle}}</div>
-                                            </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">KS Number</div>
-                                                <div class="list-text-accordion" >{{workPlanInspection?.ksApplicable?.standardNumber}}</div>
-                                            </li>
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Standard Title</div>-->
+<!--                                                <div class="list-text-accordion" >{{workPlanInspection?.ksApplicable?.standardTitle}}</div>-->
+<!--                                            </li>-->
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">KS Number</div>-->
+<!--                                                <div class="list-text-accordion" >{{workPlanInspection?.ksApplicable?.standardNumber}}</div>-->
+<!--                                            </li>-->
 
                                         </ul>
                                     </mat-tab>
@@ -1965,6 +1965,12 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFinalRemarks" name="files" id="files"
+                                                         fileslimit="1" accept=".pdf"></file-upload>
+                                        </form>
                                         <label for="hodFeedBackRemarks"><b>Please write, in detail, your feedback for MS Conducted:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="hodFeedBackRemarks"
@@ -5859,7 +5865,7 @@
                                                 class="form-control two-column-input"
                                                 formControlName="nameActivity" name="nameActivity" required type="text">
                                             <!--                                            <option [value]="" selected>Please select</option>-->
-                                            <option  [value]="'Surveillance'" selected>Surveillance</option>
+                                            <option  [value]="'Complaints Handling'" selected>Complaints Handling</option>
                                         </select>
                                         <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid" class="invalid-feedback">
                                             <div *ngIf="formNewScheduleForm.nameActivity.errors.required">Name of Activity is
