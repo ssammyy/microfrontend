@@ -1503,7 +1503,7 @@ class DestinationInspectionService(
                         corIssueDate = cor.dateOfIssue
                         countryOfSupply = cor.countryOfSupply
                         inspectionCenter = cor.inspectionCenter
-                        applicationBookingDate = cor.applicationBookingDate
+                        applicationBookingDate = cor.applicationBookingDate ?: commonDaoServices.getTimestamp()
                         inspectionDate = cor.inspectionDate
                         make = cor.vehicleMake
                         typeOfVehicle = "UNKNOWN"
