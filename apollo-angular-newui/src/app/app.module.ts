@@ -417,12 +417,14 @@ import {SystemReviewUpdateGazetteComponent} from './apollowebs/standards-develop
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {SpinnerComponent} from './shared/loader/spinner/spinner/spinner.component';
 import {GenerateDnReportComponent} from './apollowebs/di/transaction-view/generate-dn-report/generate-dn-report.component';
-import {NotificationsComponent} from './apollowebs/system/notifications/notifications.component';
-import {AcknowledgementComponent} from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
-import {FeedbackTimelineComponent} from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
-import {ReportSubmittedTimelineComponent} from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
-import {SampleSubmittedTimelineComponent} from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 import {DeclarationDocumentsComponent} from './apollowebs/di/other-documents/declaration-documents/declaration-documents.component';
+import { NotificationsComponent } from './apollowebs/system/notifications/notifications.component';
+import { AcknowledgementComponent } from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
+import { FeedbackTimelineComponent } from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
+import { ReportSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
+import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
+import {MatSortModule} from "@angular/material/sort";
+import {MatPaginatorModule} from "@angular/material/paginator";
 import {GenerateDeclarationReportComponent} from './apollowebs/di/other-documents/declaration-documents/generate-declaration-report/generate-declaration-report.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
@@ -494,6 +496,8 @@ import {GenerateDeclarationReportComponent} from './apollowebs/di/other-document
         MatBadgeModule,
         NgbRatingModule,
         MatDatepickerModule,
+        MatSortModule,
+        MatPaginatorModule,
 
         // NgxDocViewerModule
     ],

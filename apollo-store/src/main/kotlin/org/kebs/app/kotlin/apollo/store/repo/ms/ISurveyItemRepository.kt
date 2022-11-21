@@ -101,6 +101,7 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
     fun findByWorkPlanYearId(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndComplaintIdIsNotNull(workPlanYearId: Long,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndApproved(workPlanYearId: Long, approved: String, pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+    fun findAllByMsProcessEndedStatus(msProcessEndedStatus: Int): List<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndMsProcessEndedStatus(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndMsProcessEndedStatusAndComplaintIdIsNotNull(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
 

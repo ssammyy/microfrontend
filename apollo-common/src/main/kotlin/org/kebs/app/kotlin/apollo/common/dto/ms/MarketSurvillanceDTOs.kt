@@ -156,6 +156,7 @@ data class WorkPlanInspectionDto(
         var standardCategory: String? = null,
         var productSubCategory: String? = null,
         var divisionId: String? = null,
+        var msProcessEndedOn: Date? = null,
         var timelineStartDate: Date? = null,
         var timelineEndDate: Date? = null,
         var timelineOverDue: Boolean? = null,
@@ -339,6 +340,11 @@ data class WorkPlanEntityDto(
         var resourcesRequired: List<PredefinedResourcesRequiredEntityDto>? = null,
         var budget: String? = null,
         var remarks: String? = null,
+        var standardCategoryString: String? = null,
+        var broadProductCategoryString: String? = null,
+        var productCategoryString: String? = null,
+        var productString: String? = null,
+        var productSubCategoryString: String? = null,
 )
 
 data class WorkPlanScheduleApprovalDto(
@@ -971,6 +977,13 @@ data class ComplaintClassificationDto(
         var myProduct: Long? = null,
         var productSubcategory: Long? = null,
         var classificationRemarks: String? = null,
+        var productClassificationString: String? = null,
+        var broadProductCategoryString: String? = null,
+        var productCategoryString: String? = null,
+        var myProductString: String? = null,
+        var productSubcategoryString: String? = null,
+        var standardTitle: String? = null,
+        var standardNumber: String? = null,
 )
 
 data class MSRemarksDto(
@@ -1038,7 +1051,9 @@ data class ComplaintsDetailsDto(
         var ksApplicable: StandardDetailsDto? = null,
         var timelineStartDate: Date? = null,
         var timelineEndDate: Date? = null,
-        var timelineOverDue: Boolean? = null
+        var timelineOverDue: Boolean? = null,
+        var standardTitle: String? = null,
+        var standardNumber: String? = null
 
 
 )

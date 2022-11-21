@@ -21,6 +21,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.util.*
 import java.util.stream.Collectors
 
 @RestController
@@ -205,15 +206,23 @@ class StandardRequestController(
         return standardRequestService.getAllNwiSUnderVote()
     }
 
+    @GetMapping("standard/getAllApprovedNwiS")
+    fun getAllApprovedNwiS(): List<StandardNWI> {
+        return standardRequestService.getAllNwiSApproved()
+    }
+
+
+    @GetMapping("standard/getAllRejectedNwiS")
+    fun getAllRejectedNwiS(): List<StandardNWI> {
+        return standardRequestService.getAllNwiSRejected()
+    }
+
+
 
     @PostMapping("standard/decisionOnNWI")
     @ResponseBody
     fun decisionOnNWI(@RequestBody voteOnNWI: VoteOnNWI): ServerResponse {
-        return ServerResponse(
-            HttpStatus.OK,
-            "Decision on New Work Item by the TC",
-            standardRequestService.decisionOnNWI(voteOnNWI)
-        )
+        return (standardRequestService.decisionOnNWI(voteOnNWI))
     }
 
     @GetMapping("standard/getUserLoggedInBallots")
@@ -231,7 +240,7 @@ class StandardRequestController(
         return standardRequestService.getAllVotesOnNwi(nwiId)
     }
 
-    @PostMapping("/approveNwi")
+    @PostMapping("standard/approveNwi")
     fun approveNwi(@RequestParam("nwiId") nwiId: Long)
             : ServerResponse {
         return ServerResponse(
@@ -241,18 +250,15 @@ class StandardRequestController(
         )
     }
 
-    @PostMapping("/rejectNwi")
+    @PostMapping("standard/rejectNwi")
     fun rejectNwi(@RequestParam("nwiId") nwiId: Long)
             : ServerResponse {
         return ServerResponse(
             HttpStatus.OK,
-            "New Work Item Approved.",
+            "New Work Item Rejected.",
             standardRequestService.rejectNWI(nwiId)
         )
     }
-
-
-
 
     @GetMapping("standard/tc-sec/tasks")
     fun getTCSecTasks(): List<TaskDetails> {
@@ -562,6 +568,34 @@ class StandardRequestController(
     ): Collection<DatKebsSdStandardsEntity?>? {
         return standardRequestService.getDocuments(standardId)
     }
+
+
+    @GetMapping("standard/getAdditionalDocumentsByProcess")
+    fun getAdditionalDocumentsByProcess(
+        @RequestParam("standardId") standardId: Long,
+        @RequestParam("processName") processName: String,
+
+        ): Collection<DatKebsSdStandardsEntity?>? {
+        return standardRequestService.getDocumentsByProcessName(standardId, processName)
+    }
+
+
+    @GetMapping("standard/getANwiById")
+    fun getANwiById(
+        @RequestParam("nwiId") nwiId: Long,
+
+        ): List<StandardNWI> {
+        return standardRequestService.getANwiById(nwiId)
+    }
+
+    @GetMapping("standard/getRequestById")
+    fun getRequestById(
+        @RequestParam("requestId") requestId: Long,
+
+        ): List<StandardsDto> {
+        return standardRequestService.getRequestById(requestId)
+    }
+
 
     //NWI Upload Documents
     @PostMapping("/standard/uploadNWIDocs")

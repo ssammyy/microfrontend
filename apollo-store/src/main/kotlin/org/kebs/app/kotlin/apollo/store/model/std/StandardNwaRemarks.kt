@@ -45,4 +45,9 @@ class StandardNwaRemarks : Serializable {
     @Basic
     var dateOfRemark: Timestamp? = null
 
+    @Column(name = "JUSTIFICATION_ID")
+    @Basic
+    var justificationID: Long? = null
+
+
 }

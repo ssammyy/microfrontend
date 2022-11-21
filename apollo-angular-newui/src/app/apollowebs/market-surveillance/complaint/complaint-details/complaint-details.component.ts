@@ -307,11 +307,13 @@ export class ComplaintDetailsComponent implements OnInit {
     });
 
     this.classificationForm = this.formBuilder.group({
-      productClassification: ['', Validators.required],
-      broadProductCategory: ['', Validators.required],
-      productCategory: ['', Validators.required],
-      myProduct: ['', Validators.required],
-      productSubcategory: ['', Validators.required],
+      productClassificationString: ['', Validators.required],
+      broadProductCategoryString: ['', Validators.required],
+      productCategoryString: ['', Validators.required],
+      myProductString: ['', Validators.required],
+      productSubcategoryString: ['', Validators.required],
+      standardTitle: ['', Validators.required],
+      standardNumber: ['', Validators.required],
       classificationRemarks: ['', Validators.required],
     });
 

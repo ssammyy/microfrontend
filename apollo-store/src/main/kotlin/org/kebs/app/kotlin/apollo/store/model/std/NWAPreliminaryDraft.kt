@@ -47,6 +47,10 @@ class NWAPreliminaryDraft : Serializable {
     @Basic
     var datePdPrepared: Timestamp?=null
 
+    @Column(name="WORK_SHOP_DATE")
+    @Basic
+    var workShopDate: Timestamp?=null
+
     @Column(name = "SPECIAL")
     @Basic
     var special: String? = null
@@ -59,14 +63,31 @@ class NWAPreliminaryDraft : Serializable {
     @Basic
     var assignedTo: Long? = null
 
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = null
+
     @Column(name = "PROCESS_ID")
     @Basic
     var processId: String? = null
 
+    @Column(name = "PREPARED_BY")
+    @Basic
+    var preparedBy: String? = null
+
+    @Column(name = "PREPARED_BY_ID")
+    @Basic
+    var preparedById: Long? = null
+
+    @Column(name = "JUSTIFICATION_NUMBER")
+    @Basic
+    var justificationNumber: Long? = null
+
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    var accentTo: Boolean = false
+    var accentTo: String? = null
+
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null

@@ -80,6 +80,8 @@ class SchedulerImpl(
 
     final val qaAppId = applicationMapProperties.mapQualityAssurance
 
+    final var msAppId = applicationMapProperties.mapMarketSurveillance
+
     @Value("\${scheduler.ms.director.id}")
     lateinit var msDirectorId: String
 
@@ -271,6 +273,14 @@ class SchedulerImpl(
 
 
     }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateOverDueTask() {
+        val map = commonDaoServices.serviceMapDetails(msAppId)
+        marketSurveillanceWorkPlanDaoServices.checkAllOverdueTasks(map)
+
+    }
+
 //    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
 //    fun updateLabResultsWithDetails() {
 //        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
