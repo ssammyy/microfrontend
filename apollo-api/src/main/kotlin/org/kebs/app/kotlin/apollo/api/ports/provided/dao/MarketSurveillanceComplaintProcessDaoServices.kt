@@ -887,6 +887,13 @@ class MarketSurveillanceComplaintProcessDaoServices(
             productCategory = body.productCategory
             product = body.myProduct
             productSubCategory = body.productSubcategory
+            standardCategoryString = body.productClassificationString
+            broadProductCategoryString = body.broadProductCategoryString
+            productCategoryString = body.productCategoryString
+            productString = body.myProductString
+            productSubCategoryString = body.productSubcategoryString
+            standardTitle = body.standardTitle
+            standardNumber = body.standardNumber
             classificationDetailsStatus = map.activeStatus
         }
 
@@ -1507,11 +1514,16 @@ class MarketSurveillanceComplaintProcessDaoServices(
             comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
             comp.complaintTitle,
             comp.complaintDetails,
-            comp.standardCategory?.let { commonDaoServices.findStandardCategoryByID(it).standardCategory },
-            comp.broadProductCategory?.let { commonDaoServices.findBroadCategoryByID(it).category },
-            comp.productCategory?.let { commonDaoServices.findProductCategoryByID(it).name },
-            comp.productSubCategory?.let { commonDaoServices.findProductSubCategoryByID(it).name },
-            comp.product?.let { commonDaoServices.findProductByID(it).name },
+            comp.standardCategoryString,
+//            comp.standardCategory?.let { commonDaoServices.findStandardCategoryByID(it).standardCategory },
+            comp.broadProductCategoryString,
+//            comp.broadProductCategory?.let { commonDaoServices.findBroadCategoryByID(it).category },
+            comp.productCategoryString,
+//            comp.productCategory?.let { commonDaoServices.findProductCategoryByID(it).name },
+            comp.productSubCategoryString,
+//            comp.productSubCategory?.let { commonDaoServices.findProductSubCategoryByID(it).name },
+            comp.productString,
+//            comp.product?.let { commonDaoServices.findProductByID(it).name },
             complaintLocationDetails.productBrand,
             complaintLocationDetails.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
             complaintLocationDetails.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
@@ -1527,10 +1539,13 @@ class MarketSurveillanceComplaintProcessDaoServices(
             comp.rejected == 1,
             comp.classificationDetailsStatus == 1,
             complaintFilesSaved?.let { mapFileListDto(it) },
-            comp.productSubCategory?.let { commonDaoServices.findSampleStandardsByID(it) }?.let { mapStandardDetailsDto(it) },
+            null,
+//            comp.productSubCategory?.let { commonDaoServices.findSampleStandardsByID(it) }?.let { mapStandardDetailsDto(it) },
             comp.timelineStartDate,
             comp.timelineEndDate,
-            timelineOverDue
+            timelineOverDue,
+            comp.standardTitle,
+            comp.standardNumber,
         )
 
     }

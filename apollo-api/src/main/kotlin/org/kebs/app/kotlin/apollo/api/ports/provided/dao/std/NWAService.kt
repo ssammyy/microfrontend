@@ -358,7 +358,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
                 with(nwaJustification){
                     remarks=nwaJustificationDecision.comments
-                    accentTo = true
+                    //accentTo = true
                 }
                 nwaJustificationRepository.save(nwaJustification)
                 standardNwaRemarksRepository.save(standardNwaRemarks)
@@ -403,7 +403,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
                 with(nwaJustification){
                     remarks=nwaJustificationDecision.comments
-                    accentTo = false
+                    //accentTo = false
                 }
                 nwaJustificationRepository.save(nwaJustification)
                 standardNwaRemarksRepository.save(standardNwaRemarks)
@@ -447,7 +447,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
                 with(nwaJustification){
                     remarks=nwaJustificationDecision.comments
-                    accentTo = true
+                    //accentTo = true
                 }
                 nwaJustificationRepository.save(nwaJustification)
                 standardNwaRemarksRepository.save(standardNwaRemarks)
@@ -491,7 +491,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
                 with(nwaJustification){
                     remarks=nwaJustificationDecision.comments
-                    accentTo = false
+                    //accentTo = false
                 }
                 nwaJustificationRepository.save(nwaJustification)
                 standardNwaRemarksRepository.save(standardNwaRemarks)
@@ -868,7 +868,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
                 with(nwaPreliminaryDraft){
                     remarks=nwaPreliminaryDraftDecision.comments
-                    accentTo = true
+                   // accentTo = "true"
                 }
                 nwaPreliminaryDraftRepository.save(nwaPreliminaryDraft)
                 standardNwaRemarksRepository.save(standardNwaRemarks)

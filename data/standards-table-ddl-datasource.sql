@@ -649,8 +649,12 @@ end;
 create index sd_is_gazette_notice_uploads_idx on sd_is_gazette_notice_uploads (IS_GN_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
 /
 alter table SD_NWA_JUSTIFICATION
-    add ASSIGNED_TO NUMBER ;
+    add CDN NUMBER ;
 /
+alter table SD_NWA_PRELIMINARY_DRAFT
+    add STATUS NUMBER ;
+/
+
 alter table SD_NWA_DISDT_JUSTIFICATION
     add ASSIGNED_TO NUMBER ;
 /

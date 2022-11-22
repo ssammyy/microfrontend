@@ -81,6 +81,16 @@ class NWAJustificationDecision(
     ) {
 }
 
+class KNWJustificationDecision(
+    @JsonProperty("taskId") val taskId: String,
+    @JsonProperty("justificationID") val justificationID: Long,
+    @JsonProperty("accentTo") val accentTo: Boolean,
+    @JsonProperty("approvalID")  val approvalID: Long,
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("assignedTo") var assignedTo: Long
+) {
+}
+
 class NWAPreliminaryDraftDecision(
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
@@ -174,6 +184,55 @@ class GazzettementDecision(
     @JsonProperty("standardID")  val standardID: Long,
     @JsonProperty("accentTo")  var accentTo: Boolean,
     @JsonProperty("description")  var description: String
+) {
+}
+
+class NwaJustificationDto(
+    @JsonProperty("knw") var knw: String,
+    @JsonProperty("dateOfMeeting") var dateOfMeeting: Timestamp,
+    @JsonProperty("knwSecretary") var knwSecretary: String,
+    @JsonProperty("sl") var sl: String,
+    @JsonProperty("requestedBy") var requestedBy: String,
+    @JsonProperty("issuesAddressed") var issuesAddressed: String,
+    @JsonProperty("acceptanceDate") var acceptanceDate: Timestamp,
+    @JsonProperty("referenceMaterial") var referenceMaterial: String,
+    @JsonProperty("department") var department: String,
+    @JsonProperty("remarks") var remarks: String,
+    @JsonProperty("requestNumber") var requestNumber: String,
+){
+
+}
+
+
+class NwaJustificationAction(
+    @JsonProperty("justificationID") val justificationID: Long,
+    @JsonProperty("accentTo") val accentTo: String,
+    @JsonProperty("comments") val comments: String
+) {
+}
+
+class PreliminaryDraftDTO(
+    @JsonProperty("title") val title: String,
+    @JsonProperty("scope") val scope: String,
+    @JsonProperty("normativeReference") val normativeReference: String,
+    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String,
+    @JsonProperty("clause") val clause: String,
+    @JsonProperty("special") val special: String,
+    @JsonProperty("justificationNumber") val justificationNumber: Long,
+    @JsonProperty("workShopDate") val workShopDate: Timestamp,
+){}
+
+class NwaPDraftAction(
+    @JsonProperty("preliminaryDraftID") val preliminaryDraftID: Long,
+    @JsonProperty("justificationID") val justificationID: Long,
+    @JsonProperty("accentTo") val accentTo: String,
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("title") val title: String,
+    @JsonProperty("scope") val scope: String,
+    @JsonProperty("normativeReference") val normativeReference: String,
+    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String,
+    @JsonProperty("clause") val clause: String,
+    @JsonProperty("special") val special: String,
 ) {
 }
 

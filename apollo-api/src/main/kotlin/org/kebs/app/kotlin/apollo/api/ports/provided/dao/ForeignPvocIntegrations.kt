@@ -675,10 +675,11 @@ class ForeignPvocIntegrations(
                 exporterAddress1 = cor.exporterAddress1
                 exporterAddress2 = cor.exporterAddress2
                 exporterEmail = cor.exporterEmail
+                exporterPin = cor.exporterPin
                 acceptableDocDate = cor.acceptableDocDate
                 finalDocDate = cor.finalDocDate
                 inspectionFeePaymentDate = cor.inspectionFeePaymentDate
-                applicationBookingDate = cor.applicationBookingDate ?: commonDaoServices.getTimestamp()
+                applicationBookingDate = commonDaoServices.getTimestamp()
                 inspectionDate = cor.inspectionDate ?: commonDaoServices.getTimestamp()
                 make = cor.make
                 model = cor.model ?: "UNKNOWN"
@@ -757,7 +758,7 @@ class ForeignPvocIntegrations(
                 acceptableDocDate = cor.acceptableDocDate
                 finalDocDate = cor.finalDocDate
                 inspectionFeePaymentDate = cor.inspectionFeePaymentDate
-                applicationBookingDate = cor.applicationBookingDate ?: commonDaoServices.getTimestamp()
+                applicationBookingDate = commonDaoServices.getTimestamp()
                 inspectionDate = cor.inspectionDate ?: commonDaoServices.getTimestamp()
                 make = cor.make
                 model = cor.model ?: "UNKNOWN"

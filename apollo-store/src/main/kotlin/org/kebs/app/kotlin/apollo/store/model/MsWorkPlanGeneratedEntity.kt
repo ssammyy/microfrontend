@@ -22,13 +22,25 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var productCategory: Long? = null
 
+  @Column(name = "PRODUCT_CATEGORY_STRING")
+  @Basic
+  var productCategoryString: String? = null
+
     @Column(name = "BROAD_PRODUCT_CATEGORY")
     @Basic
     var broadProductCategory: Long? = null
 
+  @Column(name = "BROAD_PRODUCT_CATEGORY_STRING")
+  @Basic
+  var broadProductCategoryString: String? = null
+
     @Column(name = "PRODUCT")
     @Basic
     var product: Long? = null
+
+  @Column(name = "PRODUCT_STRING")
+  @Basic
+  var productString: String? = null
 
     @Column(name = "HOD_RM_ASSIGNED")
     @Basic
@@ -46,9 +58,17 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var standardCategory: Long? = null
 
+  @Column(name = "STANDARD_CATEGORY_STRING")
+  @Basic
+  var standardCategoryString: String? = null
+
     @Column(name = "PRODUCT_SUB_CATEGORY")
     @Basic
     var productSubCategory: Long? = null
+
+  @Column(name = "PRODUCT_SUB_CATEGORY_STRING")
+  @Basic
+  var productSubCategoryString: String? = null
 
     @Column(name = "DEPARTMENT")
     @Basic
@@ -93,6 +113,14 @@ class MsWorkPlanGeneratedEntity : Serializable {
 //    @ManyToOne
 //    var sampleSubmittedId: CdSampleSubmissionItemsEntity? = null
 
+  @Column(name = "STANDARD_TITLE")
+  @Basic
+  var standardTitle: String? = null
+
+  @Column(name = "STANDARD_NUMBER")
+  @Basic
+  var standardNumber: String? = null
+
     @Column(name = "COMPLIANT_STATUS")
     @Basic
     var compliantStatus: Int? = null
@@ -112,6 +140,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "MS_PROCESS_ENDED_STATUS")
     @Basic
     var msProcessEndedStatus: Int? = null
+
+  @Column(name = "MS_PROCESS_ENDED_ON")
+  @Basic
+  var msProcessEndedOn: Date? = null
 
     @Column(name = "NOT_COMPLIANT_STATUS")
     @Basic

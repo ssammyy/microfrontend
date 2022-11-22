@@ -149,6 +149,34 @@ class MSJSONControllers(
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }
 
+    @PostMapping("/work-plan/final-feed-back/save")
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFilesFinalFeedbackReport(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("docTypeName") docTypeName: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        val gson = Gson()
+        val body = gson.fromJson(data, WorkPlanFeedBackDto::class.java)
+
+
+        var fileDocSaved: MsUploadsEntity? = null
+        when (docTypeName) {
+            "COMPLAINT_FEED_BACK_UPLOAD" -> {
+                fileDocSaved = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,docTypeName,workPlanScheduled).second
+            }
+        }
+        return msWorkPlanDaoService.addWorkPlanScheduleFeedBackByHOD(referenceNo,batchReferenceNo,body,docFile)
+    }
+
     @PostMapping("/fuel/file/save")
     @PreAuthorize("hasAuthority('MS_IOP_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

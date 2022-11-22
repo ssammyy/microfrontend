@@ -425,6 +425,7 @@ import { ReportSubmittedTimelineComponent } from './apollowebs/market-surveillan
 import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {GenerateDeclarationReportComponent} from './apollowebs/di/other-documents/declaration-documents/generate-declaration-report/generate-declaration-report.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -884,6 +885,7 @@ import {MatPaginatorModule} from "@angular/material/paginator";
         SampleSubmittedTimelineComponent,
         GenerateDnReportComponent,
         DeclarationDocumentsComponent,
+        GenerateDeclarationReportComponent,
 
     ],
     entryComponents: [LoaderComponent],

@@ -241,10 +241,38 @@ interface NwaGazetteNoticeRepository : JpaRepository<NWAGazetteNotice, Long> {
 
 interface NwaJustificationRepository : JpaRepository<NWAJustification, Long> {
     fun findAllByOrderByIdDesc(): MutableList<NWAJustification>
+
+    @Query(value = "SELECT max(CDN)  FROM SD_NWA_JUSTIFICATION", nativeQuery = true)
+    fun getMaxCDN(): Long
+
+    @Query(value = "SELECT  ID as id,cast(DATE_OF_MEETING as varchar(200)) AS dateOfMeeting,KNW_SEC as knwSec,SL_NUMBER as slNumber,REQUEST_NUMBER as requestNumber," +
+            "REQUESTED_BY as requestedBy,ISSUES_ADDRESSED as issuesAddressed,cast(ACCEPTANCE_DATE as varchar(200)) AS acceptanceDate,REFERENCE_MATERIAL as referenceMaterial," +
+            "REMARKS as remarks,cast(SUBMISSION_DATE as varchar(200)) AS submissionDate,KNW_COMMITTEE as knwCommittee,DEPARTMENT_NAME as departmentName " +
+            "FROM SD_NWA_JUSTIFICATION  WHERE  JUSTIFICATION_STATUS='0'", nativeQuery = true)
+    fun getNwaJustification(): MutableList<KnwaJustification>
+
+    @Query(value = "SELECT  ID as id,cast(DATE_OF_MEETING as varchar(200)) AS dateOfMeeting,KNW_SEC as knwSec,SL_NUMBER as slNumber,REQUEST_NUMBER as requestNumber," +
+            "REQUESTED_BY as requestedBy,ISSUES_ADDRESSED as issuesAddressed,cast(ACCEPTANCE_DATE as varchar(200)) AS acceptanceDate,REFERENCE_MATERIAL as referenceMaterial," +
+            "REMARKS as remarks,cast(SUBMISSION_DATE as varchar(200)) AS submissionDate,KNW_COMMITTEE as knwCommittee,DEPARTMENT_NAME as departmentName " +
+            "FROM SD_NWA_JUSTIFICATION  WHERE  JUSTIFICATION_STATUS='1'", nativeQuery = true)
+    fun getApprovedJustification(): MutableList<KnwaJustification>
+
 }
 
 interface NwaPreliminaryDraftRepository : JpaRepository<NWAPreliminaryDraft, Long> {
     fun findAllByOrderByIdDesc(): MutableList<NWAPreliminaryDraft>
+
+    @Query(value = "SELECT  ID as id,TITLE as title,DIJST_NUMBER as diJNumber,REMARKS as remarks,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference," +
+            "SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,CLAUSE as clause,cast(DATE_PD_PREPARED as varchar(200)) AS datePdPrepared," +
+            "cast(WORK_SHOP_DATE as varchar(200)) AS workShopDate,SPECIAL as special,CD_APP_NUMBER as cdAppNumber,PREPARED_BY as preparedBy," +
+            "JUSTIFICATION_NUMBER as justificationNumber FROM SD_NWA_PRELIMINARY_DRAFT  WHERE  STATUS='0'", nativeQuery = true)
+    fun getPreliminaryDraft(): MutableList<NwaPDraft>
+
+    @Query(value = "SELECT  ID as id,TITLE as title,DIJST_NUMBER as diJNumber,REMARKS as remarks,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference," +
+            "SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,CLAUSE as clause,cast(DATE_PD_PREPARED as varchar(200)) AS datePdPrepared," +
+            "cast(WORK_SHOP_DATE as varchar(200)) AS workShopDate,SPECIAL as special,CD_APP_NUMBER as cdAppNumber,PREPARED_BY as preparedBy," +
+            "JUSTIFICATION_NUMBER as justificationNumber FROM SD_NWA_PRELIMINARY_DRAFT  WHERE  STATUS='2'", nativeQuery = true)
+    fun getRejectedPreliminaryDraft(): MutableList<NwaPDraft>
 
 }
 

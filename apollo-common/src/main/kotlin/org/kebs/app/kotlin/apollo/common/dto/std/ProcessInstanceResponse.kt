@@ -39,3 +39,5 @@ class ProcessInstanceRecommendation (val savedRowID: Long?) {
 }
 class ProcessInstanceDraft (val savedRowID: Long?,val processId: String, val isEnded: Boolean) {
 }
+class PrepareJustification (val savedRowID: Long?,val requestNumber: String) {
+}
