@@ -51,12 +51,12 @@
         "CONSIGNOR_PIN_NUMBER": "EXPORTER PIN"
       }
     },
-    "idf_report": {
+    "declaration_report": {
       "base_query": "DAT_KEBS_DECLARATION_ITEM_DETAILS did left join DAT_KEBS_DECLARATION_DETAILS dd on(did.DECLARATION_DETAILS_ID=dd.ID) left join DAT_KEBS_CD_ITEM_NON_STANDARD cdns on(did.CHASSIS_NUMBER=cdns.CHASSIS_NO)",
       "filters": {
         "date__range": "dd.CREATED_ON",
-        "clearing_agent": "dd.DECLARANT_PIN",
-        "idf": "dd.DECLARATION_REF_NO",
+        "declarant": "dd.DECLARANT_PIN",
+        "declaration": "dd.DECLARATION_REF_NO",
         "hs_code": "did.COMMODITY_CODE",
         "exporter": "dd.CONSIGNOR_BUSINESS_NAME",
         "bill_number": "dd.BILL_CODE",
@@ -66,7 +66,8 @@
         "dd.DECLARATION_REF_NO": "DECLARATION NUMBER",
         "dd.CONSIGNEE_BUSINESS_NAME": "IMPORTER NAME",
         "dd.CONSIGNOR_BUSINESS_NAME": "EXPORTER NAME",
-        "dd.DECLARANT_PIN": "CLEARING AGENT",
+        "dd.DECLARANT_PIN": "DECLARANT PIN",
+        "dd.DECLARANT_REGIME": "DECLARANT NAME",
         "TO_CHAR(dd.CREATED_ON,'DD-MON-YYYY HH24:MI')": "DATE RECEIVED",
         "TO_CHAR(dd.MESSAGE_DATE,'DD-MON-YYYY HH24:MI')": "DATE OF ARRIVAL",
         "did.DESCRIPTION": "PRODUCT NAME",

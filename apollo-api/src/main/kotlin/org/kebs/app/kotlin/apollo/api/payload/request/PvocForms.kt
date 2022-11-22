@@ -215,7 +215,7 @@ class CocEntityForm {
     @JsonAlias("IMPORTER_NAME")
     var importerName: String? = null
 
-    @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Only Alphanumeric values expected for this field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
     @Size(max = 50, message = "Importer pin should be upto 50 characters")
     @JsonAlias("IMPORTER_PIN")
     var importerPin: String? = null
@@ -432,7 +432,7 @@ class NcrEntityForm {
     var compliant: String? = null
 
     @JsonAlias("NCR_REMARKS")
-    @Size(max = 400, message = "Should be upto 400 characters")
+    @Size(max = 4000, message = "Should be upto 400 characters")
     var ncrRemarks: String? = null
 
 
@@ -483,6 +483,7 @@ class NcrEntityForm {
     @JsonAlias("EXPORTER_NAME")
     var exporterName: String? = null
 
+    @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
     @JsonAlias("EXPORTER_PIN")
     var exporterPin: String? = null
 
@@ -737,7 +738,7 @@ class CoiEntityForm {
     @Size(max = 150, message = "should be upto 150 characters")
     var exporterName: String? = null
 
-    @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
     @Size(max = 100, message = "should be upto 100 characters")
     var exporterPin: String? = null
 
@@ -896,9 +897,9 @@ class CorEntityForm {
     @Email(message = "Invalid email address")
     var exporterEmail: String? = null
 
-    @NotNull(message = "Booking date is required")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-    var applicationBookingDate: Timestamp? = null
+    @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 150, message = "should be upto 150 characters")
+    var exporterPin: String? = null
 
     @NotNull(message = "Inspection date is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
@@ -975,13 +976,13 @@ class CorEntityForm {
     var numberOfAxles: Long? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "should be upto 50 characters")
     var typeOfVehicle: String? = null
 
     @NotNull(message = "Required field")
     @Min(value = 0, message = "Number of passengers cannot be negative")
     var numberOfPassengers: Long? = null
 
-    @NotEmpty(message = "Required field")
     @Size(max = 50, message = "should be upto 50 characters")
     var typeOfBody: String? = null
 
@@ -996,7 +997,6 @@ class CorEntityForm {
     @Min(value = 0, message = "Inspection fee cannot be negative")
     var inspectionFee: Double? = null
 
-    @NotEmpty(message = "Required field")
     @Size(max = 100, message = "should be upto 100 characters")
     var inspectionFeeReceipt: String? = null
 
@@ -1078,9 +1078,6 @@ class NcrCorEntityForm {
     @Email(message = "Invalid email address")
     var exporterEmail: String? = null
 
-    @NotNull(message = "Booking date is required")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-    var applicationBookingDate: Timestamp? = null
 
     @NotNull(message = "Inspection date is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
@@ -1123,7 +1120,7 @@ class NcrCorEntityForm {
     var unitsOfMileage: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 250, message = "should be upto 250 characters")
+    @Size(max = 4000, message = "should be upto 250 characters")
     var inspectionRemarks: String? = null
 
     @Size(max = 250, message = "should be upto 250 characters")
@@ -1163,8 +1160,7 @@ class NcrCorEntityForm {
     @Min(value = 0, message = "Number of passengers cannot be negative")
     var numberOfPassengers: Long? = null
 
-    @NotEmpty(message = "Required field")
-    @Size(max = 50, message = "should be upto 50 characters")
+    @Size(max = 100, message = "should be upto 50 characters")
     var typeOfBody: String? = null
 
     @Size(max = 50, message = "should be upto 50 characters")
@@ -1178,8 +1174,7 @@ class NcrCorEntityForm {
     @Min(value = 0, message = "Inspection fee cannot be negative")
     var inspectionFee: Double? = null
 
-    @NotEmpty(message = "Required field")
-    @Size(max = 100, message = "should be upto 100 characters")
+    @Size(max = 200, message = "should be upto 100 characters")
     var inspectionFeeReceipt: String? = null
 
     @NotEmpty(message = "Required field")
@@ -1208,7 +1203,7 @@ class NcrCorEntityForm {
     var route: String? = null
 
     @NotNull(message = "Required field")
-    @Min(value = 1, message = "Varsion cannot be less than one")
+    @Min(value = 1, message = "Version cannot be less than one")
     var version: Long? = null
 }
 
@@ -1277,7 +1272,7 @@ class RfcEntityForm {
     @Size(max = 150, message = "Should be upto 150 characters")
     var importerName: String? = null
 
-    @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
     @Size(max = 100, message = "Should be upto 100 characters")
     var importerPin: String? = null
 
@@ -1567,7 +1562,7 @@ class RfcCorForm {
     @Size(max = 150, message = "Should be upto 150 characters")
     var exporterName: String? = null
 
-    @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
     @Size(max = 150, message = "Should be upto 150 characters")
     var exporterPin: String? = null
 
@@ -1706,11 +1701,10 @@ class RfcCorForm {
     var model: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 100, message = "Should be upto 100 characters")
+    @Size(max = 150, message = "Should be upto 100 characters")
     var chassisNumber: String? = null
 
-    @NotEmpty(message = "Required field")
-    @Size(max = 100, message = "Should be upto 100 characters")
+    @Size(max = 150, message = "Should be upto 100 characters")
     var engineNumber: String? = null
 
     @NotEmpty(message = "Required field")
@@ -2233,7 +2227,7 @@ class RiskProfileForm {
     var brandName: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 400, message = "Description should be upto 400 characters")
+    @Size(max = 4000, message = "Description should be upto 400 characters")
     var productDescription: String? = null
 
     @NotEmpty(message = "Required field")
@@ -2251,14 +2245,16 @@ class RiskProfileForm {
     @Size(max = 150, message = "Description should be upto 150 characters")
     var importerName: String? = null
 
-    @Size(max = 100, message = "Description should be upto 100 characters")
+    @NotEmpty(message = "Required PIn")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     var importerPin: String? = null
 
     @NotEmpty(message = "Required field")
     @Size(max = 200, message = "Description should be upto 200 characters")
     var exporterName: String? = null
 
-    @NotEmpty(message = "Required field")
+    @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
     @Size(max = 100, message = "Description should be upto 100 characters")
     var exporterPin: String? = null
 
@@ -2267,11 +2263,11 @@ class RiskProfileForm {
     var riskLevel: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 400, message = "Description should be upto 400 characters")
+    @Size(max = 4000, message = "Description should be upto 400 characters")
     var riskDescription: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 400, message = "Description should be upto 400 characters")
+    @Size(max = 4000, message = "Description should be upto 400 characters")
     var remarks: String? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
