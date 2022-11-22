@@ -1024,6 +1024,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerSendDestructionNotificationEmail}")
     val mapMsOfficerSendDestructionNotificationEmail: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.hodFinalFeedBackNotificationEmailComplinat}")
+    val mapMshodFinalFeedBackNotificationEmailComplinat: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerSendDestructionNotificationHODEmail}")
     val mapMsOfficerSendDestructionNotificationHODEmail: String = ""
 

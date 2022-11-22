@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface DecisionJustificationRepository: JpaRepository<DecisionJustification,Long> {
 
+    fun findAllByJustificationId(justificationId:String): List<DecisionJustification>
+
 }

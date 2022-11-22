@@ -86,86 +86,26 @@ class StandardRequestService(
 
 
     fun requestForStandard(standardRequest: StandardRequest): ProcessInstanceResponseValue {
-
-        val variables: MutableMap<String, Any> = HashMap()
-
-
-        standardRequest.name?.let { variables.put("name", it) }
-        standardRequest.createdBy?.let { variables.put("name", it) }
-
-        standardRequest.email?.let { variables.put("email", it) }
-        standardRequest.phone?.let { variables.put("phone", it) }
-//        standardRequest.tcId?.let { variables.put("tcId", it) }
-        //standardRequest.tcName?.let { variables.put("tcName", technicalCommitteeRepository.findNameById(standardRequest.tcId?.toLong())) }
-        standardRequest.departmentId?.let { variables.put("departmentId", it) }
-//        standardRequest.productSubCategoryId?.let { variables.put("productSubCategoryId", it) }
-//        standardRequest.productId?.let { variables.put("productId", it) }
-
         standardRequest.submissionDate = Timestamp(System.currentTimeMillis())
         standardRequest.createdOn = Timestamp(System.currentTimeMillis())
-
-        variables["departmentName"] = departmentRepository.findNameById(standardRequest.departmentId?.toLong())
         standardRequest.departmentName = departmentRepository.findNameById(standardRequest.departmentId?.toLong())
-
-        standardRequest.organisationName?.let { variables.put("organisationName", it) }
-        standardRequest.subject?.let { variables.put("subject", it) }
-        standardRequest.description?.let { variables.put("description", it) }
-        standardRequest.economicEfficiency?.let { variables.put("economicEfficiency", it) }
-        standardRequest.healthSafety?.let { variables.put("healthSafety", it) }
-        standardRequest.environment?.let { variables.put("environment", it) }
-        standardRequest.integration?.let { variables.put("integration", it) }
-        standardRequest.exportMarkets?.let { variables.put("exportMarkets", it) }
-        standardRequest.levelOfStandard?.let { variables.put("levelOfStandard", it) }
-
         standardRequest.status = "Review By HOD"
-        variables["status"] = standardRequest.status!!
-
-        //println(standardRequest.tcId?.toLong())
-
-        //println(technicalCommitteeRepository.findNameById(standardRequest.tcId?.toLong()))
-
-        variables["submissionDate"] = standardRequest.submissionDate!!
-
-        //print(standardRequest.toString())
-
-        var department = departmentRepository.findByIdOrNull(standardRequest.departmentId?.toLong())
-
+        val department = departmentRepository.findByIdOrNull(standardRequest.departmentId?.toLong())
         standardRequest.requestNumber = generateSRNumber(department?.abbreviations)
-
-        variables["requestNumber"] = standardRequest.requestNumber!!
-
-        // standardRequest.rank = evaluateStandardRequest(standardRequest.tcId!!, standardRequest.departmentId!!)
-
-        variables["rank"] = '3'
         standardRequest.rank = '3'.toString()
-        variable["rank"] = standardRequest.rank!!
-
         standardRequestRepository.save(standardRequest)
-
-//        sendFeedback(
-//            standardRequest.email!!,
-//            "We have received your request for standard. This is your request number: " + standardRequest.requestNumber!!,
-//            standardRequest.name!!,
-//            "Standard Request Submission"
-//        )
-
         notifications.sendEmail(
             standardRequest.email!!,
             "Standard Request Submission",
             "Hello " + standardRequest.name!! + ",\n We have received your request for standard. This is your request number: " + standardRequest.requestNumber!!
         )
-        standardRequest.id.let { variables.put("id", it) }
-
-
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        //print(variables)
-
-//        val processIntance = ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
-        //  val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
         return ProcessInstanceResponseValue(
-            standardRequest.id, processInstance.id, processInstance.isEnded,
+            standardRequest.id,
+            "Complete",
+            true,
             standardRequest.requestNumber ?: throw NullValueNotAllowedException("ID is required")
         )
+
     }
 
     fun updateDepartmentStandardRequest(standardRequest: StandardRequest) {
@@ -173,20 +113,8 @@ class StandardRequestService(
         val standardRequestToUpdate = standardRequestRepository.findById(standardRequest.id)
             .orElseThrow { RuntimeException("No Standard Request found") }
         standardRequestToUpdate.departmentId = standardRequest.departmentId
-        variable["departmentId"] = standardRequestToUpdate.departmentId!!
         standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
         standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] = standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
-
-//
-//        standardRequestToUpdate.departmentId?.let { variables.put("departmentId", it) }
-//        standardRequestToUpdate.taskId?.let { variables.put("taskId", it) }
-//        variables["departmentName"] = departmentRepository.findNameById(standardRequestToUpdate.departmentId?.toLong())
-//        standardRequestToUpdate.departmentName =
-//            departmentRepository.findNameById(standardRequestToUpdate.departmentId?.toLong())
-//        runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-
         standardRequestRepository.save(standardRequestToUpdate)
     }
 
@@ -267,15 +195,6 @@ class StandardRequestService(
     }
 
     fun hofReview(hofFeedback: HOFFeedback): HOFFeedback {
-        val variable: MutableMap<String, Any> = HashMap()
-        hofFeedback.isTc?.let { variable.put("isTc", it) }
-        hofFeedback.isTcSec?.let { variable.put("isTcSec", it) }
-        hofFeedback.sdOutput?.let { variable.put("sdOutput", it) }
-        hofFeedback.sdRequestID?.let { variable.put("id", it) }
-        hofFeedback.taskId?.let { variable.put("taskId", it) }
-        hofFeedback.sdResult?.let { variable.put("resultOutput", it) }
-        hofFeedback.reason?.let { variable.put("reason", it) }
-
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val standardRequestToUpdate = hofFeedback.sdRequestID?.let {
             standardRequestRepository.findById(it.toLong())
@@ -287,17 +206,13 @@ class StandardRequestService(
                 standardRequestToUpdate.process = hofFeedback.sdOutput
                 standardRequestToUpdate.tcSecAssigned = hofFeedback.isTc
                 standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-                variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
                 standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
-                variable["modifiedBy"] =
-                    standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
             } else if (hofFeedback.sdResult == "Reject For Review") {
                 standardRequestToUpdate.status = "Rejected For Review"
                 standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
-                variable["modifiedOn"] = standardRequestToUpdate.modifiedOn!!
                 standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
-                variable["modifiedBy"] =
-                    standardRequestToUpdate.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
+
             }
             standardRequestRepository.save(standardRequestToUpdate)
         }
@@ -403,9 +318,8 @@ class StandardRequestService(
 
     }
 
-
     fun uploadNWI(standardNWI: StandardNWI): ProcessInstanceResponseValue {
-        println("TC-SEC has uploaded NWI")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         var allOrganization = ""
         val klaxon = Klaxon()
         JsonReader(StringReader(standardNWI.liaisonOrganisation!!)).use { reader ->
@@ -430,6 +344,9 @@ class StandardRequestService(
         }
 
         standardNWI.status = "Vote ON NWI"
+        standardNWI.createdOn = Timestamp(System.currentTimeMillis())
+        standardNWI.tcSec = loggedInUser.id.toString()
+
         standardNWIRepository.save(standardNWI)
         return ProcessInstanceResponseValue(standardNWI.id, "Complete", true, "standardNWI.id")
 
@@ -444,6 +361,7 @@ class StandardRequestService(
     fun getAllNwiSUnderVote(): List<StandardNWI> {
         return standardNWIRepository.findAllByStatus("Vote ON NWI")
     }
+
     fun getAllNwiSApproved(): List<StandardNWI> {
         return standardNWIRepository.findAllByStatus("Upload Justification")
     }
@@ -451,8 +369,9 @@ class StandardRequestService(
     fun getAllNwiSRejected(): List<StandardNWI> {
         return standardNWIRepository.findAllByStatus("NWI Rejected")
     }
+
     fun getANwiById(nwiId: Long): List<StandardNWI> {
-      return standardNWIRepository.findAllById(nwiId)
+        return standardNWIRepository.findAllById(nwiId)
     }
 
     fun getRequestById(requestId: Long): List<StandardsDto> {
@@ -540,8 +459,8 @@ class StandardRequestService(
 
 
     fun approveNWI(nwiId: Long): ServerResponse {
-        val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null);
-        u.status = "Upload Justification";
+        val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null)
+        u.status = "Upload Justification"
         standardNWIRepository.save(u)
         return ServerResponse(
             HttpStatus.OK,
@@ -550,8 +469,8 @@ class StandardRequestService(
     }
 
     fun rejectNWI(nwiId: Long): ServerResponse {
-        val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null);
-        u.status = "NWI Rejected";
+        val u: StandardNWI = standardNWIRepository.findById(nwiId).orElse(null)
+        u.status = "NWI Rejected"
         standardNWIRepository.save(u)
         return ServerResponse(
             HttpStatus.OK,
@@ -559,34 +478,28 @@ class StandardRequestService(
         )
     }
 
+    fun getAllNwiSApprovedForJustification(): List<StandardNWI> {
+        return standardNWIRepository.findAllByStatusAndProcessStatusIsNull("Upload Justification")
+    }
+
 
     fun getTCSecTasks(): List<TaskDetails> {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_TC_SEC).list()
-
         return getTaskDetails(tasks)
     }
 
 
-    fun uploadJustification(standardJustification: StandardJustification) {
-        val variable: MutableMap<String, Any> = HashMap()
-        standardJustification.title?.let { variable.put("title", it) }
-        standardJustification.spcMeetingDate?.let { variable.put("spcMeetingDate", it) }
-        standardJustification.tcSecretary?.let { variable.put("tcSecretary", it) }
-        standardJustification.sl?.let { variable.put("sl", it) }
-        standardJustification.edition?.let { variable.put("edition", it) }
-        standardJustification.requestedBy?.let { variable.put("requestedBy", it) }
-        standardJustification.issuesAddressedBy?.let { variable.put("issuesAddressedBy", it) }
-        standardJustification.tcAcceptanceDate?.let { variable.put("tcAcceptanceDate", it) }
-        standardJustification.requestNo?.let { variable.put("requestNo", it) }
-        standardJustification.tcId?.let { variable.put("tcId", it) }
-
-        println(standardJustification.toString())
+    fun uploadJustification(standardJustification: StandardJustification): ProcessInstanceResponseValue {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        standardJustification.createdOn = Timestamp(System.currentTimeMillis())
+        standardJustification.createdBy = loggedInUser.id.toString()
+        standardJustification.status = "Justification Created. Awaiting Decision"
         standardJustificationRepository.save(standardJustification)
-        val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId!!.toLong()).orElse(null);
-        u.status = "Approve/Reject Justification";
+        val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId!!.toLong()).orElse(null)
+        u.processStatus = "Approve/Reject Justification"
         standardNWIRepository.save(u)
-        taskService.complete(standardJustification.taskId, variable)
-        println("TC-SEC has uploaded Justification")
+        return ProcessInstanceResponseValue(standardJustification.id, "Complete", true, "justification")
+
 
     }
 
@@ -596,28 +509,59 @@ class StandardRequestService(
     }
 
     fun decisionOnJustification(decisionJustification: DecisionJustification) {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        decisionJustification.createdOn = Timestamp(System.currentTimeMillis())
+        decisionJustification.spcId = loggedInUser.id.toString()
 
+        val j: StandardJustification? = decisionJustification.justificationId?.let {
+            standardJustificationRepository.findById(it.toLong()).orElse(null)
+        }
+        if (j != null) {
+            if (decisionJustification.decision.equals("Approved")) {
+                j.status = "Justification Approved"
+                val u: StandardNWI = standardNWIRepository.findById(j.nwiId!!.toLong()).orElse(null)
+                u.processStatus = "Prepare Minutes and Drafts For Preliminary Draft"
+                u.pdStatus= "Prepare Minutes and Drafts For Preliminary Draft"
+                val cdNumber = "CD/" + u.referenceNumber
+                j.cdNumber = cdNumber
+                standardJustificationRepository.save(j)
+                standardNWIRepository.save(u)
+            }
+            if (decisionJustification.decision.equals("Rejected")) {
+                j.status = "Justification Rejected"
+                standardJustificationRepository.save(j)
+            }
+            if (decisionJustification.decision.equals("Rejected With Amendments")) {
+                j.status = "Justification Rejected With Amendments"
+                standardJustificationRepository.save(j)
+            }
+        }
         decisionJustificationRepository.save(decisionJustification)
 
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-        decisionJustification.decision?.let { variables.put("spc_approved", it.toBoolean()) }
-        decisionJustification.reason?.let { variables.put("reason", it) }
 
-
-        val cdNumber = "CD/" + decisionJustification.referenceNo
-
-        variables["cdNumber"] = cdNumber
-
-        val standardJustification = standardJustificationRepository.findByRequestNo(decisionJustification.referenceNo)
-        standardJustification.cdNumber = cdNumber
-
-        standardJustificationRepository.save(standardJustification)
-        val u: StandardNWI = standardNWIRepository.findById(standardJustification.nwiId!!.toLong()).orElse(null);
-        u.status = "Prepare Workplan";
-        standardNWIRepository.save(u)
-
-        taskService.complete(decisionJustification.taskId, variables)
     }
+
+    fun getJustificationsPendingDecision(): List<StandardJustification> {
+        return standardJustificationRepository.findByStatus("Justification Created. Awaiting Decision")
+    }
+
+    fun getApprovedJustifications(): List<StandardJustification> {
+        return standardJustificationRepository.findByStatus("Justification Approved")
+    }
+
+    fun getRejectedJustifications(): List<StandardJustification> {
+        return standardJustificationRepository.findByStatus("Justification Rejected")
+    }
+
+    fun getRejectedAmendmentJustifications(): List<StandardJustification> {
+        return standardJustificationRepository.findByStatus("Justification Rejected With Amendments")
+    }
+
+
+    fun getJustificationDecisionById(justificationId: Long): List<DecisionJustification> {
+        return decisionJustificationRepository.findAllByJustificationId(justificationId.toString())
+    }
+
 
     fun getTCSecTasksWorkPlan(): List<TaskDetails> {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_TC_SEC).list()
@@ -625,16 +569,11 @@ class StandardRequestService(
     }
 
     fun uploadWorkPlan(standardWorkPlan: StandardWorkPlan) {
-        val variable: MutableMap<String, Any> = HashMap()
-        standardWorkPlan.targetDate?.let { variable.put("targetDate", it) }
         standardWorkPlan.status = "Prepare Minutes and Drafts For Preliminary Draft"
-        variable["status"] = standardWorkPlan.status!!
         standardWorkPlanRepository.save(standardWorkPlan)
-        val u: StandardNWI = standardNWIRepository.findById(standardWorkPlan.id).orElse(null);
-        u.status = "Prepare Minutes and Drafts For Preliminary Draft";
+        val u: StandardNWI = standardNWIRepository.findById(standardWorkPlan.id).orElse(null)
+        u.processStatus = "Prepare Minutes and Drafts For Preliminary Draft"
         standardNWIRepository.save(u)
-        taskService.complete(standardWorkPlan.taskId)
-        println("TC-SEC has uploaded workplan")
 
     }
 
@@ -657,17 +596,14 @@ class StandardRequestService(
 
     fun generateSRNumber(departmentAbbrv: String?): String {
         val allRequests = standardRequestRepository.findAllByOrderByIdDesc()
-
         var lastId: String? = "0"
         var finalValue = 1
-
 
         for (item in allRequests) {
             println(item)
             lastId = item.requestNumber
             break
         }
-
         if (lastId != "0") {
             val strs = lastId?.split(":")?.toTypedArray()
 
@@ -684,7 +620,7 @@ class StandardRequestService(
 
         val year = Calendar.getInstance()[Calendar.YEAR]
 
-        return "$departmentAbbrv/$finalValue:$year";
+        return "$departmentAbbrv/$finalValue:$year"
     }
 
     fun getTechnicalCommittee(id: Long?): MutableList<TechnicalCommittee> {
@@ -795,23 +731,9 @@ class StandardRequestService(
     //create department
     fun createStandardsDepartment(department: Department) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-
-        department.name?.let { variable.put("name", it) }
-        department.abbreviations?.let { variable.put("abbreviations", it) }
-        department.codes?.let { variable.put("codes", it) }
-        department.createdBy?.let {
-            variable.put(
-                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
-            )
-        }
-
         department.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = department.createdOn!!
         department.status = 1
-        variable["status"] = department.status!!
-        department.createdBy = loggedInUser.id.toString();
-        variable["createdBy"] = department.createdBy!!
+        department.createdBy = loggedInUser.id.toString()
 
         departmentRepository.save(department)
     }
@@ -820,18 +742,9 @@ class StandardRequestService(
     fun createTechnicalCommittee(technicalCommittee: TechnicalCommittee) {
 //        val  department_id = departmentRepository.findByName(variable.put("name").toString())
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-        technicalCommittee.departmentId.let { variable.put("departmentId", it) }
-        technicalCommittee.parentCommitte?.let { variable.put("parentCommittee", it) }
-        technicalCommittee.technical_committee_no?.let { variable.put("technical_committee_no", it) }
-        technicalCommittee.title?.let { variable.put("title", it) }
-
         technicalCommittee.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = technicalCommittee.createdOn!!
         technicalCommittee.status = 1.toString()
-        variable["status"] = technicalCommittee.status!!
-        technicalCommittee.createdBy = loggedInUser.id.toString();
-        variable["createdBy"] = technicalCommittee.createdBy!!
+        technicalCommittee.createdBy = loggedInUser.id.toString()
 
         technicalCommitteeRepository.save(technicalCommittee)
 
@@ -841,17 +754,9 @@ class StandardRequestService(
     //create productCategory
     fun createProductCategory(product: Product) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-        product.technicalCommitteeId.let { variable.put("technicalCommitteeId", it) }
-        product.name?.let { variable.put("name", it) }
-        product.description?.let { variable.put("description", it) }
-
         product.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = product.createdOn!!
         product.status = 1
-        variable["status"] = product.status
-        product.createdBy = loggedInUser.id.toString();
-        variable["createdBy"] = product.createdBy!!
+        product.createdBy = loggedInUser.id.toString()
 
         productRepository.save(product)
 
@@ -862,18 +767,9 @@ class StandardRequestService(
     fun createProductSubCategory(productSubCategory: ProductSubCategory) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        productSubCategory.productId.let { variable.put("productId", it) }
-        productSubCategory.name?.let { variable.put("name", it) }
-        productSubCategory.description?.let { variable.put("description", it) }
-
-
         productSubCategory.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = productSubCategory.createdOn!!
         productSubCategory.status = 1
-        variable["status"] = productSubCategory.status!!
-        productSubCategory.createdBy = loggedInUser.id.toString();
-        variable["createdBy"] = productSubCategory.createdBy!!
-
+        productSubCategory.createdBy = loggedInUser.id.toString()
         productSubCategoryRepository.save(productSubCategory)
 
 
@@ -903,18 +799,8 @@ class StandardRequestService(
     //update Department
     fun updateDepartment(department: Department) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-        department.id.let { variable.put("id", it) }
-        department.name?.let { variable.put("name", it) }
-        department.abbreviations?.let { variable.put("abbreviations", it) }
-        department.codes?.let { variable.put("codes", it) }
-        department.modifiedBy?.let {
-            variable.put(
-                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
-            )
-        }
+        department.modifiedBy = loggedInUser.id.toString()
         department.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = department.createdOn!!
         departmentRepository.save(department)
 
 
@@ -950,17 +836,10 @@ class StandardRequestService(
     //update technicalCommittee
     fun updateTechnicalCommittee(technicalCommittee: TechnicalCommittee) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        technicalCommittee.id.let { variable.put("id", it) }
-        technicalCommittee.departmentId.let { variable.put("departmentId", it) }
-        technicalCommittee.parentCommitte?.let { variable.put("parentCommittee", it) }
-        technicalCommittee.technical_committee_no?.let { variable.put("technical_committee_no", it) }
-        technicalCommittee.title?.let { variable.put("title", it) }
+
         technicalCommittee.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = technicalCommittee.createdOn!!
         technicalCommittee.status = 1.toString()
-        variable["status"] = technicalCommittee.status!!
-        technicalCommittee.createdBy = loggedInUser.id.toString();
-        variable["createdBy"] = technicalCommittee.createdBy!!
+        technicalCommittee.createdBy = loggedInUser.id.toString()
         technicalCommitteeRepository.save(technicalCommittee)
 
     }
@@ -993,19 +872,9 @@ class StandardRequestService(
     //update productCategory
     fun updateProductCategory(product: Product) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
-        product.id.let { variable.put("id", it) }
-        product.technicalCommitteeId.let { variable.put("technicalCommitteeId", it) }
-        product.name?.let { variable.put("name", it) }
-        product.description?.let { variable.put("description", it) }
-
         product.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = product.createdOn!!
         product.status = 1
-        variable["status"] = product.status
-        product.createdBy = loggedInUser.id.toString();
-        variable["createdBy"] = product.createdBy!!
-
+        product.createdBy = loggedInUser.id.toString()
         productRepository.save(product)
 
 
@@ -1015,17 +884,9 @@ class StandardRequestService(
     //update productSubCategory
     fun updateProductSubCategory(productSubCategory: ProductSubCategory) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        productSubCategory.id.let { variable.put("id", it) }
-        productSubCategory.productId.let { variable.put("productId", it) }
-        productSubCategory.name?.let { variable.put("name", it) }
-        productSubCategory.description?.let { variable.put("description", it) }
-
         productSubCategory.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = productSubCategory.createdOn!!
         productSubCategory.status = 1
-        variable["status"] = productSubCategory.status!!
-        productSubCategory.createdBy = loggedInUser.id.toString();
-        variable["createdBy"] = productSubCategory.createdBy!!
+        productSubCategory.createdBy = loggedInUser.id.toString()
 
         productSubCategoryRepository.save(productSubCategory)
 
@@ -1061,9 +922,10 @@ class StandardRequestService(
 
         return draftDocumentService.findUploadedDIFileBYId(standardId)
     }
+
     fun getDocumentsByProcessName(standardId: Long, processName: String): Collection<DatKebsSdStandardsEntity?>? {
 
-        return draftDocumentService.findUploadedDIFileBYIdAndType(standardId,processName)
+        return draftDocumentService.findUploadedDIFileBYIdAndType(standardId, processName)
     }
 
     fun findHofFeedbackDetails(sdRequestNumber: String): HOFFeedback? {

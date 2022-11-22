@@ -429,6 +429,7 @@ import { IntStdProposalsComponent } from './apollowebs/standards-development/int
 import { IntStdApprovedProposalsComponent } from './apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component';
 import { IntStdJustificationComponent } from './apollowebs/standards-development/international-standard/int-std-justification/int-std-justification.component';
 import { IntStdEditorComponent } from './apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component';
+import {GenerateDeclarationReportComponent} from './apollowebs/di/other-documents/declaration-documents/generate-declaration-report/generate-declaration-report.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -892,6 +893,7 @@ import { IntStdEditorComponent } from './apollowebs/standards-development/intern
         IntStdApprovedProposalsComponent,
         IntStdJustificationComponent,
         IntStdEditorComponent,
+        GenerateDeclarationReportComponent,
 
     ],
     entryComponents: [LoaderComponent],

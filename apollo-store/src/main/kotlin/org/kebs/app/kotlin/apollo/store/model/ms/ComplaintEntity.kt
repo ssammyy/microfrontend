@@ -143,6 +143,18 @@ class ComplaintEntity : Serializable {
     @Basic
     var product: Long? = null
 
+    @Column(name = "PRODUCT_CATEGORY_STRING")
+    @Basic
+    var productCategoryString: String? = null
+
+    @Column(name = "BROAD_PRODUCT_CATEGORY_STRING")
+    @Basic
+    var broadProductCategoryString: String? = null
+
+    @Column(name = "PRODUCT_STRING")
+    @Basic
+    var productString: String? = null
+
     @Column(name = "CLASSIFICATION_DETAILS_STATUS")
     @Basic
     var classificationDetailsStatus: Int? = null
@@ -154,6 +166,22 @@ class ComplaintEntity : Serializable {
     @Column(name = "PRODUCT_SUB_CATEGORY")
     @Basic
     var productSubCategory: Long? = null
+
+    @Column(name = "STANDARD_CATEGORY_STRING")
+    @Basic
+    var standardCategoryString: String? = null
+
+    @Column(name = "PRODUCT_SUB_CATEGORY_STRING")
+    @Basic
+    var productSubCategoryString: String? = null
+
+    @Column(name = "STANDARD_TITLE")
+    @Basic
+    var standardTitle: String? = null
+
+    @Column(name = "STANDARD_NUMBER")
+    @Basic
+    var standardNumber: String? = null
 
     @Column(name = "TRANSACTION_DATE")
     @Basic

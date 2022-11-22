@@ -34,7 +34,7 @@ class CommitteeService(
 
     ) {
     val PROCESS_DEFINITION_KEY = "committee_stage"
-    val variable: MutableMap<String, Any> = HashMap()
+//    val variable: MutableMap<String, Any> = HashMap()
 
 
     fun deployProcessDefinition() {
@@ -51,18 +51,12 @@ class CommitteeService(
     ): ProcessInstanceResponseValue {
         //Save Preliminary Draft
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        committeePD.pdName?.let { variable.put("pdName", it) }
         committeePD.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = committeePD.createdOn!!
         committeePD.nwiID = nwIId.toString()
-        variable["nwiID"] = committeePD.nwiID ?: throw ExpectedDataNotFound("No NWI ID  Found")
         committeePD.pdBy = loggedInUser.id.toString()
-        variable["pdBy"] = committeePD.pdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         committeePD.status = "Commenting By TC"
-        variable["status"] = committeePD.status!!
         committeePDRepository.save(committeePD)
 
-        committeePD.id.let { variable.put("id", it) }
 
         //update documents with PDId
         try {
@@ -96,37 +90,11 @@ class CommitteeService(
     // make a comment on Preliminary Draft
     fun makeComment(comments: Comments, docType: String) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        comments.title?.let { variable.put("title", it) }
-        comments.documentType?.let { variable.put("documentType", it) }
-        comments.circulationDate?.let { variable.put("circulationDate", it) }
-        comments.closingDate?.let { variable.put("closingDate", it) }
-        comments.recipientId.let { variable.put("recipientId", it) }
-        comments.organization?.let { variable.put("organization", it) }
-        comments.clause?.let { variable.put("clause", it) }
-        comments.paragraph?.let { variable.put("paragraph", it) }
-        comments.commentType?.let { variable.put("commentType", it) }
-        comments.commentsMade?.let { variable.put("commentsMade", it) }
-        comments.proposedChange?.let { variable.put("proposedChange", it) }
-        comments.observation?.let { variable.put("observation", it) }
+
         comments.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = comments.createdOn!!
-
-        if (docType == "PD") {
-            comments.pdId.let { variable.put("pdId", it) }
-        } else if (docType == "CD") {
-            comments.cdId.let { variable.put("cdId", it) }
-
-        } else if (docType == "PRD") {
-            comments.prdId.let { it?.let { it1 -> variable.put("prdId", it1) } }
-
-        }
-
         comments.createdBy = loggedInUser.id.toString()
-        variable["createdBy"] = comments.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         comments.userId = loggedInUser.id!!
-        variable["userId"] = comments.userId ?: throw ExpectedDataNotFound("No USER ID Found")
         comments.status = 1.toString()
-        variable["status"] = comments.status!!
 
         commentsRepository.save(comments)
 
@@ -156,33 +124,19 @@ class CommitteeService(
             commentsRepository.findById(comments.id).orElseThrow { RuntimeException("No comment found") }
 
         commentToEdit.title = comments.title
-        variable["title"] = commentToEdit.title!!
         commentToEdit.documentType = comments.documentType
-        variable["documentType"] = commentToEdit.documentType!!
         commentToEdit.circulationDate = comments.circulationDate
-        variable["circulationDate"] = commentToEdit.circulationDate!!
         commentToEdit.closingDate = comments.closingDate
-        variable["closingDate"] = commentToEdit.closingDate!!
         commentToEdit.recipientId = comments.recipientId
-        variable["recipientId"] = commentToEdit.recipientId
         commentToEdit.organization = comments.organization
-        variable["organization"] = commentToEdit.organization!!
         commentToEdit.clause = comments.clause
-        variable["clause"] = commentToEdit.clause!!
         commentToEdit.paragraph = comments.paragraph
-        variable["paragraph"] = commentToEdit.paragraph!!
         commentToEdit.commentType = comments.commentType
-        variable["commentType"] = commentToEdit.commentType!!
         commentToEdit.proposedChange = comments.proposedChange
-        variable["proposedChange"] = commentToEdit.proposedChange!!
         commentToEdit.observation = comments.observation
-        variable["observation"] = commentToEdit.observation!!
         commentToEdit.commentsMade = comments.commentsMade
-        variable["commentsMade"] = commentToEdit.commentsMade!!
         commentToEdit.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = commentToEdit.modifiedOn!!
         commentToEdit.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] = commentToEdit.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
         commentsRepository.save(commentToEdit)
 
@@ -196,11 +150,8 @@ class CommitteeService(
             commentsRepository.findById(comments.id).orElseThrow { RuntimeException("No comment found") }
 
         commentToDelete.status = 0.toString()
-        variable["status"] = commentToDelete.status!!
         commentToDelete.deletedOn = Timestamp(System.currentTimeMillis())
-        variable["deletedOn"] = commentToDelete.deletedOn!!
         commentToDelete.deleteBy = loggedInUser.id.toString()
-        variable["deleteBy"] = commentToDelete.deleteBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
         commentsRepository.save(commentToDelete)
 
@@ -213,22 +164,14 @@ class CommitteeService(
     ): ProcessInstanceResponseValue {
         //Save Committee Draft
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        committeeCD.cdName?.let { variable.put("cdName", it) }
         committeeCD.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = committeeCD.createdOn!!
         committeeCD.pdID = pdID
-        variable["pdID"] = committeeCD.pdID ?: throw ExpectedDataNotFound("No pdID ID  Found")
         committeeCD.cdBy = loggedInUser.id!!
-        variable["cdBy"] = committeeCD.cdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         committeeCD.createdBy = loggedInUser.id.toString()
-        variable["createdBy"] = committeeCD.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         committeeCD.status = "Commenting By TC. Awaiting Approval"
-        variable["status"] = committeeCD.status!!
         committeeCD.approved = "Not Approved"
-        variable["approved"] = committeeCD.approved!!
         committeeCDRepository.save(committeeCD)
 
-        committeeCD.id.let { variable.put("id", it) }
 
         //update documents with CDId
         try {
@@ -282,13 +225,9 @@ class CommitteeService(
             committeeCDRepository.findById(committeeCD.id).orElseThrow { RuntimeException("No Committee Draft found") }
 
         approveCommitteeDraft.approved = "Approved"
-        variable["approved"] = approveCommitteeDraft.approved!!
         approveCommitteeDraft.status = "Approved. Prepare Public Review Draft."
-        variable["status"] = approveCommitteeDraft.status!!
         approveCommitteeDraft.modifiedOn = Timestamp(System.currentTimeMillis())
-        variable["modifiedOn"] = approveCommitteeDraft.modifiedOn!!
         approveCommitteeDraft.modifiedBy = loggedInUser.id.toString()
-        variable["modifiedBy"] = approveCommitteeDraft.modifiedBy ?: throw ExpectedDataNotFound("No USER ID Found")
 
         approveCommitteeDraft.ksNumber = "KS${approveCommitteeDraft.id}${
             generateRandomText(
@@ -298,7 +237,6 @@ class CommitteeService(
                 true
             )
         }".toUpperCase()
-        variable["ksNumber"] = approveCommitteeDraft.ksNumber!!
 
         //send email to hof sic
         val messageBody =
@@ -316,6 +254,12 @@ class CommitteeService(
     fun getApprovedNwis(): List<ApprovedNwi> {
         return standardWorkPlanRepository.findAllApproved()
     }
+
+
+    fun getAllNwiSApprovedForPd(): List<StandardNWI> {
+        return standardNWIRepository.findAllByPdStatus("Prepare Minutes and Drafts For Preliminary Draft")
+    }
+
 
 
     fun uploadSDFileCommittee(
@@ -344,13 +288,13 @@ class CommitteeService(
         if (DocDescription == "Minutes For PD") {
             //update documents with PDId
             val u: StandardNWI = standardNWIRepository.findById(nwi).orElse(null);
-            u.status = "Minutes Uploaded";
+            u.pdStatus = "Minutes Uploaded";
             standardNWIRepository.save(u)
         }
         if (DocDescription == "Draft Documents For PD") {
             //update documents with PDId
             val u: StandardNWI = standardNWIRepository.findById(nwi).orElse(null);
-            u.status = "Draft Documents For PD Uploaded";
+            u.pdStatus = "Draft Documents For PD Uploaded";
             standardNWIRepository.save(u)
         }
         if (DocDescription == "Minutes For CD") {

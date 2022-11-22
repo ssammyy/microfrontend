@@ -173,6 +173,7 @@ export interface Stdtsectask {
     id: string;
     taskData: StandardRequestB;
 }
+
 export interface NwiItem {
     taskId: string;
     name: string;
@@ -194,7 +195,10 @@ export interface NwiItem {
     dateOfPresentation: string;
     nameOfTC: string;
     id: string;
-    standardId:string;
+    standardId: string;
+    tcSec: string;
+    processStatus: string;
+    pdStatus:String;
 }
 
 
@@ -222,8 +226,8 @@ export interface NWIsForVoting {
 }
 
 
-
 export interface StdJustification {
+    id: string
     taskId: string;
     spcMeetingDate: string;
     departmentId: string;
@@ -236,6 +240,14 @@ export interface StdJustification {
     requestedBy: string;
     issuesAddressedBy: string;
     tcAcceptanceDate: string;
+    status: string;
+    cdNumber: null;
+    createdOn: Date;
+    modifiedOn: Date;
+    deletedOn: Date;
+    nwiId: number;
+    createdBy: number;
+
 
 }
 
@@ -541,6 +553,7 @@ export interface StdJustificationDecision {
     decision: string;
     referenceNo: string;
     reason: string;
+    justificationId: string;
 }
 
 export interface ServerResponseProcess {
@@ -640,7 +653,7 @@ export interface Document {
     name: string;
     fileType: string;
     document: string;
-    description:string
+    description: string
 
     createdOn: string;
     createdBy: string;

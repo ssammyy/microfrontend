@@ -23,7 +23,7 @@ class RiskProfileEntity:Serializable {
     @Basic
     var brandName: String? = null
 
-    @Column(name = "PRODUCT_DESCRIPTION", nullable = true, length = 1000)
+    @Column(name = "PRODUCT_DESCRIPTION", nullable = true, length = 4000)
     @Basic
     var productDescription: String? = null
 
@@ -59,7 +59,7 @@ class RiskProfileEntity:Serializable {
     @Basic
     var riskLevel: String? = null
 
-    @Column(name = "RISK_DESCRIPTION", nullable = false, length = 4000)
+    @Column(name = "RISK_DESCRIPTION", length = 4000)
     @Basic
     var riskDescription: String? = null
 

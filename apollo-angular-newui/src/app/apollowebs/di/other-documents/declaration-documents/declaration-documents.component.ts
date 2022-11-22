@@ -4,7 +4,7 @@ import {LocalDataSource} from "ng2-smart-table";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
-import {GenerateReportComponent} from "../idf-documents/generate-report/generate-report.component";
+import {GenerateDeclarationReportComponent} from "./generate-declaration-report/generate-declaration-report.component";
 
 @Component({
   selector: 'app-declaration-documents',
@@ -48,6 +48,11 @@ export class DeclarationDocumentsComponent implements OnInit {
       },
       declarantPin: {
         title: 'Decl. PIN',
+        type: 'string',
+        filter: false
+      },
+      declarantRegime: {
+        title: 'Decl. Regime',
         type: 'string',
         filter: false
       },
@@ -161,7 +166,7 @@ export class DeclarationDocumentsComponent implements OnInit {
   }
 
   generateReport() {
-    this.dialog.open(GenerateReportComponent, {
+    this.dialog.open(GenerateDeclarationReportComponent, {
       data: {
         stations: this.stations
       }

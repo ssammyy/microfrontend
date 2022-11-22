@@ -247,6 +247,11 @@ export class WorkPlanEntityDto {
     resourcesRequired: PredefinedResourcesRequired[];
     budget: string;
     remarks: string;
+    standardCategoryString: string;
+    broadProductCategoryString: string;
+    productCategoryString: string;
+    productString: string;
+    productSubCategoryString: string;
 }
 
 // export class ComplaintsListDto {
@@ -263,6 +268,13 @@ export class ComplaintClassificationDto {
     myProduct: number;
     productSubcategory: number;
     classificationRemarks: string;
+    productClassificationString: string;
+    broadProductCategoryString: string;
+    productCategoryString: string;
+    myProductString: string;
+    productSubcategoryString: string;
+    standardTitle: string;
+    standardNumber: string;
 }
 
 export class MsComplaintAcceptanceStatusDto {
@@ -313,6 +325,8 @@ export class ComplaintDetailsDto {
     timelineStartDate: Date;
     timelineEndDate: Date;
     timelineOverDue: boolean;
+    standardTitle: string;
+    standardNumber: string;
 }
 
 

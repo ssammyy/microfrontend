@@ -64,6 +64,10 @@ class CorsBakEntity : Serializable {
     @Basic
     var exporterName: String? = null
 
+    @Column(name = "EXPORTER_PIN")
+    @Basic
+    var exporterPin: String? = null
+
     @Column(name = "EXPORTER_ADDRESS_1")
     @Basic
     var exporterAddress1: String? = null
@@ -124,7 +128,7 @@ class CorsBakEntity : Serializable {
     @Basic
     var unitsOfMileage: String? = null
 
-    @Column(name = "INSPECTION_REMARKS")
+    @Column(name = "INSPECTION_REMARKS", length = 4000)
     @Basic
     var inspectionRemarks: String? = null
 

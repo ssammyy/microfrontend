@@ -90,6 +90,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val notificationsRepo: INotificationsRepository,
     private val msFuelDaoServices: MarketSurveillanceFuelDaoServices,
     private val complaintsRepo: IComplaintRepository,
+    private val complaintsCustomerRepo: IComplaintCustomersRepository,
     private val msComplaintDaoServices: MarketSurveillanceComplaintProcessDaoServices
 ) {
     final var complaintSteps: Int = 6
@@ -1839,18 +1840,20 @@ class MarketSurveillanceWorkPlanDaoServices(
     }
 
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun addWorkPlanScheduleFeedBackByHOD(
         referenceNo: String,
         batchReferenceNo: String,
-        body: WorkPlanFeedBackDto
+        body: WorkPlanFeedBackDto,
+        docFile: MultipartFile? = null
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var complaintDetailsFound: ComplaintEntity? = null
 
         with(workPlanScheduled){
+            msProcessEndedOn = commonDaoServices.getCurrentDate()
             msProcessEndedStatus = map.activeStatus
             msEndProcessRemarks = body.hodFeedBackRemarks
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionMSProcessEnded
@@ -1867,7 +1870,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     msProcessId = applicationMapProperties.mapMSWorkPlanInspectionMSProcessEnded
                     userTaskId = null
                 }
-                msComplaintDaoServices.updateComplaintDetailsInDB(cp,map,loggedInUser)
+                    complaintDetailsFound= msComplaintDaoServices.updateComplaintDetailsInDB(cp,map,loggedInUser).second
             }
         }
 
@@ -1885,6 +1888,13 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
                         runBlocking {
+                            val compliant = complaintDetailsFound!!.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
+                            compliant.emailAddress?.let {
+                                commonDaoServices.sendEmailWithUserEmail(it,
+                                    applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
+                                    complaintDetailsFound!!, map, remarksSaved.first,
+                                    docFile?.let {doc-> commonDaoServices.convertMultipartFileToFile(doc).absolutePath })
+                            }
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val scheduleEmailDetails =  WorkPlanScheduledDTO()
                             with(scheduleEmailDetails){
@@ -3151,48 +3161,175 @@ class MarketSurveillanceWorkPlanDaoServices(
         return Pair(sr, taskNotify)
     }
 
-    fun checkAllOverdueTasks(
-        uuid: String,
-        map: ServiceMapsEntity,
-        userFrom: String?,
-        userFromDB: UsersEntity,
-        userSendTo: UsersEntity?
-    ): Pair<ServiceRequestsEntity, MsTaskNotificationsEntity> {
+    fun checkAllOverdueTasks(map: ServiceMapsEntity): Pair<ServiceRequestsEntity, MsTaskNotificationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
         val mapNotifications = notificationsRepo.findByUuid(applicationMapProperties.mapMsNotificationOverDueTask)
         var taskNotify = MsTaskNotificationsEntity()
         try {
             val complaintList = complaintsRepo.findAllByMsComplaintEndedStatusOrderByIdDesc(map.inactiveStatus)
-//            complaintList?.forEach { cp->
-//                if(cp.timelineEndDate!=null){
-//                    if(cp.timelineEndDate!! >commonDaoServices.getCurrentDate()){
-//                        val task = NotificationBodyDto().apply {
-//                            fromName = "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
-//                            toName = hd.userId?.let { commonDaoServices.concatenateName(it) }
-//                            referenceNoFound = complaint.second.referenceNumber
-//                            dateAssigned = commonDaoServices.getCurrentDate()
-//                            processType = "COMPLAINT"
-//                        }
-//
-//                        with(taskNotify) {
-//                            taskRefNumber = "TASK#${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
-//                            task.taskRefNumber = taskRefNumber
-//                            notificationType = mapNotifications?.notificationType?.typeCode
-//                            notificationName = mapNotifications?.notificationType?.description
-//                            notificationMsg = mapNotifications?.let { commonDaoServices.composeMessage(task, it) }
-//                            notificationBody = commonDaoServices.convertClassToJson(task)
-//                            fromUserId = userFromDB.id
-//                            toUserId = userSendTo?.id
-//                            readStatus = map.inactiveStatus
-//                            createdBy = userFrom ?: commonDaoServices.concatenateName(userFromDB)
-//                            createdOn = commonDaoServices.getTimestamp()
-//                        }
-//                        taskNotify = msTaskNotificationsRepo.save(taskNotify)
-//                    }
-//                }
-//
-//            }
+            complaintList?.forEach { cp->
+                if(cp.timelineEndDate!=null){
+                    if(cp.timelineEndDate!! > commonDaoServices.getCurrentDate()){
+                        var userFrom: String? =null
+                        var userFromDB: UsersEntity? =null
+                        var userSendTo: UsersEntity? =null
+                        when (cp.msProcessId) {
+                            applicationMapProperties.msComplaintProcessOnlineSubmitted -> {
+                                userFrom = cp.createdBy
+                                userSendTo = cp.hodAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.msComplaintProcessAssignHOF -> {
+                                userFromDB = cp.hodAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = cp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.msComplaintProcessAssignOfficer -> {
+                                userFromDB = cp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = cp.assignedIo?.let { commonDaoServices.findUserByID(it) }
+                            }
+                        }
+
+                        val task = NotificationBodyDto().apply {
+                            fromName = userFrom ?: userFromDB?.let { commonDaoServices.concatenateName(it) }
+                            toName = userSendTo?.let { commonDaoServices.concatenateName(it) }
+                            referenceNoFound = cp.referenceNumber
+                            dateAssigned = commonDaoServices.getCurrentDate()
+                            processType = "COMPLAINT"
+                        }
+
+                        with(taskNotify) {
+                            taskRefNumber = "TASK#${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                            task.taskRefNumber = taskRefNumber
+                            notificationType = mapNotifications?.notificationType?.typeCode
+                            notificationName = mapNotifications?.notificationType?.description
+                            notificationMsg = mapNotifications?.let { commonDaoServices.composeMessage(task, it) }
+                            notificationBody = commonDaoServices.convertClassToJson(task)
+                            fromUserId = userFromDB?.id
+                            toUserId = userSendTo?.id
+                            readStatus = map.inactiveStatus
+                            createdBy = userFrom ?: userFromDB?.let { commonDaoServices.concatenateName(it) }
+                            createdOn = commonDaoServices.getTimestamp()
+                        }
+                        taskNotify = msTaskNotificationsRepo.save(taskNotify)
+                    }
+                }
+            }
+
+            val workPlanDetails = generateWorkPlanRepo.findAllByMsProcessEndedStatus(map.inactiveStatus)
+            workPlanDetails?.forEach { wp->
+                if(wp.timelineEndDate!=null){
+                    if(wp.timelineEndDate!! > commonDaoServices.getCurrentDate()){
+                        var userFrom: String? =null
+                        var userFromDB: UsersEntity? =null
+                        var userSendTo: UsersEntity? =null
+                        when (wp.msProcessId) {
+                            applicationMapProperties.mapMSWorkPlanInspectionGenerateWorkPlan -> {
+                                userFrom = wp.createdBy
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionSubmittedForApproval -> {
+                                userFromDB = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionApprovedWorPlan -> {
+                                userFromDB = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionRejectedWorPlan -> {
+                                userFromDB = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionStartOnSiteActivities -> {
+                                userFromDB = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionEndOnSiteActivities -> {
+                                userFromDB = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionBsNumberAdded -> {
+                                userFromDB = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionLabResults -> {
+                                userFromDB = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionLabResultsAnalysed -> {
+                                userFrom = "LIMS SYSTEM"
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportGenerated -> {
+                                userFromDB = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionFinalReportApprovedHOF -> {
+                                userFromDB = wp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionFinalReportRejectedHOF -> {
+                                userFromDB = wp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportApprovedHOF -> {
+                                userFromDB = wp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportRejectedHOF -> {
+                                userFromDB = wp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionFinalReportApprovedHODRM -> {
+                                userFromDB = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionFinalReportRejectedHODRM -> {
+                                userFromDB = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportApprovedHODRM -> {
+                                userFromDB = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportRejectedHODRM -> {
+                                userFromDB = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionRecommendationsADDED -> {
+                                userFromDB = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.directorAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                            applicationMapProperties.mapMSWorkPlanInspectionRecommendationDoneMSIO -> {
+                                userFromDB = wp.officerId?.let { commonDaoServices.findUserByID(it) }
+                                userSendTo = wp.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                            }
+                        }
+
+                        val task = NotificationBodyDto().apply {
+                            fromName = userFrom ?: userFromDB?.let { commonDaoServices.concatenateName(it) }
+                            toName = userSendTo?.let { commonDaoServices.concatenateName(it) }
+                            referenceNoFound = wp.referenceNumber
+                            dateAssigned = commonDaoServices.getCurrentDate()
+                            processType = "COMPLAINT"
+                        }
+
+                        with(taskNotify) {
+                            taskRefNumber = "TASK#${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                            task.taskRefNumber = taskRefNumber
+                            notificationType = mapNotifications?.notificationType?.typeCode
+                            notificationName = mapNotifications?.notificationType?.description
+                            notificationMsg = mapNotifications?.let { commonDaoServices.composeMessage(task, it) }
+                            notificationBody = commonDaoServices.convertClassToJson(task)
+                            fromUserId = userFromDB?.id
+                            toUserId = userSendTo?.id
+                            readStatus = map.inactiveStatus
+                            createdBy = userFrom ?: userFromDB?.let { commonDaoServices.concatenateName(it) }
+                            createdOn = commonDaoServices.getTimestamp()
+                        }
+                        taskNotify = msTaskNotificationsRepo.save(taskNotify)
+                    }
+                }
+            }
 
 
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(taskNotify)}"
@@ -3986,6 +4123,11 @@ class MarketSurveillanceWorkPlanDaoServices(
             productCategory = body.productCategory
             product = body.product
             productSubCategory = body.productSubCategory
+            standardCategoryString = body.standardCategoryString
+            broadProductCategoryString = body.broadProductCategoryString
+            productCategoryString = body.productCategoryString
+            productString = body.productString
+            productSubCategoryString = body.productSubCategoryString
             resourcesRequired = body.resourcesRequired?.let { commonDaoServices.convertClassToJson(it) }
             budget = body.budget
             msProcessEndedStatus = map.inactiveStatus
@@ -4053,6 +4195,11 @@ class MarketSurveillanceWorkPlanDaoServices(
             product = comp.product
             productSubCategory = comp.productSubCategory
             resourcesRequired = body.resourcesRequired?.let { commonDaoServices.convertClassToJson(it) }
+            standardCategoryString = comp.standardCategoryString
+            broadProductCategoryString = comp.broadProductCategoryString
+            productCategoryString = comp.productCategoryString
+            productString = comp.productString
+            productSubCategoryString = comp.productSubCategoryString
             budget = body.budget
             uuid = commonDaoServices.generateUUIDString()
             msTypeId = msType.id
@@ -4638,12 +4785,18 @@ class MarketSurveillanceWorkPlanDaoServices(
         ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
             wKP.id,
-            wKP.productCategory?.let { commonDaoServices.findProductCategoryByID(it).name },
-            wKP.broadProductCategory?.let { commonDaoServices.findBroadCategoryByID(it).category },
-            wKP.product?.let { commonDaoServices.findProductByID(it).name },
-            wKP.standardCategory?.let { commonDaoServices.findStandardCategoryByID(it).standardCategory },
-            wKP.productSubCategory?.let { commonDaoServices.findProductSubCategoryByID(it).name },
+            wKP.productCategoryString,
+//            wKP.productCategory?.let { commonDaoServices.findProductCategoryByID(it).name },
+            wKP.broadProductCategoryString,
+//            wKP.broadProductCategory?.let { commonDaoServices.findBroadCategoryByID(it).category },
+            wKP.productString,
+//            wKP.product?.let { commonDaoServices.findProductByID(it).name },
+            wKP.standardCategoryString,
+//            wKP.standardCategory?.let { commonDaoServices.findStandardCategoryByID(it).standardCategory },
+            wKP.productSubCategoryString,
+//            wKP.productSubCategory?.let { commonDaoServices.findProductSubCategoryByID(it).name },
             wKP.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+            wKP.msProcessEndedOn,
             wKP.timelineStartDate,
             wKP.timelineEndDate,
             timelineOverDue,
