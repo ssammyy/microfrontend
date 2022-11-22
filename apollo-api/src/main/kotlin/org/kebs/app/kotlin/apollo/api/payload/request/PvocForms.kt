@@ -1407,7 +1407,7 @@ class RfcEntityForm {
     @NotEmpty(message = "Required field")
     var items: List<RfcItemForm>? = null
 
-    @NotEmpty(message = "Required field")
+    @NotNull(message = "Required field")
     @Min(value = 0, message = "Version should be set to positive number only")
     @Max(value = 100, message = "Max Value is 100")
     var version: Long? = null
