@@ -10,7 +10,12 @@ interface StandardNWIRepository : JpaRepository<StandardNWI, Long> {
 
 
     fun findAllByStatus(status: String): List<StandardNWI>
+
+    fun findAllByStatusAndProcessStatusIsNull(status: String): List<StandardNWI>
+
     fun findAllById(id: Long): List<StandardNWI>
+
+    fun findAllByPdStatus(status: String): List<StandardNWI>
 
 
 

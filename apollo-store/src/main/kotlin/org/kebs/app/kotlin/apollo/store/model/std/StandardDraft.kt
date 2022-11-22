@@ -92,6 +92,16 @@ class StandardDraft {
     @Basic
     var status: String? = null
 
+    @Column(name = "STANDARD_TYPE")
+    @Basic
+    var standardType: String? = null
+
+    @Column(name = "DRAFT_ID")
+    @Basic
+    var draftId: Long? = null
+
+
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

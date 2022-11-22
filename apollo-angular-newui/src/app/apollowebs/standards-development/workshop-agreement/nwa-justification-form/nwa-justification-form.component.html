@@ -32,9 +32,9 @@ type="ball-scale-multiple"
 <div class="form-group col-6">
 <label><b>Meeting Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input
-[class.is-invalid]="formPrepareJustification.meetingDate.invalid && formPrepareJustification.meetingDate.touched"
+[class.is-invalid]="formPrepareJustification.dateOfMeeting.invalid && formPrepareJustification.dateOfMeeting.touched"
 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-class="form-control one-column-input" formControlName="meetingDate" name="meetingDate"
+class="form-control one-column-input" formControlName="dateOfMeeting" name="dateOfMeeting"
 placeholder="Date" type="date">
 </div>
 <div class="form-group col-6">
@@ -81,9 +81,9 @@ placeholder="Name" type="text" disabled>
 <div class="form-group col-6">
 <label><b>Acceptance Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input
-[class.is-invalid]="formPrepareJustification.knwAcceptanceDate.invalid && formPrepareJustification.knwAcceptanceDate.touched"
+[class.is-invalid]="formPrepareJustification.acceptanceDate.invalid && formPrepareJustification.acceptanceDate.touched"
 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-class="form-control one-column-input" formControlName="knwAcceptanceDate" name="knwAcceptanceDate"
+class="form-control one-column-input" formControlName="acceptanceDate" name="acceptanceDate"
 placeholder="Date" type="date">
 </div>
 </div>
@@ -109,15 +109,15 @@ placeholder="Date" type="date">
 <!--        </div>-->
 <!--    </div>-->
 
-<div class="row col-12">
-<div class="form-group col-12">
-<label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<form #demoForm="ngForm">
-<file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf" ></file-upload>
-<input class="form-control one-column-input" ngModel="NWA Justification"  name="DocDescription" type="hidden">
-</form>
-</div>
-</div>
+<!--<div class="row col-12">-->
+<!--<div class="form-group col-12">-->
+<!--<label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--<form #demoForm="ngForm">-->
+<!--<file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf" ></file-upload>-->
+<!--<input class="form-control one-column-input" ngModel="NWA Justification"  name="DocDescription" type="hidden">-->
+<!--</form>-->
+<!--</div>-->
+<!--</div>-->
 
 <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
 <button *ngIf="prepareJustificationFormGroup.valid" [disabled]="!prepareJustificationFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>

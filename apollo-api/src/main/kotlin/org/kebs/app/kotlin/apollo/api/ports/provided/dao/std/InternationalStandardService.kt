@@ -190,7 +190,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
                 with(iSAdoptionProposal){
                     remarks=iSDecision.comments
-                    accentTo = true
+                    accentTo = "true"
                 }
                 isAdoptionProposalRepository.save(iSAdoptionProposal)
             }?: throw Exception("TASK NOT FOUND")
@@ -200,7 +200,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
                 with(iSAdoptionProposal){
                     remarks=iSDecision.comments
-                    accentTo = false
+                    accentTo = "false"
                 }
                 isAdoptionProposalRepository.save(iSAdoptionProposal)
             }?: throw Exception("TASK NOT FOUND")
@@ -311,7 +311,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
                 with(iSAdoptionJustification){
                     remarks=isJustificationDecision.comments
-                    accentTo = true
+                    accentTo = "true"
                 }
                 iSAdoptionJustificationRepository.save(iSAdoptionJustification)
             }?: throw Exception("TASK NOT FOUND")
@@ -321,7 +321,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
                 with(iSAdoptionJustification){
                     remarks=isJustificationDecision.comments
-                    accentTo = false
+                    accentTo = "false"
                 }
                 iSAdoptionJustificationRepository.save(iSAdoptionJustification)
             }?: throw Exception("TASK NOT FOUND")
@@ -350,7 +350,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
                 with(iSAdoptionJustification){
                     remarks=isJustificationDecision.comments
-                    accentTo = true
+                    accentTo = "true"
                 }
                 iSAdoptionJustificationRepository.save(iSAdoptionJustification)
                 //email to stakeholders
@@ -366,7 +366,7 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 
                 with(iSAdoptionJustification){
                     remarks=isJustificationDecision.comments
-                    accentTo = false
+                    accentTo = "false"
                 }
                 iSAdoptionJustificationRepository.save(iSAdoptionJustification)
             }?: throw Exception("TASK NOT FOUND")

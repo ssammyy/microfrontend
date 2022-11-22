@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo.std
 
+import org.kebs.app.kotlin.apollo.store.model.std.KnwaJustification
+import org.kebs.app.kotlin.apollo.store.model.std.NWAApprovedDraft
 import org.kebs.app.kotlin.apollo.store.model.std.StandardDraft
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -42,6 +44,13 @@ interface StandardDraftRepository : JpaRepository<StandardDraft, Long> {
         @Param("status") status: String
 
     ): String
+
+    @Query(value = "SELECT  ID as id,REQUESTOR_NAME as requestorName,STANDARD_OFFICER_NAME as standardOfficerName,VERSION_NUMBER as versionNumber," +
+            "EDITED_STATUS as editedBY,cast(EDITED_DATE as varchar(200)) AS editedDate,PROOFREAD_STATUS as proofreadStatus," +
+            "PROOFREAD_BY as proofReadBy,cast(PROOFREAD_DATE as varchar(200)) AS proofReadDate,DRAUGHTING_STATUS as draughtingStatus," +
+            "DRAUGHTED_BY as draughtingBy,cast(DRAUGHTING_DATE as varchar(200)) AS draughtingDate,DRAFT_ID as draftId " +
+            "FROM SD_STANDARD_DRAFT  WHERE  STATUS='1' AND STANDARD_TYPE='NWA'", nativeQuery = true)
+    fun getApprovedDraft(): MutableList<NWAApprovedDraft>
 
 
 }

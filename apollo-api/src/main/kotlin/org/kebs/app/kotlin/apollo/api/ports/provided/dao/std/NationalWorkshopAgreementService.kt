@@ -43,6 +43,8 @@ class NationalWorkshopAgreementService(
     private val bpmnService: StandardsLevyBpmn,
     private val userListRepository: UserListRepository,
     private val standardNwaRemarksRepository: StandardNwaRemarksRepository,
+    private val standardDraftRepository: StandardDraftRepository,
+    private val companyStandardRepository: CompanyStandardRepository,
 ) {
 
 
@@ -55,6 +57,7 @@ class NationalWorkshopAgreementService(
     {
         return technicalCommitteeRepository.findAll()
     }
+
 
     fun prepareJustification(nwaJustification: NWAJustification) : NWAJustification {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -243,6 +246,98 @@ class NationalWorkshopAgreementService(
 
     fun getRejectedPreliminaryDraft(): MutableList<NwaPDraft> {
         return nwaPreliminaryDraftRepository.getRejectedPreliminaryDraft()
+    }
+
+    fun getApprovedDraft(): MutableList<NWAApprovedDraft> {
+        return standardDraftRepository.getApprovedDraft()
+    }
+
+    fun getSDNumber(): Pair<String, Long>
+    {
+        //val allRequests: Int
+        var allRequests =standardRepository.getMaxSDN()
+
+        var startId="KNWA"
+
+        allRequests = allRequests.plus(1)
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+
+        return Pair("$startId/$allRequests:$year", allRequests)
+    }
+
+    // Decision on Draft
+    fun decisionOnDraft(
+        nwaPreliminaryDraft: NWAPreliminaryDraft,
+        standardNwaRemarks: StandardNwaRemarks,
+        standardDraft: StandardDraft,
+        standard: Standard
+    ) : String {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        nwaPreliminaryDraft.accentTo=nwaPreliminaryDraft.accentTo
+        standard.title=standard.title
+        standard.scope=standard.scope
+        standard.normativeReference=standard.normativeReference
+        standard.symbolsAbbreviatedTerms=standard.symbolsAbbreviatedTerms
+        standard.clause=standard.clause
+        standard.special=standard.special
+        val valueFound =getSDNumber()
+        standard.standardNumber=valueFound.first
+        standard.sdn=valueFound.second
+
+
+        val decision=nwaPreliminaryDraft.accentTo
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        standardNwaRemarks.justificationID=standardNwaRemarks.justificationID
+        standardNwaRemarks.remarks=standardNwaRemarks.remarks
+        standardNwaRemarks.status = 1.toString()
+        standardNwaRemarks.role = "KNW SEC"
+        standardNwaRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        standardNwaRemarks.remarkBy = usersName
+
+
+
+
+        if (decision === "Yes") {
+
+            standardDraftRepository.findByIdOrNull(standardDraft.id)?.let { standardDraft ->
+
+                with(standardDraft) {
+                    status = "2"
+                }
+                standardDraftRepository.save(standardDraft)
+                standardRepository.save(standard)
+                standardNwaRemarksRepository.save(standardNwaRemarks)
+                //email to legal
+                var userList= companyStandardRepository.getSacSecEmailList()
+                val targetUrl = "https://kimsint.kebs.org/";
+                userList.forEach { item->
+                    val recipient="stephenmuganda@gmail.com"
+                    //val recipient= item.getUserEmail()
+                    val subject = "KNWA Standard Uploaded"+  standard.standardNumber
+                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},Kenya National Workshop Agreement Standard has been uploaded by the Head of Publishing.Click on the Link below to view. ${targetUrl} "
+                    if (recipient != null) {
+                        notifications.sendEmail(recipient, subject, messageBody)
+                    }
+                }
+            }?: throw Exception("PRELIMINARY DRAFT NOT FOUND")
+
+        } else if (decision === "No") {
+            nwaPreliminaryDraftRepository.findByIdOrNull(nwaPreliminaryDraft.id)?.let { nwaPreliminaryDraft ->
+
+                with(nwaPreliminaryDraft) {
+                    status = 0
+                }
+                nwaPreliminaryDraftRepository.save(nwaPreliminaryDraft)
+                standardNwaRemarksRepository.save(standardNwaRemarks)
+            } ?: throw Exception("PRELIMINARY DRAFT NOT FOUND")
+
+        }
+
+        return "Actioned"
     }
 
 

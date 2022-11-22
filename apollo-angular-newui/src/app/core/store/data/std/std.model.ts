@@ -88,14 +88,14 @@ export interface StdTCTask {
 
 export interface NWAJustification {
     id: number;
-    meetingDate: string;
+    dateOfMeeting: Timestamp<any>;
     knw: string;
     knwSecretary: string;
     sl: string;
     requestNumber: string;
     requestedBy: string;
     issuesAddressed: string;
-    knwAcceptanceDate: string;
+    acceptanceDate: Timestamp<any>;
     referenceMaterial: string;
     department: string;
     taskId: string;
@@ -484,6 +484,34 @@ export interface ISAdoptionProposal {
     positionOfRespondent: string;
     nameOfOrganization: string;
     dateOfApplication: string;
+    proposalNumber: string;
+}
+export interface ISJustificationProposal{
+    id: number;
+    meetingDate: string;
+    tcId: string;
+    cSec: string;
+    slNumber: string;
+    edition: string;
+    requestNumber: string;
+    requestedBy: string;
+    issuesAddressed: string;
+    tcAcceptanceDate: string;
+    referenceMaterial: string;
+    department: number;
+    remarks: string;
+    submissionDate: string;
+    tcCommittee: string;
+    departmentName: string;
+    positiveVotes: number;
+    negativeVotes: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    proposalId: number;
 }
 export interface ProposalComments {
     taskId: string;
@@ -577,11 +605,24 @@ export interface ISDraftUpload{
     clause: string;
     scope: string;
     special: string;
-    processId: string;
+    proposalId: number;
     taskId: string;
     accentTo: boolean;
     approvalID: bigint;
-    draftId: number;
+    id: number;
+}
+export interface IStandardUpload{
+    title: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    scope: string;
+    special: string;
+    justificationId: number;
+    taskId: string;
+    accentTo: boolean;
+    proposalId: number;
+    id: number;
 }
 export interface ISDecision {
     taskId: string;

@@ -89,6 +89,10 @@ class StandardNWI {
     @Basic
     var createdOn: Timestamp? = null
 
+    @Column(name = "TC_SEC")
+    @Basic
+    var tcSec: String? = null
+
     @Column(name = "MODIFIED_ON")
     @Basic
     var modifiedOn: Timestamp? = null
@@ -101,9 +105,17 @@ class StandardNWI {
     @Basic
     var status: String? = null
 
+    @Column(name = "PROCESS_STATUS")
+    @Basic
+    var processStatus: String? = null
+
     @Column(name = "STANDARD_ID")
     @Basic
     var standardId: Long? = null
+
+    @Column(name = "PD_STATUS")
+    @Basic
+    var pdStatus: String? = null
 
 
     override fun equals(other: Any?): Boolean {

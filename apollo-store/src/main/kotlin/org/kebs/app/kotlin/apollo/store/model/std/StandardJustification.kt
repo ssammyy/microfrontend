@@ -81,6 +81,16 @@ class StandardJustification {
     var nwiId: String?=null
 
 
+    @Column(name = "CREATED_BY")
+    @Basic
+    var createdBy: String?=null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: String?=null
+
+
+
 
 
 }

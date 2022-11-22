@@ -654,6 +654,16 @@ alter table SD_NWA_JUSTIFICATION
 alter table SD_NWA_PRELIMINARY_DRAFT
     add STATUS NUMBER ;
 /
+alter table SD_STANDARD_DRAFT
+    add DRAFT_ID NUMBER ;
+/
+alter table SD_STANDARD_TBL
+    add SDN NUMBER ;
+/
+alter table SD_ADOPTION_PROPOSAL_JUSTIFICATION
+    add PROPOSAL_ID NUMBER ;
+/
+
 
 alter table SD_NWA_DISDT_JUSTIFICATION
     add ASSIGNED_TO NUMBER ;
@@ -821,6 +831,9 @@ alter table SD_STANDARD_REVIEW
 /
 alter table SD_STANDARD_REVIEW
     add STANDARD_TYPE VARCHAR(350 char) ;
+/
+alter table SD_IS_STANDARD_TB
+    add STATUS NUMBER ;
 /
 
 create  table DAT_KEBS_REVIEW_STD_REMARKS

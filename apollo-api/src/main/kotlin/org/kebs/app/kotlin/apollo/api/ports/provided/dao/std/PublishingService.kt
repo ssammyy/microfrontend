@@ -193,6 +193,7 @@ class PublishingService(
         standardDraft.requestorId?.let { variables.put("requestor_id", it) }
         standardDraft.title?.let { variables.put("title", it) }
         standardDraft.taskId?.let { variables.put("taskId", it) }
+        standardDraft.status="1"
 
 
         standardDraftRepository.save(standardDraft)

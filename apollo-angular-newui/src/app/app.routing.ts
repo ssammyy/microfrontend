@@ -248,6 +248,9 @@ import {NotificationsComponent} from './apollowebs/system/notifications/notifica
 import {AcknowledgementComponent} from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
 import {FeedbackTimelineComponent} from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
 import {DeclarationDocumentsComponent} from "./apollowebs/di/other-documents/declaration-documents/declaration-documents.component";
+import {IntStdProposalsComponent} from "./apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component";
+import {IntStdApprovedProposalsComponent} from "./apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component";
+import {IntStdEditorComponent} from "./apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component";
 
 export const routes: Routes = [
     {
@@ -976,16 +979,28 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdTasksComponent}],
     },
+
     {
         path: 'isProposalForm', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
         children: [{path: '', component: IsProposalFormComponent}],
     },
     {
+        path: 'isProposals', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdProposalsComponent}],
+    },
+    {
         path: 'isProposalComments', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
         children: [{path: '', component: IntStdCommentsComponent}],
     },
+    {
+        path: 'isPrepareJustification', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdApprovedProposalsComponent}],
+    },
+
     {
         path: 'isProposalResponses', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
@@ -1001,6 +1016,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdJustificationAppComponent}],
     },
+    {
+        path: 'isUploadDraft', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdEditorComponent}],
+    },
+
     {
         path: 'isUploadStd', component: AdminLayoutComponent,
         canActivate: [RouteGuard],

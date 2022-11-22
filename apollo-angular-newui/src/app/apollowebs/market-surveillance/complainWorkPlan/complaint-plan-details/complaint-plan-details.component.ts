@@ -3592,7 +3592,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   goBack() {
     console.log('TEST 101' + this.workPlanInspection.batchDetails.referenceNumber);
-    this.router.navigate([`/workPlan`, this.workPlanInspection.batchDetails.referenceNumber]);
+    this.router.navigate([`/complaintPlan`, this.workPlanInspection.batchDetails.referenceNumber]);
   }
 
   viewWorkPlanFileSaved(data: ComplaintsFilesFoundDto) {

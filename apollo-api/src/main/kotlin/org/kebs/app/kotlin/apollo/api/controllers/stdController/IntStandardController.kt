@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
@@ -50,7 +51,23 @@ class IntStandardController(
     @PostMapping("/prepareAdoptionProposal")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun prepareAdoptionProposal(@RequestBody iSAdoptionProposal: ISAdoptionProposal): ServerResponse{
+    fun prepareAdoptionProposal(@RequestBody iSAdoptionProposalDto: ISAdoptionProposalDto): ServerResponse{
+        val iSAdoptionProposal=ISAdoptionProposal().apply {
+            proposal_doc_name=iSAdoptionProposalDto.proposal_doc_name
+            circulationDate=iSAdoptionProposalDto.circulationDate
+            closingDate=iSAdoptionProposalDto.closingDate
+            tcSecName=iSAdoptionProposalDto.tcSecName
+            title=iSAdoptionProposalDto.title
+            scope=iSAdoptionProposalDto.scope
+            adoptionAcceptableAsPresented=iSAdoptionProposalDto.adoptionAcceptableAsPresented
+            reasonsForNotAcceptance=iSAdoptionProposalDto.reasonsForNotAcceptance
+            recommendations=iSAdoptionProposalDto.recommendations
+            nameOfRespondent=iSAdoptionProposalDto.nameOfRespondent
+            positionOfRespondent=iSAdoptionProposalDto.positionOfRespondent
+            nameOfOrganization=iSAdoptionProposalDto.nameOfOrganization
+            dateOfApplication=iSAdoptionProposalDto.dateOfApplication
+            uploadedBy=iSAdoptionProposalDto.uploadedBy
+        }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal))
     }
 
@@ -86,7 +103,7 @@ class IntStandardController(
         return sm
     }
 
-    //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getProposal")
     @ResponseBody
     fun getProposal(): MutableList<ProposalDetails>
@@ -119,9 +136,24 @@ class IntStandardController(
     //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
     @PostMapping("/SubmitAPComments")
     @ResponseBody
-    fun submitAPComments(@RequestBody isAdoptionComments: ISAdoptionComments): ServerResponse{
+    fun submitAPComments(@RequestBody iSAdoptionProposalComments: ISAdoptionProposalComments  ): ServerResponse{
+        val isAdoptionComments= ISAdoptionComments().apply {
+            user_id=iSAdoptionProposalComments.user_id
+            adoption_proposal_comment=iSAdoptionProposalComments.adoption_proposal_comment
+            comment_time=iSAdoptionProposalComments.comment_time
+            proposalID=iSAdoptionProposalComments.proposalID
+            commentTitle=iSAdoptionProposalComments.commentTitle
+            commentDocumentType=iSAdoptionProposalComments.commentDocumentType
+            comNameOfOrganization=iSAdoptionProposalComments.comNameOfOrganization
+            comClause=iSAdoptionProposalComments.comClause
+            comParagraph=iSAdoptionProposalComments.comParagraph
+            typeOfComment=iSAdoptionProposalComments.typeOfComment
+            proposedChange=iSAdoptionProposalComments.proposedChange
+        }
+
         return ServerResponse(HttpStatus.OK,"Comment Has been submitted",internationalStandardService.submitAPComments(isAdoptionComments))
     }
+
 
     @GetMapping("/getAllComments")
     fun getAllComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISAdoptionComments>?
@@ -129,10 +161,17 @@ class IntStandardController(
         return internationalStandardService.getAllComments(proposalId)
     }
 
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getProposalComments")
+    fun getProposalComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISProposalComments>?
+    {
+        return internationalStandardService.getProposalComments(proposalId)
+    }
+
 
     @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('SPC_SEC_SD_READ')" +
-            " or hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HOP_SD_READ') " +
-            " or hasAuthority('HO_SIC_SD_READ')  or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')  ")
+            " or hasAuthority('SAC_SEC_SD_READ') or hasAuthority('HOP_SD_READ') or hasAuthority('EDITOR_SD_READ') or hasAuthority('PROOFREADER_SD_READ') " +
+            " or hasAuthority('HO_SIC_SD_READ')  or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN') or hasAuthority('DRAUGHTSMAN_SD_READ')  ")
     @GetMapping("/getUserTasks")
     fun getUserTasks():List<InternationalStandardTasks>
     {
@@ -143,18 +182,66 @@ class IntStandardController(
     //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnProposal")
-    fun decisionOnProposal(@RequestBody iSDecision: ISDecision,internationalStandardRemarks: InternationalStandardRemarks) : List<InternationalStandardTasks>
+    fun decisionOnProposal(@RequestBody iSDecisions: ISTDecisions
+    ) : ServerResponse
     {
-        return internationalStandardService.decisionOnProposal(iSDecision,internationalStandardRemarks)
+        val iSAdoptionProposal= ISAdoptionProposal().apply {
+            accentTo=iSDecisions.accentTo
+        }
+        val internationalStandardRemarks= InternationalStandardRemarks().apply {
+            proposalId=iSDecisions.proposalId
+            remarks=iSDecisions.comments
+        }
+
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDecisions) }
+
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnProposal(iSAdoptionProposal,internationalStandardRemarks))
+
+    }
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getApprovedProposals")
+    @ResponseBody
+    fun getApprovedProposals(): MutableList<ProposalDetails>
+    {
+        return internationalStandardService.getApprovedProposals()
     }
 
     //********************************************************** process upload Justification **********************************************************
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/prepareJustification")
     @ResponseBody
-    fun prepareJustification(@RequestBody iSAdoptionJustification: ISAdoptionJustification): ServerResponse{
+    fun prepareJustification(@RequestBody iSAdoptionJustifications: ISAdoptionJustifications): ServerResponse{
+        val iSAdoptionJustification=ISAdoptionJustification().apply {
+            meetingDate=iSAdoptionJustifications.meetingDate
+            tcSec_id=iSAdoptionJustifications.tcSec_id
+            slNumber=iSAdoptionJustifications.slNumber
+            edition=iSAdoptionJustifications.edition
+            requestedBy=iSAdoptionJustifications.requestedBy
+            issuesAddressed=iSAdoptionJustifications.issuesAddressed
+            tcAcceptanceDate=iSAdoptionJustifications.tcAcceptanceDate
+            referenceMaterial=iSAdoptionJustifications.referenceMaterial
+            department=iSAdoptionJustifications.department
+            status=iSAdoptionJustifications.status
+            positiveVotes=iSAdoptionJustifications.positiveVotes
+            negativeVotes=iSAdoptionJustifications.negativeVotes
+            remarks=iSAdoptionJustifications.remarks
+            proposalId=iSAdoptionJustifications.proposalId
+        }
+
+
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.prepareJustification(iSAdoptionJustification))
     }
+
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getISJustification")
+    @ResponseBody
+    fun getISJustification(): MutableList<ISAdoptionProposalJustification>
+    {
+        return internationalStandardService.getISJustification()
+    }
+
     //
     @PostMapping("/js-file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -210,13 +297,33 @@ class IntStandardController(
 
     }
 
-    //decision
+    //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody isJustificationDecision: ISJustificationDecision,internationalStandardRemarks: InternationalStandardRemarks) : List<InternationalStandardTasks>
+    fun decisionOnJustification(@RequestBody iSJustificationDecisions: ISJustificationDecisions
+    ) : ServerResponse
     {
-        return internationalStandardService.decisionOnJustification(isJustificationDecision,internationalStandardRemarks)
+        val iSAdoptionJustification= ISAdoptionJustification().apply {
+            accentTo=iSJustificationDecisions.accentTo
+            id=iSJustificationDecisions.justificationId
+        }
+        val internationalStandardRemarks= InternationalStandardRemarks().apply {
+            proposalId=iSJustificationDecisions.proposalId
+            remarks=iSJustificationDecisions.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnJustification(iSAdoptionJustification,internationalStandardRemarks))
+
     }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getApprovedISJustification")
+    @ResponseBody
+    fun getApprovedISJustification(): MutableList<ISAdoptionProposalJustification>
+    {
+        return internationalStandardService.getApprovedISJustification()
+    }
+
 
     @GetMapping("/getUserComments")
     fun getUserComments(@RequestParam("id") id: Long):MutableIterable<InternationalStandardRemarks>?
@@ -232,13 +339,52 @@ class IntStandardController(
         return internationalStandardService.justificationDecision(isJustificationDecision,internationalStandardRemarks)
     }
 
-    //approve International Standard
+    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/submitDraftForEditing")
+    @ResponseBody
+    fun submitDraftForEditing(@RequestBody iSUploadStandard: ISUploadStandard): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.submitDraftForEditing(iSUploadStandard))
+    }
+
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getUploadedDraft")
+    @ResponseBody
+    fun getUploadedDraft(): MutableList<ISUploadedDraft>
+    {
+        return internationalStandardService.getUploadedDraft()
+    }
+
+    //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/checkRequirements")
-    fun checkRequirements(@RequestBody isJustificationDecision: ISJustificationDecision,internationalStandardRemarks: InternationalStandardRemarks) : List<InternationalStandardTasks>
+    fun checkRequirements(@RequestBody iSJustificationDecisions: ISJustificationDecisions
+    ) : ServerResponse
     {
-        return internationalStandardService.checkRequirements(isJustificationDecision,internationalStandardRemarks)
+        val iSUploadStandard= ISUploadStandard().apply {
+            accentTo=iSJustificationDecisions.accentTo
+            justificationNo=iSJustificationDecisions.justificationId
+        }
+        val internationalStandardRemarks= InternationalStandardRemarks().apply {
+            proposalId=iSJustificationDecisions.proposalId
+            remarks=iSJustificationDecisions.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.checkRequirements(iSUploadStandard,internationalStandardRemarks))
+
     }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getApprovedDraft")
+    @ResponseBody
+    fun getApprovedDraft(): MutableList<ISUploadedDraft>
+    {
+        return internationalStandardService.getApprovedDraft()
+    }
+
+    //approve International Standard
+
 
     @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/editStandardDraft")
@@ -252,19 +398,19 @@ class IntStandardController(
     @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/draughtStandardDraft")
     @ResponseBody
-    fun draughtStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft,iSDraftStdUpload:ISDraftStdUpload): ServerResponse
+    fun draughtStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandardDraft(nwaWorkShopDraft,iSDraftStdUpload))
+        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandardDraft(nwaWorkShopDraft))
     }
 
     @PreAuthorize("hasAuthority('PROOFREADER_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/proofReadStandardDraft")
     @ResponseBody
-    fun proofReadStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft,iSDraftStdUpload:ISDraftStdUpload): ServerResponse
+    fun proofReadStandardDraft(@RequestBody nwaWorkShopDraft: NWAWorkShopDraft): ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",internationalStandardService.proofReadStandardDraft(nwaWorkShopDraft,iSDraftStdUpload))
+        return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",internationalStandardService.proofReadStandardDraft(nwaWorkShopDraft))
     }
 
 
