@@ -70,30 +70,27 @@ class IntStandardService (private val runtimeService: RuntimeService,
     }
 
     //prepare Adoption Proposal
-    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal) : ProcessInstanceProposal
+    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal) : ISAdoptionProposal
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
-        iSAdoptionProposal.proposal_doc_name?.let{ variables.put("proposal_doc_name", it)}
-        iSAdoptionProposal.circulationDate?.let{ variables.put("circulationDate", it)}
-        iSAdoptionProposal.closingDate?.let{ variables.put("closingDate", it)}
-        iSAdoptionProposal.tcSecName?.let{ variables.put("tcSecName", it)}
-        iSAdoptionProposal.title?.let{ variables.put("title", it)}
-        iSAdoptionProposal.scope?.let{ variables.put("scope", it)}
-        iSAdoptionProposal.adoptionAcceptableAsPresented?.let{ variables.put("adoptionAcceptableAsPresented", it)}
-        iSAdoptionProposal.reasonsForNotAcceptance?.let{ variables.put("reasonsForNotAcceptance", it)}
-        iSAdoptionProposal.recommendations?.let{ variables.put("recommendations", it)}
-        iSAdoptionProposal.nameOfRespondent?.let{ variables.put("nameOfRespondent", it)}
-        iSAdoptionProposal.positionOfRespondent?.let{ variables.put("positionOfRespondent", it)}
-        iSAdoptionProposal.nameOfOrganization?.let{ variables.put("nameOfOrganization", it)}
-        iSAdoptionProposal.dateOfApplication?.let{ variables.put("dateOfApplication", it)}
-        iSAdoptionProposal.uploadedBy?.let{ variables.put("uploadedBy", it)}
+        iSAdoptionProposal.proposal_doc_name=iSAdoptionProposal.proposal_doc_name
+        iSAdoptionProposal.circulationDate=iSAdoptionProposal.circulationDate
+        iSAdoptionProposal.closingDate=iSAdoptionProposal.circulationDate
+        iSAdoptionProposal.tcSecName=iSAdoptionProposal.proposal_doc_name
+        iSAdoptionProposal.title=iSAdoptionProposal.title
+        iSAdoptionProposal.scope=iSAdoptionProposal.scope
+        iSAdoptionProposal.adoptionAcceptableAsPresented=iSAdoptionProposal.adoptionAcceptableAsPresented
+        iSAdoptionProposal.reasonsForNotAcceptance=iSAdoptionProposal.reasonsForNotAcceptance
+        iSAdoptionProposal.recommendations=iSAdoptionProposal.recommendations
+        iSAdoptionProposal.nameOfRespondent=iSAdoptionProposal.nameOfRespondent
+        iSAdoptionProposal.positionOfRespondent=iSAdoptionProposal.positionOfRespondent
+        iSAdoptionProposal.nameOfOrganization=iSAdoptionProposal.nameOfOrganization
+        iSAdoptionProposal.dateOfApplication=iSAdoptionProposal.dateOfApplication
+        iSAdoptionProposal.uploadedBy=iSAdoptionProposal.uploadedBy
         iSAdoptionProposal.preparedDate = commonDaoServices.getTimestamp()
         iSAdoptionProposal.status = 0
-        variables["preparedDate"] = iSAdoptionProposal.preparedDate!!
         iSAdoptionProposal.proposalNumber = getPRNumber()
-        iSAdoptionProposal.assignedTo= companyStandardRepository.getTcSecId()
-        variables["proposalNumber"] = iSAdoptionProposal.proposalNumber!!
 
         var userList= companyStandardRepository.getStakeHoldersEmailList()
 
@@ -109,37 +106,11 @@ class IntStandardService (private val runtimeService: RuntimeService,
             }
         }
 
-        val ispDetails = isAdoptionProposalRepository.save(iSAdoptionProposal)
-        variables["ID"] = ispDetails.id
+        return isAdoptionProposalRepository.save(iSAdoptionProposal)
 
-        //taskService.complete(nwaJustification.taskId, variables)
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-            ?.let { t ->
-                t.list()[0]
-                    ?.let { task ->
-                        task.assignee =
-                            "${iSAdoptionProposal.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-
-                        taskService.saveTask(task)
-                    }
-                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
-            }
-            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-        bpmnService.slAssignTask(
-            processInstance.processInstanceId,
-            "receiveComments",
-            iSAdoptionProposal?.assignedTo
-                ?: throw NullValueNotAllowedException("invalid user id provided")
-        )
-
-        return ProcessInstanceProposal(ispDetails.id, processInstance.id, processInstance.isEnded,
-            iSAdoptionProposal.proposalNumber!!
-        )
 
     }
+
 
     fun uploadISFile(
         uploads: SdIsDocumentUploads,
@@ -174,25 +145,28 @@ class IntStandardService (private val runtimeService: RuntimeService,
     //Submit Adoption Proposal comments
     fun submitAPComments(isAdoptionComments: ISAdoptionComments){
         val variables: MutableMap<String, Any> = HashMap()
-        isAdoptionComments.user_id?.let{ variables.put("user_id", it)}
-        isAdoptionComments.taskId?.let{ variables.put("taskId", it)}
-        isAdoptionComments.adoption_proposal_comment?.let{ variables.put("adoption_proposal_comment", it)}
-        isAdoptionComments.commentTitle?.let{ variables.put("commentTitle", it)}
-        isAdoptionComments.commentDocumentType?.let{ variables.put("commentDocumentType", it)}
-        isAdoptionComments.comNameOfOrganization?.let{ variables.put("comNameOfOrganization", it)}
-        isAdoptionComments.comClause?.let{ variables.put("comClause", it)}
-        isAdoptionComments.comParagraph?.let{ variables.put("comParagraph", it)}
-        isAdoptionComments.typeOfComment?.let{ variables.put("typeOfComment", it)}
-        isAdoptionComments.proposedChange?.let{ variables.put("proposedChange", it)}
+        isAdoptionComments.user_id=isAdoptionComments.user_id
+        isAdoptionComments.adoption_proposal_comment=isAdoptionComments.adoption_proposal_comment
+        isAdoptionComments.commentTitle=isAdoptionComments.commentTitle
+        isAdoptionComments.commentDocumentType=isAdoptionComments.commentDocumentType
+        isAdoptionComments.comNameOfOrganization=isAdoptionComments.comNameOfOrganization
+        isAdoptionComments.comClause=isAdoptionComments.comClause
+        isAdoptionComments.comParagraph=isAdoptionComments.comParagraph
+        isAdoptionComments.typeOfComment=isAdoptionComments.typeOfComment
+        isAdoptionComments.proposedChange=isAdoptionComments.proposedChange
+        isAdoptionComments.proposalID=isAdoptionComments.proposalID
 
         isAdoptionComments.comment_time = Timestamp(System.currentTimeMillis())
-        variables["comment_time"] = isAdoptionComments.comment_time!!
-
-        print(isAdoptionComments.toString())
-
         isAdoptionCommentsRepository.save(isAdoptionComments)
         println("Comment Submitted")
     }
+
+    fun getProposalComments(proposalId: Long): MutableIterable<ISProposalComments>? {
+        return isAdoptionCommentsRepository.getProposalComments(proposalId)
+    }
+
+
+
 
     //Function to retrieve task details for any candidate group
     private fun getTaskDetails(tasks: List<Task>): List<InternationalStandardTasks> {
@@ -222,116 +196,85 @@ class IntStandardService (private val runtimeService: RuntimeService,
     }
 
     // Decision on Proposal
-    fun decisionOnProposal(iSDecision: ISDecision,
-                           internationalStandardRemarks: InternationalStandardRemarks
-    ) : List<InternationalStandardTasks> {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
+    fun decisionOnProposal(
+        iSAdoptionProposal: ISAdoptionProposal,
+        internationalStandardRemarks: InternationalStandardRemarks
+    ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        variables["Yes"] = iSDecision.accentTo
-        variables["No"] = iSDecision.accentTo
-        iSDecision.comments.let { variables.put("comments", it) }
-        iSDecision.taskId.let { variables.put("taskId", it) }
-        iSDecision.processId.let { variables.put("processId", it) }
-        iSDecision.assignedTo= companyStandardRepository.getTcSecId()
-        val fname=loggedInUser.firstName
-        val sname=loggedInUser.lastName
-        val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= iSDecision.approvalID
-        internationalStandardRemarks.remarks= iSDecision.comments
+        iSAdoptionProposal.accentTo=iSAdoptionProposal.accentTo
+        val decision=iSAdoptionProposal.accentTo
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
+        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
         internationalStandardRemarks.status = 1.toString()
         internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         internationalStandardRemarks.remarkBy = usersName
+        internationalStandardRemarks.role = "TC SEC"
 
-        if(variables["Yes"]==true){
 
+        if (decision == "Yes") {
+
+            isAdoptionProposalRepository.findByIdOrNull(internationalStandardRemarks.proposalId)?.let { iSAdoptionProposal ->
+                with(iSAdoptionProposal) {
+                    status = 1
+
+                }
+                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                runtimeService.createProcessInstanceQuery()
-                    .processInstanceId(iSDecision.processId).list()
-                    ?.let { l ->
-                        val processInstance = l[0]
-                        taskService.complete(iSDecision.taskId, variables)
+            }?: throw Exception("PROPOSAL NOT FOUND")
 
-                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                            ?.let { t ->
-                                t.list()[0]
-                                    ?.let { task ->
-                                        task.assignee = "${
-                                            iSDecision.assignedTo ?: throw NullValueNotAllowedException(
-                                                " invalid user id provided"
-                                            )
-                                        }"  //set the assignee}"
-                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
-                                        taskService.saveTask(task)
-                                    }
-                                    ?: KotlinLogging.logger { }
-                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+        } else if (decision == "No") {
+            isAdoptionProposalRepository.findByIdOrNull(internationalStandardRemarks.proposalId)?.let { iSAdoptionProposal ->
 
-
-                            }
-                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                        bpmnService.slAssignTask(
-                            processInstance.processInstanceId,
-                            "prepareJustification",
-                            iSDecision.assignedTo
-                                ?: throw NullValueNotAllowedException("invalid user id provided")
-                        )
-
-                    }
-                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSDecision.processId} ")
-
-
-        }else if(variables["No"]==false) {
-
+                with(iSAdoptionProposal) {
+                    status = 4
+                }
+                isAdoptionProposalRepository.save(iSAdoptionProposal)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                taskService.complete(iSDecision.taskId, variables)
-                println("Proposal Rejected")
-
+            } ?: throw Exception("PROPOSAL NOT FOUND")
 
         }
 
-        return  getUserTasks()
-
+        return "Actioned"
     }
+
+    fun getApprovedProposals(): MutableList<ProposalDetails>{
+        return isAdoptionProposalRepository.getApprovedProposals();
+    }
+
 
     fun getUserComments(id: Long): MutableIterable<InternationalStandardRemarks>? {
         return internationalStandardRemarksRepository.findAllByProposalIdOrderByIdDesc(id)
     }
 
     //prepare justification
-    fun prepareJustification(iSAdoptionJustification: ISAdoptionJustification) : ProcessInstanceResponseValue
+    fun prepareJustification(iSAdoptionJustification: ISAdoptionJustification) : ISAdoptionJustification
     {
         val variables: MutableMap<String, Any> = HashMap()
-        iSAdoptionJustification.meetingDate?.let{ variables.put("meetingDate", it)}
-        //iSAdoptionJustification.tc_id?.let{ variables.put("tc_id", it)}
-        iSAdoptionJustification.tcSec_id?.let{ variables.put("tcSec_id", it)}
-        iSAdoptionJustification.slNumber?.let{ variables.put("slNumber", it)}
-        iSAdoptionJustification.edition?.let{ variables.put("edition", it)}
-        iSAdoptionJustification.requestedBy?.let{ variables.put("requestedBy", it)}
-        iSAdoptionJustification.issuesAddressed?.let{ variables.put("issuesAddressed", it)}
-        iSAdoptionJustification.tcAcceptanceDate?.let{ variables.put("tcAcceptanceDate", it)}
-        iSAdoptionJustification.referenceMaterial?.let{ variables.put("referenceMaterial", it)}
-        iSAdoptionJustification.department?.let{ variables.put("department", it)}
-        iSAdoptionJustification.status?.let{ variables.put("status", it)}
-        iSAdoptionJustification.positiveVotes?.let{ variables.put("positiveVotes", it)}
-        iSAdoptionJustification.negativeVotes?.let{ variables.put("negativeVotes", it)}
-        iSAdoptionJustification.remarks?.let{ variables.put("remarks", it)}
-        iSAdoptionJustification.taskId?.let{ variables.put("taskId", it)}
-        iSAdoptionJustification.assignedTo= companyStandardRepository.getSpcSecId()
+        iSAdoptionJustification.meetingDate=iSAdoptionJustification.meetingDate
+        iSAdoptionJustification.tcSec_id=iSAdoptionJustification.tcSec_id
+        iSAdoptionJustification.slNumber=iSAdoptionJustification.slNumber
+        iSAdoptionJustification.edition=iSAdoptionJustification.edition
+        iSAdoptionJustification.requestedBy=iSAdoptionJustification.requestedBy
+        iSAdoptionJustification.issuesAddressed=iSAdoptionJustification.issuesAddressed
+        iSAdoptionJustification.tcAcceptanceDate=iSAdoptionJustification.tcAcceptanceDate
+        iSAdoptionJustification.referenceMaterial=iSAdoptionJustification.referenceMaterial
+        iSAdoptionJustification.department=iSAdoptionJustification.department
+        iSAdoptionJustification.status= 0.toString()
+        iSAdoptionJustification.positiveVotes=iSAdoptionJustification.positiveVotes
+        iSAdoptionJustification.negativeVotes=iSAdoptionJustification.negativeVotes
+        iSAdoptionJustification.remarks=iSAdoptionJustification.remarks
+        iSAdoptionJustification.proposalId=iSAdoptionJustification.proposalId
 
         iSAdoptionJustification.submissionDate = Timestamp(System.currentTimeMillis())
-        variables["submissionDate"] = iSAdoptionJustification.submissionDate!!
 
         iSAdoptionJustification.requestNumber = getRQNumber()
-
-        variables["requestNumber"] = iSAdoptionJustification.requestNumber!!
-
-//        variables["tcCommittee"] = technicalComListRepository.findNameById(iSAdoptionJustification.tc_id?.toLong())
-//        iSAdoptionJustification.tcCommittee = technicalComListRepository.findNameById(iSAdoptionJustification.tc_id?.toLong())
-
-        variables["departmentName"] = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
         iSAdoptionJustification.departmentName = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
 
-        val ispDetails = iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+
         //variables["ID"] = ispDetails.id
 
         var userList= companyStandardRepository.getHopEmailList()
@@ -347,37 +290,15 @@ class IntStandardService (private val runtimeService: RuntimeService,
                 notifications.sendEmail(recipient, subject, messageBody)
             }
         }
-        runtimeService.createProcessInstanceQuery()
-            .processInstanceId(iSAdoptionJustification.processId).list()
-            ?.let { l ->
-                val processInstance = l[0]
+        isAdoptionProposalRepository.findByIdOrNull(iSAdoptionJustification.proposalId)?.let { iSAdoptionProposal ->
+            with(iSAdoptionProposal) {
+                status = 2
 
-                taskService.complete(iSAdoptionJustification.taskId, variables)
-
-                taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                    ?.let { t ->
-                        t.list()[0]
-                            ?.let { task ->
-                                task.assignee =
-                                    "${iSAdoptionJustification.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-                                taskService.saveTask(task)
-                            }
-                            ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
-                    }
-                    ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                bpmnService.slAssignTask(
-                    processInstance.processInstanceId,
-                    "decisionOnJustification",
-                    iSAdoptionJustification.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
-                )
-                return ProcessInstanceResponseValue(ispDetails.id, processInstance.id, processInstance.isEnded,
-                    iSAdoptionJustification.requestNumber!!
-                )
             }
-            ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSAdoptionJustification.processId} ")
+            isAdoptionProposalRepository.save(iSAdoptionProposal)
+        } ?: throw Exception("PROPOSAL NOT FOUND")
 
+        return iSAdoptionJustificationRepository.save(iSAdoptionJustification)
 
     }
 
@@ -406,94 +327,65 @@ class IntStandardService (private val runtimeService: RuntimeService,
         return isJustificationUploadsRepository.save(uploads)
     }
 
+    fun getISJustification(): MutableList<ISAdoptionProposalJustification> {
+        return iSAdoptionJustificationRepository.getISJustification()
+    }
+
     //Get IS justification Document
     fun findUploadedJSFileBYId(isJSDocumentId: Long): ISJustificationUploads {
         return isJustificationUploadsRepository.findByIsJSDocumentId(isJSDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$isJSDocumentId]")
     }
 
-    fun decisionOnJustification(isJustificationDecision: ISJustificationDecision,
-                           internationalStandardRemarks: InternationalStandardRemarks
-    ) : List<InternationalStandardTasks> {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
+
+    // Decision on Justification
+    fun decisionOnJustification(
+        iSAdoptionJustification: ISAdoptionJustification,
+        internationalStandardRemarks: InternationalStandardRemarks
+    ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        variables["Yes"] = isJustificationDecision.accentTo
-        variables["No"] = isJustificationDecision.accentTo
-        isJustificationDecision.comments.let { variables.put("comments", it) }
-        isJustificationDecision.taskId.let { variables.put("taskId", it) }
-        isJustificationDecision.processId.let { variables.put("processId", it) }
-        isJustificationDecision.assignedTo= companyStandardRepository.getSaSecId()
-        val fname=loggedInUser.firstName
-        val sname=loggedInUser.lastName
-        val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
-        internationalStandardRemarks.remarks= isJustificationDecision.comments
+        iSAdoptionJustification.accentTo=iSAdoptionJustification.accentTo
+        val decision=iSAdoptionJustification.accentTo
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
+        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
         internationalStandardRemarks.status = 1.toString()
         internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         internationalStandardRemarks.remarkBy = usersName
+        internationalStandardRemarks.role = "TC SEC"
 
-        if(variables["Yes"]==true){
-            var userList= companyStandardRepository.getHopEmailList()
+        if (decision == "Yes") {
+            iSAdoptionJustificationRepository.findByIdOrNull(iSAdoptionJustification.id)?.let { iSAdoptionJustification ->
+                with(iSAdoptionJustification) {
+                    status = 1.toString()
 
-            //email to Head of publishing
-            val targetUrl = "https://kimsint.kebs.org/";
-            userList.forEach { item->
-                val recipient="stephenmuganda@gmail.com"
-                //val recipient= item.getUserEmail()
-                val subject = "Justification"
-                val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Justification for International Standard has been Accepted by the SPC."
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
                 }
-            }
-
+                iSAdoptionJustificationRepository.save(iSAdoptionJustification)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                runtimeService.createProcessInstanceQuery()
-                    .processInstanceId(isJustificationDecision.processId).list()
-                    ?.let { l ->
-                        val processInstance = l[0]
-                        taskService.complete(isJustificationDecision.taskId, variables)
+            }?: throw Exception("JUSTIFICATION NOT FOUND")
 
-                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                            ?.let { t ->
-                                t.list()[0]
-                                    ?.let { task ->
-                                        task.assignee = "${
-                                            isJustificationDecision.assignedTo ?: throw NullValueNotAllowedException(
-                                                " invalid user id provided"
-                                            )
-                                        }"  //set the assignee}"
-                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
-                                        taskService.saveTask(task)
-                                    }
-                                    ?: KotlinLogging.logger { }
-                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+        } else if (decision == "No") {
+            iSAdoptionJustificationRepository.findByIdOrNull(iSAdoptionJustification.id)?.let { iSAdoptionJustification ->
 
-
-                            }
-                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                        bpmnService.slAssignTask(
-                            processInstance.processInstanceId,
-                            "justificationDecision",
-                            isJustificationDecision.assignedTo
-                                ?: throw NullValueNotAllowedException("invalid user id provided")
-                        )
-
-                    }
-                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
-
-
-        }else if(variables["No"]==false) {
-
+                with(iSAdoptionJustification) {
+                    status = 2.toString()
+                }
+                iSAdoptionJustificationRepository.save(iSAdoptionJustification)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                taskService.complete(isJustificationDecision.taskId, variables)
-                println("Proposal Rejected")
-
+            } ?: throw Exception("JUSTIFICATION NOT FOUND")
 
         }
 
-        return  getUserTasks()
-
+        return "Actioned"
     }
+
+    fun getApprovedISJustification(): MutableList<ISAdoptionProposalJustification> {
+        return iSAdoptionJustificationRepository.getApprovedISJustification()
+    }
+
+
 
     fun justificationDecision(isJustificationDecision: ISJustificationDecision,
                                 internationalStandardRemarks: InternationalStandardRemarks
@@ -613,110 +505,110 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
     }
 
-    fun checkRequirements(isJustificationDecision: ISJustificationDecision,
-                              internationalStandardRemarks: InternationalStandardRemarks
-    ) : List<InternationalStandardTasks> {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
+    fun submitDraftForEditing(iSUploadStandard: ISUploadStandard) : ISUploadStandard
+    {
+        val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        variables["Yes"] = isJustificationDecision.accentTo
-        variables["No"] = isJustificationDecision.accentTo
-        isJustificationDecision.comments.let { variables.put("comments", it) }
-        isJustificationDecision.taskId.let { variables.put("taskId", it) }
-        isJustificationDecision.processId.let { variables.put("processId", it) }
+        iSUploadStandard.title=iSUploadStandard.title
+        iSUploadStandard.scope=iSUploadStandard.scope
+        iSUploadStandard.normativeReference=iSUploadStandard.normativeReference
+        iSUploadStandard.symbolsAbbreviatedTerms=iSUploadStandard.symbolsAbbreviatedTerms
+        iSUploadStandard.clause=iSUploadStandard.clause
+        iSUploadStandard.special=iSUploadStandard.special
+        iSUploadStandard.justificationNo=iSUploadStandard.justificationNo
+        iSUploadStandard.proposalId=iSUploadStandard.proposalId
+        iSUploadStandard.status=0
+        iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
+        iSUploadStandard.iSNumber = getRQNumber()
 
-        val fname=loggedInUser.firstName
-        val sname=loggedInUser.lastName
-        val usersName= "$fname  $sname"
-        internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
-        internationalStandardRemarks.remarks= isJustificationDecision.comments
+        var userList= companyStandardRepository.getHopEmailList()
+
+        //email to Head of publishing
+        val targetUrl = "https://kimsint.kebs.org/";
+        userList.forEach { item->
+            //val recipient="stephenmuganda@gmail.com"
+            val recipient= item.getUserEmail()
+            val subject = "Standard Draft"
+            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard draft has been uploaded."
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
+            }
+        }
+
+        iSAdoptionJustificationRepository.findByIdOrNull(iSUploadStandard.justificationNo)?.let { iSAdoptionJustification ->
+            with(iSAdoptionJustification) {
+                status = 3.toString()
+
+            }
+            iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+        }?: throw Exception("JUSTIFICATION NOT FOUND")
+
+        return iSUploadStandardRepository.save(iSUploadStandard)
+    }
+
+    fun getUploadedDraft(): MutableList<ISUploadedDraft> {
+        return iSUploadStandardRepository.getUploadedDraft()
+    }
+
+    fun checkRequirements(
+        iSUploadStandard: ISUploadStandard,
+        internationalStandardRemarks: InternationalStandardRemarks
+    ) : String {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        iSUploadStandard.accentTo=iSUploadStandard.accentTo
+        val decision=iSUploadStandard.accentTo
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
+        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
         internationalStandardRemarks.status = 1.toString()
         internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         internationalStandardRemarks.remarkBy = usersName
+        internationalStandardRemarks.role = "HOP"
 
-        if(variables["Yes"]==true){
-            isJustificationDecision.assignedTo= companyStandardRepository.getEditorId()
+        if (decision == "Yes") {
+            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+                with(iSUploadStandard) {
+                    status = 1
 
+                }
+                iSUploadStandardRepository.save(iSUploadStandard)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                runtimeService.createProcessInstanceQuery()
-                    .processInstanceId(isJustificationDecision.processId).list()
-                    ?.let { l ->
-                        val processInstance = l[0]
-                        taskService.complete(isJustificationDecision.taskId, variables)
+            }?: throw Exception("DRAFT NOT FOUND")
 
-                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                            ?.let { t ->
-                                t.list()[0]
-                                    ?.let { task ->
-                                        task.assignee = "${
-                                            isJustificationDecision.assignedTo ?: throw NullValueNotAllowedException(
-                                                " invalid user id provided"
-                                            )
-                                        }"  //set the assignee}"
-                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
-                                        taskService.saveTask(task)
-                                    }
-                                    ?: KotlinLogging.logger { }
-                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+        } else if (decision == "No") {
+            iSAdoptionJustificationRepository.findByIdOrNull(iSUploadStandard.justificationNo)?.let { iSAdoptionJustification ->
 
+                with(iSAdoptionJustification) {
+                    status = 1.toString()
+                }
+                iSAdoptionJustificationRepository.save(iSAdoptionJustification)
 
-                            }
-                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                        bpmnService.slAssignTask(
-                            processInstance.processInstanceId,
-                            "draftStandardEditing",
-                            isJustificationDecision.assignedTo
-                                ?: throw NullValueNotAllowedException("invalid user id provided")
-                        )
+                iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
 
+                    with(iSUploadStandard) {
+                        status = 2
                     }
-                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
+                    iSUploadStandardRepository.save(iSUploadStandard)
+                    internationalStandardRemarksRepository.save(internationalStandardRemarks)
 
+                } ?: throw Exception("JUSTIFICATION NOT FOUND")
 
-        }else if(variables["No"]==false) {
-            isJustificationDecision.assignedTo= companyStandardRepository.getSaSecId()
-
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                runtimeService.createProcessInstanceQuery()
-                    .processInstanceId(isJustificationDecision.processId).list()
-                    ?.let { l ->
-                        val processInstance = l[0]
-                        taskService.complete(isJustificationDecision.taskId, variables)
-
-                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                            ?.let { t ->
-                                t.list()[0]
-                                    ?.let { task ->
-                                        task.assignee = "${
-                                            isJustificationDecision.assignedTo ?: throw NullValueNotAllowedException(
-                                                " invalid user id provided"
-                                            )
-                                        }"  //set the assignee}"
-                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
-                                        taskService.saveTask(task)
-                                    }
-                                    ?: KotlinLogging.logger { }
-                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
-                            }
-                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                        bpmnService.slAssignTask(
-                            processInstance.processInstanceId,
-                            "justificationDecision",
-                            isJustificationDecision.assignedTo
-                                ?: throw NullValueNotAllowedException("invalid user id provided")
-                        )
-
-                    }
-                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${isJustificationDecision.processId} ")
-
+            } ?: throw Exception("JUSTIFICATION NOT FOUND")
 
 
         }
 
-        return  getUserTasks()
-
+        return "Actioned"
     }
+
+    fun getApprovedDraft(): MutableList<ISUploadedDraft> {
+        return iSUploadStandardRepository.getApprovedDraft()
+    }
+
+
 
     fun editStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
     {
@@ -774,8 +666,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
     }
 
-    fun draughtStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft,
-                             iSDraftStdUpload:ISDraftStdUpload) : ProcessInstanceWD
+    fun draughtStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
     {
         val variable:MutableMap<String, Any> = java.util.HashMap()
         nwaWorkShopDraft.title?.let{variable.put("title", it)}
@@ -791,7 +682,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         nwaWorkShopDraft.assignedTo= companyStandardRepository.getProofReaderId()
 
         //print(nwaWorkShopDraft.toString())
-        nwaWorkshopDraftRepository.findByIdOrNull(iSDraftStdUpload.draftId)?.let { nwaWorkShopDraft->
+        nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkShopDraft.id)?.let { nwaWorkShopDraft->
 
             with(nwaWorkShopDraft){
                 title=nwaWorkShopDraft.title
@@ -841,8 +732,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
     }
 
-    fun proofReadStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft,
-                               iSDraftStdUpload:ISDraftStdUpload) : ProcessInstanceWD
+    fun proofReadStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
     {
         val variable:MutableMap<String, Any> = java.util.HashMap()
         nwaWorkShopDraft.title?.let{variable.put("title", it)}
@@ -858,7 +748,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         nwaWorkShopDraft.assignedTo= companyStandardRepository.getHopId()
 
         //print(nwaWorkShopDraft.toString())
-        nwaWorkshopDraftRepository.findByIdOrNull(iSDraftStdUpload.draftId)?.let { nwaWorkShopDraft->
+        nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkShopDraft.id)?.let { nwaWorkShopDraft->
 
             with(nwaWorkShopDraft){
                 title=nwaWorkShopDraft.title

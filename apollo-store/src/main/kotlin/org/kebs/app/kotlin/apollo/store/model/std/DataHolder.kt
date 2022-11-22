@@ -522,6 +522,99 @@ interface NwaPDraft{
 
 }
 
+interface NWAApprovedDraft{
+    fun getId(): String?
+    fun getRequestorName(): String?
+    fun getStandardOfficerName(): String?
+    fun getVersionNumber(): String?
+    fun getEditedBY(): String?
+    fun getEditedDate(): String?
+    fun getProofreadStatus(): String?
+    fun getProofReadBy(): String?
+    fun getProofReadDate(): String?
+    fun getDraughtingStatus(): String?
+    fun getDraughtingBy(): String?
+    fun getDraughtingDate(): String?
+    fun getDraftId(): Long?
+}
+
+interface ISAdoptionProposals{
+    fun getId(): Long?
+    fun getProposal_doc_name(): String?
+    fun getCirculationDate(): String?
+    fun getClosingDate(): String?
+    fun getTcSecName(): String?
+    fun getTitle(): String?
+    fun getScope(): String?
+    fun getAdoptionAcceptableAsPresented(): String?
+    fun getReasonsForNotAcceptance(): String?
+    fun getRecommendations(): String?
+    fun getNameOfRespondent(): String?
+    fun getPositionOfRespondent(): String?
+    fun getNameOfOrganization(): String?
+    fun getDateOfApplication(): String?
+    fun getUploadedBy(): String?
+    fun getPreparedDate(): String?
+    fun getProposalNumber(): String?
+}
+
+interface ISProposalComments{
+    fun getId(): String?
+    fun getUserId(): String?
+    fun getAdoptionComment(): String?
+    fun getCommentTime(): String?
+    fun getProposalId(): String?
+    fun getTitle(): String?
+    fun getDocumentType(): String?
+    fun getClause(): String?
+    fun getComNameOfOrganization(): String?
+    fun getParagraph(): String?
+    fun getTypeOfComment(): String?
+    fun getProposedChange(): String?
+}
+interface ISUploadedDraft{
+    fun getId(): Long?
+    fun getItle(): String?
+    fun getScope(): String?
+    fun getNormativeReference(): String?
+    fun getSymbolsAbbreviatedTerms(): String?
+    fun getClause(): String?
+    fun getSpecial(): String?
+    fun getISNumber(): String?
+    fun getUploadDate(): String?
+    fun getJustificationNo(): Long?
+    fun getProposalId(): Long?
+}
+
+interface ISAdoptionProposalJustification{
+    fun getId(): Long?
+    fun getMeetingDate(): String?
+    fun getTcId(): String?
+    fun getTcSec(): String?
+    fun getSlNumber(): String?
+    fun getEdition(): String?
+    fun getRequestNumber(): String?
+    fun getRequestedBy(): String?
+    fun getIssuesAddressed(): String?
+    fun getTcAcceptanceDate(): String?
+    fun getReferenceMaterial(): String?
+    fun getDepartment(): String?
+    fun getRemarks(): String?
+    fun getSubmissionDate(): String?
+    fun getTcCommittee(): String?
+    fun getDepartmentName(): String?
+    fun getPositiveVotes(): String?
+    fun getNegativeVotes(): String?
+    fun getTitle(): String?
+    fun getScope(): String?
+    fun getNormativeReference(): String?
+    fun getSymbolsAbbreviatedTerms(): String?
+    fun getClause(): String?
+    fun getSpecial(): String?
+    fun getProposalId(): Long?
+
+}
+
 
 
 

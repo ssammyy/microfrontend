@@ -1,11 +1,25 @@
 import { Injectable } from '@angular/core';
 import {
     ComJcJustificationDec,
-    GazetteNotice, InternationalStandardsComments,
-    ISAdoptionComments, ISAdoptionJustification,
-    ISAdoptionProposal, ISDecision, ISDraftUpload, ISHopTASKS, ISHosSicTASKS, ISJustificationDecision,
-    ISSacSecTASKS, ISStandard, ISTcSecTASKS, ListJustification, NWAStandard, ProposalComment,
-    ProposalComments, StakeholderProposalComments
+    GazetteNotice,
+    InternationalStandardsComments,
+    ISAdoptionComments,
+    ISAdoptionJustification,
+    ISAdoptionProposal,
+    ISDecision,
+    ISDraftUpload,
+    ISHopTASKS,
+    ISHosSicTASKS,
+    ISJustificationDecision,
+    ISJustificationProposal,
+    ISSacSecTASKS,
+    ISStandard, IStandardUpload,
+    ISTcSecTASKS,
+    ListJustification,
+    NWAStandard,
+    ProposalComment,
+    ProposalComments,
+    StakeholderProposalComments
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
@@ -54,13 +68,29 @@ export class StdIntStandardService {
         const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
+    public getApprovedProposals(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVED_PROPOSAL);
+        const params = new HttpParams();
+        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+    public getISJustification(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.get<ISJustificationProposal>(url, {params}).pipe();
+    }
+    public getApprovedISJustification(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_APP_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.get<ISJustificationProposal>(url, {params}).pipe();
+    }
 
 
 
-  public getISProposals(): Observable<ProposalComments[]> {
+
+  public getISProposals(): Observable<ISAdoptionProposal[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSALS);
     const params = new HttpParams();
-    return this.http.get<ProposalComments[]>(url, {params}).pipe();
+    return this.http.get<ISAdoptionProposal[]>(url, {params}).pipe();
   }
   //view Proposal Doc
     public viewProposalPDF(isDocumentId: any): Observable<any> {
@@ -352,10 +382,10 @@ export class StdIntStandardService {
         return this.http.get<InternationalStandardsComments>(url, {params}).pipe();
     }
 
-    public editStandardDraft(iSDraftUpload: ISDraftUpload): Observable<any> {
+    public submitDraftForEditing(iStandardUpload: IStandardUpload): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFT_STANDARD);
         const params = new HttpParams();
-        return this.http.post<ISDraftUpload>(url, iSDraftUpload, {params}).pipe(
+        return this.http.post<IStandardUpload>(url, iStandardUpload, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

@@ -165,7 +165,7 @@ class StandardLevyService(
         val approveName= "$approverFname  $approverLname"
         standardLevySiteVisitRemarks.siteVisitId= editDetails.id
         standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
-        standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
+        standardLevySiteVisitRemarks.role = "Levy Officer"
         standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         standardLevySiteVisitRemarks.remarkBy = approveName
 

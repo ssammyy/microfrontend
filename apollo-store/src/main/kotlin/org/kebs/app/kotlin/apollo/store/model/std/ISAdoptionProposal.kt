@@ -84,7 +84,7 @@ class ISAdoptionProposal {
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    var accentTo: Boolean = false
+    var accentTo: String? = null
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null

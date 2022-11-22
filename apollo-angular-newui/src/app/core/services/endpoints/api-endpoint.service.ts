@@ -71,7 +71,7 @@ export class ApiEndpointService {
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
-    public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/nwa`;
+    public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/sd/wa`;
     public static SD_NEP_NATIONAL_ENQUIRY = `${ApiEndpointService.MASTERS_CONTEXT}/National_enquiry_point`;
     public static SD_SCHEME_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Scheme_membership`;
     public static SD_IST_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/international_standard`;
@@ -398,8 +398,11 @@ export class ApiEndpointService {
         IST_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getAllComments`,
         IST_JUSTIFICATION_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserComments`,
         IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
+        IST_APPROVED_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProposals`,
         IST_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/prepareJustification`,
-        IST_UPLOAD_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/editStandardDraft`,
+        IST_VIEW_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getISJustification`,
+        IST_VIEW_APP_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedISJustification`,
+        IST_UPLOAD_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftForEditing`,
         IST_UPLOAD_DRAFTING_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/draughtStandardDraft`,
         IST_UPLOAD_PROOFREADING_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/proofReadStandardDraft`,
         IST_UPLOAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadISStandard`,

@@ -54,7 +54,7 @@ export class NwaJustificationFormComponent implements OnInit {
       });
 
     this.prepareJustificationFormGroup = this.formBuilder.group({
-      meetingDate: ['', Validators.required],
+        dateOfMeeting: ['', Validators.required],
       knw: ['', Validators.required],
       sl: ['', Validators.required],
         requestedBy: [],
@@ -62,7 +62,7 @@ export class NwaJustificationFormComponent implements OnInit {
         status: [],
       department: ['', Validators.required],
       issuesAddressed: ['', Validators.required],
-      knwAcceptanceDate: ['', Validators.required],
+        acceptanceDate: ['', Validators.required],
         uploadedFiles: [],
         DocDescription: []
       // postalAddress: ['', [Validators.required, Validators.pattern('P.O.BOX [0-9]{5}')]]
@@ -110,8 +110,8 @@ export class NwaJustificationFormComponent implements OnInit {
         (response ) => {
           console.log(response);
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
-         this.onClickSaveUploads(response.body.savedRowID)
+         //  this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
+         // this.onClickSaveUploads(response.body.savedRowID)
           this.prepareJustificationFormGroup.reset();
         },
         (error: HttpErrorResponse) => {

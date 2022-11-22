@@ -425,6 +425,10 @@ import { ReportSubmittedTimelineComponent } from './apollowebs/market-surveillan
 import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import { IntStdProposalsComponent } from './apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component';
+import { IntStdApprovedProposalsComponent } from './apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component';
+import { IntStdJustificationComponent } from './apollowebs/standards-development/international-standard/int-std-justification/int-std-justification.component';
+import { IntStdEditorComponent } from './apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -884,6 +888,10 @@ import {MatPaginatorModule} from "@angular/material/paginator";
         SampleSubmittedTimelineComponent,
         GenerateDnReportComponent,
         DeclarationDocumentsComponent,
+        IntStdProposalsComponent,
+        IntStdApprovedProposalsComponent,
+        IntStdJustificationComponent,
+        IntStdEditorComponent,
 
     ],
     entryComponents: [LoaderComponent],

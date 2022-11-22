@@ -136,12 +136,54 @@ class NationalWorkshopAgreementController(
 
     }
 
+
     @GetMapping("/getRejectedPreliminaryDraft")
     @ResponseBody
     fun getRejectedPreliminaryDraft(): MutableList<NwaPDraft>
     {
         return nwaService.getRejectedPreliminaryDraft()
     }
+
+    @GetMapping("/getApprovedDraft")
+    @ResponseBody
+    fun getApprovedDraft(): MutableList<NWAApprovedDraft>
+    {
+        return nwaService.getApprovedDraft()
+    }
+
+    // SAC SEC decision on Draft
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/decisionOnDraft")
+    fun decisionOnDraft(@RequestBody nwaPDraftAction: NwaPDraftAction
+    ) : ServerResponse
+    {
+        val nwaPreliminaryDraft= NWAPreliminaryDraft().apply {
+            accentTo=nwaPDraftAction.accentTo
+            id=nwaPDraftAction.preliminaryDraftID
+
+        }
+        val standardNwaRemarks= StandardNwaRemarks().apply {
+            justificationID=nwaPDraftAction.justificationID
+            remarks=nwaPDraftAction.comments
+        }
+
+        val standardDraft = StandardDraft().apply {
+            id=nwaPDraftAction.draftID
+        }
+
+        val standard= Standard().apply{
+            title=nwaPDraftAction.title
+            scope=nwaPDraftAction.scope
+            normativeReference=nwaPDraftAction.normativeReference
+            symbolsAbbreviatedTerms=nwaPDraftAction.symbolsAbbreviatedTerms
+            clause=nwaPDraftAction.clause
+            special=nwaPDraftAction.special
+    }
+
+        return ServerResponse(HttpStatus.OK,"Decision on Draft",nwaService.decisionOnDraft(nwaPreliminaryDraft,standardNwaRemarks,standardDraft,standard))
+
+    }
+
 
 
 

@@ -47,7 +47,7 @@ class ISUploadStandard {
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    val accentTo: Boolean = false
+    var accentTo: String? = null
 
     @Column(name = "TASK_ID")
     @Basic
@@ -60,4 +60,16 @@ class ISUploadStandard {
     @Column(name = "PROCESS_ID")
     @Basic
     var processId: String? = null
+
+    @Column(name = "JUSTIFICATION_NUMBER")
+    @Basic
+    var justificationNo: Long? = null
+
+    @Column(name = "PROPOSAL_ID")
+    @Basic
+    var proposalId: Long? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = null
 }

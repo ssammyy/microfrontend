@@ -201,6 +201,7 @@ export interface EditCompanyDTO {
 
 export interface CompanyRemarks{
     id: number;
+    editID: number;
     siteVisitId: number;
     remarks: string;
     remarkBy: string;
