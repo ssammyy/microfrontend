@@ -1888,16 +1888,13 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
                         runBlocking {
-                            if(complaintDetailsFound!=null){
-                                val compliant = complaintDetailsFound!!.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
-                                compliant.emailAddress?.let {
-                                    commonDaoServices.sendEmailWithUserEmail(it,
-                                        applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
-                                        complaintDetailsFound!!, map, remarksSaved.first,
-                                        docFile?.let {doc-> commonDaoServices.convertMultipartFileToFile(doc).absolutePath })
-                                }
+                            val compliant = complaintDetailsFound!!.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
+                            compliant.emailAddress?.let {
+                                commonDaoServices.sendEmailWithUserEmail(it,
+                                    applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
+                                    complaintDetailsFound!!, map, remarksSaved.first,
+                                    docFile?.let {doc-> commonDaoServices.convertMultipartFileToFile(doc).absolutePath })
                             }
-
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val scheduleEmailDetails =  WorkPlanScheduledDTO()
                             with(scheduleEmailDetails){
