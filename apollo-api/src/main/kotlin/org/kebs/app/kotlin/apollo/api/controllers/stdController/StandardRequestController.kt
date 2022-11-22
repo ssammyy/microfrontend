@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardRequestServ
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.StandardJustificationRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.StandardNWIRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.StandardRequestRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -33,6 +34,7 @@ class StandardRequestController(
     val referenceMaterialJustificationService: ReferenceMaterialJustificationService,
     private val standardRequestRepository: StandardRequestRepository,
     private val standardNWIRepository: StandardNWIRepository,
+    private val standardJustificationRepository: StandardJustificationRepository,
 
 
     ) {
@@ -211,12 +213,16 @@ class StandardRequestController(
         return standardRequestService.getAllNwiSApproved()
     }
 
+    @GetMapping("standard/getAllNwiSApprovedForJustification")
+    fun getAllNwiSApprovedForJustification(): List<StandardNWI> {
+        return standardRequestService.getAllNwiSApprovedForJustification()
+    }
+
 
     @GetMapping("standard/getAllRejectedNwiS")
     fun getAllRejectedNwiS(): List<StandardNWI> {
         return standardRequestService.getAllNwiSRejected()
     }
-
 
 
     @PostMapping("standard/decisionOnNWI")
@@ -273,6 +279,26 @@ class StandardRequestController(
             "Successfully uploaded justification by the TC",
             standardRequestService.uploadJustification(standardJustification)
         )
+    }
+
+    @GetMapping("standard/getJustificationsPendingDecision")
+    fun getJustificationsPendingDecision(): List<StandardJustification> {
+        return standardRequestService.getJustificationsPendingDecision()
+    }
+
+    @GetMapping("standard/getApprovedJustifications")
+    fun getApprovedJustifications(): List<StandardJustification> {
+        return standardRequestService.getApprovedJustifications()
+    }
+
+    @GetMapping("standard/getRejectedJustifications")
+    fun getRejectedJustifications(): List<StandardJustification> {
+        return standardRequestService.getRejectedJustifications()
+    }
+
+    @GetMapping("standard/getRejectedAmendmentJustifications")
+    fun getRejectedAmendmentJustifications(): List<StandardJustification> {
+        return standardRequestService.getRejectedAmendmentJustifications()
     }
 
     @GetMapping("standard/spc-sec/tasks")
@@ -588,6 +614,14 @@ class StandardRequestController(
         return standardRequestService.getANwiById(nwiId)
     }
 
+    @GetMapping("standard/getJustificationDecisionById")
+    fun getJustificationDecisionById(
+        @RequestParam("justificationId") justificationId: Long,
+
+        ): List<DecisionJustification> {
+        return standardRequestService.getJustificationDecisionById(justificationId)
+    }
+
     @GetMapping("standard/getRequestById")
     fun getRequestById(
         @RequestParam("requestId") requestId: Long,
@@ -625,6 +659,46 @@ class StandardRequestController(
                 u,
                 "NWI Documents",
                 nwi.id,
+                docDescription
+
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Documents Uploaded successfully"
+
+        return sm
+    }
+
+
+    //Justification Upload Documents
+    @PostMapping("/standard/uploadJustificationDocs")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadJustificationDocs(
+        @RequestParam("justificationId") nwiId: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("type") type: String,
+        @RequestParam("docDescription") docDescription: String,
+
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+
+        val justification = standardJustificationRepository.findByIdOrNull(nwiId.toLong())
+            ?: throw Exception("APPLICATION DOES NOT EXIST")
+        docFile.forEach { u ->
+            val upload = DatKebsSdStandardsEntity()
+            with(upload) {
+                sdDocumentId = justification.id
+                documentTypeDef = type
+
+            }
+
+            standardRequestService.uploadSDFileCommittee(
+                upload,
+                u,
+                "Justification Documents",
+                justification.id,
                 docDescription
 
             )

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -22,6 +23,18 @@ class DecisionJustification {
     @Column(name = "REFERENCE_NO")
     @Basic
     var referenceNo: String? = null
+
+    @Column(name = "JUSTIFICATION_ID")
+    @Basic
+    var justificationId: String? = null
+
+    @Column(name = "SPC_ID")
+    @Basic
+    var spcId: String? = null
+
+    @Column(name = "CREATED_ON")
+    @Basic
+    var createdOn: Timestamp? = null
 
     @Transient
     @JsonProperty("taskId")

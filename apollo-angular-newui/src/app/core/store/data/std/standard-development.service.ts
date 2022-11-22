@@ -26,7 +26,7 @@ import {
     StdWorkPlan,
     TechnicalCommitteeb
 } from './request_std.model';
-import {Ballot_Draft, Vote, VoteNwiRetrieved, VoteRetrieved, VotesNwiTally} from "./commitee-model";
+import {Vote, VoteNwiRetrieved, VoteRetrieved, VotesNwiTally} from "./commitee-model";
 
 @Injectable({
     providedIn: 'root'
@@ -175,6 +175,20 @@ export class StandardDevelopmentService {
         );
     }
 
+    public getJustificationDecisionById(justificationId: string): Observable<any> {
+
+        const url = `${this.apiServerUrl}getJustificationDecisionById`;
+        const params = new HttpParams().set('justificationId', justificationId)
+        return this.http.get<StdJustificationDecision>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
     public getRequestById(requestId: string): Observable<StandardRequestB[]> {
         const url = `${this.apiServerUrl}getRequestById`;
         const params = new HttpParams().set('requestId', requestId)
@@ -185,12 +199,26 @@ export class StandardDevelopmentService {
             catchError((fault: HttpErrorResponse) => {
                 return throwError(fault);
             })
-        );    }
+        );
+    }
 
 
     public getApprovedNwiS(): Observable<any> {
 
         const url = `${this.apiServerUrl}getAllApprovedNwiS`;
+        return this.http.get<NwiItem>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getAllNwiSApprovedForJustification(): Observable<any> {
+
+        const url = `${this.apiServerUrl}getAllNwiSApprovedForJustification`;
         return this.http.get<NwiItem>(url).pipe(
             map(function (response: any) {
                 return response;
@@ -243,6 +271,7 @@ export class StandardDevelopmentService {
             })
         );
     }
+
     public rejectNwi(nwiId: string): Observable<any> {
         const url = `${this.apiServerUrl}rejectNwi`;
         return this.http.post<any>(url, nwiId, {
@@ -266,7 +295,7 @@ export class StandardDevelopmentService {
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadNWI', uploadNWI)
     }
 
-    //upload additinal info Document Nwi
+    //upload additional info Document Nwi
     public uploadFileDetailsNwi(draftStandardID: string, data: FormData, doctype: string, nomineeName: string): Observable<any> {
         const url = `${this.apiServerUrl}uploadNWIDocs`;
 
@@ -274,6 +303,25 @@ export class StandardDevelopmentService {
             headers: {
                 'enctype': 'multipart/form-data'
             }, params: {'nwiId': draftStandardID, 'type': doctype, 'docDescription': nomineeName}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    //upload additional info Document Justification
+    public uploadFileDetailsJustification(justificationId: string, data: FormData, doctype: string, nomineeName: string): Observable<any> {
+        const url = `${this.apiServerUrl}uploadJustificationDocs`;
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'justificationId': justificationId, 'type': doctype, 'docDescription': nomineeName}
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -315,6 +363,24 @@ export class StandardDevelopmentService {
     public getTCSECTasksJustification(): Observable<StdtsecTaskJustification[]> {
         return this.http.get<StdtsecTaskJustification[]>(`${this.apiServerUrl}` + 'tc-sec/tasks')
     }
+
+    public getJustificationsPendingDecision(): Observable<StdJustification[]> {
+        return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getJustificationsPendingDecision')
+    }
+
+
+    public getApprovedJustifications(): Observable<StdJustification[]> {
+        return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getApprovedJustifications')
+    }
+
+    public getRejectedJustifications(): Observable<StdJustification[]> {
+        return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getRejectedJustifications')
+    }
+
+    public getRejectedAmendmentJustifications(): Observable<StdJustification[]> {
+        return this.http.get<StdJustification[]>(`${this.apiServerUrl}` + 'getRejectedAmendmentJustifications')
+    }
+
 
     public getSPCSECTasks(): Observable<StdSPCSECTask[]> {
         return this.http.get<StdSPCSECTask[]>(`${this.apiServerUrl}` + 'spc-sec/tasks')

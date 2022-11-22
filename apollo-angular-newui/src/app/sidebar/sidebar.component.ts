@@ -520,9 +520,9 @@ export const ROUTES: RouteInfo[] = [
             {path: 'ms-standards', title: 'Review Standard Requests', ab: 'RSR'},
             {path: 'std-tsc-sec-task', title: 'New Work Item', ab: 'NWI'},
             {path: 'std-tc-task', title: 'Vote On New Work Item', ab: 'V'},
-            {path: 'upload-justification', title: 'Upload Justification', ab: 'UJ'},
+            {path: 'upload-justification', title: 'Justification', ab: 'J'},
             {path: 'decision-justification', title: 'Decision On Justification', ab: 'DOJ'},
-            {path: 'upload-workplan', title: 'Upload Workplan', ab: 'UW'},
+            // {path: 'upload-workplan', title: 'Upload Workplan', ab: 'UW'},
 
 
         ],

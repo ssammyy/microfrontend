@@ -27,6 +27,9 @@ export class CommitteeService {
     public getAllNWIS(): any {
         return this.http.get<any>(`${this.apiServerUrl}getAllNwis`)
     }
+    public getAllNwiSForPd(): any {
+        return this.http.get<any>(`${this.apiServerUrl}getAllNwiSApprovedForPd`)
+    }
 
 
     //upload  Minutes For PD
