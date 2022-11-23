@@ -807,11 +807,25 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
     fun approveInternationalStandard(
         iSUploadStandard: ISUploadStandard,
-        internationalStandardRemarks: InternationalStandardRemarks
+        internationalStandardRemarks: InternationalStandardRemarks,
+        standard: Standard
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         iSUploadStandard.accentTo=iSUploadStandard.accentTo
         val decision=iSUploadStandard.accentTo
+
+        standard.title=standard.title
+        standard.normativeReference=standard.normativeReference
+        standard.symbolsAbbreviatedTerms=standard.symbolsAbbreviatedTerms
+        standard.clause=standard.clause
+        standard.scope=standard.scope
+        standard.special=standard.special
+        val valueFound =getISDNumber()
+        standard.standardNumber=valueFound.first
+        standard.isdn=valueFound.second
+        standard.standardType="International Standard"
+        standard.status=0
+        standard.dateFormed=Timestamp(System.currentTimeMillis())
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
@@ -830,7 +844,20 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
                 }
                 iSUploadStandardRepository.save(iSUploadStandard)
+                standardRepository.save(standard)
                 internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                var userList= companyStandardRepository.getSacSecEmailList()
+                val targetUrl = "https://kimsint.kebs.org/";
+                userList.forEach { item->
+                    //val recipient="stephenmuganda@gmail.com"
+                    val recipient= item.getUserEmail()
+                    val subject = "New Company Standard"+ standard.standardNumber
+                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded.Click on the Link below to view. ${targetUrl} "
+                    if (recipient != null) {
+                        notifications.sendEmail(recipient, subject, messageBody)
+                    }
+                }
+
             }?: throw Exception("DRAFT NOT FOUND")
 
         } else if (decision == "No") {
@@ -853,149 +880,171 @@ class IntStandardService (private val runtimeService: RuntimeService,
         return "Actioned"
     }
 
+    fun getStandardForGazettement(): MutableList<ISUploadedDraft> {
+        return standardRepository.getStandardForGazettement()
+    }
+
+    fun uploadGazetteNotice(standard: Standard) : Standard {
+        val standard= Standard()
+        standard.description=standard.description
+
+        standardRepository.findByIdOrNull(standard.id)?.let { standard ->
+
+            with(standard) {
+                status = 5
+                description = standard.description
+                standard.isGazetted=1
+                standard.dateOfGazettement= Timestamp(System.currentTimeMillis())
+            }
+            standardRepository.save(standard)
+
+        } ?: throw Exception("STANDARD NOT FOUND")
+
+        return standard
+    }
 
 
     // Upload NWA Standard
-    fun uploadISStandard(iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,
-                         internationalStandardRemarks: InternationalStandardRemarks,standard: Standard):  List<InternationalStandardTasks>
-    {
-        val variable:MutableMap<String, Any> = HashMap()
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        iSUploadStandard.title?.let{variable.put("title", it)}
-        iSUploadStandard.scope?.let{variable.put("scope", it)}
-        iSUploadStandard.normativeReference?.let{variable.put("normativeReference", it)}
-        iSUploadStandard.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
-        iSUploadStandard.clause?.let{variable.put("clause", it)}
-        iSUploadStandard.special?.let{variable.put("special", it)}
-        iSUploadStandard.taskId?.let{variable.put("taskId", it)}
-        iSUploadStandard.processId?.let{variable.put("processId", it)}
-        val isStandard= getISNumber()
-        iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
-        variable["uploadDate"] = iSUploadStandard.uploadDate!!
-
-        //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
-        standard.title=iSUploadStandard.title
-        standard.scope= iSUploadStandard.scope
-        standard.normativeReference= iSUploadStandard.normativeReference
-        standard.symbolsAbbreviatedTerms= iSUploadStandard.symbolsAbbreviatedTerms
-        standard.clause= iSUploadStandard.clause
-        standard.special=iSUploadStandard.special
-        standard.standardNumber= isStandard
-        standard.status=1
-        standard.standardType="International Standard"
-        standard.dateFormed=iSUploadStandard.uploadDate
-
-
-        iSUploadStandard.iSNumber = isStandard
-        variable["iSNumber"] = iSUploadStandard.iSNumber!!
-
-
-
-        //email to legal
-        var userList= companyStandardRepository.getSacSecEmailList()
-        val targetUrl = "https://kimsint.kebs.org/";
-        userList.forEach { item->
-            val recipient="stephenmuganda@gmail.com"
-            //val recipient= item.getUserEmail()
-            val subject = "International Standard Uploaded"+  iSUploadStandard.iSNumber
-            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},International Standard has been uploaded by the Head of Publishing.Click on the Link below to view. ${targetUrl} "
-            if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
-            }
-        }
-
-        if(variable["Yes"]==true){
-            iSUploadStandard.assignedTo= companyStandardRepository.getHoSicId()
-                iSUploadStandardRepository.save(iSUploadStandard)
-                standardRepository.save(standard)
-                runtimeService.createProcessInstanceQuery()
-                    .processInstanceId(iSUploadStandard.processId).list()
-                    ?.let { l ->
-                        val processInstance = l[0]
-                        taskService.complete(iSUploadStandard.taskId, variable)
-
-                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                            ?.let { t ->
-                                t.list()[0]
-                                    ?.let { task ->
-                                        task.assignee = "${
-                                            iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(
-                                                " invalid user id provided"
-                                            )
-                                        }"  //set the assignee}"
-                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
-                                        taskService.saveTask(task)
-                                    }
-                                    ?: KotlinLogging.logger { }
-                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
-                            }
-                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                        bpmnService.slAssignTask(
-                            processInstance.processInstanceId,
-                            "uploadGazetteNotice",
-                            iSUploadStandard.assignedTo
-                                ?: throw NullValueNotAllowedException("invalid user id provided")
-                        )
-
-                    }
-                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSUploadStandard.processId} ")
-
-
-        }else if(variable["No"]==false) {
-            val fname=loggedInUser.firstName
-            val sname=loggedInUser.lastName
-            val usersName= "$fname  $sname"
-            internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
-            internationalStandardRemarks.remarks= isJustificationDecision.comments
-            internationalStandardRemarks.status = 1.toString()
-            internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-            internationalStandardRemarks.remarkBy = usersName
-            isJustificationDecision.assignedTo= companyStandardRepository.getEditorId()
-
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                runtimeService.createProcessInstanceQuery()
-                    .processInstanceId(iSUploadStandard.processId).list()
-                    ?.let { l ->
-                        val processInstance = l[0]
-                        taskService.complete(iSUploadStandard.taskId, variable)
-
-                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                            ?.let { t ->
-                                t.list()[0]
-                                    ?.let { task ->
-                                        task.assignee = "${
-                                            iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(
-                                                " invalid user id provided"
-                                            )
-                                        }"  //set the assignee}"
-                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
-                                        taskService.saveTask(task)
-                                    }
-                                    ?: KotlinLogging.logger { }
-                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
-                            }
-                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                        bpmnService.slAssignTask(
-                            processInstance.processInstanceId,
-                            "draftStandardEditing",
-                            iSUploadStandard.assignedTo
-                                ?: throw NullValueNotAllowedException("invalid user id provided")
-                        )
-
-                    }
-                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSUploadStandard.processId} ")
-
-
-
-        }
-
-        return  getUserTasks()
-
-    }
+//    fun uploadISStandard(iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,
+//                         internationalStandardRemarks: InternationalStandardRemarks,standard: Standard):  List<InternationalStandardTasks>
+//    {
+//        val variable:MutableMap<String, Any> = HashMap()
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        iSUploadStandard.title?.let{variable.put("title", it)}
+//        iSUploadStandard.scope?.let{variable.put("scope", it)}
+//        iSUploadStandard.normativeReference?.let{variable.put("normativeReference", it)}
+//        iSUploadStandard.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
+//        iSUploadStandard.clause?.let{variable.put("clause", it)}
+//        iSUploadStandard.special?.let{variable.put("special", it)}
+//        iSUploadStandard.taskId?.let{variable.put("taskId", it)}
+//        iSUploadStandard.processId?.let{variable.put("processId", it)}
+//        val isStandard= getISNumber()
+//        iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
+//        variable["uploadDate"] = iSUploadStandard.uploadDate!!
+//
+//        //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
+//        standard.title=iSUploadStandard.title
+//        standard.scope= iSUploadStandard.scope
+//        standard.normativeReference= iSUploadStandard.normativeReference
+//        standard.symbolsAbbreviatedTerms= iSUploadStandard.symbolsAbbreviatedTerms
+//        standard.clause= iSUploadStandard.clause
+//        standard.special=iSUploadStandard.special
+//        standard.standardNumber= isStandard
+//        standard.status=1
+//        standard.standardType="International Standard"
+//        standard.dateFormed=iSUploadStandard.uploadDate
+//
+//
+//        iSUploadStandard.iSNumber = isStandard
+//        variable["iSNumber"] = iSUploadStandard.iSNumber!!
+//
+//
+//
+//        //email to legal
+//        var userList= companyStandardRepository.getSacSecEmailList()
+//        val targetUrl = "https://kimsint.kebs.org/";
+//        userList.forEach { item->
+//            val recipient="stephenmuganda@gmail.com"
+//            //val recipient= item.getUserEmail()
+//            val subject = "International Standard Uploaded"+  iSUploadStandard.iSNumber
+//            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},International Standard has been uploaded by the Head of Publishing.Click on the Link below to view. ${targetUrl} "
+//            if (recipient != null) {
+//                notifications.sendEmail(recipient, subject, messageBody)
+//            }
+//        }
+//
+//        if(variable["Yes"]==true){
+//            iSUploadStandard.assignedTo= companyStandardRepository.getHoSicId()
+//                iSUploadStandardRepository.save(iSUploadStandard)
+//                standardRepository.save(standard)
+//                runtimeService.createProcessInstanceQuery()
+//                    .processInstanceId(iSUploadStandard.processId).list()
+//                    ?.let { l ->
+//                        val processInstance = l[0]
+//                        taskService.complete(iSUploadStandard.taskId, variable)
+//
+//                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+//                            ?.let { t ->
+//                                t.list()[0]
+//                                    ?.let { task ->
+//                                        task.assignee = "${
+//                                            iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(
+//                                                " invalid user id provided"
+//                                            )
+//                                        }"  //set the assignee}"
+//                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+//                                        taskService.saveTask(task)
+//                                    }
+//                                    ?: KotlinLogging.logger { }
+//                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+//
+//
+//                            }
+//                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+//                        bpmnService.slAssignTask(
+//                            processInstance.processInstanceId,
+//                            "uploadGazetteNotice",
+//                            iSUploadStandard.assignedTo
+//                                ?: throw NullValueNotAllowedException("invalid user id provided")
+//                        )
+//
+//                    }
+//                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSUploadStandard.processId} ")
+//
+//
+//        }else if(variable["No"]==false) {
+//            val fname=loggedInUser.firstName
+//            val sname=loggedInUser.lastName
+//            val usersName= "$fname  $sname"
+//            internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
+//            internationalStandardRemarks.remarks= isJustificationDecision.comments
+//            internationalStandardRemarks.status = 1.toString()
+//            internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+//            internationalStandardRemarks.remarkBy = usersName
+//            isJustificationDecision.assignedTo= companyStandardRepository.getEditorId()
+//
+//                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+//                runtimeService.createProcessInstanceQuery()
+//                    .processInstanceId(iSUploadStandard.processId).list()
+//                    ?.let { l ->
+//                        val processInstance = l[0]
+//                        taskService.complete(iSUploadStandard.taskId, variable)
+//
+//                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+//                            ?.let { t ->
+//                                t.list()[0]
+//                                    ?.let { task ->
+//                                        task.assignee = "${
+//                                            iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(
+//                                                " invalid user id provided"
+//                                            )
+//                                        }"  //set the assignee}"
+//                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
+//                                        taskService.saveTask(task)
+//                                    }
+//                                    ?: KotlinLogging.logger { }
+//                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
+//
+//
+//                            }
+//                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+//                        bpmnService.slAssignTask(
+//                            processInstance.processInstanceId,
+//                            "draftStandardEditing",
+//                            iSUploadStandard.assignedTo
+//                                ?: throw NullValueNotAllowedException("invalid user id provided")
+//                        )
+//
+//                    }
+//                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSUploadStandard.processId} ")
+//
+//
+//
+//        }
+//
+//        return  getUserTasks()
+//
+//    }
 
     fun uploadISDFile(
         uploads: ISStandardUploads,
@@ -1029,66 +1078,33 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
 
 
-    // Upload NWA Gazette notice on Website
-    fun uploadGazetteNotice(iSGazetteNotice: ISGazetteNotice) : ProcessInstanceResponseGazzette
+
+//    // Upload NWA Gazette date
+//    fun updateGazettementDate(iSGazettement: ISGazettement)
+//    {
+//        val variable:MutableMap<String, Any> = HashMap()
+//        iSGazettement.iSNumber?.let{variable.put("iSNumber", it)}
+//        iSGazettement.dateOfGazettement = Timestamp(System.currentTimeMillis())
+//        variable["dateOfGazettement"] = iSGazettement.dateOfGazettement!!
+//        iSGazettement.description?.let{variable.put("description", it)}
+//        iSGazettement.taskId?.let{variable.put("taskId", it)}
+//        iSGazettement.processId?.let{variable.put("processId", it)}
+//
+//        print(iSGazettement.toString())
+//
+//        iSGazettementRepository.save(iSGazettement)
+//        taskService.complete(iSGazettement.taskId, variable)
+//        println("IS Gazzettement date has been updated")
+//
+//    }
+
+    fun getISDNumber(): Pair<String, Long>
     {
-        val variable:MutableMap<String, Any> = HashMap()
-        iSGazetteNotice.iSNumber?.let{variable.put("iSNumber", it)}
-        iSGazetteNotice.description?.let{variable.put("description", it)}
-        iSGazetteNotice.taskId?.let{variable.put("taskId", it)}
-        iSGazetteNotice.processId?.let{variable.put("processId", it)}
-        iSGazetteNotice.assignedTo= companyStandardRepository.getHoSicId()
-
-        iSGazetteNotice.dateUploaded = Timestamp(System.currentTimeMillis())
-        variable["dateUploaded"] = iSGazetteNotice.dateUploaded!!
-        print(iSGazetteNotice.toString())
-
-        val isuDetails = iSGazetteNoticeRepository.save(iSGazetteNotice)
-        println("IS Gazette Notice has been uploaded")
-
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-            ?.let { t ->
-                t.list()[0]
-                    ?.let { task ->
-                        task.assignee =
-                            "${iSGazetteNotice.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-
-                        taskService.saveTask(task)
-                    }
-                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
-            }
-            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-        bpmnService.slAssignTask(
-            processInstance.processInstanceId,
-            "updateGazetteDate",
-            iSGazetteNotice?.assignedTo
-                ?: throw NullValueNotAllowedException("invalid user id provided")
-        )
-
-        return ProcessInstanceResponseGazzette(isuDetails.id, processInstance.id, processInstance.isEnded
-        )
-    }
-
-    // Upload NWA Gazette date
-    fun updateGazettementDate(iSGazettement: ISGazettement)
-    {
-        val variable:MutableMap<String, Any> = HashMap()
-        iSGazettement.iSNumber?.let{variable.put("iSNumber", it)}
-        iSGazettement.dateOfGazettement = Timestamp(System.currentTimeMillis())
-        variable["dateOfGazettement"] = iSGazettement.dateOfGazettement!!
-        iSGazettement.description?.let{variable.put("description", it)}
-        iSGazettement.taskId?.let{variable.put("taskId", it)}
-        iSGazettement.processId?.let{variable.put("processId", it)}
-
-        print(iSGazettement.toString())
-
-        iSGazettementRepository.save(iSGazettement)
-        taskService.complete(iSGazettement.taskId, variable)
-        println("IS Gazzettement date has been updated")
-
+        var allRequests =standardRepository.getMaxISDN()
+        var startId="ISN"
+        allRequests = allRequests.plus(1)
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        return Pair("$startId/$allRequests:$year", allRequests)
     }
 
 

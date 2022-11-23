@@ -50,13 +50,19 @@ export class IntStdSacApprovalComponent implements OnInit {
   ngOnInit(): void {
     this.approve='Yes';
     this.reject='No';
-    this.getUploadedDraft();
+    this.getApprovedEditedDraft();
     this.approveRequirementsFormGroup = this.formBuilder.group({
       comments: ['', Validators.required],
       accentTo: [],
       justificationId:[],
       proposalId:[],
-      draftId:[]
+      draftId:[],
+        title:[],
+        normativeReference:[],
+        symbolsAbbreviatedTerms:[],
+        clause:[],
+        scope:[],
+        special:[]
 
     });
 
@@ -65,7 +71,13 @@ export class IntStdSacApprovalComponent implements OnInit {
       accentTo: [],
       justificationId:[],
       proposalId:[],
-      draftId:[]
+      draftId:[],
+        title:[],
+        normativeReference:[],
+        symbolsAbbreviatedTerms:[],
+        clause:[],
+        scope:[],
+        special:[]
 
     });
   }
@@ -82,10 +94,10 @@ export class IntStdSacApprovalComponent implements OnInit {
 
   }
 
-  public getUploadedDraft(): void {
+  public getApprovedEditedDraft(): void {
     this.loadingText = "Retrieving Drafts...";
     this.SpinnerService.show();
-    this.stdIntStandardService.getUploadedDraft().subscribe(
+    this.stdIntStandardService.getApprovedEditedDraft().subscribe(
         (response: ISCheckRequirements[]) => {
           this.isCheckRequirements = response;
           console.log(this.isCheckRequirements)
@@ -150,7 +162,13 @@ export class IntStdSacApprovalComponent implements OnInit {
             accentTo: this.approve,
             proposalId: this.actionRequest.proposalId,
             justificationId: this.actionRequest.justificationNo,
-            draftId: this.actionRequest.id
+            draftId: this.actionRequest.id,
+              title:this.actionRequest.title,
+              normativeReference:this.actionRequest.normativeReference,
+              symbolsAbbreviatedTerms:this.actionRequest.symbolsAbbreviatedTerms,
+              clause:this.actionRequest.clause,
+              scope:this.actionRequest.scope,
+              special:this.actionRequest.special
           }
       );
       this.rejectRequirementsFormGroup.patchValue(
@@ -158,7 +176,13 @@ export class IntStdSacApprovalComponent implements OnInit {
             accentTo: this.reject,
             proposalId: this.actionRequest.proposalId,
             justificationId: this.actionRequest.justificationNo,
-            draftId: this.actionRequest.id
+            draftId: this.actionRequest.id,
+              title:this.actionRequest.title,
+              normativeReference:this.actionRequest.normativeReference,
+              symbolsAbbreviatedTerms:this.actionRequest.symbolsAbbreviatedTerms,
+              clause:this.actionRequest.clause,
+              scope:this.actionRequest.scope,
+              special:this.actionRequest.special
           }
       );
     }
@@ -187,13 +211,13 @@ export class IntStdSacApprovalComponent implements OnInit {
     });
   }
 
-  approveHopJustification(): void {
+    approveInternationalStandard(): void {
     this.loadingText = "Approving Draft...";
     this.SpinnerService.show();
-    this.stdIntStandardService.decisionOnHopJustification(this.approveRequirementsFormGroup.value).subscribe(
+    this.stdIntStandardService.approveInternationalStandard(this.approveRequirementsFormGroup.value).subscribe(
         (response ) => {
           //console.log(response);
-          this.getUploadedDraft();
+          this.getApprovedEditedDraft();
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Draft Approved`);
         },
@@ -206,15 +230,15 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.hideModalRequirements();
   }
 
-  rejectHopJustification(): void {
+    rejectInternationalStandard(): void {
     this.loadingText = "Rejecting Draft...";
     this.SpinnerService.show();
-    this.stdIntStandardService.decisionOnHopJustification(this.rejectRequirementsFormGroup.value).subscribe(
+    this.stdIntStandardService.approveInternationalStandard(this.rejectRequirementsFormGroup.value).subscribe(
         (response ) => {
           //console.log(response);
-          this.getUploadedDraft();
+          this.getApprovedEditedDraft();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Draft Rejected`);
+          this.showToasterSuccess('Success', `Standard Draft Rejected`);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

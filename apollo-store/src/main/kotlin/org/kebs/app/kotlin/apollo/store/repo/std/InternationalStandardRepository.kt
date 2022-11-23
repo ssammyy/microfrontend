@@ -389,7 +389,18 @@ interface StandardRepository : JpaRepository<Standard, Long> {
     @Query(value = "SELECT max(SDN)  FROM SD_STANDARD_TBL", nativeQuery = true)
     fun getMaxSDN(): Long
 
+    @Query(value = "SELECT max(ISDN)  FROM SD_STANDARD_TBL", nativeQuery = true)
+    fun getMaxISDN(): Long
+
     fun findAllByOrderByIdDesc(): MutableList<Standard>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,STANDARD_NUMBER as iSNumber,cast(DATE_FORMED as varchar(200)) AS uploadDate FROM SD_STANDARD_TBL " +
+                "WHERE  STATUS='0' AND STANDARD_TYPE='International Standard' ",
+        nativeQuery = true
+    )
+    fun getStandardForGazettement(): MutableList<ISUploadedDraft>
 }
 
 interface StandardReviewCommentsRepository : JpaRepository<StandardReviewComments, Long> {

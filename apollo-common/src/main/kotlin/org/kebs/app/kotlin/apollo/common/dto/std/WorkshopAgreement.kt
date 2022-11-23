@@ -186,6 +186,29 @@ class ISDraftDecisions(
 ){
 
 }
+class StandardGazetteDto(
+    @JsonProperty("description") val description: String,
+    @JsonProperty("id") val id: Long
+){
+
+
+}
+class ISDraftDecisionsStd(
+    @JsonProperty("accentTo") val accentTo: String,
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("justificationId") val justificationId: Long,
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("title") val title: String,
+    @JsonProperty("normativeReference") val normativeReference: String,
+    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String,
+    @JsonProperty("clause") val clause: String,
+    @JsonProperty("scope") val scope: String,
+    @JsonProperty("special") val special: String
+
+){
+
+}
 
 class ISJustificationDecision(
     @JsonProperty("processId") val processId: String,

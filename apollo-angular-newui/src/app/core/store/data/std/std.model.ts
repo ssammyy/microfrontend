@@ -711,6 +711,20 @@ export interface ISDraftDecision {
     proposalId:number;
     draftId:number;
 }
+export interface ISDraftDecisionStd {
+    comments:string;
+    accentTo:string;
+    justificationId:number;
+    proposalId:number;
+    draftId:number;
+    title:string;
+    normativeReference:string;
+    symbolsAbbreviatedTerms:string;
+    clause:string;
+    scope:string;
+    special:string;
+}
+
 export interface ISSacSecTASKS {
     taskId: string;
     name: string;

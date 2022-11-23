@@ -257,7 +257,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="tab-pane fade" id="nav-hop-approve-justification" role="tabpanel" aria-labelledby="nav-hop-approve-justification-tab">
-                                                                    <form (ngSubmit)="approveHopJustification()" [formGroup]="approveRequirementsFormGroup" class="form">
+                                                                    <form (ngSubmit)="approveInternationalStandard()" [formGroup]="approveRequirementsFormGroup" class="form">
                                                                         <div class="modal-body">
                                                                             <div class="form-body">
                                                                                 <div class="row">
@@ -266,6 +266,12 @@
                                                                                         <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                     </div>
                                                                                 </div>
+                                                                                <input type="hidden" formControlName="title" value="{{actionRequest?.title}}" name="title" >
+                                                                                <input type="hidden" formControlName="normativeReference" value="{{actionRequest?.normativeReference}}" name="normativeReference"  >
+                                                                                <input type="hidden" formControlName="symbolsAbbreviatedTerms" value="{{actionRequest?.symbolsAbbreviatedTerms}}" name="symbolsAbbreviatedTerms" >
+                                                                                <input type="hidden" formControlName="clause" value="{{actionRequest?.clause}}" name="clause" >
+                                                                                <input type="hidden" formControlName="scope" name="scope" value="{{actionRequest?.scope}}" >
+                                                                                <input type="hidden" formControlName="special" name="special" value="{{actionRequest?.special}}" >
                                                                                 <input type="hidden" formControlName="draftId" value="{{actionRequest?.id}}" name="draftId" >
                                                                                 <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
                                                                                 <input type="hidden" formControlName="proposalId" value="{{actionRequest?.proposalId}}" name="proposalId" >
@@ -279,7 +285,7 @@
                                                                     </form>
                                                                 </div>
                                                                 <div class="tab-pane fade" id="nav-hop-reject-justification" role="tabpanel" aria-labelledby="nav-hop-reject-justification-tab">
-                                                                    <form (ngSubmit)="rejectHopJustification()" [formGroup]="rejectRequirementsFormGroup" class="form">
+                                                                    <form (ngSubmit)="rejectInternationalStandard()" [formGroup]="rejectRequirementsFormGroup" class="form">
                                                                         <div class="modal-body">
                                                                             <div class="form-body">
                                                                                 <div class="row">
@@ -288,6 +294,12 @@
                                                                                         <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                     </div>
                                                                                 </div>
+                                                                                <input type="hidden" formControlName="title" value="{{actionRequest?.title}}" name="title" >
+                                                                                <input type="hidden" formControlName="normativeReference" value="{{actionRequest?.normativeReference}}" name="normativeReference"  >
+                                                                                <input type="hidden" formControlName="symbolsAbbreviatedTerms" value="{{actionRequest?.symbolsAbbreviatedTerms}}" name="symbolsAbbreviatedTerms" >
+                                                                                <input type="hidden" formControlName="clause" value="{{actionRequest?.clause}}" name="clause" >
+                                                                                <input type="hidden" formControlName="scope" name="scope" value="{{actionRequest?.scope}}" >
+                                                                                <input type="hidden" formControlName="special" name="special" value="{{actionRequest?.special}}" >
                                                                                 <input type="hidden" formControlName="draftId" value="{{actionRequest?.id}}" name="draftId" >
                                                                                 <input type="hidden" formControlName="proposalId" value="{{actionRequest?.proposalId}}" name="proposalId" >
                                                                                 <input type="hidden" formControlName="justificationId" name="justificationId" value="{{actionRequest?.justificationNo}}" >

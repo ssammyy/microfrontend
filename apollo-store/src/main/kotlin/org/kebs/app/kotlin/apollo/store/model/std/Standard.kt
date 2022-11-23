@@ -45,6 +45,11 @@ class Standard {
     @Basic
     var sdn:Long? =null
 
+    @Column(name="ISDN")
+    @Basic
+    var isdn:Long? =null
+
+
     @Column(name="STATUS")
     @Basic
     var status:Long? =null

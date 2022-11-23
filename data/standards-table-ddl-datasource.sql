@@ -835,6 +835,10 @@ alter table SD_STANDARD_REVIEW
 alter table SD_IS_STANDARD_TB
     add STATUS NUMBER ;
 /
+alter table SD_STANDARD_TBL
+    add ISDN NUMBER ;
+/
+
 
 create  table DAT_KEBS_REVIEW_STD_REMARKS
 (

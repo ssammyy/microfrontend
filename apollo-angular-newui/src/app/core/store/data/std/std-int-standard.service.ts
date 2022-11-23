@@ -6,7 +6,7 @@ import {
     ISAdoptionComments,
     ISAdoptionJustification,
     ISAdoptionProposal, ISCheckRequirements,
-    ISDecision, ISDraftDecision,
+    ISDecision, ISDraftDecision, ISDraftDecisionStd,
     ISDraftUpload,
     ISHopTASKS,
     ISHosSicTASKS,
@@ -185,6 +185,56 @@ export class StdIntStandardService {
         );
     }
 
+    public getApprovedEditedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_EDITED_STANDARD_DRAFT);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public approveInternationalStandard(isDraftDecisionStd: ISDraftDecisionStd): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_EDITED_STANDARD_DRAFT);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecisionStd>(url, isDraftDecisionStd, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getStandardForGazettement(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_STANDARD_GAZETTE);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public uploadGazetteNotice(gazetteNotice: GazetteNotice): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_STD_GAZETTE);
+        const params = new HttpParams();
+        return this.http.post<GazetteNotice>(url, gazetteNotice, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    // public uploadGazetteNotice(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+    //     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_STD_GAZETTE);
+    //     const params = new HttpParams();
+    //     return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+    //         map(function (response: any) {
+    //             return response;
+    //         }),
+    //         catchError((fault: HttpErrorResponse) => {
+    //             return throwError(fault);
+    //         })
+    //     );
+    // }
 
 
   public getISProposals(): Observable<ISAdoptionProposal[]> {
@@ -405,18 +455,7 @@ export class StdIntStandardService {
             })
         );
     }
-    public uploadGazetteNotice(gazetteNotice: GazetteNotice): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IS_UPLOAD_GAZETTE_NOTICE);
-        const params = new HttpParams();
-        return this.http.post<GazetteNotice>(url, gazetteNotice, {params}).pipe(
-            map(function (response: any) {
-                return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                return throwError(fault);
-            })
-        );
-    }
+
 
     //view Standard File
     public viewStandardDPDF(isStandardID: any): Observable<any> {
