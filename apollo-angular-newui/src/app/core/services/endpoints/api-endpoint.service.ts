@@ -414,6 +414,8 @@ export class ApiEndpointService {
         IST_DECISION_PROOFREAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveProofReadStandard`,
         IST_VIEW_EDITED_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProofReadDraft`,
         IST_DECISION_EDITED_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveEditedStandard`,
+        IST_VIEW_EDITED_STANDARD_DRAFT: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedEditedDraft`,
+        IST_APPROVE_EDITED_STANDARD_DRAFT: `${ApiEndpointService.SD_IST_CONTEXT}/approveInternationalStandard`,
         IST_UPLOAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadISStandard`,
         IST_UPLOAD_JS_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/js-file-upload`,
         IST_SPC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSPCSECTasks`,
