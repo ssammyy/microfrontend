@@ -5,15 +5,15 @@ import {
     InternationalStandardsComments,
     ISAdoptionComments,
     ISAdoptionJustification,
-    ISAdoptionProposal,
-    ISDecision,
+    ISAdoptionProposal, ISCheckRequirements,
+    ISDecision, ISDraftDecision,
     ISDraftUpload,
     ISHopTASKS,
     ISHosSicTASKS,
     ISJustificationDecision,
     ISJustificationProposal,
     ISSacSecTASKS,
-    ISStandard, IStandardUpload,
+    ISStandard, IStandardDraftEdit, IStandardUpload,
     ISTcSecTASKS,
     ListJustification,
     NWAStandard,
@@ -84,6 +84,106 @@ export class StdIntStandardService {
         return this.http.get<ISJustificationProposal>(url, {params}).pipe();
     }
 
+    public getUploadedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+    public getApprovedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_APPROVED_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public editStandardDraft(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_EDIT_APPROVED_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getEditedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_EDITED_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public draughtStandard(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFTING_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getDraughtedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_DRAUGHTED_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public proofReadStandard(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_PROOFREADING_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getProofReadDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROOFREAD_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public approveProofReadStandard(isDraftDecision: ISDraftDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_PROOFREAD_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+
+    public getApprovedProofReadDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_EDITED_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public approveEditedStandard(isDraftDecision: ISDraftDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_EDITED_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
 
 
@@ -219,10 +319,10 @@ export class StdIntStandardService {
         );
     }
 
-    public decisionOnHopJustification(isJustificationDecision: ISJustificationDecision): Observable<any> {
+    public decisionOnHopJustification(isDraftDecision: ISDraftDecision): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_HOP_DECISION_ON_JUSTIFICATION);
         const params = new HttpParams();
-        return this.http.post<ISAdoptionJustification>(url, isJustificationDecision, {params}).pipe(
+        return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -394,6 +494,8 @@ export class StdIntStandardService {
             })
         );
     }
+
+
     public draughtStandardDraft(iSDraftUpload: ISDraftUpload): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFTING_STANDARD);
         const params = new HttpParams();

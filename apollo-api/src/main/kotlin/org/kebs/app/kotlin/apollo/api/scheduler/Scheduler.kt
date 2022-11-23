@@ -90,7 +90,6 @@ class SchedulerDevelopment(
         qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
         schedulerImpl.updateLabResultsWithDetails()
         schedulerImpl.updateFirmTypeStatus()
-        schedulerImpl.updateOverDueTask()
         schedulerImpl.updatePaidDemandNotesStatus()
 //        standardLevyService.sendLevyPaymentReminders()
         //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
@@ -103,5 +102,10 @@ class SchedulerDevelopment(
     fun runMonthlyScheduler() {
         standardLevyService.sendLevyPaymentReminders()
         sendEntryNumberToKraServices.postPenaltyDetailsToKra()
+    }
+
+    @Scheduled(cron = "\${scheduler.cron.daily}")
+    fun runDailyScheduler() {
+        schedulerImpl.updateOverDueTask()
     }
 }

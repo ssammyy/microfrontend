@@ -610,193 +610,250 @@ class IntStandardService (private val runtimeService: RuntimeService,
 
 
 
-    fun editStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
-    {
-        val variable:MutableMap<String, Any> = java.util.HashMap()
-        nwaWorkShopDraft.title?.let{variable.put("title", it)}
-        nwaWorkShopDraft.scope?.let{variable.put("scope", it)}
-        nwaWorkShopDraft.normativeReference?.let{variable.put("normativeReference", it)}
-        nwaWorkShopDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
-        nwaWorkShopDraft.clause?.let{variable.put("clause", it)}
-        nwaWorkShopDraft.special?.let{variable.put("special", it)}
-        nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
-        nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
-        nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
-        variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
-        nwaWorkShopDraft.assignedTo= companyStandardRepository.getDraughtsmanId()
 
-        //print(nwaWorkShopDraft.toString())
+    fun editStandardDraft(iSUploadStandard: ISUploadStandard) : ISUploadStandard {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val draft= ISUploadStandard()
+        iSUploadStandard.title = iSUploadStandard.title
+        iSUploadStandard.scope = iSUploadStandard.scope
+        iSUploadStandard.normativeReference = iSUploadStandard.normativeReference
+        iSUploadStandard.symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
+        iSUploadStandard.clause = iSUploadStandard.clause
+        iSUploadStandard.special = iSUploadStandard.special
+        iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
+        iSUploadStandard.proposalId = iSUploadStandard.proposalId
+        iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
 
-        val nwaDetails = nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
-        variable["draftId"] = nwaDetails.id
-        runtimeService.createProcessInstanceQuery()
-            .processInstanceId(nwaWorkShopDraft.processId).list()
-            ?.let { l ->
-                val processInstance = l[0]
-
-                taskService.complete(nwaWorkShopDraft.taskId, variable)
-
-                taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                    ?.let { t ->
-                        t.list()[0]
-                            ?.let { task ->
-                                task.assignee =
-                                    "${nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-                                taskService.saveTask(task)
-                            }
-                            ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
-                    }
-                    ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                bpmnService.slAssignTask(
-                    processInstance.processInstanceId,
-                    "draughting",
-                    nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
-                )
-                return ProcessInstanceWD(
-                    nwaDetails.id,
-                    processInstance.id,
-                    processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared?: throw NullValueNotAllowedException("Date is required")
-                )
+            with(iSUploadStandard) {
+                status = 3
+                title = iSUploadStandard.title
+                scope = iSUploadStandard.scope
+                normativeReference = iSUploadStandard.normativeReference
+                symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
+                clause = iSUploadStandard.clause
+                special = iSUploadStandard.special
             }
-            ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${nwaWorkShopDraft.processId} ")
+            iSUploadStandardRepository.save(iSUploadStandard)
 
+        } ?: throw Exception("DRAFT NOT FOUND")
 
-
+        return draft
     }
 
-    fun draughtStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
-    {
-        val variable:MutableMap<String, Any> = java.util.HashMap()
-        nwaWorkShopDraft.title?.let{variable.put("title", it)}
-        nwaWorkShopDraft.scope?.let{variable.put("scope", it)}
-        nwaWorkShopDraft.normativeReference?.let{variable.put("normativeReference", it)}
-        nwaWorkShopDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
-        nwaWorkShopDraft.clause?.let{variable.put("clause", it)}
-        nwaWorkShopDraft.special?.let{variable.put("special", it)}
-        nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
-        nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
-        nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
-        variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
-        nwaWorkShopDraft.assignedTo= companyStandardRepository.getProofReaderId()
-
-        //print(nwaWorkShopDraft.toString())
-        nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkShopDraft.id)?.let { nwaWorkShopDraft->
-
-            with(nwaWorkShopDraft){
-                title=nwaWorkShopDraft.title
-                scope=nwaWorkShopDraft.scope
-                normativeReference=nwaWorkShopDraft.normativeReference
-                symbolsAbbreviatedTerms=nwaWorkShopDraft.symbolsAbbreviatedTerms
-                clause=nwaWorkShopDraft.clause
-                special=nwaWorkShopDraft.special
-                assignedTo=nwaWorkShopDraft.assignedTo
-            }
-
-        nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
-        runtimeService.createProcessInstanceQuery()
-            .processInstanceId(nwaWorkShopDraft.processId).list()
-            ?.let { l ->
-                val processInstance = l[0]
-
-                taskService.complete(nwaWorkShopDraft.taskId, variable)
-
-                taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                    ?.let { t ->
-                        t.list()[0]
-                            ?.let { task ->
-                                task.assignee =
-                                    "${nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-                                taskService.saveTask(task)
-                            }
-                            ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
-
-
-                    }
-                    ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                bpmnService.slAssignTask(
-                    processInstance.processInstanceId,
-                    "proofreading",
-                    nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
-                )
-                return ProcessInstanceWD(
-                    nwaWorkShopDraft.id,
-                    processInstance.id,
-                    processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared?: throw NullValueNotAllowedException("Date is required")
-                )
-            }
-            ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${nwaWorkShopDraft.processId} ")
-        }?: throw Exception("RECORD NOT FOUND")
-
-
+    fun getEditedDraft(): MutableList<ISUploadedDraft> {
+        return iSUploadStandardRepository.getEditedDraft()
     }
 
-    fun proofReadStandardDraft(nwaWorkShopDraft: NWAWorkShopDraft) : ProcessInstanceWD
-    {
-        val variable:MutableMap<String, Any> = java.util.HashMap()
-        nwaWorkShopDraft.title?.let{variable.put("title", it)}
-        nwaWorkShopDraft.scope?.let{variable.put("scope", it)}
-        nwaWorkShopDraft.normativeReference?.let{variable.put("normativeReference", it)}
-        nwaWorkShopDraft.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
-        nwaWorkShopDraft.clause?.let{variable.put("clause", it)}
-        nwaWorkShopDraft.special?.let{variable.put("special", it)}
-        nwaWorkShopDraft.taskId?.let{variable.put("taskId", it)}
-        nwaWorkShopDraft.processId?.let{variable.put("processId", it)}
-        nwaWorkShopDraft.dateWdPrepared = commonDaoServices.getTimestamp()
-        variable["dateWdPrepared"] = nwaWorkShopDraft.dateWdPrepared!!
-        nwaWorkShopDraft.assignedTo= companyStandardRepository.getHopId()
 
-        //print(nwaWorkShopDraft.toString())
-        nwaWorkshopDraftRepository.findByIdOrNull(nwaWorkShopDraft.id)?.let { nwaWorkShopDraft->
+    fun draughtStandard(iSUploadStandard: ISUploadStandard) : ISUploadStandard {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val draft= ISUploadStandard()
+        iSUploadStandard.title = iSUploadStandard.title
+        iSUploadStandard.scope = iSUploadStandard.scope
+        iSUploadStandard.normativeReference = iSUploadStandard.normativeReference
+        iSUploadStandard.symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
+        iSUploadStandard.clause = iSUploadStandard.clause
+        iSUploadStandard.special = iSUploadStandard.special
+        iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
+        iSUploadStandard.proposalId = iSUploadStandard.proposalId
+        iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
 
-            with(nwaWorkShopDraft){
-                title=nwaWorkShopDraft.title
-                scope=nwaWorkShopDraft.scope
-                normativeReference=nwaWorkShopDraft.normativeReference
-                symbolsAbbreviatedTerms=nwaWorkShopDraft.symbolsAbbreviatedTerms
-                clause=nwaWorkShopDraft.clause
-                special=nwaWorkShopDraft.special
-                assignedTo=nwaWorkShopDraft.assignedTo
+            with(iSUploadStandard) {
+                status = 4
+                title = iSUploadStandard.title
+                scope = iSUploadStandard.scope
+                normativeReference = iSUploadStandard.normativeReference
+                symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
+                clause = iSUploadStandard.clause
+                special = iSUploadStandard.special
             }
+            iSUploadStandardRepository.save(iSUploadStandard)
 
-            nwaWorkshopDraftRepository.save(nwaWorkShopDraft)
-            runtimeService.createProcessInstanceQuery()
-                .processInstanceId(nwaWorkShopDraft.processId).list()
-                ?.let { l ->
-                    val processInstance = l[0]
+        } ?: throw Exception("DRAFT NOT FOUND")
 
-                    taskService.complete(nwaWorkShopDraft.taskId, variable)
+        return draft
+    }
 
-                    taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                        ?.let { t ->
-                            t.list()[0]
-                                ?.let { task ->
-                                    task.assignee =
-                                        "${nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
-                                    taskService.saveTask(task)
-                                }
-                                ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+    fun getDraughtedDraft(): MutableList<ISUploadedDraft> {
+        return iSUploadStandardRepository.getDraughtedDraft()
+    }
 
 
-                        }
-                        ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                    bpmnService.slAssignTask(
-                        processInstance.processInstanceId,
-                        "approveStandardChanges",
-                        nwaWorkShopDraft.assignedTo ?: throw NullValueNotAllowedException("invalid user id provided")
-                    )
-                    return ProcessInstanceWD(
-                        nwaWorkShopDraft.id,
-                        processInstance.id,
-                        processInstance.isEnded,nwaWorkShopDraft.dateWdPrepared?: throw NullValueNotAllowedException("Date is required")
-                    )
+
+    fun proofReadStandard(iSUploadStandard: ISUploadStandard) : ISUploadStandard {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val draft= ISUploadStandard()
+        iSUploadStandard.title = iSUploadStandard.title
+        iSUploadStandard.scope = iSUploadStandard.scope
+        iSUploadStandard.normativeReference = iSUploadStandard.normativeReference
+        iSUploadStandard.symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
+        iSUploadStandard.clause = iSUploadStandard.clause
+        iSUploadStandard.special = iSUploadStandard.special
+        iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
+        iSUploadStandard.proposalId = iSUploadStandard.proposalId
+        iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+
+            with(iSUploadStandard) {
+                status = 5
+                title = iSUploadStandard.title
+                scope = iSUploadStandard.scope
+                normativeReference = iSUploadStandard.normativeReference
+                symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
+                clause = iSUploadStandard.clause
+                special = iSUploadStandard.special
+            }
+            iSUploadStandardRepository.save(iSUploadStandard)
+
+        } ?: throw Exception("DRAFT NOT FOUND")
+
+        return draft
+    }
+
+    fun getProofReadDraft(): MutableList<ISUploadedDraft> {
+        return iSUploadStandardRepository.getProofReadDraft()
+    }
+
+    fun approveProofReadStandard(
+        iSUploadStandard: ISUploadStandard,
+        internationalStandardRemarks: InternationalStandardRemarks
+    ) : String {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        iSUploadStandard.accentTo=iSUploadStandard.accentTo
+        val decision=iSUploadStandard.accentTo
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
+        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
+        internationalStandardRemarks.status = 1.toString()
+        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        internationalStandardRemarks.remarkBy = usersName
+        internationalStandardRemarks.role = "HOP"
+
+
+            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+                with(iSUploadStandard) {
+                    status = 6
+
                 }
-                ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${nwaWorkShopDraft.processId} ")
-        }?: throw Exception("COMMENT NOT FOUND")
+                iSUploadStandardRepository.save(iSUploadStandard)
+                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            }?: throw Exception("DRAFT NOT FOUND")
 
 
+
+        return "Actioned"
     }
+
+    fun getApprovedProofReadDraft(): MutableList<ISUploadedDraft> {
+        return iSUploadStandardRepository.getApprovedProofReadDraft()
+    }
+
+    fun approveEditedStandard(
+        iSUploadStandard: ISUploadStandard,
+        internationalStandardRemarks: InternationalStandardRemarks
+    ) : String {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        iSUploadStandard.accentTo=iSUploadStandard.accentTo
+        val decision=iSUploadStandard.accentTo
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
+        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
+        internationalStandardRemarks.status = 1.toString()
+        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        internationalStandardRemarks.remarkBy = usersName
+        internationalStandardRemarks.role = "HOP"
+
+        if (decision == "Yes") {
+            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+                with(iSUploadStandard) {
+                    status = 7
+
+                }
+                iSUploadStandardRepository.save(iSUploadStandard)
+                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            }?: throw Exception("DRAFT NOT FOUND")
+
+        } else if (decision == "No") {
+
+                iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+
+                    with(iSUploadStandard) {
+                        status = 1
+                    }
+                    iSUploadStandardRepository.save(iSUploadStandard)
+                    internationalStandardRemarksRepository.save(internationalStandardRemarks)
+
+                } ?: throw Exception("DRAFT NOT FOUND")
+
+
+
+
+        }
+
+        return "Actioned"
+    }
+
+    fun getApprovedEditedDraft(): MutableList<ISUploadedDraft> {
+        return iSUploadStandardRepository.getApprovedEditedDraft()
+    }
+
+    fun approveStandard(
+        iSUploadStandard: ISUploadStandard,
+        internationalStandardRemarks: InternationalStandardRemarks
+    ) : String {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        iSUploadStandard.accentTo=iSUploadStandard.accentTo
+        val decision=iSUploadStandard.accentTo
+
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
+        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
+        internationalStandardRemarks.status = 1.toString()
+        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        internationalStandardRemarks.remarkBy = usersName
+        internationalStandardRemarks.role = "SAC"
+
+        if (decision == "Yes") {
+            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+                with(iSUploadStandard) {
+                    status = 8
+
+                }
+                iSUploadStandardRepository.save(iSUploadStandard)
+                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+            }?: throw Exception("DRAFT NOT FOUND")
+
+        } else if (decision == "No") {
+
+            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+
+                with(iSUploadStandard) {
+                    status = 1
+                }
+                iSUploadStandardRepository.save(iSUploadStandard)
+                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+
+            } ?: throw Exception("DRAFT NOT FOUND")
+
+
+
+
+        }
+
+        return "Actioned"
+    }
+
+
 
     // Upload NWA Standard
     fun uploadISStandard(iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,

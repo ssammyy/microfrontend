@@ -2,11 +2,11 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  Department, InternationalStandardsComments,
-  ISJustificationProposal,
+  InternationalStandardsComments,
+  ISCheckRequirements,
   StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
@@ -16,27 +16,27 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
-  selector: 'app-int-std-editor',
-  templateUrl: './int-std-editor.component.html',
-  styleUrls: ['./int-std-editor.component.css']
+  selector: 'app-int-std-edited-draft',
+  templateUrl: './int-std-edited-draft.component.html',
+  styleUrls: ['./int-std-edited-draft.component.css']
 })
-export class IntStdEditorComponent implements OnInit {
+export class IntStdEditedDraftComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger1: Subject<any> = new Subject<any>();
-  iSJustificationProposals: ISJustificationProposal[] = [];
-  public departments !: Department[] ;
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
-  public actionRequest: ISJustificationProposal | undefined;
+  isCheckRequirements:ISCheckRequirements[]=[];
+  public actionRequest: ISCheckRequirements | undefined;
   loadingText: string;
   approve: string;
   reject: string;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
-  public uploadDraftStandardFormGroup!: FormGroup;
+  public approveRequirementsFormGroup!: FormGroup;
+  public rejectRequirementsFormGroup!: FormGroup;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -48,17 +48,24 @@ export class IntStdEditorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getApprovedISJustification();
-
-    this.uploadDraftStandardFormGroup = this.formBuilder.group({
-        justificationNo: [],
+    this.approve='Yes';
+    this.reject='No';
+    this.getApprovedProofReadDraft();
+    this.approveRequirementsFormGroup = this.formBuilder.group({
+      comments: ['', Validators.required],
+      accentTo: [],
+      justificationId:[],
       proposalId:[],
-      title:[],
-      scope:[],
-      normativeReference:[],
-      symbolsAbbreviatedTerms:[],
-      clause:[],
-      special:[],
+      draftId:[]
+
+    });
+
+    this.rejectRequirementsFormGroup = this.formBuilder.group({
+      comments: ['', Validators.required],
+      accentTo: [],
+      justificationId:[],
+      proposalId:[],
+      draftId:[]
 
     });
   }
@@ -68,19 +75,19 @@ export class IntStdEditorComponent implements OnInit {
   }
   showToasterError(title:string,message:string){
     this.notifyService.showError(message, title)
-
   }
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
 
   }
-  public getApprovedISJustification(): void {
-    this.loadingText = "Retrieving Justifications...";
+
+  public getApprovedProofReadDraft(): void {
+    this.loadingText = "Retrieving Drafts...";
     this.SpinnerService.show();
-    this.stdIntStandardService.getApprovedISJustification().subscribe(
-        (response: ISJustificationProposal[]) => {
-          this.iSJustificationProposals = response;
-          console.log(this.iSJustificationProposals)
+    this.stdIntStandardService.getApprovedProofReadDraft().subscribe(
+        (response: ISCheckRequirements[]) => {
+          this.isCheckRequirements = response;
+          console.log(this.isCheckRequirements)
           this.rerender();
           this.SpinnerService.hide();
 
@@ -127,59 +134,43 @@ export class IntStdEditorComponent implements OnInit {
     this.isShowRemarksTab= true;
 
   }
-
-    submitDraftForEditing(): void {
-    this.loadingText = "Saving...";
-    this.SpinnerService.show();
-    this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
-        (response ) => {
-          console.log(response);
-          this.getApprovedISJustification();
-          this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
-
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Try Again`);
-          console.log(error.message);
-        }
-    );
-    this.hideModalDraftEditing();
-  }
-
-  public onOpenModal(iSJustificationProposal: ISJustificationProposal,mode:string): void{
+  public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
-    if (mode==='draftStandardEditing') {
-      this.actionRequest = iSJustificationProposal;
-      button.setAttribute('data-target', '#draftStandardEditing');
-      this.uploadDraftStandardFormGroup.patchValue(
+    if (mode==='checkRequirementsMet'){
+      this.actionRequest=iSCheckRequirement;
+      button.setAttribute('data-target','#checkRequirementsMet');
+
+      this.approveRequirementsFormGroup.patchValue(
           {
+            accentTo: this.approve,
             proposalId: this.actionRequest.proposalId,
-              justificationNo: this.actionRequest.id,
-            title: this.actionRequest.title,
-            scope:this.actionRequest.scope,
-            normativeReference: this.actionRequest.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause:this.actionRequest.clause,
-            special:this.actionRequest.special
+            justificationId: this.actionRequest.justificationNo,
+            draftId: this.actionRequest.id
           }
       );
-
+      this.rejectRequirementsFormGroup.patchValue(
+          {
+            accentTo: this.reject,
+            proposalId: this.actionRequest.proposalId,
+            justificationId: this.actionRequest.justificationNo,
+            draftId: this.actionRequest.id
+          }
+      );
     }
     // @ts-ignore
     container.appendChild(button);
     button.click();
 
   }
-  @ViewChild('closeModalDraftEditing') private closeModalDraftEditing: ElementRef | undefined;
 
-  public hideModalDraftEditing() {
-    this.closeModalDraftEditing?.nativeElement.click();
+  @ViewChild('closeModalRequirements') private closeModalRequirements: ElementRef | undefined;
+
+  public hideModalRequirements() {
+    this.closeModalRequirements?.nativeElement.click();
   }
 
   rerender(): void {
@@ -192,9 +183,45 @@ export class IntStdEditorComponent implements OnInit {
     setTimeout(() => {
       this.dtTrigger.next();
       this.dtTrigger1.next();
-
     });
+  }
 
+  approveEditedStandard(): void {
+    this.loadingText = "Approving Draft...";
+    this.SpinnerService.show();
+    this.stdIntStandardService.approveEditedStandard(this.approveRequirementsFormGroup.value).subscribe(
+        (response ) => {
+          //console.log(response);
+          this.getApprovedProofReadDraft();
+          this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Draft Approved`);
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Try Again`);
+          console.log(error.message);
+        }
+    );
+    this.hideModalRequirements();
+  }
+
+  rejectEditedStandard(): void {
+    this.loadingText = "Approving Draft...";
+    this.SpinnerService.show();
+    this.stdIntStandardService.approveEditedStandard(this.rejectRequirementsFormGroup.value).subscribe(
+        (response ) => {
+          //console.log(response);
+          this.getApprovedProofReadDraft();
+          this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Draft Approved`);
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Try Again`);
+          console.log(error.message);
+        }
+    );
+    this.hideModalRequirements();
   }
 
 
