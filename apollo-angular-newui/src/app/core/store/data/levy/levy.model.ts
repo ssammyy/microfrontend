@@ -416,6 +416,7 @@ export interface PenaltyDetails{
     periodFrom: string;
     periodTo: string;
     monthsLate: string;
+    penaltyPaid: string;
 }
 export interface DefaulterDetails{
     id: number;

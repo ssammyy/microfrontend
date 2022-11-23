@@ -805,7 +805,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         return iSUploadStandardRepository.getApprovedEditedDraft()
     }
 
-    fun approveStandard(
+    fun approveInternationalStandard(
         iSUploadStandard: ISUploadStandard,
         internationalStandardRemarks: InternationalStandardRemarks
     ) : String {

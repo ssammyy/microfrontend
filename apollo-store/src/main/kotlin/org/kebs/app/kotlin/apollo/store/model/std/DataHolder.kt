@@ -224,6 +224,7 @@ interface LevyPenalty{
     fun getBusinessLineName(): String?
     fun getBusinessNatureName(): String?
     fun getMonthsLate(): String?
+    fun getPenaltyPaid(): String?
 }
 interface ManufactureListHolder {
     fun getId(): Long?

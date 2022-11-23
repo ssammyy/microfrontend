@@ -535,8 +535,8 @@ class IntStandardController(
 
     //SAC Decision
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/approveStandard")
-    fun approveStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+    @PostMapping("/approveInternationalStandard")
+    fun approveInternationalStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
     ) : ServerResponse
     {
         val iSUploadStandard= ISUploadStandard().apply {
@@ -549,7 +549,7 @@ class IntStandardController(
             remarks=iSDraftDecisions.comments
         }
 
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveStandard(iSUploadStandard,internationalStandardRemarks))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandard(iSUploadStandard,internationalStandardRemarks))
 
     }
 
