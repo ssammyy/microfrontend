@@ -2,18 +2,16 @@ package org.kebs.app.kotlin.apollo.store.model.ms
 
 import org.kebs.app.kotlin.apollo.store.model.ms.MsAllocatedTasksCpViewEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsAllocatedTasksWpViewEntity
+import java.io.Serializable
 import java.math.BigInteger
 import java.sql.Date
 import java.util.*
-import javax.persistence.Basic
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "MS_ALLOCATED_TASKS_CP_VIEW", schema = "APOLLO", catalog = "")
-class MsAllocatedTasksCpViewEntity {
-    @Basic
+class MsAllocatedTasksCpViewEntity : Serializable {
+    @Id
     @Column(name = "REFERENCE_NUMBER")
     var referenceNumber: String? = null
 

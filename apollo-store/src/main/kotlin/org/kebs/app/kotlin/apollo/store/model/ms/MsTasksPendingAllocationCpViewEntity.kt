@@ -2,18 +2,16 @@ package org.kebs.app.kotlin.apollo.store.model.ms
 
 import org.kebs.app.kotlin.apollo.store.model.ms.MsTasksPendingAllocationCpViewEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsTasksPendingAllocationWpViewEntity
+import java.io.Serializable
 import java.math.BigInteger
 import java.sql.Date
 import java.util.*
-import javax.persistence.Basic
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "MS_TASKS_PENDING_ALLOCATION_CP_VIEW", schema = "APOLLO", catalog = "")
-class MsTasksPendingAllocationCpViewEntity {
-    @Basic
+class MsTasksPendingAllocationCpViewEntity: Serializable {
+    @Id
     @Column(name = "REFERENCE_NUMBER")
     var referenceNumber: String? = null
 
@@ -52,25 +50,5 @@ class MsTasksPendingAllocationCpViewEntity {
     @Basic
     @Column(name = "TASK_OVER_DUE")
     var taskOverDue: String? = null
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as MsTasksPendingAllocationCpViewEntity
-        return referenceNumber == that.referenceNumber && transactionDate == that.transactionDate && timelineStartDate == that.timelineStartDate && timelineEndDate == that.timelineEndDate && assignedIo == that.assignedIo && hodAssigned == that.hodAssigned && hofAssigned == that.hofAssigned && userTaskId == that.userTaskId && msComplaintEndedStatus == that.msComplaintEndedStatus && taskOverDue == that.taskOverDue
-    }
 
-    override fun hashCode(): Int {
-        return Objects.hash(
-            referenceNumber,
-            transactionDate,
-            timelineStartDate,
-            timelineEndDate,
-            assignedIo,
-            hodAssigned,
-            hofAssigned,
-            userTaskId,
-            msComplaintEndedStatus,
-            taskOverDue
-        )
-    }
 }
