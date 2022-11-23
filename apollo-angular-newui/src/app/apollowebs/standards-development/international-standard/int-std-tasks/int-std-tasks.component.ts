@@ -524,21 +524,21 @@ export class IntStdTasksComponent implements OnInit {
     editStandardDraft(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        this.stdIntStandardService.editStandardDraft(this.uploadDraftStandardFormGroup.value).subscribe(
-            (response ) => {
-                console.log(response);
-                this.getUserTasks();
-                this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
-
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Try Again`);
-                console.log(error.message);
-            }
-        );
-        this.hideModalDraftEditing();
+        // this.stdIntStandardService.editStandardDraft(this.uploadDraftStandardFormGroup.value).subscribe(
+        //     (response ) => {
+        //         console.log(response);
+        //         this.getUserTasks();
+        //         this.SpinnerService.hide();
+        //         this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
+        //
+        //     },
+        //     (error: HttpErrorResponse) => {
+        //         this.SpinnerService.hide();
+        //         this.showToasterError('Error', `Error Try Again`);
+        //         console.log(error.message);
+        //     }
+        // );
+        // this.hideModalDraftEditing();
     }
 
     draughting(): void {
