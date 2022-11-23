@@ -430,6 +430,13 @@ import { IntStdApprovedProposalsComponent } from './apollowebs/standards-develop
 import { IntStdJustificationComponent } from './apollowebs/standards-development/international-standard/int-std-justification/int-std-justification.component';
 import { IntStdEditorComponent } from './apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component';
 import {GenerateDeclarationReportComponent} from './apollowebs/di/other-documents/declaration-documents/generate-declaration-report/generate-declaration-report.component';
+import { IntStdCheckRequirementsComponent } from './apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component';
+import { IntStdEditDraftComponent } from './apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component';
+import { IntStdDraughtComponent } from './apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component';
+import { IntStdProofReadComponent } from './apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component';
+import { IntStdApproveDraftComponent } from './apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component';
+import { IntStdEditedDraftComponent } from './apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component';
+import { IntStdSacApprovalComponent } from './apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -894,6 +901,13 @@ import {GenerateDeclarationReportComponent} from './apollowebs/di/other-document
         IntStdJustificationComponent,
         IntStdEditorComponent,
         GenerateDeclarationReportComponent,
+        IntStdCheckRequirementsComponent,
+        IntStdEditDraftComponent,
+        IntStdDraughtComponent,
+        IntStdProofReadComponent,
+        IntStdApproveDraftComponent,
+        IntStdEditedDraftComponent,
+        IntStdSacApprovalComponent,
 
     ],
     entryComponents: [LoaderComponent],

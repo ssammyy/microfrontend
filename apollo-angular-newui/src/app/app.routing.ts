@@ -251,6 +251,12 @@ import {DeclarationDocumentsComponent} from "./apollowebs/di/other-documents/dec
 import {IntStdProposalsComponent} from "./apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component";
 import {IntStdApprovedProposalsComponent} from "./apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component";
 import {IntStdEditorComponent} from "./apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component";
+import {IntStdCheckRequirementsComponent} from "./apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component";
+import {IntStdEditDraftComponent} from "./apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component";
+import {IntStdDraughtComponent} from "./apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component";
+import {IntStdProofReadComponent} from "./apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component";
+import {IntStdApproveDraftComponent} from "./apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component";
+import {IntStdEditedDraftComponent} from "./apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component";
 
 export const routes: Routes = [
     {
@@ -1020,6 +1026,36 @@ export const routes: Routes = [
         path: 'isUploadDraft', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdEditorComponent}],
+    },
+    {
+        path: 'isCheckRequirements', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdCheckRequirementsComponent}],
+    },
+    {
+        path: 'isStdEditDraft', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdEditDraftComponent}],
+    },
+    {
+        path: 'isStdDraughting', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdDraughtComponent}],
+    },
+    {
+        path: 'isStdProofReading', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdProofReadComponent}],
+    },
+    {
+        path: 'isApproveDraftStd', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdApproveDraftComponent}],
+    },
+    {
+        path: 'isApprovedEdits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdEditedDraftComponent}],
     },
 
     {

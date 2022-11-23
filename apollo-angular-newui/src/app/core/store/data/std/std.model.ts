@@ -618,11 +618,22 @@ export interface IStandardUpload{
     clause: string;
     scope: string;
     special: string;
-    justificationId: number;
+    justificationNo: number;
     taskId: string;
     accentTo: boolean;
     proposalId: number;
     id: number;
+}
+export interface IStandardDraftEdit{
+    title: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    scope: string;
+    special: string;
+    justificationNo: number;
+    id: number;
+    proposalId: number;
 }
 export interface ISDecision {
     taskId: string;
@@ -692,6 +703,13 @@ export interface ISJustificationDecision {
     accentTo: boolean;
     approvalID: bigint;
     comments: string;
+}
+export interface ISDraftDecision {
+    comments:string;
+    accentTo:string;
+    justificationId:number;
+    proposalId:number;
+    draftId:number;
 }
 export interface ISSacSecTASKS {
     taskId: string;
@@ -1427,4 +1445,19 @@ export interface ReviewDecision{
     processId: string;
     reviewID: string;
 
+}
+
+export interface ISCheckRequirements{
+    id: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    justificationNo: number;
+    proposalId: number;
+    status: string;
+    uploadDate: string;
+    isNumber: string;
 }

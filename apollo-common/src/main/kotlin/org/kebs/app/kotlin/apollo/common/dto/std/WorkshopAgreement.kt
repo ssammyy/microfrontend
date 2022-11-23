@@ -177,6 +177,15 @@ class ISJustificationDecisions(
 ){
 
 }
+class ISDraftDecisions(
+    @JsonProperty("accentTo") val accentTo: String,
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("justificationId") val justificationId: Long,
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String
+){
+
+}
 
 class ISJustificationDecision(
     @JsonProperty("processId") val processId: String,
@@ -322,4 +331,26 @@ data class ISAdoptionJustifications(
 
 }
 
+class ISDraftStandard(
+    @JsonProperty("accentTo") val accentTo: String,
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("justificationId") val justificationId: Long,
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String
+){
 
+}
+
+data class ISDraftDto(
+
+    var proposalId:Long?=null,
+    var justificationNo:Long?=null,
+    var id:Long,
+    var title:String?=null,
+    var scope:String?=null,
+    var normativeReference:String?=null,
+    var symbolsAbbreviatedTerms:String?=null,
+    var clause:String?=null
+){
+
+}

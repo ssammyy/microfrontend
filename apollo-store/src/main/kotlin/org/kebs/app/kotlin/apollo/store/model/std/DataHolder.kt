@@ -574,13 +574,13 @@ interface ISProposalComments{
 }
 interface ISUploadedDraft{
     fun getId(): Long?
-    fun getItle(): String?
+    fun getTitle(): String?
     fun getScope(): String?
     fun getNormativeReference(): String?
     fun getSymbolsAbbreviatedTerms(): String?
     fun getClause(): String?
     fun getSpecial(): String?
-    fun getISNumber(): String?
+    fun getIsNumber(): String?
     fun getUploadDate(): String?
     fun getJustificationNo(): Long?
     fun getProposalId(): Long?

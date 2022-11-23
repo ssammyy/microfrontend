@@ -524,7 +524,7 @@ export class IntStdTasksComponent implements OnInit {
     editStandardDraft(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        this.stdIntStandardService.editStandardDraft(this.uploadDraftStandardFormGroup.value).subscribe(
+        this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 this.getUserTasks();

@@ -2,8 +2,8 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  Department, InternationalStandardsComments,
-  ISJustificationProposal,
+  InternationalStandardsComments,
+  ISCheckRequirements,
   StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -16,27 +16,26 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
-  selector: 'app-int-std-editor',
-  templateUrl: './int-std-editor.component.html',
-  styleUrls: ['./int-std-editor.component.css']
+  selector: 'app-int-std-proof-read',
+  templateUrl: './int-std-proof-read.component.html',
+  styleUrls: ['./int-std-proof-read.component.css']
 })
-export class IntStdEditorComponent implements OnInit {
+export class IntStdProofReadComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger1: Subject<any> = new Subject<any>();
-  iSJustificationProposals: ISJustificationProposal[] = [];
-  public departments !: Department[] ;
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
-  public actionRequest: ISJustificationProposal | undefined;
+  isCheckRequirements:ISCheckRequirements[]=[];
+  public actionRequest: ISCheckRequirements | undefined;
   loadingText: string;
   approve: string;
   reject: string;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
-  public uploadDraftStandardFormGroup!: FormGroup;
+  public editDraughtFormGroup!: FormGroup;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -48,11 +47,11 @@ export class IntStdEditorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getApprovedISJustification();
-
-    this.uploadDraftStandardFormGroup = this.formBuilder.group({
-        justificationNo: [],
+    this.getDraughtedDraft();
+    this.editDraughtFormGroup = this.formBuilder.group({
+      id: [],
       proposalId:[],
+      justificationNo:[],
       title:[],
       scope:[],
       normativeReference:[],
@@ -68,19 +67,18 @@ export class IntStdEditorComponent implements OnInit {
   }
   showToasterError(title:string,message:string){
     this.notifyService.showError(message, title)
-
   }
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
 
   }
-  public getApprovedISJustification(): void {
-    this.loadingText = "Retrieving Justifications...";
+  public getDraughtedDraft(): void {
+    this.loadingText = "Retrieving Drafts...";
     this.SpinnerService.show();
-    this.stdIntStandardService.getApprovedISJustification().subscribe(
-        (response: ISJustificationProposal[]) => {
-          this.iSJustificationProposals = response;
-          console.log(this.iSJustificationProposals)
+    this.stdIntStandardService.getDraughtedDraft().subscribe(
+        (response: ISCheckRequirements[]) => {
+          this.isCheckRequirements = response;
+          console.log(this.isCheckRequirements)
           this.rerender();
           this.SpinnerService.hide();
 
@@ -127,46 +125,28 @@ export class IntStdEditorComponent implements OnInit {
     this.isShowRemarksTab= true;
 
   }
-
-    submitDraftForEditing(): void {
-    this.loadingText = "Saving...";
-    this.SpinnerService.show();
-    this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
-        (response ) => {
-          console.log(response);
-          this.getApprovedISJustification();
-          this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
-
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Try Again`);
-          console.log(error.message);
-        }
-    );
-    this.hideModalDraftEditing();
-  }
-
-  public onOpenModal(iSJustificationProposal: ISJustificationProposal,mode:string): void{
+  public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
-    if (mode==='draftStandardEditing') {
-      this.actionRequest = iSJustificationProposal;
-      button.setAttribute('data-target', '#draftStandardEditing');
-      this.uploadDraftStandardFormGroup.patchValue(
+    if (mode==='draftStandardEditing'){
+      this.actionRequest=iSCheckRequirement;
+      button.setAttribute('data-target','#draftStandardEditing');
+
+      this.editDraughtFormGroup.patchValue(
           {
+            accentTo: this.approve,
             proposalId: this.actionRequest.proposalId,
-              justificationNo: this.actionRequest.id,
+            justificationNo: this.actionRequest.justificationNo,
+            id: this.actionRequest.id,
             title: this.actionRequest.title,
             scope:this.actionRequest.scope,
-            normativeReference: this.actionRequest.normativeReference,
+            normativeReference:this.actionRequest.normativeReference,
             symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause:this.actionRequest.clause,
-            special:this.actionRequest.special
+            clause: this.actionRequest.clause,
+            special: this.actionRequest.special
           }
       );
 
@@ -181,7 +161,6 @@ export class IntStdEditorComponent implements OnInit {
   public hideModalDraftEditing() {
     this.closeModalDraftEditing?.nativeElement.click();
   }
-
   rerender(): void {
     this.dtElements.forEach((dtElement: DataTableDirective) => {
       if (dtElement.dtInstance)
@@ -192,10 +171,26 @@ export class IntStdEditorComponent implements OnInit {
     setTimeout(() => {
       this.dtTrigger.next();
       this.dtTrigger1.next();
-
     });
-
   }
-
+  proofReadStandard(): void {
+    this.loadingText = "Approving Draft...";
+    this.SpinnerService.show();
+    this.stdIntStandardService.proofReadStandard(this.editDraughtFormGroup.value).subscribe(
+        (response ) => {
+          //console.log(response);
+          this.getDraughtedDraft();
+          this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Draft Updated`);
+          this.editDraughtFormGroup.reset();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Try Again`);
+          console.log(error.message);
+        }
+    );
+    this.hideModalDraftEditing();
+  }
 
 }

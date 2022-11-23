@@ -19,7 +19,7 @@
                                 <i class="material-icons">assignment</i>
                             </div>
                             <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
-                                Tasks <span class="badge badge-primary">{{iSJustificationProposals.length}}</span>
+                                Tasks <span class="badge badge-primary">{{isCheckRequirements.length}}</span>
                             </button></div>
                         </div>
                         <div class="card-body">
@@ -35,23 +35,23 @@
 
 
                                         <th>#</th>
-                                        <th class="knw">Meeting Date</th>
-                                        <th class="knw">SL Number</th>
-                                        <th class="knw">Edition</th>
-                                        <th class="knw">Requested By</th>
-                                        <th>Acceptance Date</th>
+                                        <th class="knw">Title</th>
+                                        <th class="knw">Request Number</th>
+                                        <th class="knw">Normative Reference</th>
+                                        <th class="knw">Clause</th>
+                                        <th>Date</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr  *ngFor="let iSJustificationProposal of iSJustificationProposals let i=index">
+                                    <tr  *ngFor="let isCheckRequirement of isCheckRequirements let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{iSJustificationProposal.meetingDate}}</td>
-                                        <td>{{iSJustificationProposal.slNumber}}</td>
-                                        <td>{{iSJustificationProposal.edition}}</td>
-                                        <td>{{iSJustificationProposal.requestedBy}}</td>
-                                        <td>{{iSJustificationProposal.tcAcceptanceDate}}</td>
-                                        <td><a  (click)="onOpenModal(iSJustificationProposal,'draftStandardEditing')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Upload Draft</a></td>
+                                        <td>{{isCheckRequirement.title}}</td>
+                                        <td>{{isCheckRequirement.isNumber}}</td>
+                                        <td>{{isCheckRequirement.normativeReference}}</td>
+                                        <td>{{isCheckRequirement.clause}}</td>
+                                        <td>{{isCheckRequirement.uploadDate}}</td>
+                                        <td><a  (click)="onOpenModal(isCheckRequirement,'draftStandardEditing')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Draughting</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -59,7 +59,7 @@
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="draftStandardEditingLabel">Upload Draft</h3>
+                                                <h3 class="modal-title" id="draftStandardEditingLabel">Draughting Standard</h3>
                                                 <button type="button" #closeModalDraftEditing class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -150,7 +150,7 @@
                                                                     </div>
 
                                                                 </div>
-                                                                <div class="tab-pane fade show active " id="nav-draft-justification" role="tabpanel" aria-labelledby="nav-draft-justification-tab">
+                                                                <div class="tab-pane fade show active" id="nav-draft-justification" role="tabpanel" aria-labelledby="nav-draft-justification-tab">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">
                                                                             <div class="list-group list-group-flush">
@@ -158,110 +158,99 @@
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
                                                                                             <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Meeting Date</b></h5>
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Title</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.meetingDate}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.title}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
                                                                                             <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Number</b></h5>
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.slNumber}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.scope}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
                                                                                             <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Edition</b></h5>
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Normative Reference</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.edition}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.normativeReference}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
                                                                                             <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Requested By</b></h5>
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Symbols Abbreviated Terms</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.requestedBy}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.symbolsAbbreviatedTerms}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
                                                                                             <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Issues Addressed</b></h5>
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Clause</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.issuesAddressed}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.clause}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
                                                                                             <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>TC Acceptance Date</b></h5>
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Special</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.tcAcceptanceDate}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.special}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
                                                                                             <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Department</b></h5>
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Date Uploaded</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.departmentName}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.uploadDate}}.</p>
                                                                                 </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
                                                                                             <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Positive Votes</b></h5>
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Request Number</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.positiveVotes}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.isNumber}}.</p>
                                                                                 </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Negative Votes</b></h5>
-                                                                                            </div>
-                                                                                        </div>
 
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.negativeVotes}}.</p>
-                                                                                </a>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -270,7 +259,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="tab-pane fade" id="nav-draft-upload" role="tabpanel" aria-labelledby="nav-upload-tab">
-                                                                    <form (ngSubmit)="submitDraftForEditing()" [formGroup]="uploadDraftStandardFormGroup" class="form">
+                                                                    <form (ngSubmit)="draughtStandard()" [formGroup]="editDraughtFormGroup" class="form">
                                                                         <div class="modal-body">
                                                                             <div class="form-body">
                                                                                 <div class="row col-12">
@@ -316,8 +305,9 @@
                                                                                     </div>
 
                                                                                 </div>
-                                                                                <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.proposalId}}" >
-                                                                                <input type="hidden" formControlName="justificationNo" name="justificationNo" value="{{actionRequest?.id}}" >
+                                                                                <input type="hidden" formControlName="id" value="{{actionRequest?.id}}" name="id" >
+                                                                                <input type="hidden" formControlName="proposalId" value="{{actionRequest?.proposalId}}" name="proposalId" >
+                                                                                <input type="hidden" formControlName="justificationNo" name="justificationNo" value="{{actionRequest?.justificationNo}}" >
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
