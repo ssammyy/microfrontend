@@ -51,7 +51,7 @@ class RfcEntity : Serializable {
     @Basic
     var solReference: String? = null
 
-    @Column(name = "IMPORTER_NAME")
+    @Column(name = "IMPORTER_NAME", length = 400)
     @Basic
     var importerName: String? = null
 
@@ -91,7 +91,7 @@ class RfcEntity : Serializable {
     @Basic
     var importerEmail: String? = null
 
-    @Column(name = "EXPORTER_NAME")
+    @Column(name = "EXPORTER_NAME", length = 400)
     @Basic
     var exporterName: String? = null
 
