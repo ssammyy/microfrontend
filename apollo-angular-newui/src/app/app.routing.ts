@@ -257,6 +257,7 @@ import {IntStdDraughtComponent} from "./apollowebs/standards-development/interna
 import {IntStdProofReadComponent} from "./apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component";
 import {IntStdApproveDraftComponent} from "./apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component";
 import {IntStdEditedDraftComponent} from "./apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component";
+import {IntStdSacApprovalComponent} from "./apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component";
 
 export const routes: Routes = [
     {
@@ -1057,6 +1058,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdEditedDraftComponent}],
     },
+    {
+        path: 'isSacApproval', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdSacApprovalComponent}],
+    },
+
 
     {
         path: 'isUploadStd', component: AdminLayoutComponent,
