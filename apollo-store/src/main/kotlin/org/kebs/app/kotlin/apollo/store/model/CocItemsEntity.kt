@@ -60,7 +60,7 @@ class CocItemsEntity : Serializable {
     @Basic
     var shipmentLineDescription: String? = null
 
-    @Column(name = "SHIPMENT_LINE_VIN", nullable = true, length = 30)
+    @Column(name = "SHIPMENT_LINE_VIN", nullable = true, length = 150)
     @Basic
     var shipmentLineVin: String? = null
 
