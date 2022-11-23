@@ -76,15 +76,18 @@ class PvocPartnersForms {
 class CocItem {
 
     @NotNull(message = "Required field")
+    @Min(value = 0, message = "Quantity should not be negative, minimum is 0")
     @JsonAlias("SHIPMENT_LINE_NUMBER")
     var shipmentLineNumber: Long = 0
 
     @NotEmpty(message = "Required field")
     @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Alphanumeric values expected for this field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     @JsonAlias("SHIPMENT_LINE_HS_CODE")
     var shipmentLineHscode: String? = null
 
     @NotNull(message = "Required field")
+    @Min(value = 0, message = "Quantity should not be negative, minimum is 0")
     @JsonAlias("SHIPMENT_LINE_QUANTITY")
     var shipmentLineQuantity: Double = 0.0
 
@@ -94,7 +97,7 @@ class CocItem {
     var shipmentLineUnitofMeasure: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 200, message = "Description should be upto 200 characters")
+    @Size(max = 250, message = "Description should be upto 250 characters")
     @JsonAlias("SHIPMENT_LINE_DESCRIPTION")
     var shipmentLineDescription: String? = null
 
@@ -102,7 +105,7 @@ class CocItem {
     @JsonAlias("SHIPMENT_LINE_VIN")
     var shipmentLineVin: String? = null
 
-
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("SHIPMENT_LINE_STICKER_NUMBER")
     var shipmentLineStickerNumber: String? = null
 
@@ -137,6 +140,7 @@ class CocItem {
     @JsonAlias("SHIPMENT_QUANTITY_DELIVERED")
     var shipmentQuantityDelivered: Double? = null
 
+    @Min(value = 0, message = "Weight should not be negative, minimum is 0")
     @JsonAlias("SHIPMENT_GROSS_WEIGHT")
     var shipmentGrossWeight: Double? = null
 
@@ -150,6 +154,7 @@ class CocItem {
     var shipmentSealNumbers: String? = null
 
     @NotNull(message = "Required field")
+    @Min(value = 0, message = "Should not be negative, minimum is 0")
     @JsonAlias("SHIPMENT_PARTIAL_NUMBER")
     var shipmentPartialNumber: Long = 0
 }
@@ -211,12 +216,12 @@ class CocEntityForm {
     var issuingOffice: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 30, message = "Should be upto 30 characters")
+    @Size(max = 200, message = "Should be upto 150 characters")
     @JsonAlias("IMPORTER_NAME")
     var importerName: String? = null
 
     @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
-    @Size(max = 50, message = "Importer pin should be upto 50 characters")
+    @Size(max = 100, message = "Importer pin should be upto 50 characters")
     @JsonAlias("IMPORTER_PIN")
     var importerPin: String? = null
 
@@ -252,7 +257,7 @@ class CocEntityForm {
     var importerTelephoneNumber: String? = null
 
 
-    @Size(max = 30, message = "Fax should be upto 30 characters")
+    @Size(max = 75, message = "Fax should be upto 30 characters")
     @JsonAlias("IMPORTER_FAX_NUMBER")
     var importerFaxNumber: String? = null
 
@@ -263,13 +268,13 @@ class CocEntityForm {
     var importerEmail: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 100, message = "Name should be upto 100 characters")
+    @Size(max = 200, message = "Name should be upto 200 characters")
     @JsonAlias("EXPORTER_NAME")
     var exporterName: String? = null
 
 
     @Pattern(regexp = "^[A-Za-z0-9_/-]+$", message = "Only Alphanumeric values expected for this field")
-    @Size(max = 50, message = "PIN should be upto 50 characters")
+    @Size(max = 100, message = "PIN should be upto 100 characters")
     @JsonAlias("EXPORTER_PIN")
     var exporterPin: String? = null
 
@@ -427,51 +432,60 @@ class NcrEntityForm {
 
 
     @NotEmpty(message = "Required field")
-    @Size(max = 5, message = "Should be upto 5 characters")
+    @Size(max = 5, message = "Should be upto 5 characters(Y/N)")
     @JsonAlias("clean")
     var compliant: String? = null
 
     @JsonAlias("NCR_REMARKS")
-    @Size(max = 4000, message = "Should be upto 400 characters")
+    @Size(max = 4000, message = "Should be upto 4000 characters")
     var ncrRemarks: String? = null
 
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("ISSUING_OFFICE")
     var issuingOffice: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Should be upto 400 characters")
     @JsonAlias("IMPORTER_NAME")
     var importerName: String? = null
 
+    @Size(max = 100, message = "Should be upto 100 characters")
     @JsonAlias("IMPORTER_PIN")
     var importerPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("IMPORTER_ADDRESS_1")
     var importerAddress1: String? = null
 
-
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("IMPORTER_ADDRESS_2")
     var importerAddress2: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("IMPORTER_CITY")
     var importerCity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     @JsonAlias("IMPORTER_COUNTRY")
     var importerCountry: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     @JsonAlias("IMPORTER_ZIP_CODE")
     var importerZipCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Should be upto 20 characters")
     @JsonAlias("IMPORTER_TELEPHONE_NUMBER")
     var importerTelephoneNumber: String? = null
 
 
+    @Size(max = 75, message = "Should be upto 75 characters")
     @JsonAlias("IMPORTER_FAX_NUMBER")
     var importerFaxNumber: String? = null
 
@@ -480,41 +494,51 @@ class NcrEntityForm {
     var importerEmail: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Should be upto 400 characters")
     @JsonAlias("EXPORTER_NAME")
     var exporterName: String? = null
 
     @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     @JsonAlias("EXPORTER_PIN")
     var exporterPin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 250, message = "Should be upto 400 characters")
     @JsonAlias("EXPORTER_ADDRESS_1")
     var exporterAddress1: String? = null
 
 
+    @Size(max = 250, message = "Should be upto 400 characters")
     @JsonAlias("EXPORTER_ADDRESS_2")
     var exporterAddress2: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     @JsonAlias("EXPORTER_CITY")
     var exporterCity: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     @JsonAlias("EXPORTER_COUNTRY")
     var exporterCountry: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 75, message = "Should be upto 75 characters")
     @JsonAlias("EXPORTER_ZIP_CODE")
     var exporterZipCode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Should be upto 20 characters")
     @JsonAlias("EXPORTER_TELEPHONE_NUMBER")
     var exporterTelephoneNumber: String? = null
 
     @JsonAlias("EXPORTER_FAX_NUMBER")
+    @Size(max = 75, message = "Should be upto 75 characters")
     var exporterFaxNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("EXPORTER_EMAIL")
     var exporterEmail: String? = null
 
@@ -534,18 +558,22 @@ class NcrEntityForm {
     var dateOfInspection: Timestamp? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("PORT_OF_DESTINATION")
     var portOfDestination: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     @JsonAlias("SHIPMENT_MODE")
     var shipmentMode: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("SHIPMENT_SEAL_NUMBER")
     var shipmentSealNumbers: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
     var shipmentContainerNumber: String? = null
 
@@ -555,6 +583,7 @@ class NcrEntityForm {
     var shipmentGrossWeight: Double? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 100, message = "Should be upto 100 characters")
     @JsonAlias("COUNTRY_OF_SUPPLY")
     var countryOfSupply: String? = null
 
@@ -569,10 +598,12 @@ class NcrEntityForm {
     var finalInvoiceExchangeRate: Double = 0.0
 
     @NotEmpty(message = "Required field")
+    @Size(max = 20, message = "Should be upto 20 characters")
     @JsonAlias("FINAL_INVOICE_CURRENCY")
     var finalInvoiceCurrency: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("FINAL_INVOICE_NUMBER")
     var finalInvoiceNumber: String? = null
 
@@ -585,6 +616,7 @@ class NcrEntityForm {
     var paymentDate: Timestamp? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 10, message = "Should be upto 10 characters")
     @JsonAlias("ROUTE")
     var route: String? = null
 
@@ -599,14 +631,16 @@ class NcrEntityForm {
 }
 
 class CoiItem {
-
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var declaredHsCode: String = ""
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Should be upto 400 characters")
     var productDescription: String? = ""
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var shipmentLineHsCode: String? = ""
 
     @NotNull(message = "Required field")
@@ -618,30 +652,39 @@ class CoiItem {
     var shipmentLineQuantity: Long? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 50, message = "Should be upto 50 characters")
     var shipmentLineUnitofMeasure: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 400, message = "Should be upto 400 characters")
     var shipmentLineDescription: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 250, message = "Should be upto 250 characters")
     var shipmentLineVin: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var shipmentLineStickerNumber: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var shipmentLineIcs: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var shipmentLineStandardsReference: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var shipmentLineLicenceReference: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Should be upto 150 characters")
     var shipmentLineRegistration: String? = null
 
     @NotEmpty(message = "Required field")
+    @Size(max = 250, message = "Should be upto 250 characters")
     var shipmentLineBrandName: String? = null
 }
 
@@ -1269,7 +1312,7 @@ class RfcEntityForm {
     var solReference: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 150, message = "Should be upto 150 characters")
+    @Size(max = 400, message = "Should be upto 150 characters")
     var importerName: String? = null
 
     @Pattern(regexp = "^[A-Za-z0-9_/-]*$", message = "Only Alphanumeric values expected for this field")
@@ -1312,7 +1355,7 @@ class RfcEntityForm {
     var importerEmail: String? = null
 
     @NotEmpty(message = "Required field")
-    @Size(max = 150, message = "Should be upto 150 characters")
+    @Size(max = 400, message = "Should be upto 150 characters")
     var exporterName: String? = null
 
     @NotEmpty(message = "Required field")
