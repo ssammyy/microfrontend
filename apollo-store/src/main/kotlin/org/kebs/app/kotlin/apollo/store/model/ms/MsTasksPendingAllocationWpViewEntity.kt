@@ -1,20 +1,16 @@
 package org.kebs.app.kotlin.apollo.store.model.ms
 
-import org.kebs.app.kotlin.apollo.store.model.ms.MsTasksPendingAllocationCpViewEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.MsTasksPendingAllocationWpViewEntity
+import java.io.Serializable
 import java.math.BigInteger
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
-import javax.persistence.Basic
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "MS_TASKS_PENDING_ALLOCATION_WP_VIEW", schema = "APOLLO", catalog = "")
-class MsTasksPendingAllocationWpViewEntity {
-    @Basic
+class MsTasksPendingAllocationWpViewEntity: Serializable {
+    @Id
     @Column(name = "REFERENCE_NUMBER")
     var referenceNumber: String? = null
 
@@ -81,32 +77,5 @@ class MsTasksPendingAllocationWpViewEntity {
     @Basic
     @Column(name = "TASK_OVER_DUE")
     var taskOverDue: String? = null
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as MsTasksPendingAllocationWpViewEntity
-        return referenceNumber == that.referenceNumber && createdOn == that.createdOn && timelineStartDate == that.timelineStartDate && timelineEndDate == that.timelineEndDate && officerId == that.officerId && hodRmAssigned == that.hodRmAssigned && hofAssigned == that.hofAssigned && userTaskId == that.userTaskId && complaintId == that.complaintId && finalReportGenerated == that.finalReportGenerated && investInspectReportStatus == that.investInspectReportStatus && msPreliminaryReportStatus == that.msPreliminaryReportStatus && dataReportStatus == that.dataReportStatus && fieldReportStatus == that.fieldReportStatus && msProcessId == that.msProcessId && msProcessEndedStatus == that.msProcessEndedStatus && taskOverDue == that.taskOverDue
-    }
 
-    override fun hashCode(): Int {
-        return Objects.hash(
-            referenceNumber,
-            createdOn,
-            timelineStartDate,
-            timelineEndDate,
-            officerId,
-            hodRmAssigned,
-            hofAssigned,
-            userTaskId,
-            complaintId,
-            finalReportGenerated,
-            investInspectReportStatus,
-            msPreliminaryReportStatus,
-            dataReportStatus,
-            fieldReportStatus,
-            msProcessId,
-            msProcessEndedStatus,
-            taskOverDue
-        )
-    }
 }
