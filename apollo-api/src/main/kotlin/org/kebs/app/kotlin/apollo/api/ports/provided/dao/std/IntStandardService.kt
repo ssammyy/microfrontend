@@ -891,7 +891,7 @@ class IntStandardService (private val runtimeService: RuntimeService,
         standardRepository.findByIdOrNull(standard.id)?.let { standard ->
 
             with(standard) {
-                status = 5
+                status = 1
                 description = standard.description
                 standard.isGazetted=1
                 standard.dateOfGazettement= Timestamp(System.currentTimeMillis())
