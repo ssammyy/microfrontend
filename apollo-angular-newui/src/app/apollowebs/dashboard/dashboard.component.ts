@@ -11,6 +11,9 @@ import {
     selectUserInfo,
     UserEntityDto
 } from 'src/app/core/store';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {MsService} from '../../core/store/data/ms/ms.service';
+import {MsDashBoardALLDto} from '../../core/store/data/ms/ms.model';
 
 declare const $: any;
 
@@ -28,6 +31,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     countExpired = 0;
 
     user: UserEntityDto;
+    msDashBoardDetails: MsDashBoardALLDto;
 
     roles: string[];
 
@@ -92,7 +96,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
     constructor(private router: Router,
-                private store$: Store<any>
+                private store$: Store<any>,
+                private SpinnerService: NgxSpinnerService,
+                private msService: MsService,
     ) {
     }
 
@@ -116,11 +122,52 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             console.log(u.roles)
             this.roles = u.roles;
             return this.roles = u.roles;
-
         });
+
+        this.loadMSData();
 
 
     }
+
+    private loadMSData(): any {
+        this.SpinnerService.show();
+        this.msService.msDashBoardAllDetails().subscribe(
+            (data) => {
+                this.msDashBoardDetails = data;
+                this.SpinnerService.hide();
+            },
+            error => {
+                this.SpinnerService.hide();
+                console.log(error);
+                // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+
+        // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
+        // console.log(this.activeStatus)
+        // // Clear list before loading
+        // this.dataSet.load([])
+        // // Switch
+        // if (this.activeStatus === "completed") {
+        //   data = this.diService.listCompletedCd(documentTypeUuid, page, size)
+        // } else if (this.activeStatus === "ongoing") {
+        //   data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
+        // } else if (this.activeStatus === "not-assigned") {
+        //   data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
+        // }
+        // data.subscribe(
+        //     result => {
+        //       if (result.responseCode === "00") {
+        //         let listD: any[] = result.data;
+        //         this.totalCount = result.totalCount
+        //         this.dataSet.load(listD)
+        //       } else {
+        //         console.log(result)
+        //       }
+        //     }
+        // );
+    }
+
 
 
     ngAfterViewInit() {

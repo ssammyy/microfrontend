@@ -477,8 +477,6 @@
             </div>
         </div>
         <div *ngIf="roles?.includes('SL_MANUFACTURE_VIEW')" >
-
-
             <div class="row">
                 <div class="col-md-4">
                     <div class="card card-chart" >
@@ -731,7 +729,234 @@
                 </div>
             </div>
         </div>
-        </div>
+        <div *ngIf="roles?.includes('MS_IO_READ')" >
 
+            <div class="row" >
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Allocated Task Complaint</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.officerDashBoard?.allocatedTaskCP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-rose card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Allocated Task Work Plan Schedule</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.officerDashBoard?.allocatedTaskWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Allocated Task Complaint Schedule</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.officerDashBoard?.allocatedTaskCPWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">report_problem</i>
+                            </div>
+                            <p class="card-category">OverDue Task Complaint</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.officerDashBoard?.overdueTaskCP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-rose card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">report_problem</i>
+                            </div>
+                            <p class="card-category">OverDue Task Work Plan Schedule</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.officerDashBoard?.overdueTaskWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">report_problem</i>
+                            </div>
+                            <p class="card-category">OverDue Task Complaint Schedule</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.officerDashBoard?.overdueTaskCPWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="roles?.includes('MS_HOD_READ') || roles?.includes('MS_RM_READ')" >
+            <div class="row" >
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Pending Self Assigning</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.hodDashBoard?.selfAssigningTaskCP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-rose card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Pending HOF Assigning</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.hodDashBoard?.assigningHOFTaskCP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="roles?.includes('MS_HOF_READ')" >
+            <div class="row" >
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Pending Officer Assigning</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.hofDashBoard?.assigningIOTaskCP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+<!--                    <div class="card card-stats">-->
+<!--                        <div class="card-header card-header-rose card-header-icon">-->
+<!--                            <div class="card-icon">-->
+<!--                                <i class="material-icons">verified</i>-->
+<!--                            </div>-->
+<!--                            <p class="card-category">Complaint Pending HOF Assigning</p>-->
+<!--                            <h3 class="card-title">{{msDashBoardDetails?.hodDashBoard?.assigningHOFTaskCP}}</h3>-->
+<!--                        </div>-->
+<!--                        <div class="card-footer">-->
+<!--                            <div class="stats">-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+        <div *ngIf="roles?.includes('MS_DIRECTOR_READ')" >
+
+            <div class="row" >
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Pending Self Assigning By HOD/RM</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.assigningHODTaskCP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-rose card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Pending HOF Assigning By HOD</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.assigningHOFTaskCP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Pending Officer Assigning By HOF</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.assigningIOTaskCP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
         <app-inspection-dashboard></app-inspection-dashboard>
     </div>

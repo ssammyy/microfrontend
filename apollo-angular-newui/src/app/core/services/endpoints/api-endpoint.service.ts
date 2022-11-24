@@ -679,6 +679,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_COMMON = {
+        MS_DASHBOARD: `${ApiEndpointService.MS_COMMON_CONTEXT}/dashboard`,
         MS_TOWNS: `${ApiEndpointService.MS_COMMON_CONTEXT}/towns`,
         MS_COUNTIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/counties`,
         MS_COUNTRIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/countries`,

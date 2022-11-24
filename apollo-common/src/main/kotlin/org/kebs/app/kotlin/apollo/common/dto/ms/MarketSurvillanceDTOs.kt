@@ -1072,6 +1072,37 @@ data class ComplaintsListDto(
         var progressStep: String? = null
 )
 
+class MsDashBoardALLDto{
+        var officerDashBoard: MsDashBoardIODto? = null
+        var hodDashBoard: MsDashBoardHODDto? = null
+        var hofDashBoard: MsDashBoardHOFDto? = null
+        var diDashBoard: MsDashBoardDIDto? = null
+}
+
+data class MsDashBoardIODto(
+        var allocatedTaskCP: Long?= 0,
+        var allocatedTaskWP: Long?= 0,
+        var allocatedTaskCPWP: Long?= 0,
+        var overdueTaskCP: Long?= 0,
+        var overdueTaskWP: Long?= 0,
+        var overdueTaskCPWP: Long?= 0,
+)
+
+data class MsDashBoardHODDto(
+        var selfAssigningTaskCP: Long?= 0,
+        var assigningHOFTaskCP: Long?= 0,
+)
+
+data class MsDashBoardDIDto(
+        var assigningHODTaskCP: Long?= 0,
+        var assigningHOFTaskCP: Long?= 0,
+        var assigningIOTaskCP: Long?= 0,
+)
+
+data class MsDashBoardHOFDto(
+        var assigningIOTaskCP: Long?= 0,
+)
+
 data class MsDepartmentDto(
         var id: Long?= 0,
         val department: String? = null,

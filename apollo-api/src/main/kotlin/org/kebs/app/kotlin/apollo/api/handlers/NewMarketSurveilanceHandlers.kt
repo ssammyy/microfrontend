@@ -92,6 +92,19 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun msDashBoardDetails(req: ServerRequest): ServerResponse {
+        try {
+            marketSurveillanceComplaintDaoServices.msDashBoardAllDetails()
+                .let {
+                    return ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
     fun msRecommendationList(req: ServerRequest): ServerResponse {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)

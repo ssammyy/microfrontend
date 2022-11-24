@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.store.model.ms
 import org.kebs.app.kotlin.apollo.store.model.ms.MsAllocatedTasksCpViewEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsAllocatedTasksWpViewEntity
 import java.io.Serializable
-import java.math.BigInteger
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
@@ -30,23 +29,23 @@ class MsAllocatedTasksWpViewEntity: Serializable {
 
     @Basic
     @Column(name = "OFFICER_ID")
-    var officerId: BigInteger? = null
+    var officerId: Long? = null
 
     @Basic
     @Column(name = "HOD_RM_ASSIGNED")
-    var hodRmAssigned: BigInteger? = null
+    var hodRmAssigned: Long? = null
 
     @Basic
     @Column(name = "HOF_ASSIGNED")
-    var hofAssigned: BigInteger? = null
+    var hofAssigned: Long? = null
 
     @Basic
     @Column(name = "USER_TASK_ID")
-    var userTaskId: BigInteger? = null
+    var userTaskId: Long? = null
 
     @Basic
     @Column(name = "COMPLAINT_ID")
-    var complaintId: BigInteger? = null
+    var complaintId: Long? = null
 
     @Basic
     @Column(name = "MS_PROCESS_ENDED_STATUS")

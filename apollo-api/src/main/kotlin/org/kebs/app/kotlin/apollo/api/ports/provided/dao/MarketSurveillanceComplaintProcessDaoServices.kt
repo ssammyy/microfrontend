@@ -65,6 +65,9 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val invoiceDaoService: InvoiceDaoService,
     private val reportsDaoService: ReportsDaoService,
     private val serviceRequestsRepo: IServiceRequestsRepository,
+    private val allocatedTasksCpViewRepo: IMsAllocatedTasksCpViewRepository,
+    private val allocatedTasksWpViewRepo: IMsAllocatedTasksWpViewRepository,
+    private val tasksPendingAllocationCpViewRepo: IMsTasksPendingAllocationCpViewRepository,
     private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
     private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
     private val reportSubmittedTimelineViewRepo: IMsReportSubmittedCpViewRepository,
@@ -196,6 +199,66 @@ class MarketSurveillanceComplaintProcessDaoServices(
             KotlinLogging.logger { }.debug(e.message, e)
             return MSComplaintSubmittedSuccessful(null,false,null, e.message ?: "Unknown Error")
         }
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msDashBoardAllDetails(): MsDashBoardALLDto {
+        val response = MsDashBoardALLDto()
+        val overDueValue = "YES"
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        val userProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                val officerDashBoard =  MsDashBoardIODto()
+                with(officerDashBoard){
+                    allocatedTaskCP = loggedInUser.id?.let { allocatedTasksCpViewRepo.countByAssignedIo(it) }
+                    allocatedTaskWP = loggedInUser.id?.let { allocatedTasksWpViewRepo.countByOfficerIdAndComplaintIdIsNull(it) }
+                    allocatedTaskCPWP = loggedInUser.id?.let { allocatedTasksWpViewRepo.countByOfficerIdAndComplaintIdIsNotNull(it) }
+                    overdueTaskCP =loggedInUser.id?.let { allocatedTasksCpViewRepo.countByAssignedIoAndTaskOverDue(it,overDueValue) }
+                    overdueTaskWP =loggedInUser.id?.let { allocatedTasksWpViewRepo.countByOfficerIdAndTaskOverDueAndComplaintIdIsNull(it,overDueValue) }
+                    overdueTaskCPWP =loggedInUser.id?.let { allocatedTasksWpViewRepo.countByOfficerIdAndTaskOverDueAndComplaintIdIsNotNull(it,overDueValue) }
+                }
+                response.officerDashBoard = officerDashBoard
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
+                val hodDashBoard =  MsDashBoardHODDto()
+                with(hodDashBoard){
+                    selfAssigningTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
+                    assigningHOFTaskCP = loggedInUser.id?.let { tasksPendingAllocationCpViewRepo.countByHodAssignedAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull(it) }
+                }
+                response.hodDashBoard = hodDashBoard
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
+                val hodDashBoard =  MsDashBoardHODDto()
+                with(hodDashBoard){
+                    selfAssigningTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
+                    assigningHOFTaskCP = loggedInUser.id?.let { tasksPendingAllocationCpViewRepo.countByHodAssignedAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull(it) }
+                }
+                response.hodDashBoard = hodDashBoard
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
+                val hofDashBoard = MsDashBoardHOFDto()
+                with(hofDashBoard){
+                    assigningIOTaskCP = loggedInUser.id?.let { tasksPendingAllocationCpViewRepo.countByHofAssignedAndMsComplaintEndedStatusIsNullAndAssignedIoIsNull(it) }
+                }
+                response.hofDashBoard = hofDashBoard
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                val diDashBoard = MsDashBoardDIDto()
+                with(diDashBoard){
+                    assigningHODTaskCP =  tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
+                    assigningHOFTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNotNullAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull()
+                    assigningIOTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNotNullAndMsComplaintEndedStatusIsNullAndHofAssignedIsNotNullAndAssignedIoIsNull()
+                }
+                response.diDashBoard = diDashBoard
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return  response
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
@@ -1625,6 +1688,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             }
             ?: throw ExpectedDataNotFound("Complaint Location with Complaint [ID = ${complaintID}], does not Exist")
     }
+
 
 
     fun listMsDepartments(status: Int): List<MsDepartmentDto>? {

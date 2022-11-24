@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.store.model.ms
 import org.kebs.app.kotlin.apollo.store.model.ms.MsTasksPendingAllocationCpViewEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsTasksPendingAllocationWpViewEntity
 import java.io.Serializable
-import java.math.BigInteger
 import java.sql.Date
 import java.util.*
 import javax.persistence.*
@@ -29,23 +28,23 @@ class MsTasksPendingAllocationCpViewEntity: Serializable {
 
     @Basic
     @Column(name = "ASSIGNED_IO")
-    var assignedIo: BigInteger? = null
+    var assignedIo: Long? = null
 
     @Basic
     @Column(name = "HOD_ASSIGNED")
-    var hodAssigned: BigInteger? = null
+    var hodAssigned: Long? = null
 
     @Basic
     @Column(name = "HOF_ASSIGNED")
-    var hofAssigned: BigInteger? = null
+    var hofAssigned: Long? = null
 
     @Basic
     @Column(name = "USER_TASK_ID")
-    var userTaskId: BigInteger? = null
+    var userTaskId: Long? = null
 
     @Basic
     @Column(name = "MS_COMPLAINT_ENDED_STATUS")
-    var msComplaintEndedStatus: BigInteger? = null
+    var msComplaintEndedStatus: Long? = null
 
     @Basic
     @Column(name = "TASK_OVER_DUE")
