@@ -6849,8 +6849,8 @@ class QADaoServices(
 
 
     fun findPermitPscDate(permitId: Long): QaRemarksEntity {
-        return if (remarksEntityRepo.findByPermitIdAndProcessBy(permitId, "PSC") != null) {
-            remarksEntityRepo.findByPermitIdAndProcessBy(permitId, "PSC")!!
+        return if (remarksEntityRepo.findFirstByPermitIdAndProcessByAndRemarksStatus(permitId, "PSC",1) != null) {
+            remarksEntityRepo.findFirstByPermitIdAndProcessByAndRemarksStatus(permitId, "PSC",1)!!
         } else {
             QaRemarksEntity()
         }

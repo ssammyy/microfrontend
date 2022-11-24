@@ -1,6 +1,6 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {ApprovedNwiS, Preliminary_Draft} from "../../../../core/store/data/std/commitee-model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {Store} from "@ngrx/store";
@@ -11,7 +11,9 @@ import {CommitteeService} from "../../../../core/store/data/std/committee.servic
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
 import {
+    DataHolder,
     Document,
+    Minutes,
     NwiItem,
     StandardRequestB,
     StdJustification,
@@ -24,6 +26,8 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {MasterService} from "../../../../core/store/data/master/master.service";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
+import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
+import {IDropdownSettings} from "ng-multiselect-dropdown";
 
 declare const $: any;
 
@@ -33,6 +37,8 @@ declare const $: any;
     styleUrls: ['./prepare-preliminary-draft.component.css']
 })
 export class PreparePreliminaryDraftComponent implements OnInit {
+    @Input() errorMsg: string;
+    @Input() displayError: boolean;
     fullname = '';
     title = 'toaster-not';
     preliminary_draft: Preliminary_Draft | undefined;
@@ -40,21 +46,18 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     public preliminary_draftFormGroup!: FormGroup;
     public approvedNwiS !: ApprovedNwiS[];
     public approvedNwiSB !: ApprovedNwiS | undefined;
-
+    public minutes_preliminary_draftFormGroup!: FormGroup;
     public approvedNwiSForPd !: NwiItem[];
     public approvedNwiSForPdB !: NwiItem | undefined;
-
     public uploadedFiles: FileList;
     public uploadedFilesB: FileList;
     public uploadedFilesC: FileList;
-
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
     isDtInitialized: boolean = false
-
-
+    validTextType: boolean = false;
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
@@ -63,24 +66,28 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     dtTrigger4: Subject<any> = new Subject<any>();
     dtTrigger5: Subject<any> = new Subject<any>();
     dtTrigger6: Subject<any> = new Subject<any>();
-
     public nwiItem!: NwiItem[];
     public stdJustificationDecision!: StdJustificationDecision[];
     docs !: Document[];
     blob: Blob;
-
+    public justificationItem!: StdJustification[];
+    public justificationItemB !: StdJustification | undefined;
     dateFormat = "yyyy-MM-dd";
     language = "en";
-
     displayedColumns: string[] = ['sl', 'edition', 'title', 'spcMeetingDate', 'departmentId', 'actions'];
     dataSource!: MatTableDataSource<StdJustification>;
     dataSourceB!: MatTableDataSource<StdJustification>;
     dataSourceC!: MatTableDataSource<StdJustification>;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
-
     public userDetails!: UserRegister;
     tasks: StandardRequestB[] = [];
+    public allSdUsers !: UserRegister[];
+    dropdownList: any[] = [];
+    public tcs !: DataHolder[];
+    public dropdownSettings: IDropdownSettings = {};
+    public dropdownSettingsB: IDropdownSettings = {};
+    selectedItems?: UserRegister;
 
 
     constructor(private formBuilder: FormBuilder,
@@ -95,13 +102,58 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     ) {
     }
 
+    isFieldValid(form: FormGroup, field: string) {
+        return !form.get(field).valid && form.get(field).touched;
+    }
+
+    displayFieldCss(form: FormGroup, field: string) {
+        return {
+            'has-error': this.isFieldValid(form, field),
+            'has-feedback': this.isFieldValid(form, field)
+        };
+    }
+
+    validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateAllFormFields(control);
+            }
+        });
+    }
+
     ngOnInit(): void {
         this.getNWIS();
+        this.getAllSdUsers()
+        this.getTechnicalCommittee()
+
 
         this.preliminary_draftFormGroup = this.formBuilder.group({
             pdName: ['', Validators.required]
         });
 
+        this.prepareMinutesForm()
+        this.dropdownSettings = {
+            singleSelection: false,
+            idField: 'id',
+            textField: 'full_name',
+            selectAllText: 'Select All',
+            unSelectAllText: 'UnSelect All',
+            allowSearchFilter: true
+        };
+        this.dropdownSettingsB = {
+            singleSelection: true,
+            idField: 'id',
+            textField: 'full_name',
+            allowSearchFilter: true
+        };
+
+    }
+
+    get formMinutesPd(): any {
+        return this.minutes_preliminary_draftFormGroup.controls;
     }
 
     public getNWIS(): void {
@@ -132,15 +184,19 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         }
         if (mode === 'preparePd') {
             this.approvedNwiSForPdB = approvedNwiS;
-            button.setAttribute('data-target', '#preparePd');
+            // button.setAttribute('data-target', '#preparePd');
+            localStorage.setItem('id', approvedNwiS.id);
+            // localStorage.removeItem(this.storageKey);
+
+
+            this.router.navigate(['/prepareDraft'], { state: { id:approvedNwiS.id } });
+
         }
         if (mode === 'uploadMinutes') {
             this.approvedNwiSForPdB = approvedNwiS;
+            this.minutes_preliminary_draftFormGroup.controls.nwiId.setValue(approvedNwiS.id);
+
             button.setAttribute('data-target', '#uploadMinutes');
-        }
-        if (mode === 'workPlan') {
-            this.approvedNwiSForPdB = approvedNwiS;
-            button.setAttribute('data-target', '#workPlan');
         }
 
         if (mode === 'uploadDraftsAndOtherRelevantDocuments') {
@@ -220,11 +276,10 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         }
     }
 
-
     uploadPreliminaryDraft(): void {
         if (this.uploadedFilesC != null) {
             this.SpinnerService.show();
-            this.committeeService.preparePreliminaryDraft(this.preliminary_draftFormGroup.value, this.approvedNwiSB.id).subscribe(
+            this.committeeService.preparePreliminaryDraft(this.preliminary_draftFormGroup.value, this.approvedNwiSForPdB.id).subscribe(
                 (response) => {
                     console.log(response)
                     this.SpinnerService.hide();
@@ -274,7 +329,6 @@ export class PreparePreliminaryDraftComponent implements OnInit {
             );
         }
     }
-
 
     showToasterSuccess(title: string, message: string) {
         this.notifyService.showSuccess(message, title)
@@ -342,6 +396,10 @@ export class PreparePreliminaryDraftComponent implements OnInit {
             this.getAllRequestDocs(String(nwiId))
             button.setAttribute('data-target', '#viewRequestModal');
         }
+        if (mode === 'justification') {
+            this.getSpecificJustification(String(nwiId))
+            button.setAttribute('data-target', '#justificationDecisionModal');
+        }
 
 
         // @ts-ignore
@@ -350,11 +408,28 @@ export class PreparePreliminaryDraftComponent implements OnInit {
 
     }
 
-
     public getSpecificNwi(nwiId: string): void {
         this.standardDevelopmentService.getNwiById(nwiId).subscribe(
             (response: NwiItem[]) => {
                 this.nwiItem = response;
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
+    public getSpecificJustification(nwiId: string): void {
+        this.standardDevelopmentService.getJustificationByNwiId(nwiId).subscribe(
+            (response: StdJustification[]) => {
+                this.justificationItem = response;
+
+                for (let product of response) {
+                    this.getDecisionOnJustification(product.id)
+                    this.getSelectedUser(product.tcSecretary)
+
+                }
 
             },
             (error: HttpErrorResponse) => {
@@ -449,7 +524,6 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         );
     }
 
-
     formatFormDate(date: Date) {
         return formatDate(date, this.dateFormat, this.language);
     }
@@ -481,6 +555,176 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         if (this.dataSourceC.paginator) {
             this.dataSourceC.paginator.firstPage();
         }
+    }
+
+    public getDecisionOnJustification(justificationId: string): void {
+        this.standardDevelopmentService.getJustificationDecisionById(justificationId).subscribe(
+            (response: StdJustificationDecision[]) => {
+                this.stdJustificationDecision = response;
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
+    public prepareMinutesForm(): void {
+        this.minutes_preliminary_draftFormGroup = this.formBuilder.group({
+            committeeId: ['', Validators.required],
+            chairpersonData: [this.selectedItems, Validators.required],
+            secretaryData: [this.selectedItems, Validators.required],
+            attendeesData: [this.selectedItems, Validators.required],
+            agenda: ['', Validators.required],
+            minutesTitle: ['', Validators.required],
+            discussion: ['', Validators.required],
+            conclusion: ['', Validators.required],
+            actionItem: ['', Validators.required],
+            adjournmentDate: ['', Validators.required],
+            minutesDate: ['', Validators.required],
+            minutesTime: ['', Validators.required],
+            minutesLocation: ['', Validators.required],
+            nwiId: ['', Validators.required],
+
+
+        });
+    }
+
+    saveStandard(formDirective): void {
+
+
+        if (this.minutes_preliminary_draftFormGroup.invalid) {
+            this.minutes_preliminary_draftFormGroup.markAllAsTouched();
+            this.validateAllFormFields(this.minutes_preliminary_draftFormGroup);
+            console.log(this.minutes_preliminary_draftFormGroup)
+
+            return;
+        } else {
+            this.onUpload(this.minutes_preliminary_draftFormGroup.value)
+            formDirective.resetForm();
+            this.minutes_preliminary_draftFormGroup.reset()
+        }
+
+        // if (this.minutes_preliminary_draftFormGroup.valid) {
+        //     this.SpinnerService.show();
+        //     this.standardDevelopmentService.addStandardRequest(this.minutes_preliminary_draftFormGroup.value).subscribe(
+        //         (response) => {
+        //             this.showToasterSuccess(response.httpStatus, `Successfully uploaded minutes`);
+        //             this.SpinnerService.hide();
+        //             formDirective.resetForm();
+        //             this.minutes_preliminary_draftFormGroup.reset()
+        //             swal.fire({
+        //                 title: 'Minutes Successfully Uploaded.',
+        //                 buttonsStyling: false,
+        //                 customClass: {
+        //                     confirmButton: 'btn btn-success form-wizard-next-btn ',
+        //                 },
+        //                 icon: 'success'
+        //             });
+        //
+        //         },
+        //         (error: HttpErrorResponse) => {
+        //             this.SpinnerService.hide();
+        //
+        //             alert(error.message);
+        //         }
+        //     );
+        //
+        // } else {
+        //     this.validateAllFormFields(this.minutes_preliminary_draftFormGroup);
+        // }
+
+
+    }
+
+    public onUpload(secTask: Minutes): void {
+        this.SpinnerService.show();
+
+
+        if (secTask.attendeesData != null) {
+            //console.log(JSON.stringify(secTask.liaisonOrganisationData.name));
+            secTask.attendeesId = JSON.stringify(secTask.attendeesData);
+            secTask.chairpersonId = JSON.stringify(secTask.chairpersonData);
+            secTask.secretaryId = JSON.stringify(secTask.secretaryData);
+
+        }
+        console.log(secTask)
+        this.hideModel();
+
+
+        // this.standardDevelopmentService.uploadNWI(secTask).subscribe(
+        //     (response) => {
+        //         console.log(response.body.savedRowID);
+        //         this.showToasterSuccess(response.httpStatus, `Successfully uploaded minutes`);
+        //         swal.fire({
+        //             title: 'Minutes Successfully Uploaded.',
+        //             buttonsStyling: false,
+        //             customClass: {
+        //                 confirmButton: 'btn btn-success form-wizard-next-btn ',
+        //             },
+        //             icon: 'success'
+        //         });
+        //         this.hideModel();
+        //         this.SpinnerService.hide();
+        //
+        //
+        //     },
+        //     (error: HttpErrorResponse) => {
+        //         alert(error.message);
+        //         this.SpinnerService.hide();
+        //
+        //     }
+        // )
+    }
+
+
+    textValidationType(e) {
+        this.validTextType = !!e;
+    }
+
+    public getAllSdUsers(): void {
+        this.committeeService.getAllSdUsers().subscribe(
+            (response: UserRegister[]) => {
+                this.allSdUsers = response;
+
+                this.dropdownList = response.map((person) => {
+                    return {
+                        id: person.id,
+                        full_name: `${person.firstName} ${person.lastName}`
+                    }
+                });
+                this.dropdownList = response.map((person) => {
+                    return {
+                        id: person.id,
+                        full_name: `${person.firstName} ${person.lastName}`
+                    }
+                });
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public getTechnicalCommittee(): void {
+        this.standardDevelopmentService.getTechnicalCommittees().subscribe(
+            (response: DataHolder[]) => {
+                this.tcs = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        )
+    }
+
+    onItemSelect(item: ListItem) {
+        console.log(item);
+    }
+
+    onSelectAll(items: any) {
+        console.log(items);
     }
 
 

@@ -426,6 +426,8 @@ import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillan
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {GenerateDeclarationReportComponent} from './apollowebs/di/other-documents/declaration-documents/generate-declaration-report/generate-declaration-report.component';
+import {MatCardModule} from "@angular/material/card";
+import { PrepareDraftComponent } from './apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -498,6 +500,7 @@ import {GenerateDeclarationReportComponent} from './apollowebs/di/other-document
         MatDatepickerModule,
         MatSortModule,
         MatPaginatorModule,
+        MatCardModule,
 
         // NgxDocViewerModule
     ],
@@ -886,6 +889,7 @@ import {GenerateDeclarationReportComponent} from './apollowebs/di/other-document
         GenerateDnReportComponent,
         DeclarationDocumentsComponent,
         GenerateDeclarationReportComponent,
+        PrepareDraftComponent,
 
     ],
     entryComponents: [LoaderComponent],

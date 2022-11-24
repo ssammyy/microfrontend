@@ -612,7 +612,7 @@ interface IQaRemarksEntityRepository : HazelcastRepository<QaRemarksEntity, Long
 
     //    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
-    fun findByPermitIdAndProcessBy(permitId: Long, processBy: String): QaRemarksEntity?
+    fun findFirstByPermitIdAndProcessByAndRemarksStatus(permitId: Long, processBy: String, remarksStatus:Int): QaRemarksEntity?
 }
 
 @Repository

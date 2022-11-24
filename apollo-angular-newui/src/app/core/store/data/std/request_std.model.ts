@@ -1,3 +1,5 @@
+import {UserRegister} from "../../../../shared/models/user";
+
 export interface StandardRequestB {
     id: number;
     requestNumber: string;
@@ -198,7 +200,7 @@ export interface NwiItem {
     standardId: string;
     tcSec: string;
     processStatus: string;
-    pdStatus:String;
+    pdStatus: String;
 }
 
 
@@ -657,5 +659,26 @@ export interface Document {
 
     createdOn: string;
     createdBy: string;
+
+}
+
+
+export interface Minutes {
+    id: number;
+    createdOn: string;
+    createdBy: string;
+    committeeId: string,
+    chairpersonId: string,
+    chairpersonData: UserRegister,
+    secretaryId: string,
+    secretaryData: UserRegister,
+    attendeesId: string,
+    attendeesData: UserRegister,
+    agenda: string,
+    minutesTitle: string,
+    discussion: string,
+    conclusion: string,
+    actionItem: string,
+    adjournmentDate: string,
 
 }

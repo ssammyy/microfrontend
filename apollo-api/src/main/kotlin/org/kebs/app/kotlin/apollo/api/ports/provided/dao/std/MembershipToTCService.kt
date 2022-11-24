@@ -19,6 +19,7 @@ import org.kebs.app.kotlin.apollo.store.model.std.CallForTCApplication
 import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.MembershipTCApplication
 import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommitteeMember
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.ResponseEntity
@@ -29,7 +30,6 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.collections.set
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue as ProcessInstanceResponseValue1
 
@@ -49,7 +49,7 @@ class MembershipToTCService(
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
     private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
-
+    private val usersRepo: IUserRepository,
 
     ) {
 
@@ -406,7 +406,7 @@ class MembershipToTCService(
     fun sendEmailForFirstMeeting(
         membershipTCApplication: MembershipTCApplication,
         applicationID: Long,
-        meetingDate:String
+        meetingDate: String
     ) {
         val u: MembershipTCApplication = membershipTCRepository.findById(applicationID).orElse(null);
         //send email
@@ -417,8 +417,6 @@ class MembershipToTCService(
 
         membershipTCRepository.save(u)
     }
-
-
 
 
     fun getTCMemberCreationTasks(): List<TaskDetails> {
@@ -508,5 +506,7 @@ class MembershipToTCService(
 
         return sdNwaUploadsEntityRepository.save(uploads)
     }
+
+
 
 }

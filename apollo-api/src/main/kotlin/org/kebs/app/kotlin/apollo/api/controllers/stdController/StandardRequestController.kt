@@ -300,6 +300,13 @@ class StandardRequestController(
     fun getRejectedAmendmentJustifications(): List<StandardJustification> {
         return standardRequestService.getRejectedAmendmentJustifications()
     }
+    @GetMapping("standard/getJustificationByNwiId")
+    fun getJustificationByNwiId(
+        @RequestParam("nwiId") nwiId: Long,
+
+        ): List<StandardJustification> {
+        return standardRequestService.getJustificationByNwiId(nwiId)
+    }
 
     @GetMapping("standard/spc-sec/tasks")
     fun getSPCSecTasks(): List<TaskDetails> {

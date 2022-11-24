@@ -521,7 +521,7 @@ class StandardRequestService(
                 j.status = "Justification Approved"
                 val u: StandardNWI = standardNWIRepository.findById(j.nwiId!!.toLong()).orElse(null)
                 u.processStatus = "Prepare Minutes and Drafts For Preliminary Draft"
-                u.pdStatus= "Prepare Minutes and Drafts For Preliminary Draft"
+                u.pdStatus = "Prepare Minutes and Drafts For Preliminary Draft"
                 val cdNumber = "CD/" + u.referenceNumber
                 j.cdNumber = cdNumber
                 standardJustificationRepository.save(j)
@@ -555,6 +555,10 @@ class StandardRequestService(
 
     fun getRejectedAmendmentJustifications(): List<StandardJustification> {
         return standardJustificationRepository.findByStatus("Justification Rejected With Amendments")
+    }
+
+    fun getJustificationByNwiId(nwiId: Long): List<StandardJustification> {
+        return standardJustificationRepository.findByNwiId(nwiId.toString())
     }
 
 

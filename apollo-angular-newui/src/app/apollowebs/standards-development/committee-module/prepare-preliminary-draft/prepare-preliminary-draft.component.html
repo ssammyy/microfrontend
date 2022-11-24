@@ -63,16 +63,16 @@
                                                data-placement="top"
                                                data-original-title="Upload NWI">View Request</a>
                                             <br>
-<!--                                            <a (click)="onOpenModal(approvedNwi,'workPlan')"-->
-<!--                                               class="btn btn-info tooltips"-->
-<!--                                               data-placement="top"-->
-<!--                                               data-original-title="Upload NWI">View Justification</a>-->
+                                            <a (click)="onOpenModalViewNwi(approvedNwi.id,'justification')"
+                                               class="btn btn-info tooltips"
+                                               data-placement="top"
+                                               data-original-title="Upload NWI">View Justification</a>
                                             <br></td>
                                         <td>
                                             <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
-                                               data-original-title="Upload NWI">Upload Minutes</a>
+                                               data-original-title="Upload NWI">Prepare Minutes</a>
                                             <a (click)="onOpenModal(approvedNwi,'uploadDraftsAndOtherRelevantDocuments')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
@@ -89,398 +89,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <!--                            <div class="modal fade " id="updateNWIModal" tabindex="-1" role="dialog"-->
-                            <!--                                 aria-labelledby="updateExampleModalLabel"-->
-                            <!--                                 aria-hidden="true">-->
-                            <!--                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">-->
-                            <!--                                    <div class="modal-content">-->
-                            <!--                                        <div class="modal-header">-->
-                            <!--                                            <h5 class="modal-title" id="updateExampleModalLabel">View NWI Details</h5>-->
-                            <!--                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-                            <!--                                                <span aria-hidden="true">&times;</span>-->
-                            <!--                                            </button>-->
-                            <!--                                        </div>-->
-                            <!--                                        <form #editForm="ngForm">-->
-                            <!--                                            <div class="modal-body">-->
-                            <!--                                                <div class="row col-12">-->
-                            <!--                                                    <label><b>Title of Proposal</b></label>-->
-                            <!--                                                    <input-->
-                            <!--                                                            oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-                            <!--                                                            class="form-control one-column-input"-->
-                            <!--                                                            name="name"-->
-                            <!--                                                            type="text">-->
-                            <!--                                                </div>-->
-                            <!--                                                <div class="row col-12">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Scope</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                name="abbreviations"-->
 
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Purpose & application</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                name="codes"-->
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-
-                            <!--                                                </div>-->
-                            <!--                                                <div class="row col-12">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Target Date</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                name="abbreviations"-->
-
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Similar Standards/Subject of-->
-                            <!--                                                            Standardization</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                name="codes"-->
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-
-                            <!--                                                </div>-->
-                            <!--                                                <div class="row col-12">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Liaison Organizations/or interested-->
-                            <!--                                                            parties</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                name="abbreviations"-->
-
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Preparatory Work</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                name="codes"-->
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-
-                            <!--                                                </div>-->
-                            <!--                                                <div class="row col-12">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Name of Proposer</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                name="abbreviations"-->
-
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Organization</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                oninput="this.value = this.value.toUpperCase()"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                name="codes"-->
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-
-                            <!--                                                </div>-->
-                            <!--                                                <div class="row col-12">-->
-                            <!--                                                    <div class="form-group col-12">-->
-                            <!--                                                        <label><b>Relevant Documents</b></label>-->
-                            <!--                                                        <div class="material-datatables">-->
-                            <!--                                                            <table class="table table-striped table-bordered table-hover"-->
-                            <!--                                                                   datatable-->
-                            <!--                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">-->
-                            <!--                                                                <thead>-->
-                            <!--                                                                <tr>-->
-                            <!--                                                                    <th class="id">Document Id</th>-->
-                            <!--                                                                    <th class="id">Document Name</th>-->
-                            <!--                                                                    <th class="action">Action</th>-->
-                            <!--                                                                </tr>-->
-                            <!--                                                                </thead>-->
-                            <!--                                                                <tbody>-->
-                            <!--                                                                <tr *ngFor="let approvedNwi of approvedNwiS let i= index; ">-->
-                            <!--                                                                    <td>{{i + 1}}</td>-->
-                            <!--                                                                    <td>{{approvedNwi.request_No}}</td>-->
-                            <!--                                                                    <td>-->
-                            <!--                                                                        <a (click)="onOpenModal(approvedNwi,'edit')"-->
-                            <!--                                                                           class="btn btn-info tooltips"-->
-                            <!--                                                                           data-placement="top"-->
-                            <!--                                                                           data-original-title="Upload NWI">Download</a>-->
-                            <!--                                                                    </td>-->
-
-                            <!--                                                                </tr>-->
-                            <!--                                                                </tbody>-->
-                            <!--                                                            </table>-->
-                            <!--                                                        </div>-->
-                            <!--                                                    </div>-->
-
-
-                            <!--                                                </div>-->
-
-
-                            <!--                                            </div>-->
-
-
-                            <!--                                            <div class="modal-footer">-->
-                            <!--                                                <button type="button" class="btn btn-secondary" #closeModal-->
-                            <!--                                                        (click)="hideModel()" data-dismiss="modal">Close-->
-                            <!--                                                </button>-->
-                            <!--                                                <button class="btn btn-info"-->
-                            <!--                                                        (click)="updateDepartment(editForm.value)">Submit-->
-                            <!--                                                </button>-->
-
-                            <!--                                            </div>-->
-                            <!--                                        </form>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
-                            <!--                            <div class="modal fade " id="workPlan" tabindex="-1" role="dialog"-->
-                            <!--                                 aria-labelledby="updateExampleModalLabel"-->
-                            <!--                                 aria-hidden="true">-->
-                            <!--                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">-->
-                            <!--                                    <div class="modal-content">-->
-                            <!--                                        <div class="modal-header">-->
-                            <!--                                            <h5 class="modal-title" id="updateExampleModalLabel">Workplan Details</h5>-->
-                            <!--                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-                            <!--                                                <span aria-hidden="true">&times;</span>-->
-                            <!--                                            </button>-->
-                            <!--                                        </div>-->
-                            <!--                                        <form #editForm="ngForm">-->
-                            <!--                                            <div class="modal-body">-->
-                            <!--                                                <div class="row">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>TC No. </b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                ngModel="{{tscsecRequest?.taskData?.tcId}}" name="tcId"-->
-                            <!--                                                                type="text">-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Code</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input" ngModel-->
-                            <!--                                                                name="code"-->
-                            <!--                                                                type="text">-->
-
-                            <!--                                                    </div>-->
-                            <!--                                                </div>-->
-
-                            <!--                                                <div class="row">-->
-                            <!--                                                    <div class="form-group col-12">-->
-                            <!--                                                        <label><b>TC Name</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                ngModel="{{tscsecRequest?.taskData?.tcId}}"-->
-                            <!--                                                                name="tcName"-->
-                            <!--                                                                placeholder="" type="text">-->
-                            <!--                                                    </div>-->
-                            <!--                                                </div>-->
-
-                            <!--                                                <div class="row">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>SL no</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                ngModel="{{tscsecRequest?.taskData?.sl}}" name="sl"-->
-                            <!--                                                                placeholder="" type="text">-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Title</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                ngModel="{{tscsecRequest?.taskData?.title}}"-->
-                            <!--                                                                name="title"-->
-                            <!--                                                                placeholder=""-->
-                            <!--                                                                type="text">-->
-
-                            <!--                                                    </div>-->
-                            <!--                                                </div>-->
-
-                            <!--                                                <div class="row">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Target Date</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                ngModel="{{tscsecRequest?.taskData?.targetDate}}"-->
-                            <!--                                                                name="targetDate"-->
-                            <!--                                                                placeholder="" type="date">-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Reference</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                ngModel="CD/{{tscsecRequest?.taskData?.requestNo}}"-->
-                            <!--                                                                name="referenceNo"-->
-                            <!--                                                                placeholder=""-->
-                            <!--                                                                type="text">-->
-
-                            <!--                                                    </div>-->
-                            <!--                                                </div>-->
-
-
-                            <!--                                                <div class="row">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Edition</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input"-->
-                            <!--                                                                ngModel="{{tscsecRequest?.taskData?.edition}}"-->
-                            <!--                                                                name="edition"-->
-                            <!--                                                                placeholder="" type="number">-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Stage Date</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input" ngModel-->
-                            <!--                                                                name="stageDate"-->
-                            <!--                                                                placeholder=""-->
-                            <!--                                                                type="date">-->
-
-                            <!--                                                    </div>-->
-                            <!--                                                </div>-->
-
-
-                            <!--                                                <div class="row">-->
-                            <!--                                                    <div class="form-group col-12">-->
-                            <!--                                                        <label><b>Month</b></label>-->
-                            <!--                                                        <select aria-label="Small"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-lg"-->
-                            <!--                                                                class="form-control"-->
-                            <!--                                                                ngModel-->
-                            <!--                                                                name="month">-->
-                            <!--                                                            <option disabled>&#45;&#45;Select Month&#45;&#45;</option>-->
-                            <!--                                                            <option value="Q1: JULY">Q1: JULY</option>-->
-                            <!--                                                            <option value="Q1: AUGUST">Q1: AUGUST</option>-->
-                            <!--                                                            <option value="Q1: SEPTEMBER">Q1: SEPTEMBER</option>-->
-                            <!--                                                            <option value="Q2: OCTOBER">Q2: OCTOBER</option>-->
-                            <!--                                                            <option value="Q2: NOVEMBER">Q2: NOVEMBER</option>-->
-                            <!--                                                            <option value="Q2: DECEMBER">Q2: DECEMBER</option>-->
-                            <!--                                                            <option value="Q3: JANUARY">Q3: JANUARY</option>-->
-                            <!--                                                            <option value="Q3: FEBRUARY">Q3: FEBRUARY</option>-->
-                            <!--                                                            <option value="Q3: MARCH">Q3: MARCH</option>-->
-                            <!--                                                            <option value="Q4: APRIL">Q4: APRIL</option>-->
-                            <!--                                                            <option value="Q4: MAY">Q4: MAY</option>-->
-                            <!--                                                            <option value="Q4: JUNE">Q4: JUNE</option>-->
-                            <!--                                                        </select>-->
-                            <!--                                                    </div>-->
-
-                            <!--                                                </div>-->
-
-                            <!--                                                <div class="row">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Stage</b></label>-->
-                            <!--                                                        <select aria-label="Small"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-lg"-->
-                            <!--                                                                class="form-control"-->
-                            <!--                                                                ngModel-->
-                            <!--                                                                name="stage">-->
-                            <!--                                                            <option disabled>&#45;&#45;Select Stage&#45;&#45;</option>-->
-                            <!--                                                            <option value="00">Request Stage</option>-->
-                            <!--                                                            <option value="10">Proposal Stage</option>-->
-                            <!--                                                            <option value="20">Committee Stage</option>-->
-                            <!--                                                            <option value="30">Public Review Stage</option>-->
-                            <!--                                                            <option value="40">Balloting Stage</option>-->
-                            <!--                                                            <option value="50">Approval Stage(SAC)</option>-->
-                            <!--                                                            <option value="60">Publishing Stage</option>-->
-
-                            <!--                                                        </select>-->
-                            <!--                                                    </div>-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Sub-stage</b></label>-->
-                            <!--                                                        <select aria-label="Small"-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-lg"-->
-                            <!--                                                                class="form-control"-->
-                            <!--                                                                ngModel-->
-                            <!--                                                                name="subStage">-->
-                            <!--                                                            <option disabled>&#45;&#45;Select Sub-Stage&#45;&#45;</option>-->
-                            <!--                                                            <option value="Registration">Registration</option>-->
-                            <!--                                                            <option value="Start">Start</option>-->
-                            <!--                                                            <option value="Completion">Completion</option>-->
-                            <!--                                                            <option value="Decision">Decision</option>-->
-
-
-                            <!--                                                        </select>-->
-
-                            <!--                                                    </div>-->
-                            <!--                                                </div>-->
-
-                            <!--                                                <div class="row">-->
-                            <!--                                                    <div class="form-group col-6">-->
-                            <!--                                                        <label><b>Value</b></label>-->
-                            <!--                                                        <input-->
-                            <!--                                                                aria-describedby="inputGroup-sizing-sm"-->
-                            <!--                                                                aria-label="Small"-->
-                            <!--                                                                class="form-control one-column-input" ngModel-->
-                            <!--                                                                type="text" name="value">-->
-                            <!--                                                    </div>-->
-                            <!--                                                </div>-->
-
-                            <!--                                                <div class="form-group">-->
-
-                            <!--                                                    <input-->
-                            <!--                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-                            <!--                                                            class="form-control one-column-input" hidden type="text"-->
-                            <!--                                                            name="taskId" ngModel="{{tscsecRequest?.taskId}}">-->
-                            <!--                                                </div>-->
-
-                            <!--                                            </div>-->
-
-
-                            <!--                                            <div class="modal-footer">-->
-                            <!--                                                <button type="button" class="btn btn-secondary" #closeModal-->
-                            <!--                                                        (click)="hideModel()" data-dismiss="modal">Close-->
-                            <!--                                                </button>-->
-                            <!--                                                <button class="submit-button" (click)="uploadWorkPlan(editForm.value)"-->
-                            <!--                                                        type="submit">SUBMIT-->
-                            <!--                                                </button>-->
-                            <!--                                            </div>-->
-                            <!--                                        </form>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
                             <div class="modal fade " id="uploadMinutes" tabindex="-1" role="dialog"
                                  aria-labelledby="updateExampleModalLabel"
                                  aria-hidden="true">
@@ -497,27 +106,260 @@
                                                 <div class="row col-12">
                                                     <div class="form-group col-12">
 
-                                                        <label><b>Please Upload The Minutes For The Discussion</b> <a
-                                                                href="https://www.w3schools.com/"> (Download Minutes
-                                                            Template Here)</a></label>
 
-                                                        <form>
-                                                            <file-upload [(ngModel)]="uploadedFiles"
-                                                                         name="uploadedFiles" fileslimit="1"
-                                                                         required
-                                                                         accept=".pdf"></file-upload>
+                                                        <form #formDirective="ngForm"
+                                                              (ngSubmit)="saveStandard(formDirective)"
+                                                              [formGroup]="minutes_preliminary_draftFormGroup"
+                                                              class="form">
+                                                            <div class="form-body">
+                                                                <div class="row">
+                                                                    <div class="form-group col-4">
+                                                                        <label><b>Minutes Date:</b></label>
+                                                                        <mat-form-field
+                                                                                class="example-full-width has-label"
+                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesDate')">
+                                                                            <input type="date"
+                                                                                   matInput
+                                                                                   id="minutesDate"
+                                                                                   placeholder="Minutes Date"
+                                                                                   (ngModelChange)="textValidationType($event)"
+                                                                                   formControlName="minutesDate">
+                                                                            <app-field-error-display
+                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesDate')"
+                                                                                    errorMsg="Please Enter Minutes Date">
+                                                                            </app-field-error-display>
+                                                                        </mat-form-field>
+
+
+                                                                    </div>
+                                                                    <div class="form-group col-4">
+                                                                        <label><b>Minutes Time</b></label>
+                                                                        <mat-form-field
+                                                                                class="example-full-width has-label"
+                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesTime')">
+                                                                            <input type="time"
+                                                                                   matInput
+                                                                                   id="minutesTime"
+                                                                                   placeholder="Minutes Time"
+                                                                                   (ngModelChange)="textValidationType($event)"
+                                                                                   formControlName="minutesTime">
+                                                                            <app-field-error-display
+                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesTime')"
+                                                                                    errorMsg="Please Enter Minutes time">
+                                                                            </app-field-error-display>
+                                                                        </mat-form-field>
+
+                                                                    </div>
+                                                                    <div class="form-group col-4">
+                                                                        <label><b>Location</b></label>
+                                                                        <mat-form-field
+                                                                                class="example-full-width has-label"
+                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesLocation')">
+                                                                            <input type="text"
+                                                                                   matInput
+                                                                                   id="minutesLocation"
+                                                                                   placeholder="Location"
+                                                                                   (ngModelChange)="textValidationType($event)"
+                                                                                   formControlName="minutesLocation">
+                                                                            <app-field-error-display
+                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesLocation')"
+                                                                                    errorMsg="Please Enter Location">
+                                                                            </app-field-error-display>
+                                                                        </mat-form-field>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Committee:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'committeeId')">
+                                                                        <mat-select aria-label="Small"
+                                                                                    aria-describedby="inputGroup-sizing-lg"
+                                                                                    class="form-control" required
+                                                                                    formControlName="committeeId"
+                                                                                    name="committeeId"
+                                                                                    placeholder="Select Committee"
+                                                                                    [class.is-invalid]="formMinutesPd.committeeId.invalid && formMinutesPd.committeeId.touched">
+                                                                            <mat-option *ngFor="let department of tcs"
+                                                                                        value="{{department.id}}">{{department.tc_Title}}</mat-option>
+                                                                        </mat-select>
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'committeeId')"
+                                                                                errorMsg="Please Select A Technical Committee">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Chairperson:</b></label>
+                                                                    <ng-multiselect-dropdown
+                                                                            [placeholder]="'Select Chairperson'"
+                                                                            [settings]="dropdownSettingsB"
+                                                                            [data]="dropdownList"
+                                                                            (onSelect)="onItemSelect($event)"
+                                                                            (onSelectAll)="onSelectAll($event)"
+                                                                            [class.is-invalid]="formMinutesPd?.chairpersonData?.errors?.required && formMinutesPd?.chairpersonData?.touched"
+                                                                            formControlName="chairpersonData"
+                                                                            name="chairpersonData">
+                                                                    </ng-multiselect-dropdown>
+                                                                    <span *ngIf="formMinutesPd?.chairpersonData?.errors?.required && formMinutesPd?.chairpersonData?.touched"
+                                                                          style="color: red;">Please Select The Chairperson </span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Secretary:</b></label>
+                                                                    <ng-multiselect-dropdown
+                                                                            [placeholder]="'Select Secretary'"
+                                                                            [settings]="dropdownSettingsB"
+                                                                            [data]="dropdownList"
+                                                                            (onSelect)="onItemSelect($event)"
+                                                                            (onSelectAll)="onSelectAll($event)"
+                                                                            [class.is-invalid]="formMinutesPd?.secretaryData?.errors?.required && formMinutesPd?.secretaryData?.touched"
+                                                                            formControlName="secretaryData"
+                                                                            name="secretaryData">
+                                                                    </ng-multiselect-dropdown>
+                                                                    <span *ngIf="formMinutesPd?.secretaryData?.errors?.required && formMinutesPd?.secretaryData?.touched"
+                                                                          style="color: red;">Please Select The Secretary </span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Attendees:</b></label>
+                                                                    <ng-multiselect-dropdown
+                                                                            [placeholder]="'Select Attendees'"
+                                                                            [settings]="dropdownSettings"
+                                                                            [data]="dropdownList"
+                                                                            (onSelect)="onItemSelect($event)"
+                                                                            (onSelectAll)="onSelectAll($event)"
+                                                                            [class.is-invalid]="formMinutesPd?.attendeesData?.errors?.required && formMinutesPd?.attendeesData?.touched"
+                                                                            formControlName="attendeesData"
+                                                                            name="attendeesData">
+                                                                    </ng-multiselect-dropdown>
+                                                                    <span *ngIf="formMinutesPd?.attendeesData?.errors?.required && formMinutesPd?.attendeesData?.touched"
+                                                                          style="color: red;">Attendees Are required </span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Agenda:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'agenda')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="agenda"
+                                                                               placeholder="Agenda*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="agenda">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'agenda')"
+                                                                                errorMsg="Please Enter The Agenda">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Minutes Title:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesTitle')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="minutesTitle"
+                                                                               placeholder="MIN 01/13: e.g Opening remarks and adoption of agenda items*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="minutesTitle">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesTitle')"
+                                                                                errorMsg="Please Enter The Minutes Title.">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Discussion/Resolution</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'discussion')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="discussion"
+                                                                               placeholder="Discussion/Resolution*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="discussion">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'discussion')"
+                                                                                errorMsg="Please Enter The Discussion/Resolution">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Conclusions</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'conclusion')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="conclusion"
+                                                                               placeholder="Conclusion*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="conclusion">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'conclusion')"
+                                                                                errorMsg="Please Enter The Conclusions">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Action Item:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'discussion')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="actionItem"
+                                                                               placeholder="Action Item*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="actionItem">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'discussion')"
+                                                                                errorMsg="Please Enter The Action Item">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Adjournment Date:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'adjournmentDate')">
+                                                                        <input type="date"
+                                                                               matInput
+                                                                               id="adjournmentDate"
+                                                                               placeholder="Adjournment Date*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="adjournmentDate">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'adjournmentDate')"
+                                                                                errorMsg="Please Enter The Adjournment Date">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div style="margin: 3em 0 2em 0">
+                                                                    <button class="btn btn-info" type="submit">SUBMIT
+                                                                    </button>
+
+                                                                </div>
+
+                                                                <!--      <div>-->
+                                                                <!--        <span>Don't have an account ? </span><span><a routerLink="/register" >Register</a></span>-->
+                                                                <!--      </div>-->
+                                                                <!--      <div>-->
+                                                                <!--        <span>Forgot username/password ? </span><span><a>Reset</a></span>-->
+                                                                <!--      </div>-->
+                                                            </div>
+
+
                                                         </form>
+
                                                     </div>
+
+
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" #closeModal
                                                         (click)="hideModel()" data-dismiss="modal">Close
                                                 </button>
-                                                <button class="btn btn-primary"
-                                                        (click)="uploadMinutes(approvedNwiSB.id)"
-                                                        type="submit">SUBMIT
-                                                </button>
+                                                <!--                                                <button class="btn btn-primary"-->
+                                                <!--                                                        (click)="uploadMinutes(approvedNwiSForPdB.id)"-->
+                                                <!--                                                        type="submit">SUBMIT-->
+                                                <!--                                                </button>-->
                                             </div>
                                         </form>
                                     </div>
@@ -558,7 +400,7 @@
                                                         (click)="hideModel()" data-dismiss="modal">Close
                                                 </button>
                                                 <button class="btn btn-primary"
-                                                        (click)="uploadDraftsAndOtherDocs(approvedNwiSB.id)"
+                                                        (click)="uploadDraftsAndOtherDocs(approvedNwiSForPdB.id)"
                                                         type="submit">UPLOAD
                                                 </button>
                                             </div>
@@ -620,7 +462,6 @@
                             </div>
 
 
-
                             <div class="modal fade" id="justificationDecisionModal" tabindex="-1" role="dialog"
                                  aria-labelledby="updateExampleModalLabel"
                                  aria-hidden="true">
@@ -634,75 +475,77 @@
                                         </div>
                                         <form #editForm="ngForm">
                                             <div class="modal-body">
+                                                <div *ngFor="let actionRequest of justificationItem let i= index; ">
 
 
-                                                <div class="row">
-                                                    <div class=" col-12">
-                                                        <ul class="list-group">
-                                                            <li class="list-group-item active">Justification
-                                                                Details
-                                                            </li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"SPC Meeting Date: " + actionRequest?.spcMeetingDate}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"Department: " + actionRequest?.departmentId}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"Technical Committee: " + actionRequest?.tcId}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"TC Secretary: " + userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"SL: " + actionRequest?.sl}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"Request No.: " + actionRequest?.requestNo}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"Title: " + actionRequest?.title}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"Edition: " + actionRequest?.edition}}
-                                                                Version
-                                                            </li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"Requested By: " + actionRequest?.requestedBy}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"Issues Addressed By: " + actionRequest?.issuesAddressedBy}}</li>
-                                                            <li style="background: lightgray"
-                                                                class="list-group-item">{{"TC Acceptance Date: " + actionRequest?.tcAcceptanceDate}}</li>
-                                                        </ul>
-                                                        <div class="material-datatables">
-                                                            <table class="table table-striped table-bordered table-hover"
-                                                                   datatable
-                                                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger4">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th class="task">Document Name</th>
-                                                                    <th class="task">Descritpion</th>
+                                                    <div class="row">
+                                                        <div class=" col-12">
+                                                            <ul class="list-group">
+                                                                <li class="list-group-item active">Justification
+                                                                    Details
+                                                                </li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"SPC Meeting Date: " + actionRequest?.spcMeetingDate}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"Department: " + actionRequest?.departmentId}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"Technical Committee: " + actionRequest?.tcId}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"TC Secretary: " + userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"SL: " + actionRequest?.sl}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"Request No.: " + actionRequest?.requestNo}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"Title: " + actionRequest?.title}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"Edition: " + actionRequest?.edition}}
+                                                                    Version
+                                                                </li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"Requested By: " + actionRequest?.requestedBy}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"Issues Addressed By: " + actionRequest?.issuesAddressedBy}}</li>
+                                                                <li style="background: lightgray"
+                                                                    class="list-group-item">{{"TC Acceptance Date: " + actionRequest?.tcAcceptanceDate}}</li>
+                                                            </ul>
+                                                            <div class="material-datatables">
+                                                                <table class="table table-striped table-bordered table-hover"
+                                                                       datatable
+                                                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger4">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th class="task">Document Name</th>
+                                                                        <th class="task">Descritpion</th>
 
-                                                                    <th class="task">Action</th>
+                                                                        <th class="task">Action</th>
 
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr *ngFor="let doc of docs let i= index; ">
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr *ngFor="let doc of docs let i= index; ">
 
-                                                                    <td>{{doc.name}}</td>
-                                                                    <td>{{doc.description}}</td>
+                                                                        <td>{{doc.name}}</td>
+                                                                        <td>{{doc.description}}</td>
 
-                                                                    <td>
-                                                                        <button class="btn btn-info tooltips"
-                                                                                style="width: inherit"
-                                                                                (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
-                                                                                data-placement="top"
-                                                                        ><i
-                                                                                class="fa fa-eye"></i> View
-                                                                        </button>
-                                                                    </td>
+                                                                        <td>
+                                                                            <button class="btn btn-info tooltips"
+                                                                                    style="width: inherit"
+                                                                                    (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                                    data-placement="top"
+                                                                            ><i
+                                                                                    class="fa fa-eye"></i> View
+                                                                            </button>
+                                                                        </td>
 
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
                                                         </div>
+
+
                                                     </div>
-
-
                                                 </div>
 
                                                 <div *ngFor="let actionRequest of stdJustificationDecision let i= index; ">
@@ -727,7 +570,6 @@
 
                                             </div>
                                             <input hidden ngModel="true" name="decision">
-                                            <input hidden ngModel="{{actionRequest?.id}}" name="referenceNo">
                                             <input hidden ngModel name="reason">
 
                                             <div class="modal-footer">
@@ -740,7 +582,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
                                  aria-labelledby="updateExampleModalLabel"
                                  aria-hidden="true">

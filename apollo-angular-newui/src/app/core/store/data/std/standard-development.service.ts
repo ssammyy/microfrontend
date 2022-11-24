@@ -175,6 +175,19 @@ export class StandardDevelopmentService {
         );
     }
 
+    public getJustificationByNwiId(nwiId: string): Observable<any> {
+        const url = `${this.apiServerUrl}getJustificationByNwiId`;
+        const params = new HttpParams().set('nwiId', nwiId)
+        return this.http.get<StdJustification>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
     public getJustificationDecisionById(justificationId: string): Observable<any> {
 
         const url = `${this.apiServerUrl}getJustificationDecisionById`;
@@ -355,8 +368,6 @@ export class StandardDevelopmentService {
     }
 
     public uploadJustification(stdJustification: StdJustification): Observable<any> {
-
-        console.log(stdJustification);
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadJustification', stdJustification)
     }
 

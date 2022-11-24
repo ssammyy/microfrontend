@@ -6,7 +6,8 @@ import {catchError, map} from "rxjs/operators";
 import {
     CommentMade,
     CommentMadeRetrieved,
-    Committee_Draft, Committee_Draft_With_Name,
+    Committee_Draft,
+    Committee_Draft_With_Name,
     Preliminary_Draft,
     StandardDocuments
 } from "./commitee-model";
@@ -27,8 +28,13 @@ export class CommitteeService {
     public getAllNWIS(): any {
         return this.http.get<any>(`${this.apiServerUrl}getAllNwis`)
     }
+
     public getAllNwiSForPd(): any {
         return this.http.get<any>(`${this.apiServerUrl}getAllNwiSApprovedForPd`)
+    }
+
+    public getAllSdUsers(): any {
+        return this.http.get<any>(`${this.apiServerUrl}getAllSdUsers`)
     }
 
 

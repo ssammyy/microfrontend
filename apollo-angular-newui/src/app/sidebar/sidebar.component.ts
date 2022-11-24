@@ -36,15 +36,8 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'dashboard',
         privilege: ['USER', 'DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ'],
     },
-    {
-        path: '/notifications',
-        title: 'Notifications',
-        type: 'link',
-        collapse: 'notifications',
-        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
-        icontype: 'business',
-    },
 
+    //Quality Assurance
     {
         path: '/admin',
         title: 'Admin',
@@ -72,18 +65,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'users', title: 'View Users ', ab: 'VU'},
         ],
     },
-    // {
-    //     path: '/',
-    //     title: 'Operations',
-    //     type: 'sub',
-    //     icontype: 'class',
-    //     privilege: ['SL_IS_MANAGER'],
-    //     collapse: 'operations',
-    //     children: [
-    //         {path: 'slCompanySuspension', title: 'Suspend Company', ab: 'SC'},
-    //         {path: 'slCompanyClosure', title: 'Close Company ', ab: 'CC'},
-    //     ],
-    // },
+
     {
         path: '/dmark',
         title: 'Diamond Mark',
@@ -153,6 +135,27 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'apply',
         privilege: ['MANUFACTURER_ADMIN', 'PVOC_APPLICATION_PROCESS'],
     },
+    {
+        path: '',
+        title: 'QA Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ','QA_DIRECTOR_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
+            {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
+            {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
+            {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
+            {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+
+
+        ],
+    },
+
+
+    //DI
+
     {
         path: '/pvoc',
         title: 'PVOC',
@@ -402,6 +405,20 @@ export const ROUTES: RouteInfo[] = [
         ],
         icontype: 'settings',
     },
+
+    //Standards Levy
+    {
+        path: '/',
+        title: 'Operations',
+        type: 'sub',
+        icontype: 'class',
+        privilege: ['SL_IS_MANAGER'],
+        collapse: 'operations',
+        children: [
+            {path: 'slCompanySuspension', title: 'Suspend Company', ab: 'SC'},
+            {path: 'slCompanyClosure', title: 'Close Company ', ab: 'CC'},
+        ],
+    },
     {
         path: '',
         title: 'Standards Levy',
@@ -432,23 +449,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
-    {
-        path: '',
-        title: 'QA Reports',
-        type: 'sub',
-        icontype: 'receipt',
-        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ','QA_DIRECTOR_READ'],
-        collapse: 'reports',
-        children: [
-            {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
-            {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
-            {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
-            {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
-            {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
 
-
-        ],
-    },
     {
         path: '',
         title: 'Company Edits',
@@ -460,6 +461,19 @@ export const ROUTES: RouteInfo[] = [
             {path: 'slRejectedEdits', title: 'Profile Changes', ab: 'PC'}
 
         ],
+    },
+
+
+    // Market Surveillance
+
+
+    {
+        path: '/notifications',
+        title: 'Notifications',
+        type: 'link',
+        collapse: 'notifications',
+        privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
+        icontype: 'business',
     },
     {
         path: '/epra',
@@ -544,7 +558,6 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
-
     {
         path: '',
         title: 'Public Review Module',
@@ -560,7 +573,6 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
-
     {
         path: '',
         title: 'Balloting Module',
@@ -576,7 +588,6 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
-
     {
         path: '',
         title: 'Publishing',
@@ -646,7 +657,6 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
-
     {
         path: '',
         title: 'Workshop Agreement',
@@ -678,7 +688,6 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
-
     {
         path: '',
         title: 'Company Standard',

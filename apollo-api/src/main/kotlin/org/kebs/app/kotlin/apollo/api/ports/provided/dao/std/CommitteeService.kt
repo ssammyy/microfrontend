@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
@@ -334,6 +335,13 @@ class CommitteeService(
             publicReviewDraftRepository.save(u)
         }
         return sdDocumentsRepository.save(uploads)
+    }
+    fun getAllSdUsers(
+    ): List<UsersEntity> {
+        usersRepo.findSdUser()
+            ?.let {
+                return it
+            } ?: throw ExpectedDataNotFound("NO USER LIST FOUND")
     }
 
 }

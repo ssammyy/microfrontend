@@ -48,7 +48,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import java.sql.Timestamp
 import java.sql.Date
 import java.util.*
 
@@ -127,6 +126,14 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
         @Param("roleId") roleId: Long,
         @Param("status") status: Int
     ): List<UsersEntity>?
+
+
+    @Query(
+        "SELECT  u.* from APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID and r.ROLE_ID = 2522",
+        nativeQuery = true
+    )
+    // Check for users who have sd access: Role Id:2522
+    fun findSdUser(): List<UsersEntity>?
 
 
     @Query(

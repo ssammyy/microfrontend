@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.CommitteeService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.DraftDocumentService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
@@ -45,6 +46,11 @@ class CommitteeController(
     @GetMapping("/getAllNwis")
     fun getAllTechnicalCommittees(): List<ApprovedNwi> {
         return committeeService.getApprovedNwis()
+    }
+
+    @GetMapping("/getAllSdUsers")
+    fun getAllSdUsers(): List<UsersEntity> {
+        return committeeService.getAllSdUsers()
     }
 
 
