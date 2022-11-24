@@ -386,10 +386,10 @@ interface StandardRepository : JpaRepository<Standard, Long> {
     )
     fun getStandardsForReview(): MutableList<ReviewStandards>
 
-    @Query(value = "SELECT max(SDN)  FROM SD_STANDARD_TBL", nativeQuery = true)
+    @Query(value = "SELECT NVL (max(SDN),0) as SDN  FROM SD_STANDARD_TBL", nativeQuery = true)
     fun getMaxSDN(): Long
 
-    @Query(value = "SELECT max(ISDN)  FROM SD_STANDARD_TBL", nativeQuery = true)
+    @Query(value = "SELECT NVL (max(ISDN),0) as ISDN  FROM SD_STANDARD_TBL", nativeQuery = true)
     fun getMaxISDN(): Long
 
     fun findAllByOrderByIdDesc(): MutableList<Standard>

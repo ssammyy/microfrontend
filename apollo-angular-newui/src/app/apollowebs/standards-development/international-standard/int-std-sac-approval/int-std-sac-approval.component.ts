@@ -219,7 +219,7 @@ export class IntStdSacApprovalComponent implements OnInit {
           //console.log(response);
           this.getApprovedEditedDraft();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Draft Approved`);
+          this.showToasterSuccess('Success', `Standard Approved and Adopted`);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -238,7 +238,7 @@ export class IntStdSacApprovalComponent implements OnInit {
           //console.log(response);
           this.getApprovedEditedDraft();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Standard Draft Rejected`);
+          this.showToasterSuccess('Success', `Standard Rejected`);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

@@ -725,7 +725,7 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'quiz',
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ',
             'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ','EDITOR_SD_READ',
-            'STAKEHOLDERS_SD_READ','PROOFREADER_SD_READ','DRAUGHTSMAN_SD_READ'],
+            'STAKEHOLDERS_SD_READ','PROOFREADER_SD_READ','DRAUGHTSMAN_SD_READ','HOD_SIC_SD_READ'],
         collapse: 'is',
         children: [
             //{path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
@@ -739,11 +739,10 @@ export const ROUTES: RouteInfo[] = [
             {path: 'isStdEditDraft', title: 'Edit Draft', ab: 'ER'},
             {path: 'isStdDraughting', title: 'Draughting', ab: 'DS'},
             {path: 'isStdProofReading', title: 'Proof Reading', ab: 'PR'},
-            {path: 'isApproveDraftStd', title: 'Approve Draft Changes', ab: 'ADC'},
-             {path: 'isEditedChanges', title: 'Approved Draft', ab: 'V'},
-            // {path: 'isJustificationApp', title: 'SPC Approval', ab: 'J'},
-            // {path: 'isUploadStd', title: 'SAC Approval', ab: 'J'},
-            // {path: 'isUploadNotice', title: 'Publishing', ab: 'PL'},
+            {path: 'isApproveDraftStd', title: 'Check Standard', ab: 'CS'},
+             {path: 'isApprovedEdits', title: 'View Edited Draft', ab: 'J'},
+             {path: 'isSacApproval', title: 'SAC Approval', ab: 'SA'},
+             {path: 'isStandardGazette', title: 'Gazette Notice', ab: 'GN'},
 
 
         ],

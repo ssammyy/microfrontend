@@ -827,6 +827,8 @@ class IntStandardService (private val runtimeService: RuntimeService,
         standard.status=0
         standard.dateFormed=Timestamp(System.currentTimeMillis())
 
+
+
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
@@ -1101,6 +1103,12 @@ class IntStandardService (private val runtimeService: RuntimeService,
     fun getISDNumber(): Pair<String, Long>
     {
         var allRequests =standardRepository.getMaxISDN()
+        allRequests = if (allRequests.equals(null)){
+            0
+        }else{
+            allRequests
+        }
+
         var startId="ISN"
         allRequests = allRequests.plus(1)
         val year = Calendar.getInstance()[Calendar.YEAR]
