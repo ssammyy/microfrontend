@@ -76,3 +76,46 @@ interface IMsSampleSubmittedCpViewRepository : HazelcastRepository<MsSampleSubmi
 
     fun findAllByReferenceNumber(referenceNumber: String): List<MsSampleSubmittedCpViewEntity>
 }
+
+@Repository
+interface IMsAllocatedTasksCpViewRepository : HazelcastRepository<MsAllocatedTasksCpViewEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<MsAllocatedTasksCpViewEntity>
+
+    fun countByAssignedIo(assignedIo: Long): Long
+    fun countByAssignedIoAndMsComplaintEndedStatus(assignedIo: Long,msComplaintEndedStatus:Long): Long
+    fun countByAssignedIoAndTaskOverDue(assignedIo: Long, taskOverDue: String): Long
+    fun findAllByReferenceNumber(referenceNumber: String): List<MsAllocatedTasksCpViewEntity>
+}
+
+@Repository
+interface IMsAllocatedTasksWpViewRepository : HazelcastRepository<MsAllocatedTasksWpViewEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<MsAllocatedTasksWpViewEntity>
+
+    fun countByOfficerIdAndComplaintIdIsNotNull(officerId: Long): Long
+    fun countByOfficerIdAndComplaintIdIsNull(officerId: Long): Long
+    fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNotNull(officerId: Long, taskOverDue: String): Long
+    fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNull(officerId: Long, taskOverDue: String): Long
+    fun findAllByReferenceNumber(referenceNumber: String): List<MsAllocatedTasksWpViewEntity>
+}
+
+interface IMsTasksPendingAllocationCpViewRepository : HazelcastRepository<MsTasksPendingAllocationCpViewEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<MsTasksPendingAllocationCpViewEntity>
+
+    fun countByHodAssignedIsNullAndMsComplaintEndedStatus(msComplaintEndedStatus: Long): Long
+    fun countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull(): Long
+    fun countByHodAssignedAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull(hodAssigned: Long): Long
+    fun countByHodAssignedIsNotNullAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull(): Long
+    fun countByHodAssignedIsNotNullAndMsComplaintEndedStatusIsNullAndHofAssignedIsNotNullAndAssignedIoIsNull(): Long
+    fun countByHofAssignedAndMsComplaintEndedStatusIsNullAndAssignedIoIsNull(hofAssigned: Long): Long
+
+}
+
+@Repository
+interface IMsTasksPendingAllocationWpViewRepository : HazelcastRepository<MsTasksPendingAllocationWpViewEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<MsTasksPendingAllocationWpViewEntity>
+
+    fun countByOfficerId(officerId: Long): Long
+    fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNotNull(officerId: Long, taskOverDue: String): Long
+    fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNull(officerId: Long, taskOverDue: String): Long
+    fun findAllByReferenceNumber(referenceNumber: String): List<MsTasksPendingAllocationWpViewEntity>
+}

@@ -72,7 +72,14 @@ import {
     RegionReAssignDto,
     PredefinedResourcesRequired,
     SeizureDto,
-    SeizureListDto, LaboratoryEntityDto, KebsStandardsDto, AllWorkPlanDetails, AcknowledgementDto, MsNotificationTaskDto,
+    SeizureListDto,
+    LaboratoryEntityDto,
+    KebsStandardsDto,
+    AllWorkPlanDetails,
+    AcknowledgementDto,
+    MsNotificationTaskDto,
+    MsDashBoardIODto,
+    MsDashBoardALLDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -2017,6 +2024,21 @@ export class MsService {
             .set('records', records);
         return this.http.get<ApiResponseModel>(url, {params}).pipe(
             map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msDashBoardAllDetails(): Observable<MsDashBoardALLDto> {
+        // console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_DASHBOARD);
+        return this.http.get<MsDashBoardALLDto>(url).pipe(
+            map(function (response: MsDashBoardALLDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

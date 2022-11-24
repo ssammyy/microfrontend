@@ -213,6 +213,37 @@ export class FuelScheduleTeamsListDetailsDto {
     officersList: MsUsersDto[];
 }
 
+export class MsDashBoardALLDto {
+    officerDashBoard: MsDashBoardIODto;
+    hodDashBoard: MsDashBoardHODDto;
+    hofDashBoard: MsDashBoardHOFDto;
+    diDashBoard: MsDashBoardDIDto;
+}
+
+export class MsDashBoardIODto {
+    allocatedTaskCP: number;
+    allocatedTaskWP: number;
+    allocatedTaskCPWP: number;
+    overdueTaskCP: number;
+    overdueTaskWP: number;
+    overdueTaskCPWP: number;
+}
+
+export class MsDashBoardHODDto {
+    selfAssigningTaskCP: number;
+    assigningHOFTaskCP: number;
+}
+
+export class MsDashBoardHOFDto {
+    assigningIOTaskCP: number;
+}
+
+export class MsDashBoardDIDto {
+    assigningHODTaskCP: number;
+    assigningHOFTaskCP: number;
+    assigningIOTaskCP: number;
+}
+
 export class WorkPlanListDto {
     id: number;
     referenceNumber: string;
