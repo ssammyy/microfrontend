@@ -565,6 +565,16 @@ import {
     SystemReviewUpdateGazetteComponent
 } from "./apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component";
 import {NotificationsComponent} from './apollowebs/system/notifications/notifications.component';
+import {IntStdProposalsComponent} from "./apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component";
+import {IntStdApprovedProposalsComponent} from "./apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component";
+import {IntStdEditorComponent} from "./apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component";
+import {IntStdCheckRequirementsComponent} from "./apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component";
+import {IntStdEditDraftComponent} from "./apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component";
+import {IntStdDraughtComponent} from "./apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component";
+import {IntStdProofReadComponent} from "./apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component";
+import {IntStdApproveDraftComponent} from "./apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component";
+import {IntStdEditedDraftComponent} from "./apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component";
+import {IntStdSacApprovalComponent} from "./apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component";
 import {
     AcknowledgementComponent
 } from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
@@ -1305,16 +1315,28 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdTasksComponent}],
     },
+
     {
         path: 'isProposalForm', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
         children: [{path: '', component: IsProposalFormComponent}],
     },
     {
+        path: 'isProposals', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdProposalsComponent}],
+    },
+    {
         path: 'isProposalComments', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],
         children: [{path: '', component: IntStdCommentsComponent}],
     },
+    {
+        path: 'isPrepareJustification', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdApprovedProposalsComponent}],
+    },
+
     {
         path: 'isProposalResponses', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
@@ -1330,6 +1352,48 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdJustificationAppComponent}],
     },
+    {
+        path: 'isUploadDraft', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdEditorComponent}],
+    },
+    {
+        path: 'isCheckRequirements', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdCheckRequirementsComponent}],
+    },
+    {
+        path: 'isStdEditDraft', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdEditDraftComponent}],
+    },
+    {
+        path: 'isStdDraughting', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdDraughtComponent}],
+    },
+    {
+        path: 'isStdProofReading', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdProofReadComponent}],
+    },
+    {
+        path: 'isApproveDraftStd', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdApproveDraftComponent}],
+    },
+    {
+        path: 'isApprovedEdits', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdEditedDraftComponent}],
+    },
+    {
+        path: 'isSacApproval', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdSacApprovalComponent}],
+    },
+
+
     {
         path: 'isUploadStd', component: AdminLayoutComponent,
         canActivate: [RouteGuard],

@@ -425,9 +425,20 @@ import { ReportSubmittedTimelineComponent } from './apollowebs/market-surveillan
 import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import { IntStdProposalsComponent } from './apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component';
+import { IntStdApprovedProposalsComponent } from './apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component';
+import { IntStdJustificationComponent } from './apollowebs/standards-development/international-standard/int-std-justification/int-std-justification.component';
+import { IntStdEditorComponent } from './apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component';
 import {GenerateDeclarationReportComponent} from './apollowebs/di/other-documents/declaration-documents/generate-declaration-report/generate-declaration-report.component';
 import {MatCardModule} from "@angular/material/card";
 import { PrepareDraftComponent } from './apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component';
+import { IntStdCheckRequirementsComponent } from './apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component';
+import { IntStdEditDraftComponent } from './apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component';
+import { IntStdDraughtComponent } from './apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component';
+import { IntStdProofReadComponent } from './apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component';
+import { IntStdApproveDraftComponent } from './apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component';
+import { IntStdEditedDraftComponent } from './apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component';
+import { IntStdSacApprovalComponent } from './apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -888,8 +899,19 @@ import { PrepareDraftComponent } from './apollowebs/standards-development/commit
         SampleSubmittedTimelineComponent,
         GenerateDnReportComponent,
         DeclarationDocumentsComponent,
+        IntStdProposalsComponent,
+        IntStdApprovedProposalsComponent,
+        IntStdJustificationComponent,
+        IntStdEditorComponent,
         GenerateDeclarationReportComponent,
         PrepareDraftComponent,
+        IntStdCheckRequirementsComponent,
+        IntStdEditDraftComponent,
+        IntStdDraughtComponent,
+        IntStdProofReadComponent,
+        IntStdApproveDraftComponent,
+        IntStdEditedDraftComponent,
+        IntStdSacApprovalComponent,
 
     ],
     entryComponents: [LoaderComponent],

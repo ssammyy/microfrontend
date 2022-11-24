@@ -1,11 +1,25 @@
 import { Injectable } from '@angular/core';
 import {
     ComJcJustificationDec,
-    GazetteNotice, InternationalStandardsComments,
-    ISAdoptionComments, ISAdoptionJustification,
-    ISAdoptionProposal, ISDecision, ISDraftUpload, ISHopTASKS, ISHosSicTASKS, ISJustificationDecision,
-    ISSacSecTASKS, ISStandard, ISTcSecTASKS, ListJustification, NWAStandard, ProposalComment,
-    ProposalComments, StakeholderProposalComments
+    GazetteNotice,
+    InternationalStandardsComments,
+    ISAdoptionComments,
+    ISAdoptionJustification,
+    ISAdoptionProposal, ISCheckRequirements,
+    ISDecision, ISDraftDecision, ISDraftDecisionStd,
+    ISDraftUpload,
+    ISHopTASKS,
+    ISHosSicTASKS,
+    ISJustificationDecision,
+    ISJustificationProposal,
+    ISSacSecTASKS,
+    ISStandard, IStandardDraftEdit, IStandardUpload,
+    ISTcSecTASKS,
+    ListJustification,
+    NWAStandard,
+    ProposalComment,
+    ProposalComments,
+    StakeholderProposalComments
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
@@ -54,13 +68,179 @@ export class StdIntStandardService {
         const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
+    public getApprovedProposals(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVED_PROPOSAL);
+        const params = new HttpParams();
+        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+    public getISJustification(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.get<ISJustificationProposal>(url, {params}).pipe();
+    }
+    public getApprovedISJustification(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_APP_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.get<ISJustificationProposal>(url, {params}).pipe();
+    }
+
+    public getUploadedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+    public getApprovedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_APPROVED_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public editStandardDraft(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_EDIT_APPROVED_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getEditedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_EDITED_DRAFT_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public draughtStandard(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFTING_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getDraughtedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_DRAUGHTED_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public proofReadStandard(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_PROOFREADING_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getProofReadDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROOFREAD_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public approveProofReadStandard(isDraftDecision: ISDraftDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_PROOFREAD_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
 
+    public getApprovedProofReadDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_EDITED_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
 
-  public getISProposals(): Observable<ProposalComments[]> {
+    public approveEditedStandard(isDraftDecision: ISDraftDecision): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_EDITED_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getApprovedEditedDraft(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_EDITED_STANDARD_DRAFT);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public approveInternationalStandard(isDraftDecisionStd: ISDraftDecisionStd): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVE_EDITED_STANDARD_DRAFT);
+        const params = new HttpParams();
+        return this.http.post<ISDraftDecisionStd>(url, isDraftDecisionStd, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getStandardForGazettement(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_STANDARD_GAZETTE);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
+    public uploadGazetteNotice(gazetteNotice: GazetteNotice): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_STD_GAZETTE);
+        const params = new HttpParams();
+        return this.http.post<GazetteNotice>(url, gazetteNotice, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    // public uploadGazetteNotice(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+    //     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_STD_GAZETTE);
+    //     const params = new HttpParams();
+    //     return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+    //         map(function (response: any) {
+    //             return response;
+    //         }),
+    //         catchError((fault: HttpErrorResponse) => {
+    //             return throwError(fault);
+    //         })
+    //     );
+    // }
+
+
+  public getISProposals(): Observable<ISAdoptionProposal[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSALS);
     const params = new HttpParams();
-    return this.http.get<ProposalComments[]>(url, {params}).pipe();
+    return this.http.get<ISAdoptionProposal[]>(url, {params}).pipe();
   }
   //view Proposal Doc
     public viewProposalPDF(isDocumentId: any): Observable<any> {
@@ -189,10 +369,10 @@ export class StdIntStandardService {
         );
     }
 
-    public decisionOnHopJustification(isJustificationDecision: ISJustificationDecision): Observable<any> {
+    public decisionOnHopJustification(isDraftDecision: ISDraftDecision): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_HOP_DECISION_ON_JUSTIFICATION);
         const params = new HttpParams();
-        return this.http.post<ISAdoptionJustification>(url, isJustificationDecision, {params}).pipe(
+        return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -275,18 +455,7 @@ export class StdIntStandardService {
             })
         );
     }
-    public uploadGazetteNotice(gazetteNotice: GazetteNotice): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IS_UPLOAD_GAZETTE_NOTICE);
-        const params = new HttpParams();
-        return this.http.post<GazetteNotice>(url, gazetteNotice, {params}).pipe(
-            map(function (response: any) {
-                return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                return throwError(fault);
-            })
-        );
-    }
+
 
     //view Standard File
     public viewStandardDPDF(isStandardID: any): Observable<any> {
@@ -352,10 +521,10 @@ export class StdIntStandardService {
         return this.http.get<InternationalStandardsComments>(url, {params}).pipe();
     }
 
-    public editStandardDraft(iSDraftUpload: ISDraftUpload): Observable<any> {
+    public submitDraftForEditing(iStandardUpload: IStandardUpload): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFT_STANDARD);
         const params = new HttpParams();
-        return this.http.post<ISDraftUpload>(url, iSDraftUpload, {params}).pipe(
+        return this.http.post<IStandardUpload>(url, iStandardUpload, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -364,6 +533,8 @@ export class StdIntStandardService {
             })
         );
     }
+
+
     public draughtStandardDraft(iSDraftUpload: ISDraftUpload): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFTING_STANDARD);
         const params = new HttpParams();

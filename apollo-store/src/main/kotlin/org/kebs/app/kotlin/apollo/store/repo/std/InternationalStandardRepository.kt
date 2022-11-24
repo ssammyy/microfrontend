@@ -20,6 +20,13 @@ interface InternationalStandardRepository {
 @Repository
 interface ISAdoptionCommentsRepository : JpaRepository<ISAdoptionComments, Long> {
     fun findByProposalID(id: Long): MutableIterable<ISAdoptionComments>?
+    @Query(
+        value = "SELECT ID as id,USER_ID as userId,ADOPTION_PROPOSAL_COMMENT as adoptionComment,COMMENT_TIME as commentTime,PROPOSAL_ID as proposalId,TITLE as title," +
+                "DOCUMENT_TYPE as documentType,CLAUSE as clause,ORGANIZATION as comNameOfOrganization,PARAGRAPH as paragraph,TYPE_OF_COMMENT as typeOfComment,PROPOSED_CHANGE as proposedChange " +
+                "FROM SD_ADOPTION_PROPOSAL_COMMENTS  WHERE PROPOSAL_ID=:id",
+        nativeQuery = true
+    )
+    fun getProposalComments(id: Long): MutableList<ISProposalComments>
 }
 
 interface ComJcJustificationRepository : JpaRepository<ComJcJustification, Long> {
@@ -186,6 +193,22 @@ interface ComStandardUploadsRepository : JpaRepository<ComStandardUploads, Long>
 
 interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustification, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISAdoptionJustification>
+
+    @Query(value = "SELECT  ID as id,MEETING_DATE AS meetingDate,TC as tcId,TC_SEC as tcSec,SL_NUMBER as slNumber," +
+            "EDITION as edition,REQUEST_NUMBER as requestNumber,REQUESTED_BY AS requestedBy,ISSUES_ADDRESSED as issuesAddressed," +
+            "TC_ACCEPTANCE_DATE as tcAcceptanceDate,REFERENCE_MATERIAL AS referenceMaterial,DEPARTMENT as department,REMARKS as remarks," +
+            "cast(SUBMISSION_DATE as varchar(200)) AS submissionDate,TC_COMMITTEE as tcCommittee,DEPARTMENT_NAME as departmentName,POSITIVE_VOTES as positiveVotes," +
+            "NEGATIVE_VOTES as negativeVotes,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms," +
+            "CLAUSE as clause,SPECIAL as special,PROPOSAL_ID as proposalId FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  STATUS='0'", nativeQuery = true)
+    fun getISJustification(): MutableList<ISAdoptionProposalJustification>
+
+    @Query(value = "SELECT  ID as id,MEETING_DATE AS meetingDate,TC as tcId,TC_SEC as tcSec,SL_NUMBER as slNumber," +
+            "EDITION as edition,REQUEST_NUMBER as requestNumber,REQUESTED_BY AS requestedBy,ISSUES_ADDRESSED as issuesAddressed," +
+            "TC_ACCEPTANCE_DATE as tcAcceptanceDate,REFERENCE_MATERIAL AS referenceMaterial,DEPARTMENT as department,REMARKS as remarks," +
+            "cast(SUBMISSION_DATE as varchar(200)) AS submissionDate,TC_COMMITTEE as tcCommittee,DEPARTMENT_NAME as departmentName,POSITIVE_VOTES as positiveVotes," +
+            "NEGATIVE_VOTES as negativeVotes,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms," +
+            "CLAUSE as clause,SPECIAL as special,PROPOSAL_ID as proposalId FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  STATUS='1'", nativeQuery = true)
+    fun getApprovedISJustification(): MutableList<ISAdoptionProposalJustification>
 }
 
 interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long> {
@@ -198,6 +221,15 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
         nativeQuery = true
     )
     fun getProposalDetails(): MutableList<ProposalDetails>
+
+    @Query(
+        value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
+                "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
+                "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance FROM SD_ADOPTION_PROPOSAL " +
+                "WHERE  STATUS='1' ",
+        nativeQuery = true
+    )
+    fun getApprovedProposals(): MutableList<ProposalDetails>
 }
 
 interface ISGazettementRepository : JpaRepository<ISGazettement, Long> {
@@ -208,6 +240,65 @@ interface ISGazetteNoticeRepository : JpaRepository<ISGazetteNotice, Long> {
 
 interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISUploadStandard>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "WHERE  STATUS='0' ",
+        nativeQuery = true
+    )
+    fun getUploadedDraft(): MutableList<ISUploadedDraft>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "WHERE  STATUS='1' ",
+        nativeQuery = true
+    )
+    fun getApprovedDraft(): MutableList<ISUploadedDraft>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "WHERE  STATUS='3' ",
+        nativeQuery = true
+    )
+    fun getEditedDraft(): MutableList<ISUploadedDraft>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "WHERE  STATUS='4' ",
+        nativeQuery = true
+    )
+    fun getDraughtedDraft(): MutableList<ISUploadedDraft>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "WHERE  STATUS='5' ",
+        nativeQuery = true
+    )
+    fun getProofReadDraft(): MutableList<ISUploadedDraft>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "WHERE  STATUS='6' ",
+        nativeQuery = true
+    )
+    fun getApprovedProofReadDraft(): MutableList<ISUploadedDraft>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "WHERE  STATUS='7' ",
+        nativeQuery = true
+    )
+    fun getApprovedEditedDraft(): MutableList<ISUploadedDraft>
+
+
+
 }
 
 interface ISJustificationUploadsRepository : JpaRepository<ISJustificationUploads, Long> {
@@ -295,7 +386,21 @@ interface StandardRepository : JpaRepository<Standard, Long> {
     )
     fun getStandardsForReview(): MutableList<ReviewStandards>
 
+    @Query(value = "SELECT max(SDN)  FROM SD_STANDARD_TBL", nativeQuery = true)
+    fun getMaxSDN(): Long
+
+    @Query(value = "SELECT max(ISDN)  FROM SD_STANDARD_TBL", nativeQuery = true)
+    fun getMaxISDN(): Long
+
     fun findAllByOrderByIdDesc(): MutableList<Standard>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,STANDARD_NUMBER as iSNumber,cast(DATE_FORMED as varchar(200)) AS uploadDate FROM SD_STANDARD_TBL " +
+                "WHERE  STATUS='0' AND STANDARD_TYPE='International Standard' ",
+        nativeQuery = true
+    )
+    fun getStandardForGazettement(): MutableList<ISUploadedDraft>
 }
 
 interface StandardReviewCommentsRepository : JpaRepository<StandardReviewComments, Long> {
@@ -463,6 +568,7 @@ interface StandardComRemarksRepository : JpaRepository<StandardComRemarks, Long>
 }
 interface InternationalStandardRemarksRepository : JpaRepository<InternationalStandardRemarks, Long> {
     fun findAllByProposalIdOrderByIdDesc(id: Long): MutableIterable<InternationalStandardRemarks>?
+
 }
 interface ReviewStandardRemarksRepository : JpaRepository<ReviewStandardRemarks, Long> {
     fun findAllByProposalIdOrderByIdDesc(id: Long): MutableIterable<ReviewStandardRemarks>?

@@ -212,6 +212,8 @@ data class SiteVisitReportDecisionDTO(
 ){
 
 }
+
+
 class SiteVisitReportDecision(
 
     @JsonProperty("taskId") val taskId: String,

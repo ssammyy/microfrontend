@@ -82,7 +82,7 @@ class ISAdoptionJustification {
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    var accentTo: Boolean = false
+    var accentTo: String? = null
 
 
     @Column(name = "ASSIGNED_TO")
@@ -128,6 +128,10 @@ class ISAdoptionJustification {
     @Column(name = "SPECIAL")
     @Basic
     var special: String? = null
+
+    @Column(name = "PROPOSAL_ID")
+    @Basic
+    var proposalId: Long? = null
 
 
 

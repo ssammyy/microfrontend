@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocAgentService
+import org.kebs.app.kotlin.apollo.api.utils.CustomExemptionTranslator
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -17,9 +18,10 @@ import org.springframework.web.servlet.function.paramOrNull
 
 @Component
 class PvocClientHandler(
-        private val pvocService: PvocAgentService,
-        private val billingService: BillingService,
-        private val validatorService: DaoValidatorService
+    private val pvocService: PvocAgentService,
+    private val billingService: BillingService,
+    private val validatorService: DaoValidatorService,
+    private val exemptionTranslator: CustomExemptionTranslator
 ) {
     fun foreignCoi(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
@@ -38,7 +40,7 @@ class PvocClientHandler(
             KotlinLogging.logger { }.error("Failed to process foreign COI", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Invalid request data"
-            response.errors = mapOf(Pair("body", ex.mostSpecificCause.message))
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to process foreign COI", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -64,7 +66,7 @@ class PvocClientHandler(
             KotlinLogging.logger { }.error("Failed to process foreign COI:", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Invalid request data"
-            response.errors = mapOf(Pair("body", ex.mostSpecificCause.message))
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to receive COC", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -86,6 +88,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveCor(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("COR: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COC request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to add COR", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -107,6 +114,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveNcr(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("NCR FOR COC: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COC request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Invalid request data"
@@ -127,6 +139,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveNcrCor(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("NCR FOR COR: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COC request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Invalid request data"
@@ -147,6 +164,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveRfcCoi(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("COI RFC: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COC request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to decode data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -168,6 +190,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveRfcCoc(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("RFC COC: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COC request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to decode data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -189,6 +216,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.receiveRfcCor(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("RFC COR: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid RFC for CRO request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to decode data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -210,6 +242,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.addIdfData(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("IDF: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid IDF request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to add  idf data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -229,6 +266,11 @@ class PvocClientHandler(
                 response.message = "ucr or idf parameters are required"
                 response.responseCode = ResponseCodes.INVALID_CODE
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("IDF: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COC request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to add  idf data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -249,6 +291,11 @@ class PvocClientHandler(
                 response.message = "ucr or rfc parameters are required"
                 response.responseCode = ResponseCodes.INVALID_CODE
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("RFC: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid COC request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to add  RFC data", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -270,6 +317,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.receivePartnerQuery(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("QUERY: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid QUERY request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Partner query failed", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
@@ -338,6 +390,11 @@ class PvocClientHandler(
             } ?: run {
                 return ServerResponse.ok().body(pvocService.addRiskProfile(form))
             }
+        } catch (ex: HttpMessageNotReadableException) {
+            KotlinLogging.logger { }.error("RISK PROFILE: Failed to decode data", ex)
+            response.responseCode = ResponseCodes.FAILED_CODE
+            response.message = "Invalid risk profile request data"
+            response.errors = exemptionTranslator.translate(ex)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Risk profile failed", ex)
             response.responseCode = ResponseCodes.FAILED_CODE

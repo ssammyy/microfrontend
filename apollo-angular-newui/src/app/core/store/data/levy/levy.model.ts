@@ -201,6 +201,7 @@ export interface EditCompanyDTO {
 
 export interface CompanyRemarks{
     id: number;
+    editID: number;
     siteVisitId: number;
     remarks: string;
     remarkBy: string;
@@ -415,6 +416,7 @@ export interface PenaltyDetails{
     periodFrom: string;
     periodTo: string;
     monthsLate: string;
+    penaltyPaid: string;
 }
 export interface DefaulterDetails{
     id: number;

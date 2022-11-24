@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
     Department, InternationalStandardsComments,
     ProposalComments,
@@ -23,16 +23,26 @@ declare const $: any;
   styleUrls: ['./int-std-tasks.component.css']
 })
 export class IntStdTasksComponent implements OnInit {
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
+  dtTrigger3: Subject<any> = new Subject<any>();
+  dtTrigger4: Subject<any> = new Subject<any>();
+  dtTrigger5: Subject<any> = new Subject<any>();
+  dtTrigger7: Subject<any> = new Subject<any>();
+  dtTrigger8: Subject<any> = new Subject<any>();
+  dtTrigger9: Subject<any> = new Subject<any>();
+  dtTrigger10: Subject<any> = new Subject<any>();
+  dtTrigger11: Subject<any> = new Subject<any>();
+  dtTrigger12: Subject<any> = new Subject<any>();
   tasks: ProposalComments[] = [];
   public departments !: Department[] ;
   stakeholderProposalComments: StakeholderProposalComments[] = [];
     internationalStandardsComments: InternationalStandardsComments[] = [];
   public actionRequest: ProposalComments | undefined;
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective;
-  isDtInitialized: boolean = false
   loadingText: string;
   approve: string;
   reject: string;
@@ -112,7 +122,8 @@ export class IntStdTasksComponent implements OnInit {
           taskId: [],
           processId:[],
           accentTo: [],
-          approvalID:[]
+          approvalID:[],
+          proposalId:[]
 
       });
 
@@ -181,7 +192,7 @@ export class IntStdTasksComponent implements OnInit {
       this.draughtingFormGroup = this.formBuilder.group({
           taskId: [],
           processId:[],
-          draftId:[],
+          id:[],
           title:[],
           scope:[],
           normativeReference:[],
@@ -215,6 +226,7 @@ export class IntStdTasksComponent implements OnInit {
           symbolsAbbreviatedTerms:[],
           clause:[],
           special:[],
+          id:[]
 
       });
       this.internationalStandardRejectFormGroup = this.formBuilder.group({
@@ -228,6 +240,7 @@ export class IntStdTasksComponent implements OnInit {
           symbolsAbbreviatedTerms:[],
           clause:[],
           special:[],
+          id:[]
 
       });
       this.noticeFormGroup = this.formBuilder.group({
@@ -250,6 +263,17 @@ export class IntStdTasksComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.dtTrigger1.unsubscribe();
+    this.dtTrigger2.unsubscribe();
+    this.dtTrigger3.unsubscribe();
+    this.dtTrigger4.unsubscribe();
+    this.dtTrigger5.unsubscribe();
+    this.dtTrigger7.unsubscribe();
+    this.dtTrigger8.unsubscribe();
+    this.dtTrigger9.unsubscribe();
+    this.dtTrigger10.unsubscribe();
+    this.dtTrigger11.unsubscribe();
+    this.dtTrigger12.unsubscribe();
   }
   showToasterError(title:string,message:string){
     this.notifyService.showError(message, title)
@@ -280,17 +304,8 @@ export class IntStdTasksComponent implements OnInit {
         (response: ProposalComments[]) => {
           this.tasks = response;
           console.log(this.tasks)
-          if (this.isDtInitialized) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
+                this.rerender();
               this.SpinnerService.hide();
-            });
-          } else {
-            this.isDtInitialized = true
-            this.dtTrigger.next();
-            this.SpinnerService.hide();
-          }
 
         },
         (error: HttpErrorResponse)=>{
@@ -506,10 +521,10 @@ export class IntStdTasksComponent implements OnInit {
         this.hideModalRequirements();
     }
 
-    uploadDraftStandard(): void {
+    editStandardDraft(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        this.stdIntStandardService.editStandardDraft(this.uploadDraftStandardFormGroup.value).subscribe(
+        this.stdIntStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 this.getUserTasks();
@@ -703,7 +718,7 @@ export class IntStdTasksComponent implements OnInit {
                   processId: this.actionRequest.processId,
                   taskId: this.actionRequest.taskId,
                   accentTo: this.approve,
-                  approvalID: this.actionRequest.taskData.ID
+                  proposalId: this.actionRequest.taskData.ID
               }
           );
           this.rejectSpcJustificationFormGroup.patchValue(
@@ -711,7 +726,7 @@ export class IntStdTasksComponent implements OnInit {
                   processId: this.actionRequest.processId,
                   taskId: this.actionRequest.taskId,
                   accentTo: this.reject,
-                  approvalID: this.actionRequest.taskData.ID
+                  proposalId: this.actionRequest.taskData.ID
               }
           );
       }
@@ -758,6 +773,25 @@ export class IntStdTasksComponent implements OnInit {
                   approvalID: this.actionRequest.taskData.ID
               }
           );
+          this.approveHopJustificationFormGroup.patchValue(
+              {
+                  processId: this.actionRequest.processId,
+                  taskId: this.actionRequest.taskId,
+                  accentTo: this.approve,
+                  approvalID: this.actionRequest.taskData.ID
+              }
+
+          );
+
+          this.rejectHopJustificationFormGroup.patchValue(
+              {
+                  processId: this.actionRequest.processId,
+                  taskId: this.actionRequest.taskId,
+                  accentTo: this.reject,
+                  approvalID: this.actionRequest.taskData.ID
+              }
+
+          );
 
 
       }
@@ -773,6 +807,18 @@ export class IntStdTasksComponent implements OnInit {
 
               }
           );
+          this.uploadDraftStandardFormGroup.patchValue(
+              {
+                  processId: this.actionRequest.processId,
+                  taskId: this.actionRequest.taskId,
+                  title: this.actionRequest.taskData.title,
+                  scope:this.actionRequest.taskData.scope,
+                  normativeReference: this.actionRequest.taskData.normativeReference,
+                  symbolsAbbreviatedTerms: this.actionRequest.taskData.symbolsAbbreviatedTerms,
+                  clause:this.actionRequest.taskData.clause,
+                  special:this.actionRequest.taskData.special
+              }
+          );
 
       }
       if (mode==='draughting') {
@@ -784,11 +830,11 @@ export class IntStdTasksComponent implements OnInit {
                   taskId: this.actionRequest.taskId,
                   title: this.actionRequest.taskData.title,
                   scope: this.actionRequest.taskData.scope,
-                  normativeReference: this.actionRequest.taskId,
+                  normativeReference: this.actionRequest.taskData.normativeReference,
                   symbolsAbbreviatedTerms: this.actionRequest.taskData.symbolsAbbreviatedTerms,
                   clause: this.actionRequest.taskData.clause,
                   special: this.actionRequest.taskData.special,
-                  draftId: this.actionRequest.taskData.draftId
+                  id: this.actionRequest.taskData.draftId
 
               }
           );
@@ -797,17 +843,17 @@ export class IntStdTasksComponent implements OnInit {
       if (mode==='proofreading') {
           this.actionRequest = proposalComments;
           button.setAttribute('data-target', '#proofreading');
-          this.draughtingFormGroup.patchValue(
+          this.proofreadingFormGroup.patchValue(
               {
                   processId: this.actionRequest.processId,
                   taskId: this.actionRequest.taskId,
                   title: this.actionRequest.taskData.title,
                   scope: this.actionRequest.taskData.scope,
-                  normativeReference: this.actionRequest.taskId,
+                  normativeReference: this.actionRequest.taskData.normativeReference,
                   symbolsAbbreviatedTerms: this.actionRequest.taskData.symbolsAbbreviatedTerms,
                   clause: this.actionRequest.taskData.clause,
                   special: this.actionRequest.taskData.special,
-                  draftId: this.actionRequest.taskData.draftId
+                  id: this.actionRequest.taskData.draftId
 
               }
           );
@@ -822,12 +868,13 @@ export class IntStdTasksComponent implements OnInit {
                   taskId: this.actionRequest.taskId,
                   title: this.actionRequest.taskData.title,
                   scope: this.actionRequest.taskData.scope,
-                  normativeReference: this.actionRequest.taskId,
+                  normativeReference: this.actionRequest.taskData.normativeReference,
                   symbolsAbbreviatedTerms: this.actionRequest.taskData.symbolsAbbreviatedTerms,
                   clause: this.actionRequest.taskData.clause,
                   special: this.actionRequest.taskData.special,
                   approvalID: this.actionRequest.taskData.ID,
-                  accentTo: this.approve
+                  accentTo: this.approve,
+                  id: this.actionRequest.taskData.draftId
 
               }
           );
@@ -837,12 +884,13 @@ export class IntStdTasksComponent implements OnInit {
                   taskId: this.actionRequest.taskId,
                   title: this.actionRequest.taskData.title,
                   scope: this.actionRequest.taskData.scope,
-                  normativeReference: this.actionRequest.taskId,
+                  normativeReference: this.actionRequest.taskData.normativeReference,
                   symbolsAbbreviatedTerms: this.actionRequest.taskData.symbolsAbbreviatedTerms,
                   clause: this.actionRequest.taskData.clause,
                   special: this.actionRequest.taskData.special,
                   approvalID: this.actionRequest.taskData.ID,
-                  accentTo: this.reject
+                  accentTo: this.reject,
+                  id: this.actionRequest.taskData.draftId
 
               }
           );
@@ -947,6 +995,29 @@ export class IntStdTasksComponent implements OnInit {
         this.closeModalUploadDate?.nativeElement.click();
     }
 
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+            this.dtTrigger1.next();
+            this.dtTrigger2.next();
+            this.dtTrigger3.next();
+            this.dtTrigger4.next();
+            this.dtTrigger5.next();
+            this.dtTrigger7.next();
+            this.dtTrigger8.next();
+            this.dtTrigger9.next();
+            this.dtTrigger10.next();
+            this.dtTrigger11.next();
+            this.dtTrigger12.next();
+        });
+
+    }
 
 
 

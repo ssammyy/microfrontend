@@ -71,7 +71,7 @@ export class ApiEndpointService {
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
-    public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/nwa`;
+    public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/sd/wa`;
     public static SD_NEP_NATIONAL_ENQUIRY = `${ApiEndpointService.MASTERS_CONTEXT}/National_enquiry_point`;
     public static SD_SCHEME_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Scheme_membership`;
     public static SD_IST_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/international_standard`;
@@ -398,10 +398,26 @@ export class ApiEndpointService {
         IST_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getAllComments`,
         IST_JUSTIFICATION_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserComments`,
         IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
+        IST_APPROVED_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProposals`,
         IST_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/prepareJustification`,
-        IST_UPLOAD_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/editStandardDraft`,
-        IST_UPLOAD_DRAFTING_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/draughtStandardDraft`,
-        IST_UPLOAD_PROOFREADING_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/proofReadStandardDraft`,
+        IST_VIEW_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getISJustification`,
+        IST_VIEW_APP_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedISJustification`,
+        IST_UPLOAD_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftForEditing`,
+        IST_VIEW_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getUploadedDraft`,
+        IST_VIEW_APPROVED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedDraft`,
+        IST_EDIT_APPROVED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/editStandardDraft`,
+        IST_VIEW_EDITED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getEditedDraft`,
+        IST_UPLOAD_DRAFTING_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/draughtStandard`,
+        IST_VIEW_DRAUGHTED_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getDraughtedDraft`,
+        IST_UPLOAD_PROOFREADING_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/proofReadStandard`,
+        IST_VIEW_PROOFREAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getProofReadDraft`,
+        IST_DECISION_PROOFREAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveProofReadStandard`,
+        IST_VIEW_EDITED_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProofReadDraft`,
+        IST_DECISION_EDITED_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveEditedStandard`,
+        IST_VIEW_EDITED_STANDARD_DRAFT: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedEditedDraft`,
+        IST_APPROVE_EDITED_STANDARD_DRAFT: `${ApiEndpointService.SD_IST_CONTEXT}/approveInternationalStandard`,
+        IST_VIEW_STANDARD_GAZETTE: `${ApiEndpointService.SD_IST_CONTEXT}/getStandardForGazettement`,
+        IST_UPLOAD_STD_GAZETTE: `${ApiEndpointService.SD_IST_CONTEXT}/uploadGazetteNotice`,
         IST_UPLOAD_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadISStandard`,
         IST_UPLOAD_JS_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/js-file-upload`,
         IST_SPC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSPCSECTasks`,
