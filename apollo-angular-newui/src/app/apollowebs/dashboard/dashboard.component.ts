@@ -226,7 +226,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             return this.roles = u.roles;
         });
 
-        this.loadMSData();
+        if (this.roles?.includes('MS_HOD_READ')
+            || this.roles?.includes('MS_IO_READ')
+            || this.roles?.includes('MS_RM_READ')
+            || this.roles?.includes('MS_HOF_READ')
+            || this.roles?.includes('MS_DIRECTOR_READ')
+        ) {
+            this.loadMSData();
+        }
+
 
 
     }
@@ -303,6 +311,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     openModalAddDetails(divVal: string, headerVal: string): void {
         this.currDivLabel = headerVal;
         this.currDiv = divVal;
+        this.loadData(this.defaultPage, this.defaultPageSize, this.currDiv);
     }
 
     public onCustomActionCP(event: any): void {
@@ -404,6 +413,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                   this.loadedDataCP = data.data;
                   this.totalCount = this.loadedDataCP.length;
                   this.dataSet.load(this.loadedDataCP);
+                  window.$('#msAllDashBoardViewData').modal('show');
                   this.SpinnerService.hide();
               },
           );
@@ -415,6 +425,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 this.loadedDataCPWP = data.data;
                 this.totalCount = this.loadedDataCPWP.length;
                 this.dataSet.load(this.loadedDataCPWP);
+                window.$('#msAllDashBoardViewData').modal('show');
                 this.SpinnerService.hide();
             },
         );
