@@ -1046,7 +1046,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllWorkPlanAllocatedTaskList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceWorkPlanDaoServices.msWorkPlanAllocatedTaskListsView(page, false)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1061,7 +1061,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllWorkPlanReportsPendingReviewList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceWorkPlanDaoServices.msWorkPlanReportsPendingReviewListsView(page, false)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1075,7 +1075,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllWorkPlanJuniorTaskOverdueWPReviewList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceWorkPlanDaoServices.msWorkPlanJuniorTaskOverDueListsView(page, false)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1089,7 +1089,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllWorkPlanJuniorTaskOverdueWPCPReviewList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceWorkPlanDaoServices.msWorkPlanJuniorTaskOverDueListsView(page, true)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1104,7 +1104,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllWorkPlanAllocatedTaskOverDueList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceWorkPlanDaoServices.msWorkPlanAllocatedTaskListsOverDueView(page, false)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1118,7 +1118,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllWorkPlanComplaintAllocatedTaskList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceWorkPlanDaoServices.msWorkPlanAllocatedTaskListsView(page, true)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1132,7 +1132,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllWorkPlanComplaintReportsPendingReviewList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceWorkPlanDaoServices.msWorkPlanReportsPendingReviewListsView(page, true)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1146,7 +1146,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllWorkPlanComplaintAllocatedTaskOverDueList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceWorkPlanDaoServices.msWorkPlanAllocatedTaskListsOverDueView(page, true)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1160,7 +1160,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllComplaintAllocatedTaskList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceComplaintDaoServices.msComplaintAllocatedTaskListsView(page)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1174,7 +1174,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllComplaintPendingAllocationList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceComplaintDaoServices.msComplaintPendingAllocationListsView(page)
                 .let {
                     ServerResponse.ok().body(it)
@@ -1188,7 +1188,7 @@ class NewMarketSurveillanceHandler(
 
     fun getAllComplaintAllocatedOverDueTaskList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req)
+            val page = commonDaoServices.extractPageRequest(req,"referenceNumber")
             marketSurveillanceComplaintDaoServices.msComplaintOverDueTaskListsView(page)
                 .let {
                     ServerResponse.ok().body(it)
