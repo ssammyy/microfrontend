@@ -559,12 +559,14 @@ class IntStandardController(
             special=iSDraftDecisions.special
         }
 
+
+
         return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandard(iSUploadStandard,internationalStandardRemarks,standard))
 
     }
 
 
-    @PreAuthorize("hasAuthority('HO_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_READ') or hasAuthority('HOD_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getStandardForGazettement")
     @ResponseBody
     fun getStandardForGazettement(): MutableList<ISUploadedDraft>
@@ -573,7 +575,7 @@ class IntStandardController(
     }
 
     //********************************************************** process upload Gazette Notice **********************************************************
-    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('HOD_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/uploadGazetteNotice")
     @ResponseBody
     fun uploadGazetteNotice(@RequestBody standardGazetteDto: StandardGazetteDto): ServerResponse

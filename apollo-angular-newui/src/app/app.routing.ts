@@ -587,6 +587,7 @@ import {
 import {
     PrepareDraftComponent
 } from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
+import {IntStdGazetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
 
 export const routes: Routes = [
     {
@@ -1392,8 +1393,11 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdSacApprovalComponent}],
     },
-
-
+    {
+        path: 'isStandardGazette', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdGazetteComponent}],
+    },
     {
         path: 'isUploadStd', component: AdminLayoutComponent,
         canActivate: [RouteGuard],

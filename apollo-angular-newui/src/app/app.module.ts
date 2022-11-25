@@ -439,6 +439,7 @@ import { IntStdProofReadComponent } from './apollowebs/standards-development/int
 import { IntStdApproveDraftComponent } from './apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component';
 import { IntStdEditedDraftComponent } from './apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component';
 import { IntStdSacApprovalComponent } from './apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component';
+import { IntStdGazetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component';
 import { MsDashboardComponent } from './apollowebs/market-surveillance/ms-dashboard/ms-dashboard.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
@@ -913,6 +914,7 @@ import { MsDashboardComponent } from './apollowebs/market-surveillance/ms-dashbo
         IntStdApproveDraftComponent,
         IntStdEditedDraftComponent,
         IntStdSacApprovalComponent,
+        IntStdGazetteComponent,
         MsDashboardComponent,
 
     ],
