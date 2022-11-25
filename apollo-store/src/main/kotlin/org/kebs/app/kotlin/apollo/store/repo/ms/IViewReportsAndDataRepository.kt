@@ -85,6 +85,8 @@ interface IMsAllocatedTasksCpViewRepository : HazelcastRepository<MsAllocatedTas
     fun countByAssignedIoAndMsComplaintEndedStatus(assignedIo: Long,msComplaintEndedStatus:Long): Long
     fun countByAssignedIoAndTaskOverDue(assignedIo: Long, taskOverDue: String): Long
     fun findAllByReferenceNumber(referenceNumber: String): List<MsAllocatedTasksCpViewEntity>
+    fun findAllByAssignedIo(assignedIo: Long,pageable: Pageable): Page<MsAllocatedTasksCpViewEntity>
+    fun findAllByAssignedIoAndTaskOverDue(assignedIo: Long,taskOverDue: String,pageable: Pageable): Page<MsAllocatedTasksCpViewEntity>
 }
 
 @Repository
@@ -96,6 +98,10 @@ interface IMsAllocatedTasksWpViewRepository : HazelcastRepository<MsAllocatedTas
     fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNotNull(officerId: Long, taskOverDue: String): Long
     fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNull(officerId: Long, taskOverDue: String): Long
     fun findAllByReferenceNumber(referenceNumber: String): List<MsAllocatedTasksWpViewEntity>
+    fun findAllByOfficerIdAndTaskOverDueAndComplaintIdIsNotNull(assignedIo: Long,askOverDue: String, pageable: Pageable): Page<MsAllocatedTasksWpViewEntity>
+    fun findAllByOfficerIdAndComplaintIdIsNotNull(assignedIo: Long,pageable: Pageable): Page<MsAllocatedTasksWpViewEntity>
+    fun findAllByOfficerIdAndComplaintIdIsNull(assignedIo: Long,pageable: Pageable): Page<MsAllocatedTasksWpViewEntity>
+    fun findAllByOfficerIdAndTaskOverDueAndComplaintIdIsNull(assignedIo: Long,askOverDue: String, pageable: Pageable): Page<MsAllocatedTasksWpViewEntity>
 }
 
 interface IMsTasksPendingAllocationCpViewRepository : HazelcastRepository<MsTasksPendingAllocationCpViewEntity, Long> {
@@ -108,6 +114,10 @@ interface IMsTasksPendingAllocationCpViewRepository : HazelcastRepository<MsTask
     fun countByHodAssignedIsNotNullAndMsComplaintEndedStatusIsNullAndHofAssignedIsNotNullAndAssignedIoIsNull(): Long
     fun countByHofAssignedAndMsComplaintEndedStatusIsNullAndAssignedIoIsNull(hofAssigned: Long): Long
 
+    fun findAllByHodAssignedAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull(hodAssigned: Long, pageable: Pageable): Page<MsTasksPendingAllocationCpViewEntity>
+    fun findAllByHofAssignedAndMsComplaintEndedStatusIsNullAndAssignedIoIsNull(hofAssigned: Long, pageable: Pageable): Page<MsTasksPendingAllocationCpViewEntity>
+    fun findAllByHodAssignedIsNullAndMsComplaintEndedStatusIsNull(hofAssigned: Long, pageable: Pageable): Page<MsTasksPendingAllocationCpViewEntity>
+    fun findAllByHodAssignedIsNullOrHofAssignedIsNullOrAssignedIoIsNullAndMsComplaintEndedStatusIsNull(pageable: Pageable): Page<MsTasksPendingAllocationCpViewEntity>
 }
 
 @Repository
@@ -115,6 +125,14 @@ interface IMsTasksPendingAllocationWpViewRepository : HazelcastRepository<MsTask
     override fun findAll(pageable: Pageable): Page<MsTasksPendingAllocationWpViewEntity>
 
     fun countByOfficerId(officerId: Long): Long
+    fun countByTaskOverDueAndComplaintIdIsNotNull(taskOverDue: String): Long
+    fun countByTaskOverDueAndComplaintIdIsNull(taskOverDue: String): Long
+    fun countByReportPendingReviewAndComplaintIdIsNotNull(reportPendingReview: Int): Long
+    fun countByReportPendingReviewAndComplaintIdIsNull(reportPendingReview: Int): Long
+    fun findAllByReportPendingReviewAndComplaintIdIsNotNull(reportPendingReview: Int, pageable: Pageable): Page<MsTasksPendingAllocationWpViewEntity>
+    fun findAllByTaskOverDueAndComplaintIdIsNotNull(taskOverDue: String, pageable: Pageable): Page<MsTasksPendingAllocationWpViewEntity>
+    fun findAllByTaskOverDueAndComplaintIdIsNull(taskOverDue: String, pageable: Pageable): Page<MsTasksPendingAllocationWpViewEntity>
+    fun findAllByReportPendingReviewAndComplaintIdIsNull(reportPendingReview: Int, pageable: Pageable): Page<MsTasksPendingAllocationWpViewEntity>
     fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNotNull(officerId: Long, taskOverDue: String): Long
     fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNull(officerId: Long, taskOverDue: String): Long
     fun findAllByReferenceNumber(referenceNumber: String): List<MsTasksPendingAllocationWpViewEntity>

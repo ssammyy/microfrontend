@@ -730,10 +730,11 @@
             </div>
         </div>
         <div *ngIf="roles?.includes('MS_IO_READ')" >
-
             <div class="row" >
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('allocatedCPTask','Allocated Task Complaint')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-warning card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">verified</i>
@@ -749,7 +750,9 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('allocatedWPTask','Allocated Task Work Plan Schedule')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-rose card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">verified</i>
@@ -765,7 +768,9 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('allocatedWPCPTask','Allocated Task Complaint Schedule')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-success card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">verified</i>
@@ -783,7 +788,9 @@
             </div>
             <div class="row" >
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('allocatedOverDueCPTasks','OverDue Task Complaint')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-warning card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">report_problem</i>
@@ -799,7 +806,9 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('allocatedOverDueWPTasks','OverDue Task Work Plan Schedule')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-rose card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">report_problem</i>
@@ -815,7 +824,9 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('allocatedOverDueWPCPTasks','OverDue Task Complaint Schedule')" data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-success card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">report_problem</i>
@@ -867,6 +878,84 @@
                     </div>
                 </div>
             </div>
+            <div class="row" >
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('juniorTaskOverDueWPTask','Work Plan Scheduled, Over due Tasks')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Work Plan Scheduled, Over due Tasks </p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('juniorTaskOverDueWPCPTask','Complaint Scheduled, Over due Tasks')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Scheduled, Over due Tasks</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskCPWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" >
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('reportPendingReviewWPTask','Work Plan Scheduled, Reports Pending Review ')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Work Plan Scheduled, Reports Pending Review </p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('reportPendingReviewWPCPTask','Complaint Scheduled, Reports Pending Review ')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Scheduled, Reports Pending Review</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewCPWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
         <div *ngIf="roles?.includes('MS_HOF_READ')" >
             <div class="row" >
@@ -903,12 +992,92 @@
 <!--                    </div>-->
                 </div>
             </div>
+            <div class="row" >
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('juniorTaskOverDueWPTask','Work Plan Scheduled, Over due Tasks')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Work Plan Scheduled, Over due Tasks </p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('juniorTaskOverDueWPCPTask','Complaint Scheduled, Over due Tasks')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Scheduled, Over due Tasks</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskCPWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" >
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('reportPendingReviewWPTask','Work Plan Scheduled, Reports Pending Review ')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Work Plan Scheduled, Reports Pending Review </p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('reportPendingReviewWPCPTask','Complaint Scheduled, Reports Pending Review ')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Scheduled, Reports Pending Review</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewCPWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
         <div *ngIf="roles?.includes('MS_DIRECTOR_READ')" >
 
             <div class="row" >
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('pendingAllocationCPTask','Complaint Pending Self Assigning By HOD/RM')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-warning card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">verified</i>
@@ -924,7 +1093,9 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('pendingAllocationCPTask','Complaint Pending HOF Assigning By HOD')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-rose card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">verified</i>
@@ -940,7 +1111,9 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('pendingAllocationCPTask','Complaint Pending Officer Assigning By HOF')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
                         <div class="card-header card-header-success card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">verified</i>
@@ -956,7 +1129,147 @@
                     </div>
                 </div>
             </div>
+            <div class="row" >
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('juniorTaskOverDueWPTask','Work Plan Scheduled, Over due Tasks')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Work Plan Scheduled, Over due Tasks </p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('juniorTaskOverDueWPCPTask','Complaint Scheduled, Over due Tasks')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Scheduled, Over due Tasks</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskCPWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" >
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('reportPendingReviewWPTask','Work Plan Scheduled, Reports Pending Review ')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Work Plan Scheduled, Reports Pending Review </p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('reportPendingReviewWPCPTask','Complaint Scheduled, Reports Pending Review ')"  data-toggle="modal"
+                         data-target="#msAllDashBoardViewData" >
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">verified</i>
+                            </div>
+                            <p class="card-category">Complaint Scheduled, Reports Pending Review</p>
+                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewCPWP}}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-        <app-inspection-dashboard></app-inspection-dashboard>
+    <app-inspection-dashboard></app-inspection-dashboard>
+
+    <div class="modal fade" id="msAllDashBoardViewData" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <div class="table-responsive table-striped">
+                                    <div *ngIf="(currDiv == 'allocatedCPTask'
+                                        || currDiv == 'allocatedOverDueCPTasks'
+                                        || currDiv == 'pendingAllocationCPTask')">
+                                        <ng2-smart-table class="table table-hover"
+                                                         [settings]="settingsCP"
+                                                         [source]="dataSet"
+                                                         (custom)="onCustomActionCP($event)">
+                                        </ng2-smart-table>
+                                    </div>
+                                    <div *ngIf="(currDiv == 'allocatedWPTask'
+                                                || currDiv == 'allocatedWPCPTask'
+                                                || currDiv == 'juniorTaskOverDueWPCPTask'
+                                                || currDiv == 'juniorTaskOverDueWPTask'
+                                                || currDiv == 'reportPendingReviewWPTask'
+                                                || currDiv == 'reportPendingReviewWPCPTask'
+                                                || currDiv == 'allocatedOverDueWPTasks'
+                                                || currDiv == 'allocatedOverDueWPCPTasks')">
+                                        <ng2-smart-table class="table table-hover"
+                                                         [settings]="settingsCPWP"
+                                                         [source]="dataSet"
+                                                         (custom)="onCustomActionCPWP($event)">
+                                        </ng2-smart-table>
+                                    </div>
+                                    <br/>
+                                    <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
+                                                    [collectionSize]="totalCount"
+                                                    (pageChange)=pageChange($event)>
+                                        <ng-template ngbPaginationFirst>First</ng-template>
+                                        <ng-template ngbPaginationLast>Last</ng-template>
+                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
+                                        <ng-template ngbPaginationNext>Next</ng-template>
+                                        <ng-template ngbPaginationEllipsis>...</ng-template>
+                                        <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+                                    </ngb-pagination>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
+</div>

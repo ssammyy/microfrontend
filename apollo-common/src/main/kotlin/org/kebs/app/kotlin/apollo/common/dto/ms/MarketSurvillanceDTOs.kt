@@ -272,6 +272,7 @@ data class WorkPlanInspectionDto(
         var analysisLabCountDone: Int? = null,
         var productListRecommendationAddedCount: Int? = null,
         var productList: List<WorkPlanProductDto>? = null,
+        var batchRefNumber: String? = null,
 )
 
 data class FuelEntityDto(
@@ -1091,16 +1092,28 @@ data class MsDashBoardIODto(
 data class MsDashBoardHODDto(
         var selfAssigningTaskCP: Long?= 0,
         var assigningHOFTaskCP: Long?= 0,
+        var reportPendingReviewCPWP: Long?= 0,
+        var reportPendingReviewWP: Long?= 0,
+        var overdueJuniorTaskWP: Long?= 0,
+        var overdueJuniorTaskCPWP: Long?= 0,
 )
 
 data class MsDashBoardDIDto(
         var assigningHODTaskCP: Long?= 0,
         var assigningHOFTaskCP: Long?= 0,
         var assigningIOTaskCP: Long?= 0,
+        var reportPendingReviewCPWP: Long?= 0,
+        var reportPendingReviewWP: Long?= 0,
+        var overdueJuniorTaskWP: Long?= 0,
+        var overdueJuniorTaskCPWP: Long?= 0,
 )
 
 data class MsDashBoardHOFDto(
         var assigningIOTaskCP: Long?= 0,
+        var reportPendingReviewCPWP: Long?= 0,
+        var reportPendingReviewWP: Long?= 0,
+        var overdueJuniorTaskWP: Long?= 0,
+        var overdueJuniorTaskCPWP: Long?= 0,
 )
 
 data class MsDepartmentDto(

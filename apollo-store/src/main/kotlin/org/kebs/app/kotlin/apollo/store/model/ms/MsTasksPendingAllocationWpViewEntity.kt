@@ -13,6 +13,26 @@ class MsTasksPendingAllocationWpViewEntity: Serializable {
     @Column(name = "REFERENCE_NUMBER")
     var referenceNumber: String? = null
 
+    @Column(name = "REPORT_PENDING_REVIEW")
+    @Basic
+    var reportPendingReview: Int? = null
+
+    @Basic
+    @Column(name = "BATCH_REF_NUMBER")
+    var batchRefNumber: String? = null
+
+    @Column(name = "NAME_ACTIVITY")
+    @Basic
+    var nameActivity: String? = null
+
+    @Column(name = "TIME_ACTIVITY_DATE")
+    @Basic
+    var timeActivityDate: Date? = null
+
+    @Column(name = "BUDGET")
+    @Basic
+    var budget: String? = null
+
     @Basic
     @Column(name = "CREATED_ON")
     var createdOn: Timestamp? = null

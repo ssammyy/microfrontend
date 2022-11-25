@@ -22,6 +22,10 @@ class MsTasksPendingAllocationCpViewEntity: Serializable {
     @Column(name = "TIMELINE_START_DATE")
     var timelineStartDate: Date? = null
 
+    @Column(name = "MS_PROCESS_ID")
+    @Basic
+    var msProcessId: Long? = null
+
     @Basic
     @Column(name = "TIMELINE_END_DATE")
     var timelineEndDate: Date? = null

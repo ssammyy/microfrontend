@@ -598,6 +598,11 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     @Bean
     fun migrationMarketSurveillanceRoutes(handler: NewMarketSurveillanceHandler) = router {
         "/api/v1/migration/ms".nest {
+            "/dashboard".nest {
+                GET("/recommendation-list", handler::msRecommendationList)
+                GET("/notification-list", handler::msNotificationTaskList)
+                PUT("/notification-read", handler::msNotificationTaskRead)
+            }
             "/common".nest {
                 GET("/dashboard", handler::msDashBoardDetails)
                 GET("/towns", handler::townsListingAdmin)
@@ -623,6 +628,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/list-new", handler::getAllComplaintNewList)
                 GET("/list-on-going", handler::getAllComplaintOnGoingList)
                 GET("/list-my-task", handler::getAllComplaintMyTaskList)
+                GET("/allocated-task-view", handler::getAllComplaintAllocatedTaskList)
+                GET("/pending-allocation-view", handler::getAllComplaintPendingAllocationList)
+                GET("/allocated-task-overDue-view", handler::getAllComplaintAllocatedOverDueTaskList)
                 GET("/details", handler::getComplaintDetails)
                 "/update".nest {
                     PUT("/accept", handler::updateComplaintByAccepting)
@@ -647,6 +655,14 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 }
             }
             "/workPlan".nest {
+                GET("/allocated-task-wp-view", handler::getAllWorkPlanAllocatedTaskList)
+                GET("/report-pending-review-wp-view", handler::getAllWorkPlanReportsPendingReviewList)
+                GET("/junior-task-overDue-wp-view", handler::getAllWorkPlanJuniorTaskOverdueWPReviewList)
+                GET("/junior-task-overDue-wp-cp-view", handler::getAllWorkPlanJuniorTaskOverdueWPCPReviewList)
+                GET("/report-pending-review-wp-cp-view", handler::getAllWorkPlanComplaintReportsPendingReviewList)
+                GET("/allocated-task-wp-cp-view", handler::getAllWorkPlanComplaintAllocatedTaskList)
+                GET("/allocated-task-overDue-wp-view", handler::getAllWorkPlanAllocatedTaskOverDueList)
+                GET("/allocated-task-overDue-wp-cp-view", handler::getAllWorkPlanComplaintAllocatedTaskOverDueList)
                 GET("/all-batch-list", handler::getAllWorkPlanBatchList)
                 GET("/all-batch-closed", handler::getAllWorkPlanBatchListClosed)
                 GET("/all-batch-open", handler::getAllWorkPlanBatchListOpen)
