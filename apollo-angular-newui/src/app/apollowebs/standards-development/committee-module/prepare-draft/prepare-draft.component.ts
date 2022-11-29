@@ -130,19 +130,19 @@ export class PrepareDraftComponent implements OnInit {
 
     updateDocumentEditorSize(): void {
         //Resizes the document editor component to fit full browser window.
-        var windowWidth = window.innerWidth;
+        const windowWidth = window.innerWidth;
         //Reducing the size of title bar, to fit Document editor component in remaining height.
-        var windowHeight = window.innerHeight - this.titleBar.getHeight();
+        const windowHeight = window.innerHeight - this.titleBar.getHeight();
         this.container.resize(windowWidth, windowHeight);
     }
 
     openTemplate(): void {
-        var uploadDocument = new FormData();
+        const uploadDocument = new FormData();
         uploadDocument.append('DocumentName', 'Getting Started.docx');
-        var loadDocumentUrl = this.serviceLink ;
-        var httpRequest = new XMLHttpRequest();
+        const loadDocumentUrl = this.serviceLink;
+        const httpRequest = new XMLHttpRequest();
         httpRequest.open('POST', loadDocumentUrl, true);
-        var dataContext = this;
+        const dataContext = this;
         httpRequest.onreadystatechange = function () {
             if (httpRequest.readyState === 4) {
                 if (httpRequest.status === 200 || httpRequest.status === 304) {
