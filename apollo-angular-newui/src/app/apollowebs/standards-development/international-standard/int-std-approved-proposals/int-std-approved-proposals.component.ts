@@ -214,6 +214,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
           this.SpinnerService.hide();
           this.rerender();
           this.isAdoptionProposals = response;
+          console.log(this.isAdoptionProposals);
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();

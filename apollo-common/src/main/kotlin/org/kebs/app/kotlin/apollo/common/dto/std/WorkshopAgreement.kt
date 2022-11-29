@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.common.dto.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
+import java.util.ArrayList
 
 class WorkshopAgreement(
     @JsonProperty("taskId") val taskId: String,
@@ -307,6 +308,7 @@ data class ISAdoptionProposalDto(
     var tcSecName: String?=null,
     var title: String?=null,
     var scope: String?=null,
+    var iStandardNumber: String?=null,
     var adoptionAcceptableAsPresented: String?=null,
     var reasonsForNotAcceptance: String?=null,
     var recommendations: String?=null,
@@ -314,7 +316,10 @@ data class ISAdoptionProposalDto(
     var positionOfRespondent: String?=null,
     var nameOfOrganization: String?=null,
     var dateOfApplication: String?=null,
-    var uploadedBy: String?=null
+    var uploadedBy: String?=null,
+    var stakeholdersList: List<String>?=null,
+    var addStakeholdersList: String
+
 ){
 
 }
@@ -330,7 +335,14 @@ data class ISAdoptionProposalComments(
     var comClause:String? =null,
     var comParagraph:String? =null,
     var typeOfComment:String? =null,
-    var proposedChange:String? =null
+    var proposedChange:String? =null,
+    var adopt :String? =null,
+    var reasonsForNotAcceptance :String? =null,
+    var recommendations :String? =null,
+    var nameOfRespondent :String? =null,
+    var positionOfRespondent :String? =null,
+    var nameOfOrganization :String? =null,
+    var dateOfApplication:Timestamp? =null
 ){
 
 }

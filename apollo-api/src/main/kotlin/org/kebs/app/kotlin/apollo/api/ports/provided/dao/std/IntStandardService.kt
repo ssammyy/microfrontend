@@ -1,6 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import com.google.gson.Gson
+import com.hazelcast.internal.util.collection.ArrayUtils
 import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
@@ -11,49 +11,54 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.common.dto.std.ISJustificationDecision
+import org.kebs.app.kotlin.apollo.common.dto.std.InternationalStandardTasks
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.thymeleaf.util.DateUtils.second
 import java.sql.Timestamp
 import java.util.*
-import kotlin.collections.HashMap
+import java.util.Collections.addAll
+
 
 @Service
-class IntStandardService (private val runtimeService: RuntimeService,
-                          private val taskService: TaskService,
-                          @Qualifier("processEngine") private val processEngine: ProcessEngine,
-                          private val repositoryService: RepositoryService,
-                          private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
-                          private val isAdoptionCommentsRepository: ISAdoptionCommentsRepository,
-                          private val iSAdoptionJustificationRepository: ISAdoptionJustificationRepository,
-                          private val iSUploadStandardRepository: ISUploadStandardRepository,
-                          private val iSGazetteNoticeRepository: ISGazetteNoticeRepository,
-                          private val iSGazettementRepository: ISGazettementRepository,
-                          private val commonDaoServices: CommonDaoServices,
-                          private val sdIsDocumentUploadsRepository: SdIsDocumentUploadsRepository,
-                          private val technicalCommitteeRepository: TechnicalCommitteeRepository,
-                          private val technicalComListRepository: TechnicalComListRepository,
-                          private val departmentRepository: DepartmentRepository,
-                          private val departmentListRepository: DepartmentListRepository,
-                          private val isJustificationUploadsRepository: ISJustificationUploadsRepository,
-                          private val isStandardUploadsRepository: ISStandardUploadsRepository,
-                          private val sdisGazetteNoticeUploadsRepository: SDISGazetteNoticeUploadsRepository,
-                          private val notifications: Notifications,
-                          private val companyStandardRepository: CompanyStandardRepository,
-                          private val bpmnService: StandardsLevyBpmn,
-                          private val internationalStandardRemarksRepository : InternationalStandardRemarksRepository,
-                          private val nwaWorkshopDraftRepository: NwaWorkShopDraftRepository,
-                          private val standardRepository : StandardRepository
+class IntStandardService(
+    private val runtimeService: RuntimeService,
+    private val taskService: TaskService,
+    @Qualifier("processEngine") private val processEngine: ProcessEngine,
+    private val repositoryService: RepositoryService,
+    private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
+    private val isAdoptionCommentsRepository: ISAdoptionCommentsRepository,
+    private val iSAdoptionJustificationRepository: ISAdoptionJustificationRepository,
+    private val iSUploadStandardRepository: ISUploadStandardRepository,
+    private val iSGazetteNoticeRepository: ISGazetteNoticeRepository,
+    private val iSGazettementRepository: ISGazettementRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val sdIsDocumentUploadsRepository: SdIsDocumentUploadsRepository,
+    private val technicalCommitteeRepository: TechnicalCommitteeRepository,
+    private val technicalComListRepository: TechnicalComListRepository,
+    private val departmentRepository: DepartmentRepository,
+    private val departmentListRepository: DepartmentListRepository,
+    private val isJustificationUploadsRepository: ISJustificationUploadsRepository,
+    private val isStandardUploadsRepository: ISStandardUploadsRepository,
+    private val sdisGazetteNoticeUploadsRepository: SDISGazetteNoticeUploadsRepository,
+    private val notifications: Notifications,
+    private val companyStandardRepository: CompanyStandardRepository,
+    private val bpmnService: StandardsLevyBpmn,
+    private val internationalStandardRemarksRepository: InternationalStandardRemarksRepository,
+    private val nwaWorkshopDraftRepository: NwaWorkShopDraftRepository,
+    private val standardRepository: StandardRepository,
+    private val userListRepository: UserListRepository,
 
-                          ) {
+    ) {
     val PROCESS_DEFINITION_KEY = "sd_InternationalStandardsForAdoption"
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment =repositoryService
@@ -68,6 +73,12 @@ class IntStandardService (private val runtimeService: RuntimeService,
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY)
         return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
     }
+    //find stakeholder
+    fun findStandardStakeholders(): List<UserDetailHolder>? {
+        return userListRepository.findStandardStakeholders()
+    }
+
+
 
     //prepare Adoption Proposal
     fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal) : ISAdoptionProposal
@@ -77,36 +88,43 @@ class IntStandardService (private val runtimeService: RuntimeService,
         iSAdoptionProposal.proposal_doc_name=iSAdoptionProposal.proposal_doc_name
         iSAdoptionProposal.circulationDate=iSAdoptionProposal.circulationDate
         iSAdoptionProposal.closingDate=iSAdoptionProposal.circulationDate
-        iSAdoptionProposal.tcSecName=iSAdoptionProposal.proposal_doc_name
+        iSAdoptionProposal.tcSecName=iSAdoptionProposal.tcSecName
         iSAdoptionProposal.title=iSAdoptionProposal.title
         iSAdoptionProposal.scope=iSAdoptionProposal.scope
-        iSAdoptionProposal.adoptionAcceptableAsPresented=iSAdoptionProposal.adoptionAcceptableAsPresented
-        iSAdoptionProposal.reasonsForNotAcceptance=iSAdoptionProposal.reasonsForNotAcceptance
-        iSAdoptionProposal.recommendations=iSAdoptionProposal.recommendations
-        iSAdoptionProposal.nameOfRespondent=iSAdoptionProposal.nameOfRespondent
-        iSAdoptionProposal.positionOfRespondent=iSAdoptionProposal.positionOfRespondent
-        iSAdoptionProposal.nameOfOrganization=iSAdoptionProposal.nameOfOrganization
-        iSAdoptionProposal.dateOfApplication=iSAdoptionProposal.dateOfApplication
+        iSAdoptionProposal.iStandardNumber=iSAdoptionProposal.iStandardNumber
+
         iSAdoptionProposal.uploadedBy=iSAdoptionProposal.uploadedBy
         iSAdoptionProposal.preparedDate = commonDaoServices.getTimestamp()
         iSAdoptionProposal.status = 0
         iSAdoptionProposal.proposalNumber = getPRNumber()
 
-        var userList= companyStandardRepository.getStakeHoldersEmailList()
+        val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
 
-        //email to stakeholders
+        iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
+        iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
+
+        val users= iSAdoptionProposal.stakeholdersList
+        val otherUsers= iSAdoptionProposal.addStakeholdersList
+        val replace = users?.replace("[", "")
+        val userList = replace?.replace("]", "")
+        val arrays = otherUsers?.split(",")?.toTypedArray()
+        val array = userList?.split(",")?.toTypedArray()
+        //val both: Array<String> = ArrayUtils.concat(array, arrays)
+
         val targetUrl = "https://kimsint.kebs.org/";
-        userList.forEach { item->
-            val recipient="stephenmuganda@gmail.com"
-            //val recipient= item.getUserEmail()
-            val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
-            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
-            if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
+        if (array != null) {
+            for (recipient in array) {
+            //val recipient="stephenmuganda@gmail.com"
+                val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
+            val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
+                if (recipient != null) {
+                    notifications.sendEmail(recipient, subject, messageBody)
+                }
+
             }
         }
 
-        return isAdoptionProposalRepository.save(iSAdoptionProposal)
+     return proposal
 
 
     }
@@ -141,6 +159,10 @@ class IntStandardService (private val runtimeService: RuntimeService,
         return isAdoptionProposalRepository.getProposalDetails();
     }
 
+    fun getProposals(proposalId: Long): MutableList<ProposalDetails> {
+        return isAdoptionProposalRepository.getProposals(proposalId)
+    }
+
 
     //Submit Adoption Proposal comments
     fun submitAPComments(isAdoptionComments: ISAdoptionComments){
@@ -155,11 +177,19 @@ class IntStandardService (private val runtimeService: RuntimeService,
         isAdoptionComments.typeOfComment=isAdoptionComments.typeOfComment
         isAdoptionComments.proposedChange=isAdoptionComments.proposedChange
         isAdoptionComments.proposalID=isAdoptionComments.proposalID
+        isAdoptionComments.adopt=isAdoptionComments.adopt
+        isAdoptionComments.reasonsForNotAcceptance=isAdoptionComments.reasonsForNotAcceptance
+        isAdoptionComments.recommendations=isAdoptionComments.recommendations
+        isAdoptionComments.nameOfRespondent=isAdoptionComments.nameOfRespondent
+        isAdoptionComments.positionOfRespondent=isAdoptionComments.positionOfRespondent
+        isAdoptionComments.nameOfOrganization=isAdoptionComments.nameOfOrganization
+        isAdoptionComments.dateOfApplication=isAdoptionComments.dateOfApplication
 
         isAdoptionComments.comment_time = Timestamp(System.currentTimeMillis())
         isAdoptionCommentsRepository.save(isAdoptionComments)
         println("Comment Submitted")
     }
+
 
     fun getProposalComments(proposalId: Long): MutableIterable<ISProposalComments>? {
         return isAdoptionCommentsRepository.getProposalComments(proposalId)

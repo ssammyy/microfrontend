@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {StdIntStandardService} from "../../../../../core/store/data/std/std-int-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../../core/store/data/std/notification.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ISAdoptionProposal} from "../../../../../core/store/data/std/std.model";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {ISAdoptionProposal, UsersEntity} from "../../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
 import {Router} from "@angular/router";
 import {Store} from "@ngrx/store";
 import {selectUserInfo} from "../../../../../core/store";
+import {ReplaySubject, Subject} from "rxjs";
+import {MatSelect} from "@angular/material/select";
+import {take, takeUntil} from "rxjs/operators";
 
 declare const $: any;
 
@@ -22,6 +25,13 @@ export class IsProposalFormComponent implements OnInit {
   public uploadedFiles: FileList;
   public isProposalFormGroup!: FormGroup;
   title = 'toaster-not';
+    proposal_doc_name: string;
+    public stakeholdersLists : UsersEntity[]=[] ;
+    public websiteCtrl: FormControl = new FormControl();
+    public websiteFilterCtrl: FormControl = new FormControl();
+    public filteredWebsites: ReplaySubject<any> = new ReplaySubject(1);
+    @ViewChild('singleSelect') singleSelect: MatSelect;
+    protected _onDestroy = new Subject();
   constructor(
       private store$: Store<any>,
       private formBuilder: FormBuilder,
@@ -32,28 +42,52 @@ export class IsProposalFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+      this.findStandardStakeholders();
+      this.proposal_doc_name='International Standard Adoption Proposal'
     this.isProposalFormGroup = this.formBuilder.group({
-      proposal_doc_name: ['', Validators.required],
+      proposal_doc_name: [],
         uploadedBy: [],
         tcSecName : ['', Validators.required],
         circulationDate : ['', Validators.required],
         closingDate : ['', Validators.required],
         title : ['', Validators.required],
         scope : ['', Validators.required],
-        adoptionAcceptableAsPresented : ['', Validators.required],
-        reasonsForNotAcceptance : ['', Validators.required],
-        recommendations : ['', Validators.required],
-        nameOfRespondent : ['', Validators.required],
-        positionOfRespondent : ['', Validators.required],
-        nameOfOrganization : ['', Validators.required],
-        dateOfApplication : ['', Validators.required],
+        iStandardNumber:[],
+        stakeholdersList:[],
+        addStakeholdersList:[]
+        // adoptionAcceptableAsPresented : ['', Validators.required],
+        // reasonsForNotAcceptance : ['', Validators.required],
+        // recommendations : ['', Validators.required],
+        // nameOfRespondent : ['', Validators.required],
+        // positionOfRespondent : ['', Validators.required],
+        // nameOfOrganization : ['', Validators.required],
+        // dateOfApplication : ['', Validators.required],
     });
 
       this.store$.select(selectUserInfo).pipe().subscribe((u) => {
           return this.fullname = u.fullName;
       });
 
+      this.websiteCtrl.setValue(this.stakeholdersLists[1]);
+      this.filteredWebsites.next(this.stakeholdersLists.slice());
+
+      this.websiteFilterCtrl.valueChanges
+          .pipe(takeUntil(this._onDestroy))
+          .subscribe(() => {
+              this.filterBanks();
+          });
+
   }
+
+    ngAfterViewInit() {
+        this.setInitialValue();
+    }
+
+    ngOnDestroy() {
+        this._onDestroy.next();
+        this._onDestroy.complete();
+    }
+
     showToasterSuccess(title:string,message:string){
         this.notifyService.showSuccess(message, title)
 
@@ -67,11 +101,20 @@ export class IsProposalFormComponent implements OnInit {
 
     }
 
+    protected setInitialValue() {
+        this.filteredWebsites
+            .pipe(take(1), takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this.singleSelect.compareWith = (a: UsersEntity, b: UsersEntity) => a && b && a.id === b.id;
+            });
+    }
+
   get formISProposal(): any{
     return this.isProposalFormGroup.controls;
   }
   uploadProposal(): void {
     this.SpinnerService.show();
+    console.log(this.isProposalFormGroup.value);
     this.stdIntStandardService.prepareAdoptionProposal(this.isProposalFormGroup.value).subscribe(
         (response) => {
           console.log(response);
@@ -162,4 +205,35 @@ export class IsProposalFormComponent implements OnInit {
     // private blobToFile(blob: Blob, test: string) {
     //
     // }
+
+    public findStandardStakeholders(): void {
+        this.SpinnerService.show();
+        this.stdIntStandardService.findStandardStakeholders().subscribe(
+            (response: UsersEntity[]) => {
+                this.SpinnerService.hide();
+                this.stakeholdersLists = response;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+    protected filterBanks() {
+        if (!this.stakeholdersLists) {
+            return;
+        }
+
+        let search = this.websiteFilterCtrl.value;
+        if (!search) {
+            this.filteredWebsites.next(this.stakeholdersLists.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+        }
+
+        this.filteredWebsites.next(
+            this.stakeholdersLists.filter(bank => bank.email.toLowerCase().indexOf(search) > -1)
+        );
+    }
 }

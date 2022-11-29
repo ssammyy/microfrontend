@@ -59,5 +59,33 @@ class ISAdoptionComments {
     @Basic
     var proposedChange:String? =null
 
+    @Column(name="ADOPT_STANDARD")
+    @Basic
+    var adopt:String? =null
+
+    @Column(name="REASON")
+    @Basic
+    var reasonsForNotAcceptance:String? =null
+
+    @Column(name="RECOMMENDATIONS")
+    @Basic
+    var recommendations:String? =null
+
+    @Column(name="NAME_OF_RESPONDENT")
+    @Basic
+    var nameOfRespondent:String? =null
+
+    @Column(name="POSITION_OF_RESPONDENT")
+    @Basic
+    var positionOfRespondent:String? =null
+
+    @Column(name="NAME_OF_ORGANIZATION")
+    @Basic
+    var nameOfOrganization:String? =null
+
+    @Column(name="DATE_OF_APPLICATION")
+    @Basic
+    var dateOfApplication:Timestamp? =null
+
 
 }

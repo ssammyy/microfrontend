@@ -1,4 +1,5 @@
 import {Timestamp} from 'rxjs';
+import {fromArray} from "rxjs-compat/observable/fromArray";
 
 export interface StandardRequest {
     id: number;
@@ -36,6 +37,7 @@ export interface UsersEntity {
     lastName: string;
     firstName: string;
     userTypes: number;
+    email: string;
 
 
 }
@@ -465,6 +467,13 @@ export interface ProposalComment{
     taskId: string;
     proposalID: number;
     typeOfComment: string;
+    adopt: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: string;
 }
 
 export interface ISAdoptionProposal {
@@ -477,6 +486,7 @@ export interface ISAdoptionProposal {
     closingDate: string;
     scope: string;
     clause: string;
+    standardNumber: string;
     adoptionAcceptableAsPresented: string;
     reasonsForNotAcceptance: string;
     recommendations: string;
@@ -485,6 +495,9 @@ export interface ISAdoptionProposal {
     nameOfOrganization: string;
     dateOfApplication: string;
     proposalNumber: string;
+    stakeholdersList:string;
+    addStakeholdersList:string;
+    iStandardNumber:string;
 }
 export interface ISJustificationProposal{
     id: number;
@@ -1320,6 +1333,12 @@ export interface StakeholderProposalComments{
     comParagraph: string;
     typeOfComment: string;
     proposedChange: string;
+    adopt:string;
+    nameOfOrganization:string;
+    nameOfRespondent:string;
+    positionOfRespondent:string;
+    reasonsForNotAcceptance:string;
+    recommendations:string;
 }
 
 export interface StandardsForReview{
