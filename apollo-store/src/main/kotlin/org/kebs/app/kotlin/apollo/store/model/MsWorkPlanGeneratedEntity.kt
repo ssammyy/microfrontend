@@ -408,6 +408,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var progressValue: Int? = null
 
+  @Column(name = "REPORT_PENDING_REVIEW")
+    @Basic
+    var reportPendingReview: Int? = null
+
     @Column(name = "PROGRESS_STEP")
     @Basic
     var progressStep: String? = null

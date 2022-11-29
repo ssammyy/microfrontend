@@ -14,6 +14,10 @@ class MsAllocatedTasksCpViewEntity : Serializable {
     @Column(name = "REFERENCE_NUMBER")
     var referenceNumber: String? = null
 
+    @Column(name = "MS_PROCESS_ID")
+    @Basic
+    var msProcessId: Long? = null
+
     @Basic
     @Column(name = "TRANSACTION_DATE")
     var transactionDate: Date? = null

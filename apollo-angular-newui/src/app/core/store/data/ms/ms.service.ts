@@ -2001,6 +2001,62 @@ export class MsService {
         );
     }
 
+    public loadMSDashBoardTaskListView(page: string, records: string, routeTake: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        let url = null;
+        switch (routeTake) {
+            case 'allocatedCPTask':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.ALLOCATED_TASK_VIEW);
+                break;
+            case 'pendingAllocationCPTask':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.PENDING_ALLOCATION_TASK_VIEW);
+                break;
+            case 'allocatedOverDueCPTasks':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.ALLOCATED_OVER_DUE_TASK_VIEW);
+                break;
+            case 'allocatedWPTask':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ALLOCATED_WP_TASK_VIEW);
+                break;
+            case 'reportPendingReviewWPTask':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.REPORTS_PENDING_REVIEW_WP_TASK_VIEW);
+                break;
+            case 'reportPendingReviewWPCPTask':
+                // tslint:disable-next-line:max-line-length
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.REPORTS_PENDING_REVIEW_WP_CP_TASK_VIEW);
+                break;
+            case 'juniorTaskOverDueWPTask':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.JUNIOR_TASK_OVER_DUE_WP_TASK_VIEW);
+                break;
+            case 'juniorTaskOverDueWPCPTask':
+                // tslint:disable-next-line:max-line-length
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.JUNIOR_TASK_OVER_DUE_WP_CP_TASK_VIEW);
+                break;
+            case 'allocatedWPCPTask':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ALLOCATED_WP_CP_TASK_VIEW);
+                break;
+            case 'allocatedOverDueWPTasks':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ALLOCATED_WP_OVER_DUE_TASK_VIEW);
+                break;
+            case 'allocatedOverDueWPCPTasks':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.ALLOCATED_WP_CP_OVER_DUE_TASK_VIEW);
+                break;
+        }
+
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
     public loadMSComplaintList(page: string, records: string, routeTake: string): Observable<ApiResponseModel> {
         // console.log(data);
         let url = null;

@@ -5,7 +5,7 @@
                 color="#fff"
                 size="medium"
                 type="ball-scale-multiple">
-            <p style="font-size: 20px color: white">Loading Please Wait...</p>
+            <p style="font-size: 20px; color: white">Loading Data Please Wait...</p>
         </ngx-spinner>
     </div>
     <div class="container-fluid">
@@ -14,7 +14,7 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i *ngIf="complaintInspection" class="material-icons">CMP</i>
+                            <i *ngIf="complaintInspection" class="material-icons">CP</i>
                         </div>
                         <h4 *ngIf="complaintInspection" class="card-title">Ref No
                             :{{complaintInspection?.complaintsDetails?.refNumber}}
@@ -140,6 +140,16 @@
                                                 <div class="list-title-accordion">Telephone Number</div>
                                                 <div class="list-text-accordion">
                                                     {{complaintInspection?.complaintsDetails?.telephoneNumber}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Remedy Sought</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.remedySought}}</div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Complaint Sample Details</div>
+                                                <div class="list-text-accordion">
+                                                    {{complaintInspection?.complaintsDetails?.complaintSampleDetails}}</div>
                                             </li>
                                         </ul>
                                     </mat-tab>

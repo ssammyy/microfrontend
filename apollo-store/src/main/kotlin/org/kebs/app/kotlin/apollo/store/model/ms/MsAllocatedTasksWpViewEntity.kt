@@ -15,6 +15,22 @@ class MsAllocatedTasksWpViewEntity: Serializable {
     @Column(name = "REFERENCE_NUMBER")
     var referenceNumber: String? = null
 
+    @Column(name = "MS_PROCESS_ID")
+    @Basic
+    var msProcessId: Long? = null
+
+    @Column(name = "NAME_ACTIVITY")
+    @Basic
+    var nameActivity: String? = null
+
+    @Column(name = "TIME_ACTIVITY_DATE")
+    @Basic
+    var timeActivityDate: Date? = null
+
+    @Column(name = "BUDGET")
+    @Basic
+    var budget: String? = null
+
     @Basic
     @Column(name = "CREATED_ON")
     var createdOn: Timestamp? = null
@@ -54,5 +70,9 @@ class MsAllocatedTasksWpViewEntity: Serializable {
     @Basic
     @Column(name = "TASK_OVER_DUE")
     var taskOverDue: String? = null
+
+    @Basic
+    @Column(name = "BATCH_REF_NUMBER")
+    var batchRefNumber: String? = null
 
 }

@@ -232,16 +232,28 @@ export class MsDashBoardIODto {
 export class MsDashBoardHODDto {
     selfAssigningTaskCP: number;
     assigningHOFTaskCP: number;
+    reportPendingReviewCPWP: number;
+    reportPendingReviewWP: number;
+    overdueJuniorTaskWP: number;
+    overdueJuniorTaskCPWP: number;
 }
 
 export class MsDashBoardHOFDto {
     assigningIOTaskCP: number;
+    reportPendingReviewCPWP: number;
+    reportPendingReviewWP: number;
+    overdueJuniorTaskWP: number;
+    overdueJuniorTaskCPWP: number;
 }
 
 export class MsDashBoardDIDto {
     assigningHODTaskCP: number;
     assigningHOFTaskCP: number;
     assigningIOTaskCP: number;
+    reportPendingReviewCPWP: number;
+    reportPendingReviewWP: number;
+    overdueJuniorTaskWP: number;
+    overdueJuniorTaskCPWP: number;
 }
 
 export class WorkPlanListDto {
@@ -251,6 +263,7 @@ export class WorkPlanListDto {
     timeActivityDate: Date;
     budget: string;
     progressStep: string;
+    batchRefNumber: string;
 }
 
 export class CountriesEntityDto {

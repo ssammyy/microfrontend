@@ -716,6 +716,9 @@ export class ApiEndpointService {
         COMPLETED_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-completed`,
         NEW_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-new`,
         MY_TASK_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-my-task`,
+        PENDING_ALLOCATION_TASK_VIEW: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/pending-allocation-view`,
+        ALLOCATED_TASK_VIEW: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/allocated-task-view`,
+        ALLOCATED_OVER_DUE_TASK_VIEW: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/allocated-task-overDue-view`,
         ONGOING_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-on-going`,
         COMPLAINT_DETAILS: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/details`,
         COMPLAINT_DETAILS_UPDATE_ACCEPTANCE: `${ApiEndpointService.MS_COMPLAINT_UPDATE_CONTEXT}/accept`,
@@ -731,6 +734,14 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_WORK_PLAN = {
+        REPORTS_PENDING_REVIEW_WP_TASK_VIEW: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/report-pending-review-wp-view`,
+        REPORTS_PENDING_REVIEW_WP_CP_TASK_VIEW: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/report-pending-review-wp-cp-view`,
+        JUNIOR_TASK_OVER_DUE_WP_TASK_VIEW: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/junior-task-overDue-wp-view`,
+        JUNIOR_TASK_OVER_DUE_WP_CP_TASK_VIEW: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/junior-task-overDue-wp-cp-view`,
+        ALLOCATED_WP_TASK_VIEW: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/allocated-task-wp-view`,
+        ALLOCATED_WP_CP_TASK_VIEW: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/allocated-task-wp-cp-view`,
+        ALLOCATED_WP_OVER_DUE_TASK_VIEW: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/allocated-task-overDue-wp-view`,
+        ALLOCATED_WP_CP_OVER_DUE_TASK_VIEW: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/allocated-task-overDue-wp-cp-view`,
         ALL_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-list`,
         OPEN_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-open`,
         CLOSE_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-closed`,

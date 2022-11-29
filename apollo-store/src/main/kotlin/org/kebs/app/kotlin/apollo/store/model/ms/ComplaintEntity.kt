@@ -73,6 +73,10 @@ class ComplaintEntity : Serializable {
     @Basic
     var remedySought: String? = null
 
+    @Column(name = "REPORT_PENDING_REVIEW")
+    @Basic
+    var reportPendingReview: Int? = null
+
     @NotNull(message = "This field is required")
     @Column(name = "COMPLAINT_TITLE")
     @Basic

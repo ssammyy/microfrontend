@@ -68,6 +68,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val allocatedTasksCpViewRepo: IMsAllocatedTasksCpViewRepository,
     private val allocatedTasksWpViewRepo: IMsAllocatedTasksWpViewRepository,
     private val tasksPendingAllocationCpViewRepo: IMsTasksPendingAllocationCpViewRepository,
+    private val tasksPendingAllocationWpViewRepo: IMsTasksPendingAllocationWpViewRepository,
+
     private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
     private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
     private val reportSubmittedTimelineViewRepo: IMsReportSubmittedCpViewRepository,
@@ -76,6 +78,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
 ) {
     final var complaintSteps: Int = 6
     private final val activeStatus: Int = 1
+    private final val overDueValue ="YES"
 
     final var appId = applicationMapProperties.mapMarketSurveillance
 
@@ -226,6 +229,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
                 val hodDashBoard =  MsDashBoardHODDto()
                 with(hodDashBoard){
+                    reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
+                    reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     selfAssigningTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
                     assigningHOFTaskCP = loggedInUser.id?.let { tasksPendingAllocationCpViewRepo.countByHodAssignedAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull(it) }
                 }
@@ -234,6 +239,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
                 val hodDashBoard =  MsDashBoardHODDto()
                 with(hodDashBoard){
+                    reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
+                    reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     selfAssigningTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
                     assigningHOFTaskCP = loggedInUser.id?.let { tasksPendingAllocationCpViewRepo.countByHodAssignedAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull(it) }
                 }
@@ -242,6 +249,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
                 val hofDashBoard = MsDashBoardHOFDto()
                 with(hofDashBoard){
+                    reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
+                    reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     assigningIOTaskCP = loggedInUser.id?.let { tasksPendingAllocationCpViewRepo.countByHofAssignedAndMsComplaintEndedStatusIsNullAndAssignedIoIsNull(it) }
                 }
                 response.hofDashBoard = hofDashBoard
@@ -249,6 +258,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
                 val diDashBoard = MsDashBoardDIDto()
                 with(diDashBoard){
+                    reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
+                    reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     assigningHODTaskCP =  tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
                     assigningHOFTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNotNullAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull()
                     assigningIOTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNotNullAndMsComplaintEndedStatusIsNullAndHofAssignedIsNotNullAndAssignedIoIsNull()
@@ -322,6 +333,68 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val complaintList = sampleSubmittedTimelineViewRepo.findAll(page)
 
         return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintAllocatedTaskListsView(page: PageRequest): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                response = listMsComplaintsTasks(allocatedTasksCpViewRepo.findAllByAssignedIo(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),page), map)
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return  response
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintPendingAllocationListsView(page: PageRequest): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        when {
+            auth.authorities.stream().anyMatch { authority ->
+                    authority.authority == "MS_HOD_READ"
+                    || authority.authority == "MS_RM_READ" } -> {
+                response = listMsComplaintsPendingAllocation(tasksPendingAllocationCpViewRepo.findAllByHodAssignedAndMsComplaintEndedStatusIsNullAndHofAssignedIsNull(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),page), map)
+            }
+            auth.authorities.stream().anyMatch { authority ->
+                authority.authority == "MS_HOF_READ" } -> {
+                response = listMsComplaintsPendingAllocation(tasksPendingAllocationCpViewRepo.findAllByHofAssignedAndMsComplaintEndedStatusIsNullAndAssignedIoIsNull(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),page), map)
+            }
+            auth.authorities.stream().anyMatch { authority ->
+                authority.authority == "MS_DIRECTOR_READ" } -> {
+                response = listMsComplaintsPendingAllocation(tasksPendingAllocationCpViewRepo.findAllByHodAssignedIsNullOrHofAssignedIsNullOrAssignedIoIsNullAndMsComplaintEndedStatusIsNull(page), map)
+
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return  response
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintOverDueTaskListsView(page: PageRequest): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ"  } -> {
+                response = listMsComplaintsTasks(allocatedTasksCpViewRepo.findAllByAssignedIoAndTaskOverDue(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),overDueValue,page), map)
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return  response
     }
     
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
@@ -455,6 +528,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             division = body.division
             approved = map.activeStatus
             approvedRemarks = body.approvedRemarks
+            reportPendingReview = map.inactiveStatus
             approvedBy = commonDaoServices.getUserName(loggedInUser)
             approvedDate = commonDaoServices.getCurrentDate()
         }
@@ -1130,6 +1204,40 @@ class MarketSurveillanceComplaintProcessDaoServices(
             ?: throw ExpectedDataNotFound("NO ${designationsEntity.designationName} Found on REGION ${regionsEntity.region} and Department ${departmentsEntity.department} Whose status is ${map.activeStatus}")
     }
 
+    fun listMsComplaintsPendingAllocation(complaints: Page<MsTasksPendingAllocationCpViewEntity>, map: ServiceMapsEntity): ApiResponseModel {
+        val complaintList = mutableListOf<ComplaintsListDto>()
+        complaints.toList().map { comp ->
+            complaintList.add(
+                ComplaintsListDto(
+                    comp.referenceNumber,
+                    null,
+                    null,
+                    comp.transactionDate,
+                    comp.msProcessId?.let { findMsProcessComplaintByID(1, it)?.processName }
+                )
+            )
+        }
+
+        return commonDaoServices.setSuccessResponse(complaintList,complaints.totalPages,complaints.number,complaints.totalElements)
+    }
+
+    fun listMsComplaintsTasks(complaints: Page<MsAllocatedTasksCpViewEntity>, map: ServiceMapsEntity): ApiResponseModel {
+        val complaintList = mutableListOf<ComplaintsListDto>()
+        complaints.toList().map { comp ->
+            complaintList.add(
+                ComplaintsListDto(
+                    comp.referenceNumber,
+                    null,
+                    null,
+                    comp.transactionDate,
+                    comp.msProcessId?.let { findMsProcessComplaintByID(1, it)?.processName }
+                )
+            )
+        }
+
+        return commonDaoServices.setSuccessResponse(complaintList,complaints.totalPages,complaints.number,complaints.totalElements)
+    }
+
     fun listMsComplaints(complaints: Page<ComplaintEntity>, map: ServiceMapsEntity): ApiResponseModel {
         val complaintList = mutableListOf<ComplaintsListDto>()
         complaints.toList().map { comp ->
@@ -1165,6 +1273,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 complaintSampleDetails = complaintDto.complaintSampleDetails
                 remedySought = complaintDto.remedySought
                 targetedProducts = complaintDto.productBrand
+                reportPendingReview = map.activeStatus
 //                complaintDepartment = complaintDto.complaintCategory
 //                standardCategory = complaintDto.productClassification
 //                broadProductCategory = complaintDto.broadProductCategory

@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsControlle
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.PredefinedResourcesRequiredEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -58,6 +59,8 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val preliminaryOutletRepo: IPreliminaryOutletsRepository,
     private val recommendationRepo: ICfgRecommendationRepository,
     private val msTaskNotificationsRepo: IMsTaskNotificationsRepository,
+    private val allocatedTasksWpViewRepo: IMsAllocatedTasksWpViewRepository,
+    private val tasksPendingAllocationWpViewRepo: IMsTasksPendingAllocationWpViewRepository,
 
     private val msTypesRepo: IMsTypesRepository,
     private val complaintCustomersRepo: IComplaintCustomersRepository,
@@ -95,6 +98,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 ) {
     final var complaintSteps: Int = 6
     private final val activeStatus: Int = 1
+    private final val overDueValue ="YES"
     val gson = Gson()
 
     final var appId = applicationMapProperties.mapMarketSurveillance
@@ -113,6 +117,144 @@ class MarketSurveillanceWorkPlanDaoServices(
         val taskNotification = loggedInUser.id?.let { msTaskNotificationsRepo.findAllByReadStatusAndToUserId(status, it) }
         return taskNotification?.sortedBy { it.id }?.map { MsNotificationTaskDto(it.id, gson.fromJson(it.notificationBody, NotificationBodyDto::class.java), it.notificationMsg, it.notificationName,it.notificationType,it.fromUserId,it.toUserId, it.readStatus == 1) }
     }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msWorkPlanAllocatedTaskListsView(page: PageRequest, complaint: Boolean): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        when {
+            complaint -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        response = mapDashBoardWorkPlanInspectionListViewDto(allocatedTasksWpViewRepo.findAllByOfficerIdAndComplaintIdIsNotNull(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),page))
+                    }
+                    else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+                }
+            }
+            else -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        response = mapDashBoardWorkPlanInspectionListViewDto(allocatedTasksWpViewRepo.findAllByOfficerIdAndComplaintIdIsNull(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),page))
+                    }
+                    else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+                }
+            }
+        }
+
+
+        return  response
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msWorkPlanAllocatedTaskListsOverDueView(page: PageRequest, complaint: Boolean): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        when {
+            complaint -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        response = mapDashBoardWorkPlanInspectionListViewDto(allocatedTasksWpViewRepo.findAllByOfficerIdAndComplaintIdIsNotNull(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),page))
+                    }
+                    else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+                }
+            }
+            else -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                        response = mapDashBoardWorkPlanInspectionListViewDto(allocatedTasksWpViewRepo.findAllByOfficerIdAndComplaintIdIsNull(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),page))
+                    }
+                    else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+                }
+            }
+        }
+
+
+        return  response
+    }
+
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msWorkPlanReportsPendingReviewListsView(page: PageRequest, complaint: Boolean): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        when {
+            complaint -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_DIRECTOR_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        response = mapDashBoardWorkPlanInspectionPendingAllocationListViewDto(tasksPendingAllocationWpViewRepo.findAllByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus,page))
+                    }
+                    else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+                }
+            }
+            else -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_DIRECTOR_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        response = mapDashBoardWorkPlanInspectionPendingAllocationListViewDto(tasksPendingAllocationWpViewRepo.findAllByReportPendingReviewAndComplaintIdIsNull(map.activeStatus,page))
+                    }
+                    else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+                }
+            }
+        }
+
+
+        return  response
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msWorkPlanJuniorTaskOverDueListsView(page: PageRequest, complaint: Boolean): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        when {
+            complaint -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_DIRECTOR_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        response = mapDashBoardWorkPlanInspectionPendingAllocationListViewDto(tasksPendingAllocationWpViewRepo.findAllByTaskOverDueAndComplaintIdIsNotNull(overDueValue,page))
+                    }
+                    else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+                }
+            }
+            else -> {
+                when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority
+                        authority.authority == "MS_HOD_READ"
+                                || authority.authority == "MS_DIRECTOR_READ"
+                                || authority.authority == "MS_HOF_READ"
+                                || authority.authority == "MS_RM_READ" } -> {
+                        response = mapDashBoardWorkPlanInspectionPendingAllocationListViewDto(tasksPendingAllocationWpViewRepo.findAllByTaskOverDueAndComplaintIdIsNull(overDueValue,page))
+                    }
+                    else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+                }
+            }
+        }
+
+
+        return  response
+    }
+
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -430,6 +572,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         resubmitStatus = map.activeStatus
                     }
                     submittedForApprovalStatus = map.activeStatus
+                    reportPendingReview = map.activeStatus
                     timelineStartDate = commonDaoServices.getCurrentDate()
                     timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionSubmittedForApproval.let { timeLine->
                         findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
@@ -760,6 +903,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                             approved = "APPROVED"
                             progressStep = approved
+                            reportPendingReview = map.inactiveStatus
                             approvedBy = commonDaoServices.concatenateName(loggedInUser)
                             approvedStatus = map.activeStatus
                             rejectedStatus = map.inactiveStatus
@@ -1220,6 +1364,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                             approvedRemarksHofFinal = body.remarks
                             approvedByHofFinal = commonDaoServices.concatenateName(loggedInUser)
                             approvedStatusHofFinal = map.activeStatus
+//                            reportPendingReview = map.inactiveStatus
                             rejectedStatusHofFinal = map.inactiveStatus
                             approvedOnHofFinal = commonDaoServices.getCurrentDate()
                             remarkStatusValue = approvedHofFinal as String
@@ -1234,6 +1379,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                             approvedBy = commonDaoServices.concatenateName(loggedInUser)
                             approvedStatus = map.activeStatus
                             rejectedStatus = map.inactiveStatus
+//                            reportPendingReview = map.inactiveStatus
                             approvedOn = commonDaoServices.getCurrentDate()
                             remarkStatusValue = approved as String
                             scheduleEmailDetails.approvalStatus = remarkStatusValue
@@ -1513,6 +1659,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     when {
                         fetchedPreliminary.approvedStatusHodFinal== map.activeStatus -> {
                             msFinalReportStatus = map.activeStatus
+                            reportPendingReview = map.inactiveStatus
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalReportApprovedHODRM
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
                             val directorDetails = commonDaoServices.findAllUsersByDesignation(map, applicationMapProperties.mapMsComplaintAndWorkPlanDesignationDirector)
@@ -1523,10 +1670,13 @@ class MarketSurveillanceWorkPlanDaoServices(
                                     batchReferenceNoFound = batchReferenceNo
                                     referenceNoFound = workPlanScheduled.referenceNumber
                                     dateAssigned = commonDaoServices.getCurrentDate()
-                                    processType = if(workPlanScheduled.complaintId!=null){
-                                        "COMPLAINT-PLAN"
-                                    }else{
-                                        "WORK-PLAN"
+                                    processType = when {
+                                        workPlanScheduled.complaintId!=null -> {
+                                            "COMPLAINT-PLAN"
+                                        }
+                                        else -> {
+                                            "WORK-PLAN"
+                                        }
                                     }
                                 }
 
@@ -1549,6 +1699,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         fetchedPreliminary.approvedStatusHod== map.activeStatus -> {
                             msFinalReportStatus = map.inactiveStatus
                             preliminaryApprovedStatus = map.activeStatus
+                            reportPendingReview = map.inactiveStatus
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportApprovedHODRM
                             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
                         }
@@ -1736,6 +1887,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         with(workPlanScheduled){
             hodRecommendationStatus= map.activeStatus
+            reportPendingReview = map.activeStatus
             directorRecommendationRemarksStatus= map.inactiveStatus
             if(destructionFound){
                 destructionRecommended = map.activeStatus
@@ -1799,6 +1951,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         with(workPlanScheduled){
             directorAssigned = loggedInUser.id
             directorRecommendationRemarksStatus= map.activeStatus
+            reportPendingReview = map.inactiveStatus
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionDirectorRemarksADDED.let { timeLine->
                 findProcessNameByID(timeLine,1 ).timelinesDay}?.let { daysCount->
@@ -2054,6 +2207,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     resubmitStatus = map.activeStatus
                     updatedStatus = map.activeStatus
                 }
+                reportPendingReview = map.activeStatus
                 finalReportGenerated= map.activeStatus
                 msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateFinalPreliminaryReport
                 userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
@@ -2434,6 +2588,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                             resubmitStatus = map.activeStatus
                             updatedStatus = map.activeStatus
                         }
+                        reportPendingReview = map.activeStatus
                         msPreliminaryReportStatus = map.activeStatus
                     }
                 }
@@ -4143,14 +4298,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     modifiedOn = commonDaoServices.getTimestamp()
                 }
                 else -> {
-                    referenceNumber = "${msType.markRef}${
-                        generateRandomText(
-                            map.transactionRefLength,
-                            map.secureRandom,
-                            map.messageDigestAlgorithm,
-                            true
-                        )
-                    }".toUpperCase()
+                    referenceNumber = "${msType.markRef}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                     createdBy = commonDaoServices.concatenateName(usersEntity)
                     createdOn = commonDaoServices.getTimestamp()
                 }
@@ -4206,7 +4354,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             submittedForApprovalStatus= map.activeStatus
             progressStep = "WorkPlan Generated"
             region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
-            referenceNumber = "${msType.markRef}${generateRandomText(map.transactionRefLength, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+            referenceNumber = "${msType.markRef}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             workPlanYearId = userWorkPlan.id
             hodRmAssigned = comp.hodAssigned
             timelineStartDate = commonDaoServices.getCurrentDate()
@@ -4359,6 +4507,38 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanInspectionScheduledList,
             createdWorkPlan
         )
+    }
+
+    fun mapDashBoardWorkPlanInspectionListViewDto(workPlanList: Page<MsAllocatedTasksWpViewEntity>): ApiResponseModel {
+        val workPlanInspectionScheduledList = mutableListOf<WorkPlanInspectionDto>()
+        workPlanList.map {workPlanInspectionScheduledList.add(
+            WorkPlanInspectionDto(
+                nameActivity =it.nameActivity,
+                budget =it.budget,
+                progressStep =it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
+                timeActivityDate =it.timeActivityDate,
+                referenceNumber =it.referenceNumber,
+                batchRefNumber =it.batchRefNumber
+            )
+        )}
+
+        return commonDaoServices.setSuccessResponse(workPlanInspectionScheduledList,workPlanList.totalPages,workPlanList.number,workPlanList.totalElements)
+    }
+
+    fun mapDashBoardWorkPlanInspectionPendingAllocationListViewDto(workPlanList: Page<MsTasksPendingAllocationWpViewEntity>): ApiResponseModel {
+        val workPlanInspectionScheduledList = mutableListOf<WorkPlanInspectionDto>()
+        workPlanList.map {workPlanInspectionScheduledList.add(
+            WorkPlanInspectionDto(
+                nameActivity =it.nameActivity,
+                budget =it.budget,
+                progressStep =it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
+                timeActivityDate =it.timeActivityDate,
+                referenceNumber =it.referenceNumber,
+                batchRefNumber =it.batchRefNumber
+            )
+        )}
+
+        return commonDaoServices.setSuccessResponse(workPlanInspectionScheduledList,workPlanList.totalPages,workPlanList.number,workPlanList.totalElements)
     }
 
     fun findProcessNameByID(processID: Long, status: Int): MsProcessNamesEntity {

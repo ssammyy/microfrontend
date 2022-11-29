@@ -9,18 +9,20 @@ import {
     loadCompanyId,
     selectCompanyInfoDtoStateData,
     selectUserInfo,
-    UserEntityDto
+    UserEntityDto,
 } from 'src/app/core/store';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../core/store/data/ms/ms.service';
-import {MsDashBoardALLDto} from '../../core/store/data/ms/ms.model';
+import {ComplaintsListDto, MsDashBoardALLDto, WorkPlanListDto, WorkPlanScheduleListDetailsDto} from '../../core/store/data/ms/ms.model';
+import {LocalDataSource} from 'ng2-smart-table';
+import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 
 declare const $: any;
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.css']
+    styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
     // constructor(private navbarTitleService: NavbarTitleService, private notificationService: NotificationService) { }
@@ -29,6 +31,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     branchCount = 0;
     countAwarded = 0;
     countExpired = 0;
+    defaultPageSize = 10;
+    defaultPage = 0;
+    currentPage = 0;
+    currentPageInternal = 0;
+    totalCount = 12;
+    dataSet: LocalDataSource = new LocalDataSource();
+    loadedDataCP: ComplaintsListDto[];
+    loadedDataCPWP: WorkPlanListDto[];
 
     user: UserEntityDto;
     msDashBoardDetails: MsDashBoardALLDto;
@@ -36,6 +46,98 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     roles: string[];
 
     @ViewChild('content') content: any;
+    currDiv!: string;
+    currDivLabel!: string;
+
+    public settingsCP = {
+        selectMode: 'single',  // single|multi
+        hideHeader: false,
+        hideSubHeader: false,
+        actions: {
+            columnTitle: 'Actions',
+            add: false,
+            edit: false,
+            delete: false,
+            custom: [
+                //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+                {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Details</i>'},
+            ],
+            position: 'right', // left|right
+        },
+        delete: {
+            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+            confirmDelete: true,
+        },
+        noDataMessage: 'No data found',
+        columns: {
+            referenceNumber: {
+                title: 'REFERENCE NUMBER',
+                type: 'string',
+                filter: true,
+            },
+            transactionDate: {
+                title: 'DATE RECEIVED',
+                type: 'date',
+                filter: true,
+            },
+            progressStep: {
+                title: 'STATUS',
+                type: 'string',
+                filter: true,
+            },
+        },
+        pager: {
+            display: true,
+            perPage: 10,
+        },
+    };
+    public settingsCPWP = {
+        selectMode: 'single',  // single|multi
+        hideHeader: false,
+        hideSubHeader: false,
+        actions: {
+            columnTitle: 'Actions',
+            add: false,
+            edit: false,
+            delete: false,
+            custom: [
+                //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+                {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View More</i>'},
+            ],
+            position: 'right', // left|right
+        },
+        delete: {
+            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+            confirmDelete: true,
+        },
+        noDataMessage: 'No data found',
+        columns: {
+            referenceNumber: {
+                title: 'REFERENCE NUMBER',
+                type: 'string',
+                filter: false,
+            },
+            timeActivityDate: {
+                title: 'ACTIVITY DATE',
+                type: 'date',
+                filter: false,
+            },
+            budget: {
+                title: 'BUDGET',
+                type: 'string',
+                filter: false,
+            },
+            progressStep: {
+                title: 'STATUS',
+                type: 'string',
+                filter: true,
+            },
+        },
+        pager: {
+            display: true,
+            perPage: 10,
+        },
+    };
 
     startAnimationForLineChart(chart: any) {
         let seq: any, delays: any, durations: any;
@@ -51,8 +153,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                         dur: 700,
                         from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
                         to: data.path.clone().stringify(),
-                        easing: Chartist.Svg.Easing.easeOutQuint
-                    }
+                        easing: Chartist.Svg.Easing.easeOutQuint,
+                    },
                 });
             } else if (data.type === 'point') {
                 seq++;
@@ -62,8 +164,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                         dur: durations,
                         from: 0,
                         to: 1,
-                        easing: 'ease'
-                    }
+                        easing: 'ease',
+                    },
                 });
             }
         });
@@ -85,8 +187,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                         dur: durations2,
                         from: 0,
                         to: 1,
-                        easing: 'ease'
-                    }
+                        easing: 'ease',
+                    },
                 });
             }
         });
@@ -116,15 +218,23 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                     this.countAwarded = d.countAwarded;
                     this.countExpired = d.countExpired;
                 }
-            }
+            },
         );
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            console.log(u.roles)
+            console.log(u.roles);
             this.roles = u.roles;
             return this.roles = u.roles;
         });
 
-        this.loadMSData();
+        if (this.roles?.includes('MS_HOD_READ')
+            || this.roles?.includes('MS_IO_READ')
+            || this.roles?.includes('MS_RM_READ')
+            || this.roles?.includes('MS_HOF_READ')
+            || this.roles?.includes('MS_DIRECTOR_READ')
+        ) {
+            this.loadMSData();
+        }
+
 
 
     }
@@ -142,30 +252,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 // this.msService.showError('AN ERROR OCCURRED');
             },
         );
-
-        // let data = this.diService.listAssignedCd(documentTypeUuid, page, size, params);
-        // console.log(this.activeStatus)
-        // // Clear list before loading
-        // this.dataSet.load([])
-        // // Switch
-        // if (this.activeStatus === "completed") {
-        //   data = this.diService.listCompletedCd(documentTypeUuid, page, size)
-        // } else if (this.activeStatus === "ongoing") {
-        //   data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
-        // } else if (this.activeStatus === "not-assigned") {
-        //   data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
-        // }
-        // data.subscribe(
-        //     result => {
-        //       if (result.responseCode === "00") {
-        //         let listD: any[] = result.data;
-        //         this.totalCount = result.totalCount
-        //         this.dataSet.load(listD)
-        //       } else {
-        //         console.log(result)
-        //       }
-        //     }
-        // );
     }
 
 
@@ -220,7 +306,129 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
     gotoHome() {
         this.router.navigate(['/dashboard']);
+    }
 
+    openModalAddDetails(divVal: string, headerVal: string): void {
+        this.currDivLabel = headerVal;
+        this.currDiv = divVal;
+        this.loadData(this.defaultPage, this.defaultPageSize, this.currDiv);
+    }
+
+    public onCustomActionCP(event: any): void {
+        switch (event.action) {
+            case 'viewRecord':
+                this.viewRecordCP(event.data);
+                break;
+        }
+    }
+
+    public onCustomActionCPWP(event: any): void {
+        if (this.currDiv === 'allocatedWPTask'
+            || this.currDiv === 'allocatedOverDueWPTasks'
+            || this.currDiv === 'juniorTaskOverDueWPTask'
+            || this.currDiv === 'reportPendingReviewWPTask'
+        ) {
+            switch (event.action) {
+                case 'viewRecord':
+                    this.viewRecordWP(event.data);
+                    break;
+            }
+        } else if (
+            this.currDiv === 'allocatedWPCPTask'
+            || this.currDiv === 'allocatedOverDueWPCPTasks'
+            || this.currDiv === 'juniorTaskOverDueWPCPTask'
+            || this.currDiv === 'reportPendingReviewWPCPTask') {
+            switch (event.action) {
+                case 'viewRecord':
+                    this.viewRecordWPCP(event.data);
+                    break;
+            }
+        }
+    }
+
+    viewRecordCP(data: ComplaintsListDto) {
+        this.router.navigate([`/complaint/details/`, data.referenceNumber]);
+    }
+
+    viewRecordWPCP(data: WorkPlanListDto) {
+        this.router.navigate([`/complaintPlan/details/`, data.referenceNumber, data.batchRefNumber]);
+    }
+
+    viewRecordWP(data: WorkPlanListDto) {
+        this.router.navigate([`/workPlan/details/`, data.referenceNumber, data.batchRefNumber]);
+    }
+
+
+    pageChange(pageIndex?: any) {
+        if (pageIndex) {
+            this.currentPageInternal = pageIndex - 1;
+            this.currentPage = pageIndex;
+            this.loadData(this.currentPageInternal, this.defaultPageSize, this.currDiv);
+        }
+    }
+
+    private loadData(page: number, records: number, routeTake: string): any {
+        this.SpinnerService.show();
+        switch (routeTake) {
+            case 'allocatedCPTask':
+                this.loadAllocatedCPTask(page, records);
+                break;
+            case 'pendingAllocationCPTask':
+                this.loadAllocatedCPTask(page, records);
+                break;
+            case 'allocatedOverDueCPTasks':
+                this.loadAllocatedCPTask(page, records);
+                break;
+            case 'allocatedWPTask':
+                this.loadAllocatedCPWPTask(page, records);
+                break;
+            case 'reportPendingReviewWPTask':
+                this.loadAllocatedCPWPTask(page, records);
+                break;
+            case 'reportPendingReviewWPCPTask':
+                this.loadAllocatedCPWPTask(page, records);
+                break;
+            case 'juniorTaskOverDueWPTask':
+                this.loadAllocatedCPWPTask(page, records);
+                break;
+            case 'juniorTaskOverDueWPCPTask':
+                this.loadAllocatedCPWPTask(page, records);
+                break;
+            case 'allocatedWPCPTask':
+                this.loadAllocatedCPWPTask(page, records);
+                break;
+            case 'allocatedOverDueWPTasks':
+                this.loadAllocatedCPWPTask(page, records);
+                break;
+            case 'allocatedOverDueWPCPTasks':
+                this.loadAllocatedCPWPTask(page, records);
+                break;
+        }
+
+    }
+
+    private loadAllocatedCPTask(page: number, records: number): any {
+          this.msService.loadMSDashBoardTaskListView(String(page), String(records), this.currDiv).subscribe(
+              (data) => {
+                  this.loadedDataCP = data.data;
+                  this.totalCount = this.loadedDataCP.length;
+                  this.dataSet.load(this.loadedDataCP);
+                  window.$('#msAllDashBoardViewData').modal('show');
+                  this.SpinnerService.hide();
+              },
+          );
+    }
+
+    private loadAllocatedCPWPTask(page: number, records: number): any {
+        this.msService.loadMSDashBoardTaskListView(String(page), String(records), this.currDiv).subscribe(
+            (data) => {
+                this.loadedDataCPWP = data.data;
+                this.totalCount = this.loadedDataCPWP.length;
+                this.dataSet.load(this.loadedDataCPWP);
+                window.$('#msAllDashBoardViewData').modal('show');
+                this.SpinnerService.hide();
+            },
+        );
     }
 
 
