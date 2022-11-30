@@ -359,50 +359,64 @@
                                                                             <div class="form-body">
                                                                                 <div class="row col-12" *ngFor="let isAdoptionProposal of isAdoptionProposals">
                                                                                     <div class="form-group col-6">
+                                                                                        <label><b>Document</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                class="form-control one-column-input" ngModel="{{isAdoptionProposal.docName}}" formControlName="docName" name="docName"
+                                                                                                placeholder="" type="text" disabled>
+                                                                                    </div>
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Prepared By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                class="form-control one-column-input" ngModel="{{isAdoptionProposal.tcSecName}}" formControlName="preparedBy" name="preparedBy"
+                                                                                                placeholder="" type="text" disabled>
+                                                                                    </div>
+                                                                                    <div class="form-group col-6">
                                                                                         <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" value="{{isAdoptionProposal.standardNumber}}" formControlName="standardNumber" name="standardNumber"
+                                                                                                class="form-control one-column-input" ngModel="{{isAdoptionProposal.standardNumber}}" formControlName="standardNumber" name="standardNumber"
                                                                                                 placeholder="" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" value="{{isAdoptionProposal.title}}" formControlName="title" name="title"
+                                                                                                class="form-control one-column-input" ngModel="{{isAdoptionProposal.title}}" formControlName="title" name="title"
                                                                                                 placeholder="" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.normativeReference}}"  formControlName="normativeReference" name="normativeReference"
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"   formControlName="normativeReference" name="normativeReference"
                                                                                                 placeholder="Name" type="text">
                                                                                     </div>
                                                                                     <div class="form-group col-6">
                                                                                         <label><b>Symbols Abbreviated Terms</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.symbolsAbbreviatedTerms}}"  formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms"
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"   formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms"
                                                                                                 placeholder="Name" type="text">
                                                                                     </div>
 
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.clause}}"  formControlName="clause" name="clause"
-                                                                                                placeholder="Name" type="text" disabled>
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"  formControlName="clause" name="clause"
+                                                                                                placeholder="Name" type="text" >
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                  class="form-control one-column-input" value="{{isAdoptionProposal.scope}}" formControlName="scope" name="scope"
+                                                                                                  class="form-control one-column-input" ngModel="{{isAdoptionProposal.scope}}" formControlName="scope" name="scope"
                                                                                                   placeholder="International Standard Scope" type="text" disabled></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Special</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                  class="form-control one-column-input" value="{{actionRequest?.special}}"   formControlName="special" name="special"
-                                                                                                  placeholder="International Standard Scope" type="text" ></textarea>
+                                                                                                  class="form-control one-column-input"   formControlName="special" name="special"
+                                                                                                  placeholder="International Standard Special" type="text" ></textarea>
 
                                                                                     </div>
 

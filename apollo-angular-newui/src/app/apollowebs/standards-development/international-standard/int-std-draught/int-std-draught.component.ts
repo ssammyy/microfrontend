@@ -58,6 +58,8 @@ export class IntStdDraughtComponent implements OnInit {
       symbolsAbbreviatedTerms:[],
       clause:[],
       special:[],
+        docName:[],
+        standardNumber:[]
 
     });
   }
@@ -146,7 +148,9 @@ export class IntStdDraughtComponent implements OnInit {
             normativeReference:this.actionRequest.normativeReference,
             symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
             clause: this.actionRequest.clause,
-            special: this.actionRequest.special
+            special: this.actionRequest.special,
+              docName:this.actionRequest.documentType,
+              standardNumber:this.actionRequest.isNumber
           }
       );
 

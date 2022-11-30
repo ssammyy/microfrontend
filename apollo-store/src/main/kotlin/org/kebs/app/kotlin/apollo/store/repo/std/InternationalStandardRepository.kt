@@ -254,7 +254,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='0' ",
         nativeQuery = true
     )
@@ -262,7 +262,8 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId," +
+                "DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='1' ",
         nativeQuery = true
     )
@@ -270,7 +271,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='3' ",
         nativeQuery = true
     )
@@ -278,7 +279,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='4' ",
         nativeQuery = true
     )
@@ -286,7 +287,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='5' ",
         nativeQuery = true
     )
@@ -294,7 +295,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='6' ",
         nativeQuery = true
     )
@@ -302,7 +303,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='7' ",
         nativeQuery = true
     )

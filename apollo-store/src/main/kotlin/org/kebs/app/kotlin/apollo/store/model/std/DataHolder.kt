@@ -594,6 +594,8 @@ interface ISUploadedDraft{
     fun getUploadDate(): String?
     fun getJustificationNo(): Long?
     fun getProposalId(): Long?
+    fun getDocumentType():String?
+    fun getPreparedBy():String?
 }
 
 interface ISAdoptionProposalJustification{

@@ -636,6 +636,9 @@ export interface IStandardUpload{
     accentTo: boolean;
     proposalId: number;
     id: number;
+    standardNumber:string;
+    preparedBy:string;
+    docName:string;
 }
 export interface IStandardDraftEdit{
     title: string;
@@ -647,6 +650,8 @@ export interface IStandardDraftEdit{
     justificationNo: number;
     id: number;
     proposalId: number;
+    docName:string;
+    standardNumber: string;
 }
 export interface ISDecision {
     taskId: string;
@@ -736,6 +741,7 @@ export interface ISDraftDecisionStd {
     clause:string;
     scope:string;
     special:string;
+    standardNumber:string;
 }
 
 export interface ISSacSecTASKS {
@@ -1493,4 +1499,6 @@ export interface ISCheckRequirements{
     status: string;
     uploadDate: string;
     isNumber: string;
+    documentType: string;
+    preparedBy: string;
 }
