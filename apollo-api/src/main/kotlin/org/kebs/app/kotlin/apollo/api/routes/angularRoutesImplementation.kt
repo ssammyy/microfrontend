@@ -651,6 +651,11 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         GET("/reportSubmitted", handler::getAllReportSubmittedReportTimeLineList)
                         GET("/sampleSubmitted", handler::getAllSampleSubmittedReportTimeLineList)
                     }
+                    "/statusReport".nest {
+                        GET("/complaint-investigation", handler::getStatusReportComplaintInvestigationList)
+                        GET("/performance-selected-product", handler::getPerformanceOfSelectedProductViewList)
+
+                    }
 
                 }
             }

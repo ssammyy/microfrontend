@@ -43,6 +43,20 @@ interface IMsFieldReportViewRepository : HazelcastRepository<MsFieldReportView, 
 }
 
 @Repository
+interface IMsPerformanceOfSelectedProductViewRepository : HazelcastRepository<MsPerformanceOfSelectedProductViewEntity, String> {
+    override fun findAll(pageable: Pageable): Page<MsPerformanceOfSelectedProductViewEntity>
+
+//    fun findByMsWorkplanGeneratedId(msWorkPlanGeneratedId: String): List<MsPerformanceOfSelectedProductViewEntity>
+}
+
+@Repository
+interface IMsComplaintsInvestigationsViewRepository : HazelcastRepository<MsComplaintsInvestigationsViewEntity, String> {
+    override fun findAll(pageable: Pageable): Page<MsComplaintsInvestigationsViewEntity>
+
+//    fun findByMsWorkplanGeneratedId(msWorkPlanGeneratedId: String): List<MsPerformanceOfSelectedProductViewEntity>
+}
+
+@Repository
 interface IMsSampleSubmissionViewRepository : HazelcastRepository<MsSampleSubmissionView, Long> {
     override fun findAll(pageable: Pageable): Page<MsSampleSubmissionView>
 

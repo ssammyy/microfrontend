@@ -931,6 +931,34 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun getStatusReportComplaintInvestigationList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
+            marketSurveillanceComplaintDaoServices.msStatusReportComplaintInvestigationLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getPerformanceOfSelectedProductViewList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
+            marketSurveillanceComplaintDaoServices.msPerformanceOfSelectedProductViewLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun getAllComplaintFeedbackReportTimeLineList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req, "transactionDate")

@@ -70,6 +70,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val tasksPendingAllocationCpViewRepo: IMsTasksPendingAllocationCpViewRepository,
     private val tasksPendingAllocationWpViewRepo: IMsTasksPendingAllocationWpViewRepository,
 
+    private val performanceOfSelectedProductViewRepo: IMsPerformanceOfSelectedProductViewRepository,
+    private val complaintsInvestigationsViewRepo: IMsComplaintsInvestigationsViewRepository,
     private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
     private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
     private val reportSubmittedTimelineViewRepo: IMsReportSubmittedCpViewRepository,
@@ -307,6 +309,22 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun msAcknowledgementReportTimeLineLists(page: PageRequest): ApiResponseModel {
         val complaintList = acknowledgementTimelineViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msStatusReportComplaintInvestigationLists(page: PageRequest): ApiResponseModel {
+        val complaintList = complaintsInvestigationsViewRepo.findAll(page)
+
+        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msPerformanceOfSelectedProductViewLists(page: PageRequest): ApiResponseModel {
+        val complaintList = performanceOfSelectedProductViewRepo.findAll(page)
 
         return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
     }
