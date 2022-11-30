@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.common.dto.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
+import java.util.ArrayList
 
 class WorkshopAgreement(
     @JsonProperty("taskId") val taskId: String,
@@ -198,13 +199,14 @@ class ISDraftDecisionsStd(
     @JsonProperty("proposalId") val proposalId: Long,
     @JsonProperty("justificationId") val justificationId: Long,
     @JsonProperty("draftId") val draftId: Long,
-    @JsonProperty("comments") val comments: String,
-    @JsonProperty("title") val title: String,
-    @JsonProperty("normativeReference") val normativeReference: String,
-    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String,
-    @JsonProperty("clause") val clause: String,
-    @JsonProperty("scope") val scope: String,
-    @JsonProperty("special") val special: String
+    @JsonProperty("comments") val comments: String?,
+    @JsonProperty("title") val title: String?,
+    @JsonProperty("normativeReference") val normativeReference: String?,
+    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String?,
+    @JsonProperty("clause") val clause: String?,
+    @JsonProperty("scope") val scope: String?,
+    @JsonProperty("special") val special: String?,
+    @JsonProperty("standardNumber") val standardNumber: String?
 
 ){
 
@@ -307,6 +309,7 @@ data class ISAdoptionProposalDto(
     var tcSecName: String?=null,
     var title: String?=null,
     var scope: String?=null,
+    var iStandardNumber: String?=null,
     var adoptionAcceptableAsPresented: String?=null,
     var reasonsForNotAcceptance: String?=null,
     var recommendations: String?=null,
@@ -314,7 +317,10 @@ data class ISAdoptionProposalDto(
     var positionOfRespondent: String?=null,
     var nameOfOrganization: String?=null,
     var dateOfApplication: String?=null,
-    var uploadedBy: String?=null
+    var uploadedBy: String?=null,
+    var stakeholdersList: List<String>?=null,
+    var addStakeholdersList: String
+
 ){
 
 }
@@ -330,7 +336,14 @@ data class ISAdoptionProposalComments(
     var comClause:String? =null,
     var comParagraph:String? =null,
     var typeOfComment:String? =null,
-    var proposedChange:String? =null
+    var proposedChange:String? =null,
+    var adopt :String? =null,
+    var reasonsForNotAcceptance :String? =null,
+    var recommendations :String? =null,
+    var nameOfRespondent :String? =null,
+    var positionOfRespondent :String? =null,
+    var nameOfOrganization :String? =null,
+    var dateOfApplication:Timestamp? =null
 ){
 
 }
@@ -365,7 +378,6 @@ class ISDraftStandard(
 }
 
 data class ISDraftDto(
-
     var proposalId:Long?=null,
     var justificationNo:Long?=null,
     var id:Long,
@@ -373,7 +385,12 @@ data class ISDraftDto(
     var scope:String?=null,
     var normativeReference:String?=null,
     var symbolsAbbreviatedTerms:String?=null,
-    var clause:String?=null
+    var clause:String?=null,
+    var standardNumber:String?=null,
+    var preparedBy:String?=null,
+    var docName:String?=null,
+    var special:String?=null,
+    var draughting:String?=null
 ){
 
 }

@@ -1408,6 +1408,8 @@ class NWAService(private val runtimeService: RuntimeService,
         return userListRepository.getHeadOfSic()
     }
 
+
+
     //Get Process History
 //    fun checkProcessHistory(processId: String?) {
 //        val historyService = processEngine.historyService

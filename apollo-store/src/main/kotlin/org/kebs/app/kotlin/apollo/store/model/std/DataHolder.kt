@@ -71,6 +71,7 @@ interface UserDetailHolder {
     fun getId(): Long?
     fun getFirstName(): String?
     fun getLastName(): String?
+    fun getEmail(): String?
 }
 
 interface BusinessLineHolder{
@@ -422,6 +423,7 @@ interface ProposalDetails{
     fun getTcSecName(): String?
     fun getAdoptionAcceptableAsPresented(): String?
     fun getReasonsForNotAcceptance(): String?
+    fun getStandardNumber(): String?
 }
 
 interface RegisteredFirms{
@@ -572,6 +574,13 @@ interface ISProposalComments{
     fun getParagraph(): String?
     fun getTypeOfComment(): String?
     fun getProposedChange(): String?
+    fun getAdopt(): String?
+    fun getReasonsForNotAcceptance(): String?
+    fun getRecommendations(): String?
+    fun getNameOfRespondent(): String?
+    fun getPositionOfRespondent(): String?
+    fun getNameOfOrganization(): String?
+    fun getDateOfApplication(): String?
 }
 interface ISUploadedDraft{
     fun getId(): Long?
@@ -585,6 +594,8 @@ interface ISUploadedDraft{
     fun getUploadDate(): String?
     fun getJustificationNo(): Long?
     fun getProposalId(): Long?
+    fun getDocumentType():String?
+    fun getPreparedBy():String?
 }
 
 interface ISAdoptionProposalJustification{

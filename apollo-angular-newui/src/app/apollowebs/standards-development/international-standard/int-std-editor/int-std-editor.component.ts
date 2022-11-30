@@ -2,9 +2,9 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  Department, InternationalStandardsComments,
-  ISJustificationProposal,
-  StakeholderProposalComments
+    Department, InternationalStandardsComments, ISAdoptionProposal,
+    ISJustificationProposal,
+    StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -27,15 +27,18 @@ export class IntStdEditorComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger1: Subject<any> = new Subject<any>();
   iSJustificationProposals: ISJustificationProposal[] = [];
+    isAdoptionProposals: ISAdoptionProposal[]=[];
   public departments !: Department[] ;
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
   public actionRequest: ISJustificationProposal | undefined;
+  public isAdoption: ISAdoptionProposal | undefined;
   loadingText: string;
   approve: string;
   reject: string;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
+  isShowProposalTab=true;
   public uploadDraftStandardFormGroup!: FormGroup;
   constructor(
       private store$: Store<any>,
@@ -59,6 +62,9 @@ export class IntStdEditorComponent implements OnInit {
       symbolsAbbreviatedTerms:[],
       clause:[],
       special:[],
+        standardNumber:[],
+        preparedBy: [],
+        docName:[]
 
     });
   }
@@ -74,6 +80,24 @@ export class IntStdEditorComponent implements OnInit {
     this.notifyService.showSuccess(message, title)
 
   }
+    public getProposals(proposalId: number): void{
+        this.SpinnerService.show();
+        this.stdIntStandardService.getProposals(proposalId).subscribe(
+            (response: ISAdoptionProposal[])=> {
+                this.SpinnerService.hide();
+                this.rerender();
+                this.isAdoptionProposals = response;
+                console.log(this.isAdoptionProposals);
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+        this.isShowProposalTab = !this.isShowProposalTab;
+        this.isShowRemarksTab= true;
+        this.isShowCommentsTab=true;
+    }
   public getApprovedISJustification(): void {
     this.loadingText = "Retrieving Justifications...";
     this.SpinnerService.show();
@@ -107,6 +131,7 @@ export class IntStdEditorComponent implements OnInit {
     );
     this.isShowRemarksTab = !this.isShowRemarksTab;
     this.isShowCommentsTab= true;
+    this.isShowProposalTab=true;
 
   }
   toggleDisplayCommentsTab(id: number){
@@ -125,6 +150,7 @@ export class IntStdEditorComponent implements OnInit {
     );
     this.isShowCommentsTab = !this.isShowCommentsTab;
     this.isShowRemarksTab= true;
+    this.isShowProposalTab=true;
 
   }
 
@@ -161,14 +187,14 @@ export class IntStdEditorComponent implements OnInit {
           {
             proposalId: this.actionRequest.proposalId,
               justificationNo: this.actionRequest.id,
-            title: this.actionRequest.title,
-            scope:this.actionRequest.scope,
-            normativeReference: this.actionRequest.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause:this.actionRequest.clause,
-            special:this.actionRequest.special
+            //title: this.isAdoption.title,
+           // scope:this.isAdoption.scope,
+           // normativeReference: this.actionRequest.normativeReference,
+           // symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
+            //clause:this.actionRequest.clause,
+            //special:this.actionRequest.special
           }
-      );
+     );
 
     }
     // @ts-ignore

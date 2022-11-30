@@ -45,6 +45,13 @@ class IntStandardController(
 //        internationalStandardService.startProcessInstance()
 //        return ServerResponse(HttpStatus.OK,"Successfully Started server", HttpStatus.OK)
 //    }
+//    *****************************************Find Stake Holders***********************************
+
+    @GetMapping("/findStandardStakeholders")
+    @ResponseBody
+    fun findStandardStakeholders(): List<UserDetailHolder>? {
+        return internationalStandardService.findStandardStakeholders()
+    }
 
     //********************************************************** process upload Justification **********************************************************
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -59,13 +66,16 @@ class IntStandardController(
             tcSecName=iSAdoptionProposalDto.tcSecName
             title=iSAdoptionProposalDto.title
             scope=iSAdoptionProposalDto.scope
-            adoptionAcceptableAsPresented=iSAdoptionProposalDto.adoptionAcceptableAsPresented
-            reasonsForNotAcceptance=iSAdoptionProposalDto.reasonsForNotAcceptance
-            recommendations=iSAdoptionProposalDto.recommendations
-            nameOfRespondent=iSAdoptionProposalDto.nameOfRespondent
-            positionOfRespondent=iSAdoptionProposalDto.positionOfRespondent
-            nameOfOrganization=iSAdoptionProposalDto.nameOfOrganization
-            dateOfApplication=iSAdoptionProposalDto.dateOfApplication
+            iStandardNumber=iSAdoptionProposalDto.iStandardNumber
+            stakeholdersList= iSAdoptionProposalDto.stakeholdersList.toString()
+            addStakeholdersList= iSAdoptionProposalDto.addStakeholdersList
+//            adoptionAcceptableAsPresented=iSAdoptionProposalDto.adoptionAcceptableAsPresented
+//            reasonsForNotAcceptance=iSAdoptionProposalDto.reasonsForNotAcceptance
+//            recommendations=iSAdoptionProposalDto.recommendations
+//            nameOfRespondent=iSAdoptionProposalDto.nameOfRespondent
+//            positionOfRespondent=iSAdoptionProposalDto.positionOfRespondent
+//            nameOfOrganization=iSAdoptionProposalDto.nameOfOrganization
+//            dateOfApplication=iSAdoptionProposalDto.dateOfApplication
             uploadedBy=iSAdoptionProposalDto.uploadedBy
         }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal))
@@ -103,13 +113,21 @@ class IntStandardController(
         return sm
     }
 
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    //@PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getProposal")
     @ResponseBody
     fun getProposal(): MutableList<ProposalDetails>
     {
         return internationalStandardService.getProposal()
     }
+
+    @GetMapping("/getProposals")
+    @ResponseBody
+    fun getProposals(@RequestParam("proposalId") proposalId: Long): MutableList<ProposalDetails>
+    {
+        return internationalStandardService.getProposals(proposalId)
+    }
+
 
     //********************************************************** Submit Comments **********************************************************
    //view Proposal Document
@@ -149,6 +167,13 @@ class IntStandardController(
             comParagraph=iSAdoptionProposalComments.comParagraph
             typeOfComment=iSAdoptionProposalComments.typeOfComment
             proposedChange=iSAdoptionProposalComments.proposedChange
+            adopt=iSAdoptionProposalComments.adopt
+            reasonsForNotAcceptance=iSAdoptionProposalComments.reasonsForNotAcceptance
+            recommendations=iSAdoptionProposalComments.recommendations
+            nameOfRespondent=iSAdoptionProposalComments.nameOfRespondent
+            positionOfRespondent=iSAdoptionProposalComments.positionOfRespondent
+            nameOfOrganization=iSAdoptionProposalComments.nameOfOrganization
+            dateOfApplication=iSAdoptionProposalComments.dateOfApplication
         }
 
         return ServerResponse(HttpStatus.OK,"Comment Has been submitted",internationalStandardService.submitAPComments(isAdoptionComments))
@@ -160,6 +185,8 @@ class IntStandardController(
     {
         return internationalStandardService.getAllComments(proposalId)
     }
+
+
 
     @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getProposalComments")
@@ -353,7 +380,13 @@ class IntStandardController(
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            iSNumber=isDraftDto.standardNumber
+            preparedBy=isDraftDto.preparedBy
+            documentType=isDraftDto.docName
+            special=isDraftDto.special
         }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
 
         return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.submitDraftForEditing(iSUploadStandard))
     }
@@ -411,7 +444,15 @@ class IntStandardController(
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            iSNumber=isDraftDto.standardNumber
+            special=isDraftDto.special
+            draughting=isDraftDto.draughting
         }
+
+//              val gson = Gson()
+//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
+//        return "Response"
         return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.editStandardDraft(iSUploadStandard))
     }
 
@@ -439,6 +480,9 @@ class IntStandardController(
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            iSNumber=isDraftDto.standardNumber
+            special=isDraftDto.special
         }
         return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandard(iSUploadStandard))
     }
@@ -466,6 +510,9 @@ class IntStandardController(
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            iSNumber=isDraftDto.standardNumber
+            special=isDraftDto.special
         }
         return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",internationalStandardService.proofReadStandard(iSUploadStandard))
     }
@@ -557,6 +604,7 @@ class IntStandardController(
             clause=iSDraftDecisions.clause
             scope=iSDraftDecisions.scope
             special=iSDraftDecisions.special
+            standardNumber=iSDraftDecisions.standardNumber
         }
 
 

@@ -32,11 +32,10 @@
                                     <tr>
                                         <th>#</th>
                                     <th class="knw">Name</th>
+                                    <th class="knw">Standard Number</th>
                                     <th class="knw">Title</th>
                                     <th class="knw">Date of Circulation</th>
                                     <th class="knw">Closing Date</th>
-                                        <th>Name of Respondent</th>
-                                        <th class="referenceMaterial">Name of Organization</th>
                                     <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -44,11 +43,10 @@
                                     <tr  *ngFor="let isAdoptionProposal of isAdoptionProposals let i=index">
                                         <td>{{i+1}}</td>
                                         <td>{{isAdoptionProposal.docName}}</td>
+                                        <td>{{isAdoptionProposal.standardNumber}}</td>
                                         <td>{{isAdoptionProposal.title}}</td>
                                         <td>{{isAdoptionProposal.circulationDate}}</td>
                                         <td>{{isAdoptionProposal.closingDate}}</td>
-                                        <td>{{isAdoptionProposal.nameOfRespondent}}</td>
-                                        <td>{{isAdoptionProposal.nameOfOrganization}}</td>
                                         <td><a  (click)="onOpenModal(isAdoptionProposal,'comment')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve"> Make Comment</a></td>
                                     </tr>
                                     </tbody>
@@ -57,21 +55,24 @@
                                     <div class="modal-dialog modal-lg " role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="commentExampleModalLabel">Comment on Proposal Adoption Document</h5>
+                                                <h3 class="modal-title" id="commentExampleModalLabel" style="font-weight: bold">Comment on Proposal Adoption Document</h3>
                                                 <button type="button" #closeModalComment class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <form (ngSubmit)="onSubmit()" [formGroup]="uploadCommentsFormGroup" class="form">
                                                 <div class="modal-body">
+                                                    <h4 style="font-weight: bold">
+                                                        The Kenya Bureau of Standards intends to adopt the International Standard as detailed here below
+                                                    </h4>
                                                     <div class="row col-12">
-
-
                                                         <div class="form-group col-12">
-                                                            <label><b>Type Comment</b></label>
-                                                            <textarea class="form-control one-column-input" formControlName="adoption_proposal_comment" name="adoption_proposal_comment"></textarea>
+                                                        <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" value="{{actionRequest?.standardNumber}}" formControlName="standardNumber" name="standardNumber"
+                                                                  placeholder="Standard Number" type="text"></textarea>
 
-                                                        </div>
+                                                    </div>
                                                         <div class="form-group col-12">
                                                             <label><b>Title</b></label>
                                                             <textarea class="form-control one-column-input" value="{{actionRequest?.title}}" formControlName="commentTitle" name="commentTitle" disabled></textarea>
@@ -80,37 +81,76 @@
 
                                                         <div class="form-group col-12">
                                                             <label><b>Document Type</b></label>
-                                                            <textarea class="form-control one-column-input" formControlName="commentDocumentType" name="commentDocumentType"></textarea>
-
-                                                        </div>
-                                                        <div class="form-group col-12">
-                                                            <label><b>Name of Organization</b></label>
-                                                            <textarea class="form-control one-column-input" value="{{actionRequest?.nameOfOrganization}}" formControlName="comNameOfOrganization" name="comNameOfOrganization"></textarea>
+                                                            <textarea class="form-control one-column-input" value="{{actionRequest?.docName}}"  formControlName="commentDocumentType" name="commentDocumentType" disabled></textarea>
 
                                                         </div>
 
                                                         <div class="form-group col-12">
-                                                            <label><b>Paragraph</b></label>
-                                                            <textarea class="form-control one-column-input" formControlName="comParagraph" name="comParagraph"></textarea>
+                                                            <label><b>Scope</b></label>
+                                                            <textarea class="form-control one-column-input" value="{{actionRequest?.scope}}" name="scope"></textarea>
 
                                                         </div>
                                                         <div class="form-group col-12">
-                                                            <label><b>Comment Type</b></label>
-                                                            <textarea class="form-control one-column-input" formControlName="typeOfComment" name="typeOfComment"></textarea>
-
+                                                            <label><b>Adoption Acceptable as Presented?</b><span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                                            <mat-radio-group aria-label="Select an option" formControlName="adopt" name="adopt" required>
+                                                                <mat-radio-button  value="Yes">Yes</mat-radio-button>
+                                                                <mat-radio-button value="No">No</mat-radio-button>
+                                                            </mat-radio-group>
                                                         </div>
-                                                        <div class="form-group col-12">
-                                                            <label><b>Proposed Change</b></label>
-                                                            <textarea class="form-control one-column-input" formControlName="proposedChange" name="proposedChange"></textarea>
 
-                                                        </div>
+
+                                                                <div class="form-group col-12">
+                                                                    <label><b>Reasons for Acceptance / Not Acceptance</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                              class="form-control one-column-input" formControlName="reasonsForNotAcceptance" name="reasonsForNotAcceptance"
+                                                                              placeholder="Reasons for Not Acceptance" type="text"></textarea>
+
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label><b>Recommendations</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                              class="form-control one-column-input" formControlName="recommendations" name="recommendations"
+                                                                              placeholder="Recommendations" type="text"></textarea>
+
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label><b>Name of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <input
+                                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                            class="form-control one-column-input" formControlName="nameOfRespondent" name="nameOfRespondent"
+                                                                            placeholder="" type="text" >
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label><b>Position of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <input
+                                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                            class="form-control one-column-input" formControlName="positionOfRespondent" name="positionOfRespondent"
+                                                                            placeholder="" type="text" >
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label><b>Name of Organization</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <input
+                                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                            class="form-control one-column-input" formControlName="nameOfOrganization" name="nameOfOrganization"
+                                                                            placeholder="" type="text" >
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label><b>Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <input
+                                                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                            class="form-control one-column-input" formControlName="dateOfApplication" name="dateOfApplication"
+                                                                            placeholder="" type="date" >
+                                                                </div>
+
+
                                                     </div>
                                                 </div>
-                                                <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
+
                                                 <input type="hidden" formControlName="proposalID" value="{{actionRequest?.id}}" name="proposalID" >
-                                                <div class="modal-footer">
+                                                <div  class="modal-footer">
                                                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
+                                                    <button  class="btn btn-sm btn-primary " type="submit">Submit</button>
+
                                                 </div>
                                             </form>
                                         </div>

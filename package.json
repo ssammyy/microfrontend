@@ -1,5 +1,8 @@
 {
   "dependencies": {
-    "ngx-doc-viewer": "^14.0.0"
+    "ngx-doc-viewer": "^14.0.0",
+    "ngx-mat-select-search": "^6.0.0",
+    "take": "^0.1.0",
+    "take-until": "github:jb55/take-until"
   }
 }
