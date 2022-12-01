@@ -8,7 +8,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.spec.ComplaintSpecification
 import org.kebs.app.kotlin.apollo.api.ports.provided.spec.ComplaintViewSpecification
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
@@ -316,17 +315,29 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun msAcknowledgementReportTimeLineLists(page: PageRequest): ApiResponseModel {
+    fun msAllComplaintReportTimeLineLists(page: PageRequest, reportType:String): ApiResponseModel {
         val map = commonDaoServices.serviceMapDetails(appId)
-        return   listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAll(page), map)
+        var response = ApiResponseModel()
+        when (reportType) {
+            "ACKNOWLEDGEMENT" -> {
+                response = listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAllByAcknowledgementTypeIsNot("PENDING ACKNOWLEDGEMENT",page), map)
+            }
+            "FEEDBACK_SENT" -> {
+                response = listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAllByFeedbackSent("YES",page), map)
+            }
+            "ALL_DETAILS" -> {
+                response = listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAll(page), map)
+            }
+        }
+        return   response
 
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun msComplaintViewSearchLists(page: PageRequest,search: ComplaintViewSearchValues): ApiResponseModel {
+    fun msComplaintViewSearchLists(page: PageRequest,search: ComplaintViewSearchValues, reportType:String): ApiResponseModel {
         val map = commonDaoServices.serviceMapDetails(appId)
-        return   complaintSearchResultListing(search,page,map)
+        return complaintSearchResultListing(search,reportType,page,map)
 
     }
 
@@ -1291,27 +1302,46 @@ class MarketSurveillanceComplaintProcessDaoServices(
     }
 
 
-    fun complaintSearchResultListing(search: ComplaintViewSearchValues,page: PageRequest, map: ServiceMapsEntity): ApiResponseModel {
+    fun complaintSearchResultListing(search: ComplaintViewSearchValues,reportType:String,page: PageRequest, map: ServiceMapsEntity): ApiResponseModel {
         val complaintList = mutableListOf<ComplaintsInvestigationListDto>()
-        val assignedIoSpec: ComplaintViewSpecification?
+        var reportTypeSpec: ComplaintViewSpecification? = null
+        var refNumberSpec: ComplaintViewSpecification? = null
+        var assignedIoSpec: ComplaintViewSpecification? = null
         var regionSpec: ComplaintViewSpecification? = null
         var complaintDepartmentSpec: ComplaintViewSpecification? = null
         var divisionSpec: ComplaintViewSpecification? = null
 
 
-        assignedIoSpec = ComplaintViewSpecification(SearchCriteria("assignedIo", ":", search.refNumber))
+
+        search.refNumber?.let {
+            refNumberSpec = ComplaintViewSpecification(SearchCriteria("referenceNumber", "=", search.refNumber))
+        }
+        search.assignedIo?.let {
+            assignedIoSpec = ComplaintViewSpecification(SearchCriteria("assignedIo", "=", search.assignedIo))
+        }
         search.region?.let {
-            regionSpec = ComplaintViewSpecification(SearchCriteria("region", ":", search.region))
+            regionSpec = ComplaintViewSpecification(SearchCriteria("region", "=", search.region))
         }
         search.complaintDepartment?.let {
-            complaintDepartmentSpec = ComplaintViewSpecification(SearchCriteria("complaintDepartment", ":", search.complaintDepartment))
+            complaintDepartmentSpec = ComplaintViewSpecification(SearchCriteria("complaintDepartment", "=", search.complaintDepartment))
         }
         search.division?.let {
-            divisionSpec = ComplaintViewSpecification(SearchCriteria("division", ":", search.division))
+            divisionSpec = ComplaintViewSpecification(SearchCriteria("division", "=", search.division))
         }
 
+        when (reportType) {
+            "ACKNOWLEDGEMENT" -> {
+                reportTypeSpec = ComplaintViewSpecification(SearchCriteria("acknowledgementType", "!=", "PENDING ACKNOWLEDGEMENT"))
+            }
+            "FEEDBACK_SENT" -> {
+                reportTypeSpec = ComplaintViewSpecification(SearchCriteria("feedbackSent", "=", "YES"))
+            }
+            "ALL_DETAILS" -> {
+                reportTypeSpec = ComplaintViewSpecification(SearchCriteria("msProcessId", "!=", "0"))
+            }
+        }
 
-        complaintFeedbackTimelineViewRepo.findAll(assignedIoSpec.or(regionSpec).or(complaintDepartmentSpec).or(divisionSpec))
+        complaintFeedbackTimelineViewRepo.findAll(reportTypeSpec?.and(refNumberSpec)?.and(assignedIoSpec)?.and(regionSpec)?.and(complaintDepartmentSpec)?.and(divisionSpec))
             .map { comp ->
                 complaintList.add(
                     ComplaintsInvestigationListDto(
@@ -1330,6 +1360,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                         comp.division?.let { commonDaoServices.findDivisionWIthId(it).division },
                         comp.timeTakenForAcknowledgement,
                         comp.feedbackSent,
+                        comp.timeTakenForFeedbackSent,
+                        comp.msProcessId?.let { findMsProcessComplaintByID(1, it)?.processName },
                     )
                 )
             }
@@ -1362,6 +1394,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                             comp.division?.let { commonDaoServices.findDivisionWIthId(it).division },
                             comp.timeTakenForAcknowledgement,
                             comp.feedbackSent,
+                            comp.timeTakenForFeedbackSent,
+                    comp.msProcessId?.let { findMsProcessComplaintByID(1, it)?.processName },
                 )
             )
         }

@@ -1096,7 +1096,9 @@ data class ComplaintsInvestigationListDto(
         var complaintDepartment: String? = null,
         var division: String? = null,
         var timeTakenForAcknowledgement: String? = null,
-        var feedbackSent: String? = null
+        var feedbackSent: String? = null,
+        var timeTakenForFeedbackSent: String? = null,
+        var msProcess: String? = null
 )
 
 class MsDashBoardALLDto{

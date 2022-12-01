@@ -24,6 +24,12 @@ class ComplaintViewSpecification(private val criteria: SearchCriteria) : Specifi
                     root.get(criteria.key), criteria.value.toString()
                 )
             }
+            criteria.operation.equals("=", ignoreCase = true) -> {
+                return builder.equal(root.get<String>(criteria.key), criteria.value.toString())
+            }
+            criteria.operation.equals("!=", ignoreCase = true) -> {
+                return builder.notEqual(root.get<String>(criteria.key), criteria.value.toString())
+            }
             criteria.operation.equals("<", ignoreCase = true) -> {
                 return builder.lessThanOrEqualTo(
                     root.get(criteria.key), criteria.value.toString()

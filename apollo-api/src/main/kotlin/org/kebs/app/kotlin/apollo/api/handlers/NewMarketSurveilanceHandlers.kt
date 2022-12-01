@@ -940,10 +940,11 @@ class NewMarketSurveillanceHandler(
         }
     }
 
-    fun getAllAcknowledgementReportTimeLineList(req: ServerRequest): ServerResponse {
+    fun getAllComplaintReportTimeLineList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req, "transactionDate")
-            marketSurveillanceComplaintDaoServices.msAcknowledgementReportTimeLineLists(page)
+            val reportType = req.paramOrNull("reportType") ?: throw ExpectedDataNotFound("Required reportType, check parameters")
+            marketSurveillanceComplaintDaoServices.msAllComplaintReportTimeLineLists(page, reportType)
                 .let {
                     ServerResponse.ok().body(it)
                 }
@@ -954,15 +955,16 @@ class NewMarketSurveillanceHandler(
         }
     }
 
-    fun getAllComplaintSearchList(req: ServerRequest): ServerResponse {
+    fun putAllComplaintSearchList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req, "transactionDate")
+            val reportType = req.paramOrNull("reportType") ?: throw ExpectedDataNotFound("Required reportType, check parameters")
             val body = req.body<ComplaintViewSearchValues>()
             val errors: Errors = BeanPropertyBindingResult(body, ComplaintViewSearchValues::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceComplaintDaoServices.msComplaintViewSearchLists(page,body)
+                    marketSurveillanceComplaintDaoServices.msComplaintViewSearchLists(page,body,reportType)
                         .let {
                             ServerResponse.ok().body(it)
                         }
