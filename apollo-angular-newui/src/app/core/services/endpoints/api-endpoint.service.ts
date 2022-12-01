@@ -681,9 +681,11 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_COMMON = {
+        MS_OFFICER_LIST: `${ApiEndpointService.MS_COMMON_CONTEXT}/officer-list`,
         MS_DASHBOARD: `${ApiEndpointService.MS_COMMON_CONTEXT}/dashboard`,
         MS_TOWNS: `${ApiEndpointService.MS_COMMON_CONTEXT}/towns`,
         MS_COUNTIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/counties`,
+        MS_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regions/load`,
         MS_COUNTRIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/countries`,
         MS_DEPARTMENTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/departments`,
         MS_LABORATORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/laboratories`,
@@ -701,6 +703,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_REPORTS = {
+        MS_COMPLAINT_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/complaint-search`,
         MS_TIMELINE_ACKNOWLEDGEMENT: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/acknowledgement`,
         MS_TIMELINE_FEEDBACK: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/feedback`,
         MS_TIMELINE_REPORT_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/reportSubmitted`,

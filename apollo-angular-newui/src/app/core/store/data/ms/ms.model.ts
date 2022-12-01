@@ -624,6 +624,32 @@ export class ComplaintLocationDto {
     businessAddress: string;
 }
 
+export class ComplaintViewSearchValues {
+    refNumber: string;
+    assignedIo: number;
+    region: number;
+    complaintDepartment: number;
+    division: number;
+}
+
+export class ComplaintsInvestigationListDto {
+    referenceNumber: string;
+    complaintTitle: string;
+    targetedProducts: string;
+    transactionDate: string;
+    approvedDate: string;
+    rejectedDate: string;
+    assignedIo: string;
+    status: string;
+    region: string;
+    county: string;
+    town: string;
+    complaintDepartment: string;
+    division: string;
+    timeTakenForAcknowledgement: string;
+    feedbackSent: string;
+}
+
 export class WorkPlanBatchDetailsDto {
     id: number;
     workPlanRegion: number;
