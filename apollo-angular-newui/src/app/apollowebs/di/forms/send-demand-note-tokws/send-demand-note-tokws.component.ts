@@ -19,6 +19,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
     message: any
     saveDisabled: Boolean = false
     public form: FormGroup;
+    public groupForm: FormGroup
     initialSelection: any[]
     presentmentRequest: any
     selectionDataSource: MatTableDataSource<any>
@@ -37,6 +38,11 @@ export class SendDemandNoteTokwsComponent implements OnInit {
         this.form = this.fb.group({
             remarks: ['', [Validators.required, Validators.minLength(5)]],
             amount: ['']
+        })
+
+        this.groupForm = this.fb.group({
+            feeId: ['', [Validators.required]],
+            group: ['SINGLE', [Validators.required]]
         })
         this.items = this.data.items
         // Selection
@@ -64,6 +70,8 @@ export class SendDemandNoteTokwsComponent implements OnInit {
             if (i.feeId) {
                 itemList.push({
                     "itemId": i.id,
+                    "items": i.items,
+                    "group": i.group,
                     "feeId": i.feeId.id,
                 })
             }
@@ -104,12 +112,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
     // Checks if group pricing can be applied
     // This is applicable when all items in selection have same feeId or have no fee applied
     checkGroupPricingApplicable(): Boolean {
-        for (let i of this.selection.selected) {
-            if (!i.feeId || !i.feeId.id || i.feeId == "None") {
-                return true
-            }
-        }
-        return false
+        return this.selection.selected.length > 1
     }
 
     findFeeById(feeData: string) {
@@ -125,18 +128,39 @@ export class SendDemandNoteTokwsComponent implements OnInit {
     }
 
     changeGroupPricing(event: any) {
-        let fee = this.findFeeById(event.target.value)
+
+        let fee = this.findFeeById(this.groupForm.value.feeId)
         if (!fee) {
             return
         }
         let data = this.selection.selected
-        for (let i = 0; i < data.length; i++) {
-            if (!data[i].feeId) {
-                // Remove selection
-                let item = this.selection.selected[i]
-                item.feeId = fee
-                this.targetPricingSelection.push(item)
-            }
+        switch (this.groupForm.value.group) {
+            case "GROUP":
+                let items = []
+                for (let i = 0; i < data.length; i++) {
+                    if (!data[i].feeId) {
+                        // Remove selection
+                        let item = this.selection.selected[i]
+                        items.push(item.id)
+                    }
+                }
+                let dataItems = {
+                    items: items,
+                    feeId: fee,
+                    group: this.groupForm.value.group
+                }
+                this.targetPricingSelection.push(dataItems)
+                break
+            default:
+                for (let i = 0; i < data.length; i++) {
+                    if (!data[i].feeId) {
+                        // Remove selection
+                        let item = this.selection.selected[i]
+                        item.feeId = fee
+                        this.targetPricingSelection.push(item)
+                    }
+                }
+                break
         }
         this.selection.clear()
         this.groupFeeApplicable = false

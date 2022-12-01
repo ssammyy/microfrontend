@@ -435,10 +435,19 @@ interface IDemandNoteItemsDetailsRepository : HazelcastRepository<CdDemandNoteIt
 }
 
 @Repository
+interface IDemandNoteGroupedItemsRepository : HazelcastRepository<CdDemandNoteGroupedItemsEntity, Long> {
+    fun findByItemGroupId(groupId: Long): List<CdDemandNoteGroupedItemsEntity>
+    fun findByItemId(itemId: Long?): List<CdDemandNoteGroupedItemsEntity>
+}
+
+@Repository
 interface CdDemandNotePaymentRepository : HazelcastRepository<CdDemandNotePaymentEntity, Long> {
     fun findByDemandNoteId(demandNoteId: Long): List<CdDemandNotePaymentEntity>
 
-    @Query(value = "SELECT sum(AMOUNT) from DAT_KEBS_CD_DEMAND_NOTE_PAYMENTS where DEMAND_NOTE_ID=:demandNoteId and STATUS=:status", nativeQuery = true)
+    @Query(
+        value = "SELECT sum(AMOUNT) from DAT_KEBS_CD_DEMAND_NOTE_PAYMENTS where DEMAND_NOTE_ID=:demandNoteId and STATUS=:status",
+        nativeQuery = true
+    )
     fun sumByDemandNoteIdAndStatus(demandNoteId: Long, status: Int): BigDecimal?
     fun findByReceiptNumber(demandNoteNumber: String): CdDemandNotePaymentEntity?
 }
@@ -656,6 +665,7 @@ interface ICdThirdPartyDetailsRepository : HazelcastRepository<CdThirdPartyDetai
 @Repository
 interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity, Long> {
     fun findByCdDocId(cdDocId: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity>?
+    fun countByCdDocId(cdDocId: ConsignmentDocumentDetailsEntity): Long
     fun findFirstByCdDocIdAndChassisNumberIsNotNull(cdDocId: ConsignmentDocumentDetailsEntity): Optional<CdItemDetailsEntity>
     fun findByCdDocIdAndDnoteStatus(cdDocId: ConsignmentDocumentDetailsEntity, dnoteStatus: Int): List<CdItemDetailsEntity>?
     fun findByCdDocIdAndSampledStatus(cdDocId: ConsignmentDocumentDetailsEntity, sampledStatus: Int): List<CdItemDetailsEntity>

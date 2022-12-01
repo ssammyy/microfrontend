@@ -23,12 +23,12 @@ import java.time.Instant
 
 @Component
 class PvocPartnerService(
-        private val corporateCustomerService: CorporateCustomerService,
-        private val partnersRepository: IPvocPartnersRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val partnerCountryRepo: IPvocPartnersCountriesRepository,
-        private val partnerCategoryRepo: IPvocPartnerTypeRepository,
-        private val apiClientService: ApiClientService
+    private val corporateCustomerService: CorporateCustomerService,
+    private val partnersRepository: IPvocPartnersRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val partnerCountryRepo: IPvocPartnersCountriesRepository,
+    private val partnerCategoryRepo: IPvocPartnerTypeRepository,
+    private val apiClientService: ApiClientService
 ) {
     fun listPartnerCategories(): ApiResponseModel {
         val response = ApiResponseModel()
@@ -64,6 +64,7 @@ class PvocPartnerService(
             partner.status = 1
             partner.createdBy = this.commonDaoServices.getLoggedInUser()?.userName
             val saved = this.partnersRepository.save(partner)
+            form.mouDays = 30
             addUpdateBilling(form, partner, false)
             response.data = PvocPartnerDto.fromEntity(saved)
             response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -89,7 +90,10 @@ class PvocPartnerService(
             corporateEmail = form.partnerEmail
             contactPhone = form.billingContactPhone
             isCiakMember = false
-            mouDays = 2
+            mouDays = when {
+                form.mouDays > 0 -> form.mouDays.toInt()
+                else -> 30
+            }
         }
         // Add billing information on partner
         if (update) {

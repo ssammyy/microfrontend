@@ -8,7 +8,6 @@ import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteForm
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
-import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.payload.response.CallbackResponses
 import org.kebs.app.kotlin.apollo.api.payload.response.DemandNoteDto
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
@@ -25,7 +24,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -170,69 +168,28 @@ class InvoiceHandlers(
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
             val invoiceForm = req.body(DemandNoteForm::class.java)
             val mapErrors = mutableMapOf<Long, String>()
-            val totalItems: Int
+            val totalItems: Long
             val demandRequest = DemandNoteRequestForm()
-            if (invoiceForm.includeAll) {
-                daoServices.findCDItemsListWithCDID(cdDetails).forEach { item ->
-                    val fees = invoiceForm.items.filter { it.itemId == item.id }
-                    if (fees.isEmpty()) {
-                        mapErrors.put(item.id!!, "Fee not selected with all items included")
-                    } else {
-                        try {
-                            val formItem = DemandNoteRequestItem()
-                            formItem.fee = daoServices.findDIFee(fees[0].feeId)
-                            formItem.itemValue = item.totalPriceNcy
-                            formItem.productName = item.itemDescription ?: item.hsDescription
-                                    ?: item.productTechnicalName
-                            formItem.itemId = item.id
-                            formItem.currency = item.foreignCurrencyCode
-                            formItem.quantity = item.quantity?.toLong() ?: 0
-                            demandRequest.addItem(formItem)
-                            // Update demand note status
-                            if (!invoiceForm.presentment) {
-                                item.dnoteStatus = map.activeStatus
-                                daoServices.updateCdItemDetailsInDB(
-                                    commonDaoServices.updateDetails(
-                                        item,
-                                        item
-                                    ) as CdItemDetailsEntity, loggedInUser
-                                )
-                            }
-                        } catch (ex: Exception) {
-                            mapErrors.put(item.id!!, ex.localizedMessage)
-                        }
-                    }
-
-                }
-                totalItems = invoiceForm.items.size
+            if (invoiceForm.items.isNullOrEmpty()) {
+                mapErrors[0] = "No item selected for demand note generation"
+                totalItems = 0
             } else {
-                invoiceForm.items.forEach {
-                    val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it.itemId)
+                invoiceForm.items.forEach { itm ->
                     // Add to list
                     try {
-                        val formItem = DemandNoteRequestItem()
-                        formItem.fee = daoServices.findDIFee(it.feeId)
-                        formItem.itemValue = item.totalPriceNcy
-                        formItem.productName = item.itemDescription ?: item.hsDescription ?: item.productTechnicalName
-                        formItem.itemId = item.id
-                        formItem.currency = item.foreignCurrencyCode
-                        formItem.quantity = item.quantity?.toLong() ?: 0
+                        val formItem = invoicePaymentService.createPaymentItemDetails(
+                            cdDetails,
+                            itm,
+                            invoiceForm.presentment,
+                            map,
+                            loggedInUser
+                        )
                         demandRequest.addItem(formItem)
-                        // Update demand note status
-                        if (!invoiceForm.presentment) {
-                            item.dnoteStatus = map.activeStatus
-                            daoServices.updateCdItemDetailsInDB(
-                                commonDaoServices.updateDetails(
-                                    item,
-                                    item
-                                ) as CdItemDetailsEntity, loggedInUser
-                            )
-                        }
                     } catch (ex: Exception) {
-                        mapErrors.put(item.id!!, ex.localizedMessage)
+                        mapErrors[itm.itemId ?: 0] = ex.localizedMessage
                     }
                 }
-                totalItems = daoServices.findCDItemsListWithCDID(cdDetails).size
+                totalItems = daoServices.countCdItemsWithCdID(cdDetails)
             }
             // Failed response
             if (mapErrors.isNotEmpty()) {
@@ -304,7 +261,7 @@ class InvoiceHandlers(
                 dt["id"] = demandNote.id ?: 0
                 demandNote.status = map.workingStatus
                 demandNote.varField1 = invoiceForm.remarks
-                demandNote.varField2 = (demandRequest.items?.size == totalItems).toString()
+                demandNote.varField2 = totalItems.toString()
                 demandNote.varField3 = "NEW"
                 daoServices.upDateDemandNote(demandNote)
                 cdDetails.varField10 = "DEMAND NOTE GENERATED AWAITING SUBMISSION"
