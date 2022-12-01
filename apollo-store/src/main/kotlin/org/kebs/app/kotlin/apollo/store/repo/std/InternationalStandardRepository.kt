@@ -22,7 +22,9 @@ interface ISAdoptionCommentsRepository : JpaRepository<ISAdoptionComments, Long>
     fun findByProposalID(id: Long): MutableIterable<ISAdoptionComments>?
     @Query(
         value = "SELECT ID as id,USER_ID as userId,ADOPTION_PROPOSAL_COMMENT as adoptionComment,COMMENT_TIME as commentTime,PROPOSAL_ID as proposalId,TITLE as title," +
-                "DOCUMENT_TYPE as documentType,CLAUSE as clause,ORGANIZATION as comNameOfOrganization,PARAGRAPH as paragraph,TYPE_OF_COMMENT as typeOfComment,PROPOSED_CHANGE as proposedChange " +
+                "DOCUMENT_TYPE as documentType,CLAUSE as clause,ORGANIZATION as comNameOfOrganization,PARAGRAPH as paragraph,TYPE_OF_COMMENT as typeOfComment,PROPOSED_CHANGE as proposedChange," +
+                "ADOPT_STANDARD as adopt,REASON as reasonsForNotAcceptance,RECOMMENDATIONS as recommendations,NAME_OF_RESPONDENT as nameOfRespondent,POSITION_OF_RESPONDENT as positionOfRespondent," +
+                "NAME_OF_ORGANIZATION as nameOfOrganization,cast(DATE_OF_APPLICATION as varchar(200)) AS dateOfApplication  " +
                 "FROM SD_ADOPTION_PROPOSAL_COMMENTS  WHERE PROPOSAL_ID=:id",
         nativeQuery = true
     )
@@ -216,7 +218,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
     @Query(
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
                 "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
-                "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance FROM SD_ADOPTION_PROPOSAL " +
+                "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,STANDARD_NUMBER as standardNumber FROM SD_ADOPTION_PROPOSAL " +
                 "WHERE  STATUS='0' ",
         nativeQuery = true
     )
@@ -225,7 +227,16 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
     @Query(
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
                 "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
-                "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance FROM SD_ADOPTION_PROPOSAL " +
+                "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,STANDARD_NUMBER as standardNumber FROM SD_ADOPTION_PROPOSAL " +
+                "WHERE  ID=:id ",
+        nativeQuery = true
+    )
+    fun getProposals(id: Long): MutableList<ProposalDetails>
+
+    @Query(
+        value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
+                "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
+                "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,STANDARD_NUMBER as standardNumber FROM SD_ADOPTION_PROPOSAL " +
                 "WHERE  STATUS='1' ",
         nativeQuery = true
     )
@@ -243,7 +254,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='0' ",
         nativeQuery = true
     )
@@ -251,7 +262,8 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId," +
+                "DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='1' ",
         nativeQuery = true
     )
@@ -259,7 +271,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='3' ",
         nativeQuery = true
     )
@@ -267,7 +279,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='4' ",
         nativeQuery = true
     )
@@ -275,7 +287,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='5' ",
         nativeQuery = true
     )
@@ -283,7 +295,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='6' ",
         nativeQuery = true
     )
@@ -291,7 +303,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
+                "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
                 "WHERE  STATUS='7' ",
         nativeQuery = true
     )
@@ -512,6 +524,13 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
             "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('HO_SIC_SD','SD_TEST_ROLE') ", nativeQuery = true)
     fun getHeadOfSic(): List<UserDetailHolder>
+
+    @Query(
+        "SELECT  u.FIRST_NAME as firstName,u.LAST_NAME as lastName,u.ID as id,u.EMAIL as email from APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID and r.ROLE_ID = 2522",
+        nativeQuery = true
+    )
+    // Check for users who have sd access: Role Id:2522
+    fun findStandardStakeholders(): List<UserDetailHolder>?
 
 
 

@@ -19,7 +19,7 @@ import {
     NWAStandard,
     ProposalComment,
     ProposalComments,
-    StakeholderProposalComments
+    StakeholderProposalComments, UsersEntity
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
@@ -33,6 +33,12 @@ import {DefaulterDetails, SiteVisitRemarks} from "../levy/levy.model";
 export class StdIntStandardService {
 
   constructor(private http: HttpClient) { }
+
+    public findStandardStakeholders(): Observable<UsersEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_GET_STD_STAKE_HOLDERS);
+        const params = new HttpParams();
+        return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    }
 
   public prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_PREPARE_ADOPTION_PROPOSAL);
@@ -68,6 +74,13 @@ export class StdIntStandardService {
         const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
+
+    public getProposals(proposalId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROPOSALS);
+        const params = new HttpParams().set('proposalId', proposalId);
+        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
     public getApprovedProposals(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVED_PROPOSAL);
         const params = new HttpParams();

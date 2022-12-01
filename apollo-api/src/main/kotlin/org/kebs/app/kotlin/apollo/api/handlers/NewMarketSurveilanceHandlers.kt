@@ -105,6 +105,19 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun msOfficerListDetails(req: ServerRequest): ServerResponse {
+        try {
+            marketSurveillanceComplaintDaoServices.msOfficerListDetails()
+                ?.let {
+                    return ServerResponse.ok().body(it)
+                }?: throw NullValueNotAllowedException("No Ms Officer list found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
     fun msRecommendationList(req: ServerRequest): ServerResponse {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
@@ -151,8 +164,6 @@ class NewMarketSurveillanceHandler(
 
     fun msDivisions(req: ServerRequest): ServerResponse {
         try {
-//            val map = commonDaoServices.serviceMapDetails(appId)
-//            val departmentID = req.pathVariable("departmentID").toLong()
             masterDataDaoService.getAllDivisions()
                 ?.let { return ServerResponse.ok().body(it) }
                 ?: throw NullValueNotAllowedException("No Ms Departments found")
@@ -162,6 +173,18 @@ class NewMarketSurveillanceHandler(
             return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
         }
     }
+
+//    fun msOfficerList(req: ServerRequest): ServerResponse {
+//        try {
+//            masterDataDaoService.msOfficerListDetails()
+//                ?.let { return ServerResponse.ok().body(it) }
+//                ?: throw NullValueNotAllowedException("No Ms Departments found")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+//        }
+//    }
 
     fun msStandardsCategory(req: ServerRequest): ServerResponse {
         try {
@@ -921,6 +944,58 @@ class NewMarketSurveillanceHandler(
         return try {
             val page = commonDaoServices.extractPageRequest(req, "transactionDate")
             marketSurveillanceComplaintDaoServices.msAcknowledgementReportTimeLineLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllComplaintSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
+            val body = req.body<ComplaintViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, ComplaintViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msComplaintViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getStatusReportComplaintInvestigationList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
+            marketSurveillanceComplaintDaoServices.msStatusReportComplaintInvestigationLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getPerformanceOfSelectedProductViewList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
+            marketSurveillanceComplaintDaoServices.msPerformanceOfSelectedProductViewLists(page)
                 .let {
                     ServerResponse.ok().body(it)
                 }

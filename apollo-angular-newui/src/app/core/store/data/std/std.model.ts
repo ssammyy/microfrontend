@@ -1,4 +1,5 @@
 import {Timestamp} from 'rxjs';
+import {fromArray} from "rxjs-compat/observable/fromArray";
 
 export interface StandardRequest {
     id: number;
@@ -36,6 +37,7 @@ export interface UsersEntity {
     lastName: string;
     firstName: string;
     userTypes: number;
+    email: string;
 
 
 }
@@ -465,6 +467,13 @@ export interface ProposalComment{
     taskId: string;
     proposalID: number;
     typeOfComment: string;
+    adopt: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: string;
 }
 
 export interface ISAdoptionProposal {
@@ -477,6 +486,7 @@ export interface ISAdoptionProposal {
     closingDate: string;
     scope: string;
     clause: string;
+    standardNumber: string;
     adoptionAcceptableAsPresented: string;
     reasonsForNotAcceptance: string;
     recommendations: string;
@@ -485,6 +495,9 @@ export interface ISAdoptionProposal {
     nameOfOrganization: string;
     dateOfApplication: string;
     proposalNumber: string;
+    stakeholdersList:string;
+    addStakeholdersList:string;
+    iStandardNumber:string;
 }
 export interface ISJustificationProposal{
     id: number;
@@ -623,6 +636,9 @@ export interface IStandardUpload{
     accentTo: boolean;
     proposalId: number;
     id: number;
+    standardNumber:string;
+    preparedBy:string;
+    docName:string;
 }
 export interface IStandardDraftEdit{
     title: string;
@@ -634,6 +650,8 @@ export interface IStandardDraftEdit{
     justificationNo: number;
     id: number;
     proposalId: number;
+    docName:string;
+    standardNumber: string;
 }
 export interface ISDecision {
     taskId: string;
@@ -723,6 +741,7 @@ export interface ISDraftDecisionStd {
     clause:string;
     scope:string;
     special:string;
+    standardNumber:string;
 }
 
 export interface ISSacSecTASKS {
@@ -1320,6 +1339,12 @@ export interface StakeholderProposalComments{
     comParagraph: string;
     typeOfComment: string;
     proposedChange: string;
+    adopt:string;
+    nameOfOrganization:string;
+    nameOfRespondent:string;
+    positionOfRespondent:string;
+    reasonsForNotAcceptance:string;
+    recommendations:string;
 }
 
 export interface StandardsForReview{
@@ -1474,4 +1499,6 @@ export interface ISCheckRequirements{
     status: string;
     uploadDate: string;
     isNumber: string;
+    documentType: string;
+    preparedBy: string;
 }

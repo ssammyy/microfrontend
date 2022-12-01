@@ -387,10 +387,12 @@ export class ApiEndpointService {
         NWA_UPLOAD_DATA_VIEW_STD: `${ApiEndpointService.SD_NWA_CONTEXT}/view/knwStandard`,
 
         // SD INTERNATIONAL STANDARDS
+        IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
         IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
         IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getISProposals`,
         IST_VIEW_IS_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getProposal`,
+        IST_VIEW_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getProposals`,
         IST_VIEW_IS_PROPOSALS_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/proposal`,
         IST_SUBMIT_AP_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/SubmitAPComments`,
         IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
@@ -679,9 +681,11 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_COMMON = {
+        MS_OFFICER_LIST: `${ApiEndpointService.MS_COMMON_CONTEXT}/officer-list`,
         MS_DASHBOARD: `${ApiEndpointService.MS_COMMON_CONTEXT}/dashboard`,
         MS_TOWNS: `${ApiEndpointService.MS_COMMON_CONTEXT}/towns`,
         MS_COUNTIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/counties`,
+        MS_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regions/load`,
         MS_COUNTRIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/countries`,
         MS_DEPARTMENTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/departments`,
         MS_LABORATORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/laboratories`,
@@ -699,6 +703,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_REPORTS = {
+        MS_COMPLAINT_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/complaint-search`,
         MS_TIMELINE_ACKNOWLEDGEMENT: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/acknowledgement`,
         MS_TIMELINE_FEEDBACK: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/feedback`,
         MS_TIMELINE_REPORT_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/reportSubmitted`,

@@ -20,6 +20,68 @@
                         </h4>
                     </div>
                     <div class="card-body">
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <h6 class="card-title">Search Details</h6>
+                                <br>
+                                <form  [formGroup]="searchFormGroup">
+
+                                    <div class="form-body">
+
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Officer Name</b></label>
+                                                    <select id="assignedIo" class="form-control" formControlName="assignedIo"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignedIo">
+                                                        <option [value]="" selected>Please select</option>
+                                                        <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id"
+                                                        >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Region</b></label>
+                                                    <select id="region" class="form-control" formControlName="region"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">
+                                                        <option [value]="" selected>Please select</option>
+                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"
+                                                        >{{app.region}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Department</b> </label>
+                                                    <select (change)="onChangeSelectedDepartment()"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                            class="form-control" formControlName="complaintDepartment" name="complaintDepartment">
+                                                        <option [value]="" selected>Please select</option>
+                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                            class="form-control" formControlName="division" name="division">
+                                                        <option [value]="" selected>Please select</option>
+                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button [disabled]="!searchFormGroup.valid"  (click)="onSubmitSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
                         <div class="toolbar">
                             <div class="btn-group btn-group-sm float-right" role="group" aria-label="Applications Status">
                             </div>

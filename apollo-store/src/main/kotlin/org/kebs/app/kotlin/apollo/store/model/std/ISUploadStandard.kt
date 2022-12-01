@@ -72,4 +72,17 @@ class ISUploadStandard {
     @Column(name = "STATUS")
     @Basic
     var status: Long? = null
+
+    @Column(name = "PREPARED_BY")
+    @Basic
+    var preparedBy: String? = null
+
+    @Column(name = "DOCUMENT_TYPE")
+    @Basic
+    var documentType: String? = null
+
+    @Column(name = "DRAUGHTING")
+    @Basic
+    var draughting: String? = null
+
 }

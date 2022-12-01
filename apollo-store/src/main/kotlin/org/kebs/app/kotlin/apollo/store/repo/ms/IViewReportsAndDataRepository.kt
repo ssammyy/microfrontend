@@ -26,6 +26,7 @@ import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -43,6 +44,20 @@ interface IMsFieldReportViewRepository : HazelcastRepository<MsFieldReportView, 
 }
 
 @Repository
+interface IMsPerformanceOfSelectedProductViewRepository : HazelcastRepository<MsPerformanceOfSelectedProductViewEntity, String> {
+    override fun findAll(pageable: Pageable): Page<MsPerformanceOfSelectedProductViewEntity>
+
+//    fun findByMsWorkplanGeneratedId(msWorkPlanGeneratedId: String): List<MsPerformanceOfSelectedProductViewEntity>
+}
+
+@Repository
+interface IMsComplaintsInvestigationsViewRepository : HazelcastRepository<MsComplaintsInvestigationsViewEntity, String> {
+    override fun findAll(pageable: Pageable): Page<MsComplaintsInvestigationsViewEntity>
+
+//    fun findByMsWorkplanGeneratedId(msWorkPlanGeneratedId: String): List<MsPerformanceOfSelectedProductViewEntity>
+}
+
+@Repository
 interface IMsSampleSubmissionViewRepository : HazelcastRepository<MsSampleSubmissionView, Long> {
     override fun findAll(pageable: Pageable): Page<MsSampleSubmissionView>
 
@@ -57,7 +72,7 @@ interface IMsAcknowledgementTimelineViewRepository : HazelcastRepository<MsAckno
 }
 
 @Repository
-interface IMsComplaintFeedbackViewRepository : HazelcastRepository<MsComplaintFeedbackViewEntity, Long> {
+interface IMsComplaintFeedbackViewRepository : HazelcastRepository<MsComplaintFeedbackViewEntity, Long>, JpaSpecificationExecutor<MsComplaintFeedbackViewEntity> {
     override fun findAll(pageable: Pageable): Page<MsComplaintFeedbackViewEntity>
 
     fun findAllByReferenceNumber(referenceNumber: String): List<MsComplaintFeedbackViewEntity>

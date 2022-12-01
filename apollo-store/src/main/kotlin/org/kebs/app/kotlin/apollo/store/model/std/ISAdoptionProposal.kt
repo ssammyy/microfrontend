@@ -28,6 +28,14 @@ class ISAdoptionProposal {
     @Basic
     var tcSecName: String? = null
 
+    @Column(name = "STAKEHOLDER_LIST")
+    @Basic
+    var stakeholdersList: String? = null
+
+    @Column(name = "OTHER_STAKEHOLDER_LIST")
+    @Basic
+    var addStakeholdersList: String? = null
+
 
     @Column(name="DATE_PREPARED")
     @Basic
@@ -96,5 +104,9 @@ class ISAdoptionProposal {
     @Column(name = "STATUS")
     @Basic
     var status: Long? = null
+
+    @Column(name = "STANDARD_NUMBER")
+    @Basic
+    var iStandardNumber: String? = null
 
 }

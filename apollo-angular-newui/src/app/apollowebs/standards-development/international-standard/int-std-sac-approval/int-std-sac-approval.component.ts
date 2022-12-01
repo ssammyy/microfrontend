@@ -62,7 +62,8 @@ export class IntStdSacApprovalComponent implements OnInit {
         symbolsAbbreviatedTerms:[],
         clause:[],
         scope:[],
-        special:[]
+        special:[],
+      standardNumber:[]
 
     });
 
@@ -77,7 +78,8 @@ export class IntStdSacApprovalComponent implements OnInit {
         symbolsAbbreviatedTerms:[],
         clause:[],
         scope:[],
-        special:[]
+        special:[],
+
 
     });
   }
@@ -168,7 +170,8 @@ export class IntStdSacApprovalComponent implements OnInit {
               symbolsAbbreviatedTerms:this.actionRequest.symbolsAbbreviatedTerms,
               clause:this.actionRequest.clause,
               scope:this.actionRequest.scope,
-              special:this.actionRequest.special
+              special:this.actionRequest.special,
+            standardNumber:this.actionRequest.isNumber
           }
       );
       this.rejectRequirementsFormGroup.patchValue(

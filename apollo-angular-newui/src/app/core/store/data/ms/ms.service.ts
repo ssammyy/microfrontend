@@ -79,7 +79,7 @@ import {
     AcknowledgementDto,
     MsNotificationTaskDto,
     MsDashBoardIODto,
-    MsDashBoardALLDto,
+    MsDashBoardALLDto, ComplaintViewSearchValues,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -87,7 +87,7 @@ import Swal from 'sweetalert2';
 import {AllPermitDetailsDto} from '../qa/qa.model';
 import {County} from '../county';
 import {Town} from '../town';
-import {UserNotificationDetailsDto} from '../master/master.model';
+import {RegionsEntityDto, UserNotificationDetailsDto} from '../master/master.model';
 
 @Injectable({
     providedIn: 'root',
@@ -686,6 +686,25 @@ export class MsService {
     /*******************************************************************START OF MARKET SURVEILLANCE REPORTS*****************************************************************************/
 
 
+    // tslint:disable-next-line:max-line-length
+    public loadSearchClaimViewList(page: string, records: string, complaintViewSearchValues: ComplaintViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_COMPLAINT_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
     public loadAcknowledgementList(page: string, records: string): Observable<ApiResponseModel> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_ACKNOWLEDGEMENT);
@@ -702,6 +721,8 @@ export class MsService {
             }),
         );
     }
+
+
 
     public loadFeedbackList(page: string, records: string): Observable<ApiResponseModel> {
         // console.log(data);
@@ -1817,6 +1838,30 @@ export class MsService {
             }),
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msOfficerListDetails(): Observable<MsUsersDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_OFFICER_LIST);
+        return this.http.get<MsUsersDto[]>(url).pipe(
+            map(function (response: MsUsersDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msRegionListDetails(): Observable<RegionsEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_REGIONS);
+        return this.http.get<RegionsEntityDto[]>(url).pipe(
+            map(function (response: RegionsEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
                 return throwError(fault);
             }),
         );

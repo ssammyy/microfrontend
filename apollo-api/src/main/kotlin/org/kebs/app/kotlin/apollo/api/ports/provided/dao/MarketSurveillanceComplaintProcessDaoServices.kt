@@ -5,8 +5,11 @@ import mu.KotlinLogging
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
+import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.spec.ComplaintSpecification
+import org.kebs.app.kotlin.apollo.api.ports.provided.spec.ComplaintViewSpecification
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -70,6 +73,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val tasksPendingAllocationCpViewRepo: IMsTasksPendingAllocationCpViewRepository,
     private val tasksPendingAllocationWpViewRepo: IMsTasksPendingAllocationWpViewRepository,
 
+    private val performanceOfSelectedProductViewRepo: IMsPerformanceOfSelectedProductViewRepository,
+    private val complaintsInvestigationsViewRepo: IMsComplaintsInvestigationsViewRepository,
     private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
     private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
     private val reportSubmittedTimelineViewRepo: IMsReportSubmittedCpViewRepository,
@@ -212,6 +217,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+
 //        val userProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
@@ -272,6 +278,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
         return  response
     }
 
+    fun msOfficerListDetails(): List<MsUsersDto>? {
+        val officerList = commonDaoServices.findOfficersListBasedOnRole(applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID)
+        return officerList?.let { mapOfficerListDto(it) }
+    }
+
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun msComplaintLists(page: PageRequest): ApiResponseModel {
@@ -306,7 +317,30 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun msAcknowledgementReportTimeLineLists(page: PageRequest): ApiResponseModel {
-        val complaintList = acknowledgementTimelineViewRepo.findAll(page)
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return   listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAll(page), map)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintViewSearchLists(page: PageRequest,search: ComplaintViewSearchValues): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return   complaintSearchResultListing(search,page,map)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msStatusReportComplaintInvestigationLists(page: PageRequest): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return   listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAll(page), map)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msPerformanceOfSelectedProductViewLists(page: PageRequest): ApiResponseModel {
+        val complaintList = performanceOfSelectedProductViewRepo.findAll(page)
 
         return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
     }
@@ -1249,6 +1283,85 @@ class MarketSurveillanceComplaintProcessDaoServices(
 //                    comp.complaintCategory,
                     comp.transactionDate,
                     comp.msProcessId?.let { findMsProcessComplaintByID(1, it)?.processName }
+                )
+            )
+        }
+
+        return commonDaoServices.setSuccessResponse(complaintList,complaints.totalPages,complaints.number,complaints.totalElements)
+    }
+
+
+    fun complaintSearchResultListing(search: ComplaintViewSearchValues,page: PageRequest, map: ServiceMapsEntity): ApiResponseModel {
+        val complaintList = mutableListOf<ComplaintsInvestigationListDto>()
+        val assignedIoSpec: ComplaintViewSpecification?
+        var regionSpec: ComplaintViewSpecification? = null
+        var complaintDepartmentSpec: ComplaintViewSpecification? = null
+        var divisionSpec: ComplaintViewSpecification? = null
+
+
+        assignedIoSpec = ComplaintViewSpecification(SearchCriteria("assignedIo", ":", search.refNumber))
+        search.region?.let {
+            regionSpec = ComplaintViewSpecification(SearchCriteria("region", ":", search.region))
+        }
+        search.complaintDepartment?.let {
+            complaintDepartmentSpec = ComplaintViewSpecification(SearchCriteria("complaintDepartment", ":", search.complaintDepartment))
+        }
+        search.division?.let {
+            divisionSpec = ComplaintViewSpecification(SearchCriteria("division", ":", search.division))
+        }
+
+
+        complaintFeedbackTimelineViewRepo.findAll(assignedIoSpec.or(regionSpec).or(complaintDepartmentSpec).or(divisionSpec))
+            .map { comp ->
+                complaintList.add(
+                    ComplaintsInvestigationListDto(
+                        comp.referenceNumber,
+                        comp.complaintTitle,
+                        comp.targetedProducts,
+                        comp.transactionDate,
+                        comp.approvedDate,
+                        comp.rejectedDate,
+                        comp.assignedIo?.let { commonDaoServices.findUserByID(it) }?.let { commonDaoServices.concatenateName(it) },
+                        comp.acknowledgementType,
+                        comp.region?.let { commonDaoServices.findRegionEntityByRegionID(it,map.activeStatus).region },
+                        comp.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
+                        comp.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                        comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                        comp.division?.let { commonDaoServices.findDivisionWIthId(it).division },
+                        comp.timeTakenForAcknowledgement,
+                        comp.feedbackSent,
+                    )
+                )
+            }
+
+        val usersPage: Page<ComplaintsInvestigationListDto> = PageImpl(complaintList, page, complaintList.size.toLong())
+        return commonDaoServices.setSuccessResponse(complaintList,usersPage.totalPages,usersPage.number,usersPage.totalElements)
+
+//        return complaintList.sortedBy { it.date }
+
+    }
+
+
+    fun listMsComplaintsInvestigationListDto(complaints: Page<MsComplaintFeedbackViewEntity>, map: ServiceMapsEntity): ApiResponseModel {
+        val complaintList = mutableListOf<ComplaintsInvestigationListDto>()
+        complaints.toList().map { comp ->
+            complaintList.add(
+                ComplaintsInvestigationListDto(
+                    comp.referenceNumber,
+                            comp.complaintTitle,
+                            comp.targetedProducts,
+                            comp.transactionDate,
+                            comp.approvedDate,
+                            comp.rejectedDate,
+                    comp.assignedIo?.let { commonDaoServices.findUserByID(it) }?.let { commonDaoServices.concatenateName(it) },
+                            comp.acknowledgementType,
+                    comp.region?.let { commonDaoServices.findRegionEntityByRegionID(it,map.activeStatus).region },
+                    comp.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
+                            comp.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                            comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                            comp.division?.let { commonDaoServices.findDivisionWIthId(it).division },
+                            comp.timeTakenForAcknowledgement,
+                            comp.feedbackSent,
                 )
             )
         }

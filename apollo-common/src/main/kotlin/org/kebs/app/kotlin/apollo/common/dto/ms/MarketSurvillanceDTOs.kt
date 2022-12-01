@@ -945,6 +945,14 @@ data class ComplaintSearchValues(
 //        var lastName: String? = null
 )
 
+data class ComplaintViewSearchValues(
+        var refNumber: String? = null,
+        var assignedIo: Long? = null,
+        var region: Long? = null,
+        var complaintDepartment: Long? = null,
+        var division: Long? = null
+)
+
 data class ComplaintAdviceRejectDto(
         var mandateForOga: Int? = null,
         var advisedWhereToRemarks: String? = null,
@@ -1071,6 +1079,24 @@ data class ComplaintsListDto(
 //        var complaintCategory: String? = null,
         var transactionDate: Date? = null,
         var progressStep: String? = null
+)
+
+data class ComplaintsInvestigationListDto(
+        var referenceNumber: String? = null,
+        var complaintTitle: String? = null,
+        var targetedProducts: String? = null,
+        var transactionDate: Date? = null,
+        var approvedDate: Date? = null,
+        var rejectedDate: Date? = null,
+        var assignedIo: String? = null,
+        var status: String? = null,
+        var region: String? = null,
+        var county: String? = null,
+        var town: String? = null,
+        var complaintDepartment: String? = null,
+        var division: String? = null,
+        var timeTakenForAcknowledgement: String? = null,
+        var feedbackSent: String? = null
 )
 
 class MsDashBoardALLDto{

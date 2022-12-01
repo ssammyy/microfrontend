@@ -1,14 +1,21 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
-import {County, CountyService, selectUserInfo, Town, TownService} from '../../../../core/store';
+import {County, CountyService, Region, selectUserInfo, Town, TownService} from '../../../../core/store';
 import {UserNotificationDetailsDto} from '../../../../core/store/data/master/master.model';
 import {LocalDataSource} from 'ng2-smart-table';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
-import {AcknowledgementDto, ApiResponseModel} from '../../../../core/store/data/ms/ms.model';
+import {
+  AcknowledgementDto,
+  ApiResponseModel,
+  ComplaintsInvestigationListDto, ComplaintViewSearchValues,
+  MsDepartment, MsDivisionDetails,
+  MsUsersDto,
+} from '../../../../core/store/data/ms/ms.model';
+import {RegionsEntityDto} from '../../../../shared/models/master-data-details';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -20,6 +27,7 @@ export class AcknowledgementComponent implements OnInit {
   submitted = false;
   selectedCounty = 0;
   selectedTown = 0;
+  departmentSelected: 0;
   selectedTownName: string;
   selectedCountyName: string;
   county$: Observable<County[]>;
@@ -27,6 +35,7 @@ export class AcknowledgementComponent implements OnInit {
   loading = false;
 
   roles: string[];
+  searchFormGroup!: FormGroup;
 
   activeStatus = 'my-tasks';
   previousStatus = 'my-tasks';
@@ -37,8 +46,13 @@ export class AcknowledgementComponent implements OnInit {
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
+  complaintViewSearchValues: ComplaintViewSearchValues;
   selectedNotification: AcknowledgementDto;
-  loadedData!: AcknowledgementDto[];
+  loadedData!: ComplaintsInvestigationListDto[];
+  msOfficerLists!: MsUsersDto[];
+  msRegions: RegionsEntityDto[] = [];
+  msDepartments: MsDepartment[] = [];
+  msDivisions: MsDivisionDetails[] = [];
   totalCount = 12;
   public settings = {
     selectMode: 'single',  // single|multi
@@ -61,50 +75,55 @@ export class AcknowledgementComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
-      // id: {
-      //   title: 'ID',
-      //   type: 'string',
-      //   filter: false
-      // },
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: true,
+        filter: false,
       },
       complaintTitle: {
         title: 'COMPLAINT TITLE',
         type: 'string',
-        filter: true,
+        filter: false,
       },
       targetedProducts: {
         title: 'TARGETED PRODUCTS',
         type: 'string',
-        filter: true,
+        filter: false,
       },
       transactionDate: {
         title: 'TRANSACTION DATE',
         type: 'date',
-        filter: true,
+        filter: false,
       },
-      approvedDate: {
-        title: 'APPROVED DATE',
-        type: 'date',
-        filter: true,
+      assignedIo: {
+        title: 'OFFICER NAME',
+        type: 'string',
+        filter: false,
       },
-      rejectedDate: {
-        title: 'REJECTED DATE',
-        type: 'date',
-        filter: true,
+      region: {
+        title: 'REGION',
+        type: 'string',
+        filter: false,
+      },
+      complaintDepartment: {
+        title: 'DEPARTMENT',
+        type: 'string',
+        filter: false,
+      },
+      division: {
+        title: 'FUNCTION',
+        type: 'string',
+        filter: false,
       },
       acknowledgementType: {
         title: 'ACKNOWLEDGEMENT TYPE',
         type: 'string',
-        filter: true,
+        filter: false,
       },
       timeTakenForAcknowledgement: {
         title: 'TIME TAKEN',
         type: 'string',
-        filter: true,
+        filter: false,
       },
     },
     pager: {
@@ -137,12 +156,24 @@ export class AcknowledgementComponent implements OnInit {
       return this.roles = u.roles;
     });
 
+    this.searchFormGroup = this.formBuilder.group({
+      refNumber: ['', null],
+      assignedIo: ['', null],
+      region: ['', null],
+      complaintDepartment: ['', null],
+      division: ['', null],
+    });
+
     this.activatedRoute.paramMap.subscribe(
         rs => {
           this.selectedBatchRefNo = rs.get('referenceNumber');
           this.loadData(this.defaultPage, this.defaultPageSize);
         },
     );
+  }
+
+  get formSearch(): any {
+    return this.searchFormGroup.controls;
   }
 
   private loadData(page: number, records: number): any {
@@ -154,13 +185,32 @@ export class AcknowledgementComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.msService.msOfficerListDetails().subscribe(
+                (dataOfficer: MsUsersDto[]) => {
+                  this.msOfficerLists = dataOfficer;
+                },
+            );
+            this.msService.msRegionListDetails().subscribe(
+                (dataRegion: RegionsEntityDto[]) => {
+                  this.msRegions = dataRegion;
+                },
+            );
+            this.msService.msDepartmentListDetails().subscribe(
+                (dataDep: MsDepartment[]) => {
+                  this.msDepartments = dataDep;
+                },
+            );
+            this.msService.msDivisionListDetails().subscribe(
+                (dataDiv: MsDivisionDetails[]) => {
+                  this.msDivisions = dataDiv;
+                },
+            );
           }
           this.SpinnerService.hide();
         },
         error => {
           this.SpinnerService.hide();
           console.log(error);
-          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
@@ -175,4 +225,46 @@ export class AcknowledgementComponent implements OnInit {
     }
   }
 
+  onSubmitSearch() {
+    this.complaintViewSearchValues = this.searchFormGroup.value;
+    // tslint:disable-next-line:max-line-length
+    this.msService.loadSearchClaimViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues).subscribe(
+        (data: ApiResponseModel) => {
+          if (data.responseCode === '00') {
+            this.loadedData = data.data;
+            this.totalCount = this.loadedData.length;
+            this.dataSet.load(this.loadedData);
+            this.msService.msOfficerListDetails().subscribe(
+                (dataOfficer: MsUsersDto[]) => {
+                  this.msOfficerLists = dataOfficer;
+                },
+            );
+            this.msService.msRegionListDetails().subscribe(
+                (dataRegion: RegionsEntityDto[]) => {
+                  this.msRegions = dataRegion;
+                },
+            );
+            this.msService.msDepartmentListDetails().subscribe(
+                (dataDep: MsDepartment[]) => {
+                  this.msDepartments = dataDep;
+                },
+            );
+            this.msService.msDivisionListDetails().subscribe(
+                (dataDiv: MsDivisionDetails[]) => {
+                  this.msDivisions = dataDiv;
+                },
+            );
+          }
+          this.SpinnerService.hide();
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+        },
+    );
+  }
+
+  onChangeSelectedDepartment() {
+    this.departmentSelected = this.searchFormGroup?.get('complaintDepartment')?.value;
+  }
 }
