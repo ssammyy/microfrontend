@@ -643,7 +643,7 @@ export class ApiEndpointService {
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
         VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
         VIEW_PDF_FIELD_REPORT: `${ApiEndpointService.MS_CONTEXT}/report/ms-field-report`,
-    }
+    };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
         VIEW_PDF_LAB_RESULT: `${ApiEndpointService.MS_CONTEXT}/view/attached-lab-pdf`,
@@ -704,7 +704,7 @@ export class ApiEndpointService {
 
     public static MARKET_SURVEILLANCE_REPORTS = {
         MS_COMPLAINT_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/complaint-search`,
-        MS_TIMELINE_ACKNOWLEDGEMENT: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/acknowledgement`,
+        MS_TIMELINE_COMPLAINT: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/complaint`,
         MS_TIMELINE_FEEDBACK: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/feedback`,
         MS_TIMELINE_REPORT_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/reportSubmitted`,
         MS_TIMELINE_SAMPLE_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/sampleSubmitted`,

@@ -648,6 +648,8 @@ export class ComplaintsInvestigationListDto {
     division: string;
     timeTakenForAcknowledgement: string;
     feedbackSent: string;
+    timeTakenForFeedbackSent: string;
+    msProcess: string;
 }
 
 export class WorkPlanBatchDetailsDto {

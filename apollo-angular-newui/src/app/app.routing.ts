@@ -1994,16 +1994,16 @@ export const routes: Routes = [
         ],
     },
     {
-        path: 'msTimeLineReports',
+        path: 'msReports',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'acknowledgement',
+                path: 'timeLineTaken',
                 component: AcknowledgementComponent,
             },
             {
-                path: 'feedback',
+                path: 'statusReport',
                 component: FeedbackTimelineComponent,
             },
             {

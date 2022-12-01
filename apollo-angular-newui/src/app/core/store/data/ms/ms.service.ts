@@ -687,13 +687,14 @@ export class MsService {
 
 
     // tslint:disable-next-line:max-line-length
-    public loadSearchClaimViewList(page: string, records: string, complaintViewSearchValues: ComplaintViewSearchValues): Observable<ApiResponseModel> {
+    public loadSearchClaimViewList(page: string, records: string, complaintViewSearchValues: ComplaintViewSearchValues, searchType: string): Observable<ApiResponseModel> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_COMPLAINT_SEARCH);
         const params = new HttpParams()
+            .set('reportType', searchType)
             .set('page', page)
             .set('records', records);
-        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
             map(function (response: ApiResponseModel) {
                 return response;
             }),
@@ -705,10 +706,16 @@ export class MsService {
     }
 
 
-    public loadAcknowledgementList(page: string, records: string): Observable<ApiResponseModel> {
+    // tslint:disable-next-line:max-line-length
+    public loadAllComplaintTimelineList(page: string, records: string, routeTake: string, searchType: string): Observable<ApiResponseModel> {
         // console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_ACKNOWLEDGEMENT);
+        let url = null;
+        if (routeTake === 'complaint' ) {
+            url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_COMPLAINT);
+        }
+        // const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_ACKNOWLEDGEMENT);
         const params = new HttpParams()
+            .set('reportType', searchType)
             .set('page', page)
             .set('records', records);
         return this.http.get<ApiResponseModel>(url, {params}).pipe(
