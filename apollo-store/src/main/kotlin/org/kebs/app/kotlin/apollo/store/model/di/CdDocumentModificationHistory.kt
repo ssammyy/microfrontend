@@ -21,7 +21,7 @@ class CdDocumentModificationHistory : Serializable {
     @Basic
     var ucrNumber: String? = null
 
-    @Column(name = "USER_COMMENT")
+    @Column(name = "USER_COMMENT", length = 4000)
     @Basic
     var comment: String? = null
 
@@ -33,7 +33,7 @@ class CdDocumentModificationHistory : Serializable {
     @Basic
     var actionCode: String? = null
 
-    @Column(name = "USER_DESCRIPTION")
+    @Column(name = "USER_DESCRIPTION", length = 4000)
     @Basic
     var description: String? = null
 

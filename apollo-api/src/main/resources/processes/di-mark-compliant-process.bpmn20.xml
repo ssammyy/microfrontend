@@ -8,8 +8,7 @@
              activiti:candidateStarterUsers="supervisor">
         <startEvent id="startTargetConsignmentDocument" name="Start Targeting"></startEvent>
         <userTask id="usertask1" name="Approve Compliant" activiti:assignee="${supervisor}"
-                  activiti:candidateUsers="supervisor" activiti:candidateGroups="${cfs_code}"
-                  activiti:category="${cfs_code}"></userTask>
+                  activiti:candidateUsers="supervisor" activiti:category="${cfs_code}"></userTask>
         <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow2" name="COC" sourceRef="exclusivegateway2" targetRef="cocApprovedStatus">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentType=='COC'}]]></conditionExpression>
@@ -27,7 +26,6 @@
         <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
         <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields" targetRef="endTargetConsignmentDocument"></sequenceFlow>
         <sequenceFlow id="flow9" sourceRef="startTargetConsignmentDocument" targetRef="usertask1"></sequenceFlow>
-        <sequenceFlow id="flow10" sourceRef="cocApprovedStatus" targetRef="servicetask5"></sequenceFlow>
         <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow11" sourceRef="servicetask3" targetRef="exclusivegateway1"></sequenceFlow>
         <serviceTask id="servicetask2" name="Generate COR" activiti:expression="#{diService.generateCorForDocument(cdUuid,supervisor,remarks)}"></serviceTask>
@@ -41,16 +39,28 @@
         <sequenceFlow id="flow17" sourceRef="exclusivegateway1" targetRef="exclusivegateway3">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${taskApproved}]]></conditionExpression>
         </sequenceFlow>
-        <sequenceFlow id="flow18" sourceRef="exclusivegateway3" targetRef="servicetask5">
+        <sequenceFlow id="flow18" sourceRef="exclusivegateway3" targetRef="servicetask7">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${compliantStatus!=1}]]></conditionExpression>
         </sequenceFlow>
-        <sequenceFlow id="flow19" sourceRef="servicetask2" targetRef="servicetask5"></sequenceFlow>
-        <serviceTask id="servicetask5" name="Update SW" activiti:expression="#{diService.swUpdateComplianceStatus(cdUuid,compliantStatus,supervisor,remarks)}"></serviceTask>
+        <serviceTask id="servicetask5" name="Update SW"
+                     activiti:expression="#{diService.swUpdateComplianceStatus(cdUuid,compliantStatus,supervisor,remarks)}"></serviceTask>
         <sequenceFlow id="flow20" name="COI" sourceRef="exclusivegateway2" targetRef="servicetask6">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentType=='COI'}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="servicetask6" name="Generate CoI" activiti:expression="#{diService.swGenerateCoI(cdUuid,remarks,supervisor)}"></serviceTask>
-        <sequenceFlow id="flow21" sourceRef="servicetask6" targetRef="servicetask5"></sequenceFlow>
+        <serviceTask id="servicetask6" name="Generate CoI"
+                     activiti:expression="#{diService.swGenerateCoI(cdUuid,remarks,supervisor)}"></serviceTask>
+        <serviceTask id="servicetask7" name="Generate NCR"
+                     activiti:expression="#{diService.swGenerateNcr(cdUuid,remarks,supervisor,documentType)}"></serviceTask>
+        <intermediateCatchEvent id="delaySendingApprovalMessage" name="TimerCatchEvent" activiti:async="true">
+            <timerEventDefinition>
+                <timeDuration>PT10M</timeDuration>
+            </timerEventDefinition>
+        </intermediateCatchEvent>
+        <sequenceFlow id="flow21" sourceRef="delaySendingApprovalMessage" targetRef="servicetask5"></sequenceFlow>
+        <sequenceFlow id="flow22" sourceRef="servicetask6" targetRef="delaySendingApprovalMessage"></sequenceFlow>
+        <sequenceFlow id="flow23" sourceRef="cocApprovedStatus" targetRef="delaySendingApprovalMessage"></sequenceFlow>
+        <sequenceFlow id="flow24" sourceRef="servicetask2" targetRef="delaySendingApprovalMessage"></sequenceFlow>
+        <sequenceFlow id="flow25" sourceRef="servicetask7" targetRef="delaySendingApprovalMessage"></sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_consignmentCompliantApprovalProcess">
         <bpmndi:BPMNPlane bpmnElement="consignmentCompliantApprovalProcess" id="BPMNPlane_consignmentCompliantApprovalProcess">
@@ -70,7 +80,7 @@
                 <omgdc:Bounds height="55.0" width="105.0" x="414.0" y="420.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="updateConsignmentDocumentProcessFields" id="BPMNShape_updateConsignmentDocumentProcessFields">
-                <omgdc:Bounds height="61.0" width="105.0" x="1223.0" y="242.0"></omgdc:Bounds>
+                <omgdc:Bounds height="61.0" width="105.0" x="1310.0" y="243.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="endTargetConsignmentDocument" id="BPMNShape_endTargetConsignmentDocument">
                 <omgdc:Bounds height="35.0" width="35.0" x="1440.0" y="255.0"></omgdc:Bounds>
@@ -88,10 +98,16 @@
                 <omgdc:Bounds height="40.0" width="40.0" x="531.0" y="253.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="servicetask5" id="BPMNShape_servicetask5">
-                <omgdc:Bounds height="55.0" width="105.0" x="1061.0" y="245.0"></omgdc:Bounds>
+                <omgdc:Bounds height="55.0" width="105.0" x="1170.0" y="245.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="servicetask6" id="BPMNShape_servicetask6">
-                <omgdc:Bounds height="55.0" width="105.0" x="830.0" y="330.0"></omgdc:Bounds>
+                <omgdc:Bounds height="55.0" width="105.0" x="840.0" y="330.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetask7" id="BPMNShape_servicetask7">
+                <omgdc:Bounds height="55.0" width="105.0" x="710.0" y="390.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="delaySendingApprovalMessage" id="BPMNShape_delaySendingApprovalMessage">
+                <omgdc:Bounds height="35.0" width="35.0" x="1080.0" y="255.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
                 <omgdi:waypoint x="740.0" y="272.0"></omgdi:waypoint>
@@ -116,28 +132,24 @@
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
                 <omgdi:waypoint x="519.0" y="447.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1275.0" y="447.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1275.0" y="303.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1362.0" y="447.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1362.0" y="304.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
-                <omgdi:waypoint x="1328.0" y="272.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1415.0" y="273.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1440.0" y="272.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
                 <omgdi:waypoint x="76.0" y="272.0"></omgdi:waypoint>
                 <omgdi:waypoint x="160.0" y="272.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
-                <omgdi:waypoint x="943.0" y="272.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1061.0" y="272.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
                 <omgdi:waypoint x="415.0" y="272.0"></omgdi:waypoint>
                 <omgdi:waypoint x="446.0" y="272.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
-                <omgdi:waypoint x="1166.0" y="272.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1223.0" y="272.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1275.0" y="272.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1310.0" y="273.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
                 <omgdi:waypoint x="720.0" y="252.0"></omgdi:waypoint>
@@ -157,28 +169,40 @@
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
                 <omgdi:waypoint x="551.0" y="293.0"></omgdi:waypoint>
-                <omgdi:waypoint x="551.0" y="423.0"></omgdi:waypoint>
-                <omgdi:waypoint x="834.0" y="423.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1113.0" y="423.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1113.0" y="300.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
-                <omgdi:waypoint x="943.0" y="107.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1113.0" y="103.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1113.0" y="245.0"></omgdi:waypoint>
+                <omgdi:waypoint x="551.0" y="418.0"></omgdi:waypoint>
+                <omgdi:waypoint x="662.0" y="418.0"></omgdi:waypoint>
+                <omgdi:waypoint x="710.0" y="417.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
                 <omgdi:waypoint x="720.0" y="292.0"></omgdi:waypoint>
                 <omgdi:waypoint x="720.0" y="357.0"></omgdi:waypoint>
-                <omgdi:waypoint x="830.0" y="357.0"></omgdi:waypoint>
+                <omgdi:waypoint x="840.0" y="357.0"></omgdi:waypoint>
                 <bpmndi:BPMNLabel>
                     <omgdc:Bounds height="13.0" width="19.0" x="720.0" y="292.0"></omgdc:Bounds>
                 </bpmndi:BPMNLabel>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
-                <omgdi:waypoint x="935.0" y="357.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1113.0" y="357.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1113.0" y="300.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1115.0" y="272.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1170.0" y="272.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
+                <omgdi:waypoint x="945.0" y="357.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1097.0" y="357.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1097.0" y="290.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+                <omgdi:waypoint x="943.0" y="272.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1080.0" y="272.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+                <omgdi:waypoint x="943.0" y="107.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1097.0" y="107.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1097.0" y="255.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+                <omgdi:waypoint x="815.0" y="417.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1097.0" y="417.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1097.0" y="290.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>

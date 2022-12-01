@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.CorporateStatusUpdateForm
 import org.kebs.app.kotlin.apollo.api.payload.response.CorporateCustomerAccountDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.repo.IBillingLimitsRepository
@@ -22,11 +23,11 @@ import java.time.LocalTime
 
 @Component
 class CorporateCustomerService(
-        private val corporateCustomersRepository: ICorporateCustomerRepository,
-        private val billingLimitsRepository: IBillingLimitsRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val sageService: PostInvoiceToSageServices,
-        private val applicationMapProperties: ApplicationMapProperties,
+    private val corporateCustomersRepository: ICorporateCustomerRepository,
+    private val billingLimitsRepository: IBillingLimitsRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val sageService: PostInvoiceToSageServices,
+    private val applicationMapProperties: ApplicationMapProperties,
 ) {
 
     fun listTransactionLimits(): ApiResponseModel {
@@ -41,7 +42,10 @@ class CorporateCustomerService(
         val localDateTime: LocalDateTime = LocalDateTime.now()
         val startOfDay: LocalDateTime = localDateTime.with(LocalTime.MIN)
         val endOfDay: LocalDateTime = localDateTime.with(LocalTime.MAX)
-        val cc = corporateCustomersRepository.countByCreatedOnBetween(Timestamp.valueOf(startOfDay), Timestamp.valueOf(endOfDay))
+        val cc = corporateCustomersRepository.countByCreatedOnBetween(
+            Timestamp.valueOf(startOfDay),
+            Timestamp.valueOf(endOfDay)
+        )
         return "%05x".format(cc + 1)
     }
 
@@ -62,7 +66,12 @@ class CorporateCustomerService(
                 if (limits.isPresent) {
                     customer.accountLimits = limits.get()
                 }
-                customer.corporateBillNumber = "KBN${commonDaoServices.convertDateToString(LocalDateTime.now(), "yyyyMMdd")}${countAccountsToday()}".toUpperCase()
+                customer.corporateBillNumber = "KBN${
+                    commonDaoServices.convertDateToString(
+                        LocalDateTime.now(),
+                        "yyyyMMdd"
+                    )
+                }${countAccountsToday()}".toUpperCase()
                 customer.corporateEmail = form.corporateEmail
                 customer.corporateName = form.corporateName
                 customer.corporateType = form.corporateType
@@ -75,7 +84,12 @@ class CorporateCustomerService(
                 customer.createdOn = Timestamp.from(Instant.now())
                 customer.createdBy = commonDaoServices.getLoggedInUser()?.userName
                 // Add customer details
-                this.sageService.checkCourierDetails(form.corporateIdentifier.orEmpty(), form.groupCode.orEmpty(), customer, map)
+                this.sageService.checkCourierDetails(
+                    form.corporateIdentifier.orEmpty(),
+                    form.groupCode.orEmpty(),
+                    customer,
+                    map
+                )
                 // Save record
                 val saved = this.corporateCustomersRepository.save(customer)
                 response.data = saved.id
@@ -85,6 +99,10 @@ class CorporateCustomerService(
                 response.message = "Corporate identifier already exists"
                 response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
             }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Failed to add SAGE account details: ${ex.message}"
+            response.errors = ex.toString()
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to add account", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -117,7 +135,12 @@ class CorporateCustomerService(
             customer.corporateType = form.corporateType
             customer.modifiedOn = Timestamp.from(Instant.now())
             customer.modifiedBy = commonDaoServices.getLoggedInUser()?.userName
-            this.sageService.checkCourierDetails(form.corporateIdentifier.orEmpty(), form.groupCode.orEmpty(), customer, map)
+            this.sageService.checkCourierDetails(
+                form.corporateIdentifier.orEmpty(),
+                form.groupCode.orEmpty(),
+                customer,
+                map
+            )
             val saved = this.corporateCustomersRepository.save(customer)
             response.data = saved.id
             response.message = "Account updated"
@@ -172,7 +195,12 @@ class CorporateCustomerService(
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 }
                 "UPDATE_LIMIT" -> {
-                    this.sageService.checkCourierDetails(customer.corporateIdentifier.orEmpty(), customer.corporateGroupCode.orEmpty(), customer, map)
+                    this.sageService.checkCourierDetails(
+                        customer.corporateIdentifier.orEmpty(),
+                        customer.corporateGroupCode.orEmpty(),
+                        customer,
+                        map
+                    )
                     this.corporateCustomersRepository.save(customer)
                     response.message = "Account activated"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
