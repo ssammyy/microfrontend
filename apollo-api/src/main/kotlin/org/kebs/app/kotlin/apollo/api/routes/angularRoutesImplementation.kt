@@ -647,14 +647,15 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 POST("/add/complaint-work-plan", handler::addComplaintToWorkPlanDetails)
                 "/reports".nest {
                     PUT("/complaint-search", handler::putAllComplaintSearchList)
+                    PUT("/sample-products-search", handler::putAllSampleProductsSearchList)
+                    PUT("/seized-goods-search", handler::putAllSeizedGoodsSearchList)
+                    GET("/seized-goods", handler::getAllSeizedGoodsViewList)
                     "/timeline".nest {
                         GET("/complaint", handler::getAllComplaintReportTimeLineList)
                     }
                     "/statusReport".nest {
                         GET("/complaint-investigation", handler::getStatusReportComplaintInvestigationList)
-                        GET("/complaint-investigation-search", handler::putAllComplaintSearchList)
                         GET("/performance-selected-product", handler::getPerformanceOfSelectedProductViewList)
-
                     }
 
                 }

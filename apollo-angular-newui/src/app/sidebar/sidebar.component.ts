@@ -534,7 +534,7 @@ export const ROUTES: RouteInfo[] = [
         children: [
             {path: 'timeLineTaken', title: 'Time line Taken', ab: 'TLT'},
             {path: 'statusReport', title: 'Status Report', ab: 'SR'},
-            // {path: 'reportSubmitted', title: 'Report Submitted', ab: 'PR'},
+            {path: 'seizedGoods', title: 'Seized Goods Report', ab: 'SGR'},
             // {path: 'sampleSubmitted', title: 'Samples Submitted', ab: 'SS'},
         ],
     },

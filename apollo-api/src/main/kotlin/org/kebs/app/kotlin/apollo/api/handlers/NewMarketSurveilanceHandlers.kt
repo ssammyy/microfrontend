@@ -955,6 +955,21 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun getAllSeizedGoodsViewList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "referenceNumber")
+//            val reportType = req.paramOrNull("reportType") ?: throw ExpectedDataNotFound("Required reportType, check parameters")
+            marketSurveillanceComplaintDaoServices.msSeizedGoodsViewLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun putAllComplaintSearchList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req, "transactionDate")
@@ -965,6 +980,55 @@ class NewMarketSurveillanceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     marketSurveillanceComplaintDaoServices.msComplaintViewSearchLists(page,body,reportType)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun putAllSampleProductsSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "referenceNumber")
+//            val reportType = req.paramOrNull("reportType") ?: throw ExpectedDataNotFound("Required reportType, check parameters")
+            val body = req.body<SampleProductViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, SampleProductViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msSampleProductViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun putAllSeizedGoodsSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "referenceNumber")
+//            val reportType = req.paramOrNull("reportType") ?: throw ExpectedDataNotFound("Required reportType, check parameters")
+            val body = req.body<SeizedGoodsViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, SeizedGoodsViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msSeizedGoodsViewSearchLists(page,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -996,7 +1060,7 @@ class NewMarketSurveillanceHandler(
 
     fun getPerformanceOfSelectedProductViewList(req: ServerRequest): ServerResponse {
         return try {
-            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
+            val page = commonDaoServices.extractPageRequest(req, "referenceNumber")
             marketSurveillanceComplaintDaoServices.msPerformanceOfSelectedProductViewLists(page)
                 .let {
                     ServerResponse.ok().body(it)

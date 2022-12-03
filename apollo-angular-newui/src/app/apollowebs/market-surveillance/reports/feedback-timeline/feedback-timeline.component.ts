@@ -6,7 +6,7 @@ import {
   ApiResponseModel,
   ComplaintsInvestigationListDto,
   ComplaintViewSearchValues,
-  FeedbackDto, MsDepartment, MsDivisionDetails, MsUsersDto,
+  FeedbackDto, MsDepartment, MsDivisionDetails, MsUsersDto, SampleProductViewSearchValues, SelectedProductViewListDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {LocalDataSource} from 'ng2-smart-table';
 import {Store} from '@ngrx/store';
@@ -15,6 +15,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {RegionsEntityDto} from '../../../../shared/models/master-data-details';
+import {ApiEndpointService} from '../../../../core/services/endpoints/api-endpoint.service';
 
 @Component({
   selector: 'app-feedback-timeline',
@@ -35,6 +36,8 @@ export class FeedbackTimelineComponent implements OnInit {
 
   roles: string[];
   searchFormGroup!: FormGroup;
+  searchFormGroup2!: FormGroup;
+  searchFormGroup3!: FormGroup;
 
   searchTypeValue = 'ALL_DETAILS';
   endPointStatusValue = 'complaint';
@@ -49,8 +52,10 @@ export class FeedbackTimelineComponent implements OnInit {
   currentPage = 0;
   currentPageInternal = 0;
   complaintViewSearchValues: ComplaintViewSearchValues;
+  sampleProductViewSearchValues: SampleProductViewSearchValues;
   selectedNotification: AcknowledgementDto;
   loadedData!: ComplaintsInvestigationListDto[];
+  loadedData2!: SelectedProductViewListDto[];
   msOfficerLists!: MsUsersDto[];
   msRegions: RegionsEntityDto[] = [];
   msDepartments: MsDepartment[] = [];
@@ -133,7 +138,127 @@ export class FeedbackTimelineComponent implements OnInit {
       perPage: 10,
     },
   };
+  public settingsPerformanceSelectedProducts = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      // custom: [
+      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
+      // ],
+      // position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      referenceNumber: {
+        title: 'REFERENCE NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      nameProduct: {
+        title: 'PRODUCT NAME',
+        type: 'string',
+        filter: false,
+      },
+      region: {
+        title: 'REGION',
+        type: 'string',
+        filter: false,
+      },
+      complaintDepartment: {
+        title: 'DEPARTMENT',
+        type: 'string',
+        filter: false,
+      },
+      divisionId: {
+        title: 'FUNCTION',
+        type: 'string',
+        filter: false,
+      },
+      bsNumber: {
+        title: 'BS NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      status: {
+        title: 'STATUS',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 10,
+    },
+  };
+  public settingsProductsPerformance = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      // custom: [
+      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
+      // ],
+      // position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      referenceNumber: {
+        title: 'REFERENCE NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      nameProduct: {
+        title: 'PRODUCT NAME',
+        type: 'string',
+        filter: false,
+      },
+      region: {
+        title: 'REGION',
+        type: 'string',
+        filter: false,
+      },
+      complaintDepartment: {
+        title: 'DEPARTMENT',
+        type: 'string',
+        filter: false,
+      },
+      divisionId: {
+        title: 'FUNCTION',
+        type: 'string',
+        filter: false,
+      },
+      status: {
+        title: 'STATUS',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 10,
+    },
+  };
   dataSet: LocalDataSource = new LocalDataSource();
+  dataSet2: LocalDataSource = new LocalDataSource();
   search: Subject<string>;
 
   constructor(private store$: Store<any>,
@@ -166,6 +291,26 @@ export class FeedbackTimelineComponent implements OnInit {
       division: ['', null],
     });
 
+    this.searchFormGroup2 = this.formBuilder.group({
+      refNumber: ['', null],
+      productName: ['', null],
+      bsNumber: ['', null],
+      status: ['', null],
+      region: ['', null],
+      complaintDepartment: ['', null],
+      division: ['', null],
+    });
+
+    this.searchFormGroup3 = this.formBuilder.group({
+      refNumber: ['', null],
+      productName: ['', null],
+      bsNumber: ['', null],
+      status: ['', null],
+      region: ['', null],
+      complaintDepartment: ['', null],
+      division: ['', null],
+    });
+
     this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
   }
 
@@ -173,15 +318,30 @@ export class FeedbackTimelineComponent implements OnInit {
     return this.searchFormGroup.controls;
   }
 
+  get formSearch2(): any {
+    return this.searchFormGroup2.controls;
+  }
+
   private loadData(page: number, records: number, routeTake: string, searchType: string): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    this.msService.loadAllComplaintTimelineList(String(page), String(records), routeTake, searchType).subscribe(
+    this.msService.loadAllComplaintTimelineAndStatusReportList(String(page), String(records), routeTake, searchType).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
-            this.loadedData = data.data;
-            this.totalCount = this.loadedData.length;
-            this.dataSet.load(this.loadedData);
+            switch (routeTake) {
+              case 'complaint':
+                this.loadedData = data.data;
+                this.totalCount = this.loadedData.length;
+                this.dataSet.load(this.loadedData);
+                break;
+              case 'sample-products':
+                this.loadedData2 = data.data;
+                this.totalCount = this.loadedData2.length;
+                this.dataSet2.load(this.loadedData2);
+                break;
+            }
+
+
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {
                   this.msOfficerLists = dataOfficer;
@@ -222,12 +382,12 @@ export class FeedbackTimelineComponent implements OnInit {
     }
   }
 
-  onSubmitSearch() {
+  onSubmitComplaintSearch() {
     this.SpinnerService.show();
     this.submitted = true;
     this.complaintViewSearchValues = this.searchFormGroup.value;
     // tslint:disable-next-line:max-line-length
-    this.msService.loadSearchClaimViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues, this.searchTypeValue).subscribe(
+    this.msService.loadSearchComplaintViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues, this.searchTypeValue).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
@@ -243,8 +403,30 @@ export class FeedbackTimelineComponent implements OnInit {
     );
   }
 
+  onSubmitSelectedProductsSearch() {
+    this.SpinnerService.show();
+    this.submitted = true;
+    this.sampleProductViewSearchValues = this.searchFormGroup2.value;
+    // tslint:disable-next-line:max-line-length
+    this.msService.loadSearchSampleProductsSelectedViewList(String(this.defaultPage), String(this.defaultPageSize), this.sampleProductViewSearchValues, this.searchTypeValue).subscribe(
+        (data: ApiResponseModel) => {
+          if (data.responseCode === '00') {
+            this.loadedData2 = data.data;
+            this.totalCount = this.loadedData2.length;
+            this.dataSet2.load(this.loadedData2);
+          }
+          this.SpinnerService.hide();
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+        },
+    );
+  }
+
   clearSearch() {
     this.searchFormGroup.reset();
+    this.searchFormGroup2.reset();
     this.submitted = false;
   }
 

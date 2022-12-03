@@ -331,7 +331,7 @@ export class AcknowledgementComponent implements OnInit {
   private loadData(page: number, records: number, routeTake: string, searchType: string): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    this.msService.loadAllComplaintTimelineList(String(page), String(records), routeTake, searchType).subscribe(
+    this.msService.loadAllComplaintTimelineAndStatusReportList(String(page), String(records), routeTake, searchType).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
@@ -382,7 +382,7 @@ export class AcknowledgementComponent implements OnInit {
     this.submitted = true;
     this.complaintViewSearchValues = this.searchFormGroup.value;
     // tslint:disable-next-line:max-line-length
-    this.msService.loadSearchClaimViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues, this.searchTypeValue).subscribe(
+    this.msService.loadSearchComplaintViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues, this.searchTypeValue).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;

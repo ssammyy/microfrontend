@@ -1,13 +1,20 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {County, CountyService, selectUserInfo, Town, TownService} from '../../../../core/store';
-import {AcknowledgementDto, ApiResponseModel, ReportSubmittedDto} from '../../../../core/store/data/ms/ms.model';
+import {
+  AcknowledgementDto,
+  ApiResponseModel, ComplaintsInvestigationListDto,
+  ComplaintViewSearchValues, MsDepartment, MsDivisionDetails, MsUsersDto,
+  ReportSubmittedDto,
+  SampleProductViewSearchValues, SeizedGoodsViewDto, SeizedGoodsViewSearchValues, SelectedProductViewListDto
+} from '../../../../core/store/data/ms/ms.model';
 import {LocalDataSource} from 'ng2-smart-table';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
+import {RegionsEntityDto} from '../../../../shared/models/master-data-details';
 
 @Component({
   selector: 'app-report-submitted-timeline',
@@ -15,11 +22,11 @@ import {MsService} from '../../../../core/store/data/ms/ms.service';
   styleUrls: ['./report-submitted-timeline.component.css']
 })
 export class ReportSubmittedTimelineComponent implements OnInit {
-
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   submitted = false;
   selectedCounty = 0;
   selectedTown = 0;
+  departmentSelected: 0;
   selectedTownName: string;
   selectedCountyName: string;
   county$: Observable<County[]>;
@@ -27,20 +34,31 @@ export class ReportSubmittedTimelineComponent implements OnInit {
   loading = false;
 
   roles: string[];
+  searchFormGroup!: FormGroup;
+  searchFormGroup2!: FormGroup;
+  searchFormGroup3!: FormGroup;
 
-  activeStatus = 'my-tasks';
-  previousStatus = 'my-tasks';
+  searchTypeValue = 'ALL_DETAILS';
+  endPointStatusValue = 'complaint';
+  activeStatus = 'seized-Goods';
+  previousStatus = 'seized-Goods';
   selectedBatchRefNo: string;
   searchStatus: any;
+  message: any;
   personalTasks = 'false';
   defaultPageSize = 10;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
-  selectedNotification: ReportSubmittedDto;
-  loadedData!: ReportSubmittedDto[];
+  seizedGoodsViewSearchValues: SeizedGoodsViewSearchValues;
+  selectedNotification: AcknowledgementDto;
+  loadedData!: SeizedGoodsViewDto[];
+  msOfficerLists!: MsUsersDto[];
+  msRegions: RegionsEntityDto[] = [];
+  msDepartments: MsDepartment[] = [];
+  msDivisions: MsDivisionDetails[] = [];
   totalCount = 12;
-  public settings = {
+  public settingsSeizedGoods = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
     hideSubHeader: false,
@@ -61,55 +79,50 @@ export class ReportSubmittedTimelineComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
-      // id: {
-      //   title: 'ID',
-      //   type: 'string',
-      //   filter: false
-      // },
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: true,
+        filter: false,
       },
-      complaintTitle: {
-        title: 'COMPLAINT TITLE',
+      descriptionProductsSeized: {
+        title: 'PRODUCT NAME',
         type: 'string',
-        filter: true,
+        filter: false,
       },
-      targetedProducts: {
-        title: 'TARGETED PRODUCTS',
+      region: {
+        title: 'REGION',
         type: 'string',
-        filter: true,
+        filter: false,
       },
-      transactionDate: {
-        title: 'TRANSACTION DATE',
-        type: 'date',
-        filter: true,
-      },
-      approvedDate: {
-        title: 'APPROVED DATE',
-        type: 'date',
-        filter: true,
-      },
-      rejectedDate: {
-        title: 'REJECTED DATE',
-        type: 'date',
-        filter: true,
-      },
-      acknowledgementType: {
-        title: 'ACKNOWLEDGEMENT TYPE',
+      currentLocation: {
+        title: 'CURRENT LOCATION',
         type: 'string',
-        filter: true,
+        filter: false,
       },
-      reportSubmited: {
-        title: 'REPORT SUBMMITED',
+      complaintDepartment: {
+        title: 'DEPARTMENT',
         type: 'string',
-        filter: true,
+        filter: false,
       },
-      timeTakenForReportSubmission: {
-        title: 'TIME TAKEN',
+      divisionId: {
+        title: 'FUNCTION',
         type: 'string',
-        filter: true,
+        filter: false,
+      },
+      quantity: {
+        title: 'QUANTITY',
+        type: 'string',
+        filter: false,
+      },
+      estimatedCost: {
+        title: 'ESTIMATED COST',
+        type: 'string',
+        filter: false,
+      },
+      status: {
+        title: 'STATUS',
+        type: 'string',
+        filter: false,
       },
     },
     pager: {
@@ -142,30 +155,61 @@ export class ReportSubmittedTimelineComponent implements OnInit {
       return this.roles = u.roles;
     });
 
-    this.activatedRoute.paramMap.subscribe(
-        rs => {
-          this.selectedBatchRefNo = rs.get('referenceNumber');
-          this.loadData(this.defaultPage, this.defaultPageSize);
-        },
-    );
+    this.searchFormGroup = this.formBuilder.group({
+      refNumber: ['', null],
+      productName: ['', null],
+      quantity: ['', null],
+      estimatedCost: ['', null],
+      currentLocation: ['', null],
+      region: ['', null],
+      complaintDepartment: ['', null],
+      division: ['', null],
+    });
+
+    this.loadData(this.defaultPage, this.defaultPageSize);
   }
+
+  get formSearch(): any {
+    return this.searchFormGroup.controls;
+  }
+
 
   private loadData(page: number, records: number): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    this.msService.loadReportSubmittedList(String(page), String(records)).subscribe(
+    this.msService.loadAllSeizedGoodsReportList(String(page), String(records)).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+
+            this.msService.msOfficerListDetails().subscribe(
+                (dataOfficer: MsUsersDto[]) => {
+                  this.msOfficerLists = dataOfficer;
+                },
+            );
+            this.msService.msRegionListDetails().subscribe(
+                (dataRegion: RegionsEntityDto[]) => {
+                  this.msRegions = dataRegion;
+                },
+            );
+            this.msService.msDepartmentListDetails().subscribe(
+                (dataDep: MsDepartment[]) => {
+                  this.msDepartments = dataDep;
+                },
+            );
+            this.msService.msDivisionListDetails().subscribe(
+                (dataDiv: MsDivisionDetails[]) => {
+                  this.msDivisions = dataDiv;
+                },
+            );
           }
           this.SpinnerService.hide();
         },
         error => {
           this.SpinnerService.hide();
           console.log(error);
-          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
@@ -180,5 +224,46 @@ export class ReportSubmittedTimelineComponent implements OnInit {
     }
   }
 
-}
+  onSubmitComplaintSearch() {
+    this.SpinnerService.show();
+    this.submitted = true;
+    this.seizedGoodsViewSearchValues = this.searchFormGroup.value;
+    // tslint:disable-next-line:max-line-length
+    this.msService.loadSearchSeizedGoodsViewList(String(this.defaultPage), String(this.defaultPageSize), this.seizedGoodsViewSearchValues).subscribe(
+        (data: ApiResponseModel) => {
+          if (data.responseCode === '00') {
+            this.loadedData = data.data;
+            this.totalCount = this.loadedData.length;
+            this.dataSet.load(this.loadedData);
+          }
+          this.SpinnerService.hide();
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+        },
+    );
+  }
 
+
+  clearSearch() {
+    this.searchFormGroup.reset();
+    this.submitted = false;
+  }
+
+  onChangeSelectedDepartment() {
+    this.departmentSelected = this.searchFormGroup?.get('complaintDepartment')?.value;
+  }
+
+  toggleStatus(status: string, endPointStatus: string, searchType: string): void {
+    this.message = null;
+    this.searchStatus = null;
+    if (status !== this.activeStatus) {
+      this.activeStatus = status;
+      this.endPointStatusValue = endPointStatus;
+      this.searchTypeValue = searchType;
+      // this.loadData(this.defaultPage, this.defaultPageSize);
+      this.loadData(this.defaultPage, this.defaultPageSize);
+    }
+  }
+}

@@ -588,6 +588,9 @@ import {
     PrepareDraftComponent
 } from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
 import {IntStdGazetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
+import {
+    ReportSubmittedTimelineComponent
+} from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
 
 export const routes: Routes = [
     {
@@ -2007,12 +2010,8 @@ export const routes: Routes = [
                 component: FeedbackTimelineComponent,
             },
             {
-                path: 'reportSubmitted',
-                component: AcknowledgementComponent,
-            },
-            {
-                path: 'sampleSubmitted',
-                component: AcknowledgementComponent,
+                path: 'seizedGoods',
+                component: ReportSubmittedTimelineComponent,
             },
 
         ],
