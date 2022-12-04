@@ -39,6 +39,8 @@ export class AcknowledgementComponent implements OnInit {
   searchFormGroup!: FormGroup;
   dtOptions: DataTables.Settings = {};
   dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
+  dtTrigger3: Subject<any> = new Subject<any>();
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
 
@@ -347,6 +349,8 @@ export class AcknowledgementComponent implements OnInit {
     });
     setTimeout(() => {
       this.dtTrigger1.next();
+      this.dtTrigger2.next();
+      this.dtTrigger3.next();
     });
 
   }
