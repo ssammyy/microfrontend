@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {County, CountyService, selectUserInfo, Town, TownService} from '../../../../core/store';
 import {
@@ -15,6 +15,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {RegionsEntityDto} from '../../../../shared/models/master-data-details';
+import {DataTableDirective} from 'angular-datatables';
 
 @Component({
   selector: 'app-report-submitted-timeline',
@@ -32,6 +33,10 @@ export class ReportSubmittedTimelineComponent implements OnInit {
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
   loading = false;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger1: Subject<any> = new Subject<any>();
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
 
   roles: string[];
   searchFormGroup!: FormGroup;
@@ -46,7 +51,7 @@ export class ReportSubmittedTimelineComponent implements OnInit {
   searchStatus: any;
   message: any;
   personalTasks = 'false';
-  defaultPageSize = 10;
+  defaultPageSize = 1000;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -151,6 +156,11 @@ export class ReportSubmittedTimelineComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.dtOptions = {
+      processing: true,
+      dom: 'Bfrtip',
+    };
+
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.roles = u.roles;
     });
@@ -173,6 +183,18 @@ export class ReportSubmittedTimelineComponent implements OnInit {
     return this.searchFormGroup.controls;
   }
 
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+    });
+    setTimeout(() => {
+      this.dtTrigger1.next();
+    });
+
+  }
 
   private loadData(page: number, records: number): any {
     this.SpinnerService.show();
@@ -183,6 +205,7 @@ export class ReportSubmittedTimelineComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.rerender();
 
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {
@@ -235,6 +258,7 @@ export class ReportSubmittedTimelineComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.rerender();
           }
           this.SpinnerService.hide();
         },

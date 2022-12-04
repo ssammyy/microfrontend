@@ -237,6 +237,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
                 val hodDashBoard =  MsDashBoardHODDto()
                 with(hodDashBoard){
+                    overdueJuniorTaskCPWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
+                    overdueJuniorTaskWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
                     reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
                     reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     selfAssigningTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
@@ -247,6 +249,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
                 val hodDashBoard =  MsDashBoardHODDto()
                 with(hodDashBoard){
+                    overdueJuniorTaskCPWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
+                    overdueJuniorTaskWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
                     reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
                     reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     selfAssigningTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
@@ -257,6 +261,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
                 val hofDashBoard = MsDashBoardHOFDto()
                 with(hofDashBoard){
+                    overdueJuniorTaskCPWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
+                    overdueJuniorTaskWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
                     reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
                     reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     assigningIOTaskCP = loggedInUser.id?.let { tasksPendingAllocationCpViewRepo.countByHofAssignedAndMsComplaintEndedStatusIsNullAndAssignedIoIsNull(it) }
@@ -266,6 +272,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
                 val diDashBoard = MsDashBoardDIDto()
                 with(diDashBoard){
+                    overdueJuniorTaskCPWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
+                    overdueJuniorTaskWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
                     reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
                     reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     assigningHODTaskCP =  tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
@@ -1339,16 +1347,19 @@ class MarketSurveillanceComplaintProcessDaoServices(
             refNumberSpec = ComplaintViewSpecification(SearchCriteria("referenceNumber", "=", search.refNumber))
         }
 
-        search.assignedIo?.let {
+        if(search.assignedIo != null && search.assignedIo!! > 0L){
             assignedIoSpec = ComplaintViewSpecification(SearchCriteria("assignedIo", "=", search.assignedIo))
         }
-        search.region?.let {
+
+        if(search.region != null && search.region!! > 0L){
             regionSpec = ComplaintViewSpecification(SearchCriteria("region", "=", search.region))
         }
-        search.complaintDepartment?.let {
+
+        if(search.complaintDepartment != null && search.complaintDepartment!! > 0L){
             complaintDepartmentSpec = ComplaintViewSpecification(SearchCriteria("complaintDepartment", "=", search.complaintDepartment))
         }
-        search.division?.let {
+
+        if(search.division != null && search.division!! > 0L){
             divisionSpec = ComplaintViewSpecification(SearchCriteria("division", "=", search.division))
         }
 
@@ -1425,18 +1436,20 @@ class MarketSurveillanceComplaintProcessDaoServices(
             bsNumberSpec = SampleProductViewSpecification(SearchCriteria("bsNumber", "=", search.bsNumber))
         }
 
-        search.region?.let {
+        if(search.region != null && search.region!! > 0L){
             regionSpec = SampleProductViewSpecification(SearchCriteria("region", "=", search.region))
         }
-        search.complaintDepartment?.let {
+
+        if(search.complaintDepartment != null && search.complaintDepartment!! > 0L){
             complaintDepartmentSpec = SampleProductViewSpecification(SearchCriteria("complaintDepartment", "=", search.complaintDepartment))
         }
-        search.division?.let {
+
+        if(search.division != null && search.division!! > 0L){
             divisionSpec = SampleProductViewSpecification(SearchCriteria("divisionId", "=", search.division))
         }
 
 
-        performanceOfSelectedProductViewRepo.findAll(refNumberSpec?.and(productNameSpec)?.and(statusSpec)?.and(bsNumberSpec)?.and(regionSpec)?.and(complaintDepartmentSpec)?.and(divisionSpec))
+        performanceOfSelectedProductViewRepo.findAll(productNameSpec?.and(statusSpec)?.and(bsNumberSpec)?.and(regionSpec)?.and(complaintDepartmentSpec)?.and(divisionSpec))
             .map { comp ->
                 sampleProductsList.add(
                     SelectedProductViewListDto(
@@ -1496,18 +1509,20 @@ class MarketSurveillanceComplaintProcessDaoServices(
             estimatedCostSpec = SeizedGoodsViewSpecification(SearchCriteria("estimatedCost", "=", search.estimatedCost))
         }
 
-        search.region?.let {
+        if(search.region != null && search.region!! > 0L){
             regionSpec = SeizedGoodsViewSpecification(SearchCriteria("region", "=", search.region))
         }
-        search.complaintDepartment?.let {
+
+        if(search.complaintDepartment != null && search.complaintDepartment!! > 0L){
             complaintDepartmentSpec = SeizedGoodsViewSpecification(SearchCriteria("complaintDepartment", "=", search.complaintDepartment))
         }
-        search.division?.let {
+
+        if(search.division != null && search.division!! > 0L){
             divisionSpec = SeizedGoodsViewSpecification(SearchCriteria("divisionId", "=", search.division))
         }
 
 
-        seizedGoodsViewRepo.findAll(refNumberSpec?.and(currentLocationSpec)?.and(productNameSpec)?.and(quantitySpec)?.and(estimatedCostSpec)?.and(regionSpec)?.and(complaintDepartmentSpec)?.and(divisionSpec))
+        seizedGoodsViewRepo.findAll(currentLocationSpec?.and(productNameSpec)?.and(quantitySpec)?.and(estimatedCostSpec)?.and(regionSpec)?.and(complaintDepartmentSpec)?.and(divisionSpec))
             .map { comp ->
                 sampleProductsList.add(
                     SeizedGoodsViewDto(

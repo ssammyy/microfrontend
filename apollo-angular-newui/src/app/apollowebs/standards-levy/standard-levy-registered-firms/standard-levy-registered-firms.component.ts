@@ -77,7 +77,7 @@ export class StandardLevyRegisteredFirmsComponent implements OnInit {
       private notifyService : NotificationService,
       private levyService: LevyService,
       private formBuilder: FormBuilder,
-      private spinnerService: OverlayService
+      private spinnerService: OverlayService,
   ) { }
 
   ngOnInit(): void {

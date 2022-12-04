@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {County, CountyService, selectUserInfo, Town, TownService} from '../../../../core/store';
 import {
@@ -16,6 +16,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {RegionsEntityDto} from '../../../../shared/models/master-data-details';
 import {ApiEndpointService} from '../../../../core/services/endpoints/api-endpoint.service';
+import {DataTableDirective} from 'angular-datatables';
 
 @Component({
   selector: 'app-feedback-timeline',
@@ -38,6 +39,10 @@ export class FeedbackTimelineComponent implements OnInit {
   searchFormGroup!: FormGroup;
   searchFormGroup2!: FormGroup;
   searchFormGroup3!: FormGroup;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger1: Subject<any> = new Subject<any>();
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
 
   searchTypeValue = 'ALL_DETAILS';
   endPointStatusValue = 'complaint';
@@ -47,7 +52,7 @@ export class FeedbackTimelineComponent implements OnInit {
   searchStatus: any;
   message: any;
   personalTasks = 'false';
-  defaultPageSize = 10;
+  defaultPageSize = 1000;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -279,6 +284,11 @@ export class FeedbackTimelineComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.dtOptions = {
+      processing: true,
+      dom: 'Bfrtip',
+    };
+
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.roles = u.roles;
     });
@@ -314,6 +324,19 @@ export class FeedbackTimelineComponent implements OnInit {
     this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
   }
 
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+    });
+    setTimeout(() => {
+      this.dtTrigger1.next();
+    });
+
+  }
+
   get formSearch(): any {
     return this.searchFormGroup.controls;
   }
@@ -333,11 +356,13 @@ export class FeedbackTimelineComponent implements OnInit {
                 this.loadedData = data.data;
                 this.totalCount = this.loadedData.length;
                 this.dataSet.load(this.loadedData);
+                this.rerender();
                 break;
               case 'sample-products':
                 this.loadedData2 = data.data;
                 this.totalCount = this.loadedData2.length;
                 this.dataSet2.load(this.loadedData2);
+                this.rerender();
                 break;
             }
 
@@ -393,6 +418,7 @@ export class FeedbackTimelineComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.rerender();
           }
           this.SpinnerService.hide();
         },
@@ -414,6 +440,7 @@ export class FeedbackTimelineComponent implements OnInit {
             this.loadedData2 = data.data;
             this.totalCount = this.loadedData2.length;
             this.dataSet2.load(this.loadedData2);
+            this.rerender();
           }
           this.SpinnerService.hide();
         },

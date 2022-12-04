@@ -113,30 +113,141 @@
 
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
-                                <div class="table-responsive table-striped">
-                                    <ng2-smart-table *ngIf="activeStatus == 'acknowledgement-of-complaint'" class="table table-hover"
-                                                     [settings]="settingsAcknowledgment"
-                                                     [source]="dataSet">
-                                    </ng2-smart-table>
-                                    <ng2-smart-table *ngIf="activeStatus == 'give-feedback-to-complainant'" class="table table-hover"
-                                                     [settings]="settingsFeedBack"
-                                                     [source]="dataSet">
-                                    </ng2-smart-table>
-                                    <ng2-smart-table *ngIf="activeStatus == 'completion-of-complaint-investigation'" class="table table-hover"
-                                                     [settings]="settingsCompletionOfComplaint"
-                                                     [source]="dataSet">
-                                    </ng2-smart-table>
-                                    <br/>
-                                    <ngb-pagination
-                                    >
-                                        <ng-template ngbPaginationFirst>First</ng-template>
-                                        <ng-template ngbPaginationLast>Last</ng-template>
-                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
-                                        <ng-template ngbPaginationNext>Next</ng-template>
-                                        <ng-template ngbPaginationEllipsis>...</ng-template>
-                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>
-                                    </ngb-pagination>
+                                <div *ngIf="activeStatus == 'acknowledgement-of-complaint'"  class="material-datatables table-responsive col-md-12">
+                                    <table
+                                            class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"   >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">REFERENCE NUMBER</th>
+                                            <th class="knw">COMPLAINT TITLE</th>
+                                            <th class="knw">TARGETED PRODUCTS</th>
+                                            <th class="sl">TRANSACTION DATE</th>
+                                            <th class="knw">OFFICER NAME</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">STATUS</th>
+                                            <th class="knw">TIME TAKEN</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let companyModel of loadedData let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel.referenceNumber}}</td>
+                                            <td>{{companyModel.complaintTitle }}</td>
+                                            <td>{{companyModel.targetedProducts}}</td>
+                                            <td>{{companyModel.transactionDate}}</td>
+                                            <td>{{companyModel.assignedIo}}</td>
+                                            <td>{{companyModel.region}}</td>
+                                            <td>{{companyModel.complaintDepartment}}</td>
+                                            <td>{{companyModel.division}}</td>
+                                            <td>{{companyModel.status}}</td>
+                                            <td>{{companyModel.timeTakenForAcknowledgement}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+                                <div *ngIf="activeStatus == 'give-feedback-to-complainant'" class="material-datatables table-responsive col-md-12">
+                                    <table
+                                            class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"   >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">REFERENCE NUMBER</th>
+                                            <th class="knw">COMPLAINT TITLE</th>
+                                            <th class="knw">TARGETED PRODUCTS</th>
+                                            <th class="sl">TRANSACTION DATE</th>
+                                            <th class="knw">OFFICER NAME</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">FEED BACK SENT STATUS</th>
+                                            <th class="knw">TIME TAKEN</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let companyModel of loadedData let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel.referenceNumber}}</td>
+                                            <td>{{companyModel.complaintTitle }}</td>
+                                            <td>{{companyModel.targetedProducts}}</td>
+                                            <td>{{companyModel.transactionDate}}</td>
+                                            <td>{{companyModel.assignedIo}}</td>
+                                            <td>{{companyModel.region}}</td>
+                                            <td>{{companyModel.complaintDepartment}}</td>
+                                            <td>{{companyModel.division}}</td>
+                                            <td>{{companyModel.feedbackSent}}</td>
+                                            <td>{{companyModel.timeTakenForFeedbackSent}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div *ngIf="activeStatus == 'completion-of-complaint-investigation'" class="material-datatables table-responsive col-md-12">
+                                    <table
+                                            class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"   >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">REFERENCE NUMBER</th>
+                                            <th class="knw">COMPLAINT TITLE</th>
+                                            <th class="knw">TARGETED PRODUCTS</th>
+                                            <th class="sl">TRANSACTION DATE</th>
+                                            <th class="knw">OFFICER NAME</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">INVESTIGATION ENDED STATUS</th>
+                                            <th class="knw">TIME TAKEN</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let companyModel of loadedData let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel.referenceNumber}}</td>
+                                            <td>{{companyModel.complaintTitle }}</td>
+                                            <td>{{companyModel.targetedProducts}}</td>
+                                            <td>{{companyModel.transactionDate}}</td>
+                                            <td>{{companyModel.assignedIo}}</td>
+                                            <td>{{companyModel.region}}</td>
+                                            <td>{{companyModel.complaintDepartment}}</td>
+                                            <td>{{companyModel.division}}</td>
+                                            <td>{{companyModel.feedbackSent}}</td>
+                                            <td>{{companyModel.timeTakenForFeedbackSent}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+<!--                                <div class="table-responsive table-striped">-->
+<!--                                    <ng2-smart-table *ngIf="activeStatus == 'acknowledgement-of-complaint'" class="table table-hover"-->
+<!--                                                     [settings]="settingsAcknowledgment"-->
+<!--                                                     [source]="dataSet">-->
+<!--                                    </ng2-smart-table>-->
+<!--                                    <ng2-smart-table *ngIf="activeStatus == 'give-feedback-to-complainant'" class="table table-hover"-->
+<!--                                                     [settings]="settingsFeedBack"-->
+<!--                                                     [source]="dataSet">-->
+<!--                                    </ng2-smart-table>-->
+<!--                                    <ng2-smart-table *ngIf="activeStatus == 'completion-of-complaint-investigation'" class="table table-hover"-->
+<!--                                                     [settings]="settingsCompletionOfComplaint"-->
+<!--                                                     [source]="dataSet">-->
+<!--                                    </ng2-smart-table>-->
+<!--                                    <br/>-->
+<!--                                    <ngb-pagination-->
+<!--                                    >-->
+<!--                                        <ng-template ngbPaginationFirst>First</ng-template>-->
+<!--                                        <ng-template ngbPaginationLast>Last</ng-template>-->
+<!--                                        <ng-template ngbPaginationPrevious>Prev</ng-template>-->
+<!--                                        <ng-template ngbPaginationNext>Next</ng-template>-->
+<!--                                        <ng-template ngbPaginationEllipsis>...</ng-template>-->
+<!--                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>-->
+<!--                                    </ngb-pagination>-->
+<!--                                </div>-->
                             </div>
                         </div>
 

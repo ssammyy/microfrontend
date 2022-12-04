@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {County, CountyService, Region, selectUserInfo, Town, TownService} from '../../../../core/store';
 import {UserNotificationDetailsDto} from '../../../../core/store/data/master/master.model';
@@ -16,6 +16,7 @@ import {
   MsUsersDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {RegionsEntityDto} from '../../../../shared/models/master-data-details';
+import {DataTableDirective} from 'angular-datatables';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -36,6 +37,10 @@ export class AcknowledgementComponent implements OnInit {
 
   roles: string[];
   searchFormGroup!: FormGroup;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger1: Subject<any> = new Subject<any>();
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
 
   searchTypeValue = 'ACKNOWLEDGEMENT';
   endPointStatusValue = 'complaint';
@@ -45,7 +50,7 @@ export class AcknowledgementComponent implements OnInit {
   searchStatus: any;
   message: any;
   personalTasks = 'false';
-  defaultPageSize = 10;
+  defaultPageSize = 1000;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -309,6 +314,11 @@ export class AcknowledgementComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.dtOptions = {
+      processing: true,
+      dom: 'Bfrtip',
+    };
+
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.roles = u.roles;
     });
@@ -328,6 +338,19 @@ export class AcknowledgementComponent implements OnInit {
     return this.searchFormGroup.controls;
   }
 
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+    });
+    setTimeout(() => {
+      this.dtTrigger1.next();
+    });
+
+  }
+
   private loadData(page: number, records: number, routeTake: string, searchType: string): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
@@ -337,6 +360,7 @@ export class AcknowledgementComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.rerender();
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {
                   this.msOfficerLists = dataOfficer;
@@ -388,6 +412,7 @@ export class AcknowledgementComponent implements OnInit {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
+            this.rerender();
           }
           this.SpinnerService.hide();
         },

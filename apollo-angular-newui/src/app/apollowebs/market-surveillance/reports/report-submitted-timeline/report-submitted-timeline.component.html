@@ -66,17 +66,6 @@
                                                 </div>
                                                 <div class="col-6 col-md-3">
                                                     <div class="form-group">
-                                                        <label><b>Officer Name</b></label>
-                                                        <select id="assignedIo" class="form-control" formControlName="assignedIo" type="number"
-                                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignedIo">
-                                                            <option  selected>Please select</option>
-                                                            <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id"
-                                                            >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6 col-md-3">
-                                                    <div class="form-group">
                                                         <label><b>Region</b></label>
                                                         <select id="region" class="form-control" formControlName="region" type="number"
                                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">
@@ -98,8 +87,6 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-6 col-md-3">
                                                     <div class="form-group">
                                                         <label><b>Division</b> </label>
@@ -147,22 +134,56 @@
 
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
-                                <div class="table-responsive table-striped">
-                                    <ng2-smart-table  class="table table-hover"
-                                                     [settings]="settingsSeizedGoods"
-                                                     [source]="dataSet">
-                                    </ng2-smart-table>
-                                    <br/>
-                                    <ngb-pagination
-                                    >
-                                        <ng-template ngbPaginationFirst>First</ng-template>
-                                        <ng-template ngbPaginationLast>Last</ng-template>
-                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
-                                        <ng-template ngbPaginationNext>Next</ng-template>
-                                        <ng-template ngbPaginationEllipsis>...</ng-template>
-                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>
-                                    </ngb-pagination>
+                                <div class="material-datatables table-responsive col-md-12">
+                                    <table  class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"   >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">REFERENCE NUMBER</th>
+                                            <th class="knw">PRODUCT NAME</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="sl">CURRENT LOCATION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">QUANTITY</th>
+                                            <th class="knw">ESTIMATED COST</th>
+                                            <th class="knw">STATUS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let companyModel of loadedData let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel.referenceNumber}}</td>
+                                            <td>{{companyModel.descriptionProductsSeized }}</td>
+                                            <td>{{companyModel.region}}</td>
+                                            <td>{{companyModel.currentLocation}}</td>
+                                            <td>{{companyModel.complaintDepartment}}</td>
+                                            <td>{{companyModel.divisionId}}</td>
+                                            <td>{{companyModel.quantity}}</td>
+                                            <td>{{companyModel.estimatedCost}}</td>
+                                            <td>{{companyModel.status}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+<!--                                <div class="table-responsive table-striped">-->
+<!--                                    <ng2-smart-table  class="table table-hover"-->
+<!--                                                     [settings]="settingsSeizedGoods"-->
+<!--                                                     [source]="dataSet">-->
+<!--                                    </ng2-smart-table>-->
+<!--                                    <br/>-->
+<!--                                    <ngb-pagination-->
+<!--                                    >-->
+<!--                                        <ng-template ngbPaginationFirst>First</ng-template>-->
+<!--                                        <ng-template ngbPaginationLast>Last</ng-template>-->
+<!--                                        <ng-template ngbPaginationPrevious>Prev</ng-template>-->
+<!--                                        <ng-template ngbPaginationNext>Next</ng-template>-->
+<!--                                        <ng-template ngbPaginationEllipsis>...</ng-template>-->
+<!--                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>-->
+<!--                                    </ngb-pagination>-->
+<!--                                </div>-->
                             </div>
                         </div>
 

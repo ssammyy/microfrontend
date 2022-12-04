@@ -153,7 +153,9 @@ interface IMsTasksPendingAllocationWpViewRepository : HazelcastRepository<MsTask
     override fun findAll(pageable: Pageable): Page<MsTasksPendingAllocationWpViewEntity>
 
     fun countByOfficerId(officerId: Long): Long
+    fun countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(taskOverDue: String,userTaskId: Long): Long
     fun countByTaskOverDueAndComplaintIdIsNotNull(taskOverDue: String): Long
+    fun countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(taskOverDue: String,userTaskId: Long): Long
     fun countByTaskOverDueAndComplaintIdIsNull(taskOverDue: String): Long
     fun countByReportPendingReviewAndComplaintIdIsNotNull(reportPendingReview: Int): Long
     fun countByReportPendingReviewAndComplaintIdIsNull(reportPendingReview: Int): Long
