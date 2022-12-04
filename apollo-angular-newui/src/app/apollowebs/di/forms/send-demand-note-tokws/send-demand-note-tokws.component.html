@@ -16,8 +16,8 @@
                         [hidden]="selection.selected.length<=1"
                         formControlName="group">
                     <option [value]="">Select fee type</option>
+                    <option value="GROUP" selected>Apply to Grouped items</option>
                     <option value="SINGLE">Apply on each item</option>
-                    <option value="GROUP">Apply to Grouped items</option>
                 </select>
                 <button class="btn btn-primary input-group-append" [hidden]="!groupFeeApplicable"
                         [disabled]="groupForm.invalid"

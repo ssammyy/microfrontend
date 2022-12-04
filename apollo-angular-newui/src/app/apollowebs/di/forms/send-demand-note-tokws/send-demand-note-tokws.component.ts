@@ -42,7 +42,7 @@ export class SendDemandNoteTokwsComponent implements OnInit {
 
         this.groupForm = this.fb.group({
             feeId: ['', [Validators.required]],
-            group: ['SINGLE', [Validators.required]]
+            group: ['GROUP', [Validators.required]]
         })
         this.items = this.data.items
         // Selection
