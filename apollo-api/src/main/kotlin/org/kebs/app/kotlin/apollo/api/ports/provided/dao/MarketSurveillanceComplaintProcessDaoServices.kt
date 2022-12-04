@@ -1335,10 +1335,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
         var divisionSpec: ComplaintViewSpecification? = null
 
 
-
-        search.refNumber?.let {
+        if(search.refNumber != null && search.refNumber?.length!! > 0){
             refNumberSpec = ComplaintViewSpecification(SearchCriteria("referenceNumber", "=", search.refNumber))
         }
+
         search.assignedIo?.let {
             assignedIoSpec = ComplaintViewSpecification(SearchCriteria("assignedIo", "=", search.assignedIo))
         }
@@ -1409,18 +1409,22 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
 
 
-        search.refNumber?.let {
+        if(search.refNumber != null && search.refNumber?.length!! > 0){
             refNumberSpec = SampleProductViewSpecification(SearchCriteria("referenceNumber", "=", search.refNumber))
         }
-        search.status?.let {
+
+        if(search.status != null && search.status?.length!! > 0){
             statusSpec = SampleProductViewSpecification(SearchCriteria("status", "=", search.status))
         }
-        search.productName?.let {
+
+        if(search.productName != null && search.productName?.length!! > 0){
             productNameSpec = SampleProductViewSpecification(SearchCriteria("nameProduct", "=", search.productName))
         }
-        search.bsNumber?.let {
+
+        if(search.bsNumber != null && search.bsNumber?.length!! > 0){
             bsNumberSpec = SampleProductViewSpecification(SearchCriteria("bsNumber", "=", search.bsNumber))
         }
+
         search.region?.let {
             regionSpec = SampleProductViewSpecification(SearchCriteria("region", "=", search.region))
         }
@@ -1472,22 +1476,26 @@ class MarketSurveillanceComplaintProcessDaoServices(
         var divisionSpec: SeizedGoodsViewSpecification? = null
 
 
-
-        search.refNumber?.let {
+        if(search.refNumber != null && search.refNumber?.length!! > 0){
             refNumberSpec = SeizedGoodsViewSpecification(SearchCriteria("referenceNumber", "=", search.refNumber))
         }
-        search.currentLocation?.let {
+
+        if(search.currentLocation != null && search.currentLocation?.length!! > 0){
             currentLocationSpec = SeizedGoodsViewSpecification(SearchCriteria("currentLocation", "=", search.currentLocation))
         }
-        search.quantity?.let {
+
+        if(search.quantity != null && search.quantity?.length!! > 0){
             quantitySpec = SeizedGoodsViewSpecification(SearchCriteria("quantity", "=", search.quantity))
         }
-        search.productName?.let {
+
+        if(search.productName != null && search.productName?.length!! > 0){
             productNameSpec = SeizedGoodsViewSpecification(SearchCriteria("descriptionProductsSeized", "=", search.productName))
         }
-        search.estimatedCost?.let {
+
+        if(search.estimatedCost != null && search.estimatedCost?.length!! > 0){
             estimatedCostSpec = SeizedGoodsViewSpecification(SearchCriteria("estimatedCost", "=", search.estimatedCost))
         }
+
         search.region?.let {
             regionSpec = SeizedGoodsViewSpecification(SearchCriteria("region", "=", search.region))
         }

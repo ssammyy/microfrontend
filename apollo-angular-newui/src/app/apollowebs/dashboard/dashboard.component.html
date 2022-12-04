@@ -892,7 +892,7 @@
                                 <i class="material-icons">verified</i>
                             </div>
                             <p class="card-category">Work Plan Scheduled, Over due Tasks </p>
-                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskWP}}</h3>
+                            <h3 class="card-title">{{msDashBoardDetails?.hodDashBoard?.overdueJuniorTaskWP}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -910,7 +910,7 @@
                                 <i class="material-icons">verified</i>
                             </div>
                             <p class="card-category">Complaint Scheduled, Over due Tasks</p>
-                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskCPWP}}</h3>
+                            <h3 class="card-title">{{msDashBoardDetails?.hodDashBoard?.overdueJuniorTaskCPWP}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -931,7 +931,7 @@
                                 <i class="material-icons">verified</i>
                             </div>
                             <p class="card-category">Work Plan Scheduled, Reports Pending Review </p>
-                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewWP}}</h3>
+                            <h3 class="card-title">{{msDashBoardDetails?.hodDashBoard?.reportPendingReviewWP}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -949,7 +949,7 @@
                                 <i class="material-icons">verified</i>
                             </div>
                             <p class="card-category">Complaint Scheduled, Reports Pending Review</p>
-                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewCPWP}}</h3>
+                            <h3 class="card-title">{{msDashBoardDetails?.hodDashBoard?.reportPendingReviewCPWP}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -964,7 +964,9 @@
         <div *ngIf="roles?.includes('MS_HOF_READ')" >
             <div class="row" >
                 <div class="col-lg-6 col-md-6 col-sm-6">
-                    <div class="card card-stats">
+                    <div class="card card-stats"
+                         (click)="openModalAddDetails('pendingAllocationCPTask','Complaint Pending Officer Assigning')"  data-toggle="modal"
+                    >
                         <div class="card-header card-header-warning card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">verified</i>
@@ -1006,7 +1008,7 @@
                                 <i class="material-icons">verified</i>
                             </div>
                             <p class="card-category">Work Plan Scheduled, Over due Tasks </p>
-                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskWP}}</h3>
+                            <h3 class="card-title">{{msDashBoardDetails?.hofDashBoard?.overdueJuniorTaskWP}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -1024,7 +1026,7 @@
                                 <i class="material-icons">verified</i>
                             </div>
                             <p class="card-category">Complaint Scheduled, Over due Tasks</p>
-                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.overdueJuniorTaskCPWP}}</h3>
+                            <h3 class="card-title">{{msDashBoardDetails?.hofDashBoard?.overdueJuniorTaskCPWP}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -1045,7 +1047,7 @@
                                 <i class="material-icons">verified</i>
                             </div>
                             <p class="card-category">Work Plan Scheduled, Reports Pending Review </p>
-                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewWP}}</h3>
+                            <h3 class="card-title">{{msDashBoardDetails?.hofDashBoard?.reportPendingReviewWP}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -1063,7 +1065,7 @@
                                 <i class="material-icons">verified</i>
                             </div>
                             <p class="card-category">Complaint Scheduled, Reports Pending Review</p>
-                            <h3 class="card-title">{{msDashBoardDetails?.diDashBoard?.reportPendingReviewCPWP}}</h3>
+                            <h3 class="card-title">{{msDashBoardDetails?.hofDashBoard?.reportPendingReviewCPWP}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
