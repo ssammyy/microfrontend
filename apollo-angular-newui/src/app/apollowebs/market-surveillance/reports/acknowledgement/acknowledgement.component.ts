@@ -37,10 +37,13 @@ export class AcknowledgementComponent implements OnInit {
   roles: string[];
   searchFormGroup!: FormGroup;
 
-  activeStatus = 'my-tasks';
-  previousStatus = 'my-tasks';
+  searchTypeValue = 'ACKNOWLEDGEMENT';
+  endPointStatusValue = 'complaint';
+  activeStatus = 'acknowledgement-of-complaint';
+  previousStatus = 'acknowledgement-of-complaint';
   selectedBatchRefNo: string;
   searchStatus: any;
+  message: any;
   personalTasks = 'false';
   defaultPageSize = 10;
   defaultPage = 0;
@@ -54,7 +57,7 @@ export class AcknowledgementComponent implements OnInit {
   msDepartments: MsDepartment[] = [];
   msDivisions: MsDivisionDetails[] = [];
   totalCount = 12;
-  public settings = {
+  public settingsAcknowledgment = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
     hideSubHeader: false,
@@ -115,12 +118,166 @@ export class AcknowledgementComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      acknowledgementType: {
-        title: 'ACKNOWLEDGEMENT TYPE',
+      status: {
+        title: 'STATUS',
         type: 'string',
         filter: false,
       },
       timeTakenForAcknowledgement: {
+        title: 'TIME TAKEN',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 10,
+    },
+  };
+  public settingsFeedBack = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      // custom: [
+      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
+      // ],
+      // position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      referenceNumber: {
+        title: 'REFERENCE NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      complaintTitle: {
+        title: 'COMPLAINT TITLE',
+        type: 'string',
+        filter: false,
+      },
+      targetedProducts: {
+        title: 'TARGETED PRODUCTS',
+        type: 'string',
+        filter: false,
+      },
+      transactionDate: {
+        title: 'TRANSACTION DATE',
+        type: 'date',
+        filter: false,
+      },
+      assignedIo: {
+        title: 'OFFICER NAME',
+        type: 'string',
+        filter: false,
+      },
+      region: {
+        title: 'REGION',
+        type: 'string',
+        filter: false,
+      },
+      complaintDepartment: {
+        title: 'DEPARTMENT',
+        type: 'string',
+        filter: false,
+      },
+      division: {
+        title: 'FUNCTION',
+        type: 'string',
+        filter: false,
+      },
+      feedbackSent: {
+        title: 'FEED BACK SENT STATUS',
+        type: 'string',
+        filter: false,
+      },
+      timeTakenForFeedbackSent: {
+        title: 'TIME TAKEN',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 10,
+    },
+  };
+  public settingsCompletionOfComplaint = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      // custom: [
+      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
+      // ],
+      // position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      referenceNumber: {
+        title: 'REFERENCE NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      complaintTitle: {
+        title: 'COMPLAINT TITLE',
+        type: 'string',
+        filter: false,
+      },
+      targetedProducts: {
+        title: 'TARGETED PRODUCTS',
+        type: 'string',
+        filter: false,
+      },
+      transactionDate: {
+        title: 'TRANSACTION DATE',
+        type: 'date',
+        filter: false,
+      },
+      assignedIo: {
+        title: 'OFFICER NAME',
+        type: 'string',
+        filter: false,
+      },
+      region: {
+        title: 'REGION',
+        type: 'string',
+        filter: false,
+      },
+      complaintDepartment: {
+        title: 'DEPARTMENT',
+        type: 'string',
+        filter: false,
+      },
+      division: {
+        title: 'FUNCTION',
+        type: 'string',
+        filter: false,
+      },
+      feedbackSent: {
+        title: 'INVESTIGATION ENDED STATUS',
+        type: 'string',
+        filter: false,
+      },
+      timeTakenForFeedbackSent: {
         title: 'TIME TAKEN',
         type: 'string',
         filter: false,
@@ -164,22 +321,17 @@ export class AcknowledgementComponent implements OnInit {
       division: ['', null],
     });
 
-    this.activatedRoute.paramMap.subscribe(
-        rs => {
-          this.selectedBatchRefNo = rs.get('referenceNumber');
-          this.loadData(this.defaultPage, this.defaultPageSize);
-        },
-    );
+    this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
   }
 
   get formSearch(): any {
     return this.searchFormGroup.controls;
   }
 
-  private loadData(page: number, records: number): any {
+  private loadData(page: number, records: number, routeTake: string, searchType: string): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    this.msService.loadAcknowledgementList(String(page), String(records)).subscribe(
+    this.msService.loadAllComplaintTimelineAndStatusReportList(String(page), String(records), routeTake, searchType).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
@@ -221,39 +373,21 @@ export class AcknowledgementComponent implements OnInit {
     if (pageIndex) {
       this.currentPageInternal = pageIndex - 1;
       this.currentPage = pageIndex;
-      this.loadData(this.currentPageInternal, this.defaultPageSize);
+      this.loadData(this.currentPageInternal, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
     }
   }
 
   onSubmitSearch() {
+    this.SpinnerService.show();
+    this.submitted = true;
     this.complaintViewSearchValues = this.searchFormGroup.value;
     // tslint:disable-next-line:max-line-length
-    this.msService.loadSearchClaimViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues).subscribe(
+    this.msService.loadSearchComplaintViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues, this.searchTypeValue).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
             this.totalCount = this.loadedData.length;
             this.dataSet.load(this.loadedData);
-            this.msService.msOfficerListDetails().subscribe(
-                (dataOfficer: MsUsersDto[]) => {
-                  this.msOfficerLists = dataOfficer;
-                },
-            );
-            this.msService.msRegionListDetails().subscribe(
-                (dataRegion: RegionsEntityDto[]) => {
-                  this.msRegions = dataRegion;
-                },
-            );
-            this.msService.msDepartmentListDetails().subscribe(
-                (dataDep: MsDepartment[]) => {
-                  this.msDepartments = dataDep;
-                },
-            );
-            this.msService.msDivisionListDetails().subscribe(
-                (dataDiv: MsDivisionDetails[]) => {
-                  this.msDivisions = dataDiv;
-                },
-            );
           }
           this.SpinnerService.hide();
         },
@@ -264,7 +398,24 @@ export class AcknowledgementComponent implements OnInit {
     );
   }
 
+  clearSearch() {
+    this.searchFormGroup.reset();
+    this.submitted = false;
+  }
+
   onChangeSelectedDepartment() {
     this.departmentSelected = this.searchFormGroup?.get('complaintDepartment')?.value;
+  }
+
+  toggleStatus(status: string, endPointStatus: string, searchType: string): void {
+    this.message = null;
+    this.searchStatus = null;
+    if (status !== this.activeStatus) {
+      this.activeStatus = status;
+      this.endPointStatusValue = endPointStatus;
+      this.searchTypeValue = searchType;
+      // this.loadData(this.defaultPage, this.defaultPageSize);
+      this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
+    }
   }
 }

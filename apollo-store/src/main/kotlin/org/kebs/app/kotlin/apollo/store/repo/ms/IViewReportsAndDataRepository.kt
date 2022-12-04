@@ -44,10 +44,21 @@ interface IMsFieldReportViewRepository : HazelcastRepository<MsFieldReportView, 
 }
 
 @Repository
-interface IMsPerformanceOfSelectedProductViewRepository : HazelcastRepository<MsPerformanceOfSelectedProductViewEntity, String> {
+interface IMsPerformanceOfSelectedProductViewRepository : HazelcastRepository<MsPerformanceOfSelectedProductViewEntity, String>, JpaSpecificationExecutor<MsPerformanceOfSelectedProductViewEntity> {
     override fun findAll(pageable: Pageable): Page<MsPerformanceOfSelectedProductViewEntity>
 
-//    fun findByMsWorkplanGeneratedId(msWorkPlanGeneratedId: String): List<MsPerformanceOfSelectedProductViewEntity>
+    fun findAllByResultsAnalysisIsNotNull(pageable: Pageable): Page<MsPerformanceOfSelectedProductViewEntity>
+
+    fun findByResultsAnalysisIsNotNull(): List<MsPerformanceOfSelectedProductViewEntity>
+}
+
+@Repository
+interface IMsSeizedGoodsViewRepository : HazelcastRepository<MsSeizedGoodsViewEntity, String>, JpaSpecificationExecutor<MsSeizedGoodsViewEntity> {
+    override fun findAll(pageable: Pageable): Page<MsSeizedGoodsViewEntity>
+
+//    fun findAllByResultsAnalysisIsNotNull(pageable: Pageable): Page<MsSeizedGoodsViewEntity>
+//
+//    fun findByResultsAnalysisIsNotNull(): List<MsSeizedGoodsViewEntity>
 }
 
 @Repository
@@ -75,7 +86,9 @@ interface IMsAcknowledgementTimelineViewRepository : HazelcastRepository<MsAckno
 interface IMsComplaintFeedbackViewRepository : HazelcastRepository<MsComplaintFeedbackViewEntity, Long>, JpaSpecificationExecutor<MsComplaintFeedbackViewEntity> {
     override fun findAll(pageable: Pageable): Page<MsComplaintFeedbackViewEntity>
 
-    fun findAllByReferenceNumber(referenceNumber: String): List<MsComplaintFeedbackViewEntity>
+    fun findAllByReferenceNumber(acknowledgementType: String): List<MsComplaintFeedbackViewEntity>
+    fun findAllByAcknowledgementTypeIsNot(acknowledgementType: String,pageable: Pageable): Page<MsComplaintFeedbackViewEntity>
+    fun findAllByFeedbackSent(feedbackSent: String,pageable: Pageable): Page<MsComplaintFeedbackViewEntity>
 }
 
 @Repository

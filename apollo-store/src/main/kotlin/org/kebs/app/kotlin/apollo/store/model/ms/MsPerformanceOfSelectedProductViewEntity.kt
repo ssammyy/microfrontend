@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.store.model.ms
 import org.kebs.app.kotlin.apollo.store.model.ms.MsComplaintsInvestigationsViewEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsPerformanceOfSelectedProductViewEntity
 import java.io.Serializable
-import java.math.BigInteger
 import java.util.*
 import javax.persistence.*
 
@@ -16,23 +15,23 @@ class MsPerformanceOfSelectedProductViewEntity : Serializable {
 
     @Basic
     @Column(name = "DIVISION_ID")
-    var divisionId: BigInteger? = null
+    var divisionId: Long? = null
 
     @Basic
     @Column(name = "COMPLAINT_DEPARTMENT")
-    var complaintDepartment: BigInteger? = null
+    var complaintDepartment: Long? = null
 
     @Basic
     @Column(name = "REGION")
-    var region: BigInteger? = null
+    var region: Long? = null
 
     @Basic
     @Column(name = "COUNTY")
-    var county: BigInteger? = null
+    var county: Long? = null
 
     @Basic
     @Column(name = "TOWN_MARKET_CENTER")
-    var townMarketCenter: BigInteger? = null
+    var townMarketCenter: Long? = null
 
     @Basic
     @Column(name = "NAME_PRODUCT")
@@ -44,11 +43,11 @@ class MsPerformanceOfSelectedProductViewEntity : Serializable {
 
     @Basic
     @Column(name = "RESULTS_ANALYSIS")
-    var resultsAnalysis: Byte? = null
+    var resultsAnalysis: Int? = null
 
     @Basic
     @Column(name = "ANALYSIS_DONE")
-    var analysisDone: Byte? = null
+    var analysisDone: Int? = null
 
     @Basic
     @Column(name = "COMPLIANCE_REMARKS")
@@ -57,27 +56,5 @@ class MsPerformanceOfSelectedProductViewEntity : Serializable {
     @Basic
     @Column(name = "STATUS")
     var status: String? = null
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as MsPerformanceOfSelectedProductViewEntity
-        return referenceNumber == that.referenceNumber && divisionId == that.divisionId && complaintDepartment == that.complaintDepartment && region == that.region && county == that.county && townMarketCenter == that.townMarketCenter && nameProduct == that.nameProduct && bsNumber == that.bsNumber && resultsAnalysis == that.resultsAnalysis && analysisDone == that.analysisDone && complianceRemarks == that.complianceRemarks && status == that.status
-    }
 
-    override fun hashCode(): Int {
-        return Objects.hash(
-            referenceNumber,
-            divisionId,
-            complaintDepartment,
-            region,
-            county,
-            townMarketCenter,
-            nameProduct,
-            bsNumber,
-            resultsAnalysis,
-            analysisDone,
-            complianceRemarks,
-            status
-        )
-    }
 }

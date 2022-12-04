@@ -604,12 +604,12 @@ export class InspectionInvestigationReportDto {
 }
 
 export class FieldReportAdditionalInfo {
-    performanceOnTestSamples: String;
+    performanceOnTestSamples: string;
     actionOnSeizedGoods: FieldReportBackDto[];
-    actionOnSeizedGoodsRemarks: String;
-    actionsOnRecommendationGiven: String;
-    followUpActivities: String;
-    others: String;
+    actionOnSeizedGoodsRemarks: string;
+    actionsOnRecommendationGiven: string;
+    followUpActivities: string;
+    others: string;
 }
 
 export class ComplaintLocationDto {
@@ -632,6 +632,27 @@ export class ComplaintViewSearchValues {
     division: number;
 }
 
+export class SampleProductViewSearchValues {
+    refNumber: string;
+    productName: string;
+    bsNumber: string;
+    status: string;
+    region: number;
+    complaintDepartment: number;
+    division: number;
+}
+
+export class SeizedGoodsViewSearchValues {
+    refNumber: string;
+    productName: string;
+    quantity: string;
+    estimatedCost: string;
+    currentLocation: string;
+    region: number;
+    complaintDepartment: number;
+    division: number;
+}
+
 export class ComplaintsInvestigationListDto {
     referenceNumber: string;
     complaintTitle: string;
@@ -648,6 +669,36 @@ export class ComplaintsInvestigationListDto {
     division: string;
     timeTakenForAcknowledgement: string;
     feedbackSent: string;
+    timeTakenForFeedbackSent: string;
+    msProcess: string;
+}
+
+export class SelectedProductViewListDto {
+    referenceNumber: string;
+    divisionId: string;
+    complaintDepartment: string;
+    region: string;
+    county: string;
+    townMarketCenter: string;
+    nameProduct: string;
+    bsNumber: string;
+    resultsAnalysis: boolean;
+    analysisDone: boolean;
+    complianceRemarks: string;
+    status: string;
+}
+
+export class SeizedGoodsViewDto {
+    referenceNumber: string;
+    divisionId: string;
+    complaintDepartment: string;
+    region: string;
+    county: string;
+    townMarketCenter: string;
+    descriptionProductsSeized: string;
+    quantity: string;
+    estimatedCost: string;
+    currentLocation: string;
 }
 
 export class WorkPlanBatchDetailsDto {

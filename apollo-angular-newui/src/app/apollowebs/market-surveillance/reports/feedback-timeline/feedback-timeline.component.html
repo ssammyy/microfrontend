@@ -14,28 +14,286 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">FB</i>
+                            <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title">Feed Back Time Line List Details
+                        <h4 class="card-title">Status Report
                         </h4>
                     </div>
                     <div class="card-body">
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <h6 class="card-title">Search Details</h6>
+                                <br>
+                                <div *ngIf="activeStatus == 'complaints-investigations'">
+                                    <form  [formGroup]="searchFormGroup">
+                                        <div class="form-body">
+                                            <div class="row">
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Ref No</b></label>
+                                                        <input class="form-control two-column-input" formControlName="refNumber"
+                                                               name="refNumber"  type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Officer Name</b></label>
+                                                        <select id="assignedIo" class="form-control" formControlName="assignedIo" type="number"
+                                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignedIo">
+                                                            <option  selected>Please select</option>
+                                                            <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id"
+                                                            >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Region</b></label>
+                                                        <select id="region" class="form-control" formControlName="region" type="number"
+                                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">
+                                                            <option  selected>Please select</option>
+                                                            <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"
+                                                            >{{app.region}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Department</b> </label>
+                                                        <select (change)="onChangeSelectedDepartment()"
+                                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                                class="form-control" formControlName="complaintDepartment" name="complaintDepartment">
+                                                            <option  selected>Please select</option>
+                                                            <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Division</b> </label>
+                                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                                class="form-control" formControlName="division" name="division">
+                                                            <option  selected>Please select</option>
+                                                            <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!--                                        <div class="float-right" role="group" aria-label="Applications Status">-->
+                                            <div class="col-6 col-md-3">
+                                                <button [disabled]="!searchFormGroup.valid" (click)="onSubmitComplaintSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>
+                                            </div>
+                                            <div *ngIf="submitted" class="col-6 col-md-3">
+                                                <button  (click)="clearSearch()" class="btn btn-default" type="button" >CLEAR FILTER</button>
+                                            </div>
+                                            <!--                                        </div>-->
+
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="activeStatus == 'performance-selected-product'">
+                                <form  [formGroup]="searchFormGroup2">
+                                    <div class="form-body">
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Ref No</b></label>
+                                                    <input class="form-control two-column-input" formControlName="refNumber"
+                                                           name="refNumber"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Product Name</b></label>
+                                                    <input class="form-control two-column-input" formControlName="productName"
+                                                           name="productName"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>BS Number</b></label>
+                                                    <input class="form-control two-column-input" formControlName="bsNumber"
+                                                           name="bsNumber"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Status</b></label>
+                                                    <select id="status" class="form-control" formControlName="status"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="status">
+                                                        <option  selected>Please select</option>
+                                                        <option  [value]="'PASSED'" >PASSED</option>
+                                                        <option  [value]="'FAILED'" >FAILED</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Region</b></label>
+                                                    <select class="form-control" formControlName="region" type="number"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"
+                                                        >{{app.region}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Department</b> </label>
+                                                    <select (change)="onChangeSelectedDepartment()"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="complaintDepartment" name="complaintDepartment">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="division" name="division">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row"> <div class="col-6 col-md-3">
+                                            <button [disabled]="!searchFormGroup2.valid" (click)="onSubmitSelectedProductsSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>
+                                        </div>
+                                        <div *ngIf="submitted" class="col-6 col-md-3">
+                                            <button  (click)="clearSearch()" class="btn btn-default" type="button" >CLEAR FILTER</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                                <div *ngIf="activeStatus == 'product-performance'">
+                                <form  [formGroup]="searchFormGroup2">
+                                    <div class="form-body">
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Ref No</b></label>
+                                                    <input class="form-control two-column-input" formControlName="refNumber"
+                                                           name="refNumber"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Product Name</b></label>
+                                                    <input class="form-control two-column-input" formControlName="productName"
+                                                           name="productName"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Status</b></label>
+                                                    <select class="form-control" formControlName="status"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="status">
+                                                        <option  selected>Please select</option>
+                                                        <option  [value]="'PASSED'" >PASSED</option>
+                                                        <option  [value]="'FAILED'" >FAILED</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Region</b></label>
+                                                    <select class="form-control" formControlName="region" type="number"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"
+                                                        >{{app.region}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Department</b> </label>
+                                                    <select (change)="onChangeSelectedDepartment()"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="complaintDepartment" name="complaintDepartment">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="division" name="division">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row"> <div class="col-6 col-md-3">
+                                            <button [disabled]="!searchFormGroup2.valid" (click)="onSubmitSelectedProductsSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>
+                                        </div>
+                                        <div *ngIf="submitted" class="col-6 col-md-3">
+                                            <button  (click)="clearSearch()" class="btn btn-default" type="button" >CLEAR FILTER</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
                         <div class="toolbar">
-                            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Applications Status">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                                <button type="button" (click)="toggleStatus('complaints-investigations', 'complaint', 'ALL_DETAILS')"
+                                        [className]="activeStatus == 'complaints-investigations' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                   COMPLAINTS INVESTIGATIONS
+                                </button>
+                                <button type="button" (click)="toggleStatus('product-performance', 'sample-products', 'FEEDBACK_SENT')"
+                                        [className]="activeStatus == 'product-performance' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    PRODUCT PERFORMANCE
+                                </button>
+                                <button type="button" (click)="toggleStatus('performance-selected-product', 'sample-products', 'FEEDBACK_SENT')"
+                                        [className]="activeStatus == 'performance-selected-product' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    PERFORMANCE OF A SELECTED PRODUCT
+                                </button>
                             </div>
                         </div>
 
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <div class="table-responsive table-striped">
-                                    <ng2-smart-table class="table table-hover"
-                                                     [settings]="settings"
+                                    <ng2-smart-table *ngIf="activeStatus == 'complaints-investigations'" class="table table-hover"
+                                                     [settings]="settingsComplaintInvestigation"
                                                      [source]="dataSet">
                                     </ng2-smart-table>
+                                    <ng2-smart-table *ngIf="activeStatus == 'performance-selected-product'" class="table table-hover"
+                                                     [settings]="settingsPerformanceSelectedProducts"
+                                                     [source]="dataSet2">
+                                    </ng2-smart-table>
+                                    <ng2-smart-table *ngIf="activeStatus == 'product-performance'" class="table table-hover"
+                                                     [settings]="settingsProductsPerformance"
+                                                     [source]="dataSet2">
+                                    </ng2-smart-table>
                                     <br/>
-                                    <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
-                                                    [collectionSize]="totalCount"
-                                                    (pageChange)=pageChange($event)>
+                                    <ngb-pagination
+                                    >
                                         <ng-template ngbPaginationFirst>First</ng-template>
                                         <ng-template ngbPaginationLast>Last</ng-template>
                                         <ng-template ngbPaginationPrevious>Prev</ng-template>

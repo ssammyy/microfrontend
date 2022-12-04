@@ -1,13 +1,21 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {County, CountyService, selectUserInfo, Town, TownService} from '../../../../core/store';
-import {AcknowledgementDto, ApiResponseModel, FeedbackDto} from '../../../../core/store/data/ms/ms.model';
+import {
+  AcknowledgementDto,
+  ApiResponseModel,
+  ComplaintsInvestigationListDto,
+  ComplaintViewSearchValues,
+  FeedbackDto, MsDepartment, MsDivisionDetails, MsUsersDto, SampleProductViewSearchValues, SelectedProductViewListDto,
+} from '../../../../core/store/data/ms/ms.model';
 import {LocalDataSource} from 'ng2-smart-table';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
+import {RegionsEntityDto} from '../../../../shared/models/master-data-details';
+import {ApiEndpointService} from '../../../../core/services/endpoints/api-endpoint.service';
 
 @Component({
   selector: 'app-feedback-timeline',
@@ -15,11 +23,11 @@ import {MsService} from '../../../../core/store/data/ms/ms.service';
   styleUrls: ['./feedback-timeline.component.css'],
 })
 export class FeedbackTimelineComponent implements OnInit {
-
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   submitted = false;
   selectedCounty = 0;
   selectedTown = 0;
+  departmentSelected: 0;
   selectedTownName: string;
   selectedCountyName: string;
   county$: Observable<County[]>;
@@ -27,20 +35,33 @@ export class FeedbackTimelineComponent implements OnInit {
   loading = false;
 
   roles: string[];
+  searchFormGroup!: FormGroup;
+  searchFormGroup2!: FormGroup;
+  searchFormGroup3!: FormGroup;
 
-  activeStatus = 'my-tasks';
-  previousStatus = 'my-tasks';
+  searchTypeValue = 'ALL_DETAILS';
+  endPointStatusValue = 'complaint';
+  activeStatus = 'complaints-investigations';
+  previousStatus = 'complaints-investigations';
   selectedBatchRefNo: string;
   searchStatus: any;
+  message: any;
   personalTasks = 'false';
   defaultPageSize = 10;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
-  selectedNotification: FeedbackDto;
-  loadedData!: FeedbackDto[];
+  complaintViewSearchValues: ComplaintViewSearchValues;
+  sampleProductViewSearchValues: SampleProductViewSearchValues;
+  selectedNotification: AcknowledgementDto;
+  loadedData!: ComplaintsInvestigationListDto[];
+  loadedData2!: SelectedProductViewListDto[];
+  msOfficerLists!: MsUsersDto[];
+  msRegions: RegionsEntityDto[] = [];
+  msDepartments: MsDepartment[] = [];
+  msDivisions: MsDivisionDetails[] = [];
   totalCount = 12;
-  public settings = {
+  public settingsComplaintInvestigation = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
     hideSubHeader: false,
@@ -61,55 +82,174 @@ export class FeedbackTimelineComponent implements OnInit {
     },
     noDataMessage: 'No data found',
     columns: {
-      // id: {
-      //   title: 'ID',
-      //   type: 'string',
-      //   filter: false
-      // },
       referenceNumber: {
         title: 'REFERENCE NUMBER',
         type: 'string',
-        filter: true,
+        filter: false,
       },
       complaintTitle: {
         title: 'COMPLAINT TITLE',
         type: 'string',
-        filter: true,
+        filter: false,
       },
       targetedProducts: {
         title: 'TARGETED PRODUCTS',
         type: 'string',
-        filter: true,
+        filter: false,
       },
       transactionDate: {
         title: 'TRANSACTION DATE',
         type: 'date',
-        filter: true,
+        filter: false,
       },
-      approvedDate: {
-        title: 'APPROVED DATE',
-        type: 'date',
-        filter: true,
-      },
-      rejectedDate: {
-        title: 'REJECTED DATE',
-        type: 'date',
-        filter: true,
-      },
-      acknowledgementType: {
-        title: 'ACKNOWLEDGEMENT TYPE',
+      assignedIo: {
+        title: 'OFFICER NAME',
         type: 'string',
-        filter: true,
+        filter: false,
       },
-      feedbackSent: {
-        title: 'FEED BACK SENT',
+      region: {
+        title: 'REGION',
         type: 'string',
-        filter: true,
+        filter: false,
       },
-      timeTakenForFeedbackSent: {
-        title: 'TIME TAKEN',
+      complaintDepartment: {
+        title: 'DEPARTMENT',
         type: 'string',
-        filter: true,
+        filter: false,
+      },
+      division: {
+        title: 'FUNCTION',
+        type: 'string',
+        filter: false,
+      },
+      msProcess: {
+        title: 'STATUS',
+        type: 'string',
+        filter: false,
+      },
+      // timeTakenForAcknowledgement: {
+      //   title: 'TIME TAKEN',
+      //   type: 'string',
+      //   filter: false,
+      // },
+    },
+    pager: {
+      display: true,
+      perPage: 10,
+    },
+  };
+  public settingsPerformanceSelectedProducts = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      // custom: [
+      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
+      // ],
+      // position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      referenceNumber: {
+        title: 'REFERENCE NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      nameProduct: {
+        title: 'PRODUCT NAME',
+        type: 'string',
+        filter: false,
+      },
+      region: {
+        title: 'REGION',
+        type: 'string',
+        filter: false,
+      },
+      complaintDepartment: {
+        title: 'DEPARTMENT',
+        type: 'string',
+        filter: false,
+      },
+      divisionId: {
+        title: 'FUNCTION',
+        type: 'string',
+        filter: false,
+      },
+      bsNumber: {
+        title: 'BS NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      status: {
+        title: 'STATUS',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 10,
+    },
+  };
+  public settingsProductsPerformance = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      // custom: [
+      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
+      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
+      // ],
+      // position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      referenceNumber: {
+        title: 'REFERENCE NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      nameProduct: {
+        title: 'PRODUCT NAME',
+        type: 'string',
+        filter: false,
+      },
+      region: {
+        title: 'REGION',
+        type: 'string',
+        filter: false,
+      },
+      complaintDepartment: {
+        title: 'DEPARTMENT',
+        type: 'string',
+        filter: false,
+      },
+      divisionId: {
+        title: 'FUNCTION',
+        type: 'string',
+        filter: false,
+      },
+      status: {
+        title: 'STATUS',
+        type: 'string',
+        filter: false,
       },
     },
     pager: {
@@ -118,6 +258,7 @@ export class FeedbackTimelineComponent implements OnInit {
     },
   };
   dataSet: LocalDataSource = new LocalDataSource();
+  dataSet2: LocalDataSource = new LocalDataSource();
   search: Subject<string>;
 
   constructor(private store$: Store<any>,
@@ -142,18 +283,111 @@ export class FeedbackTimelineComponent implements OnInit {
       return this.roles = u.roles;
     });
 
-    this.activatedRoute.paramMap.subscribe(
-        rs => {
-          this.selectedBatchRefNo = rs.get('referenceNumber');
-          this.loadData(this.defaultPage, this.defaultPageSize);
+    this.searchFormGroup = this.formBuilder.group({
+      refNumber: ['', null],
+      assignedIo: ['', null],
+      region: ['', null],
+      complaintDepartment: ['', null],
+      division: ['', null],
+    });
+
+    this.searchFormGroup2 = this.formBuilder.group({
+      refNumber: ['', null],
+      productName: ['', null],
+      bsNumber: ['', null],
+      status: ['', null],
+      region: ['', null],
+      complaintDepartment: ['', null],
+      division: ['', null],
+    });
+
+    this.searchFormGroup3 = this.formBuilder.group({
+      refNumber: ['', null],
+      productName: ['', null],
+      bsNumber: ['', null],
+      status: ['', null],
+      region: ['', null],
+      complaintDepartment: ['', null],
+      division: ['', null],
+    });
+
+    this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
+  }
+
+  get formSearch(): any {
+    return this.searchFormGroup.controls;
+  }
+
+  get formSearch2(): any {
+    return this.searchFormGroup2.controls;
+  }
+
+  private loadData(page: number, records: number, routeTake: string, searchType: string): any {
+    this.SpinnerService.show();
+    const params = {'personal': this.personalTasks};
+    this.msService.loadAllComplaintTimelineAndStatusReportList(String(page), String(records), routeTake, searchType).subscribe(
+        (data: ApiResponseModel) => {
+          if (data.responseCode === '00') {
+            switch (routeTake) {
+              case 'complaint':
+                this.loadedData = data.data;
+                this.totalCount = this.loadedData.length;
+                this.dataSet.load(this.loadedData);
+                break;
+              case 'sample-products':
+                this.loadedData2 = data.data;
+                this.totalCount = this.loadedData2.length;
+                this.dataSet2.load(this.loadedData2);
+                break;
+            }
+
+
+            this.msService.msOfficerListDetails().subscribe(
+                (dataOfficer: MsUsersDto[]) => {
+                  this.msOfficerLists = dataOfficer;
+                },
+            );
+            this.msService.msRegionListDetails().subscribe(
+                (dataRegion: RegionsEntityDto[]) => {
+                  this.msRegions = dataRegion;
+                },
+            );
+            this.msService.msDepartmentListDetails().subscribe(
+                (dataDep: MsDepartment[]) => {
+                  this.msDepartments = dataDep;
+                },
+            );
+            this.msService.msDivisionListDetails().subscribe(
+                (dataDiv: MsDivisionDetails[]) => {
+                  this.msDivisions = dataDiv;
+                },
+            );
+          }
+          this.SpinnerService.hide();
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
         },
     );
   }
 
-  private loadData(page: number, records: number): any {
+
+
+  pageChange(pageIndex?: any) {
+    if (pageIndex) {
+      this.currentPageInternal = pageIndex - 1;
+      this.currentPage = pageIndex;
+      this.loadData(this.currentPageInternal, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
+    }
+  }
+
+  onSubmitComplaintSearch() {
     this.SpinnerService.show();
-    const params = {'personal': this.personalTasks};
-    this.msService.loadFeedbackList(String(page), String(records)).subscribe(
+    this.submitted = true;
+    this.complaintViewSearchValues = this.searchFormGroup.value;
+    // tslint:disable-next-line:max-line-length
+    this.msService.loadSearchComplaintViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues, this.searchTypeValue).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
@@ -165,19 +399,50 @@ export class FeedbackTimelineComponent implements OnInit {
         error => {
           this.SpinnerService.hide();
           console.log(error);
-          // this.msService.showError('AN ERROR OCCURRED');
         },
     );
   }
 
-
-
-  pageChange(pageIndex?: any) {
-    if (pageIndex) {
-      this.currentPageInternal = pageIndex - 1;
-      this.currentPage = pageIndex;
-      this.loadData(this.currentPageInternal, this.defaultPageSize);
-    }
+  onSubmitSelectedProductsSearch() {
+    this.SpinnerService.show();
+    this.submitted = true;
+    this.sampleProductViewSearchValues = this.searchFormGroup2.value;
+    // tslint:disable-next-line:max-line-length
+    this.msService.loadSearchSampleProductsSelectedViewList(String(this.defaultPage), String(this.defaultPageSize), this.sampleProductViewSearchValues, this.searchTypeValue).subscribe(
+        (data: ApiResponseModel) => {
+          if (data.responseCode === '00') {
+            this.loadedData2 = data.data;
+            this.totalCount = this.loadedData2.length;
+            this.dataSet2.load(this.loadedData2);
+          }
+          this.SpinnerService.hide();
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+        },
+    );
   }
 
+  clearSearch() {
+    this.searchFormGroup.reset();
+    this.searchFormGroup2.reset();
+    this.submitted = false;
+  }
+
+  onChangeSelectedDepartment() {
+    this.departmentSelected = this.searchFormGroup?.get('complaintDepartment')?.value;
+  }
+
+  toggleStatus(status: string, endPointStatus: string, searchType: string): void {
+    this.message = null;
+    this.searchStatus = null;
+    if (status !== this.activeStatus) {
+      this.activeStatus = status;
+      this.endPointStatusValue = endPointStatus;
+      this.searchTypeValue = searchType;
+      // this.loadData(this.defaultPage, this.defaultPageSize);
+      this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
+    }
+  }
 }

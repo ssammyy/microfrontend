@@ -643,7 +643,7 @@ export class ApiEndpointService {
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
         VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
         VIEW_PDF_FIELD_REPORT: `${ApiEndpointService.MS_CONTEXT}/report/ms-field-report`,
-    }
+    };
 
     public static MARKET_SURVEILLANCE_FUEL_ENDPOINT = {
         VIEW_PDF_LAB_RESULT: `${ApiEndpointService.MS_CONTEXT}/view/attached-lab-pdf`,
@@ -704,7 +704,12 @@ export class ApiEndpointService {
 
     public static MARKET_SURVEILLANCE_REPORTS = {
         MS_COMPLAINT_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/complaint-search`,
-        MS_TIMELINE_ACKNOWLEDGEMENT: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/acknowledgement`,
+        MS_SAMPLE_PRODUCTS_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/sample-products-search`,
+        MS_SEIZED_GOODS_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods-search`,
+        MS_TIMELINE_COMPLAINT: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/complaint`,
+        MS_STATUS_REPORT_SAMPLE_PRODUCTS: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/statusReport/performance-selected-product`,
+        MS_SEIZED_GOODS: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods`,
+
         MS_TIMELINE_FEEDBACK: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/feedback`,
         MS_TIMELINE_REPORT_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/reportSubmitted`,
         MS_TIMELINE_SAMPLE_SUBMITTED: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/timeline/sampleSubmitted`,

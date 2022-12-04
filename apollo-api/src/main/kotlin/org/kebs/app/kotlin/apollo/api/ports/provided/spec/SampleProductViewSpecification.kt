@@ -4,17 +4,18 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.MsComplaintFeedbackViewEntity
+import org.kebs.app.kotlin.apollo.store.model.ms.MsPerformanceOfSelectedProductViewEntity
 import org.springframework.data.jpa.domain.Specification
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Predicate
 import javax.persistence.criteria.Root
 
-class ComplaintViewSpecification(private val criteria: SearchCriteria) : Specification<MsComplaintFeedbackViewEntity?> {
+class SampleProductViewSpecification(private val criteria: SearchCriteria) : Specification<MsPerformanceOfSelectedProductViewEntity?> {
 
 
     override fun toPredicate(
-        root: Root<MsComplaintFeedbackViewEntity?>,
+        root: Root<MsPerformanceOfSelectedProductViewEntity?>,
         query: CriteriaQuery<*>,
         builder: CriteriaBuilder
     ): Predicate? {
