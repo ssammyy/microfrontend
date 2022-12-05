@@ -1512,7 +1512,9 @@
                                             </button>
 
                                             <button  *ngIf="workPlanInspection?.batchDetails?.batchClosed && workPlanInspection?.updatedStatus== false && workPlanInspection?.resubmitStatus == false
-                                                && workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
+                                                && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus &&
+                                                workPlanInspection?.preliminaryReport?.approvedStatusHod == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatusHod"
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
@@ -6145,6 +6147,16 @@
                                     </div>
                                 </div>
 
+                            </div>
+                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="row">
+                                <div class="col">
+                                    <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="form-group">
+                                        <div  class="form-group">
+                                            <label><b style="color: red">Reason For Updating WorkPlan</b> </label>
+                                            <textarea class="form-control two-column-input" formControlName="remarks" name="remarks" required type="text"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>

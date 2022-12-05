@@ -2159,7 +2159,7 @@ class NewMarketSurveillanceHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.addWorkPlanScheduleFeedBackByHOD(referenceNo,batchReferenceNo,body)
+                    marketSurveillanceWorkPlanDaoServices.addWorkPlanScheduleFeedBackByHOD(referenceNo,batchReferenceNo,body, null)
                         .let {
                             ServerResponse.ok().body(it)
                         }
