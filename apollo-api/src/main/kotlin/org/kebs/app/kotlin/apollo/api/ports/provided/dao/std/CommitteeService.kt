@@ -70,7 +70,8 @@ class CommitteeService(
 
         //update NWI with Pd Status
         val b: StandardNWI = standardNWIRepository.findById(nwIId).orElse(null);
-        b.status = "Preliminary Draft Uploaded";
+//        b.pdStatus = "Preliminary Draft Uploaded";
+        b.prPdStatus="Preliminary Draft Uploaded"
         standardNWIRepository.save(b)
 
         return ProcessInstanceResponseValue(committeePD.id, "Complete", true, "committeePD.id")
@@ -258,6 +259,7 @@ class CommitteeService(
 
 
     fun getAllNwiSApprovedForPd(): List<StandardNWI> {
+
         return standardNWIRepository.findAllByPdStatus("Prepare Minutes and Drafts For Preliminary Draft")
     }
 
@@ -289,13 +291,13 @@ class CommitteeService(
         if (DocDescription == "Minutes For PD") {
             //update documents with PDId
             val u: StandardNWI = standardNWIRepository.findById(nwi).orElse(null);
-            u.pdStatus = "Minutes Uploaded";
+            u.minutesPdStatus = "Minutes Uploaded";
             standardNWIRepository.save(u)
         }
         if (DocDescription == "Draft Documents For PD") {
             //update documents with PDId
             val u: StandardNWI = standardNWIRepository.findById(nwi).orElse(null);
-            u.pdStatus = "Draft Documents For PD Uploaded";
+            u.draftDocsPdStatus = "Draft Documents For PD Uploaded";
             standardNWIRepository.save(u)
         }
         if (DocDescription == "Minutes For CD") {

@@ -117,68 +117,20 @@ class StandardNWI {
     @Basic
     var pdStatus: String? = null
 
+    @Column(name = "MINUTES_PD_STATUS")
+    @Basic
+    var minutesPdStatus: String? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
 
-        other as StandardNWI
+    @Column(name = "DRAFT_DOCUMENTS_PD_STATUS")
+    @Basic
+    var draftDocsPdStatus: String? = null
 
-        if (id != other.id) return false
-        if (taskId != other.taskId) return false
-        if (proposalTitle != other.proposalTitle) return false
-        if (scope != other.scope) return false
-        if (purpose != other.purpose) return false
-        if (targetDate != other.targetDate) return false
-        if (similarStandards != other.similarStandards) return false
-        if (liaisonOrganisation != other.liaisonOrganisation) return false
-        if (draftAttached != other.draftAttached) return false
-        if (outlineAttached != other.outlineAttached) return false
-        if (draftOutlineImpossible != other.draftOutlineImpossible) return false
-        if (outlineSentLater != other.outlineSentLater) return false
-        if (nameOfProposer != other.nameOfProposer) return false
-        if (organization != other.organization) return false
-        if (circulationDate != other.circulationDate) return false
-        if (closingDate != other.closingDate) return false
-        if (dateOfPresentation != other.dateOfPresentation) return false
-        if (nameOfTC != other.nameOfTC) return false
-        if (referenceNumber != other.referenceNumber) return false
-        if (createdOn != other.createdOn) return false
-        if (modifiedOn != other.modifiedOn) return false
-        if (deletedOn != other.deletedOn) return false
 
-        return true
-    }
+    @Column(name = "PRELIMINARY_DOCUMENTS_PD_STATUS")
+    @Basic
+    var prPdStatus: String? = null
 
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (taskId?.hashCode() ?: 0)
-        result = 31 * result + (proposalTitle?.hashCode() ?: 0)
-        result = 31 * result + (scope?.hashCode() ?: 0)
-        result = 31 * result + (purpose?.hashCode() ?: 0)
-        result = 31 * result + (targetDate?.hashCode() ?: 0)
-        result = 31 * result + (similarStandards?.hashCode() ?: 0)
-        result = 31 * result + (liaisonOrganisation?.hashCode() ?: 0)
-        result = 31 * result + (draftAttached?.hashCode() ?: 0)
-        result = 31 * result + (outlineAttached?.hashCode() ?: 0)
-        result = 31 * result + (draftOutlineImpossible?.hashCode() ?: 0)
-        result = 31 * result + (outlineSentLater?.hashCode() ?: 0)
-        result = 31 * result + (nameOfProposer?.hashCode() ?: 0)
-        result = 31 * result + (organization?.hashCode() ?: 0)
-        result = 31 * result + (circulationDate?.hashCode() ?: 0)
-        result = 31 * result + (closingDate?.hashCode() ?: 0)
-        result = 31 * result + (dateOfPresentation?.hashCode() ?: 0)
-        result = 31 * result + (nameOfTC?.hashCode() ?: 0)
-        result = 31 * result + (referenceNumber?.hashCode() ?: 0)
-        result = 31 * result + (createdOn?.hashCode() ?: 0)
-        result = 31 * result + (modifiedOn?.hashCode() ?: 0)
-        result = 31 * result + (deletedOn?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "StandardNWI(id=$id, taskId=$taskId, proposalTitle=$proposalTitle, scope=$scope, purpose=$purpose, targetDate=$targetDate, similarStandards=$similarStandards, liaisonOrganisation=$liaisonOrganisation, draftAttached=$draftAttached, outlineAttached=$outlineAttached, draftOutlineImpossible=$draftOutlineImpossible, outlineSentLater=$outlineSentLater, nameOfProposer=$nameOfProposer, organization=$organization, circulationDate=$circulationDate, closingDate=$closingDate, dateOfPresentation=$dateOfPresentation, nameOfTC=$nameOfTC, referenceNumber=$referenceNumber, createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
-    }
 
 
 }

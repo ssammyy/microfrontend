@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 import mu.KotlinLogging
+import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.CommitteeService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.DraftDocumentService
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
 import javax.servlet.http.HttpServletResponse
 
 
@@ -70,7 +72,7 @@ class CommitteeController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = standardNWIRepository.findByIdOrNull(nwiId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -110,7 +112,7 @@ class CommitteeController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = standardNWIRepository.findByIdOrNull(nwiId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -165,7 +167,7 @@ class CommitteeController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = committeePDRepository.findByIdOrNull(pdID)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -281,7 +283,7 @@ class CommitteeController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = committeePDRepository.findByIdOrNull(pdId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -321,7 +323,7 @@ class CommitteeController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = committeePDRepository.findByIdOrNull(pdId)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -376,7 +378,7 @@ class CommitteeController(
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
-        var docDescription: String;
+        var docDescription: String
 
         val application = committeeCDRepository.findByIdOrNull(cdID)
             ?: throw Exception("APPLICATION DOES NOT EXIST")
@@ -458,4 +460,40 @@ class CommitteeController(
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
     }
+
+    @GetMapping("/viewByIdB")
+    fun getFile(
+        response: HttpServletResponse,
+        @RequestParam("docId") docId: Long,
+    ): MutableMap<String, ByteArray?> {
+        val fileDB = draftDocumentService.findFile(docId)
+
+//        return JSONObject.quote(fileDB.document);
+
+
+        return Collections.singletonMap("body", fileDB.document);
+
+
+//        return ServletUriComponentsBuilder
+//            .fromCurrentContextPath()
+//            .path("/files/")
+//            .path(fileDB.id.toString())
+//            .toUriString()
+//        return ResponseEntity.ok()
+//            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.name + "\"")
+//            .body(fileDB.document)
+    }
+
+//    @GetMapping("/files/{id}")
+//    fun getFile(@PathVariable id: String?): ResponseEntity<ByteArray?>? {
+//        val fileDB: FileDB = storageService.getFile(id)
+//        return ResponseEntity.ok()
+//            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
+//            .body(fileDB.getData())
+//    }
+}
+
+fun encodeBase64(encodeMe: ByteArray?): String {
+    val encodedBytes: ByteArray = Base64.getEncoder().encode(encodeMe)
+    return String(encodedBytes)
 }

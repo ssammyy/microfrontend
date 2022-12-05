@@ -52,6 +52,28 @@ class SageQAHeader {
     @NotNull(message = "Required field")
     var connectionPassword: String? = null
 }
+class SageQAHeaderB {
+
+    @JsonProperty("serviceName")
+    @NotNull(message = "Required field")
+    var serviceName: String? = null
+
+    @JsonProperty("messageID")
+    @NotNull(message = "Required field")
+    var messageID: String? = null
+
+    @JsonProperty("connectionID")
+    @NotEmpty(message = "Required field")
+    var connectionID: String? = null
+
+    @JsonProperty("connectionPassword")
+    @NotNull(message = "Required field")
+    var connectionPassword: String? = null
+
+    @JsonProperty("Region")
+    @NotNull(message = "Required field")
+    var region: String? = null
+}
 
 class SageQARequest {
     @JsonProperty("BatchNo")
