@@ -5,8 +5,12 @@ import mu.KotlinLogging
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
+import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.spec.ComplaintViewSpecification
+import org.kebs.app.kotlin.apollo.api.ports.provided.spec.SampleProductViewSpecification
+import org.kebs.app.kotlin.apollo.api.ports.provided.spec.SeizedGoodsViewSpecification
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -70,6 +74,9 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val tasksPendingAllocationCpViewRepo: IMsTasksPendingAllocationCpViewRepository,
     private val tasksPendingAllocationWpViewRepo: IMsTasksPendingAllocationWpViewRepository,
 
+    private val performanceOfSelectedProductViewRepo: IMsPerformanceOfSelectedProductViewRepository,
+    private val seizedGoodsViewRepo: IMsSeizedGoodsViewRepository,
+    private val complaintsInvestigationsViewRepo: IMsComplaintsInvestigationsViewRepository,
     private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
     private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
     private val reportSubmittedTimelineViewRepo: IMsReportSubmittedCpViewRepository,
@@ -212,6 +219,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+
 //        val userProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
         when {
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
@@ -229,6 +237,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
                 val hodDashBoard =  MsDashBoardHODDto()
                 with(hodDashBoard){
+                    overdueJuniorTaskCPWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
+                    overdueJuniorTaskWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
                     reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
                     reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     selfAssigningTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
@@ -239,6 +249,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
                 val hodDashBoard =  MsDashBoardHODDto()
                 with(hodDashBoard){
+                    overdueJuniorTaskCPWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
+                    overdueJuniorTaskWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
                     reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
                     reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     selfAssigningTaskCP = tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
@@ -249,6 +261,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
                 val hofDashBoard = MsDashBoardHOFDto()
                 with(hofDashBoard){
+                    overdueJuniorTaskCPWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
+                    overdueJuniorTaskWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
                     reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
                     reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     assigningIOTaskCP = loggedInUser.id?.let { tasksPendingAllocationCpViewRepo.countByHofAssignedAndMsComplaintEndedStatusIsNullAndAssignedIoIsNull(it) }
@@ -258,6 +272,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
             auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
                 val diDashBoard = MsDashBoardDIDto()
                 with(diDashBoard){
+                    overdueJuniorTaskCPWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
+                    overdueJuniorTaskWP = tasksPendingAllocationWpViewRepo.countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(overDueValue,  applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO)
                     reportPendingReviewCPWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNotNull(map.activeStatus)
                     reportPendingReviewWP = tasksPendingAllocationWpViewRepo.countByReportPendingReviewAndComplaintIdIsNull(map.activeStatus)
                     assigningHODTaskCP =  tasksPendingAllocationCpViewRepo.countByHodAssignedIsNullAndMsComplaintEndedStatusIsNull()
@@ -270,6 +286,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
         }
 
         return  response
+    }
+
+    fun msOfficerListDetails(): List<MsUsersDto>? {
+        val officerList = commonDaoServices.findOfficersListBasedOnRole(applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID)
+        return officerList?.let { mapOfficerListDto(it) }
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
@@ -305,10 +326,65 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun msAcknowledgementReportTimeLineLists(page: PageRequest): ApiResponseModel {
-        val complaintList = acknowledgementTimelineViewRepo.findAll(page)
+    fun msAllComplaintReportTimeLineLists(page: PageRequest, reportType:String): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var response = ApiResponseModel()
+        when (reportType) {
+            "ACKNOWLEDGEMENT" -> {
+                response = listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAllByAcknowledgementTypeIsNot("PENDING ACKNOWLEDGEMENT",page), map)
+            }
+            "FEEDBACK_SENT" -> {
+                response = listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAllByFeedbackSent("YES",page), map)
+            }
+            "ALL_DETAILS" -> {
+                response = listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAll(page), map)
+            }
+        }
+        return   response
 
-        return commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintViewSearchLists(page: PageRequest,search: ComplaintViewSearchValues, reportType:String): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return complaintSearchResultListing(search,reportType,page,map)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msSampleProductViewSearchLists(page: PageRequest,search: SampleProductViewSearchValues): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return sampleProductSearchResultListing(search,page,map)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msSeizedGoodsViewSearchLists(page: PageRequest,search: SeizedGoodsViewSearchValues): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return seizedGoodsViewSearchResultListing(search,page,map)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msStatusReportComplaintInvestigationLists(page: PageRequest): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return   listMsComplaintsInvestigationListDto(complaintFeedbackTimelineViewRepo.findAll(page), map)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msPerformanceOfSelectedProductViewLists(page: PageRequest): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return listMsPerformanceOfSelectedProductListDto(performanceOfSelectedProductViewRepo.findAll(page), map)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msSeizedGoodsViewLists(page: PageRequest): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return listMsSeizedGoodsViewListDto(seizedGoodsViewRepo.findAll(page), map)
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
@@ -1254,6 +1330,297 @@ class MarketSurveillanceComplaintProcessDaoServices(
         }
 
         return commonDaoServices.setSuccessResponse(complaintList,complaints.totalPages,complaints.number,complaints.totalElements)
+    }
+
+
+    fun complaintSearchResultListing(search: ComplaintViewSearchValues,reportType:String,page: PageRequest, map: ServiceMapsEntity): ApiResponseModel {
+        val complaintList = mutableListOf<ComplaintsInvestigationListDto>()
+        var reportTypeSpec: ComplaintViewSpecification? = null
+        var refNumberSpec: ComplaintViewSpecification? = null
+        var assignedIoSpec: ComplaintViewSpecification? = null
+        var regionSpec: ComplaintViewSpecification? = null
+        var complaintDepartmentSpec: ComplaintViewSpecification? = null
+        var divisionSpec: ComplaintViewSpecification? = null
+
+
+        if(search.refNumber != null && search.refNumber?.length!! > 0){
+            refNumberSpec = ComplaintViewSpecification(SearchCriteria("referenceNumber", "=", search.refNumber))
+        }
+
+        if(search.assignedIo != null && search.assignedIo!! > 0L){
+            assignedIoSpec = ComplaintViewSpecification(SearchCriteria("assignedIo", "=", search.assignedIo))
+        }
+
+        if(search.region != null && search.region!! > 0L){
+            regionSpec = ComplaintViewSpecification(SearchCriteria("region", "=", search.region))
+        }
+
+        if(search.complaintDepartment != null && search.complaintDepartment!! > 0L){
+            complaintDepartmentSpec = ComplaintViewSpecification(SearchCriteria("complaintDepartment", "=", search.complaintDepartment))
+        }
+
+        if(search.division != null && search.division!! > 0L){
+            divisionSpec = ComplaintViewSpecification(SearchCriteria("division", "=", search.division))
+        }
+
+        when (reportType) {
+            "ACKNOWLEDGEMENT" -> {
+                reportTypeSpec = ComplaintViewSpecification(SearchCriteria("acknowledgementType", "!=", "PENDING ACKNOWLEDGEMENT"))
+            }
+            "FEEDBACK_SENT" -> {
+                reportTypeSpec = ComplaintViewSpecification(SearchCriteria("feedbackSent", "=", "YES"))
+            }
+            "ALL_DETAILS" -> {
+                reportTypeSpec = ComplaintViewSpecification(SearchCriteria("msProcessId", "!=", "0"))
+            }
+        }
+
+        complaintFeedbackTimelineViewRepo.findAll(reportTypeSpec?.and(refNumberSpec)?.and(assignedIoSpec)?.and(regionSpec)?.and(complaintDepartmentSpec)?.and(divisionSpec))
+            .map { comp ->
+                complaintList.add(
+                    ComplaintsInvestigationListDto(
+                        comp.referenceNumber,
+                        comp.complaintTitle,
+                        comp.targetedProducts,
+                        comp.transactionDate,
+                        comp.approvedDate,
+                        comp.rejectedDate,
+                        comp.assignedIo?.let { commonDaoServices.findUserByID(it) }?.let { commonDaoServices.concatenateName(it) },
+                        comp.acknowledgementType,
+                        comp.region?.let { commonDaoServices.findRegionEntityByRegionID(it,map.activeStatus).region },
+                        comp.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
+                        comp.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                        comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                        comp.division?.let { commonDaoServices.findDivisionWIthId(it).division },
+                        comp.timeTakenForAcknowledgement,
+                        comp.feedbackSent,
+                        comp.timeTakenForFeedbackSent,
+                        comp.msProcessId?.let { findMsProcessComplaintByID(1, it)?.processName },
+                    )
+                )
+            }
+
+        val usersPage: Page<ComplaintsInvestigationListDto> = PageImpl(complaintList, page, complaintList.size.toLong())
+        return commonDaoServices.setSuccessResponse(complaintList,usersPage.totalPages,usersPage.number,usersPage.totalElements)
+
+//        return complaintList.sortedBy { it.date }
+
+    }
+
+    fun sampleProductSearchResultListing(search: SampleProductViewSearchValues,page: PageRequest, map: ServiceMapsEntity): ApiResponseModel {
+        val sampleProductsList = mutableListOf<SelectedProductViewListDto>()
+//        var reportTypeSpec: SampleProductViewSpecification? = null
+        var refNumberSpec: SampleProductViewSpecification? = null
+        var productNameSpec: SampleProductViewSpecification? = null
+        var statusSpec: SampleProductViewSpecification? = null
+        var bsNumberSpec: SampleProductViewSpecification? = null
+        var regionSpec: SampleProductViewSpecification? = null
+        var complaintDepartmentSpec: SampleProductViewSpecification? = null
+        var divisionSpec: SampleProductViewSpecification? = null
+
+
+
+        if(search.refNumber != null && search.refNumber?.length!! > 0){
+            refNumberSpec = SampleProductViewSpecification(SearchCriteria("referenceNumber", "=", search.refNumber))
+        }
+
+        if(search.status != null && search.status?.length!! > 0){
+            statusSpec = SampleProductViewSpecification(SearchCriteria("status", "=", search.status))
+        }
+
+        if(search.productName != null && search.productName?.length!! > 0){
+            productNameSpec = SampleProductViewSpecification(SearchCriteria("nameProduct", "=", search.productName))
+        }
+
+        if(search.bsNumber != null && search.bsNumber?.length!! > 0){
+            bsNumberSpec = SampleProductViewSpecification(SearchCriteria("bsNumber", "=", search.bsNumber))
+        }
+
+        if(search.region != null && search.region!! > 0L){
+            regionSpec = SampleProductViewSpecification(SearchCriteria("region", "=", search.region))
+        }
+
+        if(search.complaintDepartment != null && search.complaintDepartment!! > 0L){
+            complaintDepartmentSpec = SampleProductViewSpecification(SearchCriteria("complaintDepartment", "=", search.complaintDepartment))
+        }
+
+        if(search.division != null && search.division!! > 0L){
+            divisionSpec = SampleProductViewSpecification(SearchCriteria("divisionId", "=", search.division))
+        }
+
+
+        performanceOfSelectedProductViewRepo.findAll(productNameSpec?.and(statusSpec)?.and(bsNumberSpec)?.and(regionSpec)?.and(complaintDepartmentSpec)?.and(divisionSpec))
+            .map { comp ->
+                sampleProductsList.add(
+                    SelectedProductViewListDto(
+                        comp.referenceNumber,
+                        comp.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+                        comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                        comp.region?.let { commonDaoServices.findRegionEntityByRegionID(it,map.activeStatus).region },
+                        comp.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
+                        comp.townMarketCenter?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                        comp.nameProduct,
+                        comp.bsNumber,
+                        comp.resultsAnalysis == 1,
+                        comp.analysisDone == 1,
+                        comp.complianceRemarks,
+                        comp.status,
+                    )
+                )
+            }
+
+        val sampleProductPage: Page<SelectedProductViewListDto> = PageImpl(sampleProductsList, page, sampleProductsList.size.toLong())
+        return commonDaoServices.setSuccessResponse(sampleProductsList,sampleProductPage.totalPages,sampleProductPage.number,sampleProductPage.totalElements)
+
+//        return complaintList.sortedBy { it.date }
+
+    }
+
+    fun seizedGoodsViewSearchResultListing(search: SeizedGoodsViewSearchValues,page: PageRequest, map: ServiceMapsEntity): ApiResponseModel {
+        val sampleProductsList = mutableListOf<SeizedGoodsViewDto>()
+//        var reportTypeSpec: SampleProductViewSpecification? = null
+        var refNumberSpec: SeizedGoodsViewSpecification? = null
+        var currentLocationSpec: SeizedGoodsViewSpecification? = null
+        var productNameSpec: SeizedGoodsViewSpecification? = null
+        var quantitySpec: SeizedGoodsViewSpecification? = null
+        var estimatedCostSpec: SeizedGoodsViewSpecification? = null
+        var regionSpec: SeizedGoodsViewSpecification? = null
+        var complaintDepartmentSpec: SeizedGoodsViewSpecification? = null
+        var divisionSpec: SeizedGoodsViewSpecification? = null
+
+
+        if(search.refNumber != null && search.refNumber?.length!! > 0){
+            refNumberSpec = SeizedGoodsViewSpecification(SearchCriteria("referenceNumber", "=", search.refNumber))
+        }
+
+        if(search.currentLocation != null && search.currentLocation?.length!! > 0){
+            currentLocationSpec = SeizedGoodsViewSpecification(SearchCriteria("currentLocation", "=", search.currentLocation))
+        }
+
+        if(search.quantity != null && search.quantity?.length!! > 0){
+            quantitySpec = SeizedGoodsViewSpecification(SearchCriteria("quantity", "=", search.quantity))
+        }
+
+        if(search.productName != null && search.productName?.length!! > 0){
+            productNameSpec = SeizedGoodsViewSpecification(SearchCriteria("descriptionProductsSeized", "=", search.productName))
+        }
+
+        if(search.estimatedCost != null && search.estimatedCost?.length!! > 0){
+            estimatedCostSpec = SeizedGoodsViewSpecification(SearchCriteria("estimatedCost", "=", search.estimatedCost))
+        }
+
+        if(search.region != null && search.region!! > 0L){
+            regionSpec = SeizedGoodsViewSpecification(SearchCriteria("region", "=", search.region))
+        }
+
+        if(search.complaintDepartment != null && search.complaintDepartment!! > 0L){
+            complaintDepartmentSpec = SeizedGoodsViewSpecification(SearchCriteria("complaintDepartment", "=", search.complaintDepartment))
+        }
+
+        if(search.division != null && search.division!! > 0L){
+            divisionSpec = SeizedGoodsViewSpecification(SearchCriteria("divisionId", "=", search.division))
+        }
+
+
+        seizedGoodsViewRepo.findAll(currentLocationSpec?.and(productNameSpec)?.and(quantitySpec)?.and(estimatedCostSpec)?.and(regionSpec)?.and(complaintDepartmentSpec)?.and(divisionSpec))
+            .map { comp ->
+                sampleProductsList.add(
+                    SeizedGoodsViewDto(
+                        comp.referenceNumber,
+                        comp.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+                        comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                        comp.region?.let { commonDaoServices.findRegionEntityByRegionID(it,map.activeStatus).region },
+                        comp.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
+                        comp.townMarketCenter?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                        comp.descriptionProductsSeized,
+                        comp.quantity,
+                        comp.estimatedCost,
+                        comp.currentLocation,
+                    )
+                )
+            }
+
+        val sampleProductPage: Page<SeizedGoodsViewDto> = PageImpl(sampleProductsList, page, sampleProductsList.size.toLong())
+        return commonDaoServices.setSuccessResponse(sampleProductsList,sampleProductPage.totalPages,sampleProductPage.number,sampleProductPage.totalElements)
+
+//        return complaintList.sortedBy { it.date }
+
+    }
+
+
+    fun listMsComplaintsInvestigationListDto(complaints: Page<MsComplaintFeedbackViewEntity>, map: ServiceMapsEntity): ApiResponseModel {
+        val complaintList = mutableListOf<ComplaintsInvestigationListDto>()
+        complaints.toList().map { comp ->
+            complaintList.add(
+                ComplaintsInvestigationListDto(
+                    comp.referenceNumber,
+                            comp.complaintTitle,
+                            comp.targetedProducts,
+                            comp.transactionDate,
+                            comp.approvedDate,
+                            comp.rejectedDate,
+                    comp.assignedIo?.let { commonDaoServices.findUserByID(it) }?.let { commonDaoServices.concatenateName(it) },
+                            comp.acknowledgementType,
+                    comp.region?.let { commonDaoServices.findRegionEntityByRegionID(it,map.activeStatus).region },
+                    comp.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
+                            comp.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                            comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                            comp.division?.let { commonDaoServices.findDivisionWIthId(it).division },
+                            comp.timeTakenForAcknowledgement,
+                            comp.feedbackSent,
+                            comp.timeTakenForFeedbackSent,
+                    comp.msProcessId?.let { findMsProcessComplaintByID(1, it)?.processName },
+                )
+            )
+        }
+
+        return commonDaoServices.setSuccessResponse(complaintList,complaints.totalPages,complaints.number,complaints.totalElements)
+    }
+
+    fun listMsPerformanceOfSelectedProductListDto(samplesFound: Page<MsPerformanceOfSelectedProductViewEntity>, map: ServiceMapsEntity): ApiResponseModel {
+        val complaintList = mutableListOf<SelectedProductViewListDto>()
+        samplesFound.toList().map { comp ->
+            complaintList.add(
+                SelectedProductViewListDto(
+                    comp.referenceNumber,
+                            comp.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+                            comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                            comp.region?.let { commonDaoServices.findRegionEntityByRegionID(it,map.activeStatus).region },
+                            comp.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
+                            comp.townMarketCenter?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                            comp.nameProduct,
+                            comp.bsNumber,
+                            comp.resultsAnalysis == 1,
+                            comp.analysisDone == 1,
+                            comp.complianceRemarks,
+                            comp.status,
+                )
+            )
+        }
+
+        return commonDaoServices.setSuccessResponse(complaintList,samplesFound.totalPages,samplesFound.number,samplesFound.totalElements)
+    }
+
+    fun listMsSeizedGoodsViewListDto(seizedFound: Page<MsSeizedGoodsViewEntity>, map: ServiceMapsEntity): ApiResponseModel {
+        val complaintList = mutableListOf<SeizedGoodsViewDto>()
+        seizedFound.toList().map { comp ->
+            complaintList.add(
+                SeizedGoodsViewDto(
+                    comp.referenceNumber,
+                            comp.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+                            comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                            comp.region?.let { commonDaoServices.findRegionEntityByRegionID(it,map.activeStatus).region },
+                            comp.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
+                            comp.townMarketCenter?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                            comp.descriptionProductsSeized,
+                            comp.quantity,
+                            comp.estimatedCost,
+                            comp.currentLocation,
+                )
+            )
+        }
+
+        return commonDaoServices.setSuccessResponse(complaintList,seizedFound.totalPages,seizedFound.number,seizedFound.totalElements)
     }
 
 

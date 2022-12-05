@@ -1752,6 +1752,10 @@ class DestinationInspectionDaoServices(
         return demandNoteNumber
     }
 
+    fun countCdItemsWithCdID(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): Long {
+        return iCdItemsRepo.countByCdDocId(consignmentDocumentDetailsEntity)
+    }
+
     fun findCDItemsListWithCDID(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity> {
         iCdItemsRepo.findByCdDocId(consignmentDocumentDetailsEntity)
             ?.let { cdItemsDetailsList ->

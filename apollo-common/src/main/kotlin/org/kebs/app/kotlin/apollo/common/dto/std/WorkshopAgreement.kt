@@ -199,13 +199,14 @@ class ISDraftDecisionsStd(
     @JsonProperty("proposalId") val proposalId: Long,
     @JsonProperty("justificationId") val justificationId: Long,
     @JsonProperty("draftId") val draftId: Long,
-    @JsonProperty("comments") val comments: String,
-    @JsonProperty("title") val title: String,
-    @JsonProperty("normativeReference") val normativeReference: String,
-    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String,
-    @JsonProperty("clause") val clause: String,
-    @JsonProperty("scope") val scope: String,
-    @JsonProperty("special") val special: String
+    @JsonProperty("comments") val comments: String?,
+    @JsonProperty("title") val title: String?,
+    @JsonProperty("normativeReference") val normativeReference: String?,
+    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String?,
+    @JsonProperty("clause") val clause: String?,
+    @JsonProperty("scope") val scope: String?,
+    @JsonProperty("special") val special: String?,
+    @JsonProperty("standardNumber") val standardNumber: String?
 
 ){
 
@@ -377,7 +378,6 @@ class ISDraftStandard(
 }
 
 data class ISDraftDto(
-
     var proposalId:Long?=null,
     var justificationNo:Long?=null,
     var id:Long,
@@ -385,7 +385,12 @@ data class ISDraftDto(
     var scope:String?=null,
     var normativeReference:String?=null,
     var symbolsAbbreviatedTerms:String?=null,
-    var clause:String?=null
+    var clause:String?=null,
+    var standardNumber:String?=null,
+    var preparedBy:String?=null,
+    var docName:String?=null,
+    var special:String?=null,
+    var draughting:String?=null
 ){
 
 }

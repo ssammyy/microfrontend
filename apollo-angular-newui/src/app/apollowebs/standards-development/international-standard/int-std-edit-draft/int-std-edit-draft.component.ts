@@ -58,6 +58,9 @@ export class IntStdEditDraftComponent implements OnInit {
       symbolsAbbreviatedTerms:[],
       clause:[],
       special:[],
+        docName:[],
+        standardNumber:[],
+        draughting:[]
 
     });
   }
@@ -146,7 +149,9 @@ export class IntStdEditDraftComponent implements OnInit {
             normativeReference:this.actionRequest.normativeReference,
             symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
             clause: this.actionRequest.clause,
-            special: this.actionRequest.special
+            special: this.actionRequest.special,
+              docName:this.actionRequest.documentType,
+              standardNumber:this.actionRequest.isNumber
           }
       );
 

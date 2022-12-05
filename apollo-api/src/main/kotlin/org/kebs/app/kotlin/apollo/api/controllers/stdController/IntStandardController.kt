@@ -380,7 +380,13 @@ class IntStandardController(
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            iSNumber=isDraftDto.standardNumber
+            preparedBy=isDraftDto.preparedBy
+            documentType=isDraftDto.docName
+            special=isDraftDto.special
         }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
 
         return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.submitDraftForEditing(iSUploadStandard))
     }
@@ -438,7 +444,15 @@ class IntStandardController(
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            iSNumber=isDraftDto.standardNumber
+            special=isDraftDto.special
+            draughting=isDraftDto.draughting
         }
+
+//              val gson = Gson()
+//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
+//        return "Response"
         return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.editStandardDraft(iSUploadStandard))
     }
 
@@ -466,6 +480,9 @@ class IntStandardController(
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            iSNumber=isDraftDto.standardNumber
+            special=isDraftDto.special
         }
         return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandard(iSUploadStandard))
     }
@@ -493,6 +510,9 @@ class IntStandardController(
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            iSNumber=isDraftDto.standardNumber
+            special=isDraftDto.special
         }
         return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",internationalStandardService.proofReadStandard(iSUploadStandard))
     }
@@ -584,6 +604,7 @@ class IntStandardController(
             clause=iSDraftDecisions.clause
             scope=iSDraftDecisions.scope
             special=iSDraftDecisions.special
+            standardNumber=iSDraftDecisions.standardNumber
         }
 
 

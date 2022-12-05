@@ -7,6 +7,8 @@ import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandGroupItem
+import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteItem
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestForm
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandNoteRequestItem
 import org.kebs.app.kotlin.apollo.api.payload.response.CallbackResponses
@@ -48,6 +50,7 @@ enum class PaymentStatus(val code: Int) {
 class InvoicePaymentService(
     private val iDemandNoteRepo: IDemandNoteRepository,
     private val iDemandNoteItemRepo: IDemandNoteItemsDetailsRepository,
+    private val iDemandNoteGroupedItemsRepository: IDemandNoteGroupedItemsRepository,
     private val auditService: ConsignmentDocumentAuditService,
     private val reportsDaoService: ReportsDaoService,
     private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
@@ -646,6 +649,66 @@ class InvoicePaymentService(
         }
     }
 
+    fun createPaymentItemDetails(
+        cdDetails: ConsignmentDocumentDetailsEntity,
+        itm: DemandNoteItem,
+        presentment: Boolean,
+        map: ServiceMapsEntity,
+        loggedInUser: UsersEntity
+    ): DemandNoteRequestItem {
+        val formItem = DemandNoteRequestItem()
+        formItem.fee = daoServices.findDIFee(itm.feeId)
+        if (itm.items.isNullOrEmpty()) {
+            val item = daoServices.findItemWithItemIDAndDocument(cdDetails, itm.itemId)
+            formItem.itemValue = item.totalPriceNcy
+            formItem.productName = item.itemDescription ?: item.hsDescription ?: item.productTechnicalName
+            formItem.itemId = item.id
+            formItem.currency = item.foreignCurrencyCode
+            formItem.quantity = item.quantity?.toLong() ?: 0
+            // Update demand note status
+            if (presentment) {
+                item.dnoteStatus = map.activeStatus
+                daoServices.updateCdItemDetailsInDB(
+                    commonDaoServices.updateDetails(
+                        item,
+                        item
+                    ) as CdItemDetailsEntity, loggedInUser
+                )
+            }
+        } else {
+            formItem.itemValue = BigDecimal.ZERO
+            formItem.quantity = 0
+            formItem.productName = "Grouped pricing"
+            formItem.items = mutableListOf()
+            formItem.quantity = (itm.items?.size ?: 0).toLong()
+            itm.items?.forEach {
+                val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it)
+                formItem.itemValue = formItem.itemValue?.plus(item.totalPriceFcy ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
+                formItem.currency = item.foreignCurrencyCode
+
+                // Add group items
+                val groupItem = DemandGroupItem()
+                groupItem.currency = item.foreignCurrencyCode
+                groupItem.itemId = item.id
+                groupItem.itemValue = item.totalPriceFcy
+                groupItem.productName = item.itemDescription ?: item.hsDescription ?: item.productTechnicalName
+                groupItem.quantity = item.quantity?.toLong() ?: 0
+                formItem.items?.add(groupItem)
+                // Update demand note status
+                if (presentment) {
+                    item.dnoteStatus = map.activeStatus
+                    daoServices.updateCdItemDetailsInDB(
+                        commonDaoServices.updateDetails(
+                            item,
+                            item
+                        ) as CdItemDetailsEntity, loggedInUser
+                    )
+                }
+            }
+        }
+        return formItem
+    }
+
     @Transactional
     fun generateDemandNoteWithItemList(
         form: DemandNoteRequestForm,
@@ -968,7 +1031,21 @@ class InvoicePaymentService(
         )
         // Skip saving for presentment
         if (!presentment) {
-            return iDemandNoteItemRepo.save(demandNoteItem)
+            if (!itemDetails.items.isNullOrEmpty()) {
+                demandNoteItem.groupType = "GROUP"
+            }
+            val saved = iDemandNoteItemRepo.save(demandNoteItem)
+            // Add Grouped Items
+            itemDetails.items?.forEach { itm ->
+                val groupItem = CdDemandNoteGroupedItemsEntity()
+                groupItem.cfValue = itm.itemValue
+                groupItem.itemId = itm.itemId
+                groupItem.description = itm.productName
+                groupItem.product = itm.productName
+                groupItem.status = 1
+                groupItem.itemGroupId = saved.id
+                this.iDemandNoteGroupedItemsRepository.save(groupItem)
+            }
         }
         var calculatedAmount = BigDecimal.ZERO
         try {

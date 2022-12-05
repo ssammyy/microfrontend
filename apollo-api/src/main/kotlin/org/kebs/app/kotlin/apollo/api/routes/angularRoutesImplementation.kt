@@ -604,6 +604,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 PUT("/notification-read", handler::msNotificationTaskRead)
             }
             "/common".nest {
+                GET("/officer-list", handler::msOfficerListDetails)
                 GET("/dashboard", handler::msDashBoardDetails)
                 GET("/towns", handler::townsListingAdmin)
                 GET("/counties", handler::countiesListingAdmin)
@@ -645,11 +646,16 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 }
                 POST("/add/complaint-work-plan", handler::addComplaintToWorkPlanDetails)
                 "/reports".nest {
+                    PUT("/complaint-search", handler::putAllComplaintSearchList)
+                    PUT("/sample-products-search", handler::putAllSampleProductsSearchList)
+                    PUT("/seized-goods-search", handler::putAllSeizedGoodsSearchList)
+                    GET("/seized-goods", handler::getAllSeizedGoodsViewList)
                     "/timeline".nest {
-                        GET("/acknowledgement", handler::getAllAcknowledgementReportTimeLineList)
-                        GET("/feedback", handler::getAllComplaintFeedbackReportTimeLineList)
-                        GET("/reportSubmitted", handler::getAllReportSubmittedReportTimeLineList)
-                        GET("/sampleSubmitted", handler::getAllSampleSubmittedReportTimeLineList)
+                        GET("/complaint", handler::getAllComplaintReportTimeLineList)
+                    }
+                    "/statusReport".nest {
+                        GET("/complaint-investigation", handler::getStatusReportComplaintInvestigationList)
+                        GET("/performance-selected-product", handler::getPerformanceOfSelectedProductViewList)
                     }
 
                 }

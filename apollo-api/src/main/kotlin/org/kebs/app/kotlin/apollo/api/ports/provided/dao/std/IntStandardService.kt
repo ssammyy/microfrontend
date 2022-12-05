@@ -549,7 +549,9 @@ class IntStandardService(
         iSUploadStandard.proposalId=iSUploadStandard.proposalId
         iSUploadStandard.status=0
         iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
-        iSUploadStandard.iSNumber = getRQNumber()
+        iSUploadStandard.iSNumber = iSUploadStandard.iSNumber
+        iSUploadStandard.preparedBy=iSUploadStandard.preparedBy
+        iSUploadStandard.documentType=iSUploadStandard.documentType
 
         var userList= companyStandardRepository.getHopEmailList()
 
@@ -653,16 +655,28 @@ class IntStandardService(
         iSUploadStandard.special = iSUploadStandard.special
         iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
         iSUploadStandard.proposalId = iSUploadStandard.proposalId
+        iSUploadStandard.documentType=iSUploadStandard.documentType
+        iSUploadStandard.iSNumber=iSUploadStandard.iSNumber
+        iSUploadStandard.draughting=iSUploadStandard.draughting
+        val draughting=iSUploadStandard.draughting
+
+
         iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
 
             with(iSUploadStandard) {
-                status = 3
+                status = if (draughting =="Yes"){
+                    3
+                }else{
+                    4
+                }
                 title = iSUploadStandard.title
                 scope = iSUploadStandard.scope
                 normativeReference = iSUploadStandard.normativeReference
                 symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
                 clause = iSUploadStandard.clause
                 special = iSUploadStandard.special
+                iSNumber = iSUploadStandard.iSNumber
+                documentType = iSUploadStandard.documentType
             }
             iSUploadStandardRepository.save(iSUploadStandard)
 
@@ -688,6 +702,8 @@ class IntStandardService(
         iSUploadStandard.special = iSUploadStandard.special
         iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
         iSUploadStandard.proposalId = iSUploadStandard.proposalId
+        iSUploadStandard.documentType=iSUploadStandard.documentType
+        iSUploadStandard.iSNumber=iSUploadStandard.iSNumber
         iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
 
             with(iSUploadStandard) {
@@ -698,6 +714,8 @@ class IntStandardService(
                 symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
                 clause = iSUploadStandard.clause
                 special = iSUploadStandard.special
+                iSNumber = iSUploadStandard.iSNumber
+                documentType = iSUploadStandard.documentType
             }
             iSUploadStandardRepository.save(iSUploadStandard)
 
@@ -724,6 +742,8 @@ class IntStandardService(
         iSUploadStandard.special = iSUploadStandard.special
         iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
         iSUploadStandard.proposalId = iSUploadStandard.proposalId
+        iSUploadStandard.documentType=iSUploadStandard.documentType
+        iSUploadStandard.iSNumber=iSUploadStandard.iSNumber
         iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
 
             with(iSUploadStandard) {
@@ -734,6 +754,8 @@ class IntStandardService(
                 symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
                 clause = iSUploadStandard.clause
                 special = iSUploadStandard.special
+                iSNumber = iSUploadStandard.iSNumber
+                documentType = iSUploadStandard.documentType
             }
             iSUploadStandardRepository.save(iSUploadStandard)
 
@@ -850,9 +872,9 @@ class IntStandardService(
         standard.clause=standard.clause
         standard.scope=standard.scope
         standard.special=standard.special
-        val valueFound =getISDNumber()
-        standard.standardNumber=valueFound.first
-        standard.isdn=valueFound.second
+        //val valueFound =getISDNumber()
+        standard.standardNumber=standard.standardNumber
+        //standard.isdn=valueFound.second
         standard.standardType="International Standard"
         standard.status=0
         standard.dateFormed=Timestamp(System.currentTimeMillis())

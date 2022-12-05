@@ -26,6 +26,7 @@ import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -43,6 +44,31 @@ interface IMsFieldReportViewRepository : HazelcastRepository<MsFieldReportView, 
 }
 
 @Repository
+interface IMsPerformanceOfSelectedProductViewRepository : HazelcastRepository<MsPerformanceOfSelectedProductViewEntity, String>, JpaSpecificationExecutor<MsPerformanceOfSelectedProductViewEntity> {
+    override fun findAll(pageable: Pageable): Page<MsPerformanceOfSelectedProductViewEntity>
+
+    fun findAllByResultsAnalysisIsNotNull(pageable: Pageable): Page<MsPerformanceOfSelectedProductViewEntity>
+
+    fun findByResultsAnalysisIsNotNull(): List<MsPerformanceOfSelectedProductViewEntity>
+}
+
+@Repository
+interface IMsSeizedGoodsViewRepository : HazelcastRepository<MsSeizedGoodsViewEntity, String>, JpaSpecificationExecutor<MsSeizedGoodsViewEntity> {
+    override fun findAll(pageable: Pageable): Page<MsSeizedGoodsViewEntity>
+
+//    fun findAllByResultsAnalysisIsNotNull(pageable: Pageable): Page<MsSeizedGoodsViewEntity>
+//
+//    fun findByResultsAnalysisIsNotNull(): List<MsSeizedGoodsViewEntity>
+}
+
+@Repository
+interface IMsComplaintsInvestigationsViewRepository : HazelcastRepository<MsComplaintsInvestigationsViewEntity, String> {
+    override fun findAll(pageable: Pageable): Page<MsComplaintsInvestigationsViewEntity>
+
+//    fun findByMsWorkplanGeneratedId(msWorkPlanGeneratedId: String): List<MsPerformanceOfSelectedProductViewEntity>
+}
+
+@Repository
 interface IMsSampleSubmissionViewRepository : HazelcastRepository<MsSampleSubmissionView, Long> {
     override fun findAll(pageable: Pageable): Page<MsSampleSubmissionView>
 
@@ -57,10 +83,12 @@ interface IMsAcknowledgementTimelineViewRepository : HazelcastRepository<MsAckno
 }
 
 @Repository
-interface IMsComplaintFeedbackViewRepository : HazelcastRepository<MsComplaintFeedbackViewEntity, Long> {
+interface IMsComplaintFeedbackViewRepository : HazelcastRepository<MsComplaintFeedbackViewEntity, Long>, JpaSpecificationExecutor<MsComplaintFeedbackViewEntity> {
     override fun findAll(pageable: Pageable): Page<MsComplaintFeedbackViewEntity>
 
-    fun findAllByReferenceNumber(referenceNumber: String): List<MsComplaintFeedbackViewEntity>
+    fun findAllByReferenceNumber(acknowledgementType: String): List<MsComplaintFeedbackViewEntity>
+    fun findAllByAcknowledgementTypeIsNot(acknowledgementType: String,pageable: Pageable): Page<MsComplaintFeedbackViewEntity>
+    fun findAllByFeedbackSent(feedbackSent: String,pageable: Pageable): Page<MsComplaintFeedbackViewEntity>
 }
 
 @Repository
@@ -125,7 +153,9 @@ interface IMsTasksPendingAllocationWpViewRepository : HazelcastRepository<MsTask
     override fun findAll(pageable: Pageable): Page<MsTasksPendingAllocationWpViewEntity>
 
     fun countByOfficerId(officerId: Long): Long
+    fun countByTaskOverDueAndComplaintIdIsNotNullAndUserTaskId(taskOverDue: String,userTaskId: Long): Long
     fun countByTaskOverDueAndComplaintIdIsNotNull(taskOverDue: String): Long
+    fun countByTaskOverDueAndComplaintIdIsNullAndUserTaskId(taskOverDue: String,userTaskId: Long): Long
     fun countByTaskOverDueAndComplaintIdIsNull(taskOverDue: String): Long
     fun countByReportPendingReviewAndComplaintIdIsNotNull(reportPendingReview: Int): Long
     fun countByReportPendingReviewAndComplaintIdIsNull(reportPendingReview: Int): Long

@@ -4,20 +4,31 @@ import org.kebs.app.kotlin.apollo.store.model.di.DestinationInspectionFeeEntity
 import java.math.BigDecimal
 
 data class DemandNoteItem(
-        val itemId: Long?,
-        val feeId: Long = 0
+    val itemId: Long?,
+    var items: List<Long>? = null,
+    val feeId: Long = 0
 )
 
 data class DemandNoteForm(
-        val items: List<DemandNoteItem>,
-        val remarks: String?,
-        val presentment: Boolean,
-        val amount: Double, // For Foreign COC/COR
-        var includeAll: Boolean
+    val items: List<DemandNoteItem>,
+    val remarks: String?,
+    val presentment: Boolean,
+    val amount: Double, // For Foreign COC/COR
+    var includeAll: Boolean
 )
+
+class DemandGroupItem {
+    var itemId: Long? = null
+    var itemValue: BigDecimal? = null
+    var currency: String? = null
+    var quantity: Long = 0
+    var route: String = "A"
+    var productName: String? = null
+}
 
 class DemandNoteRequestItem {
     var itemId: Long? = null
+    var items: MutableList<DemandGroupItem>? = null
     var itemValue: BigDecimal? = null
     var currency: String? = null
     var quantity: Long = 0

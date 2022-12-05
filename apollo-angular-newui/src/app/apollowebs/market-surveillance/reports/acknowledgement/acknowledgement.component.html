@@ -14,36 +14,240 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">AK</i>
+                            <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title">Acknowledgement Time Line List Details
+                        <h4 class="card-title">Timeliness of Activities
                         </h4>
                     </div>
                     <div class="card-body">
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <h6 class="card-title">Search Details</h6>
+                                <br>
+                                <form  [formGroup]="searchFormGroup">
+
+                                    <div class="form-body">
+
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Officer Name</b></label>
+                                                    <select id="assignedIo" class="form-control" formControlName="assignedIo" type="number"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignedIo">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id"
+                                                        >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Region</b></label>
+                                                    <select id="region" class="form-control" formControlName="region" type="number"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"
+                                                        >{{app.region}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Department</b> </label>
+                                                    <select (change)="onChangeSelectedDepartment()"
+                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="complaintDepartment" name="complaintDepartment">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Division</b> </label>
+                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                            class="form-control" formControlName="division" name="division">
+                                                        <option  selected>Please select</option>
+                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+<!--                                        <div class="float-right" role="group" aria-label="Applications Status">-->
+                                            <div class="col-6 col-md-3">
+                                                <button [disabled]="!searchFormGroup.valid"  (click)="onSubmitSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>
+                                            </div>
+                                            <div *ngIf="submitted" class="col-6 col-md-3">
+                                                <button  (click)="clearSearch()" class="btn btn-default" type="button" >CLEAR FILTER</button>
+                                            </div>
+<!--                                        </div>-->
+
+                                    </div>
+
+<!--                                    <button [disabled]="!searchFormGroup.valid"  (click)="onSubmitSearch()" class="btn btn-success" type="button" >CLEAR FILTER</button>-->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
                         <div class="toolbar">
-                            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Applications Status">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                                <button type="button" (click)="toggleStatus('acknowledgement-of-complaint', 'complaint', 'ACKNOWLEDGEMENT')"
+                                        [className]="activeStatus == 'acknowledgement-of-complaint' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    ACKNOWLEDGEMENT OF COMPLAINT
+                                </button>
+                                <button type="button" (click)="toggleStatus('give-feedback-to-complainant', 'complaint', 'FEEDBACK_SENT')"
+                                        [className]="activeStatus == 'give-feedback-to-complainant' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    GIVE FEEDBACK TO COMPLAINANT
+                                </button>
+                                <button type="button" (click)="toggleStatus('completion-of-complaint-investigation', 'complaint', 'FEEDBACK_SENT')"
+                                        [className]="activeStatus == 'completion-of-complaint-investigation' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    COMPLETION OF COMPLAINT INVESTIGATION
+                                </button>
                             </div>
                         </div>
 
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
-                                <div class="table-responsive table-striped">
-                                    <ng2-smart-table class="table table-hover"
-                                                     [settings]="settings"
-                                                     [source]="dataSet">
-                                    </ng2-smart-table>
-                                    <br/>
-                                    <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
-                                                    [collectionSize]="totalCount"
-                                                    (pageChange)=pageChange($event)>
-                                        <ng-template ngbPaginationFirst>First</ng-template>
-                                        <ng-template ngbPaginationLast>Last</ng-template>
-                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
-                                        <ng-template ngbPaginationNext>Next</ng-template>
-                                        <ng-template ngbPaginationEllipsis>...</ng-template>
-                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>
-                                    </ngb-pagination>
+                                <div *ngIf="activeStatus == 'acknowledgement-of-complaint'"  class="material-datatables table-responsive col-md-12">
+                                    <table
+                                            class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"   >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">REFERENCE NUMBER</th>
+                                            <th class="knw">COMPLAINT TITLE</th>
+                                            <th class="knw">TARGETED PRODUCTS</th>
+                                            <th class="sl">TRANSACTION DATE</th>
+                                            <th class="knw">OFFICER NAME</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">STATUS</th>
+                                            <th class="knw">TIME TAKEN</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let companyModel of loadedData let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel.referenceNumber}}</td>
+                                            <td>{{companyModel.complaintTitle }}</td>
+                                            <td>{{companyModel.targetedProducts}}</td>
+                                            <td>{{companyModel.transactionDate}}</td>
+                                            <td>{{companyModel.assignedIo}}</td>
+                                            <td>{{companyModel.region}}</td>
+                                            <td>{{companyModel.complaintDepartment}}</td>
+                                            <td>{{companyModel.division}}</td>
+                                            <td>{{companyModel.status}}</td>
+                                            <td>{{companyModel.timeTakenForAcknowledgement}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+                                <div *ngIf="activeStatus == 'give-feedback-to-complainant'" class="material-datatables table-responsive col-md-12">
+                                    <table
+                                            class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2"   >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">REFERENCE NUMBER</th>
+                                            <th class="knw">COMPLAINT TITLE</th>
+                                            <th class="knw">TARGETED PRODUCTS</th>
+                                            <th class="sl">TRANSACTION DATE</th>
+                                            <th class="knw">OFFICER NAME</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">FEED BACK SENT STATUS</th>
+                                            <th class="knw">TIME TAKEN</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let companyModel of loadedData let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel.referenceNumber}}</td>
+                                            <td>{{companyModel.complaintTitle }}</td>
+                                            <td>{{companyModel.targetedProducts}}</td>
+                                            <td>{{companyModel.transactionDate}}</td>
+                                            <td>{{companyModel.assignedIo}}</td>
+                                            <td>{{companyModel.region}}</td>
+                                            <td>{{companyModel.complaintDepartment}}</td>
+                                            <td>{{companyModel.division}}</td>
+                                            <td>{{companyModel.feedbackSent}}</td>
+                                            <td>{{companyModel.timeTakenForFeedbackSent}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div *ngIf="activeStatus == 'completion-of-complaint-investigation'" class="material-datatables table-responsive col-md-12">
+                                    <table
+                                            class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3"   >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">REFERENCE NUMBER</th>
+                                            <th class="knw">COMPLAINT TITLE</th>
+                                            <th class="knw">TARGETED PRODUCTS</th>
+                                            <th class="sl">TRANSACTION DATE</th>
+                                            <th class="knw">OFFICER NAME</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">INVESTIGATION ENDED STATUS</th>
+                                            <th class="knw">TIME TAKEN</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let companyModel of loadedData let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel.referenceNumber}}</td>
+                                            <td>{{companyModel.complaintTitle }}</td>
+                                            <td>{{companyModel.targetedProducts}}</td>
+                                            <td>{{companyModel.transactionDate}}</td>
+                                            <td>{{companyModel.assignedIo}}</td>
+                                            <td>{{companyModel.region}}</td>
+                                            <td>{{companyModel.complaintDepartment}}</td>
+                                            <td>{{companyModel.division}}</td>
+                                            <td>{{companyModel.feedbackSent}}</td>
+                                            <td>{{companyModel.timeTakenForFeedbackSent}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+<!--                                <div class="table-responsive table-striped">-->
+<!--                                    <ng2-smart-table *ngIf="activeStatus == 'acknowledgement-of-complaint'" class="table table-hover"-->
+<!--                                                     [settings]="settingsAcknowledgment"-->
+<!--                                                     [source]="dataSet">-->
+<!--                                    </ng2-smart-table>-->
+<!--                                    <ng2-smart-table *ngIf="activeStatus == 'give-feedback-to-complainant'" class="table table-hover"-->
+<!--                                                     [settings]="settingsFeedBack"-->
+<!--                                                     [source]="dataSet">-->
+<!--                                    </ng2-smart-table>-->
+<!--                                    <ng2-smart-table *ngIf="activeStatus == 'completion-of-complaint-investigation'" class="table table-hover"-->
+<!--                                                     [settings]="settingsCompletionOfComplaint"-->
+<!--                                                     [source]="dataSet">-->
+<!--                                    </ng2-smart-table>-->
+<!--                                    <br/>-->
+<!--                                    <ngb-pagination-->
+<!--                                    >-->
+<!--                                        <ng-template ngbPaginationFirst>First</ng-template>-->
+<!--                                        <ng-template ngbPaginationLast>Last</ng-template>-->
+<!--                                        <ng-template ngbPaginationPrevious>Prev</ng-template>-->
+<!--                                        <ng-template ngbPaginationNext>Next</ng-template>-->
+<!--                                        <ng-template ngbPaginationEllipsis>...</ng-template>-->
+<!--                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>-->
+<!--                                    </ngb-pagination>-->
+<!--                                </div>-->
                             </div>
                         </div>
 

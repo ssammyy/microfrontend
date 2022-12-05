@@ -1,19 +1,31 @@
 <h2 mat-dialog-title>Generate Demand Note for Consignment</h2>
 <mat-dialog-content>
     <div class="row no_margin">
-        <div class="col-sm-12 col-md-11" [hidden]="!groupFeeApplicable">
-            <div class="input-group" [hidden]="!groupFeeApplicable">
+        <div class="col-sm-12 col-md-12" [hidden]="!groupFeeApplicable">
+            <div class="input-group" [hidden]="!groupFeeApplicable" [formGroup]="groupForm">
                 <label for="groupFees" class="search-form-label" [hidden]="true">Select applicable fee for selected
                     items</label>
                 <select id="groupFees" class="search-form-select"
                         [hidden]="selection.selected.length<=1"
-                        (change)="changeGroupPricing($event)">
+                        formControlName="feeId">
                     <option [value]="">Select applicable fee</option>
                     <option *ngFor="let d of paymentFees" [value]="d.id">{{d.description}}</option>
                 </select>
+                <label for="groupApplication" class="search-form-label" [hidden]="true">Select mode</label>
+                <select id="groupApplication" class="search-form-select"
+                        [hidden]="selection.selected.length<=1"
+                        formControlName="group">
+                    <option [value]="">Select fee type</option>
+                    <option value="GROUP" selected>Apply to Grouped items</option>
+                    <option value="SINGLE">Apply on each item</option>
+                </select>
+                <button class="btn btn-primary input-group-append" [hidden]="!groupFeeApplicable"
+                        [disabled]="groupForm.invalid"
+                        (click)="changeGroupPricing($event)">Apply
+                </button>
             </div>
         </div>
-        <div class="col-sm-12 col-md-11" *ngIf="this.items && this.items.length>0">
+        <div class="col-sm-12 col-md-12" *ngIf="this.items && this.items.length>0">
             <p class="text-blue-dark">Consignment Items</p>
             <mat-table [dataSource]="selectionDataSource">
                 <ng-container matColumnDef="select">
@@ -76,7 +88,7 @@
             </mat-table>
             <mat-error *ngIf="message">{{message}}</mat-error>
         </div>
-        <div class="col-sm-12 col-md-11" *ngIf="presentmentData">
+        <div class="col-sm-12 col-md-12" *ngIf="presentmentData">
             <p class="text-blue-dark">Pricing Applied</p>
             <div class="separator-gray w-100"></div>
             <mat-table [dataSource]="itemPricingDataSource">
@@ -130,11 +142,11 @@
         <!--            <label class="waiver-form-label">CD PAYABLE AMOUNT: {{presentmentData.demandNote.totalAmount | money}}</label>-->
         <!--            <label class="waiver-form-label">CD ADJUSTED AMOUNT: {{presentmentData.demandNote.amountPayable| money}}</label>-->
         <!--        </div>-->
-        <div class="col-sm-12 col-md-11" *ngIf="items && items.length==0">
+        <div class="col-sm-12 col-md-12" *ngIf="items && items.length==0">
             <label for="fcorDemandAmount" class="waiver-form-label">Total Amount</label>
             <input id="fcorDemandAmount" class="waiver-form-input-master" formControlName="amount">
         </div>
-        <div class="col-sm-12 col-md-11" [formGroup]="form">
+        <div class="col-sm-12 col-md-12" [formGroup]="form">
             <label for="sendDemandNoteRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
                 consignment:</label>
             <textarea id="sendDemandNoteRemarks" class="waiver-form-input-master"

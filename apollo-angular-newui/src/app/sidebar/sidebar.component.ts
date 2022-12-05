@@ -525,17 +525,17 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'receipt',
     },
     {
-        path: '/msTimeLineReports',
-        title: 'TimeLine Reports',
+        path: '/msReports',
+        title: 'MS Reports',
         type: 'sub',
         icontype: 'receipt',
         privilege: ['MS_IO_READ', 'MS_HOD_READ', 'MS_RM_READ', 'MS_HOF_READ', 'MS_DIRECTOR_READ'],
         collapse: 'reports',
         children: [
-            {path: 'acknowledgement', title: 'Acknowledgement', ab: 'AP'},
-            {path: 'feedback', title: 'Feed back', ab: 'PG'},
-            {path: 'reportSubmitted', title: 'Report Submitted', ab: 'PR'},
-            {path: 'sampleSubmitted', title: 'Samples Submitted', ab: 'SS'},
+            {path: 'timeLineTaken', title: 'Time line Taken', ab: 'TLT'},
+            {path: 'statusReport', title: 'Status Report', ab: 'SR'},
+            {path: 'seizedGoods', title: 'Seized Goods Report', ab: 'SGR'},
+            // {path: 'sampleSubmitted', title: 'Samples Submitted', ab: 'SS'},
         ],
     },
 

@@ -53,6 +53,7 @@ class PvocPartnersForms {
     var billingContactEmail: String? = null
 
     var billingLimitId: Long = 0
+    var mouDays: Long = 0
 
 
     fun addDetails(partner: PvocPartnersEntity, update: Boolean) {

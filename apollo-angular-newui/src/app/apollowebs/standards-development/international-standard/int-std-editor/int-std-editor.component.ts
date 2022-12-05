@@ -32,6 +32,7 @@ export class IntStdEditorComponent implements OnInit {
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
   public actionRequest: ISJustificationProposal | undefined;
+  public isAdoption: ISAdoptionProposal | undefined;
   loadingText: string;
   approve: string;
   reject: string;
@@ -61,6 +62,9 @@ export class IntStdEditorComponent implements OnInit {
       symbolsAbbreviatedTerms:[],
       clause:[],
       special:[],
+        standardNumber:[],
+        preparedBy: [],
+        docName:[]
 
     });
   }
@@ -83,6 +87,7 @@ export class IntStdEditorComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.rerender();
                 this.isAdoptionProposals = response;
+                console.log(this.isAdoptionProposals);
             },
             (error: HttpErrorResponse)=>{
                 this.SpinnerService.hide();
@@ -182,14 +187,14 @@ export class IntStdEditorComponent implements OnInit {
           {
             proposalId: this.actionRequest.proposalId,
               justificationNo: this.actionRequest.id,
-            title: this.actionRequest.title,
-            scope:this.actionRequest.scope,
-            normativeReference: this.actionRequest.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause:this.actionRequest.clause,
-            special:this.actionRequest.special
+            //title: this.isAdoption.title,
+           // scope:this.isAdoption.scope,
+           // normativeReference: this.actionRequest.normativeReference,
+           // symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
+            //clause:this.actionRequest.clause,
+            //special:this.actionRequest.special
           }
-      );
+     );
 
     }
     // @ts-ignore

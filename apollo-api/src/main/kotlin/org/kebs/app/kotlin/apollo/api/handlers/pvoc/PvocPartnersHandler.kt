@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.PvocPartnersForms
 import org.kebs.app.kotlin.apollo.api.service.DaoValidatorService
 import org.kebs.app.kotlin.apollo.api.service.PvocPartnerService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -38,6 +39,11 @@ class PvocPartnersHandler(
                 response = this.partnerService.addPartnerDetails(form)
                 response
             }
+        } catch (ex: ExpectedDataNotFound) {
+            KotlinLogging.logger { }.error("Request processing reversed: ${ex.message}")
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = ex.localizedMessage
+            response.errors = ex.toString()
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to add partner", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS

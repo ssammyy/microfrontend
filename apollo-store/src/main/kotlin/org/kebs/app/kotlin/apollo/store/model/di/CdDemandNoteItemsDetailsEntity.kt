@@ -48,6 +48,10 @@ class CdDemandNoteItemsDetailsEntity : Serializable {
     @Basic
     var feeName: String? = null
 
+    @Column(name = "GROUP_TYPE")
+    @Basic
+    var groupType: String = "SINGLE" // SINGLE or GROUP
+
     @Column(name = "RATE")
     @Basic
     var rate: String? = null
