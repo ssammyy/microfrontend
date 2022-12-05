@@ -65,6 +65,7 @@ class QADaoServices(
     private val qaInspectionHaccpImplementationRepo: IQaInspectionHaccpImplementationRepository,
     private val permitRepo: IPermitApplicationsRepository,
     private val iPermitRepo: PermitRepository,
+    private val permitMigratedRepo: IPermitMigrationApplicationsEntityRepository,
     private val permitUpdateDetailsRequestsRepo: IPermitUpdateDetailsRequestsRepository,
     private val userRequestsRepo: IUserRequestTypesRepository,
     private val SampleCollectionRepo: IQaSampleCollectionRepository,
@@ -6849,8 +6850,8 @@ class QADaoServices(
 
 
     fun findPermitPscDate(permitId: Long): QaRemarksEntity {
-        return if (remarksEntityRepo.findFirstByPermitIdAndProcessByAndRemarksStatus(permitId, "PSC",1) != null) {
-            remarksEntityRepo.findFirstByPermitIdAndProcessByAndRemarksStatus(permitId, "PSC",1)!!
+        return if (remarksEntityRepo.findFirstByPermitIdAndProcessByAndRemarksStatus(permitId, "PSC", 1) != null) {
+            remarksEntityRepo.findFirstByPermitIdAndProcessByAndRemarksStatus(permitId, "PSC", 1)!!
         } else {
             QaRemarksEntity()
         }
@@ -6985,10 +6986,55 @@ class QADaoServices(
                 p.effectiveDate.toString(),
                 p.dateOfExpiry.toString()
 
-                )
+            )
         }
+    }
+    fun listPermitsNotMigratedWebsite(
+        permits: List<PermitMigrationApplicationsEntity>,
+        map: ServiceMapsEntity
+    ): List<KebsWebistePermitEntityDto> {
+        return permits.map { p ->
+            KebsWebistePermitEntityDto(
+                p.companyName,
+                p.physicalAddress,
+                p.permitNumber,
+                p.productName,
+                p.tradeMark,
+                p.ksNumber,
+                p.commodityDescription,
+                p.effectiveDate.toString(),
+                p.dateOfExpiry.toString()
+
+            )
+        }
+    }
+
+    fun findPermitByPermitNumber(
+        awardedPermitNumber: String
+    ): List<PermitApplicationsEntity> {
+
+        permitRepo.findByAwardedPermitNumber(awardedPermitNumber)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
 
     }
 
+    fun findPermitByPermitNumberNotMigrated(
+        awardedPermitNumber: String
+    ): List<PermitMigrationApplicationsEntity> {
+
+        permitMigratedRepo.findByPermitNumber(awardedPermitNumber)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
 
 }

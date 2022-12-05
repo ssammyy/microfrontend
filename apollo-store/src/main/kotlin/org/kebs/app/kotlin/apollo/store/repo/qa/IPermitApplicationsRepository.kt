@@ -17,7 +17,7 @@ import java.util.*
 @Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserIdAndVarField9IsNull(userId: Long): List<PermitApplicationsEntity>?
-    fun findByAwardedPermitNumber(awardedPermitNumber: String): PermitApplicationsEntity?
+    fun findByAwardedPermitNumber(awardedPermitNumber: String):  List<PermitApplicationsEntity>?
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
     fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
     fun countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
@@ -1053,3 +1053,10 @@ interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
     override fun findAll(@Nullable spec: Specification<PermitApplicationsEntity?>?): MutableList<PermitApplicationsEntity>
 
 }
+
+
+@Repository
+interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntity, Long> {
+    fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntity>?
+}
+

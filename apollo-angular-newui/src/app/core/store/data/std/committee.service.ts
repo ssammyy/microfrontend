@@ -193,6 +193,13 @@ export class CommitteeService {
         );
     }
 
+    public viewDocsByIdB(docId: any): Observable<any> {
+        const url = `${this.apiServerUrl}` + 'viewByIdB';
+        const params = new HttpParams().set('docId', docId)
+        return this.http.get<any>(url, {params, responseType: 'text' as 'json'})
+
+    }
+
 
     //upload  Minutes For CD
     public uploadMinutesForCd(pdId: string, data: FormData, doctype: string, docName: string): Observable<any> {
