@@ -1,6 +1,6 @@
 import {createElement, Event, KeyboardEventArgs} from '@syncfusion/ej2-base';
 import {DocumentEditor, FormatType} from '@syncfusion/ej2-angular-documenteditor';
-import {DropDownButton, ItemModel} from "@syncfusion/ej2-angular-splitbuttons";
+import {DropDownButton, ItemModel} from '@syncfusion/ej2-angular-splitbuttons';
 import {Button} from '@syncfusion/ej2-angular-buttons';
 import {MenuEventArgs} from '@syncfusion/ej2-angular-navigations';
 

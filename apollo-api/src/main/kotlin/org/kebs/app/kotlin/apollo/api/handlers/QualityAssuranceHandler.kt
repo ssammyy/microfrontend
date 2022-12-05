@@ -4109,6 +4109,7 @@ class QualityAssuranceHandler(
         }
 
     }
+
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun loadAllSmarksAwardedPermitsForReportsApi(req: ServerRequest): ServerResponse {
         try {
@@ -4135,6 +4136,7 @@ class QualityAssuranceHandler(
         }
 
     }
+
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun loadAllDmarksAwardedPermitsForReportsApi(req: ServerRequest): ServerResponse {
         try {
@@ -4151,6 +4153,40 @@ class QualityAssuranceHandler(
                     map.inactiveStatus
                 ), map
             )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllAwardedPermitsByPermitNumber(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitNumber = req.paramOrNull("permitNumber")
+                ?: throw ExpectedDataNotFound("Required Permit Number, check config")
+
+            var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+            println(qaDaoServices.findPermitByPermitNumber(permitNumber))
+
+            permitListAllApplications =
+                if (qaDaoServices.findPermitByPermitNumber(permitNumber).isEmpty()) {
+                    qaDaoServices.listPermitsNotMigratedWebsite(
+                        qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumber), map
+                    )
+                } else {
+
+                    qaDaoServices.listPermitsWebsite(
+                        qaDaoServices.findPermitByPermitNumber(
+                            permitNumber
+                        ), map
+                    )
+                }
 
             return ok().body(permitListAllApplications)
 

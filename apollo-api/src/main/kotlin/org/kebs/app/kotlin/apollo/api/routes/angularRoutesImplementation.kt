@@ -741,7 +741,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/end-sample-submission-bs-number", handler::addWorkPlanScheduleSampleSubmissionEndBsNumber)
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
-                        PUT( "/final-ssf-compliance-status-save", handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd)
+                        PUT(
+                            "/final-ssf-compliance-status-save",
+                            handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd
+                        )
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
 //                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                         POST("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
@@ -814,6 +817,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/getAwardedSmarkPermits", handler::loadAllSmarksAwardedPermitsForReportsApi)
             GET("/getAwardedFmarkPermits", handler::loadAllFmarksAwardedPermitsForReportsApi)
             GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
+            GET("/getAllAwardedPermits", handler::getAllAwardedPermitsByPermitNumber)
+
 
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
 

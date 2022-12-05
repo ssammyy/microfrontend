@@ -19,6 +19,9 @@ public class CamelFtpProperties {
     @Value("\${org.app.properties.camel.sftp.port:922}")
     var port = 922
 
+    @Value("\${org.app.properties.camel.sftp.delay-minutes:5}")
+    var delayMinutes: Long = 5
+
     @Value("\${org.app.properties.camel.sftp.path}")
     var path = "/C/mhxapps/inbound"
 

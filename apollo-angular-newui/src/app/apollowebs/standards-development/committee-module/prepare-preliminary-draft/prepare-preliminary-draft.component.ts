@@ -157,14 +157,19 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     }
 
     public getNWIS(): void {
+        this.SpinnerService.show();
+
         this.committeeService.getAllNwiSForPd().subscribe(
             (response: NwiItem[]) => {
                 console.log(response);
+                this.SpinnerService.hide();
 
                 this.approvedNwiSForPd = response;
                 this.rerender()
             },
             (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+
                 alert(error.message);
             }
         );
@@ -675,6 +680,8 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         //
         //     }
         // )
+        this.SpinnerService.hide();
+
     }
 
 
@@ -725,6 +732,23 @@ export class PreparePreliminaryDraftComponent implements OnInit {
 
     onSelectAll(items: any) {
         console.log(items);
+    }
+    viewPdfFileById(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
+        this.SpinnerService.show();
+        this.committeeService.viewDocsById(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
     }
 
 

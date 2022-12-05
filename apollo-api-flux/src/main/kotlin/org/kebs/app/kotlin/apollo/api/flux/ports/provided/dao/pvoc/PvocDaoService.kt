@@ -1,4 +1,4 @@
-//package org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.pvoc
+//package org.kebs.app.kotlin.apollo.api.flux.ports.provTo.pvoc
 //
 //import mu.KotlinLogging
 //import org.kebs.app.kotlin.apollo.api.flux.ports.dto.pvoc.*

@@ -4,16 +4,16 @@ import {NwiItem} from "../../../../core/store/data/std/request_std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DocumentEditorContainerComponent, ToolbarService} from '@syncfusion/ej2-angular-documenteditor';
 import {isNullOrUndefined} from "@swimlane/ngx-datatable";
 import {TitleBar} from "../../../title-bar";
 import {CommitteeService} from "../../../../core/store/data/std/committee.service";
+import {ApiEndpointService} from "../../../../core/services/endpoints/api-endpoint.service";
 
 @Component({
     selector: 'app-prepare-draft',
     templateUrl: './prepare-draft.component.html',
     styleUrls: ['./prepare-draft.component.css'],
-    providers: [ToolbarService]
+    // providers: [ToolbarService]
 
 })
 export class PrepareDraftComponent implements OnInit {
@@ -26,13 +26,17 @@ export class PrepareDraftComponent implements OnInit {
     public serviceLink: string;
     titleBar: TitleBar;
     blob: Blob;
+    protocol = `https://`;
+    baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV
+
+    private apiServerUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/committee/`;
 
 
     constructor(private router: Router, private committeeService: CommitteeService,
                 private standardDevelopmentService: StandardDevelopmentService, private formBuilder: FormBuilder,
     ) {
 
-        this.serviceLink='https://zamzam45.com/news/KS_Developed_Standard_Template.docx'
+        this.serviceLink= `${this.apiServerUrl}`
     }
 
 
@@ -40,7 +44,6 @@ export class PrepareDraftComponent implements OnInit {
         this.checkForId();
         this.getSpecificNwi(this.id)
         this.introductoryDetailsForm()
-        // this.viewPdfFile(595, 'application/pdf')
 
     }
 
@@ -79,7 +82,7 @@ export class PrepareDraftComponent implements OnInit {
             introductoryElement: ['', Validators.required],
             partTitle: ['', Validators.required],
             organisation: ['', Validators.required],
-            foreWord: ['', Validators.required],
+            foreword: ['', Validators.required],
 
 
         });
@@ -138,38 +141,39 @@ export class PrepareDraftComponent implements OnInit {
 
     openTemplate(): void {
         const uploadDocument = new FormData();
-        uploadDocument.append('DocumentName', 'Getting Started.docx');
-        const loadDocumentUrl = this.serviceLink;
+        uploadDocument.append('docId', '595');
+        var params = "docId=595";
+
+        const loadDocumentUrl = this.serviceLink + 'viewByIdB';
         const httpRequest = new XMLHttpRequest();
-        httpRequest.open('POST', loadDocumentUrl, true);
+        httpRequest.open('GET', loadDocumentUrl +"?"+params, true);
         const dataContext = this;
-        httpRequest.onreadystatechange = function () {
-            if (httpRequest.readyState === 4) {
-                if (httpRequest.status === 200 || httpRequest.status === 304) {
-                    //Opens the SFDT for the specified file received from the web API.
-                    dataContext.container.documentEditor.open(httpRequest.responseText);
-                }
-            }
-        };
-        //Sends the request with template file name to web API.
-        httpRequest.send(uploadDocument);
-    }
+        // httpRequest.onreadystatechange = function () {
+        //     if (httpRequest.readyState === 4) {
+        //         if (httpRequest.status === 200 || httpRequest.status === 304) {
+        //             //Opens the SFDT for the specified file received from the web API.
+        //             dataContext.container.documentEditor.open(httpRequest.responseText);
+        //         }
+        //     }
+        // };
+        // //Sends the request with template file name to web API.
+        // httpRequest.send(uploadDocument);
 
-    viewPdfFile(pdfId: number, applicationType: string): void {
-        this.committeeService.viewDocsById(pdfId).subscribe(
-            (dataPdf: any) => {
-                this.blob = new Blob([dataPdf], {type: applicationType});
+        this.committeeService.viewDocsByIdB(595).subscribe(
+            (response: any) => {
 
-                // tslint:disable-next-line:prefer-const
-                let downloadURL = window.URL.createObjectURL(this.blob);
-
-                console.log(downloadURL)
-                this.serviceLink = downloadURL;
+                console.log(response.body)
+                this.serviceLink = response;
 
 
-                // this.pdfUploadsView = dataPdf;
+                dataContext.container.documentEditor.open(response.body);
             },
         );
+
+
+
     }
+
+
 
 }
