@@ -637,6 +637,7 @@ class CamelSftpUpload(
             .bean(SFTPService::class.java, "addDownloadProcessing")
             .choice()
             .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsCdApprovalDoctype))
+            .log("Delayed File: \\\${in.headers.CamelFileName}")
             .description("Delay sending approval messages")
             .delay(TimeUnit.MINUTES.toMillis(properties.delayMinutes))
             .asyncDelayed()
