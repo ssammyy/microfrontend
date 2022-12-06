@@ -205,7 +205,7 @@ class AuctionHandler(
                 response.data = form
                 response
             } ?: run {
-                response = auctionService.requestPayment(auctionId, form.remarks!!, form.feeId!!)
+                response = auctionService.requestPayment(auctionId, form.remarks!!, form.feeId!!, "A")
                 response
             }
         } catch (ex: Exception) {
