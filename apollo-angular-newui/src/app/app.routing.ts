@@ -584,9 +584,9 @@ import {
 import {
     DeclarationDocumentsComponent
 } from "./apollowebs/di/other-documents/declaration-documents/declaration-documents.component";
-import {
-    PrepareDraftComponent
-} from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
+// import {
+//     PrepareDraftComponent
+// } from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
 import {IntStdGazetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
 import {
     ReportSubmittedTimelineComponent
@@ -1638,11 +1638,11 @@ export const routes: Routes = [
         children: [{path: '', component: ApproveCommitteeDraftComponent}],
     },
 
-    {
-        // prepare  Draft
-        path: 'prepareDraft', component: AdminLayoutComponent,
-        children: [{path: '', component: PrepareDraftComponent}],
-    },
+    // {
+    //     // prepare  Draft
+    //     path: 'prepareDraft', component: AdminLayoutComponent,
+    //     children: [{path: '', component: PrepareDraftComponent}],
+    // },
 
 
     /****************************************************************

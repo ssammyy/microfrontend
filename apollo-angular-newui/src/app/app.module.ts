@@ -431,7 +431,7 @@ import { IntStdJustificationComponent } from './apollowebs/standards-development
 import { IntStdEditorComponent } from './apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component';
 import {GenerateDeclarationReportComponent} from './apollowebs/di/other-documents/declaration-documents/generate-declaration-report/generate-declaration-report.component';
 import {MatCardModule} from "@angular/material/card";
-import { PrepareDraftComponent } from './apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component';
+// import { PrepareDraftComponent } from './apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component';
 import { IntStdCheckRequirementsComponent } from './apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component';
 import { IntStdEditDraftComponent } from './apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component';
 import { IntStdDraughtComponent } from './apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component';
@@ -911,7 +911,7 @@ import {DocumentEditorContainerModule} from "@syncfusion/ej2-angular-documentedi
         IntStdJustificationComponent,
         IntStdEditorComponent,
         GenerateDeclarationReportComponent,
-        PrepareDraftComponent,
+        // PrepareDraftComponent,
         IntStdCheckRequirementsComponent,
         IntStdEditDraftComponent,
         IntStdDraughtComponent,
