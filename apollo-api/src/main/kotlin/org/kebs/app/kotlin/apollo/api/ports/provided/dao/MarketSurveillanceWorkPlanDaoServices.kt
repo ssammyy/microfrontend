@@ -2044,8 +2044,9 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
                         runBlocking {
-                            val compliant = complaintDetailsFound!!.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
-                            compliant.emailAddress?.let {
+                            val compliant = complaintDetailsFound?.id?.let { complaintsCustomerRepo.findByComplaintId(it) }
+//                            val compliant = complaintDetailsFound?.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
+                            compliant?.emailAddress?.let {
                                 commonDaoServices.sendEmailWithUserEmail(it,
                                     applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
                                     complaintDetailsFound!!, map, remarksSaved.first,
