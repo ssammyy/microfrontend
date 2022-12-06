@@ -683,14 +683,14 @@ class InvoicePaymentService(
             formItem.quantity = (itm.items?.size ?: 0).toLong()
             itm.items?.forEach {
                 val item = daoServices.findItemWithItemIDAndDocument(cdDetails, it)
-                formItem.itemValue = formItem.itemValue?.plus(item.totalPriceFcy ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
+                formItem.itemValue = formItem.itemValue?.plus(item.totalPriceNcy ?: BigDecimal.ZERO) ?: BigDecimal.ZERO
                 formItem.currency = item.foreignCurrencyCode
 
                 // Add group items
                 val groupItem = DemandGroupItem()
                 groupItem.currency = item.foreignCurrencyCode
                 groupItem.itemId = item.id
-                groupItem.itemValue = item.totalPriceFcy
+                groupItem.itemValue = item.totalPriceNcy
                 groupItem.productName = item.itemDescription ?: item.hsDescription ?: item.productTechnicalName
                 groupItem.quantity = item.quantity?.toLong() ?: 0
                 formItem.items?.add(groupItem)
