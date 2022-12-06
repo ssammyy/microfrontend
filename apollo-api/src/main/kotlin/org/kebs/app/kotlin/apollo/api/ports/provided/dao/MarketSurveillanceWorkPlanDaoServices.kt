@@ -1490,10 +1490,13 @@ class MarketSurveillanceWorkPlanDaoServices(
                                     batchReferenceNoFound = batchReferenceNo
                                     referenceNoFound = workPlanScheduled.referenceNumber
                                     dateAssigned = commonDaoServices.getCurrentDate()
-                                    if(workPlanScheduled.complaintId!=null){
-                                        processType = "COMPLAINT-PLAN"
-                                    }else{
-                                        processType = "WORK-PLAN"
+                                    processType = when {
+                                        workPlanScheduled.complaintId!=null -> {
+                                            "COMPLAINT-PLAN"
+                                        }
+                                        else -> {
+                                            "WORK-PLAN"
+                                        }
                                     }
                                 }
 
@@ -4935,6 +4938,11 @@ class MarketSurveillanceWorkPlanDaoServices(
                     wkp.resourcesRequired?.let { mapPredefinedResourcesRequiredListDto(it) },
                     wkp.budget,
                     wkp.updatedRemarks,
+                    wkp.standardCategoryString,
+                    wkp.broadProductCategoryString,
+                    wkp.productCategoryString,
+                    wkp.productString,
+                    wkp.productSubCategoryString,
         )
     }
 
