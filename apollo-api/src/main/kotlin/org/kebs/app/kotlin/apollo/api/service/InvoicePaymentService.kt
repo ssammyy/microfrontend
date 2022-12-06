@@ -657,12 +657,14 @@ class InvoicePaymentService(
         loggedInUser: UsersEntity
     ): DemandNoteRequestItem {
         val formItem = DemandNoteRequestItem()
+        formItem.route = cdDetails.cdStandardsTwo?.cocType ?: "L"
         formItem.fee = daoServices.findDIFee(itm.feeId)
         if (itm.items.isNullOrEmpty()) {
             val item = daoServices.findItemWithItemIDAndDocument(cdDetails, itm.itemId)
             formItem.itemValue = item.totalPriceNcy
             formItem.productName = item.itemDescription ?: item.hsDescription ?: item.productTechnicalName
             formItem.itemId = item.id
+
             formItem.currency = item.foreignCurrencyCode
             formItem.quantity = item.quantity?.toLong() ?: 0
             // Update demand note status
@@ -825,6 +827,7 @@ class InvoicePaymentService(
         var fee: InspectionFeeRanges? = null
         //1. Handle ranges in the fee depending on amounts
         var feeType = diInspectionFeeId.rateType
+        var checkMinMaxValues = true;
         if ("RANGE".equals(diInspectionFeeId.rateType)) {
             var documentOrigin = "LOCAL"
             when (documentType) {
@@ -836,6 +839,9 @@ class InvoicePaymentService(
                 }
                 "A" -> {
                     documentOrigin = "AUCTION"
+                }
+                else -> {
+                    documentOrigin = "LOCAL"
                 }
             }
             KotlinLogging.logger { }.info("$documentOrigin CFI DOCUMENT TYPE = $currencyCode-$cfiValue")
@@ -852,8 +858,12 @@ class InvoicePaymentService(
             }
             minimumUsd = fee.minimumUsd?.let { convertAmount(it, "USD") }
             maximumUsd = fee.maximumUsd?.let { convertAmount(it, "USD") }
-            minimumKes = fee.minimumKsh ?: BigDecimal.ZERO
-            maximumKes = fee.maximumKsh ?: BigDecimal.ZERO
+            minimumKes = BigDecimal.ZERO
+            maximumKes = BigDecimal.ZERO
+            // Min/Max values
+            if (minimumUsd != null || maximumUsd != null) {
+                checkMinMaxValues = false
+            }
             fixedAmount = fee.fixedAmount ?: BigDecimal.ZERO
             feeType = fee.rateType
             rate = fee.rate
@@ -878,24 +888,26 @@ class InvoicePaymentService(
                 demandNoteItem.amountPayable = BigDecimal(amount?.toDouble() ?: 0.0)
                 KotlinLogging.logger { }.info("$feeType MY AMOUNT BEFORE CALCULATION = $currencyCode-$amount")
                 //3.  APPLY MAX AND MIN VALUES Prefer USD setting to KES setting
-                amount?.let {
-                    when (minimumUsd) {
-                        null -> {
-                            demandNoteItem.minimumAmount = minimumKes
-                            demandNoteItem.maximumAmount = maximumKes
-                            if (it < minimumKes && minimumKes > BigDecimal.ZERO) {
-                                amount = minimumKes
-                            } else if (it > maximumKes && maximumKes < BigDecimal.ZERO) {
-                                amount = maximumKes
+                if (checkMinMaxValues) {
+                    amount?.let {
+                        when (minimumUsd) {
+                            null -> {
+                                demandNoteItem.minimumAmount = minimumKes
+                                demandNoteItem.maximumAmount = maximumKes
+                                if (it < minimumKes && minimumKes > BigDecimal.ZERO) {
+                                    amount = minimumKes
+                                } else if (it > maximumKes && maximumKes < BigDecimal.ZERO) {
+                                    amount = maximumKes
+                                }
                             }
-                        }
-                        else -> {
-                            demandNoteItem.minimumAmount = minimumUsd
-                            demandNoteItem.maximumAmount = maximumUsd
-                            if (it < minimumUsd && minimumUsd > BigDecimal.ZERO) {
-                                amount = minimumUsd
-                            } else if (maximumUsd != null && it > maximumUsd && maximumUsd > BigDecimal.ZERO) {
-                                amount = maximumUsd
+                            else -> {
+                                demandNoteItem.minimumAmount = minimumUsd
+                                demandNoteItem.maximumAmount = maximumUsd
+                                if (it < minimumUsd && minimumUsd > BigDecimal.ZERO) {
+                                    amount = minimumUsd
+                                } else if (maximumUsd != null && it > maximumUsd && maximumUsd > BigDecimal.ZERO) {
+                                    amount = maximumUsd
+                                }
                             }
                         }
                     }
