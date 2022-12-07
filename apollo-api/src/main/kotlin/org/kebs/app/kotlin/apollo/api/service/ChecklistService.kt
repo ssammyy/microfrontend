@@ -1223,7 +1223,7 @@ class ChecklistService(
         val optional = this.motorVehicleItemChecklistRepository.findById(mvInspectionId)
         if (optional.isPresent) {
             val ministryInspection = optional.get()
-            commonDaoServices.findAllUsersWithMinistryUserType()?.let { ministryUsers ->
+            commonDaoServices.findAllUsersWithMinistryUserType(stationId)?.let { ministryUsers ->
                 if (ministryUsers.isNotEmpty()) {
                     ministryUsers[Random().nextInt(ministryUsers.size)].let {
                         ministryInspection.assignedUser = it
