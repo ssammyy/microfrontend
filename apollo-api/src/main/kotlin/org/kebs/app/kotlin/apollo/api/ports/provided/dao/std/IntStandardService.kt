@@ -1,6 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import com.hazelcast.internal.util.collection.ArrayUtils
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
@@ -23,10 +23,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import org.thymeleaf.util.DateUtils.second
 import java.sql.Timestamp
 import java.util.*
-import java.util.Collections.addAll
 
 
 @Service
@@ -98,7 +96,8 @@ class IntStandardService(
         iSAdoptionProposal.status = 0
         iSAdoptionProposal.proposalNumber = getPRNumber()
 
-        val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
+        val proposal=ISAdoptionProposal()
+       // val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
 
         iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
         iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
@@ -109,19 +108,36 @@ class IntStandardService(
         val userList = replace?.replace("]", "")
         val arrays = otherUsers?.split(",")?.toTypedArray()
         val array = userList?.split(",")?.toTypedArray()
-        //val both: Array<String> = ArrayUtils.concat(array, arrays)
+
+        val listOne: ArrayList<String?> = ArrayList<String?>(listOf(userList))
+
+        val listTwo: ArrayList<String?> = ArrayList<String?>(listOf(otherUsers))
+
+        listOne.addAll(listTwo) //Merge both lists
+
+
+        println(listOne)
+        println(listTwo)
+//        val list: MutableList<Any> = ArrayList<Any>(listOf(userList)) //returns a list view of an array
+//        val lists: MutableList<Any> = ArrayList<Any>(listOf(otherUsers)) //returns a list view of an array
+//         list.add(lists)
+
+
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "users:" + gson.toJson(users) }
+        KotlinLogging.logger { }.info { "otherUsers:" + gson.toJson(otherUsers) }
+        KotlinLogging.logger { }.info { "Merged:" + gson.toJson(listOne) }
+
 
         val targetUrl = "https://kimsint.kebs.org/";
-        if (array != null) {
-            for (recipient in array) {
-            //val recipient="stephenmuganda@gmail.com"
-                val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
-            val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
-                }
-
+        for (recipient in listOne) {
+        //val recipient="stephenmuganda@gmail.com"
+            val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
+        val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
             }
+
         }
 
      return proposal
@@ -1274,4 +1290,8 @@ class IntStandardService(
 
         return "$startId/$finalValue:$year"
     }
+}
+
+private fun <E> MutableList<E>.addAll(elements: E) {
+
 }

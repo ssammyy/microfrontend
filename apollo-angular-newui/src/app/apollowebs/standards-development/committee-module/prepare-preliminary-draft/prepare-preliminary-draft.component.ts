@@ -74,7 +74,7 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     public justificationItemB !: StdJustification | undefined;
     dateFormat = "yyyy-MM-dd";
     language = "en";
-    displayedColumns: string[] = ['sl', 'edition', 'title', 'spcMeetingDate', 'departmentId', 'actions'];
+    displayedColumns: string[] = ['sl', 'edition', 'title', 'spcMeetingDate', 'departmentId', 'actions','',''];
     dataSource!: MatTableDataSource<StdJustification>;
     dataSourceB!: MatTableDataSource<StdJustification>;
     dataSourceC!: MatTableDataSource<StdJustification>;

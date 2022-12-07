@@ -30,8 +30,8 @@
                             <h4 class="card-title">ALL NEW WORK ITEMS
                             </h4>
                             <div class="material-datatables">
-                                <table class="table table-striped table-bordered table-hover" datatable
-                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3">
+                                <table class="table table-responsive table-striped table-bordered table-hover" datatable
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3" style="width: 100%">
                                     <thead>
                                     <tr>
                                         <th class="id">New Work Item ID</th>
@@ -39,8 +39,12 @@
                                         <th class="task">Proposal Title</th>
                                         <th class="task">Technical Committee Name</th>
                                         <th class="task">Status</th>
-                                        <th class="action">View</th>
-                                        <th class="action">Action</th>
+                                        <th class="edit">View NWI</th>
+                                        <th class="viewRequest">View Request</th>
+                                        <th class="justification">View Justification</th>
+                                        <th class="uploadMinutes">Prepare Minutes</th>
+                                        <th class="uploadDraftsAndOtherRelevantDocuments">Upload Drafts</th>
+                                        <th class="preparePd">Prepare Preliminary Draft</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -56,28 +60,33 @@
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View NWI</a>
-                                            <br>
-
+                                            </td>
+                                           <td>
                                             <a (click)="onOpenModalViewNwi(approvedNwi.standardId,'viewRequest')"
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View Request</a>
-                                            <br>
+                                            </td>
+                                        <td>
                                             <a (click)="onOpenModalViewNwi(approvedNwi.id,'justification')"
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View Justification</a>
-                                            <br></td>
+
+                                        </td>
                                         <td>
                                             <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Prepare Minutes</a>
+                                        </td>
+                                        <td>
                                             <a (click)="onOpenModal(approvedNwi,'uploadDraftsAndOtherRelevantDocuments')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Upload Drafts And Other Documents</a>
-
+                                        </td>
+                                        <td>
                                             <a (click)="onOpenModal(approvedNwi,'preparePd')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
@@ -91,12 +100,12 @@
                             </div>
 
                             <div class="modal fade " id="uploadMinutes" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="uploadMinutesModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Minutes</h5>
+                                            <h5 class="modal-title" id="uploadMinutesModalLabel">Upload Minutes</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -367,12 +376,12 @@
                             </div>
                             <div class="modal fade " id="uploadDraftsAndOtherRelevantDocuments" tabindex="-1"
                                  role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="uploadDraftsAndOtherRelevantDocumentsModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Drafts And Other
+                                            <h5 class="modal-title" id="uploadDraftsAndOtherRelevantDocumentsModalLabel">Upload Drafts And Other
                                                 Relevant Documents</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -409,12 +418,12 @@
                                 </div>
                             </div>
                             <div class="modal fade " id="preparePd" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="preparePdModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Prepare Preliminary
+                                            <h5 class="modal-title" id="preparePdModalLabel">Prepare Preliminary
                                                 Draft</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -463,7 +472,7 @@
 
 
                             <div class="modal fade" id="justificationDecisionModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="justificationDecisionModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
@@ -516,7 +525,7 @@
                                                                     <thead>
                                                                     <tr>
                                                                         <th class="task">Document Name</th>
-                                                                        <th class="task">Descritpion</th>
+                                                                        <th class="task">Description</th>
 
                                                                         <th class="task">Action</th>
 
@@ -583,12 +592,12 @@
                                 </div>
                             </div>
                             <div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="viewNwiModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">NEW WORK
+                                            <h5 class="modal-title" id="viewNwiModalLabel">NEW WORK
                                                 ITEM</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -702,14 +711,14 @@
                                 </div>
                             </div>
                             <div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="viewRequestModalLabel"
                                  aria-hidden="true">
 
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title"
-                                                id="updateExampleModalLabel">Request Details</h5>
+                                                id="viewRequestModalLabel">Request Details</h5>
                                             <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>

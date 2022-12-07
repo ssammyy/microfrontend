@@ -65,6 +65,7 @@ export class StandardTaskComponent implements OnInit {
 
 
     displayedColumns: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions'];
+    displayedColumn: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions','action'];
     dataSource!: MatTableDataSource<StandardRequestB>;
     dataSourceB!: MatTableDataSource<StandardRequestB>;
     dataSourceC!: MatTableDataSource<StandardRequestB>;
