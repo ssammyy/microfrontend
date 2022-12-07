@@ -62,6 +62,19 @@ data class TeamsFuelDetailsDto(
         var countyID : Long? = null,
 )
 
+data class SeizedGoodsViewDto(
+        var referenceNumber: String? = null,
+        var divisionId: String? = null,
+        var complaintDepartment: String? = null,
+        var region: String? = null,
+        var county: String? = null,
+        var townMarketCenter: String? = null,
+        var descriptionProductsSeized: String? = null,
+        var quantity: String? = null,
+        var estimatedCost: String? = null,
+        var currentLocation: String? = null,
+)
+
 data class WorkPlanScheduleListDetailsDto(
         var workPlanList: List<WorkPlanInspectionDto>? = null,
         var createdWorkPlan: WorkPlanBatchDetailsDto? = null
@@ -945,6 +958,35 @@ data class ComplaintSearchValues(
 //        var lastName: String? = null
 )
 
+data class ComplaintViewSearchValues(
+        var refNumber: String? = null,
+        var assignedIo: Long? = null,
+        var region: Long? = null,
+        var complaintDepartment: Long? = null,
+        var division: Long? = null
+)
+
+data class SampleProductViewSearchValues(
+        var refNumber: String? = null,
+        var productName: String? = null,
+        var bsNumber: String? = null,
+        var status: String? = null,
+        var region: Long? = null,
+        var complaintDepartment: Long? = null,
+        var division: Long? = null
+)
+
+data class SeizedGoodsViewSearchValues(
+        var refNumber: String? = null,
+        var productName: String? = null,
+        var quantity: String? = null,
+        var estimatedCost: String? = null,
+        var currentLocation: String? = null,
+        var region: Long? = null,
+        var complaintDepartment: Long? = null,
+        var division: Long? = null
+)
+
 data class ComplaintAdviceRejectDto(
         var mandateForOga: Int? = null,
         var advisedWhereToRemarks: String? = null,
@@ -1071,6 +1113,41 @@ data class ComplaintsListDto(
 //        var complaintCategory: String? = null,
         var transactionDate: Date? = null,
         var progressStep: String? = null
+)
+
+data class ComplaintsInvestigationListDto(
+        var referenceNumber: String? = null,
+        var complaintTitle: String? = null,
+        var targetedProducts: String? = null,
+        var transactionDate: Date? = null,
+        var approvedDate: Date? = null,
+        var rejectedDate: Date? = null,
+        var assignedIo: String? = null,
+        var status: String? = null,
+        var region: String? = null,
+        var county: String? = null,
+        var town: String? = null,
+        var complaintDepartment: String? = null,
+        var division: String? = null,
+        var timeTakenForAcknowledgement: String? = null,
+        var feedbackSent: String? = null,
+        var timeTakenForFeedbackSent: String? = null,
+        var msProcess: String? = null
+)
+
+data class SelectedProductViewListDto(
+        var referenceNumber: String? = null,
+        var divisionId: String? = null,
+        var complaintDepartment: String? = null,
+        var region: String? = null,
+        var county: String? = null,
+        var townMarketCenter: String? = null,
+        var nameProduct: String? = null,
+        var bsNumber: String? = null,
+        var resultsAnalysis: Boolean? = null,
+        var analysisDone: Boolean? = null,
+        var complianceRemarks: String? = null,
+        var status: String? = null,
 )
 
 class MsDashBoardALLDto{

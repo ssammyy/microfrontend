@@ -14,36 +14,176 @@
                 <div class="card">
                     <div class="card-header card-header-primary card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">RS</i>
+                            <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title">Report Submitted Time Line List Details
+                        <h4 class="card-title">Seized Goods Report
                         </h4>
                     </div>
                     <div class="card-body">
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <h6 class="card-title">Search Details</h6>
+                                <br>
+                                <form  [formGroup]="searchFormGroup">
+                                        <div class="form-body">
+                                            <div class="row">
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Ref No</b></label>
+                                                        <input class="form-control two-column-input" formControlName="refNumber"
+                                                               name="refNumber"  type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Product Name</b></label>
+                                                        <input class="form-control two-column-input" formControlName="productName"
+                                                               name="productName"  type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Quantity</b></label>
+                                                        <input class="form-control two-column-input" formControlName="quantity"
+                                                               name="quantity"  type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Estimated Cost</b></label>
+                                                        <input class="form-control two-column-input" formControlName="estimatedCost"
+                                                               name="estimatedCost"  type="text">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Current Location</b></label>
+                                                        <input class="form-control two-column-input" formControlName="currentLocation"
+                                                               name="currentLocation"  type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Region</b></label>
+                                                        <select id="region" class="form-control" formControlName="region" type="number"
+                                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">
+                                                            <option  selected>Please select</option>
+                                                            <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"
+                                                            >{{app.region}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Department</b> </label>
+                                                        <select (change)="onChangeSelectedDepartment()"
+                                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                                class="form-control" formControlName="complaintDepartment" name="complaintDepartment">
+                                                            <option  selected>Please select</option>
+                                                            <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-group">
+                                                        <label><b>Division</b> </label>
+                                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"
+                                                                class="form-control" formControlName="division" name="division">
+                                                            <option  selected>Please select</option>
+                                                            <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!--                                        <div class="float-right" role="group" aria-label="Applications Status">-->
+                                            <div class="col-6 col-md-3">
+                                                <button [disabled]="!searchFormGroup.valid" (click)="onSubmitComplaintSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>
+                                            </div>
+                                            <div *ngIf="submitted" class="col-6 col-md-3">
+                                                <button  (click)="clearSearch()" class="btn btn-default" type="button" >CLEAR FILTER</button>
+                                            </div>
+                                            <!--                                        </div>-->
+
+                                        </div>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
                         <div class="toolbar">
-                            <div class="btn-group btn-group-sm float-right" role="group" aria-label="Applications Status">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                                <button type="button" (click)="toggleStatus('seized-Goods', 'complaint', 'ALL_DETAILS')"
+                                        [className]="activeStatus == 'seized-Goods' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    SEIZED GOODS PER SCHEDULE
+                                </button>
+<!--                                <button type="button" (click)="toggleStatus('product-performance', 'sample-products', 'FEEDBACK_SENT')"-->
+<!--                                        [className]="activeStatus == 'product-performance' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">-->
+<!--                                    PRODUCT PERFORMANCE-->
+<!--                                </button>-->
+<!--                                <button type="button" (click)="toggleStatus('performance-selected-product', 'sample-products', 'FEEDBACK_SENT')"-->
+<!--                                        [className]="activeStatus == 'performance-selected-product' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">-->
+<!--                                    PERFORMANCE OF A SELECTED PRODUCT-->
+<!--                                </button>-->
                             </div>
                         </div>
 
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
-                                <div class="table-responsive table-striped">
-                                    <ng2-smart-table class="table table-hover"
-                                                     [settings]="settings"
-                                                     [source]="dataSet">
-                                    </ng2-smart-table>
-                                    <br/>
-                                    <ngb-pagination [(page)]="currentPage" [pageSize]="defaultPageSize"
-                                                    [collectionSize]="totalCount"
-                                                    (pageChange)=pageChange($event)>
-                                        <ng-template ngbPaginationFirst>First</ng-template>
-                                        <ng-template ngbPaginationLast>Last</ng-template>
-                                        <ng-template ngbPaginationPrevious>Prev</ng-template>
-                                        <ng-template ngbPaginationNext>Next</ng-template>
-                                        <ng-template ngbPaginationEllipsis>...</ng-template>
-                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>
-                                    </ngb-pagination>
+                                <div class="material-datatables table-responsive col-md-12">
+                                    <table  class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"   >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th class="knw">REFERENCE NUMBER</th>
+                                            <th class="knw">PRODUCT NAME</th>
+                                            <th class="knw">REGION</th>
+                                            <th class="sl">CURRENT LOCATION</th>
+                                            <th class="knw">DEPARTMENT</th>
+                                            <th class="knw">FUNCTION</th>
+                                            <th class="knw">QUANTITY</th>
+                                            <th class="knw">ESTIMATED COST</th>
+                                            <th class="knw">STATUS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let companyModel of loadedData let i=index">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel.referenceNumber}}</td>
+                                            <td>{{companyModel.descriptionProductsSeized }}</td>
+                                            <td>{{companyModel.region}}</td>
+                                            <td>{{companyModel.currentLocation}}</td>
+                                            <td>{{companyModel.complaintDepartment}}</td>
+                                            <td>{{companyModel.divisionId}}</td>
+                                            <td>{{companyModel.quantity}}</td>
+                                            <td>{{companyModel.estimatedCost}}</td>
+                                            <td>{{companyModel.status}}</td>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+<!--                                <div class="table-responsive table-striped">-->
+<!--                                    <ng2-smart-table  class="table table-hover"-->
+<!--                                                     [settings]="settingsSeizedGoods"-->
+<!--                                                     [source]="dataSet">-->
+<!--                                    </ng2-smart-table>-->
+<!--                                    <br/>-->
+<!--                                    <ngb-pagination-->
+<!--                                    >-->
+<!--                                        <ng-template ngbPaginationFirst>First</ng-template>-->
+<!--                                        <ng-template ngbPaginationLast>Last</ng-template>-->
+<!--                                        <ng-template ngbPaginationPrevious>Prev</ng-template>-->
+<!--                                        <ng-template ngbPaginationNext>Next</ng-template>-->
+<!--                                        <ng-template ngbPaginationEllipsis>...</ng-template>-->
+<!--                                        <ng-template ngbPaginationNumber let-page>{{page}}</ng-template>-->
+<!--                                    </ngb-pagination>-->
+<!--                                </div>-->
                             </div>
                         </div>
 

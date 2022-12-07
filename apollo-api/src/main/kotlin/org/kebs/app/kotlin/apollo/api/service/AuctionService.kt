@@ -140,7 +140,11 @@ class AuctionService(
         return saved.id
     }
 
-    fun createPaymentRequest(request: AuctionRequests, fee: DestinationInspectionFeeEntity): DemandNoteRequestForm {
+    fun createPaymentRequest(
+        request: AuctionRequests,
+        fee: DestinationInspectionFeeEntity,
+        route: String
+    ): DemandNoteRequestForm {
         val demandNoteReq = DemandNoteRequestForm()
         demandNoteReq.product = "AUCTION"
         demandNoteReq.name = request.importerName
@@ -171,7 +175,7 @@ class AuctionService(
         val items = this.auctionItemsRepo.findByAuctionId_Id(request.id!!)
         for (element in items) {
             val itm = DemandNoteRequestItem()
-            itm.route = "D"
+            itm.route = route
             itm.quantity = element.quantity?.toLong() ?: 0
             itm.currency = element.currency
             itm.productName = element.itemName
@@ -184,7 +188,7 @@ class AuctionService(
         return demandNoteReq
     }
 
-    fun requestPayment(auctionId: Long, remarks: String, feeId: Long): ApiResponseModel {
+    fun requestPayment(auctionId: Long, remarks: String, feeId: Long, route: String): ApiResponseModel {
         val response = ApiResponseModel()
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val optional = this.auctionRequestsRepository.findById(auctionId)
@@ -192,9 +196,15 @@ class AuctionService(
         if (optional.isPresent && fee.isPresent) {
             val auctionRequest = optional.get()
             commonDaoServices.getLoggedInUser()?.let {
-                val demandNoteReq = createPaymentRequest(auctionRequest, fee.get())
+                val demandNoteReq = createPaymentRequest(auctionRequest, fee.get(), route)
                 val returnList = mutableListOf<CdDemandNoteItemsDetailsEntity>()
-                val demandNote = this.invoicePaymentService.generateDemandNoteWithItemList(demandNoteReq, returnList, map, PaymentPurpose.AUDIT, it)
+                val demandNote = this.invoicePaymentService.generateDemandNoteWithItemList(
+                    demandNoteReq,
+                    returnList,
+                    map,
+                    PaymentPurpose.AUDIT,
+                    it
+                )
                 auctionRequest.demandNoteId = demandNote.id
                 auctionRequest.approvalStatus = AuctionGoodStatus.PAYMENT_PENDING.status
                 auctionRequest.varField1 = "PENDING PAYMENT"

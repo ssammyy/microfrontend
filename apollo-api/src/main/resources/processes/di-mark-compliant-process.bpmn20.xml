@@ -36,7 +36,8 @@
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentType=='COR'}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow16" sourceRef="usertask1" targetRef="servicetask3"></sequenceFlow>
-        <serviceTask id="servicetask3" name="Mark Compliance Status" activiti:expression="${diService.markCompliant(cdUuid,compliantStatus, supervisor,remarks,taskApproved)}"></serviceTask>
+        <serviceTask id="servicetask3" name="Mark Compliance Status"
+                     activiti:expression="${diService.markCompliant(cdUuid,compliantStatus, supervisor,remarks,taskApproved)}"></serviceTask>
         <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow17" sourceRef="exclusivegateway1" targetRef="exclusivegateway3">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${taskApproved}]]></conditionExpression>
@@ -45,11 +46,13 @@
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${compliantStatus!=1}]]></conditionExpression>
         </sequenceFlow>
         <sequenceFlow id="flow19" sourceRef="servicetask2" targetRef="servicetask5"></sequenceFlow>
-        <serviceTask id="servicetask5" name="Update SW" activiti:expression="#{diService.swUpdateComplianceStatus(cdUuid,compliantStatus,supervisor,remarks)}"></serviceTask>
+        <serviceTask id="servicetask5" name="Update SW"
+                     activiti:expression="#{diService.swUpdateComplianceStatus(cdUuid,compliantStatus,supervisor,remarks)}"></serviceTask>
         <sequenceFlow id="flow20" name="COI" sourceRef="exclusivegateway2" targetRef="servicetask6">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${documentType=='COI'}]]></conditionExpression>
         </sequenceFlow>
-        <serviceTask id="servicetask6" name="Generate CoI" activiti:expression="#{diService.swGenerateCoI(cdUuid,remarks,supervisor)}"></serviceTask>
+        <serviceTask id="servicetask6" name="Generate CoI"
+                     activiti:expression="#{diService.swGenerateCoI(cdUuid,remarks,supervisor)}"></serviceTask>
         <sequenceFlow id="flow21" sourceRef="servicetask6" targetRef="servicetask5"></sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_consignmentCompliantApprovalProcess">

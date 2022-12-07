@@ -1490,10 +1490,13 @@ class MarketSurveillanceWorkPlanDaoServices(
                                     batchReferenceNoFound = batchReferenceNo
                                     referenceNoFound = workPlanScheduled.referenceNumber
                                     dateAssigned = commonDaoServices.getCurrentDate()
-                                    if(workPlanScheduled.complaintId!=null){
-                                        processType = "COMPLAINT-PLAN"
-                                    }else{
-                                        processType = "WORK-PLAN"
+                                    processType = when {
+                                        workPlanScheduled.complaintId!=null -> {
+                                            "COMPLAINT-PLAN"
+                                        }
+                                        else -> {
+                                            "WORK-PLAN"
+                                        }
                                     }
                                 }
 
@@ -2041,8 +2044,9 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
                         runBlocking {
-                            val compliant = complaintDetailsFound!!.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
-                            compliant.emailAddress?.let {
+                            val compliant = complaintDetailsFound?.id?.let { complaintsCustomerRepo.findByComplaintId(it) }
+//                            val compliant = complaintDetailsFound?.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
+                            compliant?.emailAddress?.let {
                                 commonDaoServices.sendEmailWithUserEmail(it,
                                     applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
                                     complaintDetailsFound!!, map, remarksSaved.first,
@@ -4935,6 +4939,11 @@ class MarketSurveillanceWorkPlanDaoServices(
                     wkp.resourcesRequired?.let { mapPredefinedResourcesRequiredListDto(it) },
                     wkp.budget,
                     wkp.updatedRemarks,
+                    wkp.standardCategoryString,
+                    wkp.broadProductCategoryString,
+                    wkp.productCategoryString,
+                    wkp.productString,
+                    wkp.productSubCategoryString,
         )
     }
 

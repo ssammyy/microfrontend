@@ -70,18 +70,20 @@ class KeswFileEvents(data: FileDetails) : ApplicationEvent(data) {
 
 @Service
 class SFTPService(
-        private val iDFDaoService: IDFDaoService,
-        private val declarationDaoService: DeclarationDaoService,
-        private val manifestDaoService: ManifestDaoService,
-        private val destinationInspectionDaoServices: DestinationInspectionDaoServices,
-        private val consignmentDocumentDaoService: ConsignmentDocumentDaoService,
-        private val eventPublisher: ApplicationEventPublisher,
-        private val properties: CamelFtpProperties,
-        private val resourceLoader: ResourceLoader,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val sftpRepository: ISftpTransmissionEntityRepository
+    private val iDFDaoService: IDFDaoService,
+    private val declarationDaoService: DeclarationDaoService,
+    private val manifestDaoService: ManifestDaoService,
+    private val destinationInspectionDaoServices: DestinationInspectionDaoServices,
+    private val consignmentDocumentDaoService: ConsignmentDocumentDaoService,
+    private val eventPublisher: ApplicationEventPublisher,
+    private val properties: CamelFtpProperties,
+    private val resourceLoader: ResourceLoader,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val sftpRepository: ISftpTransmissionEntityRepository
 ) {
-    val ignoreDocuments = setOf(applicationMapProperties.mapKeswsErrorDocument, applicationMapProperties.mapKeswsUcrResDoctype)
+    val ignoreDocuments =
+        setOf(applicationMapProperties.mapKeswsErrorDocument, applicationMapProperties.mapKeswsUcrResDoctype)
+
     fun uploadFile(file: File, move: Boolean = false): Boolean {
         try {
             val fileCp = Paths.get(properties.outboundDirectory, file.name).toFile()
@@ -127,10 +129,12 @@ class SFTPService(
                         KotlinLogging.logger { }.info("Reading file from ${this.properties.uploadPreMove}: $fileName")
                         return successFilePaht.toFile().readText()
                     } else if (Files.exists(failedFilePath)) {
-                        KotlinLogging.logger { }.info("Reading file from ${this.properties.outboundDirectory}/error: $fileName")
+                        KotlinLogging.logger { }
+                            .info("Reading file from ${this.properties.outboundDirectory}/error: $fileName")
                         return failedFilePath.toFile().readText()
                     } else if (Files.exists(outboundFilePath)) {
-                        KotlinLogging.logger { }.info("Reading file from ${this.properties.outboundDirectory}: $fileName")
+                        KotlinLogging.logger { }
+                            .info("Reading file from ${this.properties.outboundDirectory}: $fileName")
                         return outboundFilePath.toFile().readText()
                     } else {
                         KotlinLogging.logger { }.warn("Failed to find any file ${fileName}:")
@@ -158,7 +162,11 @@ class SFTPService(
         KotlinLogging.logger { }.info("CD File: ${exchange.message.headers} | Save Status: ${updated}|")
         // Link with manifest details
         try {
-            this.declarationDaoService.linkManifestWithConsignment(null, consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.ucrNumber, false)
+            this.declarationDaoService.linkManifestWithConsignment(
+                null,
+                consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.ucrNumber,
+                false
+            )
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to link document:", ex)
         }
@@ -167,7 +175,7 @@ class SFTPService(
 
     fun processDocumentResponses(exchange: Exchange) {
         KotlinLogging.logger { }
-                .info("Declaration Document Res: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+            .info("Declaration Document Res: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val ucrNumberMessage = exchange.message.body as UCRNumberMessage
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
@@ -180,15 +188,18 @@ class SFTPService(
     }
 
     fun processDeclarationVerificationDocumentType(exchange: Exchange) {
-        KotlinLogging.logger { }.info("Verification Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }
+            .info("Verification Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val declarationVerificationDocumentMessage = exchange.message.body as DeclarationVerificationMessage
-        val docSaved = destinationInspectionDaoServices.updateCdVerificationSchedule(declarationVerificationDocumentMessage)
-        KotlinLogging.logger { }.info("Verification Document Type: ${exchange.message.headers} | Saved Status: ${docSaved}|")
+        val docSaved =
+            destinationInspectionDaoServices.updateCdVerificationSchedule(declarationVerificationDocumentMessage)
+        KotlinLogging.logger { }
+            .info("Verification Document Type: ${exchange.message.headers} | Saved Status: ${docSaved}|")
     }
 
     fun processUcrResultDocument(exchange: Exchange) {
         KotlinLogging.logger { }
-                .info("UCR Res Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+            .info("UCR Res Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val ucrNumberMessage = exchange.message.body as UCRNumberMessage
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
@@ -200,27 +211,34 @@ class SFTPService(
             throw Exception("BaseDocRef Number or UcrNumber missing")
         }
         KotlinLogging.logger { }
-                .info("UCR Res Document: $baseDocRefNo | UcrNumber: $ucrNumber|")
+            .info("UCR Res Document: $baseDocRefNo | UcrNumber: $ucrNumber|")
         try {
             val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
-            KotlinLogging.logger { }.info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
+            KotlinLogging.logger { }
+                .info("UCR Res Document: ${exchange.message.headers} | Saved Status: ${idfUpdated}|")
         } catch (ex: Exception) {
             KotlinLogging.logger { }
-                    .warn("UCR Res Document not linked: $baseDocRefNo | UcrNumber: $ucrNumber|", ex)
+                .warn("UCR Res Document not linked: $baseDocRefNo | UcrNumber: $ucrNumber|", ex)
         }
         // Update IDF number on consignment
-        this.destinationInspectionDaoServices.updateIdfNumber(ucrNumber, baseDocRefNo, ucrNumberMessage.data?.dataIn?.version)
+        this.destinationInspectionDaoServices.updateIdfNumber(
+            ucrNumber,
+            baseDocRefNo,
+            ucrNumberMessage.data?.dataIn?.version
+        )
     }
 
     fun processAirManifestDocument(exchange: Exchange) {
-        KotlinLogging.logger { }.info("Air Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }
+            .info("Air Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val manifestDocumentMessage = exchange.message.body as ManifestDocumentMessage
         val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
         KotlinLogging.logger { }.info("Air Manifest Document: ${exchange.message.headers} | Saved Status: ${docSaved}|")
     }
 
     fun processManifestDocument(exchange: Exchange) {
-        KotlinLogging.logger { }.info("Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }
+            .info("Manifest Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val manifestDocumentMessage = exchange.message.body as ManifestDocumentMessage
         val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
         KotlinLogging.logger { }.info("Manifest Document: ${exchange.message.headers} | Saved Status: ${docSaved}|")
@@ -255,9 +273,11 @@ class SFTPService(
      *
      */
     fun processErrorDocument(exchange: Exchange) {
-        KotlinLogging.logger { }.info("Error Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
+        KotlinLogging.logger { }
+            .info("Error Document: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val keswsErrorResponse = exchange.message.body as KeswsErrorResponse
-        val log = keswsErrorResponse.documentDetails?.fileName?.let { sftpRepository.findFirstByFilenameOrderByCreatedOn(it) }
+        val log =
+            keswsErrorResponse.documentDetails?.fileName?.let { sftpRepository.findFirstByFilenameOrderByCreatedOn(it) }
         log?.let { fileLog ->
             fileLog.keswErrorCode = keswsErrorResponse.errorInformation?.errorCode
             fileLog.keswErrorMessage = keswsErrorResponse.errorInformation?.errorDescription
@@ -418,59 +438,59 @@ class SFTPService(
  */
 @Component
 class CamelSftpDownload(
-        private val properties: CamelFtpProperties,
-        private val applicationMapProperties: ApplicationMapProperties,
+    private val properties: CamelFtpProperties,
+    private val applicationMapProperties: ApplicationMapProperties,
 ) : RouteBuilder() {
     private val ftpBuilder = URIBuilder()
-            .setScheme(properties.scheme)
-            .setHost(properties.host)
-            .setPort(properties.port)
-            .setPath(properties.path)
+        .setScheme(properties.scheme)
+        .setHost(properties.host)
+        .setPort(properties.port)
+        .setPath(properties.path)
     private lateinit var fromFtpUrl: URI
 
     init {
         KotlinLogging.logger { }.info("Loading Camel SFT Download router")
         ftpBuilder
-                .addParameter("username", properties.userName)
-                .addParameter("password", properties.password)
-                .addParameter("passiveMode", properties.passiveMode)
-                .addParameter("initialDelay", properties.initialDelay)
-                .addParameter("delay", properties.delay)
-                .addParameter("sortBy", "file:modified") // Oldest file first
-                .addParameter("noop", "false")
+            .addParameter("username", properties.userName)
+            .addParameter("password", properties.password)
+            .addParameter("passiveMode", properties.passiveMode)
+            .addParameter("initialDelay", properties.initialDelay)
+            .addParameter("delay", properties.delay)
+            .addParameter("sortBy", "file:modified") // Oldest file first
+            .addParameter("noop", "false")
 //                .addParameter("implicit",properties.implicitSecurity)
-                .addParameter("move", properties.move)
-                .addParameter("preMove", properties.preMove)
-                .addParameter("streamDownload", "true") // Avoid in memory loading of files
-                .addParameter("localWorkDirectory", "/tmp") // Needed with streamDownload
-                .addParameter("download", "true") // Get file into exchange body
+            .addParameter("move", properties.move)
+            .addParameter("preMove", properties.preMove)
+            .addParameter("streamDownload", "true") // Avoid in memory loading of files
+            .addParameter("localWorkDirectory", "/tmp") // Needed with streamDownload
+            .addParameter("download", "true") // Get file into exchange body
         when (properties.scheme) {
             "ftps" -> {
                 ftpBuilder.addParameter("runLoggingLevel", properties.logLevel)
-                        .addParameter("moveFailed", properties.moveFailed)
-                        .addParameter("maximumReconnectAttempts", "50")
-                        .addParameter("binary", "true")
-                        .addParameter("startingDirectoryMustExist", "true")
-                        .addParameter("sendEmptyMessageWhenIdle", "false")
-                        .addParameter("siteCommand", "pwd\nls -lrth")
-                        .addParameter("include", properties.antInclude)
-                        .addParameter("autoCreate", "false")
+                    .addParameter("moveFailed", properties.moveFailed)
+                    .addParameter("maximumReconnectAttempts", "50")
+                    .addParameter("binary", "true")
+                    .addParameter("startingDirectoryMustExist", "true")
+                    .addParameter("sendEmptyMessageWhenIdle", "false")
+                    .addParameter("siteCommand", "pwd\nls -lrth")
+                    .addParameter("include", properties.antInclude)
+                    .addParameter("autoCreate", "false")
             }
             "sftp" -> {
                 ftpBuilder.addParameter("runLoggingLevel", properties.logLevel)
-                        .addParameter("readLock", properties.readLock)
-                        .addParameter("maxMessagesPerPoll", "10")
-                        .addParameter("moveFailed", properties.moveFailed)
-                        .addParameter("autoCreate", "false")
-                        .addParameter("greedy", "true") // If you find file, don't delay the next check for more files
-                        .addParameter("timeUnit", TimeUnit.MILLISECONDS.name)
-                        .addParameter("useFixedDelay", "true")
-                        .addParameter("antInclude", properties.antInclude)
-                        .addParameter("strictHostKeyChecking", "yes")
-                        .addParameter("useUserKnownHostsFile", properties.useUserKnownHostsFile)
-                        .addParameter("readLockMinAge", properties.readLockMinAge)
-                        .addParameter("readLockTimeout", properties.readLockTimeout)
-                        .addParameter("readLockCheckInterval", properties.readLockCheckInterval)
+                    .addParameter("readLock", properties.readLock)
+                    .addParameter("maxMessagesPerPoll", "10")
+                    .addParameter("moveFailed", properties.moveFailed)
+                    .addParameter("autoCreate", "false")
+                    .addParameter("greedy", "true") // If you find file, don't delay the next check for more files
+                    .addParameter("timeUnit", TimeUnit.MILLISECONDS.name)
+                    .addParameter("useFixedDelay", "true")
+                    .addParameter("antInclude", properties.antInclude)
+                    .addParameter("strictHostKeyChecking", "yes")
+                    .addParameter("useUserKnownHostsFile", properties.useUserKnownHostsFile)
+                    .addParameter("readLockMinAge", properties.readLockMinAge)
+                    .addParameter("readLockTimeout", properties.readLockTimeout)
+                    .addParameter("readLockCheckInterval", properties.readLockCheckInterval)
             }
         }
         ftpBuilder.addParameter("stepwise", properties.stepwise)
@@ -481,11 +501,13 @@ class CamelSftpDownload(
     fun <T> createXmlMapper(classz: Class<T>): JacksonXMLDataFormat {
         val documentFormat = JacksonXMLDataFormat()
         documentFormat.disableFeatures = arrayOf(
-                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES.name,
-                DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES.name).joinToString(",")
+            DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES.name,
+            DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES.name
+        ).joinToString(",")
         documentFormat.enableFeatures = arrayOf(
-                DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS.name,
-                DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT.name).joinToString(",")
+            DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS.name,
+            DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT.name
+        ).joinToString(",")
         documentFormat.unmarshalType = classz
         return documentFormat
     }
@@ -494,39 +516,39 @@ class CamelSftpDownload(
         KotlinLogging.logger { }.debug("DEBUG: $fromFtpUrl")
 
         from(fromFtpUrl.toString())
-                .log(simple("Processing file.... \${in.headers.CamelFileName}").text)
-                .onException(Exception::class.java)
-                .bean(SFTPService::class.java, "errorProcessingRequest")
-                .end()
-                .setHeader(documentTypeHeader, constant("IN"))
-                .bean(SFTPService::class.java, "addDownloadProcessing")
+            .log(simple("Processing file.... \${in.headers.CamelFileName}").text)
+            .onException(Exception::class.java)
+            .bean(SFTPService::class.java, "errorProcessingRequest")
+            .end()
+            .setHeader(documentTypeHeader, constant("IN"))
+            .bean(SFTPService::class.java, "addDownloadProcessing")
 //                .choice()
 //                .log(simple("Processing file response message.... \${in.headers.CamelFileName}").text)
 //                .`when`().method(SFTPService::class.java, "checkIsResponse") // Check if it is a response file, and process response accordingly
 //                .bean(SFTPService::class.java, "fileReceivedResponse")
 //                .otherwise()
-                .choice()
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsCdDoctype)) // Process consignment documents
-                .unmarshal(createXmlMapper(ConsignmentDocument::class.java))
-                .bean(SFTPService::class.java, "processConsignmentDocumentType")
-                .log("Downloaded file \${in.headers.CamelFileName} processed.")
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsUcrResDoctype))
-                .unmarshal(createXmlMapper(UCRNumberMessage::class.java))
-                .bean(SFTPService::class.java, "processUcrResultDocument")
-                .log("UCR Response file \${in.headers.CamelFileName} processed.")
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsDeclarationVerificationDoctype))
-                .unmarshal(createXmlMapper(DeclarationVerificationMessage::class.java))
-                .bean(SFTPService::class.java, "processDeclarationVerificationDocumentType")
-                .log("Declaration document \${in.headers.CamelFileName} processed.")
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsAirManifestDoctype))
-                .unmarshal(createXmlMapper(ManifestDocumentMessage::class.java))
-                .bean(SFTPService::class.java, "processAirManifestDocument")
-                .log("Air Manifest document \${in.headers.CamelFileName} processed.")
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsManifestDoctype))
-                .unmarshal(createXmlMapper(ManifestDocumentMessage::class.java))
-                .bean(SFTPService::class.java, "processManifestDocument")
-                .log("Manifest document \${in.headers.CamelFileName} processed.")
-                .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsDeclarationDoctype))
+            .choice()
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsCdDoctype)) // Process consignment documents
+            .unmarshal(createXmlMapper(ConsignmentDocument::class.java))
+            .bean(SFTPService::class.java, "processConsignmentDocumentType")
+            .log("Downloaded file \${in.headers.CamelFileName} processed.")
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsUcrResDoctype))
+            .unmarshal(createXmlMapper(UCRNumberMessage::class.java))
+            .bean(SFTPService::class.java, "processUcrResultDocument")
+            .log("UCR Response file \${in.headers.CamelFileName} processed.")
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsDeclarationVerificationDoctype))
+            .unmarshal(createXmlMapper(DeclarationVerificationMessage::class.java))
+            .bean(SFTPService::class.java, "processDeclarationVerificationDocumentType")
+            .log("Declaration document \${in.headers.CamelFileName} processed.")
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsAirManifestDoctype))
+            .unmarshal(createXmlMapper(ManifestDocumentMessage::class.java))
+            .bean(SFTPService::class.java, "processAirManifestDocument")
+            .log("Air Manifest document \${in.headers.CamelFileName} processed.")
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsManifestDoctype))
+            .unmarshal(createXmlMapper(ManifestDocumentMessage::class.java))
+            .bean(SFTPService::class.java, "processManifestDocument")
+            .log("Manifest document \${in.headers.CamelFileName} processed.")
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsDeclarationDoctype))
             .unmarshal(createXmlMapper(DeclarationDocumentMessage::class.java))
             .bean(SFTPService::class.java, "processDeclarationDocumentType")
             .log("Manifest document \${in.headers.CamelFileName} processed.")
@@ -540,17 +562,17 @@ class CamelSftpDownload(
             .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsErrorDocument))
             .unmarshal(createXmlMapper(KraCancellationMessage::class.java))
             .bean(SFTPService::class.java, "processCancellationMessage")
-                .otherwise()
-                .removeHeader(documentTypeHeader)
-                .setHeader(documentTypeHeader, constant(unprocesable))
-                .setHeader("error", simple("Invalid file received: \${in.headers.CamelFileName}"))
-                .log("Invalid file \${file:name} complete.")
-                .setHeader("moveFailed", simple("\${in.headers.CamelFileName}"))
-                .throwException(java.lang.Exception(header("error").toString()))
-                .end()
-                .bean(SFTPService::class.java, "successfulProcessingRequest") // Save Download status
+            .otherwise()
+            .removeHeader(documentTypeHeader)
+            .setHeader(documentTypeHeader, constant(unprocesable))
+            .setHeader("error", simple("Invalid file received: \${in.headers.CamelFileName}"))
+            .log("Invalid file \${file:name} complete.")
+            .setHeader("moveFailed", simple("\${in.headers.CamelFileName}"))
+            .throwException(java.lang.Exception(header("error").toString()))
+            .end()
+            .bean(SFTPService::class.java, "successfulProcessingRequest") // Save Download status
 //                .end()
-                .end()
+            .end()
 //        // Link to save file to database
 //        from(wireTapResult)
 //                .log("Saving document \${in.headers.CamelFileName} details")
@@ -565,28 +587,33 @@ class CamelSftpDownload(
  */
 @Component
 class CamelSftpUpload(
-        private val properties: CamelFtpProperties,
+    private val properties: CamelFtpProperties,
+    private val applicationMapProperties: ApplicationMapProperties,
 ) : RouteBuilder() {
     private val ftpBuilder = URIBuilder()
-            .setScheme(properties.scheme)
-            .setHost(properties.host)
-            .setPort(properties.port)
-            .setPath(properties.uploadDirectory)
-            .addParameter("username", properties.userName)
-            .addParameter("password", properties.password)
+        .setScheme(properties.scheme)
+        .setHost(properties.host)
+        .setPort(properties.port)
+        .setPath(properties.uploadDirectory)
+        .addParameter("username", properties.userName)
+        .addParameter("password", properties.password)
     private val fileBuilder = URIBuilder()
-            .setScheme("file")
-            .setPath(Paths.get("", properties.outboundDirectory)
-                    .toAbsolutePath()
-                    .toString())
-            .setParameter("runLoggingLevel", properties.logLevel)
-            .setParameter("delete", "false")
-            .setParameter("move", Paths.get("", properties.uploadPreMove)
-                    .toAbsolutePath()
-                    .toString())
-            .setParameter("moveFailed", "error")
-            .setParameter("antInclude", properties.antInclude)
-            .setParameter("autoCreate", "true")
+        .setScheme("file")
+        .setPath(
+            Paths.get("", properties.outboundDirectory)
+                .toAbsolutePath()
+                .toString()
+        )
+        .setParameter("runLoggingLevel", properties.logLevel)
+        .setParameter("delete", "false")
+        .setParameter(
+            "move", Paths.get("", properties.uploadPreMove)
+                .toAbsolutePath()
+                .toString()
+        )
+        .setParameter("moveFailed", "error")
+        .setParameter("antInclude", properties.antInclude)
+        .setParameter("autoCreate", "true")
     private lateinit var uploadURI: URI
     val documentTypeHeader = "documentDirection"
 
@@ -599,17 +626,25 @@ class CamelSftpUpload(
     override fun configure() {
         // Upload file manually
         from(directUploadEndpoint)
-                .setHeader(documentTypeHeader, constant("OUT"))
-                .log("Manual: Uploading file to FTP server: \${in.headers.CamelFileName}")
-                .to(uploadURI.toString())
-                .bean(SFTPService::class.java, "successfulProcessingRequest") // Save Download status
-                .log("Manual: Uploaded file to FTP server: \${in.headers.CamelFileName}")
+            .setHeader(documentTypeHeader, constant("OUT"))
+            .log("Manual: Uploading file to FTP server: \${in.headers.CamelFileName}")
+            .to(uploadURI.toString())
+            .bean(SFTPService::class.java, "successfulProcessingRequest") // Save Download status
+            .log("Manual: Uploaded file to FTP server: \${in.headers.CamelFileName}")
         // Upload file to FTP from folder
         from(fileBuilder.build().toString())
-                .setHeader(documentTypeHeader, constant("OUT"))
-                .bean(SFTPService::class.java, "addDownloadProcessing")
-                .log("Uploading file to FTP server: \${in.headers.CamelFileName}")
-                .to(uploadURI.toString())
-                .log("Uploaded file to FTP server: \${in.headers.CamelFileName}")
+            .setHeader(documentTypeHeader, constant("OUT"))
+            .bean(SFTPService::class.java, "addDownloadProcessing")
+            .choice()
+            .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsCdApprovalDoctype))
+            .log("Delayed File: \\\${in.headers.CamelFileName}")
+            .description("Delay sending approval messages")
+            .delay(TimeUnit.MINUTES.toMillis(properties.delayMinutes))
+            .asyncDelayed()
+            .log("Async Delayed file to FTP server: \${in.headers.CamelFileName}")
+            .end()
+            .log("Uploading file to FTP server: \${in.headers.CamelFileName}")
+            .to(uploadURI.toString())
+            .log("Uploaded file to FTP server: \${in.headers.CamelFileName}")
     }
 }

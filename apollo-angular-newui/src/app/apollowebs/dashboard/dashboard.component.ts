@@ -73,17 +73,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             referenceNumber: {
                 title: 'REFERENCE NUMBER',
                 type: 'string',
-                filter: true,
+                filter: false,
             },
             transactionDate: {
                 title: 'DATE RECEIVED',
                 type: 'date',
-                filter: true,
+                filter: false,
             },
             progressStep: {
                 title: 'STATUS',
                 type: 'string',
-                filter: true,
+                filter: false,
             },
         },
         pager: {

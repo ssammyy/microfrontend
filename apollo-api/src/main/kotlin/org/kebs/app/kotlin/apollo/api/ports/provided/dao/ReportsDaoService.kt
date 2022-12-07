@@ -95,11 +95,10 @@ class ReportsDaoService(
 //        map["imagePath"] = logoImageFile
         val dataSource = JRBeanCollectionDataSource(listCollect)
         // Handle classpath resource
-        val file: InputStream?
-        if (filePath.startsWith("classpath:")) {
-            file = resourceLoader.getResource(filePath).inputStream
+        val file: InputStream = if (filePath.startsWith("classpath:")) {
+            resourceLoader.getResource(filePath).inputStream
         } else {
-            file = ResourceUtils.getFile(filePath).inputStream()
+            ResourceUtils.getFile(filePath).inputStream()
         }
         val design = JRXmlLoader.load(file)
         val jasperReport = JasperCompileManager.compileReport(design)

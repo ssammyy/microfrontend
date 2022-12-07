@@ -79,7 +79,7 @@ import {
     AcknowledgementDto,
     MsNotificationTaskDto,
     MsDashBoardIODto,
-    MsDashBoardALLDto,
+    MsDashBoardALLDto, ComplaintViewSearchValues, SampleProductViewSearchValues, SeizedGoodsViewSearchValues,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -87,7 +87,7 @@ import Swal from 'sweetalert2';
 import {AllPermitDetailsDto} from '../qa/qa.model';
 import {County} from '../county';
 import {Town} from '../town';
-import {UserNotificationDetailsDto} from '../master/master.model';
+import {RegionsEntityDto, UserNotificationDetailsDto} from '../master/master.model';
 
 @Injectable({
     providedIn: 'root',
@@ -686,10 +686,78 @@ export class MsService {
     /*******************************************************************START OF MARKET SURVEILLANCE REPORTS*****************************************************************************/
 
 
-    public loadAcknowledgementList(page: string, records: string): Observable<ApiResponseModel> {
+    // tslint:disable-next-line:max-line-length
+    public loadSearchComplaintViewList(page: string, records: string, complaintViewSearchValues: ComplaintViewSearchValues, searchType: string): Observable<ApiResponseModel> {
         // console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_ACKNOWLEDGEMENT);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_COMPLAINT_SEARCH);
         const params = new HttpParams()
+            .set('reportType', searchType)
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadSearchSampleProductsSelectedViewList(page: string, records: string, sampleProductViewSearchValues: SampleProductViewSearchValues, searchType: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SAMPLE_PRODUCTS_SEARCH);
+        const params = new HttpParams()
+            // .set('reportType', searchType)
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, sampleProductViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadSearchSeizedGoodsViewList(page: string, records: string, seizedGoodsViewSearchValues: SeizedGoodsViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SEIZED_GOODS_SEARCH);
+        const params = new HttpParams()
+            // .set('reportType', searchType)
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, seizedGoodsViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    // tslint:disable-next-line:max-line-length
+    public loadAllComplaintTimelineAndStatusReportList(page: string, records: string, routeTake: string, searchType: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        let url = null;
+        switch (routeTake) {
+            case 'complaint':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_COMPLAINT);
+                break;
+            case 'sample-products':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_STATUS_REPORT_SAMPLE_PRODUCTS);
+                break;
+        }
+        // const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_ACKNOWLEDGEMENT);
+        const params = new HttpParams()
+            .set('reportType', searchType)
             .set('page', page)
             .set('records', records);
         return this.http.get<ApiResponseModel>(url, {params}).pipe(
@@ -702,6 +770,30 @@ export class MsService {
             }),
         );
     }
+
+    public loadAllSeizedGoodsReportList(page: string, records: string): Observable<ApiResponseModel> {
+        // console.log(data);
+        // let url = null;
+        // if (routeTake === 'sample-products' ) {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SEIZED_GOODS);
+        // }
+        // const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_TIMELINE_ACKNOWLEDGEMENT);
+        const params = new HttpParams()
+            // .set('reportType', searchType)
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
 
     public loadFeedbackList(page: string, records: string): Observable<ApiResponseModel> {
         // console.log(data);
@@ -1817,6 +1909,30 @@ export class MsService {
             }),
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msOfficerListDetails(): Observable<MsUsersDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_OFFICER_LIST);
+        return this.http.get<MsUsersDto[]>(url).pipe(
+            map(function (response: MsUsersDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msRegionListDetails(): Observable<RegionsEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_REGIONS);
+        return this.http.get<RegionsEntityDto[]>(url).pipe(
+            map(function (response: RegionsEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
                 return throwError(fault);
             }),
         );

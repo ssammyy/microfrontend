@@ -449,6 +449,7 @@ class DestinationInspectionBpmn(
         val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
         val userProfilesEntity = commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus)
         val codes = daoServices.findAllCFSUserCodes(userProfilesEntity.id ?: 0L)
+        KotlinLogging.logger { }.info("User CFS: $codes")
         val consignmentActions = taskService.createTaskQuery()
             .active() // Load active tasks only
             .orderByTaskCreateTime().desc()

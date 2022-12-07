@@ -39,15 +39,15 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     var issuedDateTime: String? = null
 
     @Basic
-    @Column(name = "SUMMARY_PAGE_URL")
+    @Column(name = "SUMMARY_PAGE_URL", length = 1024)
     var summaryPageURL: String? = null
 
     @Basic
-    @Column(name = "LOCAL_COI_REMARKS")
+    @Column(name = "LOCAL_COI_REMARKS", length = 4000)
     var localCoiRemarks: String? = null
 
     @Basic
-    @Column(name = "SEND_COI_REMARKS")
+    @Column(name = "SEND_COI_REMARKS", length = 4000)
     var sendCoiRemarks: String? = null
 
     @Column(name = "UCR_NUMBER")
@@ -109,7 +109,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var localCocOrCorStatus: Int? = null
 
-    @Column(name = "LOCAL_COC_COR_REMARKS")
+    @Column(name = "LOCAL_COC_COR_REMARKS", length = 4000)
     @Basic
     var localCocOrCorRemarks: String? = null
 
@@ -121,7 +121,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var compliantStatus: Int? = null
 
-    @Column(name = "COMPLIANT_REMARKS")
+    @Column(name = "COMPLIANT_REMARKS", length = 4000)
     @Basic
     var compliantRemarks: String? = null
 
@@ -145,7 +145,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var blacklistStatus: Int? = null
 
-    @Column(name = "BLACKLIST_REMARKS")
+    @Column(name = "BLACKLIST_REMARKS", length = 4000)
     @Basic
     var blacklistRemarks: String? = null
 
@@ -161,11 +161,11 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var assignedStatus: Int? = null
 
-    @Column(name = "ASSIGNED_REMARKS")
+    @Column(name = "ASSIGNED_REMARKS", length = 4000)
     @Basic
     var assignedRemarks: String? = null
 
-    @Column(name = "ASSIGN_PORT_REMARKS")
+    @Column(name = "ASSIGN_PORT_REMARKS", length = 4000)
     @Basic
     var assignPortRemarks: String? = null
 
@@ -177,7 +177,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var reassignedStatus: Int? = null
 
-    @Column(name = "REASSIGNED_REMARKS")
+    @Column(name = "REASSIGNED_REMARKS", length = 4000)
     @Basic
     var reassignedRemarks: String? = null
 
@@ -193,7 +193,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var processRejectionDate: Date? = null
 
-    @Column(name = "PROCESS_REJECTION_REMARKS")
+    @Column(name = "PROCESS_REJECTION_REMARKS", length = 4000)
     @Basic
     var processRejectionRemarks: String? = null
 
@@ -322,7 +322,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var inspectionNotificationStatus: Int? = null
 
-    @Column(name = "INSPECTION_REMARKS")
+    @Column(name = "INSPECTION_REMARKS", length = 4000)
     @Basic
     var inspectionRemarks: String? = null
 
@@ -347,7 +347,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var inspectionChecklist: Int? = 0
 
-    @Column(name = "TARGET_APPROVED_REMARKS")
+    @Column(name = "TARGET_APPROVED_REMARKS", length = 4000)
     @Basic
     var targetApproveRemarks: String? = null
 
@@ -371,7 +371,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var cancelStatus: String? = null
 
-    @Column(name = "CANCEL_REASON")
+    @Column(name = "CANCEL_REASON", length = 4000)
     @Basic
     var cancelReason: String? = null
 
@@ -379,7 +379,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var cancelReference: String? = null
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 4000)
     @Basic
     @Field(index = Index.YES, analyze = Analyze.NO, store = Store.YES)
     var description: String? = null

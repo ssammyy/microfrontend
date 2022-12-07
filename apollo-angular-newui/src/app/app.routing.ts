@@ -584,10 +584,13 @@ import {
 import {
     DeclarationDocumentsComponent
 } from "./apollowebs/di/other-documents/declaration-documents/declaration-documents.component";
-import {
-    PrepareDraftComponent
-} from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
+// import {
+//     PrepareDraftComponent
+// } from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
 import {IntStdGazetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
+import {
+    ReportSubmittedTimelineComponent
+} from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
 
 export const routes: Routes = [
     {
@@ -1635,11 +1638,11 @@ export const routes: Routes = [
         children: [{path: '', component: ApproveCommitteeDraftComponent}],
     },
 
-    {
-        // prepare  Draft
-        path: 'prepareDraft', component: AdminLayoutComponent,
-        children: [{path: '', component: PrepareDraftComponent}],
-    },
+    // {
+    //     // prepare  Draft
+    //     path: 'prepareDraft', component: AdminLayoutComponent,
+    //     children: [{path: '', component: PrepareDraftComponent}],
+    // },
 
 
     /****************************************************************
@@ -1994,25 +1997,21 @@ export const routes: Routes = [
         ],
     },
     {
-        path: 'msTimeLineReports',
+        path: 'msReports',
         component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'acknowledgement',
+                path: 'timeLineTaken',
                 component: AcknowledgementComponent,
             },
             {
-                path: 'feedback',
+                path: 'statusReport',
                 component: FeedbackTimelineComponent,
             },
             {
-                path: 'reportSubmitted',
-                component: AcknowledgementComponent,
-            },
-            {
-                path: 'sampleSubmitted',
-                component: AcknowledgementComponent,
+                path: 'seizedGoods',
+                component: ReportSubmittedTimelineComponent,
             },
 
         ],
