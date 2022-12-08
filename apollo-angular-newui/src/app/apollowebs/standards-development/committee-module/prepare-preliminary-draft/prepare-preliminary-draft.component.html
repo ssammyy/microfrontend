@@ -30,8 +30,8 @@
                             <h4 class="card-title">ALL NEW WORK ITEMS
                             </h4>
                             <div class="material-datatables">
-                                <table class="table table-striped table-bordered table-hover" datatable
-                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3">
+                                <table class="table table-responsive table-striped table-bordered table-hover" datatable
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3" style="width: 100%">
                                     <thead>
                                     <tr>
                                         <th class="id">New Work Item ID</th>
@@ -39,8 +39,12 @@
                                         <th class="task">Proposal Title</th>
                                         <th class="task">Technical Committee Name</th>
                                         <th class="task">Status</th>
-                                        <th class="action">View</th>
-                                        <th class="action">Action</th>
+                                        <th class="edit">View NWI</th>
+                                        <th class="viewRequest">View Request</th>
+                                        <th class="justification">View Justification</th>
+                                        <th class="uploadMinutes">Prepare Minutes</th>
+                                        <th class="uploadDraftsAndOtherRelevantDocuments">Upload Drafts</th>
+                                        <th class="preparePd">Prepare Preliminary Draft</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -56,18 +60,20 @@
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View NWI</a>
-                                            <br>
-
+                                            </td>
+                                           <td>
                                             <a (click)="onOpenModalViewNwi(approvedNwi.standardId,'viewRequest')"
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View Request</a>
-                                            <br>
+                                            </td>
+                                        <td>
                                             <a (click)="onOpenModalViewNwi(approvedNwi.id,'justification')"
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View Justification</a>
-                                            <br></td>
+
+                                        </td>
                                         <td>
                                             <!--                                            <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"-->
                                             <!--                                               class="btn btn-success tooltips"-->
@@ -77,13 +83,16 @@
                                             <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
-                                               data-original-title="Upload NWI">Upload Minutes</a>
+                                               data-original-title="Upload NWI">Prepare Minutes</a>
+                                        </td>
+                                        <td>
 
                                             <a (click)="onOpenModal(approvedNwi,'uploadDraftsAndOtherRelevantDocuments')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">Upload Drafts And Other Documents</a>
-
+                                        </td>
+                                        <td>
                                             <a (click)="onOpenModal(approvedNwi,'preparePd')"
                                                class="btn btn-success tooltips"
                                                data-placement="top"
@@ -95,6 +104,259 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <div class="modal fade " id="uploadMinutes" tabindex="-1" role="dialog"
+                                 aria-labelledby="uploadMinutesModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="uploadMinutesModalLabel">Upload Minutes</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                            <div class="modal-body">
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+
+
+                                                        <form #formDirective="ngForm"
+                                                              (ngSubmit)="saveStandard(formDirective)"
+                                                              [formGroup]="minutes_preliminary_draftFormGroup"
+                                                              class="form">
+                                                            <div class="form-body">
+                                                                <div class="row">
+                                                                    <div class="form-group col-4">
+                                                                        <label><b>Minutes Date:</b></label>
+                                                                        <mat-form-field
+                                                                                class="example-full-width has-label"
+                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesDate')">
+                                                                            <input type="date"
+                                                                                   matInput
+                                                                                   id="minutesDate"
+                                                                                   placeholder="Minutes Date"
+                                                                                   (ngModelChange)="textValidationType($event)"
+                                                                                   formControlName="minutesDate">
+                                                                            <app-field-error-display
+                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesDate')"
+                                                                                    errorMsg="Please Enter Minutes Date">
+                                                                            </app-field-error-display>
+                                                                        </mat-form-field>
+
+
+                                                                    </div>
+                                                                    <div class="form-group col-4">
+                                                                        <label><b>Minutes Time</b></label>
+                                                                        <mat-form-field
+                                                                                class="example-full-width has-label"
+                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesTime')">
+                                                                            <input type="time"
+                                                                                   matInput
+                                                                                   id="minutesTime"
+                                                                                   placeholder="Minutes Time"
+                                                                                   (ngModelChange)="textValidationType($event)"
+                                                                                   formControlName="minutesTime">
+                                                                            <app-field-error-display
+                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesTime')"
+                                                                                    errorMsg="Please Enter Minutes time">
+                                                                            </app-field-error-display>
+                                                                        </mat-form-field>
+
+                                                                    </div>
+                                                                    <div class="form-group col-4">
+                                                                        <label><b>Location</b></label>
+                                                                        <mat-form-field
+                                                                                class="example-full-width has-label"
+                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesLocation')">
+                                                                            <input type="text"
+                                                                                   matInput
+                                                                                   id="minutesLocation"
+                                                                                   placeholder="Location"
+                                                                                   (ngModelChange)="textValidationType($event)"
+                                                                                   formControlName="minutesLocation">
+                                                                            <app-field-error-display
+                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesLocation')"
+                                                                                    errorMsg="Please Enter Location">
+                                                                            </app-field-error-display>
+                                                                        </mat-form-field>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Committee:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'committeeId')">
+                                                                        <mat-select aria-label="Small"
+                                                                                    aria-describedby="inputGroup-sizing-lg"
+                                                                                    class="form-control" required
+                                                                                    formControlName="committeeId"
+                                                                                    name="committeeId"
+                                                                                    placeholder="Select Committee"
+                                                                                    [class.is-invalid]="formMinutesPd.committeeId.invalid && formMinutesPd.committeeId.touched">
+                                                                            <mat-option *ngFor="let department of tcs"
+                                                                                        value="{{department.id}}">{{department.tc_Title}}</mat-option>
+                                                                        </mat-select>
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'committeeId')"
+                                                                                errorMsg="Please Select A Technical Committee">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Chairperson:</b></label>
+                                                                    <ng-multiselect-dropdown
+                                                                            [placeholder]="'Select Chairperson'"
+                                                                            [settings]="dropdownSettingsB"
+                                                                            [data]="dropdownList"
+                                                                            (onSelect)="onItemSelect($event)"
+                                                                            (onSelectAll)="onSelectAll($event)"
+                                                                            [class.is-invalid]="formMinutesPd?.chairpersonData?.errors?.required && formMinutesPd?.chairpersonData?.touched"
+                                                                            formControlName="chairpersonData"
+                                                                            name="chairpersonData">
+                                                                    </ng-multiselect-dropdown>
+                                                                    <span *ngIf="formMinutesPd?.chairpersonData?.errors?.required && formMinutesPd?.chairpersonData?.touched"
+                                                                          style="color: red;">Please Select The Chairperson </span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Secretary:</b></label>
+                                                                    <ng-multiselect-dropdown
+                                                                            [placeholder]="'Select Secretary'"
+                                                                            [settings]="dropdownSettingsB"
+                                                                            [data]="dropdownList"
+                                                                            (onSelect)="onItemSelect($event)"
+                                                                            (onSelectAll)="onSelectAll($event)"
+                                                                            [class.is-invalid]="formMinutesPd?.secretaryData?.errors?.required && formMinutesPd?.secretaryData?.touched"
+                                                                            formControlName="secretaryData"
+                                                                            name="secretaryData">
+                                                                    </ng-multiselect-dropdown>
+                                                                    <span *ngIf="formMinutesPd?.secretaryData?.errors?.required && formMinutesPd?.secretaryData?.touched"
+                                                                          style="color: red;">Please Select The Secretary </span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Attendees:</b></label>
+                                                                    <ng-multiselect-dropdown
+                                                                            [placeholder]="'Select Attendees'"
+                                                                            [settings]="dropdownSettings"
+                                                                            [data]="dropdownList"
+                                                                            (onSelect)="onItemSelect($event)"
+                                                                            (onSelectAll)="onSelectAll($event)"
+                                                                            [class.is-invalid]="formMinutesPd?.attendeesData?.errors?.required && formMinutesPd?.attendeesData?.touched"
+                                                                            formControlName="attendeesData"
+                                                                            name="attendeesData">
+                                                                    </ng-multiselect-dropdown>
+                                                                    <span *ngIf="formMinutesPd?.attendeesData?.errors?.required && formMinutesPd?.attendeesData?.touched"
+                                                                          style="color: red;">Attendees Are required </span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Agenda:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'agenda')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="agenda"
+                                                                               placeholder="Agenda*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="agenda">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'agenda')"
+                                                                                errorMsg="Please Enter The Agenda">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Minutes Title:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesTitle')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="minutesTitle"
+                                                                               placeholder="MIN 01/13: e.g Opening remarks and adoption of agenda items*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="minutesTitle">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesTitle')"
+                                                                                errorMsg="Please Enter The Minutes Title.">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Discussion/Resolution</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'discussion')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="discussion"
+                                                                               placeholder="Discussion/Resolution*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="discussion">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'discussion')"
+                                                                                errorMsg="Please Enter The Discussion/Resolution">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Conclusions</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'conclusion')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="conclusion"
+                                                                               placeholder="Conclusion*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="conclusion">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'conclusion')"
+                                                                                errorMsg="Please Enter The Conclusions">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Action Item:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'discussion')">
+                                                                        <input type="text"
+                                                                               matInput
+                                                                               id="actionItem"
+                                                                               placeholder="Action Item*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="actionItem">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'discussion')"
+                                                                                errorMsg="Please Enter The Action Item">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label><b>Adjournment Date:</b></label>
+                                                                    <mat-form-field class="example-full-width has-label"
+                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'adjournmentDate')">
+                                                                        <input type="date"
+                                                                               matInput
+                                                                               id="adjournmentDate"
+                                                                               placeholder="Adjournment Date*"
+                                                                               (ngModelChange)="textValidationType($event)"
+                                                                               formControlName="adjournmentDate">
+                                                                        <app-field-error-display
+                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'adjournmentDate')"
+                                                                                errorMsg="Please Enter The Adjournment Date">
+                                                                        </app-field-error-display>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div style="margin: 3em 0 2em 0">
+                                                                    <button class="btn btn-info" type="submit">SUBMIT
+                                                                    </button>
+
+                                                                </div>
+
+                                                                <!--      <div>-->
+                                                                <!--        <span>Don't have an account ? </span><span><a routerLink="/register" >Register</a></span>-->
+                                                                <!--      </div>-->
+                                                                <!--      <div>-->
+                                                                <!--        <span>Forgot username/password ? </span><span><a>Reset</a></span>-->
+                                                                <!--      </div>-->
+                                                            </div>
 
                             <!--                            <div class="modal fade " id="uploadMinutes" tabindex="-1" role="dialog"-->
                             <!--                                 aria-labelledby="updateExampleModalLabel"-->
@@ -371,14 +633,21 @@
                             <!--                                    </div>-->
                             <!--                                </div>-->
                             <!--                            </div>-->
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="modal fade " id="uploadDraftsAndOtherRelevantDocuments" tabindex="-1"
                                  role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="uploadDraftsAndOtherRelevantDocumentsModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Drafts And Other
+                                            <h5 class="modal-title" id="uploadDraftsAndOtherRelevantDocumentsModalLabel">Upload Drafts And Other
                                                 Relevant Documents</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -415,12 +684,12 @@
                                 </div>
                             </div>
                             <div class="modal fade " id="preparePd" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="preparePdModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Prepare Preliminary
+                                            <h5 class="modal-title" id="preparePdModalLabel">Prepare Preliminary
                                                 Draft</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -510,7 +779,7 @@
                             </div>
 
                             <div class="modal fade" id="justificationDecisionModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="justificationDecisionModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
@@ -563,7 +832,7 @@
                                                                     <thead>
                                                                     <tr>
                                                                         <th class="task">Document Name</th>
-                                                                        <th class="task">Descritpion</th>
+                                                                        <th class="task">Description</th>
 
                                                                         <th class="task">Action</th>
 
@@ -630,12 +899,12 @@
                                 </div>
                             </div>
                             <div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="viewNwiModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">NEW WORK
+                                            <h5 class="modal-title" id="viewNwiModalLabel">NEW WORK
                                                 ITEM</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -680,7 +949,7 @@
                                                                 class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
                                                             <li style="background: lightgray"
                                                                 class="list-group-item">{{"Organization: " + nwiActionRequest?.organization}}</li>
-                                                            <li style="background: lightgray"
+                                                             <li style="background: lightgray"
                                                                 class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
                                                             <li style="background: lightgray"
                                                                 class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
@@ -749,14 +1018,14 @@
                                 </div>
                             </div>
                             <div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="viewRequestModalLabel"
                                  aria-hidden="true">
 
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title"
-                                                id="updateExampleModalLabel">Request Details</h5>
+                                                id="viewRequestModalLabel">Request Details</h5>
                                             <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>

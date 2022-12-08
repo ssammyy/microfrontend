@@ -495,8 +495,8 @@ export interface ISAdoptionProposal {
     nameOfOrganization: string;
     dateOfApplication: string;
     proposalNumber: string;
-    stakeholdersList:string;
-    addStakeholdersList:string;
+    stakeholdersList:string[];
+    addStakeholdersList:string[];
     iStandardNumber:string;
 }
 export interface ISJustificationProposal{
