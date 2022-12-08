@@ -40,9 +40,10 @@ export class StdIntStandardService {
         return this.http.get<UsersEntity[]>(url, {params}).pipe();
     }
 
-  public prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal): Observable<any> {
+  public prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal,valueString: string[]): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_PREPARE_ADOPTION_PROPOSAL);
     const params = new HttpParams();
+    iSAdoptionProposal.addStakeholdersList=valueString
     return this.http.post<ISAdoptionProposal>(url, iSAdoptionProposal, {params}).pipe(
         map(function (response: any) {
           return response;

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.lang.reflect.Type
 import java.sql.Timestamp
 import java.util.*
 
@@ -56,8 +58,10 @@ class IntStandardService(
     private val standardRepository: StandardRepository,
     private val userListRepository: UserListRepository,
 
+
     ) {
     val PROCESS_DEFINITION_KEY = "sd_InternationalStandardsForAdoption"
+    val gson = Gson()
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment =repositoryService
         .createDeployment()
@@ -76,6 +80,11 @@ class IntStandardService(
         return userListRepository.findStandardStakeholders()
     }
 
+
+    fun mapKEBSOfficersNameListDto(officersName: String): List<String>? {
+        val userListType: Type = object : TypeToken<ArrayList<String?>?>() {}.type
+        return gson.fromJson(officersName, userListType)
+    }
 
 
     //prepare Adoption Proposal
@@ -96,52 +105,34 @@ class IntStandardService(
         iSAdoptionProposal.status = 0
         iSAdoptionProposal.proposalNumber = getPRNumber()
 
-        val proposal=ISAdoptionProposal()
-       // val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
+        val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
 
         iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
         iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
 
-        val users= iSAdoptionProposal.stakeholdersList
-        val otherUsers= iSAdoptionProposal.addStakeholdersList
-        val replace = users?.replace("[", "")
-        val userList = replace?.replace("]", "")
-        val arrays = otherUsers?.split(",")?.toTypedArray()
-        val array = userList?.split(",")?.toTypedArray()
-
-        val listOne: ArrayList<String?> = ArrayList<String?>(listOf(userList))
-
-        val listTwo: ArrayList<String?> = ArrayList<String?>(listOf(otherUsers))
-
-        listOne.addAll(listTwo) //Merge both lists
-
-
-        println(listOne)
-        println(listTwo)
-//        val list: MutableList<Any> = ArrayList<Any>(listOf(userList)) //returns a list view of an array
-//        val lists: MutableList<Any> = ArrayList<Any>(listOf(otherUsers)) //returns a list view of an array
-//         list.add(lists)
-
-
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "users:" + gson.toJson(users) }
-        KotlinLogging.logger { }.info { "otherUsers:" + gson.toJson(otherUsers) }
-        KotlinLogging.logger { }.info { "Merged:" + gson.toJson(listOne) }
+        val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
+        val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
 
         val targetUrl = "https://kimsint.kebs.org/";
-        for (recipient in listOne) {
-        //val recipient="stephenmuganda@gmail.com"
-            val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
-        val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
-            if (recipient != null) {
+        if (listOne != null) {
+            for (recipient in listOne) {
+                val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
+                val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
                 notifications.sendEmail(recipient, subject, messageBody)
-            }
 
+            }
+        }
+        if (listTwo != null) {
+            for (recipient in listTwo) {
+                val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
+                val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
+                notifications.sendEmail(recipient, subject, messageBody)
+
+            }
         }
 
      return proposal
-
 
     }
 

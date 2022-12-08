@@ -68,7 +68,7 @@ placeholder="name" type="text" disabled>
                         <ngx-mat-select-search [formControl]="websiteFilterCtrl"></ngx-mat-select-search>
                     </mat-option>
                     <mat-option *ngFor="let user of stakeholdersLists " [value]="user.email">
-                        {{user.firstName}},{{user.lastName}}
+                        {{user.firstName}} {{user.lastName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

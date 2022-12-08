@@ -24,13 +24,13 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("api/v1/migration/international_standard")
 class IntStandardController(
     val internationalStandardService: IntStandardService,
-    private val commonDaoServices: CommonDaoServices,
     private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
     private val isAdoptionJustificationRepository: ISAdoptionJustificationRepository,
     private val isStandardUploadsRepository: ISStandardUploadsRepository,
     private val isUploadStandardRepository: ISUploadStandardRepository,
     private val sdisGazetteNoticeUploadsRepository: SDISGazetteNoticeUploadsRepository,
-    private val isGazetteNoticeRepository: ISGazetteNoticeRepository
+    private val isGazetteNoticeRepository: ISGazetteNoticeRepository,
+    private val commonDaoServices: CommonDaoServices
     ) {
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/deploy")
@@ -59,6 +59,7 @@ class IntStandardController(
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun prepareAdoptionProposal(@RequestBody iSAdoptionProposalDto: ISAdoptionProposalDto): ServerResponse{
+
         val iSAdoptionProposal=ISAdoptionProposal().apply {
             proposal_doc_name=iSAdoptionProposalDto.proposal_doc_name
             circulationDate=iSAdoptionProposalDto.circulationDate
@@ -67,8 +68,8 @@ class IntStandardController(
             title=iSAdoptionProposalDto.title
             scope=iSAdoptionProposalDto.scope
             iStandardNumber=iSAdoptionProposalDto.iStandardNumber
-            stakeholdersList= iSAdoptionProposalDto.stakeholdersList.toString()
-            addStakeholdersList= iSAdoptionProposalDto.addStakeholdersList
+            stakeholdersList= iSAdoptionProposalDto.stakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
+            addStakeholdersList= iSAdoptionProposalDto.addStakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
 //            adoptionAcceptableAsPresented=iSAdoptionProposalDto.adoptionAcceptableAsPresented
 //            reasonsForNotAcceptance=iSAdoptionProposalDto.reasonsForNotAcceptance
 //            recommendations=iSAdoptionProposalDto.recommendations
@@ -78,6 +79,8 @@ class IntStandardController(
 //            dateOfApplication=iSAdoptionProposalDto.dateOfApplication
             uploadedBy=iSAdoptionProposalDto.uploadedBy
         }
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "Request Proposal:" + gson.toJson(iSAdoptionProposalDto) }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal))
     }
 

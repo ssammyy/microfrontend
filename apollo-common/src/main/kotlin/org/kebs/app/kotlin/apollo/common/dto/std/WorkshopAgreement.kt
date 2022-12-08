@@ -319,7 +319,7 @@ data class ISAdoptionProposalDto(
     var dateOfApplication: String?=null,
     var uploadedBy: String?=null,
     var stakeholdersList: List<String>?=null,
-    var addStakeholdersList: String
+    var addStakeholdersList: List<String>?=null,
 
 ){
 
