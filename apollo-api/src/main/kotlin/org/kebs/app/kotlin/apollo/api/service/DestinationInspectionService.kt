@@ -1300,7 +1300,8 @@ class DestinationInspectionService(
                 consignmentDocument.ucrNumber,
                 remarks,
                 "KEBS_${cdStatus.category?.toUpperCase()}",
-                "${cdStatus.category?.capitalize()} consignment"
+                "${cdStatus.category?.capitalize()} consignment",
+                consignmentDocument.assigner?.userName
             )
         }
     }
