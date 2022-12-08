@@ -105,7 +105,10 @@ import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.*
+import java.time.DayOfWeek
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
@@ -115,6 +118,9 @@ import javax.servlet.http.HttpServletResponse
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLOutputFactory
 
+enum class UserTypes(val typeName: String) {
+    MINISTRY_USER("MINISTRY"), PVOC_USER("PVOC")
+}
 
 @Service
 class CommonDaoServices(
@@ -400,7 +406,6 @@ class CommonDaoServices(
         val gson = Gson()
         return gson.toJson(classToConvert)
     }
-
 
 
     fun getUserTypeDetails(usertypeID: Long): UserTypesEntity {
@@ -989,6 +994,7 @@ class CommonDaoServices(
             }
             ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
     }
+
     fun findAllUsersByDesignation(
         map: ServiceMapsEntity,
         designationID: Long
@@ -2078,8 +2084,12 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("Laboratory with this ID  = ${laboratoryId}, does not Exist")
     }
 
-    fun findAllUsersWithMinistryUserType(): List<UsersEntity>? {
-        return usersRepo.findAllByUserTypes(applicationMapProperties.mapUserTypeMinistry)
+    fun findAllUsersWithMinistryUserType(stationId: Long): List<UsersEntity>? {
+        val userTypes = userTypesRepo.findFirstByVarField1(UserTypes.MINISTRY_USER.typeName)
+        if (userTypes.isPresent) {
+            return usersRepo.findAllByUserTypes(userTypes.get().id ?: 0)
+        }
+        return emptyList()
     }
 
     fun getLoggedInUser(): UsersEntity? {
@@ -2444,6 +2454,7 @@ class CommonDaoServices(
 
         return emailVerificationTokenEntityRepo.save(tokensEntity)
     }
+
     fun generateRegistrationVerificationToken(
         input: String,
         phone: String,

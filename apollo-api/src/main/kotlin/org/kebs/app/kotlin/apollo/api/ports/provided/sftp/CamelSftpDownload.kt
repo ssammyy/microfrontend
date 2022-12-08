@@ -642,8 +642,10 @@ class CamelSftpUpload(
             .delay(TimeUnit.MINUTES.toMillis(properties.delayMinutes))
             .asyncDelayed()
             .log("Async Delayed file to FTP server: \${in.headers.CamelFileName}")
+            .endChoice()
+            .otherwise()
+            .log("Uploading file directly to FTP server: \${in.headers.CamelFileName}")
             .end()
-            .log("Uploading file to FTP server: \${in.headers.CamelFileName}")
             .to(uploadURI.toString())
             .log("Uploaded file to FTP server: \${in.headers.CamelFileName}")
     }

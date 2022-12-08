@@ -326,7 +326,7 @@ interface IUserSectionAssignmentsRepository : HazelcastRepository<UserSectionAss
 interface IUserTypesEntityRepository : HazelcastRepository<UserTypesEntity, Long> {
     fun findByStatus(status: Int): List<UserTypesEntity>
     fun findByTypeNameAndStatus(typeName: String, status: Int): UserTypesEntity?
-
+    fun findFirstByVarField1(userType: String): Optional<UserTypesEntity>
 
     @Query(
         "SELECT u.* FROM CFG_USER_TYPES U INNER JOIN DAT_KEBS_USERS P ON U.DEFAULT_ROLE = P.USER_TYPE WHERE P.ID=:userId",
