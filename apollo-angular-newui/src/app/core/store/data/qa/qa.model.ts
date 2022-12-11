@@ -113,6 +113,13 @@ export class GenerateInvoiceDto {
     permitRefNumber: string;
     permitInvoicesID: number[];
 }
+export class GenerateInvoiceWithWithholdingDto {
+    batchID: bigint;
+    plantID: bigint;
+    permitRefNumber: string;
+    permitInvoicesID: number[];
+    isWithHolding:boolean;
+}
 
 export class SSFPDFListDetailsDto {
     pdfSavedId: bigint;

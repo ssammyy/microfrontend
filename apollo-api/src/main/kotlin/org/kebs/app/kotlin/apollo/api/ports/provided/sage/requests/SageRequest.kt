@@ -33,6 +33,23 @@ class SageQARequestBody {
     @NotNull(message = "Required field")
     var details: MutableList<SageQADetails>? = null
 }
+class SageQARequestBodyB {
+
+    @JsonProperty("header")
+    @NotNull(message = "Required field")
+    @Valid
+    var header: SageQAHeaderB? = null
+
+    @JsonProperty("request")
+    @Valid
+    @NotNull(message = "Required field")
+    var request: SageQARequestB? = null
+
+    @JsonProperty("details")
+    @Valid
+    @NotNull(message = "Required field")
+    var details: MutableList<SageQADetails>? = null
+}
 
 class SageQAHeader {
 
@@ -116,6 +133,51 @@ class SageQARequest {
     @JsonProperty("TaxPINNo")
     @NotNull(message = "Required field")
     var TaxPINNo: String? = null
+}
+class SageQARequestB {
+    @JsonProperty("BatchNo")
+    @NotNull(message = "Required field")
+    var BatchNo: String? = null
+
+    @JsonProperty("DocumentDate")
+    @NotNull(message = "Required field")
+    var DocumentDate: String? = null
+
+    @JsonProperty("InvoiceType")
+    @NotEmpty(message = "Required field")
+    var InvoiceType: Long? = null
+
+    @JsonProperty("ServiceType")
+    @NotNull(message = "Required field")
+    var ServiceType: String? = null
+
+    @JsonProperty("CurrencyCode")
+    @NotNull(message = "Required field")
+    var CurrencyCode: String? = null
+
+    @JsonProperty("CustomerCode")
+    @NotNull(message = "Required field")
+    var CustomerCode: String? = null
+
+    @JsonProperty("CustomerName")
+    @NotNull(message = "Required field")
+    var CustomerName: String? = null
+
+    @JsonProperty("InvoiceDesc")
+    @NotNull(message = "Required field")
+    var InvoiceDesc: String? = null
+
+    @JsonProperty("InvoiceAmnt")
+    @NotNull(message = "Required field")
+    var InvoiceAmnt: BigDecimal? = null
+
+    @JsonProperty("TaxPINNo")
+    @NotNull(message = "Required field")
+    var TaxPINNo: String? = null
+
+    @JsonProperty("Witholding")
+    @NotNull(message = "Required field")
+    var Withholding: String? = null
 }
 
 class SageQADetails {

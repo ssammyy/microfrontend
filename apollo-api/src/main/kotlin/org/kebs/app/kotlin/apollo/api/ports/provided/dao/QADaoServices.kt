@@ -5102,6 +5102,7 @@ class QADaoServices(
                                 ).toUpperCase()
                                 userId = userID
                                 plantId = batchInvoiceDto.plantID
+                                varField1 = batchInvoiceDto.isWithHolding // withholding field
                                 status = s.activeStatus
                                 description = "${permitInvoiceFound.invoiceRef}"
                                 totalAmount = permitInvoiceFound.totalAmount
@@ -5309,6 +5310,8 @@ class QADaoServices(
             }
             invoiceDetails = findBatchInvoicesWithID(batchInvoiceDto.batchID)
 
+            val isWithHoldingVariable= batchInvoiceDto.isWithHolding
+
 
             val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
                 user.userName!!,
@@ -5337,6 +5340,9 @@ class QADaoServices(
                 accountName = manufactureDetails.name
                 accountNumber = manufactureDetails.kraPin
                 currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+                region =  commonDaoServices.findRegionNameByRegionID(attachedPermitPlantDetails.region!!)
+                isWithHolding = isWithHoldingVariable
+
             }
 
             invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(

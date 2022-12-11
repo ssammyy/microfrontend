@@ -1162,6 +1162,9 @@ class QualityAssuranceHandler(
         )
         req.attributes()["allInspectionReportDetailsList"] = allInspectionReportDetailsList
         req.attributes()["permitDetails"] = permit
+        req.attributes()["encryptedPermitId"] = jasyptStringEncryptor.encrypt(permit.id.toString())
+        req.attributes()["encryptedUserId"] = jasyptStringEncryptor.encrypt(permit.userId.toString())
+
 
         return ok().render(qaInspectionReportListsPage, req.attributes())
     }

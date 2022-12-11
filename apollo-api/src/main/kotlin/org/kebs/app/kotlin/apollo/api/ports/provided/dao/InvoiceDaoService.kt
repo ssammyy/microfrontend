@@ -493,6 +493,12 @@ class InvoiceDaoService(
         var reveneCode: String? = null
 
         var revenueDesc: String? = null
+
+        var region: String? = null
+
+        var isWithHolding: String? = null
+
+
     }
 
 }
