@@ -323,12 +323,12 @@ class DestinationInspectionService(
     }
 
     fun findDocumentsWithActions(
-        usersEntity: UsersEntity,
+        userName: String,
         category: String?,
         myTask: Boolean,
         page: PageRequest
     ): ApiResponseModel {
-        return diBpmn.consignmentDocumentWithActions(usersEntity, category, myTask, page)
+        return diBpmn.consignmentDocumentWithActions(userName, category, myTask, page)
     }
 
     fun markCompliant(
@@ -1571,13 +1571,26 @@ class DestinationInspectionService(
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             var cdDetails = daoServices.findCDWithUuid(cdUuid)
+            var loadCdDetails = true
             // When IO requests for details, they are are auto assigned
             if (isInspectionOfficer && cdDetails.assignedInspectionOfficer == null) {
-                this.selfAssign(cdDetails)
-                // Reload CD on self assign BPM
-                response.responseCode = ResponseCodes.RELOAD_PAGE
-                response.message = "Consignment Assigned reload details"
-            } else {
+                // Check if can self assign from flight station
+                val profile =
+                    commonDaoServices.findUserProfileByUsername(
+                        commonDaoServices.loggedInUserAuthentication().name,
+                        map.activeStatus
+                    )
+                val cnt = daoServices.countCFSUserCodes(profile.id ?: 0, cdDetails.freightStation?.id ?: 0)
+                if (cnt > 0) {
+                    loadCdDetails = false
+                    this.selfAssign(cdDetails)
+                    // Reload CD on self assign BPM
+                    response.responseCode = ResponseCodes.RELOAD_PAGE
+                    response.message = "Consignment Assigned reload details"
+                }
+            }
+            // Load consignment details if user is assigned or in read only mode
+            if (loadCdDetails) {
                 // Workaround for consignment that are already received and not linked. Maybe removed in future
                 if (!StringUtils.hasLength(cdDetails.manifestNumber)) {
                     this.daoServices.linkManifestWithConsignment(null, cdDetails.ucrNumber, false)

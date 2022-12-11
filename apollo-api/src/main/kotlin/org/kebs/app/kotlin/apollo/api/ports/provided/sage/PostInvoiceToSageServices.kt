@@ -673,7 +673,7 @@ class PostInvoiceToSageServices(
 
                 value.request?.billReferenceNo
                         ?.let { code ->
-                            stagingRepo.findBySageInvoiceNumber(code.uppercase())
+                            stagingRepo.findBySageInvoiceNumber(code.toUpperCase())
                                     ?.let { record ->
                                         when {
                                             record.transactionId != null -> {
