@@ -31,8 +31,10 @@
                                             <th class="task">Brand Name</th>
                                             <th class="task">Total Amount</th>
                                             <th class="task">Reference Number</th>
+                                            <th class="task">WithHolding</th>
+
                                             <th class="task">Action</th>
-<!--                                            <th class="task">Select</th>-->
+                                            <!--                                            <th class="task">Select</th>-->
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -42,19 +44,36 @@
                                             <td>{{task.brandName}}</td>
                                             <td>{{task.totalAmount}}</td>
                                             <td>{{task.invoiceNumber}}</td>
+                                            <td>
+
+                                                                                                <mat-checkbox class="example-margin mb-0"
+                                                                                                              (change)="setWithHoldingToTrue($event)">
+                                                                                                    I am WithHolding
+
+                                                                                                </mat-checkbox>
+<!--                                                <input class="example-margin mb-0" type="checkbox"-->
+<!--                                                       value="true"-->
+<!--                                                       id="defaultCheck1"-->
+<!--                                                       (change)="setWithHoldingToTrue($event.target.checked)"-->
+<!--                                                > <label for="defaultCheck1"> I Am Withholding</label><br>-->
+
+
+                                            </td>
+
+
                                             <td *ngIf="task.totalAmount != 0">
                                                 <button style="width: auto" type="button" class="btn btn-primary"
                                                         (click)="payNowForOneInvoice(task.permitID,task.permitRefNumber)">
                                                     PAY NOW
                                                 </button>
                                             </td>
-<!--                                            <td style="padding-left: 50px" *ngIf="task.totalAmount != 0">-->
-<!--                                                <input class="form-check-input" type="checkbox"-->
-<!--                                                       value="{{task.permitID}}"-->
-<!--                                                       id="defaultCheck1"-->
-<!--                                                       (change)="onChange($event.target.checked, task.permitID)"-->
-<!--                                                       [checked]="checked(task)">-->
-<!--                                            </td>-->
+                                            <!--                                            <td style="padding-left: 50px" *ngIf="task.totalAmount != 0">-->
+                                            <!--                                                <input class="form-check-input" type="checkbox"-->
+                                            <!--                                                       value="{{task.permitID}}"-->
+                                            <!--                                                       id="defaultCheck1"-->
+                                            <!--                                                       (change)="onChange($event.target.checked, task.permitID)"-->
+                                            <!--                                                       [checked]="checked(task)">-->
+                                            <!--                                            </td>-->
                                         </tr>
                                         </tbody>
                                     </table>
@@ -114,21 +133,21 @@
                             </div>
                         </div>
                     </div>
-<!--                    <div class="col-md-2">-->
-<!--                        <div class="card">-->
-<!--                            <div class="card-header card-header-primary card-header-icon">-->
-<!--                                <h4 class="card-title">Complete Consolidation</h4>-->
-<!--                            </div>-->
-<!--                            <div class="card-icon">-->
-<!--                                <div class="card-body">-->
-<!--                                    <button style="width: -webkit-fill-available;font-size: 8.1px;"-->
-<!--                                            type="button" class="btn btn-primary" (click)="submit()">-->
-<!--                                        Consolidate-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <!--                    <div class="col-md-2">-->
+                    <!--                        <div class="card">-->
+                    <!--                            <div class="card-header card-header-primary card-header-icon">-->
+                    <!--                                <h4 class="card-title">Complete Consolidation</h4>-->
+                    <!--                            </div>-->
+                    <!--                            <div class="card-icon">-->
+                    <!--                                <div class="card-body">-->
+                    <!--                                    <button style="width: -webkit-fill-available;font-size: 8.1px;"-->
+                    <!--                                            type="button" class="btn btn-primary" (click)="submit()">-->
+                    <!--                                        Consolidate-->
+                    <!--                                    </button>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
                     <!-- end content-->
 
                 </div>

@@ -337,7 +337,6 @@ class ApiDestinationInspectionHandler(
                 if (cdTypeUuid != null) {
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
-                val usersEntity = commonDaoServices.findUserByUserName(auth.name)
                 val activeDocument = req.paramOrNull("active") ?: "1"
                 // Query supervisor assigned or inspection officer assigned
                 val page = extractPage(req)
@@ -353,14 +352,14 @@ class ApiDestinationInspectionHandler(
                         val supervisorCategory = req.paramOrNull("category")
                         if ("1".equals(activeDocument, false)) {
                             response = destinationInspectionService.findDocumentsWithActions(
-                                usersEntity,
+                                auth.name,
                                 supervisorCategory,
                                 personal,
                                 page
                             )
                         } else {
                             data = daoServices.findAllInspectionsCdWithAssigner(
-                                usersEntity,
+                                auth.name,
                                 cdType,
                                 arrayListOf(
                                     ConsignmentApprovalStatus.QUERIED.code,
@@ -382,7 +381,7 @@ class ApiDestinationInspectionHandler(
                         .anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                         data = if ("1".equals(activeDocument, false)) {
                             daoServices.findAllCdWithAssignedIoID(
-                                usersEntity,
+                                auth.name,
                                 cdType,
                                 arrayListOf(
                                     ConsignmentApprovalStatus.UNDER_INSPECTION.code,
@@ -392,7 +391,7 @@ class ApiDestinationInspectionHandler(
                             )
                         } else {
                             daoServices.findAllCdWithAssignedIoID(
-                                usersEntity,
+                                auth.name,
                                 cdType,
                                 arrayListOf(
                                     ConsignmentApprovalStatus.WAITING.code,
@@ -418,14 +417,14 @@ class ApiDestinationInspectionHandler(
                         val supervisorCategory = req.paramOrNull("category")
                         if ("1".equals(activeDocument, false)) {
                             response = destinationInspectionService.findDocumentsWithActions(
-                                usersEntity,
+                                auth.name,
                                 supervisorCategory,
                                 personal,
                                 page
                             )
                         } else {
                             data = daoServices.findAllInspectionsCdWithAssigner(
-                                usersEntity,
+                                auth.name,
                                 cdType,
                                 arrayListOf(
                                     ConsignmentApprovalStatus.QUERIED.code,
@@ -465,8 +464,7 @@ class ApiDestinationInspectionHandler(
                     cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
                 }
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                val usersEntity = commonDaoServices.findUserByUserName(auth.name)
-                val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
+                val userProfilesEntity = commonDaoServices.findUserProfileByUsername(auth.name, map.activeStatus)
                 val allUserCFS = daoServices.findAllCFSUserList(userProfilesEntity.id!!)
                 val statuses = listOf(
                     ConsignmentApprovalStatus.UNDER_INSPECTION.code,

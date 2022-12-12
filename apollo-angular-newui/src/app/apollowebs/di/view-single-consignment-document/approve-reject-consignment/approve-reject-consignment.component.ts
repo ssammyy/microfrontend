@@ -50,22 +50,60 @@ export class ApproveRejectConsignmentComponent implements OnInit {
         })
     }
 
+    getStatus(statusId: any): any {
+        let status = {}
+        for (let d of this.statuses) {
+            if (d.id == statusId) {
+                status = d
+                break
+            }
+        }
+        return status
+    }
+
+
+    processResult(res: any) {
+        console.log(res)
+        this.loading = false
+        if (res.responseCode === "00") {
+            this.dialogRef.close(true)
+        } else {
+            this.message = res.message
+        }
+    }
+
+    processError(err: any) {
+        this.loading = false
+        console.log(err)
+    }
+
     saveRecord() {
         this.loading = true
-        this.diService.approveReject(this.form.value, this.data.uuid)
-            .subscribe(
-                res => {
+        let status = this.getStatus(this.form.value.cdStatusTypeId)
+        //console.log(status)
+        if (status && status.category === "REJECT") {
+            this.diService.showConfirmation(`Are you sure you want to reject consignment with UCR number ${this.data.ucr}`, (result) => {
+                //console.log(result)
+                if (result) {
+                    this.diService.approveReject(this.form.value, this.data.uuid)
+                        .subscribe(
+                            (res) => {
+                                this.processResult(res)
+                            },
+                            this.processError
+                        )
+                } else {
                     this.loading = false
-                    if (res.responseCode === "00") {
-                        this.dialogRef.close(true)
-                    } else {
-                        this.message = res.message
-                    }
-                },
-                error => {
-                    this.loading = false
-                    console.log(error)
                 }
-            )
+            })
+        } else {
+            this.diService.approveReject(this.form.value, this.data.uuid)
+                .subscribe(
+                    (res) => {
+                        this.processResult(res)
+                    },
+                    this.processError
+                )
+        }
     }
 }

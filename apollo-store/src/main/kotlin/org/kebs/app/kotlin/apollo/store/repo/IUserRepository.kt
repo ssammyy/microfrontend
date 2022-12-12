@@ -840,6 +840,7 @@ interface ICompanyProfileDirectorsRepository : HazelcastRepository<CompanyProfil
 @Repository
 interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long> {
     fun findByUserIdAndStatus(userId: UsersEntity, status: Int): UserProfilesEntity?
+    fun findByUserId_UserNameAndStatus(username: String, status: Int): UserProfilesEntity?
     fun findByUserId(userId: UsersEntity): UserProfilesEntity?
     fun findFirstByUserIdOrderByIdDesc(userId: UsersEntity): UserProfilesEntity?
 

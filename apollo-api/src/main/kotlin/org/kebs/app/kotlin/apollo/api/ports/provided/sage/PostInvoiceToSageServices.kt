@@ -399,13 +399,15 @@ class PostInvoiceToSageServices(
         val invoiceFound = invoiceDaoService.findInvoiceStgReconciliationDetailsByID(stgID)
         runBlocking {
 
-            val headerBody = SageQAHeader().apply {
+            val headerBody = SageQAHeaderB().apply {
                 serviceName = "BSKApp"
                 messageID = "BSK"
                 connectionID = jasyptStringEncryptor.decrypt(config.username)
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
+                region = invoiceAccountDetails.region
+
             }
-            val requestBody = SageQARequest().apply {
+            val requestBody = SageQARequestB().apply {
                 BatchNo = ""
                 DocumentDate = commonDaoServices.convertTimestampToKeswsValidDate(commonDaoServices.getTimestamp())
                 InvoiceType = 4
@@ -416,6 +418,7 @@ class PostInvoiceToSageServices(
                 InvoiceDesc = "QA ${invoiceFound.referenceCode} Billing"
                 InvoiceAmnt = invoiceFound.invoiceAmount
                 TaxPINNo = invoiceAccountDetails.accountNumber
+                Withholding = invoiceAccountDetails.isWithHolding
 
             }
 
@@ -431,7 +434,7 @@ class PostInvoiceToSageServices(
             list.add(detailBody)
 
 
-            val rootRequest = SageQARequestBody().apply {
+            val rootRequest = SageQARequestBodyB().apply {
                 header = headerBody
                 request = requestBody
                 details = list
@@ -673,7 +676,7 @@ class PostInvoiceToSageServices(
 
                 value.request?.billReferenceNo
                         ?.let { code ->
-                            stagingRepo.findBySageInvoiceNumber(code.uppercase())
+                            stagingRepo.findBySageInvoiceNumber(code.toUpperCase())
                                     ?.let { record ->
                                         when {
                                             record.transactionId != null -> {

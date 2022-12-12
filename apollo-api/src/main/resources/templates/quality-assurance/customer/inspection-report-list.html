@@ -75,11 +75,11 @@
                                 <a sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
                                    th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == 1}"
                                    style="color: white"
-                                   th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
+                                   th:href="@{/api/qa/inspection/new-inspection-report(permitID=${encryptedPermitId})}"
                                    class="filter-link">GENERATE NEW INSPECTION REPORT</a>
 
                                 <a style="color: white"
-                                   th:href="@{/api/qa/permit-details(permitID=${permitDetails.id},userID=${permitDetails?.userId})}"
+                                   th:href="@{/api/qa/permit-details(permitID=${encryptedPermitId},userID=${encryptedUserId})}"
                                    class="filter-link">GO TO PERMIT DETAILS</a>
                                 <!--                                <button id="addParam" class="btn btn-primary"  type="button">ADD PLANT DETAILS</button>-->
                             </div>

@@ -1,7 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {Router} from '@angular/router';
-import {GenerateInvoiceDto, PermitInvoiceDto} from '../../../core/store/data/qa/qa.model';
+import {
+  GenerateInvoiceDto,
+  GenerateInvoiceWithWithholdingDto,
+  PermitInvoiceDto
+} from '../../../core/store/data/qa/qa.model';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Subject} from 'rxjs';
 import swal from 'sweetalert2';
@@ -35,6 +39,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   final_array = [];
   selected = [];
   messages = []
+  isWithHolding = false;
   // permitInvoicesIDS = [];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
@@ -83,6 +88,12 @@ export class InvoiceConsolidateComponent implements OnInit {
     }
   }
 
+  setWithHoldingToTrue(checked) {
+    this.isWithHolding = !!checked;
+  }
+
+
+
   payNowForOneInvoice(invoicesID: any, permitRefNumber: any) {
 
     const swalWithBootstrapButtons = Swal.mixin({
@@ -106,11 +117,14 @@ export class InvoiceConsolidateComponent implements OnInit {
         this.SpinnerService.show();
         const permitInvoicesIDS: number[] = [];
         permitInvoicesIDS.push(invoicesID);
-        const consolidatedInvoice = new GenerateInvoiceDto;
+        const consolidatedInvoice = new GenerateInvoiceWithWithholdingDto;
         consolidatedInvoice.batchID = null;
         consolidatedInvoice.plantID = null;
         consolidatedInvoice.permitRefNumber = permitRefNumber;
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
+        consolidatedInvoice.isWithHolding = this.isWithHolding
+
+        console.log( consolidatedInvoice.isWithHolding)
         this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
             (data) => {
               console.log(data);

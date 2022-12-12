@@ -1060,6 +1060,12 @@ class CommonDaoServices(
             }
             ?: throw ExpectedDataNotFound("The following Region with ID  = $regionsId and status = $status, does not Exist")
     }
+    fun findRegionNameByRegionID(regionsId: Long): String {
+        regionsRepo.findNameById(regionsId)
+            .let { regionEntity ->
+                return regionEntity
+            }
+    }
 
     fun findCountiesEntityByCountyId(countyId: Long, status: Int): CountiesEntity {
         countiesRepo.findByIdAndStatus(countyId, status)
@@ -1864,6 +1870,14 @@ class CommonDaoServices(
                 return userProfile
             }
             ?: throw ExpectedDataNotFound("User Profile with user ID  = ${user.id} and status = $status, does not Exist")
+    }
+
+    fun findUserProfileByUsername(username: String, status: Int): UserProfilesEntity {
+        iUserProfilesRepo.findByUserId_UserNameAndStatus(username, status)
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("User Profile with username  = ${username} and status = $status, does not Exist")
     }
 
     fun findUserProfileByUserID(user: UsersEntity): UserProfilesEntity {

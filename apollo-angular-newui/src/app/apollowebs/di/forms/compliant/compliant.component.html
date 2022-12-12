@@ -9,15 +9,16 @@
                 <option value="1">Compliant</option>
                 <option value="0">Not Compliant</option>
             </select>
+            <p class="text-info" *ngIf="form.errors.compliantStatus">Please select compliance status</p>
             <label for="documentType" class="waiver-form-label">Document Type</label>
             <select id="documentType" name="compliantStatus" class="waiver-form-input-master"
                     formControlName="documentType">
                 <option value="" disabled selected>Select Certificate</option>
-                <option value="COC" [hidden]="corRequest">COC</option>
-                <option value="COI" [hidden]="corRequest">COI</option>
-                <option value="COR" [hidden]="cocRequest">Certificate Of Roadworthiness</option>
-
+                <option value="COC" [hidden]="corRequest">COC (Certificate of Compliance)</option>
+                <option value="COI" [hidden]="corRequest">COI (Certificate of Inspection)</option>
+                <option value="COR" [hidden]="cocRequest">COR (Certificate Of Road Worthiness)</option>
             </select>
+            <p class="text-info">Please select certificate when assigning compliance status</p>
             <label for="compliantRemarks" class="waiver-form-label">Please write, in detail, your feedback for this
                 consignment:</label>
             <textarea id="compliantRemarks" class="waiver-form-input-master" placeholder=""
