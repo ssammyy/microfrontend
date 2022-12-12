@@ -2192,5 +2192,33 @@ begin
     end if;
 end;
 
+create  table SL_ENTRY_NO_DATA_MIGRATION
+(
+    id                   number   not null primary key,
+    MANUFACTURER            varchar(1000 char),
+    REGISTRATION_NUMBER           varchar(1000 char),
+    DIRECTOR_ID           varchar(1000 char),
+    KRA_PIN           varchar(1000 char),
+    ENTRY_NUMBER           int
+)
+/
+create sequence SL_ENTRY_NO_DATA_MIGRATION_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger SL_ENTRY_NO_DATA_MIGRATION_trg
+    before
+        insert
+    on SL_ENTRY_NO_DATA_MIGRATION
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select SL_ENTRY_NO_DATA_MIGRATION_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
 
 

@@ -76,19 +76,16 @@ class ComStandardService(
     fun requestForStandard(companyStandardRequest: CompanyStandardRequest): ProcessInstanceResponse {
 
         val variables: MutableMap<String, Any> = HashMap()
-        companyStandardRequest.companyName?.let { variables.put("companyName", it) }
-        companyStandardRequest.departmentId?.let { variables.put("departmentId", it) }
-        companyStandardRequest.tcId?.let { variables.put("tcId", it) }
-        companyStandardRequest.productId?.let { variables.put("productId", it) }
-        companyStandardRequest.productSubCategoryId?.let { variables.put("productSubCategoryId", it) }
+        companyStandardRequest.companyName=companyStandardRequest.companyName
+        companyStandardRequest.departmentId=companyStandardRequest.departmentId
+        companyStandardRequest.tcId=companyStandardRequest.tcId
+        companyStandardRequest.productId=companyStandardRequest.productId
+        companyStandardRequest.productSubCategoryId=companyStandardRequest.productSubCategoryId
         //companyStandardRequest.submissionDate?.let{ variables.put("submissionDate", it)}
-        companyStandardRequest.companyPhone?.let { variables.put("companyPhone", it) }
-        companyStandardRequest.companyEmail?.let { variables.put("companyEmail", it) }
+        companyStandardRequest.companyPhone=companyStandardRequest.companyPhone
+        companyStandardRequest.companyEmail=companyStandardRequest.companyEmail
         companyStandardRequest.submissionDate = Timestamp(System.currentTimeMillis())
-        variables["submissionDate"] = companyStandardRequest.submissionDate!!
         companyStandardRequest.requestNumber = getRQNumber()
-
-        variables["requestNumber"] = companyStandardRequest.requestNumber!!
 
         variables["tcName"] = technicalCommitteeRepository.findNameById(companyStandardRequest.tcId?.toLong())
         companyStandardRequest.tcName = technicalCommitteeRepository.findNameById(companyStandardRequest.tcId?.toLong())

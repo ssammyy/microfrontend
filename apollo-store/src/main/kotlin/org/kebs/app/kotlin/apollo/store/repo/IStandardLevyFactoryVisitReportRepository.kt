@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 import org.kebs.app.kotlin.apollo.store.model.SdlFactoryVisitReportsUploadEntity
 import org.kebs.app.kotlin.apollo.store.model.SlUpdatecompanyDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
+import org.kebs.app.kotlin.apollo.store.model.StdLevyEntryNoDataMigrationEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.CompleteTasksDetailHolder
 import org.kebs.app.kotlin.apollo.store.model.std.UserDetailHolder
@@ -29,5 +30,9 @@ interface ISdlFactoryVisitReportsUploadEntityRepository : HazelcastRepository<Sd
 
 interface ISlUpdatecompanyDetailsEntityRepository : HazelcastRepository<SlUpdatecompanyDetailsEntity, Long>{
     //fun findByReportId(reportId: Long) : SdlFactoryVisitReportsUploadEntity?
+}
+
+interface StdLevyEntryNoDataMigrationEntityRepository : HazelcastRepository<StdLevyEntryNoDataMigrationEntity, Long>{
+
 }
 
