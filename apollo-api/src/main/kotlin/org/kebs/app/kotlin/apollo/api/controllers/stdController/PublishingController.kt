@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.EditorDocumentServi
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.PublishingService
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.store.model.std.Ballot
 import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
 import org.kebs.app.kotlin.apollo.store.model.std.StandardDraft
@@ -48,19 +49,37 @@ class PublishingController(
     //********************************************************** process submit draft standard **********************************************************
     @PostMapping("/submit")
     @ResponseBody
-    fun requestForStandard(@RequestBody standardDraft: StandardDraft): ServerResponse {
+    fun requestForStandard(
+        @RequestBody ballot: Ballot,
+        @RequestParam("decision") decision: String,
+    ): ServerResponse {
         //return ResponseEntity(standardRequestService.requestForStandard(standardRequest), HttpStatus.OK)
         return ServerResponse(
             HttpStatus.OK,
             "Successfully submitted draft standard",
-            publishingService.submitDraftStandard(standardDraft)
+            publishingService.submitDraftStandard(ballot, decision)
         )
     }
 
     @GetMapping("/getHOPTasks")
-    fun getHOPTasks(): List<TaskDetails> {
-        return publishingService.getHOPTasks()
+    fun getAllBallotDraftsForPublishing(): List<Ballot> {
+        return publishingService.getAllBallotDraftsForPublishing()
     }
+
+    @GetMapping("/approvedForEditing")
+    fun getAllBallotDraftsForPublishingApprovedForEditing(): List<Ballot> {
+        return publishingService.getAllBallotDraftsForPublishingApprovedForEditing()
+    }
+
+    @GetMapping("/rejectedForEditing")
+    fun getAllBallotDraftsForPublishingRejectedForEditing(): List<Ballot> {
+        return publishingService.getAllBallotDraftsForPublishingRejectedForEditing()
+    }
+
+//    @GetMapping("/getHOPTasks")
+//    fun getHOPTasks(): List<TaskDetails> {
+//        return publishingService.getHOPTasks()
+//    }
 
     @PostMapping("/decisionOnKSDraft")
     @ResponseBody
@@ -78,11 +97,15 @@ class PublishingController(
     @PostMapping("/uploadRejectionFeedback")
     @ResponseBody
     fun uploadFeedbackOnDraft(@RequestBody decisionFeedback: DecisionFeedback): ServerResponse {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded feedback on draft",publishingService.uploadFeedbackOnDraft(decisionFeedback))
+        return ServerResponse(
+            HttpStatus.OK,
+            "Successfully uploaded feedback on draft",
+            publishingService.uploadFeedbackOnDraft(decisionFeedback)
+        )
     }
 
     @GetMapping("/getEditorTasks")
-    fun getEditorTasks(): List<TaskDetails> {
+    fun getEditorTasks(): List<StandardDraft> {
         return publishingService.getEditorTasks()
     }
 
@@ -99,9 +122,48 @@ class PublishingController(
         )
     }
 
+    @PostMapping("/approvedForProofReading")
+    @ResponseBody
+    fun approvedForProofReading(
+        @RequestBody standardDraft: StandardDraft,
+        @RequestParam("decision") decision: String,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Approved For Proofreading",
+            publishingService.approvedForProofReading(standardDraft, decision)
+        )
+    }
+
+    @PostMapping("/approvedForDraughting")
+    @ResponseBody
+    fun approvedForDraughting(
+        @RequestBody standardDraft: StandardDraft,
+        @RequestParam("decision") decision: String,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Approved For Draughting",
+            publishingService.approvedForDraughting(standardDraft, decision)
+        )
+    }
+
     @GetMapping("/getProofReaderTasks")
-    fun getProofreaderTasks(): List<TaskDetails> {
+    fun getProofreaderTasks(): List<StandardDraft> {
         return publishingService.getProofreaderTasks()
+    }
+
+    @PostMapping("/sendToOfficer")
+    @ResponseBody
+    fun sendToOfficer(
+        @RequestBody standardDraft: StandardDraft,
+        @RequestParam("decision") decision: String,
+    ): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Approved For Draughting",
+            publishingService.sendToOfficer(standardDraft, decision)
+        )
     }
 
     @PostMapping("/finishedProofReading")
@@ -119,19 +181,19 @@ class PublishingController(
 
 
     @GetMapping("/getDraughtsmanTasks")
-    fun getDraughtsmanTasks(): List<TaskDetails> {
+    fun getDraughtsmanTasks(): List<StandardDraft> {
         return publishingService.getDraughtsmanTasks()
     }
 
     @PostMapping("/uploadDraughtChanges")
     @ResponseBody
     fun uploadDraftStandardDraughtChanges(
-        @RequestBody standardDraft: StandardDraft, @RequestParam("draftStandardID") draftStandardID: Long,
+        @RequestBody standardDraft: StandardDraft, @RequestParam("decision") decision: String,
     ): ServerResponse {
         return ServerResponse(
             HttpStatus.OK,
             "Finished draughting changes",
-            publishingService.uploadDraftStandardDraughtChanges(standardDraft, draftStandardID)
+            publishingService.uploadDraftStandardDraughtChanges(standardDraft, decision)
         )
     }
 
@@ -156,7 +218,7 @@ class PublishingController(
     ): CommonDaoServices.MessageSuccessFailDTO {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        var docDescription = "DraftStandards";
+        var docDescription = "DraftStandards"
 
         val nwaJustification = standardDraftRepository.findByIdOrNull(draftStandardID)
             ?: throw Exception("DRAFT DOCUMENT ID DOES NOT EXIST")
@@ -172,13 +234,16 @@ class PublishingController(
                 "DraftStandard" -> {
                     docDescription = "Draft Standard Publishing"
                 }
+
                 "EditedDraftStandard" -> {
                     docDescription = "Edited Draft Standard Publishing"
                 }
+
                 "ProofReadDraftStandard" -> {
                     docDescription = "ProofRead Draft Standard Publishing"
 
                 }
+
                 "DraughtingDraftStandard" -> {
                     docDescription = "Draughting Draft Standard Publishing"
                 }
@@ -205,7 +270,7 @@ class PublishingController(
         @RequestParam("itemId") itemId: String,
         @RequestParam("type") type: String
     ): ResponseEntity<ResponseMessage> {
-        var message: String? = null
+        var message: String?
 
 
 
@@ -214,9 +279,11 @@ class PublishingController(
                 "DraftDocument" -> {
                     draftDocumentService.store(file, itemId)
                 }
+
                 "EditorDocuments" -> {
                     draftDocumentService.store(file, itemId)
                 }
+
                 "DraughtDocuments" -> {
                     draftDocumentService.store(file, itemId)
                 }
@@ -233,7 +300,10 @@ class PublishingController(
 
 
     @GetMapping("list/files/{type}/{itemId}")
-    fun getListFiles(@PathVariable type: String?,@PathVariable("itemId") itemId: String): ResponseEntity<List<ResponseFile>> {
+    fun getListFiles(
+        @PathVariable type: String?,
+        @PathVariable("itemId") itemId: String
+    ): ResponseEntity<List<ResponseFile>> {
 
         var files: List<ResponseFile>? = null
         when (type) {
@@ -255,6 +325,7 @@ class PublishingController(
 
                 }.collect(Collectors.toList())
             }
+
             "EditorDocuments" -> {
 
                 files = editorDocumentService.getAllFiles(itemId).map { dbFile ->
@@ -273,6 +344,7 @@ class PublishingController(
 
                 }.collect(Collectors.toList())
             }
+
             "DraughtDocuments" -> {
 
                 files = draughtDocumentService.getAllFiles(itemId).map { dbFile ->

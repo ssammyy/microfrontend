@@ -40,8 +40,9 @@
                                         <th class="action">Status</th>
 
                                         <th class="action">Comments</th>
-                                        <th class="action">Action</th>
-
+                                        <th class="uploadMinutes"> Minutes</th>
+                                        <th class="uploadDraftsAndOtherRelevantDocuments"> Drafts</th>
+                                        <th class="preparePd">Committee Draft</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -63,19 +64,77 @@
                                             Comment(s)</a></span></td>
 
                                         <td>
-                                            <a (click)="onOpenModal(pd,'uploadMinutes')"
-                                               class="btn btn-success tooltips"
-                                               data-placement="top"
-                                               data-original-title="Upload NWI">Upload Minutes</a>
-                                            <a (click)="onOpenModal(pd,'uploadDraftsAndOtherRelevantDocuments')"
-                                               class="btn btn-warning tooltips"
-                                               data-placement="top" style="width: max-content"
-                                               data-original-title="Upload NWI">Upload Drafts and Documents </a>
-                                            <br>
-                                            <a (click)="onOpenModal(pd,'prepareCd')"
-                                               class="btn btn-success tooltips"
-                                               data-placement="top"
-                                               data-original-title="Upload NWI">Prepare Committee Draft</a>
+                                            <ng-container [ngSwitch]="pd.status">
+                                                <ng-container *ngSwitchCase="'Minutes Uploaded'">
+                                                    <ng-container *ngTemplateOutlet="form1"></ng-container>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="'Draft Documents For CD Uploaded'">
+                                                    <ng-container *ngTemplateOutlet="form1"></ng-container>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="'Committee Draft Uploaded'">
+                                                    <ng-container *ngTemplateOutlet="form1"></ng-container>
+                                                </ng-container>
+                                                <ng-container *ngSwitchDefault>
+                                                    <a (click)="onOpenModal(pd,'uploadMinutes')"
+                                                       class="btn btn-success tooltips"
+                                                       data-placement="top"
+                                                       data-original-title="Upload NWI">Upload</a>
+                                                </ng-container>
+                                                <ng-template #form1>
+                                                    <span class="badge badge-success">Minutes Uploaded</span>
+                                                </ng-template>
+                                            </ng-container>
+
+
+                                        </td>
+                                        <td>
+                                            <div *ngIf="pd.status=='Commenting By TC'; else elseBlock">
+                                                <span class="badge badge-warning">Upload Minutes First</span>
+                                            </div>
+                                            <ng-template #elseBlock>
+                                                <ng-container [ngSwitch]="pd.status">
+                                                    <ng-container *ngSwitchCase="'Draft Documents For CD Uploaded'">
+                                                        <ng-container *ngTemplateOutlet="form1B"></ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'Committee Draft Uploaded'">
+                                                        <ng-container *ngTemplateOutlet="form1B"></ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchDefault>
+                                                        <a (click)="onOpenModal(pd,'uploadDraftsAndOtherRelevantDocuments')"
+                                                           class="btn btn-success tooltips"
+                                                           data-placement="top" style="width: max-content"
+                                                           data-original-title="Upload NWI">Upload </a>
+                                                    </ng-container>
+                                                    <ng-template #form1B>
+                                                        <span class="badge badge-success">Draft Documents Uploaded</span>
+                                                    </ng-template>
+                                                </ng-container>
+                                            </ng-template>
+
+
+                                        </td>
+                                        <td>
+                                            <div *ngIf="pd.status=='Commenting By TC' || pd.status=='Minutes Uploaded'; else elseBlockB">
+                                                <span class="badge badge-warning">Upload Required Documents</span>
+                                            </div>
+                                            <ng-template #elseBlockB>
+
+                                                <ng-container [ngSwitch]="pd.status">
+
+                                                    <ng-container *ngSwitchCase="'Committee Draft Uploaded'">
+                                                        <ng-container *ngTemplateOutlet="form1C"></ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchDefault>
+                                                        <a (click)="onOpenModal(pd,'prepareCd')"
+                                                           class="btn btn-success tooltips"
+                                                           data-placement="top"
+                                                           data-original-title="Upload NWI">Upload</a>
+                                                    </ng-container>
+                                                    <ng-template #form1C>
+                                                        <span class="badge badge-success">Committee Draft Uploaded</span>
+                                                    </ng-template>
+                                                </ng-container>
+                                            </ng-template>
 
                                         </td>
 

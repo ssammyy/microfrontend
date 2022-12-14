@@ -1,7 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.sql.Timestamp
 import javax.persistence.*
-import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "SD_SCHEME_MEMBERSHIP_REQUEST")
@@ -11,47 +11,47 @@ class SchemeMembershipRequest {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "REQUEST_ID")
     @Basic
-    val requestId : Long = 0
+    val requestId: Long = 0
 
     @Column(name = "REQUESTER_NAME")
     @Basic
-    val name : String = ""
+    val name: String? = null
 
     @Column(name = "DESIGNATION_OCCUPATION")
     @Basic
-    val designationOccupation : String = ""
+    val designationOccupation: String? = null
 
     @Column(name = "ADDRESS")
     @Basic
-    val address : String = ""
+    val address: String? = null
 
     @Column(name = "EMAIL")
     @Basic
-    val email : String = ""
+    val email: String? = null
 
     @Column(name = "PHONE")
     @Basic
-    val phone : String = ""
+    val phone: String? = null
 
     @Column(name = "REQUEST_DATE")
     @Basic
-    val date : String = ""
+    val date: String? = null
 
     @Column(name = "ACCOUNT_TYPE")
     @Basic
-    val account_type : String = ""
+    val accountType: String? = null
 
     @Column(name = "SIC_ASSIGNED_ID")
     @Basic
-    val sic_assigned_id : String? =""
+    var sicAssignedId: String? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
 
-    @Column(name = "VAR_FIELD_2")
+    @Column(name = "WEB_STORE_ACCOUNT_CREATION_DATE")
     @Basic
-    var varField2: String? = null
+    var webStoreAccountCreationDate: Timestamp? = null
 
     @Column(name = "VAR_FIELD_3")
     @Basic
@@ -61,7 +61,33 @@ class SchemeMembershipRequest {
     @Basic
     var varField4: String? = null
 
-    @Transient
-    var taskID: String = ""
-    var processID: String = ""
+    @Column(name = "CREATED_AT")
+    @Basic
+    var createdOn: Timestamp? = null
+
+    @Column(name = "SIC_ASSIGNED_DATE_ASSIGNED")
+    @Basic
+    var sicAssignedDateAssigned: Timestamp? = null
+
+    @Column(name = "INVOICE_STATUS")
+    @Basic
+    var invoiceStatus: String? = null
+
+    @Column(name = "INVOICE_NUMBER")
+    @Basic
+    var invoiceNumber: String? = null
+
+    @Column(name = "INVOICE_AMOUNT")
+    @Basic
+    var invoiceAmount: String? = null
+
+    @Column(name = "INVOICE_GENERATED_DATE")
+    @Basic
+    var invoiceGeneratedDate: Timestamp? = null
+
+    @Column(name = "INVOICE_PAYMENT_DATE")
+    @Basic
+    var invoicePaymentDate: Timestamp? = null
+
+
 }

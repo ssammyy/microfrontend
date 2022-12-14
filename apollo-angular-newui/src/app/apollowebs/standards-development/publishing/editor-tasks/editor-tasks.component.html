@@ -13,14 +13,14 @@
                             <div class="card-icon">
                                 <i class="material-icons">assignment</i>
                             </div>
-                            <h4 class="card-title"><b>Edit Draft Standards</b></h4>
+                            <h4 class="card-title"><b>Editor Tasks</b></h4>
                         </div>
 
                         <div class="card-body">
                             <div class="toolbar">
                                 <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
                                     <div class="d-flex flex-wrap align-items-center">
-                                        <h5 class="mr-4">Edit Draft Standards</h5>
+                                        <h5 class="mr-4">Editor Tasks</h5>
                                         <div class="resolved-pill">
                                             <p>{{tasks.length}}</p>
                                         </div>
@@ -33,30 +33,93 @@
                                     <thead>
                                     <tr>
                                         <th class="id">ID</th>
-                                        <th class="task">Task</th>
                                         <th class="task">Title</th>
-                                        <th class="task">Document</th>
-                                        <th class="task">Version</th>
+                                        <th class="task">Original Draft</th>
+
+                                        <th class="task">Edited Status</th>
+                                        <th class="task">Edited Draft</th>
+
+                                        <th class="task">Draughted Status</th>
+                                        <th class="task">Draughted Draft</th>
+
+                                        <th class="task">Proofread Status</th>
+                                        <th class="task">ProofRead Draft</th>
+
+                                        <th class="task">Process</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr *ngFor="let task of tasks  let i= index;">
                                         <td>{{i + 1}}</td>
-                                        <td>{{task.name}}</td>
-                                        <td>{{task.taskData.title}}</td>
+                                        <td>{{task.title}}</td>
                                         <td>
                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                    (click)="viewPdfFile( task.taskData.ID,'ApprovedDraftStandard'+task.taskData.ID, 'application/pdf')"
+                                                    (click)="viewPdfFile( task.id,'ApprovedDraftStandard'+task.id, 'application/pdf')"
                                                     target="_blank" class="btn btn-info btn-sm ">
                                                 <i class="material-icons">visibility</i>
 
                                             </button>
                                         </td>
-                                        <td>{{task.taskData.versionNumber}}</td>
-                                        <td><a (click)="onOpenModal(task,'edit')" type="button"
-                                               class="btn btn-info"
-                                               data-placement="top" data-original-title="Review draft">Edit Draft</a>
+                                        <td>{{task.editedStatus}}</td>
+                                        <td>
+                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                    (click)="viewPdfFile( task.id,'ApprovedDraftStandard'+task.id, 'application/pdf')"
+                                                    target="_blank" class="btn btn-info btn-sm ">
+                                                <i class="material-icons">visibility</i>
+
+                                            </button>
+                                        </td>
+                                        <td>{{task.draughtingStatus}}</td>
+                                        <td>
+                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                    (click)="viewPdfFile( task.id,'ApprovedDraftStandard'+task.id, 'application/pdf')"
+                                                    target="_blank" class="btn btn-info btn-sm ">
+                                                <i class="material-icons">visibility</i>
+
+                                            </button>
+                                        </td>
+                                        <td>{{task.proofreadStatus}}</td>
+                                        <td>
+                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                    (click)="viewPdfFile( task.id,'ApprovedDraftStandard'+task.id, 'application/pdf')"
+                                                    target="_blank" class="btn btn-info btn-sm ">
+                                                <i class="material-icons">visibility</i>
+
+                                            </button>
+                                        </td>
+
+                                        <td>{{task.approvalStatus}}</td>
+                                        <td>
+                                            <div *ngIf="task.editedStatus=='Edited'&& task.approvalStatus!='Approved For Draughting'
+                                            && task.approvalStatus!='Draughting' && task.approvalStatus!='Approved For Proofreading'
+                                            && task.approvalStatus!='ProofRead Done'">
+                                                <a (click)="approveForDraughting(task)" type="button"
+                                                   class="btn btn-info"
+                                                   data-placement="top" data-original-title="Review draft">Send For
+                                                    Draughting</a>
+                                            </div>
+                                            <div *ngIf="task.editedStatus=='Not Edited'">
+                                                <a (click)="onOpenModal(task,'edit')" type="button"
+                                                   class="btn btn-info"
+                                                   data-placement="top" data-original-title="Review draft">Edit
+                                                    Draft</a>
+                                            </div>
+                                            <div *ngIf="task.draughtingStatus=='Draughted' && task.draughtingStatus=='Draughting Not Needed' && task.approvalStatus!='Approved For Proofreading'">
+                                                <a (click)="approveForProofReading(task)" type="button"
+                                                   class="btn btn-info"
+                                                   data-placement="top" data-original-title="Review draft">Send For
+                                                    Proofreading</a>
+                                            </div>
+
+                                            <div *ngIf="task.approvalStatus=='ProofRead Done'">
+                                                <a (click)="sendToOfficer(task)" type="button"
+                                                   class="btn btn-info"
+                                                   data-placement="top" data-original-title="Review draft">Send To
+                                                    Officer</a>
+                                            </div>
+
+
                                         </td>
                                     </tr>
                                     </tbody>
@@ -75,20 +138,23 @@
                                         </div>
                                         <form #editForm="ngForm">
                                             <div class="modal-body">
-                                                <p>{{actionRequest?.taskData?.title}} Details</p>
+                                                <p>{{actionRequest?.title}} Details</p>
                                                 <ul>
-                                                    <li><b>Proposal Title:</b>{{actionRequest?.taskData?.title}}</li>
-                                                    <li><b>Version:</b>{{actionRequest?.taskData?.versionNumber}}</li>
+                                                    <li><b>Proposal Title:</b>{{actionRequest?.title}}</li>
+                                                    <li><b>Version:</b>{{actionRequest?.versionNumber}}</li>
                                                     <li><b>Standard
-                                                        Officer:</b>{{actionRequest?.taskData?.standardOfficerName}}
+                                                        Officer:</b>{{actionRequest?.standardOfficerName}}
                                                     </li>
-                                                    <li><a href="#"
-                                                           (click)="viewPdfFile( actionRequest?.taskData?.ID,'DraftStandard'+actionRequest?.taskData?.ID, 'application/pdf')"
-                                                           target="_blank">View Approved Draft Standard To Be Edited</a>
+                                                    <li>
+                                                        <button class="btn btn-info tooltips"
+                                                                style="width: inherit"
+                                                                (click)="viewPdfFile( actionRequest?.id,'DraftStandard'+actionRequest?.id, 'application/pdf')"
+                                                                data-placement="top"> View Draft
+                                                        </button>
                                                     </li>
                                                 </ul>
                                                 <div class="row">
-                                                    <input hidden ngModel="{{actionRequest?.taskId}}" name="taskId"
+                                                    <input hidden ngModel="{{actionRequest?.id}}" name="taskId"
                                                            id="taskId">
                                                     <div class="form-group col-12">
                                                         <label><b>Upload Draft Document</b></label>
@@ -107,13 +173,13 @@
                                             </div>
                                             <input hidden name="id" id="id">
                                             <div class="modal-footer">
-<!--                                                <button type="button" class="btn btn-danger" #closeModal-->
-<!--                                                        data-dismiss="modal"-->
-<!--                                                        (click)="decisionOnDraft(editForm.value,'false',actionRequest?.taskData?.ID)">Reject-->
-<!--                                                </button>-->
+                                                <!--                                                <button type="button" class="btn btn-danger" #closeModal-->
+                                                <!--                                                        data-dismiss="modal"-->
+                                                <!--                                                        (click)="decisionOnDraft(editForm.value,'false',actionRequest?.taskData?.ID)">Reject-->
+                                                <!--                                                </button>-->
                                                 <button class="btn btn-info" data-dismiss="modal" #closeModal
-                                                        (click)="decisionOnDraft(editForm.value,'true',actionRequest?.taskData?.ID)">Forward To
-                                                    Proofreader
+                                                        (click)="decisionOnDraft(editForm.value,'true',actionRequest?.id)">
+                                                    Submit Edited Draft
                                                 </button>
                                             </div>
                                         </form>
