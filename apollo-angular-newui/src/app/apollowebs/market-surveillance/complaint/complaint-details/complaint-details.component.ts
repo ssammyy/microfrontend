@@ -333,7 +333,7 @@ export class ComplaintDetailsComponent implements OnInit {
       product: null,
       productSubCategory: null,
       resourcesRequired: null,
-      budget: ['', Validators.required],
+      budget: null,
       // remarks: ['', Validators.required],
     });
 

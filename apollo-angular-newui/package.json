@@ -80,6 +80,7 @@
     "jquery-validation": "1.19.2",
     "jqvmap": "1.5.1",
     "jszip": "^3.10.1",
+    "mat-select-search": "^1.2.21",
     "moment": "2.29.1",
     "moment-timezone": "0.5.31",
     "ng-multiselect-dropdown": "^0.3.8",
