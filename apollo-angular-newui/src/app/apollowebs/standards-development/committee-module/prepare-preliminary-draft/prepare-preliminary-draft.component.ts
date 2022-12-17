@@ -74,7 +74,7 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     public justificationItemB !: StdJustification | undefined;
     dateFormat = "yyyy-MM-dd";
     language = "en";
-    displayedColumns: string[] = ['sl', 'edition', 'title', 'spcMeetingDate', 'departmentId', 'actions'];
+    displayedColumns: string[] = ['sl', 'edition', 'title', 'spcMeetingDate', 'departmentId', 'actions', '', ''];
     dataSource!: MatTableDataSource<StdJustification>;
     dataSourceB!: MatTableDataSource<StdJustification>;
     dataSourceC!: MatTableDataSource<StdJustification>;
@@ -162,10 +162,11 @@ export class PreparePreliminaryDraftComponent implements OnInit {
         this.committeeService.getAllNwiSForPd().subscribe(
             (response: NwiItem[]) => {
                 console.log(response);
-                this.SpinnerService.hide();
 
                 this.approvedNwiSForPd = response;
                 this.rerender()
+                this.SpinnerService.hide();
+
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -187,15 +188,19 @@ export class PreparePreliminaryDraftComponent implements OnInit {
             this.approvedNwiSForPdB = approvedNwiS;
             button.setAttribute('data-target', '#updateNWIModal');
         }
+        // if (mode === 'preparePd') {
+        //     this.approvedNwiSForPdB = approvedNwiS;
+        //     // button.setAttribute('data-target', '#preparePd');
+        //     localStorage.setItem('id', approvedNwiS.id);
+        //     // localStorage.removeItem(this.storageKey);
+        //
+        //
+        //     this.router.navigate(['/prepareDraft'], { state: { id:approvedNwiS.id } });
+        //
+        // }
         if (mode === 'preparePd') {
             this.approvedNwiSForPdB = approvedNwiS;
-            // button.setAttribute('data-target', '#preparePd');
-            localStorage.setItem('id', approvedNwiS.id);
-            // localStorage.removeItem(this.storageKey);
-
-
-            this.router.navigate(['/prepareDraft'], { state: { id:approvedNwiS.id } });
-
+            button.setAttribute('data-target', '#preparePd');
         }
         if (mode === 'uploadMinutes') {
             this.approvedNwiSForPdB = approvedNwiS;
@@ -271,6 +276,7 @@ export class PreparePreliminaryDraftComponent implements OnInit {
                         },
                         icon: 'success'
                     });
+                    this.hideModel()
                     this.getNWIS();
 
                     // this.router.navigate(['/draftStandard']);
@@ -373,13 +379,11 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
-
     public hideModel() {
         this.closeModal?.nativeElement.click();
     }
 
     @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
-
     public hideModelC() {
         this.closeModalC?.nativeElement.click();
     }
@@ -733,6 +737,7 @@ export class PreparePreliminaryDraftComponent implements OnInit {
     onSelectAll(items: any) {
         console.log(items);
     }
+
     viewPdfFileById(pdfId: number, fileName: string, applicationType: string, doctype: string): void {
         this.SpinnerService.show();
         this.committeeService.viewDocsById(pdfId).subscribe(

@@ -62,18 +62,13 @@ class BallotService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         ballot.ballotName?.let { variable.put("ballotName", it) }
         ballot.prdID = prdId
-        variable["prdID"] = ballot.prdID
 
 
         ballot.createdOn = Timestamp(System.currentTimeMillis())
-        variable["createdOn"] = ballot.createdOn!!
 
         ballot.ballotDraftBy = loggedInUser.id.toString()
-        variable["ballotDraftBy"] = ballot.ballotDraftBy ?: throw ExpectedDataNotFound("No USER ID Found")
         ballot.createdBy = loggedInUser.id.toString()
-        variable["createdBy"] = ballot.createdBy ?: throw ExpectedDataNotFound("No USER ID Found")
         ballot.status = "Created & Submitted For Voting"
-        variable["status"] = ballot.status!!
 
         ballotRepository.save(ballot)
 
@@ -107,7 +102,7 @@ class BallotService(
 
 
 //        //check if person has voted
-        ballotvoteRepository.findByUserIdAndAndBallotIdAndStatus(ballotVote.userId, ballotVote.ballotId, 1)
+        ballotvoteRepository.findByUserIdAndBallotIdAndStatus(ballotVote.userId, ballotVote.ballotId, 1)
             ?.let {
                 // throw InvalidValueException("You Have Already Voted")
                 return ServerResponse(

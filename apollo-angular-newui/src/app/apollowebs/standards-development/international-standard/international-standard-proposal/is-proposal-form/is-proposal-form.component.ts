@@ -115,7 +115,8 @@ export class IsProposalFormComponent implements OnInit {
   uploadProposal(): void {
     this.SpinnerService.show();
     console.log(this.isProposalFormGroup.value);
-    this.stdIntStandardService.prepareAdoptionProposal(this.isProposalFormGroup.value).subscribe(
+    const valueString=this.isProposalFormGroup.get("addStakeholdersList").value.split(",")
+    this.stdIntStandardService.prepareAdoptionProposal(this.isProposalFormGroup.value,valueString).subscribe(
         (response) => {
           console.log(response);
           this.SpinnerService.hide();

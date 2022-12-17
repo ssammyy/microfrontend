@@ -33,6 +33,23 @@ class SageQARequestBody {
     @NotNull(message = "Required field")
     var details: MutableList<SageQADetails>? = null
 }
+class SageQARequestBodyB {
+
+    @JsonProperty("header")
+    @NotNull(message = "Required field")
+    @Valid
+    var header: SageQAHeaderB? = null
+
+    @JsonProperty("request")
+    @Valid
+    @NotNull(message = "Required field")
+    var request: SageQARequestB? = null
+
+    @JsonProperty("details")
+    @Valid
+    @NotNull(message = "Required field")
+    var details: MutableList<SageQADetails>? = null
+}
 
 class SageQAHeader {
 
@@ -52,6 +69,7 @@ class SageQAHeader {
     @NotNull(message = "Required field")
     var connectionPassword: String? = null
 }
+
 class SageQAHeaderB {
 
     @JsonProperty("serviceName")
@@ -115,6 +133,51 @@ class SageQARequest {
     @JsonProperty("TaxPINNo")
     @NotNull(message = "Required field")
     var TaxPINNo: String? = null
+}
+class SageQARequestB {
+    @JsonProperty("BatchNo")
+    @NotNull(message = "Required field")
+    var BatchNo: String? = null
+
+    @JsonProperty("DocumentDate")
+    @NotNull(message = "Required field")
+    var DocumentDate: String? = null
+
+    @JsonProperty("InvoiceType")
+    @NotEmpty(message = "Required field")
+    var InvoiceType: Long? = null
+
+    @JsonProperty("ServiceType")
+    @NotNull(message = "Required field")
+    var ServiceType: String? = null
+
+    @JsonProperty("CurrencyCode")
+    @NotNull(message = "Required field")
+    var CurrencyCode: String? = null
+
+    @JsonProperty("CustomerCode")
+    @NotNull(message = "Required field")
+    var CustomerCode: String? = null
+
+    @JsonProperty("CustomerName")
+    @NotNull(message = "Required field")
+    var CustomerName: String? = null
+
+    @JsonProperty("InvoiceDesc")
+    @NotNull(message = "Required field")
+    var InvoiceDesc: String? = null
+
+    @JsonProperty("InvoiceAmnt")
+    @NotNull(message = "Required field")
+    var InvoiceAmnt: BigDecimal? = null
+
+    @JsonProperty("TaxPINNo")
+    @NotNull(message = "Required field")
+    var TaxPINNo: String? = null
+
+    @JsonProperty("Witholding")
+    @NotNull(message = "Required field")
+    var Withholding: String? = null
 }
 
 class SageQADetails {
@@ -219,9 +282,10 @@ class RequestItems {
             } catch (ex: NumberFormatException) {
                 itm.rate = 0.0
             }
-            itm.productName = item.feeName
-            if ((item.feeName?.length ?: 0) > 50) {
-                itm.productName = item.feeName?.substring(0, 49)
+            // Limit product name length to 50
+            itm.productName = item.product
+            if ((item.product?.length ?: 0) > 50) {
+                itm.productName = item.product?.substring(0, 49)
             }
             return itm
         }
@@ -281,7 +345,7 @@ class SageRequest {
                     else -> "example@example.com"
                 }
                 entryPoint = dn.entryPoint
-                entryNo = dn.entryNo ?: ""
+                entryNo = dn.ucrNumber ?: dn.entryNo
                 courier = dn.courier ?: ""
                 otherInfo = dn.currency
                 totalAmount = dn.totalAmount ?: BigDecimal.ZERO

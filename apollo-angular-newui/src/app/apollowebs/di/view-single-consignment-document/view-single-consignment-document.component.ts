@@ -472,6 +472,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         const ref = this.dialog.open(CompliantComponent, {
             data: {
                 uuid: this.consignmentId,
+                ucr: this.consignment.ucr_number,
                 cocRequest: this.consignment.ui.cocRequest,
                 corRequest: this.consignment.ui.corRequest,
                 configurations: this.configurations,
@@ -525,6 +526,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
         const ref = this.dialog.open(ApproveRejectConsignmentComponent, {
             data: {
                 uuid: this.consignmentId,
+                ucr: this.consignment.cd_details.ucrNumber,
                 configurations: this.configurations,
                 complianceStatus: this.consignment.cd_details.complianceStatus,
                 documentType: this.consignment.cd_details.cocType

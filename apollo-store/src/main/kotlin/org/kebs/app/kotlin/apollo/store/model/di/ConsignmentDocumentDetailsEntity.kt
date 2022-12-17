@@ -359,7 +359,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var targetDate: Date? = null
 
-    @Column(name = "TARGET_REASON")
+    @Column(name = "TARGET_REASON", length = 400)
     @Basic
     var targetReason: String? = null
 

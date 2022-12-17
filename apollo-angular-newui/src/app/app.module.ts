@@ -444,6 +444,9 @@ import { IntStdSacApprovalComponent } from './apollowebs/standards-development/i
 import { IntStdGazetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component';
 import { MsDashboardComponent } from './apollowebs/market-surveillance/ms-dashboard/ms-dashboard.component';
 import {DocumentEditorContainerModule} from "@syncfusion/ej2-angular-documenteditor";
+import { SchemeMembershipFormComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component';
+import { SchemeMembershipReviewComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component';
+import { SchemeMembershipSicComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -921,6 +924,9 @@ import {DocumentEditorContainerModule} from "@syncfusion/ej2-angular-documentedi
         IntStdSacApprovalComponent,
         IntStdGazetteComponent,
         MsDashboardComponent,
+        SchemeMembershipFormComponent,
+        SchemeMembershipReviewComponent,
+        SchemeMembershipSicComponent,
 
     ],
     entryComponents: [LoaderComponent],

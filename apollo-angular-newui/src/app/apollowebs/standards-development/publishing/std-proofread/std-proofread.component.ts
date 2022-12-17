@@ -4,7 +4,12 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {NgxSpinnerService} from "ngx-spinner";
 import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ProofReadTask, StandardTasks, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
+import {
+    DraftEditing,
+    ProofReadTask,
+    StandardTasks,
+    StdTCDecision
+} from "../../../../core/store/data/std/request_std.model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import swal from "sweetalert2";
@@ -18,8 +23,8 @@ export class StdProofreadComponent implements OnInit {
 
   p = 1;
   p2 = 1;
-  tasks: ProofReadTask[] = [];
-  public actionRequest: ProofReadTask | undefined;
+  tasks: DraftEditing[] = [];
+  public actionRequest: DraftEditing | undefined;
   public formActionRequest: StdTCDecision | undefined;
   blob: Blob;
   dtOptions: DataTables.Settings = {};
@@ -44,7 +49,7 @@ export class StdProofreadComponent implements OnInit {
     this.loadingText = "Retrieving Draft Standards Please Wait ...."
     this.SpinnerService.show();
     this.publishingService.getProofReaderTasks().subscribe(
-        (response: ProofReadTask[]) => {
+        (response: DraftEditing[]) => {
           this.tasks = response;
           this.SpinnerService.hide();
 
@@ -66,13 +71,12 @@ export class StdProofreadComponent implements OnInit {
     );
   }
 
-  public onOpenModal(task: ProofReadTask, mode: string): void {
+  public onOpenModal(task: DraftEditing, mode: string): void {
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle', 'modal');
-    console.log(task.taskId)
     if (mode === 'edit') {
       this.actionRequest = task;
       button.setAttribute('data-target', '#justificationDecisionModal');
@@ -97,7 +101,7 @@ export class StdProofreadComponent implements OnInit {
   public decisionOnProofReading(stdTCDecision: StdTCDecision, decision: string, draftId: number): void {
     if (this.uploadedFiles != null) {
       if (this.uploadedFiles.length > 0) {
-        this.loadingText = "Submitting Proofread Draft Standard For Draughting...."
+        this.loadingText = "Submitting Proofread Draft Standard...."
         this.SpinnerService.show();
         stdTCDecision.decision = decision;
         console.log(stdTCDecision);
@@ -105,7 +109,7 @@ export class StdProofreadComponent implements OnInit {
             (response) => {
 
               console.log(response);
-                this.showToasterSuccess(response.httpStatus, `Draft Standard Submitted For Draughting.`);
+                this.showToasterSuccess(response.httpStatus, `Draft Standard Successfully ProofRead.`);
                 this.onClickSaveUploads(String(draftId))
               //this.hideModel();
               this.getProofReaderTasks();
@@ -141,7 +145,7 @@ export class StdProofreadComponent implements OnInit {
             this.uploadedFiles = null;
             console.log(data);
             swal.fire({
-              title: 'Draft Standard Submitted To Draughts Man.',
+              title: 'Draft Standard Successfully ProofRead.',
               buttonsStyling: false,
               customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',

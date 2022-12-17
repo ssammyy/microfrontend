@@ -36,24 +36,22 @@
                                         <th class="task">Task</th>
                                         <th class="task">Title</th>
                                         <th class="task">Document</th>
-                                        <th class="task">Version</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr *ngFor="let task of tasks  let i= index;">
                                         <td>{{i + 1}}</td>
-                                        <td>{{task.name}}</td>
-                                        <td>{{task.taskData.title}}</td>
+                                        <td>{{task.ballotName}}</td>
+                                        <td>{{task.status}}</td>
                                         <td>
                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                    (click)="viewPdfFile( task.taskData.ID,'ApprovedDraftStandard'+task.taskData.ID, 'application/pdf')"
+                                                    (click)="viewPdfFile( task.id,'ApprovedDraftStandard'+task.id, 'application/pdf')"
                                                     target="_blank" class="btn btn-info btn-sm ">
                                                 <i class="material-icons">visibility</i>
 
                                             </button>
                                         </td>
-                                        <td>{{task.taskData.versionNumber}}</td>
                                         <td><a (click)="onOpenModal(task,'edit')" type="button"
                                                class="btn btn-info"
                                                data-placement="top" data-original-title="Review draft">View Final Draft</a>
@@ -75,18 +73,18 @@
                                         </div>
                                         <form #editForm="ngForm">
                                             <div class="modal-body">
-                                                <p>{{actionRequest?.taskData?.title}} Details</p>
+                                                <p>{{actionRequest?.ballotName}} Details</p>
                                                 <ul>
-                                                    <li><b>Proposal Title:</b>{{actionRequest?.taskData?.title}}</li>
-                                                    <li><b>Version:</b>{{actionRequest?.taskData?.versionNumber}}</li>
+                                                    <li><b>Proposal Title:</b>{{actionRequest?.ballotName}}</li>
+                                                    <li><b>Version:</b>{{actionRequest?.ballotName}}</li>
                                                     <li><b>Standard
-                                                        Officer:</b>{{actionRequest?.taskData?.standardOfficerName}}
+                                                        Officer:</b>{{actionRequest?.ballotName}}
                                                     </li>
 <!--                                                    <li><b>Edited-->
 <!--                                                        By:</b>{{actionRequest?.taskData?.standardOfficerName}}-->
 <!--                                                    </li>-->
                                                     <li><b>Edited
-                                                        Status:</b>{{actionRequest?.taskData?.editedStatus}}
+                                                        Status:</b>{{actionRequest?.ballotName}}
                                                     </li>
 <!--                                                    <li><b>Edited-->
 <!--                                                        Date:</b>{{actionRequest?.taskData?.standardOfficerName}}-->
@@ -95,7 +93,7 @@
 <!--                                                        By:</b>{{actionRequest?.taskData?.standardOfficerName}}-->
 <!--                                                    </li>-->
                                                     <li><b>Proofread
-                                                        Status:</b>{{actionRequest?.taskData?.proofreadStatus}}
+                                                        Status:</b>{{actionRequest?.ballotName}}
                                                     </li>
 <!--                                                    <li><b>Proofread-->
 <!--                                                        Date:</b>{{actionRequest?.taskData?.standardOfficerName}}-->
@@ -104,14 +102,14 @@
 <!--                                                        By:</b>{{actionRequest?.taskData?.standardOfficerName}}-->
 <!--                                                    </li>-->
                                                     <li><b>Draughting
-                                                        Status:</b>{{actionRequest?.taskData?.draughtingStatus}}
+                                                        Status:</b>{{actionRequest?.ballotName}}
                                                     </li>
 <!--                                                    <li><b>Draughting-->
 <!--                                                        Date:</b>{{actionRequest?.taskData?.standardOfficerName}}-->
 <!--                                                    </li>-->
 
                                                     <li><a href="#"
-                                                           (click)="viewPdfFile( actionRequest?.taskData?.ID,'DraftStandard'+actionRequest?.taskData?.ID, 'application/pdf')"
+                                                           (click)="viewPdfFile( actionRequest?.id,'DraftStandard'+actionRequest?.id, 'application/pdf')"
                                                            target="_blank">View Draft Standard</a>
                                                     </li>
                                                 </ul>

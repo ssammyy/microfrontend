@@ -19,7 +19,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdInspectionMotorVehicleItemChecklistEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
@@ -391,7 +390,7 @@ class DestinationInspectionBpmn(
      *                  supervisor CFSs
      */
     fun consignmentDocumentWithActions(
-        loggedInUser: UsersEntity,
+        userName: String,
         category: String?,
         myTasks: Boolean,
         page: PageRequest
@@ -403,16 +402,16 @@ class DestinationInspectionBpmn(
             .processVariableExists("cdUuid")
 
         if (myTasks) {
-            KotlinLogging.logger { }.debug("Loading tasks assigned to me: ${loggedInUser.userName}")
+            KotlinLogging.logger { }.debug("Loading tasks assigned to me: ${userName}")
             actionsQuery.or()
-                .taskAssignee(loggedInUser.userName)
-                .taskOwner(loggedInUser.userName)
+                .taskAssignee(userName)
+                .taskOwner(userName)
                 .endOr()
         } else {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-            val userProfilesEntity = commonDaoServices.findUserProfileByUserID(loggedInUser, map.activeStatus)
+            val userProfilesEntity = commonDaoServices.findUserProfileByUsername(userName, map.activeStatus)
             val codes = daoServices.findAllCFSUserCodes(userProfilesEntity.id ?: 0L)
-            KotlinLogging.logger { }.debug("Loading tasks in my CFSs: ${loggedInUser.userName}: ${codes}")
+            KotlinLogging.logger { }.debug("Loading tasks in my CFSs: ${userName}: ${codes}")
             actionsQuery.taskCandidateGroupIn(codes)
                 .ignoreAssigneeValue()
         }

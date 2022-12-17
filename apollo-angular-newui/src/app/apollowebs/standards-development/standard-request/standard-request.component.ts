@@ -22,7 +22,7 @@ export class StandardRequestComponent implements OnInit {
 
     ngOnInit() {
         //this.getStandards();
-        this.getDepartments();
+        // this.getDepartments();
         //this.getTechnicalCommittee();
     }
 

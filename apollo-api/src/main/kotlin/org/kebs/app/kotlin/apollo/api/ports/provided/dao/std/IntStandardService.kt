@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import com.hazelcast.internal.util.collection.ArrayUtils
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
@@ -23,10 +24,9 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import org.thymeleaf.util.DateUtils.second
+import java.lang.reflect.Type
 import java.sql.Timestamp
 import java.util.*
-import java.util.Collections.addAll
 
 
 @Service
@@ -58,8 +58,10 @@ class IntStandardService(
     private val standardRepository: StandardRepository,
     private val userListRepository: UserListRepository,
 
+
     ) {
     val PROCESS_DEFINITION_KEY = "sd_InternationalStandardsForAdoption"
+    val gson = Gson()
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment =repositoryService
         .createDeployment()
@@ -78,6 +80,11 @@ class IntStandardService(
         return userListRepository.findStandardStakeholders()
     }
 
+
+    fun mapKEBSOfficersNameListDto(officersName: String): List<String>? {
+        val userListType: Type = object : TypeToken<ArrayList<String?>?>() {}.type
+        return gson.fromJson(officersName, userListType)
+    }
 
 
     //prepare Adoption Proposal
@@ -103,29 +110,29 @@ class IntStandardService(
         iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
         iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
 
-        val users= iSAdoptionProposal.stakeholdersList
-        val otherUsers= iSAdoptionProposal.addStakeholdersList
-        val replace = users?.replace("[", "")
-        val userList = replace?.replace("]", "")
-        val arrays = otherUsers?.split(",")?.toTypedArray()
-        val array = userList?.split(",")?.toTypedArray()
-        //val both: Array<String> = ArrayUtils.concat(array, arrays)
+        val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
+        val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
+
 
         val targetUrl = "https://kimsint.kebs.org/";
-        if (array != null) {
-            for (recipient in array) {
-            //val recipient="stephenmuganda@gmail.com"
+        if (listOne != null) {
+            for (recipient in listOne) {
                 val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
-            val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
-                }
+                val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
+                notifications.sendEmail(recipient, subject, messageBody)
+
+            }
+        }
+        if (listTwo != null) {
+            for (recipient in listTwo) {
+                val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
+                val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
+                notifications.sendEmail(recipient, subject, messageBody)
 
             }
         }
 
      return proposal
-
 
     }
 
@@ -1274,4 +1281,8 @@ class IntStandardService(
 
         return "$startId/$finalValue:$year"
     }
+}
+
+private fun <E> MutableList<E>.addAll(elements: E) {
+
 }

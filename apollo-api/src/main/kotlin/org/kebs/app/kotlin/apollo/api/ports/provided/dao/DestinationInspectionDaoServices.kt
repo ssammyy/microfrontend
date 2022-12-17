@@ -2736,11 +2736,12 @@ class DestinationInspectionDaoServices(
 
 
     fun findAllCdWithAssignedIoID(
-        usersEntity: UsersEntity,
+        usersName: String,
         cdType: ConsignmentDocumentTypesEntity?,
         statuses: List<Int?>,
         page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
+        val usersEntity = commonDaoServices.findUserByUserName(usersName)
         return cdType?.let {
             iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                 usersEntity,
@@ -2822,11 +2823,12 @@ class DestinationInspectionDaoServices(
     }
 
     fun findAllInspectionsCdWithAssigner(
-        usersEntity: UsersEntity,
+        userName: String,
         cdType: ConsignmentDocumentTypesEntity?,
         statuses: List<Int>,
         page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
+        val usersEntity = commonDaoServices.findUserByUserName(userName)
         return cdType?.let {
             iConsignmentDocumentDetailsRepo.findAllByAssignerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndStatusIn(
                 usersEntity,

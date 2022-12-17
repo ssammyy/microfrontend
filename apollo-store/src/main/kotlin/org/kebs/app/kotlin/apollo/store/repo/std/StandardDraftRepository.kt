@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.repo.std
 
-import org.kebs.app.kotlin.apollo.store.model.std.KnwaJustification
 import org.kebs.app.kotlin.apollo.store.model.std.NWAApprovedDraft
 import org.kebs.app.kotlin.apollo.store.model.std.StandardDraft
 import org.springframework.data.jpa.repository.JpaRepository
@@ -45,12 +44,29 @@ interface StandardDraftRepository : JpaRepository<StandardDraft, Long> {
 
     ): String
 
-    @Query(value = "SELECT  ID as id,REQUESTOR_NAME as requestorName,STANDARD_OFFICER_NAME as standardOfficerName,VERSION_NUMBER as versionNumber," +
-            "EDITED_STATUS as editedBY,cast(EDITED_DATE as varchar(200)) AS editedDate,PROOFREAD_STATUS as proofreadStatus," +
-            "PROOFREAD_BY as proofReadBy,cast(PROOFREAD_DATE as varchar(200)) AS proofReadDate,DRAUGHTING_STATUS as draughtingStatus," +
-            "DRAUGHTED_BY as draughtingBy,cast(DRAUGHTING_DATE as varchar(200)) AS draughtingDate,DRAFT_ID as draftId " +
-            "FROM SD_STANDARD_DRAFT  WHERE  STATUS='1' AND STANDARD_TYPE='NWA'", nativeQuery = true)
+    @Query(
+        value = "SELECT  ID as id,REQUESTOR_NAME as requestorName,STANDARD_OFFICER_NAME as standardOfficerName,VERSION_NUMBER as versionNumber," +
+                "EDITED_STATUS as editedBY,cast(EDITED_DATE as varchar(200)) AS editedDate,PROOFREAD_STATUS as proofreadStatus," +
+                "PROOFREAD_BY as proofReadBy,cast(PROOFREAD_DATE as varchar(200)) AS proofReadDate,DRAUGHTING_STATUS as draughtingStatus," +
+                "DRAUGHTED_BY as draughtingBy,cast(DRAUGHTING_DATE as varchar(200)) AS draughtingDate,DRAFT_ID as draftId " +
+                "FROM SD_STANDARD_DRAFT  WHERE  STATUS='1' AND STANDARD_TYPE='NWA'", nativeQuery = true
+    )
     fun getApprovedDraft(): MutableList<NWAApprovedDraft>
+
+    fun findByApprovalStatusAndDraftIdIsNotNull(status: String): List<StandardDraft>
+
+
+    @Query(
+        value = "SELECT * from SD_STANDARD_DRAFT where DRAFT_ID is not null AND (APPROVAL_STATUS='Approved For Editing'\n" +
+                "                                  OR APPROVAL_STATUS='Awaiting Decision On Draughting'\n" +
+                "                                  OR APPROVAL_STATUS='Draughting Done'\n" +
+                "                                  OR APPROVAL_STATUS='Draughting Approved'\n" +
+                "                                  OR APPROVAL_STATUS='ProofRead Done'\n" +
+
+                "                                  OR APPROVAL_STATUS='Approved For Proofreading'\n" +
+                "                                  OR APPROVAL_STATUS='Approved For Draughting')", nativeQuery = true
+    )
+    fun getEditorDrafts(): List<StandardDraft>
 
 
 }

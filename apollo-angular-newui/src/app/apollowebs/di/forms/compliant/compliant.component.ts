@@ -35,28 +35,52 @@ export class CompliantComponent implements OnInit {
         this.cocRequest = this.data.cocRequest
         this.form = this.fb.group({
             compliantStatus: ['', Validators.required],
-            documentType: [''],
+            documentType: [null],
             remarks: ['', [Validators.required, Validators.minLength(5)]]
         }, DocumentTypeSelectionValidator)
     }
 
+    processResult(res) {
+        this.loading = false
+        if (res.responseCode === "00") {
+            this.diService.showSuccess(res.message, () => {
+                this.dialogRef.close(true)
+            })
+        } else {
+            this.message = res.message
+        }
+    }
+
+    processError(err: any) {
+        this.loading = false
+        console.log(err)
+    }
+
     saveRecord() {
         this.loading = true
-        this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
-            .subscribe(
-                res => {
-                    this.loading = false
-                    if (res.responseCode === "00") {
-                        this.diService.showSuccess(res.message, () => {
-                            this.dialogRef.close(true)
-                        })
-                    } else {
-                        this.message = res.message
-                    }
-                },
-                error => {
+        if (this.form.value.compliantStatus == '0') {
+            this.diService.showConfirmation(`Are you sure you want to reject thi consignment with UCR  ${this.data.ucr}?`, (result) => {
+                if (result) {
+                    this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
+                        .subscribe(
+                            res => this.processResult(res),
+                            error => this.processError(error)
+                        )
+                } else {
                     this.loading = false
                 }
-            )
+            })
+        } else {
+            if (this.form.value.documentType) {
+                this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
+                    .subscribe(
+                        res => this.processResult(res),
+                        error => this.processError(error)
+                    )
+            } else {
+                this.loading = false;
+                this.message = "Please select the certificate to issue"
+            }
+        }
     }
 }

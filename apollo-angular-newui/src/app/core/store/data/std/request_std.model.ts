@@ -201,6 +201,9 @@ export interface NwiItem {
     tcSec: string;
     processStatus: string;
     pdStatus: String;
+    minutesPdStatus: null,
+    draftDocsPdStatus: null,
+    prPdStatus: null
 }
 
 
@@ -358,6 +361,53 @@ export interface HOPTasks {
     taskId: string;
     name: string;
     taskData: StandardDraft;
+}
+
+
+export interface DraftPublishing {
+    id: number;
+    prdID: string;
+    ballotName: string;
+    ballotDraftBy: string;
+    createdOn: string;
+    modifiedOn: string;
+    deletedOn: string;
+    createdBy: string;
+    modifiedBy: string;
+    deleteBy: string;
+    approvalStatus: string;
+    varField2: string;
+    varField1: string;
+    status: string;
+}
+
+export interface DraftEditing {
+    id: number;
+    title: string;
+    requestorId: string;
+    requestorName: string;
+    standardOfficerId: string;
+    standardOfficerName: string;
+    versionNumber: number;
+    approvalStatus: string;
+    approvedBy: string;
+    editedStatus: string;
+    editedBY: string;
+    editedDate: string;
+    proofreadStatus: string;
+    proofReadBy: string;
+    proofReadDate: string;
+    draughtingStatus: string;
+    draughtingBy: string;
+    draughtingDate: string;
+    submission_date: string;
+    status: string;
+    standardType: string;
+    draftId: string;
+
+
+
+
 }
 
 export interface EditorTask {

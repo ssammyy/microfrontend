@@ -59,7 +59,7 @@ enum class ConsignmentDocumentStatus(val code: String) {
     PARTIAL_PAYMENT_MADE("PARTIAL_PAYMENT_MADE"), PAYMENT_BILLED("PAYMENT_BILLED"),
     COMPLIANCE_REQUEST("COMPLIANCE_REQ"), COMPLIANCE_APPROVED("COMPLIANCE_APPROVE"), COMPLIANCE_REJECTED("COMPLIANCE_REJECTED"),
     BLACKLIST_REQUEST("BLACKLIST_REQUEST"), BLACKLIST_APPROVED("BLACKLIST_APPROVED"), BLACKLIST_REJECTED("BLACKLIST_REJECTED"),
-    COC_ISSUED("COC_ISSUED"), COR_ISSUED("COR_ISSUED"), COI_ISSUED("COU_ISSUED"), NCR_ISSUED("NCR_ISSUED"),
+    COC_ISSUED("COC_ISSUED"), COR_ISSUED("COR_ISSUED"), COI_ISSUED("COI_ISSUED"), NCR_ISSUED("NCR_ISSUED"),
     REJ_AMEND_REQUEST("AMENDMENT"), REJ_AMEND_APPROVED("AMENDMENT_APPROVE"), REJ_AMEND_REJECTED("AMEND_REJECTED"),
     QUERY_REQUEST("QUERY_REQUEST"), AMEND_APPROVED("QUERY"), QUERY_REJECTED("QUERY_REJECTED"),
     APPROVE_REQUEST("APPROVE_REQUEST"), APPROVE_APPROVED("APPROVE"), APPROVE_REJECTED("APPROVE_REJECTED"),
@@ -323,12 +323,12 @@ class DestinationInspectionService(
     }
 
     fun findDocumentsWithActions(
-        usersEntity: UsersEntity,
+        userName: String,
         category: String?,
         myTask: Boolean,
         page: PageRequest
     ): ApiResponseModel {
-        return diBpmn.consignmentDocumentWithActions(usersEntity, category, myTask, page)
+        return diBpmn.consignmentDocumentWithActions(userName, category, myTask, page)
     }
 
     fun markCompliant(
@@ -1300,7 +1300,8 @@ class DestinationInspectionService(
                 consignmentDocument.ucrNumber,
                 remarks,
                 "KEBS_${cdStatus.category?.toUpperCase()}",
-                "${cdStatus.category?.capitalize()} consignment"
+                "${cdStatus.category?.capitalize()} consignment",
+                consignmentDocument.assigner?.userName
             )
         }
     }
@@ -1570,13 +1571,26 @@ class DestinationInspectionService(
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             var cdDetails = daoServices.findCDWithUuid(cdUuid)
+            var loadCdDetails = true
             // When IO requests for details, they are are auto assigned
             if (isInspectionOfficer && cdDetails.assignedInspectionOfficer == null) {
-                this.selfAssign(cdDetails)
-                // Reload CD on self assign BPM
-                response.responseCode = ResponseCodes.RELOAD_PAGE
-                response.message = "Consignment Assigned reload details"
-            } else {
+                // Check if can self assign from flight station
+                val profile =
+                    commonDaoServices.findUserProfileByUsername(
+                        commonDaoServices.loggedInUserAuthentication().name,
+                        map.activeStatus
+                    )
+                val cnt = daoServices.countCFSUserCodes(profile.id ?: 0, cdDetails.freightStation?.id ?: 0)
+                if (cnt > 0) {
+                    loadCdDetails = false
+                    this.selfAssign(cdDetails)
+                    // Reload CD on self assign BPM
+                    response.responseCode = ResponseCodes.RELOAD_PAGE
+                    response.message = "Consignment Assigned reload details"
+                }
+            }
+            // Load consignment details if user is assigned or in read only mode
+            if (loadCdDetails) {
                 // Workaround for consignment that are already received and not linked. Maybe removed in future
                 if (!StringUtils.hasLength(cdDetails.manifestNumber)) {
                     this.daoServices.linkManifestWithConsignment(null, cdDetails.ucrNumber, false)

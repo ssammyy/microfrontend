@@ -1,12 +1,13 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpErrorResponse} from "@angular/common/http";
-import {EditorTask, StandardDraft, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
+import {DraftEditing, EditorTask, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
 import {PublishingService} from "../../../../core/store/data/std/publishing.service";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import swal from "sweetalert2";
+import Swal from "sweetalert2";
 import {Router} from "@angular/router";
 
 @Component({
@@ -17,8 +18,8 @@ import {Router} from "@angular/router";
 export class EditorTasksComponent implements OnInit {
     p = 1;
     p2 = 1;
-    tasks: EditorTask[] = [];
-    public actionRequest: EditorTask | undefined;
+    tasks: DraftEditing[] = [];
+    public actionRequest: DraftEditing | undefined;
     blob: Blob;
     public formActionRequest: StdTCDecision | undefined;
     dtOptions: DataTables.Settings = {};
@@ -29,7 +30,6 @@ export class EditorTasksComponent implements OnInit {
     public itemId: number;
     loadingText: string;
     public uploadedFiles: FileList;
-
 
 
     constructor(private publishingService: PublishingService, private notifyService: NotificationService,
@@ -45,7 +45,7 @@ export class EditorTasksComponent implements OnInit {
         this.loadingText = "Retrieving Draft Standards Please Wait ...."
         this.SpinnerService.show();
         this.publishingService.getEditorTasks().subscribe(
-            (response: EditorTask[]) => {
+            (response: DraftEditing[]) => {
                 this.tasks = response;
                 this.SpinnerService.hide();
 
@@ -67,13 +67,13 @@ export class EditorTasksComponent implements OnInit {
         );
     }
 
-    public onOpenModal(task: EditorTask, mode: string): void {
+    public onOpenModal(task: DraftEditing, mode: string): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
         button.type = 'button';
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
-        console.log(task.taskId);
+        console.log(task.id);
         if (mode === 'edit') {
             this.actionRequest = task;
             button.setAttribute('data-target', '#justificationDecisionModal');
@@ -99,14 +99,14 @@ export class EditorTasksComponent implements OnInit {
 
         if (this.uploadedFiles != null) {
             if (this.uploadedFiles.length > 0) {
-                this.loadingText = "Submitting Edited Draft Standard For Proofreading...."
+                this.loadingText = "Submitting Edited Draft...."
                 this.SpinnerService.show();
                 //stdTCDecision.decision = decision;
-               // console.log(stdTCDecision);
-                this.publishingService.completeEditing(uploadStdDraft,draftId).subscribe(
+                // console.log(stdTCDecision);
+                this.publishingService.completeEditing(uploadStdDraft, draftId).subscribe(
                     (response) => {
                         console.log(response);
-                        this.showToasterSuccess(response.httpStatus, `Draft Standard Submitted For Proofreading.`);
+                        this.showToasterSuccess(response.httpStatus, `Draft Standard Edited....`);
                         this.onClickSaveUploads(String(draftId))
 
                         this.getEditorTasks();
@@ -160,18 +160,21 @@ export class EditorTasksComponent implements OnInit {
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
-        this.publishingService.viewDEditedApplicationPDF(pdfId,"DraftStandard").subscribe(
+        this.publishingService.viewDEditedApplicationPDF(pdfId, "DraftStandard").subscribe(
             (dataPdf: any) => {
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
 
                 // tslint:disable-next-line:prefer-const
-                let downloadURL = window.URL.createObjectURL(this.blob);
-                const link = document.createElement('a');
-                link.href = downloadURL;
-                link.download = fileName;
-                link.click();
+                // let downloadURL = window.URL.createObjectURL(this.blob);
+                // const link = document.createElement('a');
+                // link.href = downloadURL;
+                // link.download = fileName;
+                // link.click();
                 // this.pdfUploadsView = dataPdf;
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                window.open(downloadURL, '_blank');
             },
         );
     }
@@ -181,5 +184,133 @@ export class EditorTasksComponent implements OnInit {
     public hideModel() {
         this.closeModal?.nativeElement.click();
     }
+
+    approveForDraughting(uploadStdDraft: DraftEditing): void {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-success'
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure your want to approve for draughting?',
+            text: 'You won\'t be able to reverse this!',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No Need For Draughting!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.publishingService.sendForDraughting(uploadStdDraft, "Approved").subscribe(
+                    (response) => {
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Approved!',
+                            'Approved For Draughting!',
+                            'success'
+                        );
+                        this.SpinnerService.hide();
+                        this.showToasterSuccess(response.httpStatus, 'Approved For Draughting');
+                        this.getEditorTasks();
+                    },
+                );
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                this.SpinnerService.show();
+                this.publishingService.sendForDraughting(uploadStdDraft, "No Need For Draughting").subscribe(
+                    (response) => {
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'No Need For Draughting!',
+                            'Ballot Draft Successfully Rejected!',
+                            'success'
+                        );
+                        this.SpinnerService.hide();
+                        this.showToasterSuccess(response.httpStatus, "Draft Doesn't need to be draughted");
+                        this.getEditorTasks();
+                    },
+                );
+            }
+        });
+    }
+
+    approveForProofReading(uploadStdDraft: DraftEditing): void {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-success'
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: 'Send for proofreading?',
+            text: 'Are you sure your want to approve for proofreading?',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.publishingService.sendForProofreading(uploadStdDraft, "Approved").subscribe(
+                    (response) => {
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Approved!',
+                            'Approved For Proofreading!',
+                            'success'
+                        );
+                        this.SpinnerService.hide();
+                        this.showToasterSuccess(response.httpStatus, 'Approved For Proofreading');
+                        this.getEditorTasks();
+                    },
+                );
+            }
+        });
+    }
+
+    sendToOfficer(uploadStdDraft: DraftEditing): void {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-success'
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: 'Send to Officer?',
+            text: 'Are you sure your want send to Standard Officer?',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.publishingService.sendToOfficer(uploadStdDraft, "Approved").subscribe(
+                    (response) => {
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Sent!',
+                            'Sent To Officer!',
+                            'success'
+                        );
+                        this.SpinnerService.hide();
+                        this.showToasterSuccess(response.httpStatus, 'Sent To Officer');
+                        this.getEditorTasks();
+                    },
+                );
+            }
+        });
+    }
+
 
 }

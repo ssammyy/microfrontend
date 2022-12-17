@@ -30,7 +30,7 @@ class CdDemandNoteGroupedItemsEntity : Serializable {
     @Basic
     var product: String? = null
 
-    @Column(name = "CF_AMOUNT", precision = 17, scale = 2)
+    @Column(name = "CF_AMOUNT", precision = 19, scale = 2)
     @Basic
     var cfValue: BigDecimal? = null
 

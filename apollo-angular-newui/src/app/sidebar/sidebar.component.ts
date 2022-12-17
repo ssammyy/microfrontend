@@ -140,7 +140,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'QA Reports',
         type: 'sub',
         icontype: 'receipt',
-        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ','QA_DIRECTOR_READ'],
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
         collapse: 'reports',
         children: [
             {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
@@ -613,12 +613,11 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
         collapse: 'publish',
         children: [
-            {path: 'draftStandard', title: 'Upload Draft Standard', ab: 'UDS'},
             {path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS'},
-            {path: 'editorTasks', title: 'Edit Draft Standards', ab: 'EDS'},
-            {path: 'proofReaderTasks', title: 'Proofread Draft Standards', ab: 'PDS'},
+            {path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS'},
             {path: 'draughtsmanTasks', title: 'Draught Draft Standards', ab: 'DDS'},
-            {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
+            {path: 'proofReaderTasks', title: 'Proofread Draft Standards', ab: 'PDS'},
+            // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
 
 
         ],
@@ -724,8 +723,8 @@ export const ROUTES: RouteInfo[] = [
         type: 'sub',
         icontype: 'quiz',
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ',
-            'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ','EDITOR_SD_READ',
-            'STAKEHOLDERS_SD_READ','PROOFREADER_SD_READ','DRAUGHTSMAN_SD_READ','HOD_SIC_SD_READ'],
+            'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'EDITOR_SD_READ',
+            'STAKEHOLDERS_SD_READ', 'PROOFREADER_SD_READ', 'DRAUGHTSMAN_SD_READ', 'HOD_SIC_SD_READ'],
         collapse: 'is',
         children: [
             //{path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
@@ -740,9 +739,9 @@ export const ROUTES: RouteInfo[] = [
             {path: 'isStdDraughting', title: 'Draughting', ab: 'DS'},
             {path: 'isStdProofReading', title: 'Proof Reading', ab: 'PR'},
             {path: 'isApproveDraftStd', title: 'Check Standard', ab: 'CS'},
-             {path: 'isApprovedEdits', title: 'View Edited Draft', ab: 'J'},
-             {path: 'isSacApproval', title: 'SAC Approval', ab: 'SA'},
-             {path: 'isStandardGazette', title: 'Gazette Notice', ab: 'GN'},
+            {path: 'isApprovedEdits', title: 'View Edited Draft', ab: 'J'},
+            {path: 'isSacApproval', title: 'SAC Approval', ab: 'SA'},
+            {path: 'isStandardGazette', title: 'Gazette Notice', ab: 'GN'},
 
 
         ],
@@ -752,7 +751,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standards Review',
         type: 'sub',
         icontype: 'quiz',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ','EDITOR_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],
         collapse: 'SR',
         children: [
             {path: 'standardsForReview', title: 'View Standards', ab: 'VW'},
@@ -766,6 +765,20 @@ export const ROUTES: RouteInfo[] = [
             {path: 'reviewStandardsDraughtsMan', title: 'Draughting', ab: 'DT'},
             {path: 'reviewStandardsGazette', title: 'Gazette Standard', ab: 'GS'},
             {path: 'reviewStandardsGazetteDate', title: 'Update Gazetted Standard', ab: 'UGS'},
+
+
+        ],
+    },
+    {
+        path: '',
+        title: 'Scheme Membership',
+        type: 'sub',
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'sm',
+        children: [
+            {path: 'hodReview', title: 'Review Requests', ab: 'RR'},
+            {path: 'sicReview', title: 'SIC Review', ab: 'RR'},
 
 
         ],

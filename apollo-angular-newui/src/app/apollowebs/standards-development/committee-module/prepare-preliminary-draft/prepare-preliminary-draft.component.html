@@ -30,8 +30,8 @@
                             <h4 class="card-title">ALL NEW WORK ITEMS
                             </h4>
                             <div class="material-datatables">
-                                <table class="table table-striped table-bordered table-hover" datatable
-                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3">
+                                <table class="table table-responsive table-striped table-bordered table-hover" datatable
+                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3" style="width: 100%">
                                     <thead>
                                     <tr>
                                         <th class="id">New Work Item ID</th>
@@ -39,8 +39,12 @@
                                         <th class="task">Proposal Title</th>
                                         <th class="task">Technical Committee Name</th>
                                         <th class="task">Status</th>
-                                        <th class="action">View</th>
-                                        <th class="action">Action</th>
+                                        <th class="edit">View NWI</th>
+                                        <th class="viewRequest">View Request</th>
+                                        <th class="justification">View Justification</th>
+                                        <th class="uploadMinutes"> Minutes</th>
+                                        <th class="uploadDraftsAndOtherRelevantDocuments"> Drafts</th>
+                                        <th class="preparePd">Preliminary Draft</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -49,46 +53,108 @@
                                         <td>{{approvedNwi.referenceNumber}}</td>
                                         <td>{{approvedNwi.proposalTitle}}</td>
                                         <td>{{approvedNwi.nameOfTC}}</td>
-                                        <td><span class="badge badge-primary">{{approvedNwi.pdStatus}}</span></td>
+                                        <td>
+
+
+                                            <div *ngIf="approvedNwi.prPdStatus==null; else elseBlockVy">
+                                                <span class="badge badge-primary">{{approvedNwi.pdStatus}}</span>
+                                            </div>
+                                            <ng-template #elseBlockVy>
+                                                <span class="badge badge-primary">Under Review-{{approvedNwi.prPdStatus}}</span>
+
+                                            </ng-template>
+
+                                        </td>
 
                                         <td>
                                             <a (click)="onOpenModalViewNwi(approvedNwi.id,'edit')"
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View NWI</a>
-                                            <br>
-
+                                        </td>
+                                        <td>
                                             <a (click)="onOpenModalViewNwi(approvedNwi.standardId,'viewRequest')"
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View Request</a>
-                                            <br>
+                                        </td>
+                                        <td>
                                             <a (click)="onOpenModalViewNwi(approvedNwi.id,'justification')"
                                                class="btn btn-info tooltips"
                                                data-placement="top"
                                                data-original-title="Upload NWI">View Justification</a>
-                                            <br></td>
+
+                                        </td>
                                         <td>
                                             <!--                                            <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"-->
                                             <!--                                               class="btn btn-success tooltips"-->
                                             <!--                                               data-placement="top"-->
                                             <!--                                               data-original-title="Upload NWI">Prepare Minutes</a>-->
 
-                                            <a (click)="onOpenModal(approvedNwi,'uploadMinutes')"
-                                               class="btn btn-success tooltips"
-                                               data-placement="top"
-                                               data-original-title="Upload NWI">Upload Minutes</a>
 
-                                            <a (click)="onOpenModal(approvedNwi,'uploadDraftsAndOtherRelevantDocuments')"
-                                               class="btn btn-success tooltips"
-                                               data-placement="top"
-                                               data-original-title="Upload NWI">Upload Drafts And Other Documents</a>
+                                            <ng-container [ngSwitch]="approvedNwi.minutesPdStatus">
+                                                <ng-container *ngSwitchCase="'Minutes Uploaded'">
+                                                    <ng-container *ngTemplateOutlet="form1"></ng-container>
+                                                </ng-container>
+                                                <ng-container *ngSwitchDefault><a
+                                                        (click)="onOpenModal(approvedNwi,'uploadMinutes')"
+                                                        class="btn btn-success tooltips"
+                                                        data-placement="top"
+                                                        data-original-title="Upload NWI">Prepare Minutes</a>
+                                                </ng-container>
+                                                <ng-template #form1>
+                                                    <span class="badge badge-success">Minutes Uploaded</span>
+                                                </ng-template>
+                                            </ng-container>
 
-                                            <a (click)="onOpenModal(approvedNwi,'preparePd')"
-                                               class="btn btn-success tooltips"
-                                               data-placement="top"
-                                               data-original-title="Upload NWI">Prepare Preliminary Draft</a>
 
+                                        </td>
+                                        <td>
+                                            <div *ngIf="approvedNwi.minutesPdStatus==null; else elseBlock">
+                                                <span class="badge badge-warning">Upload Minutes First</span>
+                                            </div>
+                                            <ng-template #elseBlock>
+                                                <ng-container [ngSwitch]="approvedNwi.draftDocsPdStatus">
+                                                    <ng-container *ngSwitchCase="'Draft Documents For PD Uploaded'">
+                                                        <ng-container *ngTemplateOutlet="form1"></ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchDefault>
+                                                        <a (click)="onOpenModal(approvedNwi,'uploadDraftsAndOtherRelevantDocuments')"
+                                                           class="btn btn-success tooltips"
+                                                           data-placement="top"
+                                                           data-original-title="Upload NWI">Upload</a>
+                                                    </ng-container>
+                                                    <ng-template #form1>
+                                                        <span class="badge badge-success">Drafts Uploaded</span>
+                                                    </ng-template>
+                                                </ng-container>
+                                            </ng-template>
+                                        </td>
+                                        <td>
+                                            <div *ngIf="approvedNwi.minutesPdStatus==null||approvedNwi.draftDocsPdStatus==null; else elseBlockV">
+                                                <span class="badge badge-warning">Upload Required Documents</span>
+                                            </div>
+                                            <ng-template #elseBlockV>
+
+
+                                                <ng-container [ngSwitch]="approvedNwi.prPdStatus">
+                                                    <ng-container *ngSwitchCase="'Preliminary Draft Uploaded'">
+                                                        <ng-container *ngTemplateOutlet="pdUploaded"></ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchDefault>
+                                                        <a (click)="onOpenModal(approvedNwi,'preparePd')"
+                                                           class="btn btn-success tooltips"
+                                                           data-placement="top"
+                                                           data-original-title="Upload NWI">Prepare Preliminary
+                                                            Draft</a>
+                                                    </ng-container>
+                                                    <ng-template #pdUploaded>
+                                                        <span class="badge badge-success">Preliminary Draft Uploaded</span>
+                                                    </ng-template>
+                                                </ng-container>
+
+
+                                            </ng-template>
                                         </td>
 
                                     </tr>
@@ -97,17 +163,16 @@
                             </div>
 
                             <!--                            <div class="modal fade " id="uploadMinutes" tabindex="-1" role="dialog"-->
-                            <!--                                 aria-labelledby="updateExampleModalLabel"-->
+                            <!--                                 aria-labelledby="uploadMinutesModalLabel"-->
                             <!--                                 aria-hidden="true">-->
                             <!--                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">-->
                             <!--                                    <div class="modal-content">-->
                             <!--                                        <div class="modal-header">-->
-                            <!--                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Minutes</h5>-->
+                            <!--                                            <h5 class="modal-title" id="uploadMinutesModalLabel">Upload Minutes</h5>-->
                             <!--                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
                             <!--                                                <span aria-hidden="true">&times;</span>-->
                             <!--                                            </button>-->
                             <!--                                        </div>-->
-                            <!--                                        <form>-->
                             <!--                                            <div class="modal-body">-->
                             <!--                                                <div class="row col-12">-->
                             <!--                                                    <div class="form-group col-12">-->
@@ -350,35 +415,298 @@
                             <!--                                                                &lt;!&ndash;      </div>&ndash;&gt;-->
                             <!--                                                            </div>-->
 
+                            <!--                            &lt;!&ndash;                            <div class="modal fade " id="uploadMinutes" tabindex="-1" role="dialog"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                 aria-labelledby="updateExampleModalLabel"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                 aria-hidden="true">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                    <div class="modal-content">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                        <div class="modal-header">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Minutes</h5>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                <span aria-hidden="true">&times;</span>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                            </button>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                        </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                        <form>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                            <div class="modal-body">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                <div class="row col-12">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                    <div class="form-group col-12">&ndash;&gt;-->
 
+
+                            <!--                            &lt;!&ndash;                                                        <form #formDirective="ngForm"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                              (ngSubmit)="saveStandard(formDirective)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                              [formGroup]="minutes_preliminary_draftFormGroup"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                              class="form">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                            <div class="form-body">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="row">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <div class="form-group col-4">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <label><b>Minutes Date:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <mat-form-field&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesDate')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            <input type="date"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   id="minutesDate"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   placeholder="Minutes Date"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   formControlName="minutesDate">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesDate')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    errorMsg="Please Enter Minutes Date">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </mat-form-field>&ndash;&gt;-->
+
+
+                            <!--                            &lt;!&ndash;                                                                    </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <div class="form-group col-4">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <label><b>Minutes Time</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <mat-form-field&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesTime')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            <input type="time"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   id="minutesTime"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   placeholder="Minutes Time"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   formControlName="minutesTime">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesTime')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    errorMsg="Please Enter Minutes time">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </mat-form-field>&ndash;&gt;-->
+
+                            <!--                            &lt;!&ndash;                                                                    </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <div class="form-group col-4">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <label><b>Location</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <mat-form-field&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesLocation')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            <input type="text"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   id="minutesLocation"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   placeholder="Location"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                   formControlName="minutesLocation">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesLocation')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    errorMsg="Please Enter Location">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </mat-form-field>&ndash;&gt;-->
+
+                            <!--                            &lt;!&ndash;                                                                    </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Committee:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <mat-form-field class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'committeeId')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <mat-select aria-label="Small"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    aria-describedby="inputGroup-sizing-lg"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    class="form-control" required&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    formControlName="committeeId"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    name="committeeId"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    placeholder="Select Committee"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [class.is-invalid]="formMinutesPd.committeeId.invalid && formMinutesPd.committeeId.touched">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            <mat-option *ngFor="let department of tcs"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                        value="{{department.id}}">{{department.tc_Title}}</mat-option>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </mat-select>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'committeeId')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                errorMsg="Please Select A Technical Committee">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </mat-form-field>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Chairperson:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <ng-multiselect-dropdown&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [placeholder]="'Select Chairperson'"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [settings]="dropdownSettingsB"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [data]="dropdownList"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            (onSelect)="onItemSelect($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            (onSelectAll)="onSelectAll($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [class.is-invalid]="formMinutesPd?.chairpersonData?.errors?.required && formMinutesPd?.chairpersonData?.touched"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            formControlName="chairpersonData"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            name="chairpersonData">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </ng-multiselect-dropdown>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <span *ngIf="formMinutesPd?.chairpersonData?.errors?.required && formMinutesPd?.chairpersonData?.touched"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                          style="color: red;">Please Select The Chairperson </span>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Secretary:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <ng-multiselect-dropdown&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [placeholder]="'Select Secretary'"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [settings]="dropdownSettingsB"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [data]="dropdownList"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            (onSelect)="onItemSelect($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            (onSelectAll)="onSelectAll($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [class.is-invalid]="formMinutesPd?.secretaryData?.errors?.required && formMinutesPd?.secretaryData?.touched"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            formControlName="secretaryData"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            name="secretaryData">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </ng-multiselect-dropdown>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <span *ngIf="formMinutesPd?.secretaryData?.errors?.required && formMinutesPd?.secretaryData?.touched"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                          style="color: red;">Please Select The Secretary </span>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Attendees:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <ng-multiselect-dropdown&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [placeholder]="'Select Attendees'"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [settings]="dropdownSettings"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [data]="dropdownList"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            (onSelect)="onItemSelect($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            (onSelectAll)="onSelectAll($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            [class.is-invalid]="formMinutesPd?.attendeesData?.errors?.required && formMinutesPd?.attendeesData?.touched"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            formControlName="attendeesData"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                            name="attendeesData">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </ng-multiselect-dropdown>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <span *ngIf="formMinutesPd?.attendeesData?.errors?.required && formMinutesPd?.attendeesData?.touched"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                          style="color: red;">Attendees Are required </span>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Agenda:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <mat-form-field class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'agenda')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <input type="text"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               id="agenda"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               placeholder="Agenda*"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               formControlName="agenda">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'agenda')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                errorMsg="Please Enter The Agenda">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </mat-form-field>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Minutes Title:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <mat-form-field class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'minutesTitle')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <input type="text"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               id="minutesTitle"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               placeholder="MIN 01/13: e.g Opening remarks and adoption of agenda items*"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               formControlName="minutesTitle">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'minutesTitle')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                errorMsg="Please Enter The Minutes Title.">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </mat-form-field>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Discussion/Resolution</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <mat-form-field class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'discussion')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <input type="text"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               id="discussion"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               placeholder="Discussion/Resolution*"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               formControlName="discussion">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'discussion')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                errorMsg="Please Enter The Discussion/Resolution">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </mat-form-field>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Conclusions</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <mat-form-field class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'conclusion')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <input type="text"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               id="conclusion"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               placeholder="Conclusion*"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               formControlName="conclusion">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'conclusion')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                errorMsg="Please Enter The Conclusions">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </mat-form-field>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Action Item:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <mat-form-field class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'discussion')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <input type="text"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               id="actionItem"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               placeholder="Action Item*"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               formControlName="actionItem">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'discussion')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                errorMsg="Please Enter The Action Item">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </mat-form-field>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div class="form-group">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <label><b>Adjournment Date:</b></label>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <mat-form-field class="example-full-width has-label"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                    [ngClass]="displayFieldCss(minutes_preliminary_draftFormGroup, 'adjournmentDate')">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <input type="date"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               matInput&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               id="adjournmentDate"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               placeholder="Adjournment Date*"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               (ngModelChange)="textValidationType($event)"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                               formControlName="adjournmentDate">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        <app-field-error-display&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                [displayError]="isFieldValid(minutes_preliminary_draftFormGroup, 'adjournmentDate')"&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                                errorMsg="Please Enter The Adjournment Date">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                        </app-field-error-display>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </mat-form-field>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                <div style="margin: 3em 0 2em 0">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    <button class="btn btn-info" type="submit">SUBMIT&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                    </button>&ndash;&gt;-->
+
+                            <!--                            &lt;!&ndash;                                                                </div>&ndash;&gt;-->
+
+                            <!--                            &lt;!&ndash;                                                                &lt;!&ndash;      <div>&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                &lt;!&ndash;        <span>Don't have an account ? </span><span><a routerLink="/register" >Register</a></span>&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                &lt;!&ndash;      </div>&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                &lt;!&ndash;      <div>&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                &lt;!&ndash;        <span>Forgot username/password ? </span><span><a>Reset</a></span>&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                                &lt;!&ndash;      </div>&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                            </div>&ndash;&gt;-->
+
+
+                            <!--                            &lt;!&ndash;                                                        </form>&ndash;&gt;-->
+
+                            <!--                            &lt;!&ndash;                                                    </div>&ndash;&gt;-->
+
+
+                            <!--                            &lt;!&ndash;                                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                            </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                            <div class="modal-footer">&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                <button type="button" class="btn btn-secondary" #closeModal&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                        (click)="hideModel()" data-dismiss="modal">Close&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                </button>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                &lt;!&ndash;                                                <button class="btn btn-primary"&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                &lt;!&ndash;                                                        (click)="uploadMinutes(approvedNwiSForPdB.id)"&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                &lt;!&ndash;                                                        type="submit">SUBMIT&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                                &lt;!&ndash;                                                </button>&ndash;&gt;&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                            </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                        </form>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                    </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                                </div>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                            </div>&ndash;&gt;-->
                             <!--                                                        </form>-->
-
                             <!--                                                    </div>-->
-
-
                             <!--                                                </div>-->
                             <!--                                            </div>-->
-                            <!--                                            <div class="modal-footer">-->
-                            <!--                                                <button type="button" class="btn btn-secondary" #closeModal-->
-                            <!--                                                        (click)="hideModel()" data-dismiss="modal">Close-->
-                            <!--                                                </button>-->
-                            <!--                                                &lt;!&ndash;                                                <button class="btn btn-primary"&ndash;&gt;-->
-                            <!--                                                &lt;!&ndash;                                                        (click)="uploadMinutes(approvedNwiSForPdB.id)"&ndash;&gt;-->
-                            <!--                                                &lt;!&ndash;                                                        type="submit">SUBMIT&ndash;&gt;-->
-                            <!--                                                &lt;!&ndash;                                                </button>&ndash;&gt;-->
-                            <!--                                            </div>-->
-                            <!--                                        </form>-->
                             <!--                                    </div>-->
                             <!--                                </div>-->
                             <!--                            </div>-->
                             <div class="modal fade " id="uploadDraftsAndOtherRelevantDocuments" tabindex="-1"
                                  role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="uploadDraftsAndOtherRelevantDocumentsModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Upload Drafts And Other
+                                            <h5 class="modal-title"
+                                                id="uploadDraftsAndOtherRelevantDocumentsModalLabel">Upload Drafts And
+                                                Other
                                                 Relevant Documents</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -402,7 +730,7 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
+                                                <button type="button" class="btn btn-secondary" #closeModal
                                                         (click)="hideModel()" data-dismiss="modal">Close
                                                 </button>
                                                 <button class="btn btn-primary"
@@ -415,12 +743,12 @@
                                 </div>
                             </div>
                             <div class="modal fade " id="preparePd" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="preparePdModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Prepare Preliminary
+                                            <h5 class="modal-title" id="preparePdModalLabel">Prepare Preliminary
                                                 Draft</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -438,8 +766,8 @@
 
                                                         </div>
                                                         <label><b>Please Upload The Preliminary Draft</b> <a
-                                                                href="https://www.w3schools.com/"> (Download Preliminary
-                                                            Draft Template Here)</a></label>
+                                                                (click)="viewPdfFile(595,'minutesTemplate','application/pdf')">
+                                                            (View Preliminary Draft Template Here)</a></label>
                                                         <form>
                                                             <file-upload [(ngModel)]="uploadedFilesC"
                                                                          name="uploadedFiles" fileslimit="1"
@@ -500,7 +828,7 @@
                                                         (click)="hideModel()" data-dismiss="modal">Close
                                                 </button>
                                                 <button class="btn btn-primary"
-                                                        (click)="uploadMinutes(approvedNwiSB.id)"
+                                                        (click)="uploadMinutes(approvedNwiSForPdB.id)"
                                                         type="submit">SUBMIT
                                                 </button>
                                             </div>
@@ -510,7 +838,7 @@
                             </div>
 
                             <div class="modal fade" id="justificationDecisionModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="justificationDecisionModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
@@ -563,7 +891,7 @@
                                                                     <thead>
                                                                     <tr>
                                                                         <th class="task">Document Name</th>
-                                                                        <th class="task">Descritpion</th>
+                                                                        <th class="task">Description</th>
 
                                                                         <th class="task">Action</th>
 
@@ -630,12 +958,12 @@
                                 </div>
                             </div>
                             <div class="modal fade" id="viewNwi" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="viewNwiModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">NEW WORK
+                                            <h5 class="modal-title" id="viewNwiModalLabel">NEW WORK
                                                 ITEM</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -749,14 +1077,14 @@
                                 </div>
                             </div>
                             <div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
+                                 aria-labelledby="viewRequestModalLabel"
                                  aria-hidden="true">
 
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title"
-                                                id="updateExampleModalLabel">Request Details</h5>
+                                                id="viewRequestModalLabel">Request Details</h5>
                                             <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>

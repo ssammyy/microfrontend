@@ -16,5 +16,12 @@ interface BallotingRepository : JpaRepository<Ballot, Long> {
     )
     fun findBallotDraft(): MutableList<BallotWithUserName>
 
+    fun findByApprovalStatusAndVarField2IsNull(status: String?): List<Ballot>
+
+    fun findByVarField2(status: String?): List<Ballot>
+
+    fun findByEditedStatus(status: String?): List<Ballot>
+
+
 
 }
