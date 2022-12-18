@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {PublishingService} from "../../../../core/store/data/std/publishing.service";
-import {EditorTask, StandardDraft, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
+import {DraftPublishing, StandardDraft, StdTCDecision} from "../../../../core/store/data/std/request_std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -19,8 +19,8 @@ export class ApproveDraftStdComponent implements OnInit {
     p2 = 1;
     blob: Blob;
 
-    tasks: EditorTask[] = [];
-    public actionRequest: EditorTask | undefined;
+    tasks: DraftPublishing[] = [];
+    public actionRequest: DraftPublishing | undefined;
     public formActionRequest: StdTCDecision | undefined;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
@@ -43,7 +43,7 @@ export class ApproveDraftStdComponent implements OnInit {
         this.loadingText = "Retrieving Draft Standards Please Wait ...."
         this.SpinnerService.show();
         this.publishingService.getHOPTasks().subscribe(
-            (response: EditorTask[]) => {
+            (response: DraftPublishing[]) => {
                 this.tasks = response;
                 console.log(response)
                 this.SpinnerService.hide();
@@ -67,13 +67,13 @@ export class ApproveDraftStdComponent implements OnInit {
         );
     }
 
-    public onOpenModal(task: EditorTask, mode: string): void {
+    public onOpenModal(task: DraftPublishing, mode: string): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
         button.type = 'button';
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
-        console.log(task.taskId);
+        console.log(task.id);
         if (mode === 'edit') {
             this.actionRequest = task;
             button.setAttribute('data-target', '#justificationDecisionModal');
@@ -84,6 +84,7 @@ export class ApproveDraftStdComponent implements OnInit {
         button.click();
 
     }
+
     showToasterSuccess(title: string, message: string) {
         this.notifyService.showSuccess(message, title)
 
@@ -114,9 +115,10 @@ export class ApproveDraftStdComponent implements OnInit {
             }
         )
     }
+
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
-        this.publishingService.viewDEditedApplicationPDF(pdfId,"DraftStandard").subscribe(
+        this.publishingService.viewDEditedApplicationPDF(pdfId, "DraftStandard").subscribe(
             (dataPdf: any) => {
                 this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
@@ -131,6 +133,7 @@ export class ApproveDraftStdComponent implements OnInit {
             },
         );
     }
+
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
 
     public hideModel() {

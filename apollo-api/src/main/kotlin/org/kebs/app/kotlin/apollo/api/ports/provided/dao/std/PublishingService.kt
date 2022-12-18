@@ -10,12 +10,9 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.Decision
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
-import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
-import org.kebs.app.kotlin.apollo.store.model.std.DecisionFeedback
-import org.kebs.app.kotlin.apollo.store.model.std.StandardDraft
+import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.BallotingRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.DecisionFeedbackRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.StandardDraftRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.StandardsDocumentsRepository
@@ -35,6 +32,7 @@ class PublishingService(
     private val decisionFeedbackRepository: DecisionFeedbackRepository,
     val commonDaoServices: CommonDaoServices,
     private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
+    private val ballotRepository: BallotingRepository,
 
 
     ) {
@@ -49,39 +47,54 @@ class PublishingService(
         .addClasspathResource("processes/std/publishing_module.bpmn20.xml")
         .deploy()
 
-    fun submitDraftStandard(standardDraft: StandardDraft): ProcessInstanceResponseValue {
-        val variables: MutableMap<String, Any> = HashMap()
+    fun getAllBallotDraftsForPublishing(): List<Ballot> {
+        return ballotRepository.findByApprovalStatusAndVarField2IsNull("Sent To Head Of Publishing")
+    }
+
+    fun getAllBallotDraftsForPublishingApprovedForEditing(): List<Ballot> {
+        return ballotRepository.findByVarField2("Approved For Editing")
+    }
+
+    fun getAllBallotDraftsForPublishingRejectedForEditing(): List<Ballot> {
+        return ballotRepository.findByVarField2("Rejected For Editing")
+    }
+
+
+    fun submitDraftStandard(ballot: Ballot, decision: String): ProcessInstanceResponseValue {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        standardDraft.standardOfficerId?.let {
-            variables.put(
-                (loggedInUser.id ?: throw ExpectedDataNotFound("No USER ID Found")).toString(), it
-            )
+        val approveBallotDraft =
+            ballotRepository.findById(ballot.id).orElseThrow { RuntimeException("No Ballot Draft found") }
+        val standardDraft = StandardDraft();
+
+        if (decision == "True") {
+            approveBallotDraft.varField2 = "Approved For Editing"
+            approveBallotDraft.varField1 = ballot.varField1 //reason provided for decision
+
+            //create a new standard from ballot: These will be saved in a new table so  all the details from previous batch will be present
+            val user = ballot.createdBy?.let { commonDaoServices.findUserByID(it.toLong()) }
+            standardDraft.standardOfficerId = ballot.createdBy
+            standardDraft.title = ballot.ballotName
+            standardDraft.versionNumber = 1
+            standardDraft.standardOfficerName = user?.firstName + " " + user?.lastName
+            standardDraft.draftId = ballot.id
+            standardDraft.requestorId = loggedInUser.id.toString()
+            standardDraft.submission_date = Timestamp(System.currentTimeMillis())
+            standardDraft.approvalStatus = "Approved For Editing"
+            standardDraft.editedStatus = "Not Edited"
+            standardDraft.proofreadStatus = "Not ProofRead"
+            standardDraft.draughtingStatus = "Not Draughted"
+            standardDraftRepository.save(standardDraft)
         }
-        standardDraft.standardOfficerName = loggedInUser.firstName + " " + loggedInUser.lastName
-        variables["standardOfficerName"] = standardDraft.standardOfficerName!!
-        standardDraft.standardOfficerId = loggedInUser.id.toString()
-        variables["standardOfficerId"] = standardDraft.standardOfficerId!!
-        standardDraft.requestorId?.let { variables.put("requestorId", it) }
-        standardDraft.title?.let { variables.put("title", it) }
-        standardDraft.submission_date = Timestamp(System.currentTimeMillis())
-        variables["submission_date"] = standardDraft.submission_date!!
-        standardDraft.versionNumber?.let { variables.put("versionNumber", it) }
+        if (decision == "False") {
+            approveBallotDraft.varField2 = "Rejected For Editing"
+            approveBallotDraft.varField1 = ballot.varField1
 
-        standardDraft.approvalStatus = "Not Approved"
-        variables["approvalStatus"] = standardDraft.approvalStatus!!
-        standardDraft.editedStatus = "Not Edited"
-        variables["editedStatus"] = standardDraft.editedStatus!!
-        standardDraft.proofreadStatus = "Not ProofRead"
-        variables["proofreadStatus"] = standardDraft.proofreadStatus!!
-        standardDraft.draughtingStatus = "Not Draughted"
-        variables["draughtingStatus"] = standardDraft.draughtingStatus!!
+        }
+        ballotRepository.save(approveBallotDraft)
 
-        standardDraftRepository.save(standardDraft)
-        variables["ID"] = standardDraft.id
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+
         return ProcessInstanceResponseValue(
-            standardDraft.id, processInstance.id, processInstance.isEnded,
-            standardDraft.standardOfficerId ?: throw NullValueNotAllowedException("ID is required")
+            1, " processInstance.id", true, "1"
         )
     }
 
@@ -100,10 +113,7 @@ class PublishingService(
     }
 
     fun decisionOnKSDraft(decision: Decision, draftStandardID: Long) {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["approved"] = decision.decision
         updateDraftDecision(decision.taskId, draftStandardID)
-        taskService.complete(decision.taskId, variables)
     }
 
     private fun updateDraftDecision(taskId: String, draftStandardID: Long) {
@@ -117,87 +127,100 @@ class PublishingService(
     }
 
     fun uploadFeedbackOnDraft(decisionFeedback: DecisionFeedback) {
-        val variable: MutableMap<String, Any> = HashMap()
-
-        decisionFeedback.user_id.let { variable.put("user_id", it) }
-        decisionFeedback.item_id?.let { variable.put("item_id", it) }
-        decisionFeedback.status?.let { variable.put("status", it) }
-        decisionFeedback.comment?.let { variable.put("comment", it) }
-        decisionFeedback.taskId?.let { variable.put("taskId", it) }
-        print(decisionFeedback.toString())
         decisionFeedbackRepository.save(decisionFeedback)
         taskService.complete(decisionFeedback.taskId)
     }
 
-    fun getEditorTasks(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_EDITOR).list()
-        return getTaskDetails(tasks)
+    fun getEditorTasks(): List<StandardDraft> {
+        return standardDraftRepository.getEditorDrafts()
+
     }
 
-    fun editDraftStandard(standardDraft: StandardDraft,draftStandardID: Long) {
+    fun editDraftStandard(standardDraft: StandardDraft, draftStandardID: Long) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val  editedStandardDraft: StandardDraft = standardDraftRepository.findById(draftStandardID).orElse(null);
+        val editedStandardDraft: StandardDraft = standardDraftRepository.findById(draftStandardID).orElse(null);
         editedStandardDraft.editedBY = loggedInUser.firstName + " " + loggedInUser.lastName
         editedStandardDraft.editedStatus = "Edited"
         editedStandardDraft.editedDate = Timestamp(System.currentTimeMillis())
+        editedStandardDraft.approvalStatus = "Awaiting Decision On Draughting"
         standardDraftRepository.save(editedStandardDraft)
-        taskService.complete(standardDraft.taskId)
     }
 
-    fun getProofreaderTasks(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_PROOFREADER).list()
-        return getTaskDetails(tasks)
+    fun getEditorTasksForDraughting(): List<StandardDraft> {
+        return standardDraftRepository.findByApprovalStatusAndDraftIdIsNotNull("Awaiting Decision On Draughting")
     }
+
+    fun approvedForProofReading(standardDraft: StandardDraft, decision: String) {
+
+        val u: StandardDraft = standardDraftRepository.findById(standardDraft.id).orElse(null);
+        u.approvalStatus = "Approved For Proofreading"
+        standardDraftRepository.save(u)
+    }
+
+    fun approvedForDraughting(standardDraft: StandardDraft, decision: String) {
+
+        val u: StandardDraft = standardDraftRepository.findById(standardDraft.id).orElse(null);
+        u.approvalStatus = "Approved For Draughting"
+        standardDraftRepository.save(u)
+    }
+
 
     fun decisionOnProofReading(decision: Decision, draftStandardID: Long) {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["draught"] = decision.decision
+
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: StandardDraft = standardDraftRepository.findById(draftStandardID).orElse(null);
         u.proofReadBy = loggedInUser.firstName + " " + loggedInUser.lastName
-        u.proofreadStatus = "Approved"
-        u.approvalStatus="Approved For Draughting"
+        u.proofreadStatus = "ProofRead"
+        u.approvalStatus = "ProofRead Done"
         u.proofReadDate = Timestamp(System.currentTimeMillis())
-        u.status="Approved For Draughting"
         standardDraftRepository.save(u)
-        taskService.complete(decision.taskId, variables)
     }
 
-    fun getDraughtsmanTasks(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_DRAUGHTSMAN).list()
-        return getTaskDetails(tasks)
+    fun getProofreaderTasks(): List<StandardDraft> {
+        return standardDraftRepository.findByApprovalStatusAndDraftIdIsNotNull("Approved For Proofreading")
+
     }
 
-    fun uploadDraftStandardDraughtChanges(standardDraft: StandardDraft,draftStandardID: Long) {
+    fun getDraughtsmanTasks(): List<StandardDraft> {
+        return standardDraftRepository.findByApprovalStatusAndDraftIdIsNotNull("Approved For Draughting")
+
+    }
+
+    fun uploadDraftStandardDraughtChanges(standardDraft: StandardDraft, decision: String) {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val  draughtedStandardDraft: StandardDraft = standardDraftRepository.findById(draftStandardID).orElse(null);
+        val draughtedStandardDraft: StandardDraft = standardDraftRepository.findById(standardDraft.id).orElse(null);
         draughtedStandardDraft.draughtingBy = loggedInUser.firstName + " " + loggedInUser.lastName
-        draughtedStandardDraft.draughtingStatus = "Draughted"
         draughtedStandardDraft.draughtingDate = Timestamp(System.currentTimeMillis())
+        if (decision == "True") {
+            draughtedStandardDraft.draughtingStatus = "Draughted"
+        } else if (decision == "False") {
+            draughtedStandardDraft.draughtingStatus = "Draughting Not Needed"
+        }
+        draughtedStandardDraft.approvalStatus = "Draughting Done"
+
         standardDraftRepository.save(draughtedStandardDraft)
-        taskService.complete(standardDraft.taskId)
+//        taskService.complete(standardDraft.taskId)
 
     }
 
     fun approveDraughtChange(standardDraft: StandardDraft) {
-        val variables: MutableMap<String, Any> = HashMap()
-
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        standardDraft.id.let { variables.put("ID", it) }
-
         standardDraft.approvedBy = loggedInUser.id.toString();
-        variables["approvedBy"] = standardDraft.approvedBy!!
-        standardDraft.approvalStatus = "Fully Approved"
-        variables["approvalStatus"] = standardDraft.approvalStatus!!
-        standardDraft.requestorId?.let { variables.put("requestor_id", it) }
-        standardDraft.title?.let { variables.put("title", it) }
-        standardDraft.taskId?.let { variables.put("taskId", it) }
-        standardDraft.status="1"
-
-
+        standardDraft.approvalStatus = "Draughting Approved"
+        standardDraft.status = "1"
         standardDraftRepository.save(standardDraft)
-        taskService.complete(standardDraft.taskId)
+//        taskService.complete(standardDraft.taskId)
+    }
+
+    fun sendToOfficer(standardDraft: StandardDraft, decision: String) {
+
+        val u: StandardDraft = standardDraftRepository.findById(standardDraft.id).orElse(null);
+        u.status = "Sent To Standard Officer"
+        standardDraftRepository.save(u)
+        val approveBallotDraft = ballotRepository.findById(standardDraft.draftId).orElseThrow { RuntimeException("No Ballot Draft found") }
+        approveBallotDraft?.editedStatus = "Edited"
+        ballotRepository.save(approveBallotDraft)
     }
 
 
@@ -225,5 +248,17 @@ class PublishingService(
 
         return sdNwaUploadsEntityRepository.save(uploads)
     }
+
+
+
+    //Approval Process
+
+    //Get all required for Approval After Editing
+    fun getAllEditedBallotDraftsForApproval(): List<Ballot> {
+        return ballotRepository.findByEditedStatus("Edited")
+    }
+
+    //Decision On Draft
+
 
 }

@@ -34,7 +34,7 @@
                                     <tr>
                                         <th class="id">ID</th>
                                         <th class="task">Task</th>
-                                        <th class="task">Title</th>
+                                        <th class="task">Status</th>
                                         <th class="task">Document</th>
                                         <th class="task">Version</th>
                                         <th class="action">Action</th>
@@ -43,17 +43,17 @@
                                     <tbody>
                                     <tr *ngFor="let task of tasks  let i= index;">
                                         <td>{{i + 1}}</td>
-                                        <td>{{task.name}}</td>
-                                        <td>{{task.taskData.title}}</td>
+                                        <td>{{task.title}}</td>
+                                        <td>{{task.draughtingStatus}}</td>
                                         <td>
                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                    (click)="viewPdfFile( task.taskData.ID,'EditedDraftStandard'+task.taskData.ID, 'application/pdf')"
+                                                    (click)="viewPdfFile( task.id,'EditedDraftStandard'+task.id, 'application/pdf')"
                                                     target="_blank" class="btn btn-info btn-sm ">
                                                 <i class="material-icons">visibility</i>
 
                                             </button>
                                         </td>
-                                        <td>{{task.taskData.versionNumber}}</td>
+                                        <td>{{task.versionNumber}}</td>
                                         <td><a (click)="onOpenModal(task,'edit')" type="button"
                                                class="btn btn-info"
                                                data-placement="top" data-original-title="Review draft">Proofread Draft</a>
@@ -75,20 +75,21 @@
                                         </div>
                                         <form #editForm="ngForm">
                                             <div class="modal-body">
-                                                <p>{{actionRequest?.taskData?.title}} Details</p>
+                                                <p>{{actionRequest?.title}} Details</p>
                                                 <ul>
-                                                    <li><b>Proposal Title:</b>{{actionRequest?.taskData?.title}}</li>
-                                                    <li><b>Version:</b>{{actionRequest?.taskData?.versionNumber}}</li>
+                                                    <li><b>Proposal Title:</b>{{actionRequest?.title}}</li>
+                                                    <li><b>Version:</b>{{actionRequest?.versionNumber}}</li>
                                                     <li><b>Standard
-                                                        Officer:</b>{{actionRequest?.taskData?.standardOfficerName}}
+                                                        Officer:</b>{{actionRequest?.standardOfficerName}}
                                                     </li>
+
                                                     <li><a href="#"
-                                                           (click)="viewPdfFile( actionRequest?.taskData?.ID,'DraftStandard'+actionRequest?.taskData?.ID, 'application/pdf')"
+                                                           (click)="viewPdfFile( actionRequest?.id,'DraftStandard'+actionRequest?.id, 'application/pdf')"
                                                            target="_blank">View Edited Draft Standard To Be Proofread</a>
                                                     </li>
                                                 </ul>
                                                 <div class="row">
-                                                    <input hidden ngModel="{{actionRequest?.taskId}}" name="taskId"
+                                                    <input hidden ngModel="{{actionRequest?.id}}" name="taskId"
                                                            id="taskId">
                                                     <div class="form-group col-12">
                                                         <label><b>Upload Proofread Draft Document</b></label>
@@ -107,13 +108,12 @@
                                             </div>
                                             <input hidden name="id" id="id">
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger" #closeModal
-                                                        data-dismiss="modal"
-                                                        (click)="decisionOnProofReading(editForm.value,'false',actionRequest?.taskData?.ID)">Reject
-                                                </button>
+<!--                                                <button type="button" class="btn btn-danger" #closeModal-->
+<!--                                                        data-dismiss="modal"-->
+<!--                                                        (click)="decisionOnProofReading(editForm.value,'false',actionRequest?.id)">Reject-->
+<!--                                                </button>-->
                                                 <button class="btn btn-info" data-dismiss="modal" #closeModal
-                                                        (click)="decisionOnProofReading(editForm.value,'true',actionRequest?.taskData?.ID)">Forward To
-                                                    Draughts Man
+                                                        (click)="decisionOnProofReading(editForm.value,'true',actionRequest?.id)">Done Proofreading
                                                 </button>
                                             </div>
                                         </form>

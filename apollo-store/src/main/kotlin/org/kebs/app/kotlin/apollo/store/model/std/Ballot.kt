@@ -57,8 +57,16 @@ class Ballot {
     @Basic
     var varField2: String? = null
 
+    @Column(name = "VAR_FIELD_1")
+    @Basic
+    var varField1: String? = null
+
 
     @Column(name = "STATUS")
     @Basic
     var status: String? = null
+
+    @Column(name = "EDITED_STATUS")
+    @Basic
+    var editedStatus: String? = null
 }
