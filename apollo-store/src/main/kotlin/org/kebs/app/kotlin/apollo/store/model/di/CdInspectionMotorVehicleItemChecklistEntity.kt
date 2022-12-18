@@ -39,7 +39,7 @@ class CdInspectionMotorVehicleItemChecklistEntity : Serializable {
     @Basic
     var makeVehicle: String? = ""
 
-    @Column(name = "CHASSIS_NO")
+    @Column(name = "CHASSIS_NO", nullable = true)
     @Basic
     var chassisNo: String? = ""
 

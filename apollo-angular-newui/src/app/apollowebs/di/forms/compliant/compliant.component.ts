@@ -21,6 +21,7 @@ export class CompliantComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log(this.data)
         const DocumentTypeSelectionValidator: ValidatorFn = (fg: FormGroup) => {
             const status = fg.get('compliantStatus').value;
             if (status && status === "1") {
@@ -58,7 +59,7 @@ export class CompliantComponent implements OnInit {
 
     saveRecord() {
         this.loading = true
-        if (this.form.value.compliantStatus == '0') {
+        if (this.form.value.compliantStatus === '0') {
             this.diService.showConfirmation(`Are you sure you want to reject thi consignment with UCR  ${this.data.ucr}?`, (result) => {
                 if (result) {
                     this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
@@ -71,7 +72,7 @@ export class CompliantComponent implements OnInit {
                 }
             })
         } else {
-            if (this.form.value.documentType) {
+            if (this.form.value.documentType && this.form.value.documentType?.length > 0) {
                 this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
                     .subscribe(
                         res => this.processResult(res),
@@ -80,6 +81,7 @@ export class CompliantComponent implements OnInit {
             } else {
                 this.loading = false;
                 this.message = "Please select the certificate to issue"
+                this.diService.showError(this.message)
             }
         }
     }

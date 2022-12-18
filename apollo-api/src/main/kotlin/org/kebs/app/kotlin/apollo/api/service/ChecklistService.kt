@@ -472,7 +472,7 @@ class ChecklistService(
         if (vehicleChecklist.inspectionChecklistType == null) {
             throw ExpectedDataNotFound("Vehicle Checklist type not found, please contact administrator")
         }
-        this.motorVehicleChecklistRepository.save(vehicleChecklist)
+        vehicleChecklist = this.motorVehicleChecklistRepository.save(vehicleChecklist)
         itemList?.let { items ->
             for (itm in items) {
                 val itemDetails = iCdItemsRepo.findById(itm.temporalItemId!!)
