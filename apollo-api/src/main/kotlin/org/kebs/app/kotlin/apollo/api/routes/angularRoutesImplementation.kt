@@ -607,6 +607,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/officer-list", handler::msOfficerListDetails)
                 GET("/dashboard", handler::msDashBoardDetails)
                 GET("/towns", handler::townsListingAdmin)
+                GET("/regions", handler::regionListingAdmin)
                 GET("/counties", handler::countiesListingAdmin)
                 GET("/departments", handler::msDepartments)
                 GET("/divisions", handler::msDivisions)

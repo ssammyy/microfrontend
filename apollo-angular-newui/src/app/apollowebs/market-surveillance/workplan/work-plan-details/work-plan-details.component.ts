@@ -52,7 +52,7 @@ import {
   BroadProductCategory,
   ProductCategories,
   Products,
-  ProductSubcategory,
+  ProductSubcategory, RegionsEntityDto,
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
 import {Observable, throwError} from 'rxjs';
@@ -74,6 +74,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   currDivLabel!: string;
   submitted = false;
   addLabParamStatus = true;
+  disableDivision = true;
   defaultPageSize = 20;
   selectedSFFDetails: SampleSubmissionDto;
   defaultPage = 0;
@@ -195,6 +196,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
+  selectedRegion = 0;
   selectedTown = 0;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
@@ -1445,6 +1447,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   public workPlanInspection: WorkPlanInspectionDto;
   public msCounties: {name: string, code: string}[];
 
+  msRegions: RegionsEntityDto[] = null;
   msCountiesList: County[] = null;
   msTowns: Town[] = null;
 
@@ -1795,14 +1798,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       rationale: ['', Validators.required],
       scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
+      region: ['', Validators.required],
       county: ['', Validators.required],
       townMarketCenter: ['', Validators.required],
       locationActivityOther: ['', Validators.required],
-      standardCategoryString: ['', Validators.required],
-      broadProductCategoryString: ['', Validators.required],
-      productCategoryString: ['', Validators.required],
       productString: ['', Validators.required],
-      productSubCategoryString: ['', Validators.required],
       resourcesRequired: null,
       budget: ['', Validators.required],
       remarks: null,
@@ -2171,6 +2171,15 @@ export class WorkPlanDetailsComponent implements OnInit {
         },
         error => {
           this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+    this.msService.msRegionListDetails().subscribe(
+        (dataRegions: RegionsEntityDto[]) => {
+          this.msRegions = dataRegions;
+        },
+        error => {
           console.log(error);
           this.msService.showError('AN ERROR OCCURRED');
         },
@@ -4178,6 +4187,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onChangeSelectedDepartment() {
+    this.disableDivision = false;
+    this.addNewScheduleForm.controls.divisionId.enable();
     this.departmentSelected = this.addNewScheduleForm?.get('complaintDepartment')?.value;
     this.standardProductCategorySelected = this.addNewScheduleForm?.get('standardCategory')?.value;
     this.broadProductCategorySelected = this.addNewScheduleForm?.get('broadProductCategory')?.value;
@@ -4211,6 +4222,12 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.productsSelected = this.addNewScheduleForm?.get('product')?.value;
     this.productSubcategorySelected = this.addNewScheduleForm?.get('productSubcategory')?.value;
   }
+
+  updateSelectedRegion() {
+    this.selectedRegion = this.addNewScheduleForm?.get('regionID')?.value;
+    console.log(`region set to ${this.selectedRegion}`);
+  }
+
 
   updateSelectedCounty() {
     this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;

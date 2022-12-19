@@ -73,10 +73,12 @@ export class ComplaintDetailsComponent implements OnInit {
   active: Number = 0;
   submitted = false;
   selectedRefNo: string;
+  region$: Observable<Region[]>;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
+  selectedRegion = 0;
   selectedCounty = 0;
   selectedTown = 0;
   complaintInspection: AllComplaintsDetailsDto;
@@ -254,6 +256,7 @@ export class ComplaintDetailsComponent implements OnInit {
       private regionService: RegionService,
       private townService: TownService,
       private router: Router) {
+    this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
     this.town$ = townService.entities$;
     countyService.getAll().subscribe();
@@ -282,6 +285,7 @@ export class ComplaintDetailsComponent implements OnInit {
 
     this.reAssignRegionForm = this.formBuilder.group({
       reassignedRemarks: ['', Validators.required],
+      regionID: ['', Validators.required],
       countyID: ['', Validators.required],
       townID: ['', Validators.required],
     });
@@ -509,6 +513,10 @@ export class ComplaintDetailsComponent implements OnInit {
     );
 
   }
+  updateSelectedRegion() {
+    this.selectedRegion = this.reAssignRegionForm?.get('regionID')?.value;
+    console.log(`region set to ${this.selectedRegion}`);
+  }
 
   updateSelectedCounty() {
     this.selectedCounty = this.reAssignRegionForm?.get('countyID')?.value;
@@ -524,7 +532,6 @@ export class ComplaintDetailsComponent implements OnInit {
           }
         },
     );
-
   }
 
   updateSelectedTown() {

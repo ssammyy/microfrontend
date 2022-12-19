@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import java.sql.Date
 import java.time.LocalDate
 import kotlin.random.Random
+import kotlin.random.nextULong
 
 fun formatDate(): String {
     val date = LocalDate.now()

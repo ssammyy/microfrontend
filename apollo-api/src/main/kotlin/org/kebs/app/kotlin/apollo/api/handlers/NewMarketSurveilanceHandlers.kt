@@ -238,6 +238,20 @@ class NewMarketSurveillanceHandler(
 
     }
 
+    fun regionListingAdmin(req: ServerRequest): ServerResponse {
+        try {
+            masterDataDaoService.getAllRegions()
+                ?.let { return ServerResponse.ok().body(it) }
+                ?: throw NullValueNotAllowedException("No Town List found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
 
     fun standardsList(req: ServerRequest): ServerResponse {
         try {
