@@ -4,7 +4,7 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {Observable, throwError} from "rxjs";
 import * as fileSaver from 'file-saver';
 import {catchError, map} from "rxjs/operators";
-import swal from "sweetalert2";
+import swal, {SweetAlertIcon} from "sweetalert2";
 import {DatePipe} from "@angular/common";
 
 @Injectable({
@@ -683,7 +683,11 @@ export class DestinationInspectionService {
         })
     }
 
-    showConfirmation(message: string, fn?: Function) {
+    showConfirmation(message: string, fn?: Function, icon?: SweetAlertIcon) {
+        let confirmationIcon: SweetAlertIcon = 'question'
+        if (icon) {
+            confirmationIcon = icon
+        }
         swal.fire({
             title: message,
             buttonsStyling: false,
@@ -694,7 +698,7 @@ export class DestinationInspectionService {
                 confirmButton: 'btn btn-success form-wizard-next-btn',
                 denyButton: 'btn btn-danger form-wizard-next-btn',
             },
-            // icon: 'question'
+            icon: confirmationIcon
         }).then((result) => {
             if (fn) {
                 fn(result.isConfirmed)

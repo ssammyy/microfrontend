@@ -542,7 +542,11 @@ interface ICdInspectionMotorVehicleItemChecklistRepository : HazelcastRepository
     fun findByMinistryReportSubmitStatusInAndSampled(status: List<Int>, ministrySubmitted: String, page: Pageable): Page<CdInspectionMotorVehicleItemChecklistEntity>
     fun findAllByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): List<CdInspectionMotorVehicleItemChecklistEntity>
     fun findFirstByInspection(inspectionGeneral: CdInspectionMotorVehicleChecklist): CdInspectionMotorVehicleItemChecklistEntity?
-    fun findByInspection_InspectionGeneralAndItemId(inspectionGeneral: CdInspectionGeneralEntity, itemId: CdItemDetailsEntity?): CdInspectionMotorVehicleItemChecklistEntity?
+    fun findFirstByInspectionAndChassisNoIsNotNull(inspectionGeneral: CdInspectionMotorVehicleChecklist): CdInspectionMotorVehicleItemChecklistEntity?
+    fun findByInspection_InspectionGeneralAndItemId(
+        inspectionGeneral: CdInspectionGeneralEntity,
+        itemId: CdItemDetailsEntity?
+    ): CdInspectionMotorVehicleItemChecklistEntity?
 }
 
 @Repository

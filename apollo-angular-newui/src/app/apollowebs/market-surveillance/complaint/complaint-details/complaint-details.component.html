@@ -417,6 +417,17 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                     </div>
+                                    <div *ngIf="role == 'MS_HOF_MODIFY' && userLoggedInID == complaintInspection?.hofAssigned?.id">
+                                        <button (click)="openModalAddDetails('assignOfficer')"
+                                                *ngIf="complaintInspection?.officersAssigned != null && complaintInspection?.hofAssigned !=null" class="btn btn-sm btn-primary mr-2"
+                                                data-target="#myModal1"
+                                                data-toggle="modal"
+                                                mat-raised-button=""><span
+                                                class="mat-button-wrapper">RE-ASSIGN IO</span>
+                                            <div class="mat-ripple mat-button-ripple" matripple=""></div>
+                                            <div class="mat-button-focus-overlay"></div>
+                                        </button>
+                                    </div>
                                     <div *ngIf="role == 'MS_IO_MODIFY' && userLoggedInID == complaintInspection?.officersAssigned?.id">
                                         <button (click)="openModalAddDetails('addClassificationDetails')"
                                                 *ngIf="complaintInspection?.complaintsDetails?.classificationDetailsStatus == false "
@@ -625,7 +636,7 @@
                                                 <mat-select (selectionChange)="updateSelectedCounty()"
                                                             [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"
                                                             formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">
-                                                    <mat-option *ngFor="let app of apps| filterPipe: {status: true}" [value]="app.id">{{app.county}}</mat-option>
+                                                    <mat-option *ngFor="let app of apps| filterPipe: {status: true} | orderBy " [value]="app.id">{{app.county}}</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                             <label for="townID"><b>Select Town</b></label>
@@ -683,9 +694,16 @@
                                     <div>
                                         <label for="productClassificationString"><b>Standard Product Category:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input formControlName="productClassificationString" id="productClassificationString" matInput name="productClassificationString"
-                                                   [class.is-invalid]="formClassificationForm.productClassificationString.invalid && formClassificationForm.productClassificationString.touched"
-                                                   type="text">
+                                            <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors"
+                                                    class="form-control two-column-input"
+                                                    formControlName="nameActivity" name="nameActivity" required type="text">
+                                                <option [value]="" selected>Please select</option>
+                                                <option [value]="'AGROCHEMICAL'" >AGROCHEMICAL</option>
+                                                <option [value]="'ENGINEERING'" >ENGINEERING</option>
+                                            </select>
+<!--                                            <input formControlName="productClassificationString" id="productClassificationString" matInput name="productClassificationString"-->
+<!--                                                   [class.is-invalid]="formClassificationForm.productClassificationString.invalid && formClassificationForm.productClassificationString.touched"-->
+<!--                                                   type="text">-->
                                         </mat-form-field>
 <!--                                        <label for="productClassification"><b>Select Product Classification</b></label>-->
 <!--                                        <mat-form-field>-->
@@ -701,9 +719,21 @@
 <!--                                        </mat-form-field>-->
                                         <label for="broadProductCategoryString"><b>Broad Product Category:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input formControlName="broadProductCategoryString" id="broadProductCategoryString" matInput name="broadProductCategoryString"
-                                                   [class.is-invalid]="formClassificationForm.broadProductCategoryString.invalid && formClassificationForm.broadProductCategoryString.touched"
-                                                   type="text">
+                                            <select [class.is-invalid]="formClassificationForm.broadProductCategoryString.invalid && formClassificationForm.broadProductCategoryString.touched"
+                                                    class="form-control two-column-input"
+                                                    formControlName="broadProductCategoryString" id="broadProductCategoryString" type="text">
+                                                <option [value]="" selected>Please select</option>
+                                                <option [value]="'FOOD'" >FOOD</option>
+                                                <option [value]="'AGRICULTURE'" >AGRICULTURE</option>
+                                                <option [value]="'CHEMICAL'" >CHEMICAL</option>
+                                                <option [value]="'TEXTILE'" >TEXTILE</option>
+                                                <option [value]="'MECHANICAL'" >MECHANICAL</option>
+                                                <option [value]="'CIVIL'" >CIVIL</option>
+                                                <option [value]="'ELECTRICAL'" >ELECTRICAL</option>
+                                            </select>
+<!--                                            <input formControlName="broadProductCategoryString" id="broadProductCategoryString" matInput name="broadProductCategoryString"-->
+<!--                                                   [class.is-invalid]="formClassificationForm.broadProductCategoryString.invalid && formClassificationForm.broadProductCategoryString.touched"-->
+<!--                                                   type="text">-->
                                         </mat-form-field>
 <!--                                        <label for="broadProductCategory"><b>Select Broad Product Category</b></label>-->
 <!--                                        <mat-form-field>-->
@@ -720,6 +750,7 @@
                                         <label for="productCategoryString"><b>Product Category:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input formControlName="productCategoryString" id="productCategoryString" matInput name="productCategoryString"
+                                                   placeholder="Please enter section"
                                                    [class.is-invalid]="formClassificationForm.productCategoryString.invalid && formClassificationForm.productCategoryString.touched"
                                                    type="text">
                                         </mat-form-field>
@@ -738,6 +769,7 @@
                                         <label for="myProductString"><b>Product:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input formControlName="myProductString" id="myProductString" matInput name="myProductString"
+                                                   placeholder="Please enter Product Name"
                                                    [class.is-invalid]="formClassificationForm.myProductString.invalid && formClassificationForm.myProductString.touched"
                                                    type="text">
                                         </mat-form-field>
@@ -927,14 +959,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Budget</b> </label>
-                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
-                                               class="form-control two-column-input" formControlName="budget"
-                                               name="budget" required type="text">
-                                    </div>
-                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors"
-                                         class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required
-                                        </div>
+                                        <input class="form-control two-column-input" formControlName="budget"
+                                               name="budget" type="text">
                                     </div>
                                 </div>
 

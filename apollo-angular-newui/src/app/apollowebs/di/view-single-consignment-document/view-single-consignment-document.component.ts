@@ -4,14 +4,9 @@ import {ApproveRejectConsignmentComponent} from './approve-reject-consignment/ap
 import {ActivatedRoute, Router} from '@angular/router';
 import {DestinationInspectionService} from '../../../core/store/data/di/destination-inspection.service';
 import {AttachmentDialogComponent} from './attachment-dialog/attachment-dialog.component';
-import {GenerateLocalCocComponent} from '../forms/generate-local-coc/generate-local-coc.component';
-import {GenerateLocalCorComponent} from '../forms/generate-local-cor/generate-local-cor.component';
-import {ManualAssignOfficerComponent} from '../forms/manual-assign-officer/manual-assign-officer.component';
 import {ReAssignOfficerComponent} from '../forms/re-assign-officer/re-assign-officer.component';
-import {AssignPortComponent} from '../forms/assign-port/assign-port.component';
 import {AssignOfficerComponent} from '../forms/assign-officer/assign-officer.component';
 import {CompliantComponent} from '../forms/compliant/compliant.component';
-import {SendCoiComponent} from '../forms/send-coi/send-coi.component';
 import {TargetItemComponent} from '../forms/target-item/target-item.component';
 import {TargetSupervisorComponent} from '../forms/target-supervisor/target-supervisor.component';
 import {SendDemandNoteTokwsComponent} from '../forms/send-demand-note-tokws/send-demand-note-tokws.component';
@@ -93,9 +88,10 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             )
     }
 
-    approveRejectTasks(taskId: any, docUuid: any, taskTitle: any) {
+    approveRejectTasks(taskId: any, docUuid: any, taskTitle: any, dataMap: any) {
         this.dialog.open(ProcessRejectionComponent, {
             data: {
+                dataMap: dataMap,
                 cdUuid: docUuid,
                 title: taskTitle,
                 taskId: taskId
@@ -282,12 +278,6 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             );
     }
 
-    isVehicle(): Boolean {
-        if (this.consignment) {
-            return this.consignment.cd_details.cdTypeCategory === 'VEHICLES';
-        }
-        return false;
-    }
 
     viewInspectionChecklists() {
         this.router.navigate(['/di/checklist/details/', this.consignment.cd_details.uuid]);
@@ -331,56 +321,6 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             );
     }
 
-    generateLocalCoC() {
-        const ref = this.dialog.open(GenerateLocalCocComponent, {
-            data: {
-                uuid: this.consignmentId,
-                configurations: this.configurations,
-            }
-        });
-        ref.afterClosed()
-            .subscribe(
-                res => {
-                    if (res) {
-                        this.loadConsignmentDetails();
-                    }
-                }
-            );
-    }
-
-    generateLocalCoR() {
-        const ref = this.dialog.open(GenerateLocalCorComponent, {
-            data: {
-                uuid: this.consignmentId,
-                configurations: this.configurations,
-            }
-        });
-        ref.afterClosed()
-            .subscribe(
-                res => {
-                    if (res) {
-                        this.loadConsignmentDetails();
-                    }
-                }
-            );
-    }
-
-    manualAssignInspectionOfficer() {
-        const ref = this.dialog.open(ManualAssignOfficerComponent, {
-            data: {
-                uuid: this.consignmentId,
-                configurations: this.configurations,
-            }
-        });
-        ref.afterClosed()
-            .subscribe(
-                res => {
-                    if (res) {
-                        this.loadConsignmentDetails();
-                    }
-                }
-            );
-    }
 
     assignInspectionOfficer() {
         const ref = this.dialog.open(AssignOfficerComponent, {
@@ -451,22 +391,6 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
             );
     }
 
-    sendCertificateOfCompliance() {
-        const ref = this.dialog.open(SendCoiComponent, {
-            data: {
-                uuid: this.consignmentId,
-                configurations: this.configurations,
-            }
-        });
-        ref.afterClosed()
-            .subscribe(
-                res => {
-                    if (res) {
-                        this.loadConsignmentDetails();
-                    }
-                }
-            );
-    }
 
     markAsCompliant() {
         const ref = this.dialog.open(CompliantComponent, {
@@ -483,23 +407,6 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
                 res => {
                     if (res) {
                         this.router.navigate(['/di']);
-                    }
-                }
-            );
-    }
-
-    assignConsignmentPort() {
-        const ref = this.dialog.open(AssignPortComponent, {
-            data: {
-                uuid: this.consignmentId,
-                configurations: this.configurations,
-            }
-        });
-        ref.afterClosed()
-            .subscribe(
-                res => {
-                    if (res) {
-                        this.loadConsignmentDetails();
                     }
                 }
             );
