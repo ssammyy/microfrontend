@@ -40,16 +40,18 @@ export class ViewTasksComponent implements OnInit {
                             this.loadMyTasks()
                         })
                     } else {
-                        this.diService.showError(res.message,()=>{
+                        this.diService.showError(res.message, () => {
 
                         })
                     }
                 }
             )
     }
-    approveRejectTasks(taskId: any, docUuid: any,taskTitle: any) {
+
+    approveRejectTasks(taskId: any, docUuid: any, taskTitle: any, dataMap: any) {
         this.dialog.open(ProcessRejectionComponent, {
             data: {
+                dataMap: dataMap,
                 cdUuid: docUuid,
                 title: taskTitle,
                 taskId: taskId

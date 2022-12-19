@@ -727,7 +727,9 @@ class DestinationInspectionDaoServices(
         iCdInspectionGeneralRepo.findFirstByCdDetailsAndCurrentChecklist(cdEntity, 1)?.let { cdItemDetailsList ->
             this.cdMotorVehicleInspectionChecklistRepo.findByInspectionGeneral(cdItemDetailsList)
                 ?.let { mvInspectionEntity ->
-                    this.iCdInspectionMotorVehicleItemChecklistRepo.findFirstByInspection(mvInspectionEntity)
+                    this.iCdInspectionMotorVehicleItemChecklistRepo.findFirstByInspectionAndChassisNoIsNotNull(
+                        mvInspectionEntity
+                    )
                         ?.let { cdMvInspectionEntity ->
                             ministryReportRef = cdMvInspectionEntity.ministryReportReference
                             ministryReporDate = cdMvInspectionEntity.ministryReportDate
@@ -782,7 +784,8 @@ class DestinationInspectionDaoServices(
                     localCor.yearOfManufacture = nonStandardEntity.vehicleYear ?: "UNKNOWN"
                     localCor.chasisNumber = nonStandardEntity.chassisNo ?: "UNKNOWN"
                     localCor
-                } ?: throw ExpectedDataNotFound("No Item Non standard details found, chassis number not found")
+                }
+                    ?: throw ExpectedDataNotFound("No Item Non standard details found, item with chassis number not found")
                 with(localCor) {
                     inspectionCenter = cdEntity.freightStation?.cfsName ?: "UNKNOWN"
                     inspectionMileage = "UNKNOWN"
@@ -2370,7 +2373,7 @@ class DestinationInspectionDaoServices(
 
     fun findVehicleFromCd(cd: ConsignmentDocumentDetailsEntity): CdItemDetailsEntity? {
         try {
-            var item = iCdItemsRepo.findFirstByCdDocIdAndChassisNumberIsNotNull(cd)
+            val item = iCdItemsRepo.findFirstByCdDocIdAndChassisNumberIsNotNull(cd)
             if (item.isPresent) {
                 return item.get()
             }

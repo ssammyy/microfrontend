@@ -338,8 +338,8 @@ class DestinationInspectionService(
         remarks: String,
         taskApproved: Boolean
     ): Boolean {
+        val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
         if (taskApproved) {
-            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             consignmentDocument.compliantStatus = compliantStatus
             consignmentDocument.status = ConsignmentApprovalStatus.APPROVED.code
             consignmentDocument.compliantDate = commonDaoServices.getCurrentDate()
@@ -416,6 +416,15 @@ class DestinationInspectionService(
                     daoServices.updateCDStatus(consignmentDocument, it2)
                 }
             }
+            // Add audit history
+            cdAuditService.addHistoryRecord(
+                consignmentDocument.id,
+                consignmentDocument.ucrNumber,
+                remarks,
+                "KEBS_${cdStatusType.category}_COMPLIANCE",
+                consignmentDocument.varField10 ?: remarks,
+                supervisor
+            )
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO COMPLIANCE REJECTION STATUS", ex)
         }
