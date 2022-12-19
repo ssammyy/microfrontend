@@ -631,12 +631,20 @@
                             <div class="form-body">
                                 <div class="form-group" >
                                     <div>
+                                        <label for="regionID"><b>Select Region</b></label>
+                                        <mat-form-field *ngIf="region$ | async as apps">
+                                            <mat-select (selectionChange)="updateSelectedRegion()"
+                                                        [class.is-invalid]="formReAssignRegionForm.regionID.invalid && formReAssignRegionForm.regionID.touched"
+                                                        formControlName="regionID" id="regionID" name="regionID" placeholder="Please Select an option">
+                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true}  " [value]="app.id">{{app.region}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                             <label for="countyID"><b>Select County</b></label>
                                             <mat-form-field *ngIf="county$ | async as apps">
                                                 <mat-select (selectionChange)="updateSelectedCounty()"
                                                             [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"
                                                             formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">
-                                                    <mat-option *ngFor="let app of apps| filterPipe: {status: true} | orderBy " [value]="app.id">{{app.county}}</mat-option>
+                                                    <mat-option *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion} " [value]="app.id">{{app.county}}</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                             <label for="townID"><b>Select Town</b></label>

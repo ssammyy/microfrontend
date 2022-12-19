@@ -1152,7 +1152,7 @@
                                         name="county" required="required" style="width: 100%; height: 60%">
                                     <option ngValue="null" selected>Please select</option>
                                     <option
-                                            *ngFor="let app of apps| filterPipe: {status: true}"
+                                            *ngFor="let app of apps| filterPipe: {status: true, orderBy:sortFnCounty}"
                                             [ngValue]="app.id"
                                             class="dropdown-item">{{app.county}}</option>
                                 </select>
@@ -1427,12 +1427,12 @@
                                 {{locationDetails?.marketCenter}}</div>
                         </li>
                         <li class="list-item-accordion">
-                            <div class="list-title-accordion">Building Name</div>
+                            <div class="list-title-accordion">Name of outlet</div>
                             <div class="list-text-accordion">
                                 {{locationDetails?.buildingName}}</div>
                         </li>
                         <li class="list-item-accordion">
-                            <div class="list-title-accordion">Business Address</div>
+                            <div class="list-title-accordion">Business/Physical Address</div>
                             <div class="list-text-accordion">
                                 {{locationDetails?.businessAddress}}</div>
                         </li>

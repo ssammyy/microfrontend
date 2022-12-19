@@ -903,6 +903,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         with(complaintLocationDetails) {
             county = body.countyID
             town = body.townID
+//            region = body.regionID
             region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
         }
         complaintLocationDetails = complaintLocationRepo.save(complaintLocationDetails)

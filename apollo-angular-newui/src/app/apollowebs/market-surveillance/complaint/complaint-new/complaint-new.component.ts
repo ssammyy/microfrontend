@@ -224,6 +224,12 @@ export class ComplaintNewComponent implements OnInit {
     return this.stepFiveForm.controls;
   }
 
+  sortFnCounty = (a: County, b: County): number => {
+    if (a.county < b.county) { return -1; }
+    if (a.county === b.county) { return 0; }
+    if (a.county > b.county) { return 1; }
+  }
+
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
   }
