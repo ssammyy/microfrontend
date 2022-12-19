@@ -1,6 +1,6 @@
 export interface County {
   id: number;
   regionId: number;
-  county: string;
+  county: any;
   status: boolean;
 }

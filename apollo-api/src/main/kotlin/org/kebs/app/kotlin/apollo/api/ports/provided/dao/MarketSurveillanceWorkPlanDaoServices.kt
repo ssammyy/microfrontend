@@ -4928,6 +4928,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     wkp.rationale,
                     wkp.scopeOfCoverage,
                     wkp.timeActivityDate,
+                    wkp.region,
                     wkp.county,
                     wkp.townMarketCenter,
                     wkp.locationActivityOther,

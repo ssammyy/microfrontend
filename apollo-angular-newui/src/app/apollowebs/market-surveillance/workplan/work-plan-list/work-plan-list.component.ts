@@ -14,7 +14,7 @@ import {
   WorkPlanScheduleListDetailsDto, WorkPlanTownsDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {Observable, Subject, throwError} from 'rxjs';
-import {County, CountyService, loadCountyId, selectCountyIdData, selectUserInfo, Town, TownService} from '../../../../core/store';
+import {County, CountyService, loadCountyId, Region, selectCountyIdData, selectUserInfo, Town, TownService} from '../../../../core/store';
 import {LocalDataSource} from 'ng2-smart-table';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -24,7 +24,7 @@ import {
   BroadProductCategory,
   ProductCategories,
   Products,
-  ProductSubcategory,
+  ProductSubcategory, RegionsEntityDto,
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
 import {data} from 'jquery';
@@ -42,6 +42,7 @@ export class WorkPlanListComponent implements OnInit {
   addChargeSheetForm!: FormGroup;
   dataSave: BatchFileFuelSaveDto;
   submitted = false;
+  selectedRegion = 0;
   selectedCounty = 0;
   selectedTown = 0;
   selectedTownName: string;
@@ -51,6 +52,7 @@ export class WorkPlanListComponent implements OnInit {
   loading = false;
 
   roles: string[];
+  msRegions: RegionsEntityDto[] = [];
   msCounties: County[] = [];
   msTowns: Town[] = [];
   msDepartments: MsDepartment[] = [];
@@ -66,6 +68,7 @@ export class WorkPlanListComponent implements OnInit {
   productsSelected: 0;
   productSubcategorySelected: 0;
   departmentSelected: 0;
+  disableDivision = true;
 
   activeStatus = 'my-tasks';
   previousStatus = 'my-tasks';
@@ -211,14 +214,11 @@ export class WorkPlanListComponent implements OnInit {
       rationale: ['', Validators.required],
       scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
+      region: ['', Validators.required],
       county: ['', Validators.required],
       townMarketCenter: ['', Validators.required],
       locationActivityOther: ['', Validators.required],
-      standardCategoryString: ['', Validators.required],
-      broadProductCategoryString: ['', Validators.required],
-      productCategoryString: ['', Validators.required],
       productString: ['', Validators.required],
-      productSubCategoryString: ['', Validators.required],
       resourcesRequired: null,
       budget: ['', Validators.required],
       // remarks: ['', Validators.required],
@@ -256,6 +256,15 @@ export class WorkPlanListComponent implements OnInit {
           this.msService.msCountiesListDetails().subscribe(
               (dataCounties: County[]) => {
                 this.msCounties = dataCounties;
+              },
+              error => {
+                console.log(error);
+                this.msService.showError('AN ERROR OCCURRED');
+              },
+          );
+          this.msService.msRegionListDetails().subscribe(
+              (dataRegions: RegionsEntityDto[]) => {
+                this.msRegions = dataRegions;
               },
               error => {
                 console.log(error);
@@ -434,6 +443,10 @@ export class WorkPlanListComponent implements OnInit {
     }
   }
 
+  updateSelectedRegion() {
+    this.selectedRegion = this.addNewScheduleForm?.get('regionID')?.value;
+    console.log(`region set to ${this.selectedRegion}`);
+  }
 
   updateSelectedCounty() {
     this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
@@ -541,6 +554,8 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   onChangeSelectedDepartment() {
+    this.disableDivision = false;
+    this.addNewScheduleForm.controls.divisionId.enable();
     this.departmentSelected = this.addNewScheduleForm?.get('complaintDepartment')?.value;
     this.standardProductCategorySelected = this.addNewScheduleForm?.get('standardCategory')?.value;
     this.broadProductCategorySelected = this.addNewScheduleForm?.get('broadProductCategory')?.value;
@@ -601,8 +616,8 @@ export class WorkPlanListComponent implements OnInit {
       // this.dataSaveAllWorkPlan.countyTownDetails =  this.dataCountyTownList;
       // tslint:disable-next-line:max-line-length
       this.msService.msAddWorkPlanScheduleDetails(this.loadedData.createdWorkPlan.referenceNumber, this.dataSaveWorkPlan).subscribe(
-          (data: any) => {
-            console.log(data);
+          (data4: any) => {
+            console.log(data4);
             this.SpinnerService.hide();
             // this.addNewScheduleForm.reset();
             this.msService.showSuccess('WORK PLAN SCHEDULED DETAILS, SAVED SUCCESSFULLY');

@@ -1128,12 +1128,12 @@
                     </div>
 
                     <div class="col">
-                        <label class="input-placeholder"><b>Name of Building</b></label>
+                        <label class="input-placeholder"><b>Name of outlet </b></label>
                         <input style="color: white;font-size: 14px;"
                                [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.buildingName.errors }"
                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                class="form-control two-column-input" formControlName="buildingName" id="buildingName"
-                               name="buildingName" placeholder="The Building Name" required="required" type="text">
+                               name="buildingName" placeholder="The Outlet Name" required="required" type="text">
                         <div *ngIf="submitted && formStepThreeForm.buildingName.errors" class="invalid-feedback">
                             <div *ngIf="formStepThreeForm.buildingName.errors.required">The Building Name is required</div>
                         </div>
@@ -1145,14 +1145,14 @@
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>County</b></label>
                             <br>
-                            <ng-container *ngIf="county$ | async as apps">
+                            <ng-container>
                                 <select (ngModelChange)="updateSelectedCounty()"
                                         [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
                                         formControlName="county" id="county"
                                         name="county" required="required" style="width: 100%; height: 60%">
                                     <option ngValue="null" selected>Please select</option>
                                     <option
-                                            *ngFor="let app of apps| filterPipe: {status: true}"
+                                            *ngFor="let app of countyList| filterPipe: {status: true}"
                                             [ngValue]="app.id"
                                             class="dropdown-item">{{app.county}}</option>
                                 </select>
@@ -1257,13 +1257,13 @@
                 <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
-                            <label class="input-placeholder"><b>Business Address</b></label>
+                            <label class="input-placeholder"><b>Business/Physical Address</b></label>
                             <input style="color: white;font-size: 14px;"
                                    [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.businessAddress.errors }"
                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                    class="form-control two-column-input" formControlName="businessAddress"
                                    id="businessAddress"
-                                   name="businessAddress" placeholder="Business Address" required="required" type="text">
+                                   name="businessAddress" placeholder="Business/Physical Address" required="required" type="text">
                             <div *ngIf="submitted && formStepThreeForm.businessAddress.errors" class="invalid-feedback">
                                 <div *ngIf="formStepThreeForm.businessAddress.errors.required">The Business Address is
                                     required
@@ -1427,12 +1427,12 @@
                                 {{locationDetails?.marketCenter}}</div>
                         </li>
                         <li class="list-item-accordion">
-                            <div class="list-title-accordion">Building Name</div>
+                            <div class="list-title-accordion">Name of outlet</div>
                             <div class="list-text-accordion">
                                 {{locationDetails?.buildingName}}</div>
                         </li>
                         <li class="list-item-accordion">
-                            <div class="list-title-accordion">Business Address</div>
+                            <div class="list-title-accordion">Business/Physical Address</div>
                             <div class="list-text-accordion">
                                 {{locationDetails?.businessAddress}}</div>
                         </li>

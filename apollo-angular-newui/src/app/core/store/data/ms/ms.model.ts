@@ -280,6 +280,7 @@ export class WorkPlanEntityDto {
     rationale: string;
     scopeOfCoverage: string;
     timeActivityDate: Date;
+    region: number;
     county: number;
     townMarketCenter: number;
     locationActivityOther: string;
@@ -1125,6 +1126,7 @@ export class ComplaintAssignDto {
 
 export class RegionReAssignDto {
     reassignedRemarks: string;
+    regionID: bigint;
     countyID: bigint;
     townID: bigint;
 }
