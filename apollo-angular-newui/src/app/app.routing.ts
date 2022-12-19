@@ -600,6 +600,7 @@ import {
 import {
     SchemeMembershipSicComponent
 } from "./apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component";
+import {RegisterTivetComponent} from "./views/registration/register-tivet/register-tivet.component";
 
 export const routes: Routes = [
     {
@@ -622,6 +623,11 @@ export const routes: Routes = [
                 path: 'register',
                 component: SignUpComponent,
             },
+            {
+                path: 'registerTivet',
+                component: RegisterTivetComponent,
+            },
+
 
 
         ],

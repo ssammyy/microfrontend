@@ -447,6 +447,7 @@ import {DocumentEditorContainerModule} from "@syncfusion/ej2-angular-documentedi
 import { SchemeMembershipFormComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component';
 import { SchemeMembershipReviewComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component';
 import { SchemeMembershipSicComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component';
+import { RegisterTivetComponent } from './views/registration/register-tivet/register-tivet.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -927,6 +928,7 @@ import { SchemeMembershipSicComponent } from './apollowebs/standards-development
         SchemeMembershipFormComponent,
         SchemeMembershipReviewComponent,
         SchemeMembershipSicComponent,
+        RegisterTivetComponent,
 
     ],
     entryComponents: [LoaderComponent],

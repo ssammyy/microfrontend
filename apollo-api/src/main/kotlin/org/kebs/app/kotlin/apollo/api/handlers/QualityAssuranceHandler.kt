@@ -23,17 +23,21 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 //import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 
+import com.fasterxml.jackson.databind.MapperFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvider
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaMessageDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
+import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootMsg
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -45,11 +49,16 @@ import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaProcessStatusRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
+import org.springframework.validation.FieldError
+import org.springframework.validation.Validator
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.badRequest
@@ -78,6 +87,8 @@ class QualityAssuranceHandler(
     private val jasyptStringEncryptor: StringEncryptor,
     private val iQaProcessStatusRepository: IQaProcessStatusRepository,
     private val reactiveAuthenticationManager: CustomAuthenticationProvider,
+    private val validator: Validator,
+    private val service: StandardsLevyDaoService,
 
 
     ) {
@@ -116,6 +127,7 @@ class QualityAssuranceHandler(
     private val cdSampleSubmitPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-submit.html"
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
+
 
     fun notSupported(req: ServerRequest): ServerResponse = badRequest().body("Invalid Request: Not supported")
 
@@ -3528,11 +3540,14 @@ class QualityAssuranceHandler(
 
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
+            newBatchInvoiceDto.isWithHolding = dto.isWithHolding
             with(newBatchInvoiceDto) {
                 batchID =
                     batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
+            KotlinLogging.logger { }.info("Withholding Status = ${newBatchInvoiceDto.isWithHolding}")
+
             //submit to staging invoices
             batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(
                 permit,
@@ -4200,5 +4215,142 @@ class QualityAssuranceHandler(
         }
 
     }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllAwardedPermitsByPermitNumberSms(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitNumber = req.paramOrNull("permitNumber")
+                ?: throw ExpectedDataNotFound("Required Permit Number, check config")
+
+            val parts = permitNumber.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val permitType = parts[0]
+            val permitNumberToBeRetrieved = parts[1]
+
+            var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+            println(qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved))
+
+
+            when (permitType) {
+                "SM" -> {
+
+                    permitListAllApplications =
+                        if (qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved).isEmpty()) {
+                            qaDaoServices.listPermitsNotMigratedWebsite(
+                                qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumberToBeRetrieved), map
+                            )
+                        } else {
+
+                            qaDaoServices.listPermitsWebsite(
+                                qaDaoServices.findPermitByPermitNumber(
+                                    permitNumber
+                                ), map
+                            )
+                        }
+                }
+
+                "FM" -> {
+                    permitListAllApplications =
+
+
+                        if (qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved).isEmpty()) {
+                            qaDaoServices.listPermitsNotMigratedWebsiteFmark(
+                                qaDaoServices.findPermitByPermitNumberNotMigratedFmark(permitNumberToBeRetrieved), map
+                            )
+                        } else {
+
+                            qaDaoServices.listPermitsWebsite(
+                                qaDaoServices.findPermitByPermitNumber(
+                                    permitNumber
+                                ), map
+                            )
+                        }
+                }
+
+                "DM" -> {
+                    permitListAllApplications =
+                        if (qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved).isEmpty()) {
+                            qaDaoServices.listPermitsNotMigratedWebsiteDmark(
+                                qaDaoServices.findPermitByPermitNumberNotMigratedDmark(permitNumberToBeRetrieved), map
+                            )
+                        } else {
+
+                            qaDaoServices.listPermitsWebsite(
+                                qaDaoServices.findPermitByPermitNumber(
+                                    permitNumber
+                                ), map
+                            )
+                        }
+                }
+            }
+
+            return ok().body(permitListAllApplications!!)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
+        return try {
+
+            val stringData = req.body<String>()
+            val mapper = ObjectMapper()
+            mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+//            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+//            mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+            val removedString = commonDaoServices.removeQuotesAndUnescape(stringData)
+            val body: RootMsg = mapper.readValue(removedString, RootMsg::class.java)
+            KotlinLogging.logger { }.info { "Message 2 $body" }
+            val errors: Errors = BeanPropertyBindingResult(body, RootMsg::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+
+                    val requestBody = body.request ?: throw ExpectedDataNotFound("Missing request value")
+                    KotlinLogging.logger { }.info { "Message 4 $requestBody" }
+                    val response = service.getPermit(requestBody)
+                    ServerResponse.ok().body(response)
+                }
+
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+
+    }
+
+    fun onValidationErrors(errors: Errors): ServerResponse {
+        val errorMap = mutableMapOf<String, String?>()
+        errors.allErrors.forEach { error ->
+            error?.let { e ->
+                val fieldName = (e as FieldError).field
+                val errorMessage = e.getDefaultMessage()
+                errorMap[fieldName] = errorMessage
+            }
+
+        }
+        return ServerResponse
+            .badRequest()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(errorMap)
+
+
+    }
+
+    fun onErrors(message: String?) =
+        ServerResponse
+            .badRequest()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(message ?: "UNKNOWN_ERROR")
 
 }
