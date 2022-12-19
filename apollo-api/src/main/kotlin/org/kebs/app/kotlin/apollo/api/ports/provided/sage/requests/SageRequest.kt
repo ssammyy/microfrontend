@@ -33,6 +33,7 @@ class SageQARequestBody {
     @NotNull(message = "Required field")
     var details: MutableList<SageQADetails>? = null
 }
+
 class SageQARequestBodyB {
 
     @JsonProperty("header")
@@ -134,6 +135,7 @@ class SageQARequest {
     @NotNull(message = "Required field")
     var TaxPINNo: String? = null
 }
+
 class SageQARequestB {
     @JsonProperty("BatchNo")
     @NotNull(message = "Required field")
@@ -349,6 +351,10 @@ class SageRequest {
                 courier = dn.courier ?: ""
                 otherInfo = dn.currency
                 totalAmount = dn.totalAmount ?: BigDecimal.ZERO
+            }
+            // SAGE customer name should be max 60 characters
+            if ((req.customerName?.length ?: 0) > 60) {
+                req.customerName = req.customerName?.substring(0, 60)
             }
             return req
         }
