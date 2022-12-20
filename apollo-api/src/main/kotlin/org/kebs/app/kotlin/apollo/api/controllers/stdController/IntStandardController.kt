@@ -53,6 +53,7 @@ class IntStandardController(
         return internationalStandardService.findStandardStakeholders()
     }
 
+
     //********************************************************** process upload Justification **********************************************************
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/prepareAdoptionProposal")

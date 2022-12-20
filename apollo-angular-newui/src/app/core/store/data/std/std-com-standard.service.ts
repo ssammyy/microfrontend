@@ -7,7 +7,7 @@ import {
   ComHodTasks,
   ComJcJustification, ComJcJustificationAction, ComJcJustificationDec,
   ComJcJustificationList, CompanyStandardRequest, CompanyStdRemarks, COMPreliminaryDraft, ComStandard, ComStandardJC,
-  ComStdAction,
+  ComStdAction, ComStdRequest,
   Department, NWAPreliminaryDraft, NWAWDDecision, NWAWorkShopDraft, Product,
   UsersEntity
 } from './std.model';
@@ -97,6 +97,7 @@ export class StdComStandardService {
     return this.http.get<ComHodTasks[]>(url, {params}).pipe();
   }
 
+
   public assignRequest(comStdAction: ComStdAction): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_ASSIGN_REQUEST);
     const params = new HttpParams();
@@ -112,6 +113,20 @@ export class StdComStandardService {
   public formJointCommittee(comStandardJC: ComStandardJC): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_FORM_JOINT_COMMITTEE);
     const params = new HttpParams();
+    return this.http.post<ComStandardJC>(url, comStandardJC, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public formJCommittee(comStandardJC: ComStandardJC,valueString: string[]): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_FORM_JOINT_COMMITTEE);
+    const params = new HttpParams();
+    comStandardJC.name=valueString
     return this.http.post<ComStandardJC>(url, comStandardJC, {params}).pipe(
         map(function (response: any) {
           return response;
@@ -193,6 +208,37 @@ export class StdComStandardService {
         })
     );
   }
+
+  public uploadCommitmentLetter(comStdRequestID: string, data: FormData): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_COMMITMENT_LETTER);
+
+    return this.http.post<any>(url, data, {
+      headers: {
+        'enctype': 'multipart/form-data'
+      }, params: {'comStdRequestID': comStdRequestID}
+    }).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public viewCommitmentLetter(comStdRequestID: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_VIEW_COMMITMENT_LETTER);
+    const params = new HttpParams().set('comStdRequestID', comStdRequestID);
+    return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
   public prepareCompanyPreliminaryDraft(comPreliminaryDraft: COMPreliminaryDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_PREPARE_PRELIMINARY_DRAFT);
     const params = new HttpParams();
@@ -371,6 +417,36 @@ export class StdComStandardService {
     const params = new HttpParams().set('approvalID', approvalID);
     return this.http.get<CompanyStdRemarks>(url, {params}).pipe();
   }
+
+  public getCompanyStandardRequest(): Observable<ComStdRequest[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_REQUEST);
+    const params = new HttpParams();
+    return this.http.get<ComStdRequest[]>(url, {params}).pipe();
+  }
+  public getUploadedStdDraft(): Observable<COMPreliminaryDraft[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT);
+    const params = new HttpParams();
+    return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
+  }
+  public getUploadedStdDraftForComment(): Observable<COMPreliminaryDraft[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT_COMMENT);
+    const params = new HttpParams();
+    return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
+  }
+
+  public commentOnDraft(approveDraft: ApproveDraft): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_DRAFT);
+    const params = new HttpParams();
+    return this.http.post<ApproveDraft>(url, approveDraft, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
 
 
 }

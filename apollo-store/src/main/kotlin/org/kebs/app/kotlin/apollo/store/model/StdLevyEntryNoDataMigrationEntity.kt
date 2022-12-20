@@ -35,7 +35,7 @@ class StdLevyEntryNoDataMigrationEntity : Serializable{
 
     @Column(name = "ENTRY_NUMBER")
     @Basic
-    var entryNumber: String? = null
+    var entryNumber: Long? = null
 
 
 }

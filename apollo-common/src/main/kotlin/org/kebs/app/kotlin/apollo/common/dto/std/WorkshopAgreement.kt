@@ -183,7 +183,8 @@ class ISDraftDecisions(
     @JsonProperty("proposalId") val proposalId: Long,
     @JsonProperty("justificationId") val justificationId: Long,
     @JsonProperty("draftId") val draftId: Long,
-    @JsonProperty("comments") val comments: String
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("requestId") val requestId: Long
 ){
 
 }
@@ -206,7 +207,8 @@ class ISDraftDecisionsStd(
     @JsonProperty("clause") val clause: String?,
     @JsonProperty("scope") val scope: String?,
     @JsonProperty("special") val special: String?,
-    @JsonProperty("standardNumber") val standardNumber: String?
+    @JsonProperty("standardNumber") val standardNumber: String?,
+    @JsonProperty("requestId") val requestId: Long?
 
 ){
 
@@ -390,7 +392,60 @@ data class ISDraftDto(
     var preparedBy:String?=null,
     var docName:String?=null,
     var special:String?=null,
-    var draughting:String?=null
+    var draughting:String?=null,
+    var requestNumber:Long?=null,
+    var comStdNumber:String?=null,
+    var documentType:String?=null,
+){
+
+}
+
+data class ISCompanyStdRequestDto(
+    var companyName: String?=null,
+    var departmentId: String?=null,
+    var tcId: String?=null,
+    var productId: String?=null,
+    var productSubCategoryId: String?=null,
+    var companyPhone: String?=null,
+    var assignedTo: Long?=null,
+    var companyEmail: String?=null,
+    var requestId: Long
+){
+
+}
+
+data class JointCommitteeDto(
+    var requestId: Long?=null,
+    var name: List<String>?=null
+){
+
+}
+
+
+
+data class ComTcJustificationDto(
+    var proposer: String?=null,
+    var purpose: String?=null,
+    var subject: String?=null,
+    var scope: String?=null,
+    var targetDate: String?=null,
+    var proposedRepresentation: String?=null,
+    var programmeOfWork: String?=null,
+    var organization: String?=null,
+    var liaisonOrganization: String?=null,
+    var dateOfPresentation: String?=null,
+    var nameOfTC: String?=null,
+    var referenceNumber: String?=null,
+    var comRequestId: Long?=null
+){
+
+}
+
+class ComJustificationDecisions(
+    @JsonProperty("accentTo") val accentTo: String,
+    @JsonProperty("id") val id: Long,
+    @JsonProperty("requestId") val requestId: Long,
+    @JsonProperty("comments") val comments: String
 ){
 
 }

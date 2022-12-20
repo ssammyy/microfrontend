@@ -108,6 +108,8 @@ class StandardRequestService(
 
     }
 
+
+
     fun updateDepartmentStandardRequest(standardRequest: StandardRequest) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val standardRequestToUpdate = standardRequestRepository.findById(standardRequest.id)
@@ -978,6 +980,9 @@ class StandardRequestService(
         return sdDocumentsRepository.save(uploads)
     }
 
+    fun standardReceivedReports(): MutableList<ReceivedStandards>{
+        return standardRequestRepository.getReceivedStandardsReport()
+    }
 
 }
 

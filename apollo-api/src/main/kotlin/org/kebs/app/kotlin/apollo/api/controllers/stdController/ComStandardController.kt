@@ -21,48 +21,96 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 
-@RequestMapping("api/v1/migration/null")
+@RequestMapping("api/v1/migration")
 class ComStandardController (val comStandardService: ComStandardService,
                              val standardRequestService: StandardRequestService,
                              private val commonDaoServices: CommonDaoServices,
                              private val comJcJustificationRepository: ComJcJustificationRepository,
                              private val comStdDraftRepository: ComStdDraftRepository,
-                             private val companyStandardRepository: CompanyStandardRepository
+                             private val companyStandardRepository: CompanyStandardRepository,
+                             private val comStandardRequestUploadsRepository: ComStandardRequestUploadsRepository,
+                             private val comStandardRequestRepository: ComStandardRequestRepository,
 
                              ) {
-
-    //********************************************************** deployment endpoints **********************************************************
-    @PostMapping("/company_standard/deploy")
-    fun deployWorkflow(): ServerResponse {
-        comStandardService.deployProcessDefinition()
-        return ServerResponse(HttpStatus.OK,"Successfully deployed server", HttpStatus.OK)
-    }
-//    ********************************************************** deployment endpoints **********************************************************
-//    @PostMapping("/startProcessInstance")
-//    fun startProcess(): ServerResponse {
-//        comStandardService.startProcessInstance()
-//        return ServerResponse(HttpStatus.OK,"Successfully Started server", HttpStatus.OK)
-//    }
 
     //********************************************************** process upload standard request **********************************************************
     @PostMapping("/anonymous/company_standard/request")
     @ResponseBody
-    fun requestForStandard(@RequestBody companyStandardRequest: CompanyStandardRequest): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded standard request",comStandardService.requestForStandard(companyStandardRequest))
+    fun requestForStandard(@RequestBody isCompanyStdRequestDto: ISCompanyStdRequestDto): ServerResponse{
+        val companyStandardRequest= CompanyStandardRequest().apply {
+            companyName=isCompanyStdRequestDto.companyName
+            departmentId=isCompanyStdRequestDto.departmentId
+            tcId=isCompanyStdRequestDto.tcId
+            productId=isCompanyStdRequestDto.productId
+            productSubCategoryId=isCompanyStdRequestDto.productSubCategoryId
+            companyPhone=isCompanyStdRequestDto.companyPhone
+            companyEmail=isCompanyStdRequestDto.companyEmail
+        }
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.requestForStandard(companyStandardRequest))
     }
 
-//    @GetMapping("/getProducts")
-//    @ResponseBody
-//    fun getProducts(): MutableList<Product>
-//    {
-//        return standardRequestService.getProducts()
-//    }
-//    @GetMapping("/getProductCategories/{productId}")
-//    @ResponseBody
-//    fun getProductCategories(@PathVariable("productId") productId: String?): MutableList<ProductSubCategory>
-//    {
-//        return standardRequestService.getProductCategories(productId)
-//    }
+    @PostMapping("/anonymous/company_standard/commitmentLetter")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadCommitmentLetter(
+        @RequestParam("comStdRequestID") comStdRequestID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+
+        val comStdRequest = comStandardRequestRepository.findByIdOrNull(comStdRequestID)?: throw Exception("REQUEST ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = ComStandardRequestUploads()
+            with(upload) {
+                comStdRequestId = comStdRequest.id
+
+            }
+            comStandardService.uploadCommitmentLetter(
+                upload,
+                u,
+                "UPLOADS",
+                "Standard Request",
+                "Commitment Letter"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    //View Site Visit Report Document
+    @GetMapping("/company_standard/view/commitmentLetter")
+    fun viewPDFile(
+        response: HttpServletResponse,
+        @RequestParam("comStdRequestID") comStdRequestID: Long
+    ) {
+
+        val fileUploaded = comStandardService.findUploadedReportFileBYId(comStdRequestID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getCompanyStandardRequest")
+    @ResponseBody
+    fun getCompanyStandardRequest(): MutableList<ComStdRequest>
+    {
+        return comStandardService.getCompanyStandardRequest()
+    }
+
 @GetMapping("/anonymous/company_standard/getDepartments")
 @ResponseBody
     fun getDepartments(): MutableList<Department>
@@ -70,46 +118,151 @@ class ComStandardController (val comStandardService: ComStandardService,
         return standardRequestService.getDepartments()
     }
 
-    //********************************************************** get HOD Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOD_TWO_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getHODTasks")
-    fun getHODTasks():List<TaskDetails>
+
+
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getAssignedCompanyStandardRequest")
+    @ResponseBody
+    fun getAssignedCompanyStandardRequest(): MutableList<ComStdRequest>
     {
-        return comStandardService.getHODTasks()
+        return comStandardService.getAssignedCompanyStandardRequest()
+    }
+
+    @PreAuthorize("hasAuthority('HOD_TWO_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/assignRequest")
+    @ResponseBody
+    fun assignRequest(@RequestBody isCompanyStdRequestDto: ISCompanyStdRequestDto): ServerResponse{
+        val companyStandardRequest= CompanyStandardRequest().apply {
+            assignedTo=isCompanyStdRequestDto.assignedTo
+            id=isCompanyStdRequestDto.requestId
+        }
+        return ServerResponse(HttpStatus.OK,"Successfully Assigned request to project leader",comStandardService.assignRequest(companyStandardRequest))
+    }
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/formJointCommittee")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun formJointCommittee(@RequestBody jointCommitteeDto: JointCommitteeDto): ServerResponse{
+        val comStandardJointCommittee=ComStandardJointCommittee().apply {
+            name= jointCommitteeDto.name?.let { commonDaoServices.convertClassToJson(it) }
+            requestId=jointCommitteeDto.requestId
+        }
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.formJointCommittee(comStandardJointCommittee))
     }
 
     //********************************************************** process Assign Standard Request **********************************************************
     @PreAuthorize("hasAuthority('HOD_TWO_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/assignRequest")
+    @PostMapping("/company_standard/submitJustificationForFormationOfTC")
     @ResponseBody
-    fun assignRequest(@RequestBody comStdAction: ComStdAction): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully Assigned request to project leader",comStandardService.assignRequest(comStdAction))
+    fun submitJustificationForFormationOfTC(@RequestBody comTcJustificationDto: ComTcJustificationDto): ServerResponse{
+        val justificationForTC= JustificationForTC().apply {
+            proposer=comTcJustificationDto.proposer
+            purpose=comTcJustificationDto.purpose
+            subject=comTcJustificationDto.subject
+            scope=comTcJustificationDto.scope
+            targetDate=comTcJustificationDto.targetDate
+            proposedRepresentation=comTcJustificationDto.proposedRepresentation
+            programmeOfWork=comTcJustificationDto.programmeOfWork
+            organization=comTcJustificationDto.organization
+            liaisonOrganization=comTcJustificationDto.liaisonOrganization
+            dateOfPresentation=comTcJustificationDto.dateOfPresentation
+            nameOfTC=comTcJustificationDto.nameOfTC
+            referenceNumber=comTcJustificationDto.referenceNumber
+            comRequestId=comTcJustificationDto.comRequestId
+        }
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.submitJustificationForFormationOfTC(justificationForTC))
     }
 
-    //********************************************************** get Project Leader Tasks **********************************************************
-    @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getPlTasks")
-    fun getPlTasks():List<TaskDetails>
+    @PreAuthorize("hasAuthority('HOF_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getComTcJustification")
+    @ResponseBody
+    fun getComTcJustification(): MutableList<JustificationForTC>
     {
-        return comStandardService.getPlTasks()
+        return comStandardService.getComTcJustification()
     }
 
-    //********************************************************** process Form Joint Committee **********************************************************
-    @PreAuthorize("hasAuthority('PL_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/formJointCommittee")
-    @ResponseBody
-    fun formJointCommittee(@RequestBody comStandardJC: ComStandardJC,user: UsersEntity): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully Formed Joint Committee",comStandardService.formJointCommittee(comStandardJC,user))
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('HOF_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/approveJustification")
+    fun approveJustification(@RequestBody comJustificationDecisions: ComJustificationDecisions
+    ) : ServerResponse
+    {
+        val justificationForTC= JustificationForTC().apply {
+            accentTo=comJustificationDecisions.accentTo
+            id=comJustificationDecisions.id
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=comJustificationDecisions.requestId
+            remarks=comJustificationDecisions.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveJustification(justificationForTC,companyStandardRemarks))
+
     }
 
-    //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('PL_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/prepareJustification")
+    @PreAuthorize("hasAuthority('SPC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getComApprovedTcJustification")
     @ResponseBody
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun prepareJustification(@RequestBody comJcJustification: ComJcJustification): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",comStandardService.prepareJustification(comJcJustification))
+    fun getComApprovedTcJustification(): MutableList<JustificationForTC>
+    {
+        return comStandardService.getComApprovedTcJustification()
     }
+
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('SPC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/approveSpcJustification")
+    fun approveSpcJustification(@RequestBody comJustificationDecisions: ComJustificationDecisions
+    ) : ServerResponse
+    {
+        val justificationForTC= JustificationForTC().apply {
+            accentTo=comJustificationDecisions.accentTo
+            id=comJustificationDecisions.id
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=comJustificationDecisions.requestId
+            remarks=comJustificationDecisions.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveSpcJustification(justificationForTC,companyStandardRemarks))
+
+    }
+
+    @PreAuthorize("hasAuthority('SAC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getApprovedSpcComTcJustification")
+    @ResponseBody
+    fun getApprovedSpcComTcJustification(): MutableList<JustificationForTC>
+    {
+        return comStandardService.getApprovedSpcComTcJustification()
+    }
+
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('SAC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/approveSacJustification")
+    fun approveSacJustification(@RequestBody comJustificationDecisions: ComJustificationDecisions
+    ) : ServerResponse
+    {
+        val justificationForTC= JustificationForTC().apply {
+            accentTo=comJustificationDecisions.accentTo
+            id=comJustificationDecisions.id
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=comJustificationDecisions.requestId
+            remarks=comJustificationDecisions.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveSacJustification(justificationForTC,companyStandardRemarks))
+
+    }
+
+    @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getApprovedComTcJustification")
+    @ResponseBody
+    fun getApprovedComTcJustification(): MutableList<JustificationForTC>
+    {
+        return comStandardService.getApprovedComTcJustification()
+    }
+
 
     @PostMapping("/company_standard/file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -143,40 +296,29 @@ class ComStandardController (val comStandardService: ComStandardService,
         return sm
     }
 
-    //********************************************************** get SPC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getSpcSecTasks")
-    fun getSpcSecTasks():List<TaskDetails>
-    {
-        return comStandardService.getSpcSecTasks()
-    }
-
-    //decision
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody comJustificationDecision: ComJustificationDecision) : List<TaskDetails>
-    {
-        return comStandardService.decisionOnJustification(comJustificationDecision)
-    }
 
 
-
-    //approve Justification List
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/approveJustification")
-    fun approveJustification(@RequestBody comJustificationDecision: ComJustificationDecision) : List<TaskDetails>
-    {
-        return comStandardService.approveJustification(comJustificationDecision)
-    }
 
     //********************************************************** process Upload Company Draft **********************************************************
     @PreAuthorize("hasAuthority('PL_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/uploadDraft")
     @ResponseBody
-    fun uploadDraft(@RequestBody comStdDraft: ComStdDraft): ServerResponse{
+    fun uploadDraft(@RequestBody comStdDraftDto: ComStdDraftDto): ServerResponse{
 
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
+        val comStdDraft= ComStdDraft().apply {
+            title=comStdDraftDto.title
+            scope=comStdDraftDto.scope
+            normativeReference=comStdDraftDto.normativeReference
+            symbolsAbbreviatedTerms=comStdDraftDto.symbolsAbbreviatedTerms
+            clause=comStdDraftDto.clause
+            special=comStdDraftDto.special
+            requestNumber=comStdDraftDto.requestNumber
+            requestId=comStdDraftDto.requestId
+        }
+
+
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraftDto) }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",comStandardService.uploadDraft(comStdDraft))
     }
 
@@ -212,20 +354,30 @@ class ComStandardController (val comStandardService: ComStandardService,
         return sm
     }
 
+    @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getUploadedStdDraftForComment")
+    @ResponseBody
+    fun getUploadedStdDraftForComment(): MutableList<ComStdDraft>
+    {
+        return comStandardService.getUploadedStdDraftForComment()
+    }
+
+    @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getUploadedStdDraft")
+    @ResponseBody
+    fun getUploadedStdDraft(): MutableList<ComStdDraft>
+    {
+        return comStandardService.getUploadedStdDraft()
+    }
+
     @GetMapping("/company_standard/getDRNumber")
     @ResponseBody
     fun getDRNumber(): String
     {
         return comStandardService.getDRNumber();
     }
-    //********************************************************** get JC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('JC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getJcSecTasks")
-    fun getJcSecTasks():List<TaskDetails>
-    {
-        return comStandardService.getJcSecTasks()
-    }
-    @GetMapping("/view/attached")
+
+    @GetMapping("/company_standard/view/attached")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun downloadFileDocument(
         response: HttpServletResponse,
@@ -235,7 +387,7 @@ class ComStandardController (val comStandardService: ComStandardService,
         val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
         commonDaoServices.downloadFile(response, mappedFileClass)
     }
-    @GetMapping("/view/comDraft")
+    @GetMapping("/company_standard/view/comDraft")
     fun viewCompanyDraftFile(
         response: HttpServletResponse,
         @RequestParam("comStdDraftID") comStdDraftID: Long
@@ -255,72 +407,333 @@ class ComStandardController (val comStandardService: ComStandardService,
 
     }
 
-//    @GetMapping("/view/comDraft")
-//    fun viewComDraftFile(
-//        response: HttpServletResponse,
-//        @RequestParam("comDraftDocumentId") comDraftDocumentId: Long
-//    ) {
-//        val fileUploaded = comStandardService.findUploadedCDRFileBYId(comDraftDocumentId)
-//        val fileDoc = commonDaoServices.mapClass(fileUploaded)
-//        response.contentType = "application/pdf"
-////                    response.setHeader("Content-Length", pdfReportStream.size().toString())
-//        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
-//        response.outputStream
-//            .let { responseOutputStream ->
-//                responseOutputStream.write(fileDoc.document?.let {
-//                    org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull(
-//                        it
-//                    )
-//                } as ByteArray)
-//                responseOutputStream.close()
-//            }
-//
-//        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
-//
-//    }
 
-
-    //Decision on Company Draft
     @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/decisionOnCompanyStdDraft")
-    fun decisionOnCompanyStdDraft(@RequestBody comDraftDecision: ComDraftDecision) : List<TaskDetails>
+    @PostMapping("/company_standard/commentOnDraft")
+    fun commentOnDraft(@RequestBody comStdDraftDecisionDto: ComStdDraftDecisionDto
+    ) : ServerResponse
     {
-        return comStandardService.decisionOnCompanyStdDraft(comDraftDecision)
+
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=comStdDraftDecisionDto.requestId
+            remarks=comStdDraftDecisionDto.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.commentOnDraft(companyStandardRemarks))
+
     }
 
-    //********************************************************** get COM SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('COM_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getComSecTasks")
-    fun getComSecTasks():List<TaskDetails>
+    @GetMapping("/company_standard/getAllComments")
+    fun getAllComments(@RequestParam("requestId") requestId: Long):MutableIterable<CompanyStandardRemarks>?
     {
-        return comStandardService.getComSecTasks()
-    }
-    //********************************************************** process Edit Company Standard **********************************************************
-
-    //Decision on Company Draft COM SEC
-    @PreAuthorize("hasAuthority('COM_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/decisionOnComStdDraft")
-    fun decisionOnComStdDraft(@RequestBody comDraftDecision: ComDraftDecision) : List<TaskDetails>
-    {
-        return comStandardService.decisionOnCompanyStdDraft(comDraftDecision)
+        return comStandardService.getAllComments(requestId)
     }
 
-    //********************************************************** get HOP Tasks **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getHopTasks")
-    fun getHopTasks():List<TaskDetails>
-    {
-        return comStandardService.getHopTasks()
-    }
 
-    //********************************************************** process Upload Company Standard **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/uploadComStandard")
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/decisionOnStdDraft")
+    fun decisionOnStdDraft(@RequestBody comStdDraftDecisionDto: ComStdDraftDecisionDto
+    ) : ServerResponse
+    {
+        val comStdDraft= ComStdDraft().apply {
+
+            accentTo=comStdDraftDecisionDto.accentTo
+            id= comStdDraftDecisionDto.id!!
+            title=comStdDraftDecisionDto.title
+            scope=comStdDraftDecisionDto.scope
+            normativeReference=comStdDraftDecisionDto.normativeReference
+            symbolsAbbreviatedTerms=comStdDraftDecisionDto.symbolsAbbreviatedTerms
+            clause=comStdDraftDecisionDto.clause
+            special=comStdDraftDecisionDto.special
+            requestNumber=comStdDraftDecisionDto.requestNumber
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=comStdDraftDecisionDto.requestId
+            remarks=comStdDraftDecisionDto.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.decisionOnStdDraft(comStdDraft,companyStandardRemarks))
+
+    }
+    //*************************************************** process Edit Company Standard **********************************************************
+
+
+    @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getApprovedStdDraft")
     @ResponseBody
-    fun uploadComStandard(@RequestBody companyStandard: CompanyStandard): ServerResponse
+    fun getApprovedStdDraft(): MutableList<ComStdDraft>
     {
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",comStandardService.uploadComStandard(companyStandard))
+        return comStandardService.getApprovedStdDraft()
     }
+
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/decisionOnComStdDraft")
+    fun decisionOnComStdDraft(@RequestBody comStdDraftDecisionDto: ComStdDraftDecisionDto
+    ) : ServerResponse
+    {
+        val comStdDraft= ComStdDraft().apply {
+            accentTo=comStdDraftDecisionDto.accentTo
+            id= comStdDraftDecisionDto.id!!
+            title=comStdDraftDecisionDto.title
+            scope=comStdDraftDecisionDto.scope
+            normativeReference=comStdDraftDecisionDto.normativeReference
+            symbolsAbbreviatedTerms=comStdDraftDecisionDto.symbolsAbbreviatedTerms
+            clause=comStdDraftDecisionDto.clause
+            special=comStdDraftDecisionDto.special
+            requestNumber=comStdDraftDecisionDto.requestNumber
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=comStdDraftDecisionDto.requestId
+            remarks=comStdDraftDecisionDto.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.decisionOnStdDraft(comStdDraft,companyStandardRemarks))
+
+    }
+    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getStdDraftForEditing")
+    @ResponseBody
+    fun getStdDraftForEditing(): MutableList<ComStdDraft>
+    {
+        return comStandardService.getStdDraftForEditing()
+    }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/submitDraftForEditing")
+    @ResponseBody
+    fun submitDraftForEditing(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    {
+        val companyStandard= CompanyStandard().apply {
+            requestNumber=isDraftDto.requestNumber
+            comStdNumber=isDraftDto.comStdNumber
+            id=isDraftDto.id
+            title=isDraftDto.title
+            scope=isDraftDto.scope
+            normativeReference=isDraftDto.normativeReference
+            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+            clause=isDraftDto.clause
+            documentType=isDraftDto.documentType
+            preparedBy=isDraftDto.preparedBy
+            documentType=isDraftDto.docName
+            special=isDraftDto.special
+        }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
+
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Draft",comStandardService.submitDraftForEditing(companyStandard))
+    }
+
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getUploadedDraft")
+    @ResponseBody
+    fun getUploadedDraft(): MutableList<COMUploadedDraft>
+    {
+        return comStandardService.getUploadedDraft()
+    }
+
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/checkRequirements")
+    fun checkRequirements(@RequestBody iSDraftDecisions: ISDraftDecisions
+    ) : ServerResponse
+    {
+        val companyStandard= CompanyStandard().apply {
+            accentTo=iSDraftDecisions.accentTo
+            draftId=iSDraftDecisions.draftId
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=iSDraftDecisions.requestId
+            remarks=iSDraftDecisions.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.checkRequirements(companyStandard,companyStandardRemarks))
+
+    }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getApprovedDraft")
+    @ResponseBody
+    fun getApprovedEditedDraft(): MutableList<COMUploadedDraft>
+    {
+        return comStandardService.getApprovedEditedDraft()
+    }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/editStandardDraft")
+    @ResponseBody
+    fun editStandardDraft(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    {
+
+        val companyStandard= CompanyStandard().apply {
+            requestNumber=isDraftDto.requestNumber
+            id=isDraftDto.id
+            title=isDraftDto.title
+            scope=isDraftDto.scope
+            normativeReference=isDraftDto.normativeReference
+            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+            clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            comStdNumber=isDraftDto.comStdNumber
+            special=isDraftDto.special
+            draughting=isDraftDto.draughting
+        }
+
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",comStandardService.editStandardDraft(companyStandard))
+    }
+
+    @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getComEditedDraft")
+    @ResponseBody
+    fun getComEditedDraft(): MutableList<COMUploadedDraft>
+    {
+        return comStandardService.getComEditedDraft()
+    }
+
+    @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/draughtStandard")
+    @ResponseBody
+    fun draughtStandard(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    {
+
+        val companyStandard= CompanyStandard().apply {
+            requestNumber=isDraftDto.requestNumber
+            id=isDraftDto.id
+            title=isDraftDto.title
+            scope=isDraftDto.scope
+            normativeReference=isDraftDto.normativeReference
+            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+            clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            comStdNumber=isDraftDto.comStdNumber
+            special=isDraftDto.special
+        }
+        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",comStandardService.draughtStandard(companyStandard))
+    }
+
+    @PreAuthorize("hasAuthority('PROOFREADER_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getDraughtedDraft")
+    @ResponseBody
+    fun getDraughtedDraft(): MutableList<COMUploadedDraft>
+    {
+        return comStandardService.getDraughtedDraft()
+    }
+
+    @PreAuthorize("hasAuthority('PROOFREADER_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/proofReadStandard")
+    @ResponseBody
+    fun proofReadStandard(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    {
+
+        val companyStandard= CompanyStandard().apply {
+            requestNumber=isDraftDto.requestNumber
+            id=isDraftDto.id
+            title=isDraftDto.title
+            scope=isDraftDto.scope
+            normativeReference=isDraftDto.normativeReference
+            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+            clause=isDraftDto.clause
+            documentType=isDraftDto.docName
+            comStdNumber=isDraftDto.comStdNumber
+            special=isDraftDto.special
+        }
+        return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",comStandardService.proofReadStandard(companyStandard))
+    }
+
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getProofReadDraft")
+    @ResponseBody
+    fun getProofReadDraft(): MutableList<COMUploadedDraft>
+    {
+        return comStandardService.getProofReadDraft()
+    }
+
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/approveProofReadStandard")
+    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+    ) : ServerResponse
+    {
+        val companyStandard= CompanyStandard().apply {
+            accentTo=iSDraftDecisions.accentTo
+            id=iSDraftDecisions.draftId
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=iSDraftDecisions.requestId
+            remarks=iSDraftDecisions.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveProofReadStandard(companyStandard,companyStandardRemarks))
+
+    }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getApprovedProofReadDraft")
+    @ResponseBody
+    fun getApprovedProofReadDraft(): MutableList<COMUploadedDraft>
+    {
+        return comStandardService.getApprovedProofReadDraft()
+    }
+
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/approveEditedStandard")
+    fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+    ) : ServerResponse
+    {
+        val companyStandard= CompanyStandard().apply {
+            accentTo=iSDraftDecisions.accentTo
+            id=iSDraftDecisions.draftId
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=iSDraftDecisions.requestId
+            remarks=iSDraftDecisions.comments
+        }
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveEditedStandard(companyStandard,companyStandardRemarks))
+
+    }
+
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getApprovedCompanyStdDraft")
+    @ResponseBody
+    fun getApprovedCompanyStdDraft(): MutableList<COMUploadedDraft>
+    {
+        return comStandardService.getApprovedCompanyStdDraft()
+    }
+
+    //SAC Decision
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/approveInternationalStandard")
+    fun approveInternationalStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
+    ) : ServerResponse
+    {
+        val companyStandard= CompanyStandard().apply {
+            accentTo=iSDraftDecisions.accentTo
+            id=iSDraftDecisions.draftId
+
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=iSDraftDecisions.requestId
+            remarks=iSDraftDecisions.comments
+        }
+
+        val standard= Standard().apply {
+            title=iSDraftDecisions.title
+            normativeReference=iSDraftDecisions.normativeReference
+            symbolsAbbreviatedTerms=iSDraftDecisions.symbolsAbbreviatedTerms
+            clause=iSDraftDecisions.clause
+            scope=iSDraftDecisions.scope
+            special=iSDraftDecisions.special
+            standardNumber=iSDraftDecisions.standardNumber
+        }
+
+
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveInternationalStandard(companyStandard,companyStandardRemarks,standard))
+
+    }
+
 
     @GetMapping("/company_standard/getCSNumber")
     @ResponseBody
@@ -362,16 +775,10 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
 
-    //********************************************************** get SAC SEC Tasks **********************************************************
-    @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getSacSecTasks")
-    fun getSacSecTasks():List<TaskDetails>
-    {
-        return comStandardService.getSacSecTasks()
-    }
+
 
     // View Standard
-    @GetMapping("/view/comStandard")
+    @GetMapping("/company_standard/view/comStandard")
     fun viewStandardFile(
         response: HttpServletResponse,
         @RequestParam("comStandardID") comStandardID: Long
@@ -391,14 +798,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
     }
 
-    //********************************************************** process Upload Company Standard **********************************************************
-    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/editCompanyStandard")
-    @ResponseBody
-    fun editCompanyStandard(@RequestBody editCompanyStandard: EditCompanyStandard): ServerResponse
-    {
-        return ServerResponse(HttpStatus.OK,"Successfully Edited Standard",comStandardService.editCompanyStandard(editCompanyStandard))
-    }
+
 
     @PostMapping("/company_standard/std-efile-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

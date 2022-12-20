@@ -95,6 +95,15 @@ aria-describedby="inputGroup-sizing-sm" aria-label="Small"
 class="form-control one-column-input" formControlName="companyEmail"  name="companyEmail"
 placeholder="joedoe@gmail.com" type="email">
 </div>
+    <div class="row col-12">
+        <div class="form-group col-12">
+            <label><b>Attach Commitment Letter</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <form #demoForm="ngForm">
+                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf" ></file-upload>
+                <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
+            </form>
+        </div>
+    </div>
     <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
         <button *ngIf="stdRequestFormGroup.valid" [disabled]="!stdRequestFormGroup.valid" class="btn btn-sm btn-info float-right" type="submit">Submit</button>
 

@@ -444,6 +444,7 @@ import { IntStdSacApprovalComponent } from './apollowebs/standards-development/i
 import { IntStdGazetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component';
 import { MsDashboardComponent } from './apollowebs/market-surveillance/ms-dashboard/ms-dashboard.component';
 import {DocumentEditorContainerModule} from "@syncfusion/ej2-angular-documenteditor";
+import { ComStdDraftCommentComponent } from './apollowebs/standards-development/company-standard/com-std-draft-comment/com-std-draft-comment.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -921,6 +922,7 @@ import {DocumentEditorContainerModule} from "@syncfusion/ej2-angular-documentedi
         IntStdSacApprovalComponent,
         IntStdGazetteComponent,
         MsDashboardComponent,
+        ComStdDraftCommentComponent,
 
     ],
     entryComponents: [LoaderComponent],

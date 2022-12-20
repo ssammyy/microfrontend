@@ -591,6 +591,7 @@ import {IntStdGazetteComponent} from "./apollowebs/standards-development/interna
 import {
     ReportSubmittedTimelineComponent
 } from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
+import {ComStdDraftCommentComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-comment/com-std-draft-comment.component";
 
 export const routes: Routes = [
     {
@@ -1523,6 +1524,11 @@ export const routes: Routes = [
         path: 'comStdListed',
         component: ComStdListComponent,
     },
+    {
+        path: 'comStdDraftComment',
+        component: ComStdDraftCommentComponent,
+    },
+
     // {
     //     path: 'comStdListed', component: AdminLayoutComponent,
     //     children: [{path: '', component: ComStdListComponent}],

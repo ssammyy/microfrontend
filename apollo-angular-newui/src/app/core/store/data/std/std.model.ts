@@ -894,7 +894,7 @@ export interface ComStdAction {
     id: string;
     requestNumber: string;
     dateAssigned: string;
-    taskId: string;
+    requestId: number;
 }
 
 export interface ComStandardJC {
@@ -903,6 +903,8 @@ export interface ComStandardJC {
     idOfJc: string;
     taskId: string;
     processId: string;
+    requestId: number;
+    name: string[];
 }
 
 export interface ComJcJustification {
@@ -1089,7 +1091,15 @@ export interface COMPreliminaryDraft{
     taskId: string;
     processId: string;
     diJNumber: number;
-    requestNumber: number;
+    requestNumber: string;
+    requestId: number;
+    draftNumber: string;
+    status: number;
+}
+export interface ComApproveDraft{
+    accentTo: boolean;
+    requestId: bigint;
+    comments: string;
 }
 
 //********************************************************** Company Standards Adoption -END **********************************************************
@@ -1501,4 +1511,19 @@ export interface ISCheckRequirements{
     isNumber: string;
     documentType: string;
     preparedBy: string;
+}
+
+export interface ComStdRequest{
+    id: number;
+    requestNumber: string;
+    submissionDate: string;
+    companyName: string;
+    departmentId: string;
+    companyPhone: string;
+    companyEmail: string;
+    departmentName: string;
+    productName: string;
+    productSubCategoryName: string;
+    tcName: string;
+    status: number;
 }
