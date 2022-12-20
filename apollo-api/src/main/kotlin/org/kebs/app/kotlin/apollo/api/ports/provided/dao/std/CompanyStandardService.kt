@@ -250,7 +250,7 @@ class CompanyStandardService(
         comStdDraft.symbolsAbbreviatedTerms?.let { variables.put("symbolsAbbreviatedTerms", it) }
         comStdDraft.clause?.let { variables.put("clause", it) }
         comStdDraft.special?.let { variables.put("special", it) }
-        comStdDraft.uploadedBy= loggedInUser.id.toString()
+        comStdDraft.uploadedBy= loggedInUser.id
         comStdDraft.taskId?.let { variables.put("taskId", it) }
         comStdDraft.processId?.let { variables.put("processId", it) }
         comStdDraft.requestNumber?.let { variables.put("requestNumber", it) }
@@ -369,7 +369,7 @@ class CompanyStandardService(
             comStdDraftRepository.findByIdOrNull(comDraftDecision.approvalID)?.let { comStdDraft->
                 with(comStdDraft){
                     remarks=comDraftDecision.comments
-                    accentTo = true
+                    accentTo = "NA"
                 }
                 comStdDraftRepository.save(comStdDraft)
                 standardComRemarksRepository.save(standardComRemarks)
@@ -481,7 +481,7 @@ class CompanyStandardService(
             comStdDraftRepository.findByIdOrNull(comDraftDecision.approvalID)?.let { comStdDraft->
                 with(comStdDraft){
                     remarks=comDraftDecision.comments
-                    accentTo = true
+                    accentTo = "true"
                 }
                 comStdDraftRepository.save(comStdDraft)
                 standardComRemarksRepository.save(standardComRemarks)

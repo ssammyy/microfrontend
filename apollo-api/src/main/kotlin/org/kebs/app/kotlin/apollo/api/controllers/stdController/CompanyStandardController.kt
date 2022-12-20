@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 
-@RequestMapping("api/v1/migration")
+@RequestMapping("api/v1/migration/try")
 class CompanyStandardController(val comStandardService: CompanyStandardService,
                                 val standardRequestService: StandardRequestService,
                                 private val commonDaoServices: CommonDaoServices,

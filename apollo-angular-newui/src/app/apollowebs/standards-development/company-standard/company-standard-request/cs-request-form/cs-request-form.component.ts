@@ -14,6 +14,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../../core/store/data/std/notification.service";
 import {StandardDevelopmentService} from "../../../../../core/store/data/std/standard-development.service";
+import swal from "sweetalert2";
 
 declare const $: any;
 
@@ -28,6 +29,8 @@ export class CsRequestFormComponent implements OnInit {
   public departments !: Department[] ;
   public technicalCommittees !: TechnicalCommittee[];
   public stdRequestFormGroup!: FormGroup;
+    blob: Blob;
+    public uploadedFiles:  FileList;
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -71,12 +74,11 @@ export class CsRequestFormComponent implements OnInit {
     saveStandard(): void {
     this.SpinnerService.show();
     this.stdComStandardService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
-        (response:CompanyStandardRequest) =>{
+        (response) =>{
 
           this.SpinnerService.hide();
           console.log(response);
-          Swal.fire('Thank you...', 'Standard Request Submitted!', 'success').then(r => this.stdRequestFormGroup.reset());
-
+            this.onClickSaveUploads(response.body.id)
 
         },
         (error:HttpErrorResponse) =>{
@@ -85,6 +87,51 @@ export class CsRequestFormComponent implements OnInit {
         }
     );
   }
+
+    onClickSaveUploads(comStdRequestID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.stdComStandardService.uploadCommitmentLetter(comStdRequestID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Thank you....',
+                        html:'Company Standard Request Submitted',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    }).then(r => this.stdRequestFormGroup.reset());
+                },
+            );
+        }
+
+    }
+
+    viewCommitmentLetter(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCommitmentLetter(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+            },
+        );
+    }
+
     public getDepartments(): void {
         this.SpinnerService.show();
         this.stdComStandardService.getDepartments().subscribe(

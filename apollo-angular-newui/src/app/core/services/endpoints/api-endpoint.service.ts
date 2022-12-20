@@ -451,6 +451,8 @@ export class ApiEndpointService {
         // ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/${id}`,
         ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/`,
         ICT_ADD_STD_REQUEST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/request`,
+        ICT_VIEW_COMMITMENT_LETTER: `${ApiEndpointService.SD_ICT_CONTEXT}/view/commitmentLetter`,
+        ICT_UPLOAD_COMMITMENT_LETTER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/commitmentLetter`,
         ICT_HOD_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHODTasks`,
         ICT_COM_USER_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getUserTasks`,
         ICT_COM_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAllComments`,
@@ -477,6 +479,14 @@ export class ApiEndpointService {
         ICT_COM_HOP_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHopTasks`,
         ICT_COM_EDIT_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/editCompanyStandard`,
         ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/std-efile-upload`,
+
+
+        ICT_COM_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequest`,
+        ICT_COM_STD_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraft`,
+        ICT_COM_STD_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraftForComment`,
+        ICT_COM_STD_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/commentOnDraft`,
+
+
 
         // SD SYSTEMIC REVIEW
         SR_GET_REVIEWED_STANDARDS: `${ApiEndpointService.SD_SR_CONTEXT}/reviewedStandards`,
