@@ -592,6 +592,15 @@ import {
     ReportSubmittedTimelineComponent
 } from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
 import {ComStdDraftCommentComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-comment/com-std-draft-comment.component";
+import {
+    SchemeMembershipFormComponent
+} from "./apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component";
+import {
+    SchemeMembershipReviewComponent
+} from "./apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component";
+import {
+    SchemeMembershipSicComponent
+} from "./apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component";
 
 export const routes: Routes = [
     {
@@ -1885,6 +1894,34 @@ export const routes: Routes = [
 
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - ADOPTION OF EA STANDARDS
+     ***************************************************************/
+    /****************************************************************
+     * SCHEME MEMBERSHIP
+     ***************************************************************/
+    {
+        path: 'schemeMemberShipForm',
+        component: StandardRequestComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: SchemeMembershipFormComponent}],
+    },
+    {
+        path: 'hodReview',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: SchemeMembershipReviewComponent}],
+    },
+
+    {
+        path: 'sicReview',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: SchemeMembershipSicComponent}],
+    },
+
+
+
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - SCHEME MEMBERSHIP
      ***************************************************************/
 
 

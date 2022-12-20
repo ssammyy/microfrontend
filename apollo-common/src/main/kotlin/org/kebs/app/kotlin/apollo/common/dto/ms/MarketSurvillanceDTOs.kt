@@ -343,6 +343,7 @@ data class WorkPlanEntityDto(
         var rationale: String? = null,
         var scopeOfCoverage: String? = null,
         var timeActivityDate: Date? = null,
+        var region: Long? = null,
         var county: Long? = null,
         var townMarketCenter: Long? = null,
         var locationActivityOther: String? = null,
@@ -1001,6 +1002,7 @@ data class ComplaintAssignDto(
 
 data class RegionReAssignDto(
         var reassignedRemarks: String? = null,
+        var regionID: Long? = null,
         var countyID: Long? = null,
         var townID: Long? = null
 )

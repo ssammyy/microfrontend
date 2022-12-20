@@ -258,7 +258,10 @@ class CheckListForm {
             dt.serialNumber = "MVC${item.itemId}${formatDate()}${Random(5).nextULong()}"
             dt.sampled = item.submitToMinistry
             dt.makeVehicle = item.makeVehicle
-            dt.chassisNo = item.chassisNo
+            dt.chassisNo = when {
+                (item.chassisNo?.length ?: 0) > 0 -> item.chassisNo
+                else -> null
+            }
             dt.engineNoCapacity = item.engineNoCapacity
             item.manufacturerDate?.let {
                 dt.manufactureDate = Date.valueOf(it)
@@ -289,9 +292,9 @@ class CheckListForm {
 
 class SSFLaboratoryRequest {
     fun fillDetails(lab: QaSCFLaboratoryRequestsEntity) {
-        lab.laboratoryName=laboratoryName
-        lab.testParameters=testParameters
-        lab.remarks=remarks
+        lab.laboratoryName = laboratoryName
+        lab.testParameters = testParameters
+        lab.remarks = remarks
     }
 
     val testParameters: String? = null
@@ -305,7 +308,7 @@ class SsfForm {
     var ssfSubmissionDate: String? = null
     var returnOrDispose: String? = null
     var conditionOfSample: String? = null
-    var labRequests: List<SSFLaboratoryRequest>?=null
+    var labRequests: List<SSFLaboratoryRequest>? = null
     fun ssf(): QaSampleSubmissionEntity {
         val df = QaSampleSubmissionEntity()
         df.description = description

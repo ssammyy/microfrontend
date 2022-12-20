@@ -79,6 +79,7 @@ export class ComplaintNewComponent implements OnInit {
   businessNatures$: Observable<BusinessNatures[]>;
   region$: Observable<Region[]>;
   county$: Observable<County[]>;
+  countyList: County[];
   town$: Observable<Town[]>;
   selectedBusinessLine = 0;
   selectedBusinessNature = 0;
@@ -137,6 +138,12 @@ export class ComplaintNewComponent implements OnInit {
         this.time -= 1;
       },
     };
+
+    this.countyService.getAll().subscribe((data: County[]) => {
+      // this.countyList = data.sort((a, b) => a.county - b.county);
+      this.countyList = data.sort((a, b) => a.county > b.county ? 1 : -1);
+        },
+    );
 
     this.stepZeroForm = this.formBuilder.group({
       registrationNumber: ['', Validators.required],
@@ -223,6 +230,12 @@ export class ComplaintNewComponent implements OnInit {
   get formStepFiveForm(): any {
     return this.stepFiveForm.controls;
   }
+
+  // sortFnCounty = (a: County, b: County): number => {
+  //   if (a.county < b.county) { return -1; }
+  //   if (a.county === b.county) { return 0; }
+  //   if (a.county > b.county) { return 1; }
+  // }
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;

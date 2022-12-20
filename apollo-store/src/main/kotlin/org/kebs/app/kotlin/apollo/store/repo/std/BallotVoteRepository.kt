@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo.std
 
 import org.kebs.app.kotlin.apollo.store.model.std.BallotVote
-import org.kebs.app.kotlin.apollo.store.model.std.CommentsWithPdId
 import org.kebs.app.kotlin.apollo.store.model.std.VotesTally
 import org.kebs.app.kotlin.apollo.store.model.std.VotesWithBallotId
 import org.springframework.data.jpa.repository.JpaRepository
@@ -32,6 +31,7 @@ interface BallotVoteRepository : JpaRepository<BallotVote, Long> {
     fun getVotesTally(): List<VotesTally>
 
 
-    fun findByUserIdAndAndBallotIdAndStatus(userId: Long, ballotId: Long, status: Long): BallotVote?
+
+    fun findByUserIdAndBallotIdAndStatus(userId: Long, ballotId: Long, status: Long): BallotVote?
 
 }

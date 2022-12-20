@@ -7,14 +7,13 @@ import {selectResponseData} from './core/store/data/response/response.selectors'
 import {ApiResponse} from './core/domain/response.model';
 import {LoadingService} from "./core/services/loader/loadingservice.service";
 import {delay} from "rxjs/operators";
-import {ToolbarService} from "@syncfusion/ej2-angular-documenteditor";
+// import {ToolbarService} from "@syncfusion/ej2-angular-documenteditor";
 // import {HtmlEditorService, ImageService, LinkService, ToolbarService} from '@syncfusion/ej2-angular-richtexteditor';
 
 @Component({
     selector: 'app-my-app',
     templateUrl: './app.component.html',
-    providers: [ToolbarService]
-
+    // providers: [ToolbarService]
 })
 
 export class AppComponent implements OnInit {
