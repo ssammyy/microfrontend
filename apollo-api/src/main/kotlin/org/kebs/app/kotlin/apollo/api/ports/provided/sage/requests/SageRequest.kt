@@ -89,9 +89,7 @@ class SageQAHeaderB {
     @NotNull(message = "Required field")
     var connectionPassword: String? = null
 
-    @JsonProperty("Region")
-    @NotNull(message = "Required field")
-    var region: String? = null
+
 }
 
 class SageQARequest {
@@ -179,7 +177,11 @@ class SageQARequestB {
 
     @JsonProperty("Witholding")
     @NotNull(message = "Required field")
-    var Withholding: String? = null
+    var Withholding: Long? = null
+
+    @JsonProperty("Region")
+    @NotNull(message = "Required field")
+    var region: String? = null
 }
 
 class SageQADetails {

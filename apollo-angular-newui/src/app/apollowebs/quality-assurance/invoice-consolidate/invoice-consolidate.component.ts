@@ -39,7 +39,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   final_array = [];
   selected = [];
   messages = []
-  isWithHolding = "false";
+  isWithHolding = 0;
   // permitInvoicesIDS = [];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
@@ -90,7 +90,7 @@ export class InvoiceConsolidateComponent implements OnInit {
 
   setWithHoldingToTrue(checked) {
     if(checked) {
-      this.isWithHolding = "true";
+      this.isWithHolding = 1;
     }
   }
 

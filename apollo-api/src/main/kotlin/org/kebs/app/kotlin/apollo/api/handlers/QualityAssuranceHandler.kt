@@ -1124,6 +1124,9 @@ class QualityAssuranceHandler(
         req.attributes()["foundPDFFiles"] = result.distinct()
         req.attributes()["complianceDetails"] = QaSampleSubmittedPdfListDetailsEntity()
         req.attributes()["SampleSubmissionDetails"] = QaSampleSubmissionEntity()
+        req.attributes()["encryptedPermitId"] = jasyptStringEncryptor.encrypt(permit.id.toString())
+        req.attributes()["encryptedUserId"] = jasyptStringEncryptor.encrypt(permit.userId.toString())
+
 
         return ok().render(qaSSFDetailesPage, req.attributes())
 
@@ -1148,6 +1151,8 @@ class QualityAssuranceHandler(
         req.attributes()["allSSFDetailsList"] = allSSFDetailsList
         req.attributes()["permitDetails"] = permit
         req.attributes()["SampleSubmissionDetails"] = QaSampleSubmissionEntity()
+        req.attributes()["encryptedPermitId"] = jasyptStringEncryptor.encrypt(permit.id.toString())
+        req.attributes()["encryptedUserId"] = jasyptStringEncryptor.encrypt(permit.userId.toString())
 
         return ok().render(qaSSFListDetailesPage, req.attributes())
     }

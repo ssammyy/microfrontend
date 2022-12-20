@@ -8,12 +8,14 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
+import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayInputStream
 import javax.servlet.http.HttpServletResponse
 
 
@@ -26,6 +28,8 @@ class QualityAssuranceJSONControllers(
     private val resourceLoader: ResourceLoader,
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
+    private val usersSignatureRepository: UserSignatureRepository
+
 ) {
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
@@ -305,6 +309,20 @@ class QualityAssuranceJSONControllers(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
         map["QrCode"] = foundPermitDetails.permitNumber.toString()
+        val user = permit.varField6?.toLong().let { it?.let { it1 -> commonDaoServices.findUserByID(it1) } }
+
+
+        if (user != null) {
+            val mySignature: ByteArray?
+            val image: ByteArrayInputStream?
+            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+            if (signatureFromDb != null) {
+                mySignature= signatureFromDb.signature
+                image = ByteArrayInputStream(mySignature)
+                map["Signature"] = image
+
+            }
+        }
 
 
         when (foundPermitDetails.permitTypeID) {

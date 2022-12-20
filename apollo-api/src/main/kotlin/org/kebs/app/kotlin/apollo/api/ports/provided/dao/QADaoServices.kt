@@ -5105,7 +5105,7 @@ class QADaoServices(
                                 ).toUpperCase()
                                 userId = userID
                                 plantId = batchInvoiceDto.plantID
-                                varField1 = batchInvoiceDto.isWithHolding // withholding field
+                                varField1 = batchInvoiceDto.isWithHolding.toString() // withholding field
                                 status = s.activeStatus
                                 description = "${permitInvoiceFound.invoiceRef}"
                                 totalAmount = permitInvoiceFound.totalAmount
@@ -5307,14 +5307,12 @@ class QADaoServices(
         var invoiceDetails: QaBatchInvoiceEntity? = null
         try {
 
-            val userID = user.id ?: throw Exception("INVALID USER ID")
             if (batchInvoiceDto.batchID == -1L) {
                 throw Exception("INVALID BATCH ID NUMBER")
             }
             invoiceDetails = findBatchInvoicesWithID(batchInvoiceDto.batchID)
 
             val isWithHoldingVariable = batchInvoiceDto.isWithHolding
-            KotlinLogging.logger { }.info("Withholding Status = ${isWithHoldingVariable}")
             val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
                 user.userName!!,
                 invoiceDetails.invoiceNumber ?: throw Exception("MISSING INVOICE NUMBER")
@@ -7017,6 +7015,7 @@ class QADaoServices(
             )
         }
     }
+
     fun listPermitsNotMigratedWebsiteFmark(
         permits: List<PermitMigrationApplicationsEntityFmark>,
         map: ServiceMapsEntity
