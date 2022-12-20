@@ -300,6 +300,7 @@ class StandardRequestController(
     fun getRejectedAmendmentJustifications(): List<StandardJustification> {
         return standardRequestService.getRejectedAmendmentJustifications()
     }
+
     @GetMapping("standard/getJustificationByNwiId")
     fun getJustificationByNwiId(
         @RequestParam("nwiId") nwiId: Long,

@@ -692,3 +692,5 @@ GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedSmar
 
 ###
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=22270
+
+SM#1234

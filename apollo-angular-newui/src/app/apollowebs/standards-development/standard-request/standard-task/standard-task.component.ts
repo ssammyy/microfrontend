@@ -65,7 +65,7 @@ export class StandardTaskComponent implements OnInit {
 
 
     displayedColumns: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions'];
-    displayedColumn: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions','action'];
+    displayedColumn: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions', 'action'];
     dataSource!: MatTableDataSource<StandardRequestB>;
     dataSourceB!: MatTableDataSource<StandardRequestB>;
     dataSourceC!: MatTableDataSource<StandardRequestB>;
@@ -160,9 +160,11 @@ export class StandardTaskComponent implements OnInit {
     }
 
     public getHOFTasks(): void {
+        this.SpinnerService.show()
         this.standardDevelopmentService.getHOFTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.tasks = response;
+                this.SpinnerService.hide()
                 this.dataSource = new MatTableDataSource(this.tasks);
 
                 this.dataSource.paginator = this.paginator;
@@ -170,6 +172,8 @@ export class StandardTaskComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.SpinnerService.hide()
+
             }
         );
     }

@@ -496,7 +496,7 @@ class InvoiceDaoService(
 
         var region: String? = null
 
-        var isWithHolding: String? = null
+        var isWithHolding: Long? = null
 
 
     }

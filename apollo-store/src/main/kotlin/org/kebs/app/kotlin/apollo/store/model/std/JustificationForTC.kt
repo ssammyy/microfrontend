@@ -30,6 +30,14 @@ class JustificationForTC {
     @Basic
     var scope:String? = null
 
+    @Column(name="COM_REQUEST_ID")
+    @Basic
+    var comRequestId:Long? = null
+
+    @Column(name="STATUS")
+    @Basic
+    var status:Long? = null
+
     @Column(name="PROPOSED_TC_REPRESENTATION")
     @Basic
     var proposedRepresentation:String? = null
@@ -57,6 +65,15 @@ class JustificationForTC {
     @Column(name = "DATE_OF_PRESENTATION")
     @Basic
     var dateOfPresentation: String? = null
+
+    @Column(name = "ACCENT_TO")
+    @Basic
+    var accentTo: String? = null
+
+    @Column(name = "TC_NUMBER")
+    @Basic
+    var tcNumber: String? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -76,6 +93,7 @@ class JustificationForTC {
         if (referenceNumber != other.referenceNumber) return false
         if (targetDate != other.targetDate) return false
         if (dateOfPresentation != other.dateOfPresentation) return false
+        if (accentTo != other.accentTo) return false
 
         return true
     }
@@ -94,11 +112,12 @@ class JustificationForTC {
         result = 31 * result + (referenceNumber?.hashCode() ?: 0)
         result = 31 * result + (targetDate?.hashCode() ?: 0)
         result = 31 * result + (dateOfPresentation?.hashCode() ?: 0)
+        result = 31 * result + (accentTo?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "JustificationForTC(id=$id, subject=$subject, proposer=$proposer, purpose=$purpose, nameOfTC=$nameOfTC, scope=$scope, proposedRepresentation=$proposedRepresentation, programmeOfWork=$programmeOfWork, liaisonOrganization=$liaisonOrganization, organization=$organization, referenceNumber=$referenceNumber, targetDate=$targetDate, dateOfPresentation=$dateOfPresentation)"
+        return "JustificationForTC(id=$id, subject=$subject, proposer=$proposer, purpose=$purpose, nameOfTC=$nameOfTC, scope=$scope, proposedRepresentation=$proposedRepresentation, programmeOfWork=$programmeOfWork, liaisonOrganization=$liaisonOrganization, organization=$organization, referenceNumber=$referenceNumber, targetDate=$targetDate, dateOfPresentation=$dateOfPresentation,accentTo=$accentTo)"
     }
 
 

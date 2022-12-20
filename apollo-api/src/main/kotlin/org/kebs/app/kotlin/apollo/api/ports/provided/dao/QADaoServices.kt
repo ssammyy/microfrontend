@@ -66,6 +66,9 @@ class QADaoServices(
     private val permitRepo: IPermitApplicationsRepository,
     private val iPermitRepo: PermitRepository,
     private val permitMigratedRepo: IPermitMigrationApplicationsEntityRepository,
+    private val permitMigratedRepoDmark: IPermitMigrationApplicationsDmarkEntityRepository,
+    private val permitMigratedRepoFmark: IPermitMigrationApplicationsFmarkEntityRepository,
+
     private val permitUpdateDetailsRequestsRepo: IPermitUpdateDetailsRequestsRepository,
     private val userRequestsRepo: IUserRequestTypesRepository,
     private val SampleCollectionRepo: IQaSampleCollectionRepository,
@@ -5102,16 +5105,28 @@ class QADaoServices(
                                 ).toUpperCase()
                                 userId = userID
                                 plantId = batchInvoiceDto.plantID
-                                varField1 = batchInvoiceDto.isWithHolding // withholding field
-                                if(isWithHolding ==1){
+                                varField1 = batchInvoiceDto.isWithHolding.toString() // withholding field
+                                if(batchInvoiceDto.isWithHolding ==1L){
+                                    var foundTotalAmount  = permitInvoiceFound.totalAmount
+                                    foundTotalAmount = foundTotalAmount?.minus(permitInvoiceFound.taxAmount!!)
 
-                                }else{
+                                    val taxFoundAmount = foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
 
+                                    foundTotalAmount = taxFoundAmount?.let { foundTotalAmount?.plus(it) }
+
+                                    with(permitInvoiceFound) {
+                                        totalAmount = foundTotalAmount
+                                        taxAmount = taxFoundAmount
+                                        varField2 = "WITH HELD TRUE"
+                                        modifiedBy = commonDaoServices.concatenateName(user)
+                                        modifiedOn = commonDaoServices.getTimestamp()
+                                    }
+                                    permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
                                 }
                                 status = s.activeStatus
                                 description = "${permitInvoiceFound.invoiceRef}"
                                 totalAmount = permitInvoiceFound.totalAmount
-                                totalTaxAmount = permitInvoiceFound.taxAmount
+                                totalTaxAmount =permitInvoiceFound.taxAmount
                                 createdBy = commonDaoServices.concatenateName(user)
                                 createdOn = commonDaoServices.getTimestamp()
                             }
@@ -5309,15 +5324,12 @@ class QADaoServices(
         var invoiceDetails: QaBatchInvoiceEntity? = null
         try {
 
-            val userID = user.id ?: throw Exception("INVALID USER ID")
             if (batchInvoiceDto.batchID == -1L) {
                 throw Exception("INVALID BATCH ID NUMBER")
             }
             invoiceDetails = findBatchInvoicesWithID(batchInvoiceDto.batchID)
 
-            val isWithHoldingVariable= batchInvoiceDto.isWithHolding
-
-
+            val isWithHoldingVariable = batchInvoiceDto.isWithHolding
             val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
                 user.userName!!,
                 invoiceDetails.invoiceNumber ?: throw Exception("MISSING INVOICE NUMBER")
@@ -5345,7 +5357,7 @@ class QADaoServices(
                 accountName = manufactureDetails.name
                 accountNumber = manufactureDetails.kraPin
                 currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-                region =  commonDaoServices.findRegionNameByRegionID(attachedPermitPlantDetails.region!!)
+                region = commonDaoServices.findRegionNameByRegionID(attachedPermitPlantDetails.region!!)
                 isWithHolding = isWithHoldingVariable
 
             }
@@ -7000,8 +7012,49 @@ class QADaoServices(
             )
         }
     }
+
     fun listPermitsNotMigratedWebsite(
         permits: List<PermitMigrationApplicationsEntity>,
+        map: ServiceMapsEntity
+    ): List<KebsWebistePermitEntityDto> {
+        return permits.map { p ->
+            KebsWebistePermitEntityDto(
+                p.companyName,
+                p.physicalAddress,
+                p.permitNumber,
+                p.productName,
+                p.tradeMark,
+                p.ksNumber,
+                p.commodityDescription,
+                p.effectiveDate.toString(),
+                p.dateOfExpiry.toString()
+
+            )
+        }
+    }
+
+    fun listPermitsNotMigratedWebsiteFmark(
+        permits: List<PermitMigrationApplicationsEntityFmark>,
+        map: ServiceMapsEntity
+    ): List<KebsWebistePermitEntityDto> {
+        return permits.map { p ->
+            KebsWebistePermitEntityDto(
+                p.companyName,
+                p.physicalAddress,
+                p.permitNumber,
+                p.productName,
+                p.tradeMark,
+                p.ksNumber,
+                p.commodityDescription,
+                p.effectiveDate.toString(),
+                p.dateOfExpiry.toString()
+
+            )
+        }
+    }
+
+    fun listPermitsNotMigratedWebsiteDmark(
+        permits: List<PermitMigrationApplicationsEntityDmark>,
         map: ServiceMapsEntity
     ): List<KebsWebistePermitEntityDto> {
         return permits.map { p ->
@@ -7039,6 +7092,34 @@ class QADaoServices(
     ): List<PermitMigrationApplicationsEntity> {
 
         permitMigratedRepo.findByPermitNumber(awardedPermitNumber)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findPermitByPermitNumberNotMigratedDmark(
+        awardedPermitNumber: String
+    ): List<PermitMigrationApplicationsEntityDmark> {
+
+        permitMigratedRepoDmark.findByPermitNumber(awardedPermitNumber)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findPermitByPermitNumberNotMigratedFmark(
+        awardedPermitNumber: String
+    ): List<PermitMigrationApplicationsEntityFmark> {
+
+        permitMigratedRepoFmark.findByPermitNumber(awardedPermitNumber)
             ?.let { permitList ->
                 return permitList
             }

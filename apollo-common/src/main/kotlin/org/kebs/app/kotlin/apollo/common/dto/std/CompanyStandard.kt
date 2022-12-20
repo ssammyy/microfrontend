@@ -20,3 +20,34 @@ class ComDraftDecision(
     @JsonProperty("assignedTo") var assignedTo: Long?
 ) {
 }
+
+class ComStdDraftDto(
+    var title: String?=null,
+    var scope: String?=null,
+    var normativeReference: String?=null,
+    var symbolsAbbreviatedTerms: String?=null,
+    var clause: String?=null,
+    var special: String?=null,
+    var uploadedBy: String?=null,
+    var requestNumber: String?=null,
+    var requestId: Long?=null
+){
+
+}
+
+class ComStdDraftDecisionDto(
+    var title: String?=null,
+    var scope: String?=null,
+    var normativeReference: String?=null,
+    var symbolsAbbreviatedTerms: String?=null,
+    var clause: String?=null,
+    var special: String?=null,
+    var uploadedBy: String?=null,
+    var requestNumber: String?=null,
+    var accentTo: String?=null,
+    var id: Long?=null,
+    var requestId: Long?=null,
+    var comments: String?=null
+){
+
+}

@@ -263,7 +263,7 @@
                                 </div>
 
                                 <a style="color: white"
-                                   th:href="@{/api/qa/permit-details(permitID=${permitDetails.id},userID=${permitDetails?.userId})}"
+                                   th:href="@{/api/qa/permit-details(permitID=${encryptedPermitId},userID=${encryptedUserId})}"
                                    class="filter-link">GO TO PERMIT DETAILS</a>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -42,7 +43,8 @@ class CompanyStandard {
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    val accentTo: Boolean = false
+    var accentTo: String? = null
+
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null
@@ -50,4 +52,32 @@ class CompanyStandard {
     @Column(name = "PROCESS_ID")
     @Basic
     var processId: String? = null
+
+    @Column(name = "REQUEST_NUMBER")
+    @Basic
+    var requestNumber: Long? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Long? = null
+
+    @Column(name = "UPLOAD_DATE")
+    @Basic
+    var uploadDate: Timestamp? = null
+
+    @Column(name = "PREPARED_BY")
+    @Basic
+    var preparedBy: String? = null
+
+    @Column(name = "DOCUMENT_TYPE")
+    @Basic
+    var documentType: String? = null
+
+    @Column(name = "DRAFT_ID")
+    @Basic
+    var draftId: Long? = null
+
+    @Column(name = "DRAUGHTING")
+    @Basic
+    var draughting: String? = null
 }

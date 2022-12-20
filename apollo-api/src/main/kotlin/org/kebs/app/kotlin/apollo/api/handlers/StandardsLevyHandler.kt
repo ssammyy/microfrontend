@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootKra
+import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootMsg
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
@@ -142,6 +143,41 @@ class StandardsLevyHandler(
             KotlinLogging.logger { }.error(e.message)
             onErrors(e.message)
         }
+    }
+
+    fun processReceiveMessageBody(req: ServerRequest): ServerResponse
+    {
+        return try {
+
+            val stringData = req.body<String>()
+            val mapper = ObjectMapper()
+            mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+//            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+//            mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+            val removedString = commonDaoServices.removeQuotesAndUnescape(stringData)
+            val body: RootMsg = mapper.readValue(removedString, RootMsg::class.java)
+            KotlinLogging.logger { }.info { "Message 2 $body" }
+            val errors: Errors = BeanPropertyBindingResult(body, RootMsg::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+
+                    val requestBody = body.request?: throw ExpectedDataNotFound("Missing request value")
+                    KotlinLogging.logger { }.info { "Message 4 $requestBody" }
+                    val response = service.getPermit(requestBody)
+                    ServerResponse.ok().body(response)
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+
     }
 
     /**

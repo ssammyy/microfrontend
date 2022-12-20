@@ -118,7 +118,7 @@ export class GenerateInvoiceWithWithholdingDto {
     plantID: bigint;
     permitRefNumber: string;
     permitInvoicesID: number[];
-    isWithHolding:boolean;
+    isWithHolding:number;
 }
 
 export class SSFPDFListDetailsDto {

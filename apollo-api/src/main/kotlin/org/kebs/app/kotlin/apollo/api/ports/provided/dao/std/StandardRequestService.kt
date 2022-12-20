@@ -108,10 +108,21 @@ class StandardRequestService(
 
     }
 
+
+
     fun updateDepartmentStandardRequest(standardRequest: StandardRequest) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val department = departmentRepository.findByIdOrNull(standardRequest.departmentId?.toLong())
+
         val standardRequestToUpdate = standardRequestRepository.findById(standardRequest.id)
             .orElseThrow { RuntimeException("No Standard Request found") }
+
+        val s1 = standardRequestToUpdate.requestNumber
+        val parts = s1?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
+        val part1 = parts?.get(0)
+        val part2 = parts?.get(1)
+        val replaceString = department?.abbreviations?.let { part1?.replace(part1, it) }
+        standardRequestToUpdate.requestNumber = "$replaceString/$part2"
         standardRequestToUpdate.departmentId = standardRequest.departmentId
         standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
         standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
@@ -978,6 +989,9 @@ class StandardRequestService(
         return sdDocumentsRepository.save(uploads)
     }
 
+    fun standardReceivedReports(): MutableList<ReceivedStandards>{
+        return standardRequestRepository.getReceivedStandardsReport()
+    }
 
 }
 

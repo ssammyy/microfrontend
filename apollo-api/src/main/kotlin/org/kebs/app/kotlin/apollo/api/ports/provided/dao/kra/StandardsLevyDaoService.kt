@@ -164,6 +164,13 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
+    fun getPermit(msg: KMessageBody): String{
+        val permitNo=msg.data?.message
+
+        println(permitNo)
+
+        return "Data Found"
+    }
     private fun validateCredentialsAndLogToDataStore(paymentRequest: Request, log: WorkflowTransactionsEntity): RequestResult {
         when (daoService.validateHash(paymentRequest)) {
             false -> throw InvalidInputException("90003,NOK, Hash code validation provided")

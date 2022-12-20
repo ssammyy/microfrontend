@@ -1,10 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Subject} from "rxjs";
-import {ApproveDraft, ApproveSACJC, ComJcJustificationDec} from "../../../../core/store/data/std/std.model";
+import {
+    ApproveDraft,
+    ApproveSACJC,
+    ComJcJustificationDec, COMPreliminaryDraft,
+    ComStdRequest
+} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DataTableDirective} from "angular-datatables";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-com-std-draft',
@@ -12,45 +19,57 @@ import {HttpErrorResponse} from "@angular/common/http";
   styleUrls: ['./com-std-draft.component.css']
 })
 export class ComStdDraftComponent implements OnInit {
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
-  tasks: ComJcJustificationDec[] = [];
-  public actionRequest: ComJcJustificationDec | undefined;
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
+    tasks: COMPreliminaryDraft[] = [];
+    public actionRequest: COMPreliminaryDraft | undefined;
+    public committeeFormGroup!: FormGroup;
+    public uploadDraftFormGroup!: FormGroup;
   blob: Blob;
   constructor(
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
-      private notifyService : NotificationService
+      private notifyService : NotificationService,
+      private formBuilder: FormBuilder,
   ) { }
 
   ngOnInit(): void {
-    this.getJcSecTasks();
+    this.getUploadedStdDraft();
   }
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-  }
-  showToasterError(title:string,message:string){
-    this.notifyService.showError(message, title)
-  }
-  showToasterSuccess(title:string,message:string){
-    this.notifyService.showSuccess(message, title)
+    ngOnDestroy(): void {
+        this.dtTrigger.unsubscribe();
+    }
 
-  }
-  public getJcSecTasks(): void{
-    this.SpinnerService.show();
-    this.stdComStandardService.getJcSecTasks().subscribe(
-        (response: ComJcJustificationDec[])=> {
-          this.SpinnerService.hide();
-          this.dtTrigger.next();
-          this.tasks = response;
-        },
-        (error: HttpErrorResponse)=>{
-          this.SpinnerService.hide();
-          alert(error.message);
-        }
-    );
-  }
-  public onOpenModal(task: ComJcJustificationDec,mode:string): void{
+    showToasterSuccess(title:string,message:string){
+        this.notifyService.showSuccess(message, title)
+
+    }
+    showToasterError(title:string,message:string){
+        this.notifyService.showError(message, title)
+
+    }
+    showToasterWarning(title:string,message:string){
+        this.notifyService.showWarning(message, title)
+
+    }
+    public getUploadedStdDraft(): void{
+        this.SpinnerService.show();
+        this.stdComStandardService.getUploadedStdDraft().subscribe(
+            (response: COMPreliminaryDraft[])=> {
+                this.SpinnerService.hide();
+                this.rerender();
+                this.tasks = response;
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+  public onOpenModal(task: COMPreliminaryDraft,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -85,13 +104,13 @@ export class ComStdDraftComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Draft Approved`);
           console.log(response);
-          this.getJcSecTasks();
+          this.getUploadedStdDraft();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Action`);
           console.log(error.message);
-          this.getJcSecTasks();
+          this.getUploadedStdDraft();
           //alert(error.message);
         }
     );
@@ -103,13 +122,13 @@ export class ComStdDraftComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Draft Rejected`);
           console.log(response);
-          this.getJcSecTasks();
+          this.getUploadedStdDraft();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Action`);
           console.log(error.message);
-          this.getJcSecTasks();
+          this.getUploadedStdDraft();
           //alert(error.message);
         }
     );
@@ -133,10 +152,21 @@ export class ComStdDraftComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.showToasterError('Error', `Error Processing Request`);
                 console.log(error.message);
-                this.getJcSecTasks();
+                this.getUploadedStdDraft();
                 //alert(error.message);
             }
         );
+    }
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+        });
     }
 
 }

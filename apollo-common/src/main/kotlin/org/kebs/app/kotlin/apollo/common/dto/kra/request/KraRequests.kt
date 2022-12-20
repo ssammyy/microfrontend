@@ -256,6 +256,16 @@ class Header {
     var bankRefNo: String? = null
 }
 
+class DataBody {
+    var profile_code: String? = null
+    var mobile_number: String? = null
+    var link_id: String? = null
+    var message: String? = null
+
+}
+
+
+
 class PENALTY {
     var penaltyOrderNo: String? = null
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
@@ -284,3 +294,23 @@ class RootKra {
     @JsonProperty("REQUEST")
     var request: Request? = null
 }
+
+class RootMsg {
+    @JsonProperty("REQUEST")
+    var request: KMessageBody? = null
+}
+
+class KMessageBody {
+    var uid: String? = null
+    var actor_type: String? = null
+    var event_type: String? = null
+    var created_at: String? = null
+
+
+    @JsonProperty("DATA")
+    var data: DataBody? = null
+
+
+}
+
+

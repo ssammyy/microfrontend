@@ -39,60 +39,174 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <th class="sl">Sub Category</th>
 <th class="requestNumber">Submission Date </th>
 <th class="sl">Phone Number</th>
+<th class="sl">Commitment Letter</th>
 <th class="action">Action</th>
 </tr>
 </thead>
 <tbody>
 <tr  *ngFor="let task of tasks let i=index">
 <td>{{i+1}}</td>
-<td>{{task.taskData.requestNumber}}</td>
-<td>{{task.taskData.companyName}}</td>
-<td>{{task.taskData.departmentName}}</td>
-<td>{{task.taskData.productName}}</td>
-<td>{{task.taskData.productSubCategoryName}}</td>
-<td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
-<td>{{task.taskData.companyPhone}}</td>
-<td><a  (click)="onOpenModal(task,'approve')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Assign To Project Leader</a></td>
+<td>{{task.requestNumber}}</td>
+<td>{{task.companyName}}</td>
+<td>{{task.departmentName}}</td>
+<td>{{task.productName}}</td>
+<td>{{task.productSubCategoryName}}</td>
+<td>{{task.submissionDate | date: 'dd/MM/yyyy'}}</td>
+<td>{{task.companyPhone}}</td>
+    <td><button mat-raised-button type="button" (click)="viewCommitmentLetter( task.id,'Letter'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+      <i class="material-icons">visibility</i> </button></td>
+<td *ngIf="task.status==0"><a  (click)="onOpenModal(task,'assignProjectLeader')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Assign To Project Leader</a></td>
+<td *ngIf="task.status==1"><a  (click)="onOpenModal(task,'formJointCommittee')" class="btn btn-warning btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Form Joint Committee</a></td>
+<td *ngIf="task.status==2"><a  (click)="onOpenModal(task,'uploadDraft')" class="btn btn-success btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Upload Draft</a></td>
 </tr>
 </tbody>
 </table>
 
+</div>
+    <div class="modal fade" id="assignProjectLeader" tabindex="-1" role="dialog" aria-labelledby="assignProjectLeaderModalLabel" aria-hidden="true">a
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="assignProjectLeaderModalLabel">Assign To Project Leader</h3>
+                    <button type="button" class="close" #closeModalAssign data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form #assignForm="ngForm" >
+                    <div class="modal-body">
+                        <div class="form-body">
+                            <div class="row col-12">
+                                <div class="form-group col-12">
+                                    <label>Assign To</label>
+                                    <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo" >
+                                        <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                    </ng-select>
 
-<div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignExampleModalLabel" aria-hidden="true">a
-<div class="modal-dialog modal-lg" role="document">
-<div class="modal-content">
-<div class="modal-header">
-<h3 class="modal-title" id="assignExampleModalLabel">Assign To Project Leader</h3>
-<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-<span aria-hidden="true">&times;</span>
-</button>
-</div>
-<form #assignForm="ngForm" >
-<div class="modal-body">
-<div class="form-body">
-<div class="row col-12">
-<div class="form-group col-12">
-<label>Assign To</label>
-<ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo" >
-<ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
-</ng-select>
+                                </div>
+                                <input type="hidden" ngModel="{{actionRequest?.id}}" name="requestId" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm" (click)="onAssign(assignForm.value)" data-dismiss="modal">Assign</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-</div>
-<input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
-<input type="hidden" ngModel="{{actionRequest?.taskData?.requestNumber}}" name="requestNumber" >
-</div>
-</div>
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-<button type="submit" class="btn btn-primary btn-sm" (click)="onAssign(assignForm.value)" data-dismiss="modal">Assign</button>
-</div>
-</form>
-</div>
-</div>
-</div>
+    <div class="modal fade" id="formJointCommittee" tabindex="-1" role="dialog" aria-labelledby="formJointCommitteeModalLabel" aria-hidden="true">a
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="formJointCommitteeModalLabel">Form Joint Committee</h3>
+                    <button type="button" class="close" #closeModalJC data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form (ngSubmit)="formJointCommittee()" [formGroup]="committeeFormGroup" class="form">
+                    <hr>
+                    <div class="form-body">
+                        <div class="form-group col-12">
+                            <label><b>Enter Emails of Committee members(Comma Separated)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                      class="form-control one-column-input" formControlName="name" name="name"
+                                      placeholder="Type Names of Committee Members" type="text"></textarea>
 
-</div>
+                        </div>
+                        <input type="hidden" formControlName="requestId"  ngModel="{{actionRequest?.id}}" name="requestId" >
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
+                    </div>
+
+
+
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="uploadDraft" tabindex="-1" role="dialog" aria-labelledby="uploadDraftModalLabel" aria-hidden="true">a
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="uploadDraftModalLabel">Form Joint Committee</h3>
+                    <button type="button" class="close" #closeModalUploadDraft data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form (ngSubmit)="uploadDraft()" [formGroup]="uploadDraftFormGroup" class="form">
+                    <div class="modal-body">
+                        <div class="form-body">
+                            <div class="row col-12">
+                                <div class="form-group col-6">
+                                    <label><b>Request Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                    <input
+                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                            class="form-control one-column-input" value="{{actionRequest?.requestNumber}}" formControlName="requestNumber" name="requestNumber"
+                                            placeholder="" type="text" disabled>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                              class="form-control one-column-input"  formControlName="title" name="title"
+                                              placeholder="Title" type="text" ></textarea>
+
+                                </div>
+                                <div class="form-group col-12">
+                                    <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                              class="form-control one-column-input"  formControlName="normativeReference" name="normativeReference"
+                                              placeholder="Normative Reference" type="text" ></textarea>
+
+                                </div>
+                                <div class="form-group col-12">
+                                    <label><b>Symbols Abbreviated Terms</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                              class="form-control one-column-input"  formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms"
+                                              placeholder="Symbols Abbreviated Terms" type="text" ></textarea>
+
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                              class="form-control one-column-input"  formControlName="clause" name="clause"
+                                              placeholder="Clause" type="text" ></textarea>
+
+                                </div>
+                                <div class="form-group col-12">
+                                    <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                              class="form-control one-column-input"  formControlName="scope" name="scope"
+                                              placeholder="Scope" type="text" ></textarea>
+
+                                </div>
+                                <div class="form-group col-12">
+                                    <label><b>Special</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                              class="form-control one-column-input"   formControlName="special" name="special"
+                                              placeholder="Special" type="text" ></textarea>
+
+                                </div>
+                            </div>
+                            <input type="hidden" formControlName="requestId" value="{{actionRequest?.id}}" name="requestId" >
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 </div>

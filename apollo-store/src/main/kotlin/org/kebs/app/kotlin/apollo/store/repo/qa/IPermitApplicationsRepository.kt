@@ -1059,4 +1059,13 @@ interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
 interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntity, Long> {
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 }
+@Repository
+interface IPermitMigrationApplicationsFmarkEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntityFmark, Long> {
+    fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
+}
+
+@Repository
+interface IPermitMigrationApplicationsDmarkEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntityDmark, Long> {
+    fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
+}
 
