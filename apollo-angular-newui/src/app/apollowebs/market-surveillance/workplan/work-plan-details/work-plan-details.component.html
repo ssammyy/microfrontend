@@ -1114,7 +1114,7 @@
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/REJECT SCHEDULE</span>
+                                                    class="mat-button-wrapper">APPROVE/DEFER SCHEDULE</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
@@ -1122,7 +1122,7 @@
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/REJECT SCHEDULE</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER SCHEDULE</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.hofAssignedDetails != null" (click)="openModalAddDetails('reAssignHOF')" mat-raised-button="" data-toggle="modal"
@@ -1139,7 +1139,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DEFER PRELIMINARY REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1150,7 +1150,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/REJECT PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PRELIMINARY REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1164,7 +1164,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/REJECT FINAL REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1178,7 +1178,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/REJECT FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1496,7 +1496,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/REJECT PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DEFER PRELIMINARY REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1506,7 +1506,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/REJECT PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PRELIMINARY REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1519,7 +1519,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/REJECT PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PRELIMINARY REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1532,7 +1532,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/REJECT FINAL REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1545,7 +1545,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/REJECT FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus  == false && workPlanInspection?.resubmitStatus  == false && workPlanInspection?.finalReportGenerated
@@ -1556,7 +1556,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/REJECT FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
@@ -1759,7 +1759,7 @@
                                                         [class.is-invalid]="formApproveScheduleForm.approvalStatus.invalid && formApproveScheduleForm.approvalStatus.touched"
                                                         formControlName="approvalStatus" id="approvalStatus1" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">REJECT</mat-option>
+                                                <mat-option [value]="false">DEFER</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
@@ -1786,7 +1786,7 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">REJECT</mat-option>
+                                                <mat-option [value]="false">DEFER</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
@@ -1867,7 +1867,7 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">REJECT</mat-option>
+                                                <mat-option [value]="false">DEFER</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
@@ -1894,7 +1894,7 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">REJECT</mat-option>
+                                                <mat-option [value]="false">DEFER</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
@@ -1947,7 +1947,7 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus" id="approvalStatus3" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">REJECT</mat-option>
+                                                <mat-option [value]="false">DEFER</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>

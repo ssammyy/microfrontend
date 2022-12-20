@@ -436,6 +436,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var timeActivityDate: Date? = null
 
+    @Column(name = "TIME_ACTIVITY_END_DATE")
+    @Basic
+    var timeActivityEndDate: Date? = null
+
     @Column(name = "TIME_DATE_REPORT_SUBMITTED")
     @Basic
     var timeDateReportSubmitted: Date? = null

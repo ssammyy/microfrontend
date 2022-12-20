@@ -3044,6 +3044,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             divisionId = body.divisionId
             nameActivity = body.nameActivity
             timeActivityDate = body.timeActivityDate
+            timeActivityEndDate = body.timeActivityEndDate
             county = body.county
             townMarketCenter = body.townMarketCenter
             locationActivityOther = body.locationActivityOther
@@ -4274,6 +4275,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             rationale = body.rationale
             scopeOfCoverage = body.scopeOfCoverage
             timeActivityDate = body.timeActivityDate
+            timeActivityEndDate = body.timeActivityEndDate
             county = body.county
             townMarketCenter = body.townMarketCenter
             locationActivityOther = body.locationActivityOther
@@ -4336,6 +4338,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             divisionId = comp.division
             nameActivity = body.nameActivity
             timeActivityDate = body.timeActivityDate
+            timeActivityDate = body.timeActivityEndDate
             rationale = body.rationale
             scopeOfCoverage = body.scopeOfCoverage
             county = complaintLocationDetails.county
@@ -4503,6 +4506,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 budget =it.budget,
                 progressStep =it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
                 timeActivityDate =it.timeActivityDate,
+                timeActivityEndDate =it.timeActivityEndDate,
                 referenceNumber =it.referenceNumber
             )
         )}
@@ -4928,6 +4932,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     wkp.rationale,
                     wkp.scopeOfCoverage,
                     wkp.timeActivityDate,
+                    wkp.timeActivityEndDate,
                     wkp.region,
                     wkp.county,
                     wkp.townMarketCenter,
@@ -5050,6 +5055,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.townMarketCenter?.let { commonDaoServices.findTownEntityByTownId(it).town },
             wKP.locationActivityOther,
             wKP.timeActivityDate,
+            wKP.timeActivityEndDate,
             wKP.timeDateReportSubmitted,
             wKP.timeActivityRemarks,
             wKP.rescheduledDateNotVisited,

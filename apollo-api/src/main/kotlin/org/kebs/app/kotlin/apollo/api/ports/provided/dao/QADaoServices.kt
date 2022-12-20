@@ -5103,6 +5103,11 @@ class QADaoServices(
                                 userId = userID
                                 plantId = batchInvoiceDto.plantID
                                 varField1 = batchInvoiceDto.isWithHolding // withholding field
+                                if(isWithHolding ==1){
+
+                                }else{
+
+                                }
                                 status = s.activeStatus
                                 description = "${permitInvoiceFound.invoiceRef}"
                                 totalAmount = permitInvoiceFound.totalAmount

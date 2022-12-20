@@ -280,6 +280,7 @@ export class WorkPlanEntityDto {
     rationale: string;
     scopeOfCoverage: string;
     timeActivityDate: Date;
+    timeActivityEndDate: Date;
     region: number;
     county: number;
     townMarketCenter: number;
@@ -786,6 +787,7 @@ export class WorkPlanInspectionDto {
     townMarketCenter: string;
     locationActivityOther: string;
     timeActivityDate: Date;
+    timeActivityEndDate: Date;
     timeDateReportSubmitted: Date;
     timeActivityRemarks: string;
     rescheduledDateNotVisited: Date;

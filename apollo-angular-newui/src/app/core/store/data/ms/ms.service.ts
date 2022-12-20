@@ -104,6 +104,14 @@ export class MsService {
         };
     }
 
+    public dateValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+        const start = control.get('dateStart');
+        const end = control.get('dateEnd');
+        console.log('validators called');
+        return start.value !== null && end.value !== null && start.value < end.value
+            ? null : { dateValid: true };
+    }
+
 
 
     public getAllCountriesList() {
