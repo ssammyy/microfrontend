@@ -313,4 +313,29 @@ class KMessageBody {
 
 }
 
+class RequestMsg {
 
+    var header: MsgRequestHeader? = null
+    var profile_code: ProfileCode? = null
+    @JsonProperty("messages")
+    var messages: MutableList<MESSAGE>? = null
+}
+
+
+
+class MsgRequestHeader{
+    var apiKey: String? = null
+}
+
+class ProfileCode{
+    var profile_code: String? = null
+
+}
+
+
+class MESSAGE {
+    var mobile_number: String? = null
+    var message: String? = null
+    var message_ref: String? = null
+    var link_id: String? = null
+}

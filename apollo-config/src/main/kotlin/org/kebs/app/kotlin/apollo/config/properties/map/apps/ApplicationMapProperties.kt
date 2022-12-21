@@ -1438,6 +1438,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.registered.collection.path}")
     val mapSLRegisteredFirmsPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.search.qa.permit}")
+    val mapSearchForQAPermit: String = ""
+
     /**
      * TODO: Why do we need this
      */
