@@ -6027,6 +6027,15 @@
                                 </div>
 
                             </div>
+                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="row">
+                                <div class="col">
+                                    <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="form-group">
+                                        <div  class="form-group">
+                                            <label><b style="color: red">Reason For Updating WorkPlan</b> </label>
+                                            <textarea class="form-control two-column-input" formControlName="remarks" name="remarks" required type="text"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </form>
                     <br>
