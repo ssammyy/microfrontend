@@ -74,6 +74,7 @@ class StandardsLevyDaoService(
     private val integRepo: IIntegrationConfigurationRepository,
     private val commonDaoServices: CommonDaoServices,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val thisDaoService: DaoService,
 
     private val extension: ActorSpringExtension,
 //    private val actorSystem: ActorSystem,
@@ -169,11 +170,14 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
-    fun getPermit(msg: KMessageBody): String{
+    suspend fun getPermit(msg: KMessageBody): String{
         val permitNo=msg.data?.message
         val linkId= msg.data?.link_id
         val phoneNumber= msg.data?.mobile_number
         val profileCode= msg.data?.profile_code
+
+
+        val configUrl = "https://api.smsc.co.ke/v1/premiumsms/messages"
 
         val headerBody = MsgRequestHeader().apply {
             apiKey= applicationMapProperties.mapSearchForQAPermit
@@ -203,6 +207,15 @@ class StandardsLevyDaoService(
 
         val gson = Gson()
         KotlinLogging.logger { }.info { "REQUEST BODY" + gson.toJson(rootRequest) }
+
+        val resp = thisDaoService.getHttpPostCallResponse(
+            false,
+            configUrl,
+            null,
+            rootRequest,
+            null,
+            null
+        )
 
 
 
