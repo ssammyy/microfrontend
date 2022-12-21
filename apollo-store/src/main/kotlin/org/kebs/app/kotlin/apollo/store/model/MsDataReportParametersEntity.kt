@@ -23,6 +23,14 @@ class MsDataReportParametersEntity : Serializable{
     @Basic
     var localImport: String? = null
 
+    @Column(name = "PERMIT_NUMBER")
+    @Basic
+    var permitNumber: String? = null
+
+    @Column(name = "UCR_NUMBER")
+    @Basic
+    var ucrNumber: String? = null
+
     @Column(name = "COMPLIANCE_INSPECTION_PARAMETER")
     @Basic
     var complianceInspectionParameter: Int? = null

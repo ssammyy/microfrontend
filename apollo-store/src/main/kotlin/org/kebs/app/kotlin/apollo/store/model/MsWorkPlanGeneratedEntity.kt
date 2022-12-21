@@ -26,6 +26,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
   @Basic
   var productCategoryString: String? = null
 
+  @Column(name = "TOTAL_COMPLIANCE")
+  @Basic
+  var totalCompliance: String? = null
+
     @Column(name = "BROAD_PRODUCT_CATEGORY")
     @Basic
     var broadProductCategory: Long? = null

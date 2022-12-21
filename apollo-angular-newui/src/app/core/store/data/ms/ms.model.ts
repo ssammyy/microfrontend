@@ -1301,6 +1301,7 @@ export class SSFSaveComplianceStatusDto {
     bsNumber: string;
     complianceStatus: boolean;
     complianceRemarks: string;
+    totalCompliance: string;
 }
 
 export class LabResultsParamDto {

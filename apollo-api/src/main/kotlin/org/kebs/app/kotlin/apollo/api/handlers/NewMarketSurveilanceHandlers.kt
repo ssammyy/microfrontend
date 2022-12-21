@@ -105,6 +105,34 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun msSearchPermitNumberDetails(req: ServerRequest): ServerResponse {
+        try {
+            val permitNumber = req.paramOrNull("permitNumber") ?: throw ExpectedDataNotFound("Required permitNumber, check parameters")
+            marketSurveillanceComplaintDaoServices.msSearchPermitNumber(permitNumber)
+                .let {
+                    return ServerResponse.ok().body(it)
+                }?: throw NullValueNotAllowedException("No Permit number found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    fun msSearchUCRNumberDetails(req: ServerRequest): ServerResponse {
+        try {
+            val ucrNumber = req.paramOrNull("ucrNumber") ?: throw ExpectedDataNotFound("Required ucrNumber, check parameters")
+            marketSurveillanceComplaintDaoServices.msSearchUCRNumber(ucrNumber)
+                .let {
+                    return ServerResponse.ok().body(it)
+                }?: throw NullValueNotAllowedException("No UCR Number found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
     fun msOfficerListDetails(req: ServerRequest): ServerResponse {
         try {
             marketSurveillanceComplaintDaoServices.msOfficerListDetails()

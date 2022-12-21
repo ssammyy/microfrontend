@@ -537,10 +537,10 @@
                                     <mat-tab *ngIf="workPlanInspection?.inspectionInvestigationDto" label="15">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
-                                            MS FIELD REPORT
+                                            MS INITIAL REPORT
                                         </ng-template>
                                         <!--                                        <b class="text-primary">Lab Results Details</b>-->
-                                        <label style="color: #0082f3">MS FIELD REPORT DETAILS</label>
+                                        <label style="color: #0082f3"> MS INITIAL REPORT DETAILS</label>
                                         <div class="panel" style="max-height: 388px;">
                                             <br>
                                             <ul class="w-list-unstyled">
@@ -775,10 +775,10 @@
                                     <mat-tab *ngIf="workPlanInspection?.preliminaryReport" label="17">
                                         <!--                                    <mat-tab  label="6">-->
                                         <ng-template mat-tab-label>
-                                            PRELIMINARY REPORT
+                                            PROGRESS REPORT
                                         </ng-template>
                                         <!--                                        <b class="text-primary">Lab Results Details</b>-->
-                                        <label style="color: #0082f3">Preliminary Report Details</label>
+                                        <label style="color: #0082f3">Progress Report Details</label>
                                         <div class="panel" style="max-height: 388px;">
                                             <br>
                                             <ul class="w-list-unstyled">
@@ -1138,7 +1138,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DEFER PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1149,7 +1149,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1340,13 +1340,13 @@
                                                             <button *ngIf="workPlanInspection?.investInspectReportStatus ==false" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
                                                                     data-target="#investInspectReportModal"
                                                                     class="btn btn-sm btn-primary"><span
-                                                                    class="mat-button-wrapper">ADD FIELD REPORT</span>
+                                                                    class="mat-button-wrapper">ADD INITIAL REPORT</span>
                                                                 <div class="mat-button-focus-overlay"></div>
                                                             </button>
                                                             <button *ngIf="workPlanInspection?.investInspectReportStatus" (click)="openModalAddDetails('dataReportDetails')" mat-raised-button="" data-toggle="modal"
                                                                     data-target="#investInspectReportModal"
                                                                     class="btn btn-sm btn-primary"><span
-                                                                    class="mat-button-wrapper">UPDATE FIELD REPORT</span>
+                                                                    class="mat-button-wrapper">UPDATE INITIAL REPORT</span>
                                                                 <div class="mat-button-focus-overlay"></div>
                                                             </button>
                                                         </div>
@@ -1385,7 +1385,7 @@
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">CREATE PRELIMINARY</span>
+                                                    class="mat-button-wrapper">CREATE PROGRESS</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1397,7 +1397,7 @@
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">UPDATE PRELIMINARY</span>
+                                                    class="mat-button-wrapper">UPDATE PROGRESS</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1408,7 +1408,7 @@
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">UPDATE PRELIMINARY</span>
+                                                    class="mat-button-wrapper">UPDATE PROGRESS</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1477,7 +1477,7 @@
                                             && workPlanInspection?.hodRecommendationStatus && workPlanInspection?.inspectionInvestigationDto?.additionalInformationStatus == false"
                                                     mat-raised-button="" data-toggle="modal" data-target="#updateFieldDataReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">UPDATE FIELD REPORT</span>
+                                                    class="mat-button-wrapper">UPDATE INITIAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1495,7 +1495,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DEFER PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1505,7 +1505,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1516,7 +1516,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PRELIMINARY REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1787,7 +1787,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Progress Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1948,7 +1948,7 @@
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Preliminary Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Progress Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks3" matInput type="text"
                                                       formControlName="remarks"
@@ -2101,6 +2101,11 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
+                                        <label for="complianceStatusSSF"><b>Final Compliance  %</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="totalCompliance" matInput type="text" placeholder="Please Enter final Total Compliance" formControlName="totalCompliance" name="totalCompliance"
+                                                   disabled        [class.is-invalid]="formSSFSaveComplianceStatusForm.totalCompliance.invalid && formSSFSaveComplianceStatusForm.totalCompliance.touched">
+                                        </mat-form-field>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
                                         <mat-form-field id="complianceStatusSSF">
                                             <mat-select placeholder="Please Select an option"
@@ -3419,7 +3424,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">FILL IN THE MS FIELD REPORT DETAILS</h4>
+                    <h4 class="modal-title">FILL IN THE MS INITIAL REPORT DETAILS</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
@@ -3428,7 +3433,7 @@
                     <form [formGroup]="investInspectReportForm">
                         <div >
 
-                            <h4 class="mb-3" style="color: #0066B1">MS FIELD REPORT DETAILS</h4>
+                            <h4 class="mb-3" style="color: #0066B1">MS INITIAL REPORT DETAILS</h4>
                             <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
                             <div class="row">
                                 <div class="col">
@@ -3781,7 +3786,7 @@
                                                 class="form-control two-column-input"
                                                 formControlName="statusActivity" name="statusActivity" required type="text">
                                             <option [value]="" selected>Please select One</option>
-                                            <option  [value]="'Preliminary report (ongoing activity)'">Preliminary report (ongoing activity)</option>
+                                            <option  [value]="'Progress report (ongoing activity)'">Progress report (ongoing activity)</option>
                                             <option  [value]="'Final report (completed activity'">Final report (completed activity</option>
                                         </select>
                                         <div *ngIf="submitted && formInvestInspectReportForm.statusActivity.errors && formInvestInspectReportForm.statusActivity.invalid" class="invalid-feedback">
@@ -3822,7 +3827,7 @@
     </div>
     <!-- End INSPECTION AND INVESTIGATION REPORT Modal -->
 
-    <!-- UPDATE ON DATA AND FIELD REPORT Modal -->
+    <!-- UPDATE ON DATA AND INITIAL REPORT Modal -->
     <div class="modal fade" id="updateFieldDataReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -3836,7 +3841,7 @@
                 <div class="modal-body">
                     <form [formGroup]="fieldReportAdditionalInfortForm">
                         <div >
-                            <h4 class="mb-3" style="color: #0066B1">MS FIELD REPORT DETAILS</h4>
+                            <h4 class="mb-3" style="color: #0066B1">MS INITIAL REPORT DETAILS</h4>
                             <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
                             <div class="row">
                                 <div class="col">
@@ -4026,7 +4031,7 @@
             </div>
         </div>
     </div>
-    <!-- End UPDATE ON DATA AND FIELD REPORT Modal -->
+    <!-- End UPDATE ON DATA AND INITIAL REPORT Modal -->
 
     <!-- Final Recommendation Modal -->
     <div class="modal fade" id="finalRecommendationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -4139,13 +4144,13 @@
     <!-- End Final Recommendation Modal -->
 
 
-    <!-- PRELIMINARY REPORT Modal -->
+    <!-- PROGRESS REPORT Modal -->
     <div class="modal fade" id="preliminaryReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Fill in the Details to generate a Preliminary Report</h4>
+                    <h4 class="modal-title">Fill in the Details to generate a Progress Report</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
@@ -4154,7 +4159,7 @@
                     <form [formGroup]="preliminaryReportForm">
                         <div >
 
-                            <h4 class="mb-3" style="color: #0066B1">PRELIMINARY REPORT DETAILS</h4>
+                            <h4 class="mb-3" style="color: #0066B1">PROGRESS REPORT DETAILS</h4>
                             <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
                             <div class="row">
                                 <div class="col">
@@ -4541,7 +4546,7 @@
             </div>
         </div>
     </div>
-    <!-- End PRELIMINARY REPORT Modal -->
+    <!-- End PROGRESS REPORT Modal -->
 
     <!-- FINAL REPORT Modal -->
     <div class="modal fade" id="preliminaryReportFinalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

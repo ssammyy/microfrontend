@@ -2878,6 +2878,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         compliantStatusDate = commonDaoServices.getCurrentDate()
                         compliantStatusBy = commonDaoServices.concatenateName(loggedInUser)
                         compliantStatusRemarks = body.complianceRemarks
+                        totalCompliance = body.totalCompliance
                         remarkStatusValue = "COMPLIANT"
                     }
                     else -> {
@@ -2887,6 +2888,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         notCompliantStatusDate = commonDaoServices.getCurrentDate()
                         notCompliantStatusBy = commonDaoServices.concatenateName(loggedInUser)
                         notCompliantStatusRemarks = body.complianceRemarks
+                        totalCompliance = body.totalCompliance
                         remarkStatusValue = "NOT-COMPLIANT"
                     }
                 }
@@ -3776,6 +3778,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     with(param) {
                         typeBrandName= body.typeBrandName
                         localImport= body.localImport
+                        permitNumber= body.permitNumber
+                        ucrNumber= body.ucrNumber
                         complianceInspectionParameter= body.complianceInspectionParameter
                         measurementsResults= body.measurementsResults
                         remarks= body.remarks
@@ -3790,6 +3794,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     with(saveDataReport) {
                         typeBrandName = body.typeBrandName
                         localImport = body.localImport
+                        permitNumber= body.permitNumber
+                        ucrNumber= body.ucrNumber
                         complianceInspectionParameter = body.complianceInspectionParameter
                         measurementsResults = body.measurementsResults
                         remarks = body.remarks
@@ -5107,7 +5113,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             bsNumberCountAdded,
             analysisLabCountDone,
             productListRecommendationAddedCount,
-            productList
+            productList,
+            wKP.totalCompliance
         )
     }
 

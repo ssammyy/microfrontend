@@ -605,6 +605,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             }
             "/common".nest {
                 GET("/officer-list", handler::msOfficerListDetails)
+                GET("/search-permit-number", handler::msSearchPermitNumberDetails)
+                GET("/search-ucr-number", handler::msSearchUCRNumberDetails)
                 GET("/dashboard", handler::msDashBoardDetails)
                 GET("/towns", handler::townsListingAdmin)
                 GET("/regions", handler::regionListingAdmin)
