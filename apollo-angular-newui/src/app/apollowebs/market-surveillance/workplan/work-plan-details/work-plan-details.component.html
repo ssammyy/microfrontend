@@ -6037,6 +6037,7 @@
                                     </div>
                                 </div>
                         </div>
+                        </div>
                     </form>
                     <br>
                     <form [formGroup]="addResourceRequiredForm">
@@ -6465,6 +6466,10 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="totalCompliance" matInput type="text" placeholder="Please Enter final Total Compliance" formControlName="totalCompliance" name="totalCompliance"
+                                                   ngModel="{{totalComplianceValue}}"  disabled   hidden [class.is-invalid]="formSSFSaveComplianceStatusForm.totalCompliance.invalid && formSSFSaveComplianceStatusForm.totalCompliance.touched">
+                                        </mat-form-field>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
                                         <mat-form-field id="complianceStatusSSF4">
                                             <mat-select placeholder="Please Select an option"
