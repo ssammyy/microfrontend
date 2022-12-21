@@ -4299,7 +4299,7 @@ class QualityAssuranceHandler(
 
     }
 
-    fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
+     fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
         return try {
 
             val stringData = req.body<String>()
@@ -4318,7 +4318,7 @@ class QualityAssuranceHandler(
                     val requestBody = body.request ?: throw ExpectedDataNotFound("Missing request value")
                     KotlinLogging.logger { }.info { "Message 4 $requestBody" }
                     val response = service.getPermit(requestBody)
-                    ServerResponse.ok().body(response)
+                    ok().body(response)
                 }
 
                 else -> {
