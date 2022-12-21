@@ -225,13 +225,15 @@ class StandardsLevyDaoService(
                 null
             )
 
+            println(permitNo)
+
         }
 
 
 
 
 
-        println(permitNo)
+
 
         return "Data Found"
     }
