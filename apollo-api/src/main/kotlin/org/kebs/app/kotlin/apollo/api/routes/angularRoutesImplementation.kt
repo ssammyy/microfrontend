@@ -827,7 +827,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/getAllAwardedPermitsByPermitNumberSms", handler::getAllAwardedPermitsByPermitNumberSms)
 
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
-            GET("/getAllAwardedPermitsByPermitNumberSmsRequest", handler::processReceiveMessageBody)
+            POST("/getAllAwardedPermitsByPermitNumberSmsRequest", handler::processReceiveMessageBody)
 
 
         }

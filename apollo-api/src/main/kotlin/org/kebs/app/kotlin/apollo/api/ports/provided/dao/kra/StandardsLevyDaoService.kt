@@ -164,8 +164,8 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
-    fun getPermit(msg: KMessageBody): String{
-        val permitNo=msg.data?.message
+    fun getPermit(msg: DataBody): String{
+        val permitNo=msg.message
 
         println(permitNo)
 

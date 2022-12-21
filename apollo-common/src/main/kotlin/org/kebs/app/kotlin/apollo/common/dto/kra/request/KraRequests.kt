@@ -296,8 +296,8 @@ class RootKra {
 }
 
 class RootMsg {
-    @JsonProperty("REQUEST")
-    var request: KMessageBody? = null
+    @JsonProperty("DATA")
+    var request: DataBody? = null
 }
 
 class KMessageBody {
@@ -307,7 +307,7 @@ class KMessageBody {
     var created_at: String? = null
 
 
-    @JsonProperty("DATA")
+    @JsonProperty("data")
     var data: DataBody? = null
 
 
