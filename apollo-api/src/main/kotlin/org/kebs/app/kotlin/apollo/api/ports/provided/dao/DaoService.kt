@@ -261,6 +261,7 @@ class DaoService(
         finalUrl: String,
         accessToken: String?,
         payload: Any?,
+        config: IntegrationConfigurationEntity?,
         bodyParams: Map<String, String>? = null,
         headerParams: Map<String, String>? = null,
     ): HttpResponse? {

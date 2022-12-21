@@ -1441,6 +1441,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.search.qa.permit}")
     val mapSearchForQAPermit: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.kebs.msg.config.integration}")
+    val mapKebsMsgConfigIntegration: Long = 0L
+
     /**
      * TODO: Why do we need this
      */

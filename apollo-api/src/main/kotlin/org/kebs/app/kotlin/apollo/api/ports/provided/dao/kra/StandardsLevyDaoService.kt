@@ -176,8 +176,11 @@ class StandardsLevyDaoService(
         val phoneNumber= msg.data?.mobile_number
         val profileCode= msg.data?.profile_code
 
+        val config =
+            commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKebsMsgConfigIntegration)
+        val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR KRA")
 
-        val configUrl = "https://api.smsc.co.ke/v1/premiumsms/messages"
+
 
         val headerBody = MsgRequestHeader().apply {
             apiKey= applicationMapProperties.mapSearchForQAPermit
@@ -208,11 +211,12 @@ class StandardsLevyDaoService(
         val gson = Gson()
         KotlinLogging.logger { }.info { "REQUEST BODY" + gson.toJson(rootRequest) }
 
-        val resp = thisDaoService.getHttpPostCallResponse(
+        val resp = thisDaoService.getHttpResponseFromPostCall(
             false,
             configUrl,
             null,
             rootRequest,
+            config,
             null,
             null
         )
