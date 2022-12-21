@@ -404,7 +404,6 @@ class PostInvoiceToSageServices(
                 messageID = "BSK"
                 connectionID = jasyptStringEncryptor.decrypt(config.username)
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
-                region = invoiceAccountDetails.region
 
             }
             val requestBody = SageQARequestB().apply {
@@ -419,6 +418,8 @@ class PostInvoiceToSageServices(
                 InvoiceAmnt = invoiceFound.invoiceAmount
                 TaxPINNo = invoiceAccountDetails.accountNumber
                 Withholding = invoiceAccountDetails.isWithHolding
+                region = invoiceAccountDetails.region
+
 
             }
 

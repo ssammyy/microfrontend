@@ -81,7 +81,9 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
     private val reportSubmittedTimelineViewRepo: IMsReportSubmittedCpViewRepository,
     private val sampleSubmittedTimelineViewRepo: IMsSampleSubmittedCpViewRepository,
-    private val commonDaoServices: CommonDaoServices
+    private val commonDaoServices: CommonDaoServices,
+    private val desInspDaoServices: DestinationInspectionDaoServices,
+    private val qaDaoServices: QADaoServices
 ) {
     final var complaintSteps: Int = 6
     private final val activeStatus: Int = 1
@@ -291,6 +293,28 @@ class MarketSurveillanceComplaintProcessDaoServices(
     fun msOfficerListDetails(): List<MsUsersDto>? {
         val officerList = commonDaoServices.findOfficersListBasedOnRole(applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID)
         return officerList?.let { mapOfficerListDto(it) }
+    }
+
+    fun msSearchPermitNumber(permitNumber: String): PermitUcrSearch {
+        val permitDetails = qaDaoServices.findPermitBYPermitNumber(permitNumber)
+        return PermitUcrSearch(
+            id= permitDetails.id,
+                    permitNumber= permitDetails.awardedPermitNumber,
+//                    ucrNumber= permitDetails,
+                    productName= permitDetails.productName,
+                    validityStatus= permitDetails.permitExpiredStatus ==1,
+        )
+    }
+
+    fun msSearchUCRNumber(ucrNumber: String): PermitUcrSearch {
+        val ucrDetails = desInspDaoServices.findCdWithUcrNumberLatest(ucrNumber)?:throw ExpectedDataNotFound("No UCR found with the following ucr number = $ucrNumber")
+        return PermitUcrSearch(
+            id= ucrDetails.id,
+//            permitNumber= ucrDetails.awardedPermitNumber,
+            ucrNumber= ucrDetails.ucrNumber,
+//            productName= ucrDetails.cdStandard.,
+//            validityStatus= ucrDetails.permitExpiredStatus ==1,
+        )
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")

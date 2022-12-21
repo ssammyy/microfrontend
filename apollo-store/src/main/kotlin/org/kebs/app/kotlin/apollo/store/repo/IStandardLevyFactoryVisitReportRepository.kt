@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 import org.kebs.app.kotlin.apollo.store.model.SdlFactoryVisitReportsUploadEntity
 import org.kebs.app.kotlin.apollo.store.model.SlUpdatecompanyDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
+import org.kebs.app.kotlin.apollo.store.model.StdLevyEntryNoDataMigrationEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.CompleteTasksDetailHolder
 import org.kebs.app.kotlin.apollo.store.model.std.UserDetailHolder
@@ -29,5 +30,14 @@ interface ISdlFactoryVisitReportsUploadEntityRepository : HazelcastRepository<Sd
 
 interface ISlUpdatecompanyDetailsEntityRepository : HazelcastRepository<SlUpdatecompanyDetailsEntity, Long>{
     //fun findByReportId(reportId: Long) : SdlFactoryVisitReportsUploadEntity?
+}
+
+interface StdLevyEntryNoDataMigrationEntityRepository : HazelcastRepository<StdLevyEntryNoDataMigrationEntity, Long>{
+    @Query(value = "SELECT max(ENTRY_NUMBER)  FROM SL_ENTRY_NO_DATA_MIGRATION", nativeQuery = true)
+    fun getMaxEntryNo(): Long
+
+    @Query(value = "SELECT ENTRY_NUMBER  FROM SL_ENTRY_NO_DATA_MIGRATION WHERE KRA_PIN=:kraPin", nativeQuery = true)
+    fun getEntryNo(@Param("kraPin") kraPin: String?): Long?
+
 }
 

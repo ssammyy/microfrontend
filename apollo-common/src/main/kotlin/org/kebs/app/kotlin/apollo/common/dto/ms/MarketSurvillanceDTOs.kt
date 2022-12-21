@@ -233,6 +233,7 @@ data class WorkPlanInspectionDto(
         var townMarketCenter: String? = null,
         var locationActivityOther: String? = null,
         var timeActivityDate: Date? = null,
+        var timeActivityEndDate: Date? = null,
         var timeDateReportSubmitted: Date? = null,
         var timeActivityRemarks: String? = null,
         var rescheduledDateNotVisited: Date? = null,
@@ -286,6 +287,7 @@ data class WorkPlanInspectionDto(
         var productListRecommendationAddedCount: Int? = null,
         var productList: List<WorkPlanProductDto>? = null,
         var batchRefNumber: String? = null,
+        var totalComplianceValue: String? = null,
 )
 
 data class FuelEntityDto(
@@ -343,6 +345,7 @@ data class WorkPlanEntityDto(
         var rationale: String? = null,
         var scopeOfCoverage: String? = null,
         var timeActivityDate: Date? = null,
+        var timeActivityEndDate: Date? = null,
         var region: Long? = null,
         var county: Long? = null,
         var townMarketCenter: Long? = null,
@@ -533,6 +536,8 @@ data class DataReportParamsDto(
         var id: Long?= 0,
         var typeBrandName: String? = null,
         var localImport: String? = null,
+        var permitNumber: String? = null,
+        var ucrNumber: String? = null,
         var complianceInspectionParameter: Int? = null,
         var measurementsResults: String? = null,
         var remarks: String? = null,
@@ -854,6 +859,8 @@ data class SSFSaveComplianceStatusDto(
         var complianceStatus: Boolean,
         @NotNull(message = "Required field")
         var complianceRemarks: String,
+        @NotNull(message = "Required field")
+        var totalCompliance: String,
 )
 
 data class PreliminaryReportDto(
@@ -1230,6 +1237,14 @@ data class MsNotificationTaskDto(
         var fromUserId: Long? = null,
         var toUserId: Long? = null,
         var readStatus: Boolean? = null,
+)
+
+data class PermitUcrSearch(
+        var id: Long?= 0,
+        var permitNumber: String? = null,
+        var ucrNumber: String? = null,
+        var productName: String? = null,
+        val validityStatus: Boolean? = null
 )
 
 data class MsUsersDto(

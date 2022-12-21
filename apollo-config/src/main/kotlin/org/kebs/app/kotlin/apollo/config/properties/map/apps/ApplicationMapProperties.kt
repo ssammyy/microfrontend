@@ -223,6 +223,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.prefix}")
     val mapInvoicesPrefix: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.for.permitWithHolding}")
+    val mapInvoicesPermitWithHolding: BigDecimal = BigDecimal.ZERO
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.importer.details}")
     val mapImporterDetails: Int = 0
 

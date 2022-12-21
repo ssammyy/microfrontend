@@ -362,6 +362,8 @@
                                                         [ngClass]="displayFieldCss(stdNwiFormGroup, 'proposalTitle')">
                                             <input type="text"
                                                    matInput
+                                                   ngModel="{{nwiRequest?.subject}}"
+
                                                    id="proposalTitle"
                                                    placeholder="Indicate subject matter of the proposed new standard"
                                                    (ngModelChange)="textValidationType($event)"
@@ -381,6 +383,8 @@
                                             <textarea type="text"
                                                       matInput
                                                       id="scope"
+                                                      ngModel="{{nwiRequest?.description}}"
+
                                                       placeholder="Give a clear indication of the coverage of the proposed new standard"
                                                       (ngModelChange)="textValidationType($event)"
                                                       formControlName="scope"></textarea>

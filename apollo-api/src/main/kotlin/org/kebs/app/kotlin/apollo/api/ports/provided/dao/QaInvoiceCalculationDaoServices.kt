@@ -55,8 +55,7 @@ class QaInvoiceCalculationDaoServices(
         BigDecimal(permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS"))
         commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
 
-        val ratesMap =
-            iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
+        val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
         val selectedRate = ratesMap.filter {
             manufactureTurnOver > it.min ?: BigDecimal.ZERO && manufactureTurnOver <= it.max ?: throw NullValueNotAllowedException(
                 "Max needs to be defined"

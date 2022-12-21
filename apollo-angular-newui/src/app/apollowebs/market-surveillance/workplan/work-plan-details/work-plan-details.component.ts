@@ -67,6 +67,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   active: Number = 0;
   selectedFile: File;
   selectedRefNo: string;
+  totalComplianceValue: Number =0;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
   currDiv!: string;
@@ -1701,6 +1702,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.ssfSaveComplianceStatusForm = this.formBuilder.group({
       complianceStatus: ['', Validators.required],
       complianceRemarks: ['', Validators.required],
+      totalCompliance: ['', Validators.required],
     });
 
     this.finalRecommendationDetailsForm = this.formBuilder.group({
@@ -2235,6 +2237,18 @@ export class WorkPlanDetailsComponent implements OnInit {
       if (divVal === arrHead[h]) {
         this.currDivLabel = arrHeadSave[h];
       }
+    }
+
+    if (divVal === 'finalLabComplianceStatus') {
+      let complianceLabs = 0;
+      let totalCount = this.workPlanInspection?.sampleLabResults.length;
+      for (let b = 0; b < this.workPlanInspection?.sampleLabResults.length; b++) {
+        if (this.workPlanInspection?.sampleLabResults[b].ssfResultsList.complianceStatus === true) {
+          complianceLabs++;
+        }
+      }
+
+      this.totalComplianceValue = (complianceLabs / totalCount) * 100;
     }
 
     this.updateDataReport();

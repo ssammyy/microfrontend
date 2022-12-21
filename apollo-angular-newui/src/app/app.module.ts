@@ -443,9 +443,11 @@ import { IntStdSacApprovalComponent } from './apollowebs/standards-development/i
 // import {DocumentEditorContainerAllModule} from "@syncfusion/ej2-angular-documenteditor";
 import { IntStdGazetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component';
 import { MsDashboardComponent } from './apollowebs/market-surveillance/ms-dashboard/ms-dashboard.component';
+import { ComStdDraftCommentComponent } from './apollowebs/standards-development/company-standard/com-std-draft-comment/com-std-draft-comment.component';
 import { SchemeMembershipFormComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component';
 import { SchemeMembershipReviewComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component';
 import { SchemeMembershipSicComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component';
+import { RegisterTivetComponent } from './views/registration/register-tivet/register-tivet.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -922,9 +924,11 @@ import { SchemeMembershipSicComponent } from './apollowebs/standards-development
         IntStdSacApprovalComponent,
         IntStdGazetteComponent,
         MsDashboardComponent,
+        ComStdDraftCommentComponent,
         SchemeMembershipFormComponent,
         SchemeMembershipReviewComponent,
         SchemeMembershipSicComponent,
+        RegisterTivetComponent,
 
     ],
     entryComponents: [LoaderComponent],

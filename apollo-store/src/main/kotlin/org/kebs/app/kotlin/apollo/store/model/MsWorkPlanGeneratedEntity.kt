@@ -26,6 +26,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
   @Basic
   var productCategoryString: String? = null
 
+  @Column(name = "TOTAL_COMPLIANCE")
+  @Basic
+  var totalCompliance: String? = null
+
     @Column(name = "BROAD_PRODUCT_CATEGORY")
     @Basic
     var broadProductCategory: Long? = null
@@ -435,6 +439,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Column(name = "TIME_ACTIVITY_DATE")
     @Basic
     var timeActivityDate: Date? = null
+
+    @Column(name = "TIME_ACTIVITY_END_DATE")
+    @Basic
+    var timeActivityEndDate: Date? = null
 
     @Column(name = "TIME_DATE_REPORT_SUBMITTED")
     @Basic

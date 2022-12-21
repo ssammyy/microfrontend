@@ -154,6 +154,14 @@ interface AllLevyPayments{
 
 
 }
+interface ReceivedStandards{
+    fun getCreatedON(): Timestamp?
+    fun getName(): String?
+    fun getPhone(): String?
+    fun getStatus(): String?
+    fun getFirstName(): String?
+    fun getLastName(): String?
+}
 
 interface LevyPayments{
     fun getId(): Long?
@@ -625,6 +633,36 @@ interface ISAdoptionProposalJustification{
     fun getSpecial(): String?
     fun getProposalId(): Long?
 
+}
+
+interface COMUploadedDraft{
+    fun getId(): Long?
+    fun getTitle(): String?
+    fun getScope(): String?
+    fun getNormativeReference(): String?
+    fun getSymbolsAbbreviatedTerms(): String?
+    fun getClause(): String?
+    fun getSpecial(): String?
+    fun getComStdNumber(): String?
+    fun getUploadDate(): String?
+    fun getRequestNumber(): Long?
+    fun getProposalId(): Long?
+    fun getDocumentType():String?
+    fun getPreparedBy():String?
+}
+
+interface ComStdRequest{
+    fun getId(): Long?
+    fun getRequestNumber(): String?
+    fun getSubmissionDate(): Timestamp?
+    fun getCompanyName(): String?
+    fun getCompanyPhone(): String?
+    fun getCompanyEmail(): String?
+    fun getTcName(): String?
+    fun getDepartmentName(): String?
+    fun getProductName(): String?
+    fun getProductSubCategoryName(): String?
+    fun getStatus(): Long?
 }
 
 

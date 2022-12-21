@@ -10,7 +10,7 @@ class ComStdDraft {
     @Id
     @Column(name="ID")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    val id:Long=0
+    var id:Long=0
     @Column(name = "TITLE")
     @Basic
     var title: String? = null
@@ -39,19 +39,21 @@ class ComStdDraft {
     @Basic
     var uploadDate: Timestamp?=null
 
+    @Column(name="DEADLINE_DATE")
+    @Basic
+    var deadlineDate: Timestamp?=null
+
     @Column(name = "DRAFT_NUMBER")
     @Basic
     var draftNumber: String? = null
 
     @Column(name="UPLOADED_BY")
     @Basic
-    var uploadedBy : String?=null
+    var uploadedBy : Long?=null
 
     @Column(name="CREATED_BY")
     @Basic
     var createdBy : String?=null
-
-
 
     @Column(name = "REMARKS")
     @Basic
@@ -60,7 +62,7 @@ class ComStdDraft {
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
-    var accentTo: Boolean = false
+    var accentTo: String? = null
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null
@@ -76,4 +78,17 @@ class ComStdDraft {
     @Column(name="REQUEST_NUMBER")
     @Basic
     var requestNumber:String?=null
+
+    @Column(name="REQUEST_ID")
+    @Basic
+    var requestId:Long?=null
+
+
+    @Column(name="STATUS")
+    @Basic
+    var status:Long?=null
+
+    @Column(name="COM_STANDARD_NUMBER")
+    @Basic
+    var comStdNumber:String?=null
 }
