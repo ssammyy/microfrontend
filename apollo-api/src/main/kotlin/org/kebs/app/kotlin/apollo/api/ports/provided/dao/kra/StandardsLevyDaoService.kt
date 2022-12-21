@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra
 
 import akka.actor.ActorSystem
 import com.google.gson.Gson
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -170,58 +171,61 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
-    suspend fun getPermit(msg: KMessageBody): String{
-        val permitNo=msg.data?.message
-        val linkId= msg.data?.link_id
-        val phoneNumber= msg.data?.mobile_number
-        val profileCode= msg.data?.profile_code
+     fun getPermit(msg: KMessageBody): String{
+
 
         val config =
             commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKebsMsgConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR KRA")
 
 
+        runBlocking {
 
-        val headerBody = MsgRequestHeader().apply {
-            apiKey= applicationMapProperties.mapSearchForQAPermit
+            val permitNo=msg.data?.message
+            val linkId= msg.data?.link_id
+            val phoneNumber= msg.data?.mobile_number
+            val profileCode= msg.data?.profile_code
+
+            val headerBody = MsgRequestHeader().apply {
+                apiKey = applicationMapProperties.mapSearchForQAPermit
+            }
+
+            val profileBody = ProfileCode().apply {
+                profile_code = profileCode
+
+            }
+
+            val msgBody = MESSAGE().apply {
+                mobile_number = phoneNumber
+                message = permitNo
+                message_ref = ""
+                link_id = linkId
+
+            }
+
+            val list = mutableListOf<MESSAGE>()
+            list.add(msgBody)
+
+            val rootRequest = RequestMsg().apply {
+                header = headerBody
+                profile_code = profileBody
+                messages = list
+            }
+
+            val gson = Gson()
+            KotlinLogging.logger { }.info { "REQUEST BODY" + gson.toJson(rootRequest) }
+
+            val resp = thisDaoService.getHttpResponseFromPostCall(
+                false,
+                configUrl,
+                null,
+                rootRequest,
+                config,
+                null,
+                null
+            )
+
         }
-
-        val profileBody= ProfileCode().apply {
-            profile_code=profileCode
-
-        }
-
-        val msgBody= MESSAGE().apply {
-            mobile_number=phoneNumber
-            message=permitNo
-            message_ref=""
-            link_id=linkId
-
-        }
-
-        val list = mutableListOf<MESSAGE>()
-        list.add(msgBody)
-
-        val rootRequest = RequestMsg().apply {
-            header = headerBody
-            profile_code=profileBody
-            messages = list
-        }
-
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "REQUEST BODY" + gson.toJson(rootRequest) }
-
-        val resp = thisDaoService.getHttpResponseFromPostCall(
-            false,
-            configUrl,
-            null,
-            rootRequest,
-            config,
-            null,
-            null
-        )
-
-
 
 
 
