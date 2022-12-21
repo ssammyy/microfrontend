@@ -4700,6 +4700,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.id,
                 it.typeBrandName,
                 it.localImport,
+                it.permitNumber,
+                it.ucrNumber,
                 it.complianceInspectionParameter,
                 it.measurementsResults,
                 it.remarks,
