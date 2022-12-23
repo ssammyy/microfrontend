@@ -34,7 +34,7 @@
             <p>{{demandDetails.note.amountPayable | money}}</p>
         </div>
         <div class="col-sm-3 col-md-4">
-            <label class="waiver-form-label">RECEIPT NUMBER</label>
+            <label class="waiver-form-label">REFERENCE NUMBER</label>
             <p>{{demandDetails.note.receiptNo}}</p>
         </div>
 
@@ -51,7 +51,7 @@
             <p>{{demandDetails.note.entryPoint + (demandDetails.note.courier ? ', ' + demandDetails.note.courier : "")}}</p>
         </div>
         <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.entryNo">
-            <label class="waiver-form-label">SAGE ENTRY NUMBER</label>
+            <label class="waiver-form-label">UCR NUMBER</label>
             <p>{{demandDetails.note.entryNo}}</p>
         </div>
         <div class="col-sm-3 col-md-4" *ngIf="demandDetails.note.postingMsgRef">

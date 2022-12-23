@@ -38,7 +38,7 @@ export class ProcessRejectionComponent implements OnInit {
             // Check non compliance
             if (this.data.dataMap.compliantStatus !== 1) {
                 let icon: SweetAlertIcon = 'warning'
-                this.diService.showConfirmation(`Are you sure you want ${result} non-compliance request on this consignment? This will send a rejection message for all items in the consignment.`, (res) => {
+                this.diService.showConfirmation(`Are you sure you want ${result} non-compliance request on this consignment? This will send a rejection message for all items in the consignment and this is not reversible`, (res) => {
                     if (res) {
                         this.sendRequest()
                     } else {
@@ -55,13 +55,17 @@ export class ProcessRejectionComponent implements OnInit {
                 })
             }
         } else {
-            this.diService.showConfirmation(`Are you sure you want ${result} compliance on this consignment?`, (res) => {
-                if (res) {
-                    this.sendRequest()
-                } else {
-                    this.loading = false;
-                }
-            })
+            if (this.data.dataMap.compliantStatus) {
+                this.diService.showConfirmation(`Are you sure you want ${result} compliance on this consignment?`, (res) => {
+                    if (res) {
+                        this.sendRequest()
+                    } else {
+                        this.loading = false;
+                    }
+                })
+            } else {
+                this.sendRequest()
+            }
         }
     }
 

@@ -6027,6 +6027,16 @@
                                 </div>
 
                             </div>
+                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="row">
+                                <div class="col">
+                                    <div *ngIf="workPlanInspection?.submittedForApprovalStatus" class="form-group">
+                                        <div  class="form-group">
+                                            <label><b style="color: red">Reason For Updating WorkPlan</b> </label>
+                                            <textarea class="form-control two-column-input" formControlName="remarks" name="remarks" required type="text"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
                         </div>
                     </form>
                     <br>
@@ -6456,6 +6466,10 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="totalCompliance" matInput type="text" placeholder="Please Enter final Total Compliance" formControlName="totalCompliance" name="totalCompliance"
+                                                   ngModel="{{totalComplianceValue}}"  disabled   hidden [class.is-invalid]="formSSFSaveComplianceStatusForm.totalCompliance.invalid && formSSFSaveComplianceStatusForm.totalCompliance.touched">
+                                        </mat-form-field>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
                                         <mat-form-field id="complianceStatusSSF4">
                                             <mat-select placeholder="Please Select an option"

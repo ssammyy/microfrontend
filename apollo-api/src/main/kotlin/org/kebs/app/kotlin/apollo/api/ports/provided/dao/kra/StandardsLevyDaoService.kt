@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra
 
 import akka.actor.ActorSystem
 import com.google.gson.Gson
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -16,6 +17,7 @@ import org.kebs.app.kotlin.apollo.common.dto.kra.response.RequestResult
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.adaptor.akka.config.ActorSpringExtension
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.KraPinValidations
 import org.kebs.app.kotlin.apollo.store.model.Sl2PaymentsDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.Sl2PaymentsHeaderEntity
@@ -29,9 +31,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.sql.Date
 import java.sql.Timestamp
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 
@@ -69,6 +69,8 @@ class StandardsLevyDaoService(
     private val jobsRepo: IBatchJobDetailsRepository,
     private val integRepo: IIntegrationConfigurationRepository,
     private val commonDaoServices: CommonDaoServices,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val thisDaoService: DaoService,
 
     private val extension: ActorSpringExtension,
 //    private val actorSystem: ActorSystem,
@@ -164,14 +166,82 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
-    fun getPermit(msg: KMessageBody): String{
-        val permitNo=msg.data?.message
+    fun getPermit(msg: DataBody): String {
 
-        println(permitNo)
+
+        val config =
+            commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKebsMsgConfigIntegration)
+        val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR KRA")
+
+
+        runBlocking {
+
+            val permitNo = msg.message
+            val linkId = msg.link_id
+            val phoneNumber = msg.mobile_number
+            val profileCode = msg.profile_code
+
+            val headerBody = MsgRequestHeader().apply {
+                apiKey = applicationMapProperties.mapSearchForQAPermit
+            }
+
+            val profileBody = ProfileCode().apply {
+                profile_code = profileCode
+
+            }
+
+            val msgBody = MESSAGE().apply {
+                mobile_number = phoneNumber
+                message = permitNo
+                message_ref = ""
+                link_id = linkId
+
+            }
+
+            val list = mutableListOf<MESSAGE>()
+            list.add(msgBody)
+
+            val rootRequest = RequestMsg().apply {
+                header = headerBody
+                profile_code = profileBody
+                messages = list
+            }
+
+            val headerMap: MutableMap<String, String> = HashMap()
+            headerMap["api-key"] = applicationMapProperties.mapSearchForQAPermit
+
+
+            val gson = Gson()
+            KotlinLogging.logger { }.info { "REQUEST BODY" + gson.toJson(rootRequest) }
+
+            val resp = thisDaoService.getHttpResponseFromPostCall(
+                false,
+                configUrl,
+                null,
+                rootRequest,
+                config,
+                null,
+                headerMap
+            )
+
+
+            println(resp)
+
+        }
+
+
+
+
+
+
 
         return "Data Found"
     }
-    private fun validateCredentialsAndLogToDataStore(paymentRequest: Request, log: WorkflowTransactionsEntity): RequestResult {
+
+    private fun validateCredentialsAndLogToDataStore(
+        paymentRequest: Request,
+        log: WorkflowTransactionsEntity
+    ): RequestResult {
         when (daoService.validateHash(paymentRequest)) {
             false -> throw InvalidInputException("90003,NOK, Hash code validation provided")
             true -> {
@@ -193,7 +263,7 @@ class StandardsLevyDaoService(
                 header.requestHeaderBank = paymentRequest.header?.bank
                 header.requestBankRefNo = paymentRequest.header?.bankRefNo
                 header.requestHeaderTransmissionDate = paymentRequest.transmissionDate
-               // header.headerTransmissionDate = paymentRequest.transmissionDate
+                // header.headerTransmissionDate = paymentRequest.transmissionDate
                 header.transactionDate = paymentRequest.header?.paymentDate
                 header.status = 0
                 header.createdBy = paymentRequest.loginId
@@ -237,7 +307,7 @@ class StandardsLevyDaoService(
                 }
 
                 val requestResult = RequestResult()
-                with(requestResult){
+                with(requestResult) {
                     responseCode = "90000"
                     message = "Successful Submission of Payment Details"
                     status = "OK"
@@ -358,18 +428,23 @@ class StandardsLevyDaoService(
                 ?.let { job ->
                     integRepo.findByIdOrNull(job.integrationId)
                         ?.let { config ->
-                            kraPinValidationsRepo.findFirstByKraPinAndStatusOrderByIdDesc(body.kraPin, job.endSuccessStatus)
+                            kraPinValidationsRepo.findFirstByKraPinAndStatusOrderByIdDesc(
+                                body.kraPin,
+                                job.endSuccessStatus
+                            )
                                 ?.let {
                                     /**
                                      * Use existing valid Database record
                                      */
                                     try {
 
-                                        response = daoService.xmlMapper().readValue(it.responsePayload, PinValidationResponse::class.java)
+                                        response = daoService.xmlMapper()
+                                            .readValue(it.responsePayload, PinValidationResponse::class.java)
                                         log.integrationResponse = it.responsePayload
                                         log.integrationRequest = "reusing correct record"
                                         log.responseStatus = response.pinValidationResponseResult?.status
-                                        log.responseMessage = "${response.pinValidationResponseResult?.message}-${response.pinValidationResponseResult?.message}"
+                                        log.responseMessage =
+                                            "${response.pinValidationResponseResult?.message}-${response.pinValidationResponseResult?.message}"
                                         log.transactionStatus = job.endSuccessStatus ?: 30
 
 
@@ -391,11 +466,21 @@ class StandardsLevyDaoService(
                                     req.password = jasyptStringEncryptor.decrypt(config.password)
                                     val finalUrl = "${config.url}${job.jobUri}"
                                     log.integrationRequest = daoService.xmlMapper().writeValueAsString(req)
-                                    val resp = daoService.getHttpResponseFromPostCall(finalUrl, null, req, config, null, null, log)
-                                    val data = daoService.processResponses<PinValidationResponse>(resp, log, finalUrl, config)
+                                    val resp = daoService.getHttpResponseFromPostCall(
+                                        finalUrl,
+                                        null,
+                                        req,
+                                        config,
+                                        null,
+                                        null,
+                                        log
+                                    )
+                                    val data =
+                                        daoService.processResponses<PinValidationResponse>(resp, log, finalUrl, config)
                                     log = data.first
                                     log.responseStatus = data.second?.pinValidationResponseResult?.status
-                                    log.responseMessage = "${data.second?.pinValidationResponseResult?.message}-${data.second?.pinValidationResponseResult?.message}"
+                                    log.responseMessage =
+                                        "${data.second?.pinValidationResponseResult?.message}-${data.second?.pinValidationResponseResult?.message}"
 
                                     log = logsRepo.save(log)
                                     when (data.second?.pinValidationResponseResult?.responseCode) {
@@ -406,10 +491,16 @@ class StandardsLevyDaoService(
 
                                             val kraPinValidations = KraPinValidations()
                                             kraPinValidations.requestReference = log.transactionReference
-                                            kraPinValidations.responseCode = data.second?.pinValidationResponseResult?.responseCode
-                                            kraPinValidations.responseMessage = data.second?.pinValidationResponseResult?.message
-                                            kraPinValidations.responseStatus = data.second?.pinValidationResponseResult?.status
-                                            data.second?.let { kraPinValidations.responsePayload = daoService.mapper().writeValueAsString(it) }
+                                            kraPinValidations.responseCode =
+                                                data.second?.pinValidationResponseResult?.responseCode
+                                            kraPinValidations.responseMessage =
+                                                data.second?.pinValidationResponseResult?.message
+                                            kraPinValidations.responseStatus =
+                                                data.second?.pinValidationResponseResult?.status
+                                            data.second?.let {
+                                                kraPinValidations.responsePayload =
+                                                    daoService.mapper().writeValueAsString(it)
+                                            }
                                             kraPinValidations.status = job.endSuccessStatus
                                             kraPinValidations.transactionDate = LocalDate.now()
                                             kraPinValidations.transmissionDate = log.transactionStartDate
@@ -420,6 +511,7 @@ class StandardsLevyDaoService(
                                             log = logsRepo.save(log)
 
                                         }
+
                                         else -> {
                                             log.transactionStatus = job.endFailureStatus ?: 20
                                             log = logsRepo.save(log)

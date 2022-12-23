@@ -34,6 +34,8 @@ export class CompliantComponent implements OnInit {
         };
         this.corRequest = this.data.corRequest
         this.cocRequest = this.data.cocRequest
+        //console.log(this.cocRequest)
+        //console.log(this.corRequest)
         this.form = this.fb.group({
             compliantStatus: ['', Validators.required],
             documentType: [null],

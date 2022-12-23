@@ -261,17 +261,28 @@ class DestinationInspectionBpmn(
         consignmentDocument.compliantStatus = map.initStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
         consignmentDocument.diProcessCompletedOn = null
-        consignmentDocument.varField10 = "REQUEST COMPLIANCE APPROVAL"
+        consignmentDocument.varField10 = "REQUEST COMPLIANCE/NON-COMPLIANCE APPROVAL"
         consignmentDocument.status = ConsignmentApprovalStatus.WAITING.code
         // Save process details
         val updateCd = daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.COMPLIANCE_REQUEST)
-        this.auditService.addHistoryRecord(
-            consignmentDocument.id!!,
-            consignmentDocument.ucrNumber,
-            data["remarks"] as String?,
-            "REQUEST CONSIGNMENT COMPLIANCE UPDATE",
-            "Request to mark Consignment as compliant"
-        )
+        val complianceStatus = data["compliantStatus"] as Int
+        if (complianceStatus == 1) {
+            this.auditService.addHistoryRecord(
+                consignmentDocument.id!!,
+                consignmentDocument.ucrNumber,
+                data["remarks"] as String?,
+                "REQUEST CONSIGNMENT COMPLIANCE UPDATE",
+                "Request to mark Consignment as compliant"
+            )
+        } else {
+            this.auditService.addHistoryRecord(
+                consignmentDocument.id!!,
+                consignmentDocument.ucrNumber,
+                data["remarks"] as String?,
+                "REQUEST CONSIGNMENT NON-COMPLIANCE UPDATE",
+                "Request to mark Consignment as non-compliant"
+            )
+        }
         // Update current process
         this.commonDaoServices.getLoggedInUser()?.let { it1 -> this.daoServices.updateCdDetailsInDB(updateCd, it1) }
     }

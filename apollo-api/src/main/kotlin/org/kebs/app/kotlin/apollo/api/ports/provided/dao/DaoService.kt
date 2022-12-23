@@ -256,6 +256,30 @@ class DaoService(
                 }?.call?.response?.call?.response
     }
 
+    suspend fun getHttpPostCallResponse(
+        auth: Boolean,
+        finalUrl: String,
+        accessToken: String?,
+        payload: Any?,
+        config: IntegrationConfigurationEntity?,
+        bodyParams: Map<String, String>? = null,
+        headerParams: Map<String, String>? = null,
+    ): HttpResponse? {
+        return buildClient(auth, config)
+            ?.request<HttpResponse>(finalUrl) {
+                method = HttpMethod.Post
+                headerParams?.forEach { (p, v) -> header(p, v) }
+                bodyParams?.forEach { (p, v) -> parameter(p, v) }
+//                header("Authorization", "Bearer $accessToken")
+//                header("Accept", "application/json")
+
+                payload?.let {
+                    body = TextContent(mapper().writeValueAsString(it), ContentType.Application.Json)
+                }
+
+            }?.call?.response?.call?.response
+    }
+
 
 
     suspend fun getHttpResponseFromGetCall(

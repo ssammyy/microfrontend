@@ -306,8 +306,9 @@ Email:info@kebs.org
 				<reportElement x="0" y="204" width="552" height="56" uuid="fcb29516-41ae-490c-9882-894a5fb38304"/>
 			</rectangle>
 			<staticText>
-				<reportElement style="TextStatic" x="10" y="230" width="80" height="20" uuid="28c27f80-14ef-4c99-9b9f-13101833084c"/>
-				<text><![CDATA[ENTRY / ABL No]]></text>
+				<reportElement style="TextStatic" x="10" y="230" width="80" height="20"
+							   uuid="28c27f80-14ef-4c99-9b9f-13101833084c"/>
+				<text><![CDATA[UCR No.]]></text>
 			</staticText>
 			<textField>
 				<reportElement style="TextParamater" x="90" y="230" width="188" height="20" uuid="004d0d85-6d9a-4204-a4e6-f101be19bf9c">
@@ -348,10 +349,10 @@ Email:info@kebs.org
                 </textElement>
                 <textFieldExpression><![CDATA[$P{amountInWords}]]></textFieldExpression>
             </textField>
-            <staticText>
-                <reportElement style="TextStatic" x="10" y="291" width="62" height="20"
-                               uuid="dc56d66e-4a4d-4823-a182-a0230b451d8d"/>
-				<text><![CDATA[Reciept No]]></text>
+			<staticText>
+				<reportElement style="TextStatic" x="10" y="291" width="62" height="20"
+							   uuid="dc56d66e-4a4d-4823-a182-a0230b451d8d"/>
+				<text><![CDATA[Payment Ref. No]]></text>
 			</staticText>
 			<textField>
 				<reportElement style="TextParamater" isPrintRepeatedValues="false" x="76" y="291" width="468" height="20" uuid="654ef138-57fb-4e8d-ad57-275a71bf03ce">

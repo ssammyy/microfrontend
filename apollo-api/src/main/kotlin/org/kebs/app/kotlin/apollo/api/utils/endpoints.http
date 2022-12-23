@@ -4,7 +4,8 @@
 GET https://localhost:8006/api/v1/migration/anonymous/titles/
 
 #######
-GET https://localhost:8006/api/v1/migration/anonymous/membershipToTC/approve?applicationID=$2a$10$6zKH8JJ8vcVzOLe7ntWF6OODzGIdlP52.a7RuNoVW8gIfCnWEMe7G
+GET https://localhost:8006/api/v1/migration/anonymous/membershipToTC/approve?
+    applicationID=$2a$10$6zKH8JJ8vcVzOLe7ntWF6OODzGIdlP52.a7RuNoVW8gIfCnWEMe7G
 
 ###
 GET https://localhost:8006/api/v1/migration/secure/user/details/2046
@@ -86,6 +87,7 @@ Content-Type: application/json
 ###GET TCTasks
 GET https://localhost:8006/api/v1/migration/standard/getAllStdsForNwi
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY2ODUxMDMwNCwiZXhwIjoxNjY4NTE2MzA0LCJhZGRyZXNzIjoiMTk3LjI0OC4xNjYuNjUiLCJ1c2VyQWdlbnQiOiJbTW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTVfNykgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEwNy4wLjAuMCBTYWZhcmkvNTM3LjM2XSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.fkOAMbl1n_AqMqcEs-61UMy_LJsmVA_pCg29I5KBE-ubdPKRFlj90Cy-VZdF7HoL0EDQuFN5h-mLxKNQViPkPg
+
 ###GET TCTasks
 GET https://localhost:8006/api/v1/migration/standard/getTCTasks
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY1OTU4NDg0NCwiZXhwIjoxNjU5NTkwODQ0LCJhZGRyZXNzIjoiMTI3LjAuMC4xIiwidXNlckFnZW50IjoiW0FwYWNoZS1IdHRwQ2xpZW50LzQuNS4xMyAoSmF2YS8xNy4wLjMpXSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.KghVligwb3o5gEQyJx-DZCgUC7OVsMEBEFbamN-xM5OREoH_WNt95rb_AORsVYIOtIUilmwvxBiYa3mJ7O4sbQ
@@ -668,6 +670,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY
 ###
 GET https://localhost:8006/api/v1/migration/standard/getAllStds
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY2MjYyMjA4MiwiZXhwIjoxNjYyNjI4MDgyLCJhZGRyZXNzIjoiMTI3LjAuMC4xIiwidXNlckFnZW50IjoiW0FwYWNoZS1IdHRwQ2xpZW50LzQuNS4xMyAoSmF2YS8xNy4wLjMpXSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.ugecxGMb0Tiicpde6OjoDp55MPyRbw2LDMvQ8Dncfy0h6uagUjPzX4CmptkCMGTDGFLFM5mRXt1baB6fG-x9rQ
+
 ###
 POST https://localhost:8006/api/v1/migration/stdLevy/postPenaltyDetailsToKra
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aW1Aa2Vicy5jb20iLCJpc3MiOiJraW1zLmtlYnMub3JnIiwiaWF0IjoxNjU2NDM1ODIzLCJleHAiOjE2NTY0NDE4MjMsImFkZHJlc3MiOiIxMjcuMC4wLjEiLCJ1c2VyQWdlbnQiOiJbQXBhY2hlLUh0dHBDbGllbnQvNC41LjEzIChKYXZhLzExLjAuMTIpXSIsImZ1bGxOYW1lIjoiVGltb3RoeSBLYW56ZSIsInJvbGVzIjoiTElTVF9DT01QQU5ZLE1PRElGWV9DT01QQU5ZLFNMX01BTlVGQUNUVVJFX1ZJRVcsU0xfU0NIRURVTEVfVklTSVQsU0xfQVNTSUdOX0NPTVBBTlksU0xfU0lURV9WSVNJVF9QUk9DRVNTX1ZJRVcsU0xfU0lURV9WSVNJVF9SRVBPUlRfQ1JFQVRFLFNMX1NJVEVfVklTSVRfUkVQT1JUX0ZFRURCQUNLX0NSRUFURSxTTF9TTElfQ19GT1JNX1ZJRVcsU0xfU0xJX0ZPUk1fVklFVyxTTF9JU19QTF9PRkZJQ0VSIn0.tr8ZSSX9vC8l0vyVaH4PPqS45mw92utBr2VRT-e-bfDFV__Iv--HGealzwPA2O6_4zwQXVVgjGxKtFAFpugSTQ
@@ -691,6 +694,21 @@ Content-Type: application/json
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedSmarkPermits
 
 ###
-GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=22270
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=SM#60008
 
-SM#1234
+
+###
+POST https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByPermitNumberSmsRequest
+Content-Type: application/json
+
+{
+  "data": {
+    "profile_code": "2012112",
+    "mobile_number": "254702882256",
+    "link_id": "00006110182050226888385241",
+    "message": "SM#22270"
+  }
+}
+
+
+

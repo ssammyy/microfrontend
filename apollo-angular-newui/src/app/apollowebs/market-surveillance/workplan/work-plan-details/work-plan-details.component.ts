@@ -67,7 +67,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   active: Number = 0;
   selectedFile: File;
   selectedRefNo: string;
-  totalComplianceValue: Number =0;
+  totalComplianceValue: Number = 0;
   selectedBatchRefNo: string;
   selectedPDFFileName: string;
   currDiv!: string;
@@ -2241,7 +2241,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     if (divVal === 'finalLabComplianceStatus') {
       let complianceLabs = 0;
-      let totalCount = this.workPlanInspection?.sampleLabResults.length;
+      const totalCount = this.workPlanInspection?.sampleLabResults.length;
       for (let b = 0; b < this.workPlanInspection?.sampleLabResults.length; b++) {
         if (this.workPlanInspection?.sampleLabResults[b].ssfResultsList.complianceStatus === true) {
           complianceLabs++;
