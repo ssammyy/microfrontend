@@ -9,7 +9,7 @@
                 <option value="1">Compliant</option>
                 <option value="0">Not Compliant</option>
             </select>
-            <p class="text-info" *ngIf="form.errors.compliantStatus">Please select compliance status</p>
+            <p class="text-info" *ngIf="form.errors && form.errors.compliantStatus">Please select compliance status</p>
             <label for="documentType" class="waiver-form-label">Document Type</label>
             <select id="documentType" name="compliantStatus" class="waiver-form-input-master"
                     formControlName="documentType">

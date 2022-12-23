@@ -1,0 +1,174 @@
+
+<div class="main-content">
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                color="#fff"
+                size="medium"
+                type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">Loading Please Wait...</p>
+        </ngx-spinner>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">Market Surveillance Workplan Monitoring Tool</h4>
+                    </div>
+                    <div class="card-body">
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <h6 class="card-title">Search Details</h6>
+                                <br>
+                                <form >
+<!--                                    <div class="form-body">-->
+<!--                                        <div class="row">-->
+<!--                                            <div class="col-4 col-md-3 ">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Officer Name</b></label>-->
+<!--                                                    <select id="assignedIo" class="form-control" formControlName="assignedIo" type="number"-->
+<!--                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignedIo">-->
+<!--                                                        <option  selected>Please select</option>-->
+<!--                                                        <option >Officers list</option>-->
+<!--                                                        &lt;!&ndash;                                                        <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id"&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                        >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>&ndash;&gt;-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-4 col-md-3 ">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Region</b></label>-->
+<!--                                                    <select id="region" class="form-control" formControlName="region" type="number"-->
+<!--                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">-->
+<!--                                                        <option  selected>Please select</option>-->
+<!--                                                        <option >List of regions</option>-->
+<!--                                                        &lt;!&ndash;                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                        >{{app.region}}</option>&ndash;&gt;-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-4 col-md-3 ">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Date of Activity</b></label>-->
+<!--                                                    <input type="date" placeholder="Start date">-->
+
+<!--                                                    &lt;!&ndash;                                                    <select id="date" class="form-control" formControlName="region" type="number"&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                        &ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                        &lt;!&ndash;                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"&ndash;&gt;&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                        &lt;!&ndash;                                                        >{{app.region}}</option>&ndash;&gt;&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                    </select>&ndash;&gt;-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+
+<!--                                        </div>-->
+<!--                                        <div class="row">-->
+<!--                                            <div class="col-4 col-md-3">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Product</b></label>-->
+<!--                                                    <select id="product" class="form-control" formControlName="product" type="number"-->
+<!--                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="product">-->
+<!--                                                        <option selected>Please select</option>-->
+<!--                                                        <option>Product list</option>-->
+<!--                                                        &lt;!&ndash;                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"&ndash;&gt;-->
+<!--                                                        &lt;!&ndash;                                                        >{{app.region}}</option>&ndash;&gt;-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-4 col-md-3">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Department</b></label>-->
+<!--                                                    &lt;!&ndash;                                                    <select (change)="onChangeSelectedDepartment()"&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                         remove this select and use the above one    &ndash;&gt;-->
+<!--                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"-->
+<!--                                                            class="form-control" formControlName="complaintDepartment" name="complaintDepartment">-->
+<!--                                                        <option selected>Please select</option>-->
+<!--                                                        <option>Departments List</option>-->
+<!--                                                        &lt;!&ndash;                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>&ndash;&gt;-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
+
+<!--                                            </div>-->
+<!--                                            <div class="col-4 col-md-3">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Division</b> </label>-->
+<!--                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"-->
+<!--                                                            class="form-control" formControlName="division" name="division">-->
+<!--                                                        <option  selected>Please select</option>-->
+<!--                                                        <option >Division list</option>-->
+<!--                                                        &lt;!&ndash;                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>&ndash;&gt;-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div  >-->
+                                    <div class="row">
+                                        <div class="col-6 col-md-3">
+                                            <button class="btn btn-success" type="button">APPLY FILTER</button>
+                                            <!--                                            <button [disabled]="!searchFormGroup.valid"  (click)="onSubmitSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>-->
+                                        </div>
+                                        <!--                                        <div *ngIf="submitted" class="col-6 col-md-3">-->
+                                        <!--                                            <button  (click)="clearSearch()" class="btn btn-default" type="button" >CLEAR FILTER</button>-->
+                                        <!--                                        </div>-->
+                                        <div class="col-6 col-md-3">
+                                            <button class="btn btn-success" type="button">CLEAR FILTER</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+<!--                        <div class="toolbar">-->
+
+<!--                        </div>-->
+                        <div widget class="card border-0 box-shadow">
+                            <div class="material-datatables table-responsive col-md-12">
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>TARGET RANGE</th>
+                                        <th>PRODUCT</th>
+                                        <th>AREA</th>
+                                        <th>OFFICERS</th>
+                                        <th>SECTOR</th>
+                                        <!--All months that appear in the various data reports-->
+                                        <th>MONTHS UNDERTAKEN</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>01/09/2022-31/12/2022</td>
+                                        <td>Toilex</td>
+                                        <td>Kiambu</td>
+                                        <td>MSIO, KabiruMSIO</td>
+                                        <td>Engineering</td>
+                                        <td>SEP, OCT, NOV</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="material-datatables table-responsive col-md-12" style="margin-top: 30px; margin-bottom: 30px">
+                                <table>
+                                    <tr>
+                                        <th>COMPLIANCE TO WORKPLAN: </th>
+                                        <td>0%</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
