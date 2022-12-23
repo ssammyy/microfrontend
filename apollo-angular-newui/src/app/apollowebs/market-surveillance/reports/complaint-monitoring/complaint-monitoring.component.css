@@ -1,0 +1,16 @@
+.summaryTables{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.summaryTables table{
+    margin: 20px;
+    width: 100%;
+    cursor: pointer;
+}
+table{
+    margin-top: 30px;
+}
+

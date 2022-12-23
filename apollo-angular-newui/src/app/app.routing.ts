@@ -602,6 +602,15 @@ import {
     SchemeMembershipSicComponent
 } from "./apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component";
 import {RegisterTivetComponent} from "./views/registration/register-tivet/register-tivet.component";
+import {
+    ComplaintMonitoringComponent
+} from "./apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component";
+import {
+    FieldInspectionSummaryComponent
+} from "./apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component";
+import {
+    WorkplanMonitoringToolComponent
+} from "./apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component";
 
 export const routes: Routes = [
     {
@@ -2051,16 +2060,16 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'timeLineTaken',
-                component: AcknowledgementComponent,
+                path: 'complaintMonitoring',
+                component: ComplaintMonitoringComponent,
             },
             {
-                path: 'statusReport',
-                component: FeedbackTimelineComponent,
+                path: 'fieldInspectionSummary',
+                component: FieldInspectionSummaryComponent,
             },
             {
-                path: 'seizedGoods',
-                component: ReportSubmittedTimelineComponent,
+                path: 'workPlanMonitoringTool',
+                component: WorkplanMonitoringToolComponent,
             },
 
         ],

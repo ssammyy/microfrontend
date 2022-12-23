@@ -448,6 +448,9 @@ import { SchemeMembershipFormComponent } from './apollowebs/standards-developmen
 import { SchemeMembershipReviewComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component';
 import { SchemeMembershipSicComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component';
 import { RegisterTivetComponent } from './views/registration/register-tivet/register-tivet.component';
+import { ComplaintMonitoringComponent } from './apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component';
+import { FieldInspectionSummaryComponent } from './apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component';
+import { WorkplanMonitoringToolComponent } from './apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -929,6 +932,9 @@ import { RegisterTivetComponent } from './views/registration/register-tivet/regi
         SchemeMembershipReviewComponent,
         SchemeMembershipSicComponent,
         RegisterTivetComponent,
+        ComplaintMonitoringComponent,
+        FieldInspectionSummaryComponent,
+        WorkplanMonitoringToolComponent,
 
     ],
     entryComponents: [LoaderComponent],
