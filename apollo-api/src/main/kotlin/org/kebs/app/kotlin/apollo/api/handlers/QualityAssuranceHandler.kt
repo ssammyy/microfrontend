@@ -4222,15 +4222,19 @@ class QualityAssuranceHandler(
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllAwardedPermitsByPermitNumberSms(req: ServerRequest): ServerResponse {
+    fun getAllAwardedPermitsByPermitNumberSms(permitNumber: String): String {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitNumber = req.paramOrNull("permitNumber")
-                ?: throw ExpectedDataNotFound("Required Permit Number, check config")
-
             val parts = permitNumber.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val permitType = parts[0]
             val permitNumberToBeRetrieved = parts[1]
+//            val permitNumberToBeRetrievedB = parts[2]
+
+            var response = ""
+
+            println("&&&&&&&&" + permitNumber)
+            println("&&&&&&&&" + permitNumberToBeRetrieved)
+            println("&&&&&&&&" + permitType)
 
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
             println(qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved))
@@ -4288,18 +4292,27 @@ class QualityAssuranceHandler(
                         }
                 }
             }
+            if (permitListAllApplications?.isNotEmpty()!!) {
+                for (permit in permitListAllApplications) {
+                    response = "Product: " + permit.product_name + " Brand: " + permit.product_brand +
+                            " SM Issue Date: " + permit.issue_date + " SM Expiry Date: " + permit.expiry_date + "Status:Valid"
+                }
+            } else {
+                response = "Permit Not Found"
+            }
 
-            return ok().body(permitListAllApplications!!)
+
+            return response
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
-            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            return "ERROR"
         }
 
     }
 
-     fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
+    fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
         return try {
 
             val stringData = req.body<String>()
@@ -4314,11 +4327,14 @@ class QualityAssuranceHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
+                    val permitDetails = body.request?.message?.let { getAllAwardedPermitsByPermitNumberSms(it) }
 
                     val requestBody = body.request ?: throw ExpectedDataNotFound("Missing request value")
                     KotlinLogging.logger { }.info { "Message 4 $requestBody" }
-                    val response = service.getPermit(requestBody)
-                    ok().body(response)
+
+                    requestBody.message
+                    val response = permitDetails?.let { service.getPermit(requestBody, it) }
+                    ok().body(response!!)
                 }
 
                 else -> {

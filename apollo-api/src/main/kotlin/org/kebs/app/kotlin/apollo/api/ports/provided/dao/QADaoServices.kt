@@ -5106,11 +5106,12 @@ class QADaoServices(
                                 userId = userID
                                 plantId = batchInvoiceDto.plantID
                                 varField1 = batchInvoiceDto.isWithHolding.toString() // withholding field
-                                if(batchInvoiceDto.isWithHolding ==1L){
-                                    var foundTotalAmount  = permitInvoiceFound.totalAmount
+                                if (batchInvoiceDto.isWithHolding == 1L) {
+                                    var foundTotalAmount = permitInvoiceFound.totalAmount
                                     foundTotalAmount = foundTotalAmount?.minus(permitInvoiceFound.taxAmount!!)
 
-                                    val taxFoundAmount = foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
+                                    val taxFoundAmount =
+                                        foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
 
                                     foundTotalAmount = taxFoundAmount?.let { foundTotalAmount?.plus(it) }
 
@@ -5126,7 +5127,7 @@ class QADaoServices(
                                 status = s.activeStatus
                                 description = "${permitInvoiceFound.invoiceRef}"
                                 totalAmount = permitInvoiceFound.totalAmount
-                                totalTaxAmount =permitInvoiceFound.taxAmount
+                                totalTaxAmount = permitInvoiceFound.taxAmount
                                 createdBy = commonDaoServices.concatenateName(user)
                                 createdOn = commonDaoServices.getTimestamp()
                             }
@@ -6999,9 +7000,24 @@ class QADaoServices(
     ): List<KebsWebistePermitEntityDto> {
         return permits.map { p ->
             KebsWebistePermitEntityDto(
-                p.firmName,
-                p.physicalAddress,
-                p.awardedPermitNumber,
+                if (p.firmName == null) {
+                    p.attachedPlantId?.let {
+                        commonDaoServices.findCompanyProfileWithID(
+                            findPlantDetails(it).companyProfileId ?: -1L
+                        ).name
+                    }
+                } else {
+                    p.firmName
+                },
+                if (p.physicalAddress == null) {
+                    p.attachedPlantId?.let {
+                        commonDaoServices.findCompanyProfileWithID(
+                            findPlantDetails(it).companyProfileId ?: -1L
+                        ).physicalAddress
+                    }
+                } else {
+                    p.physicalAddress
+                }, p.awardedPermitNumber,
                 p.productName,
                 p.tradeMark,
                 p.ksNumber,
