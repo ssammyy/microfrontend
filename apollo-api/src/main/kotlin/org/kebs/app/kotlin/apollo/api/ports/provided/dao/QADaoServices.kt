@@ -35,6 +35,7 @@ import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.stream.Collectors
 
@@ -7082,7 +7083,7 @@ class QADaoServices(
                 p.tradeMark,
                 p.ksNumber,
                 p.commodityDescription,
-                p.effectiveDate.toString(),
+                p.dateOfIssue.toString(),
                 p.dateOfExpiry.toString()
 
             )
@@ -7092,6 +7093,7 @@ class QADaoServices(
     fun findPermitByPermitNumber(
         awardedPermitNumber: String
     ): List<PermitApplicationsEntity> {
+
 
         permitRepo.findByAwardedPermitNumber(awardedPermitNumber)
             ?.let { permitList ->
@@ -7120,10 +7122,15 @@ class QADaoServices(
     fun findPermitByPermitNumberNotMigratedDmark(
         awardedPermitNumber: String
     ): List<PermitMigrationApplicationsEntityDmark> {
+        println("^^^^^^^^^^^^^^"+awardedPermitNumber)
 
-        permitMigratedRepoDmark.findByPermitNumber(awardedPermitNumber)
+        permitMigratedRepoDmark.findAllPermitsByPermitNumber(awardedPermitNumber)
             ?.let { permitList ->
+
+                println("^^^^^^^^^^^^^^"+permitList)
                 return permitList
+
+
             }
 
             ?: throw ExpectedDataNotFound("No Permit Found ")
@@ -7144,5 +7151,6 @@ class QADaoServices(
 
 
     }
+
 
 }
