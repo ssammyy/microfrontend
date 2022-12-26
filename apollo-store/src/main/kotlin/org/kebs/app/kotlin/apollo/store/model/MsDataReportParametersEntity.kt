@@ -19,6 +19,10 @@ class MsDataReportParametersEntity : Serializable{
     @Basic
     var typeBrandName: String? = null
 
+    @Column(name = "PRODUCT_NAME")
+    @Basic
+    var productName: String? = null
+
     @Column(name = "LOCAL_IMPORT")
     @Basic
     var localImport: String? = null

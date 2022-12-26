@@ -17,7 +17,7 @@ import {
   MsDivisionDetails, MsProducts, MsProductSubcategory,
   MsRecommendationDto, MSRemarksDto, MSSSFLabResultsDto, MSSSFPDFListDetailsDto,
   MsStandardProductCategory,
-  PDFSaveComplianceStatusDto, PredefinedResourcesRequired,
+  PDFSaveComplianceStatusDto, PermitUcrSearch, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
   PreliminaryReportItemsDto, RecommendationDto,
@@ -76,6 +76,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   submitted = false;
   addLabParamStatus = true;
   disableDivision = true;
+  isImport = 0;
   defaultPageSize = 20;
   selectedSFFDetails: SampleSubmissionDto;
   defaultPage = 0;
@@ -119,6 +120,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   sampleSubmitBSNumberForm!: FormGroup;
   pdfSaveComplianceStatusForm!: FormGroup;
   ssfSaveComplianceStatusForm!: FormGroup;
+  verificationPermitForm!: FormGroup;
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
   remediationForm!: FormGroup;
@@ -1552,6 +1554,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
       outletDetails: ['', Validators.required],
+      mostRecurringNonCompliant: ['', Validators.required],
       personMet: ['', Validators.required],
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
@@ -1586,8 +1589,11 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.dataReportParamForm = this.formBuilder.group({
       id: null,
+      productName: ['', Validators.required],
       typeBrandName: ['', Validators.required],
       localImport: ['', Validators.required],
+      permitNumber: 'N/A',
+      ucrNumber: 'N/A',
       complianceInspectionParameter: ['', Validators.required],
       measurementsResults: ['', Validators.required],
       remarks: ['', Validators.required],
@@ -1705,6 +1711,14 @@ export class WorkPlanDetailsComponent implements OnInit {
       totalCompliance: ['', Validators.required],
     });
 
+    this.verificationPermitForm = this.formBuilder.group({
+      id: null,
+      permitNumber: null,
+      ucrNumber: null,
+      productName: null,
+      validityStatus: null,
+    });
+
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
@@ -1800,6 +1814,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       rationale: ['', Validators.required],
       scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
+      timeActivityEndDate: ['', Validators.required],
       region: ['', Validators.required],
       county: ['', Validators.required],
       townMarketCenter: ['', Validators.required],
@@ -2299,14 +2314,14 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
   updateDataReport() {
-    if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus === false) {
-      this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
-      this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
-      this.dataSaveDataReportParamList = [];
-      for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
-        this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
-      }
-    }
+    // if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus === false) {
+    //   this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
+    //   this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
+    //   this.dataSaveDataReportParamList = [];
+    //   for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
+    //     this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
+    //   }
+    // }
   }
 
   updateFieldReport() {
@@ -3364,8 +3379,16 @@ export class WorkPlanDetailsComponent implements OnInit {
   onClickEndSampleSubmitted() {
     this.msService.showSuccessWith2Message('Are you sure your want to End Sample Submission?', 'You won\'t be able to revert back after submission!',
         // tslint:disable-next-line:max-line-length
-        'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+        'You can click the \'ADD SAMPLE SUBMISSION\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
           this.endSampleSubmitted();
+        });
+  }
+
+  onClickEndDataReportAdding() {
+    this.msService.showSuccessWith2Message('Are you sure your want to End Data Report Adding?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can click the \'ADD DATA REPORT\' button to update details Before Saving', 'DATA REPORT DETAILS SAVED SUCCESSFUL', () => {
+          this.endDataReportAdding();
         });
   }
 
@@ -3380,6 +3403,26 @@ export class WorkPlanDetailsComponent implements OnInit {
           console.log(data);
           this.SpinnerService.hide();
           this.msService.showSuccess('SAMPLE SUBMISSION ENDED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  endDataReportAdding() {
+    this.SpinnerService.show();
+    this.msService.msWorkPlanScheduleEndDataReportAdding(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('DATA REPORT ENDED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
@@ -3769,9 +3812,53 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickAddDataReportParam() {
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
+    const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
+
+    switch (valueSelected) {
+      case 'Local':
+        this.msService.loadPermitDetailsSearch(this.dataSaveDataReportParam.permitNumber).subscribe(
+            (data: PermitUcrSearch) => {
+              this.SpinnerService.hide();
+              this.verificationPermitForm.patchValue(data);
+              this.currDivLabel = `PERMIT FOUND WITH FOLLOWING DETAILS`;
+              this.currDiv = 'verificationPermitDetails';
+
+              window.$('#myModal2').modal('show');
+              // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+
+              console.log(error);
+              // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+        break;
+      case 'Import':
+        this.msService.loadUCRDetailsSearch(this.dataSaveDataReportParam.ucrNumber).subscribe(
+            (data: any) => {
+              this.SpinnerService.hide();
+              // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+        break;
+    }
+
+
+
     this.dataSaveDataReportParamList.push(this.dataSaveDataReportParam);
+    this.dataReportParamForm?.get('productName')?.reset();
     this.dataReportParamForm?.get('typeBrandName')?.reset();
     this.dataReportParamForm?.get('localImport')?.reset();
+    this.dataReportParamForm?.get('permitNumber')?.reset();
+    this.dataReportParamForm?.get('permitNumber')?.setValue('N/A');
+    this.dataReportParamForm?.get('ucrNumber')?.reset();
+    this.dataReportParamForm?.get('ucrNumber')?.setValue('N/A');
     this.dataReportParamForm?.get('complianceInspectionParameter')?.reset();
     this.dataReportParamForm?.get('measurementsResults')?.reset();
     this.dataReportParamForm?.get('remarks')?.reset();
@@ -4200,8 +4287,28 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  onChangeSelectedImportType() {
+
+    const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
+
+    switch (valueSelected) {
+      case 'Local':
+        this.isImport = 1;
+        this.dataReportParamForm?.get('permitNumber')?.reset();
+        this.dataReportParamForm?.get('ucrNumber')?.setValue('N/A');
+        break;
+      case 'Import':
+        this.isImport = 2;
+        this.dataReportParamForm?.get('ucrNumber')?.reset();
+        this.dataReportParamForm?.get('permitNumber')?.setValue('N/A');
+        break;
+    }
+
+  }
+
+
   onChangeSelectedDepartment() {
-    this.disableDivision = false;
+    // this.disableDivision = false;
     this.addNewScheduleForm.controls.divisionId.enable();
     this.departmentSelected = this.addNewScheduleForm?.get('complaintDepartment')?.value;
     this.standardProductCategorySelected = this.addNewScheduleForm?.get('standardCategory')?.value;
@@ -4238,25 +4345,16 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.addNewScheduleForm?.get('regionID')?.value;
+    this.selectedRegion = this.addNewScheduleForm?.get('region')?.value;
+    this.addNewScheduleForm.controls.county.enable();
     console.log(`region set to ${this.selectedRegion}`);
   }
 
 
   updateSelectedCounty() {
     this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
-    console.log(`county set to ${this.selectedCounty}`);
-    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
-    this.store$.select(selectCountyIdData).subscribe(
-        (d) => {
-          if (d) {
-            console.log(`Select county inside is ${d}`);
-            return this.townService.getAll();
-          } else {
-            return throwError('Invalid request, County id is required');
-          }
-        },
-    );
+    this.addNewScheduleForm.controls.townMarketCenter.enable();
+    this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
 
   }
 

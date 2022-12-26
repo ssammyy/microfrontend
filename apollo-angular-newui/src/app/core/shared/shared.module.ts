@@ -5,6 +5,7 @@ import {PreventDoubleClickDirective} from './prevent-double-click.directive';
 import {ConsignmentStatusComponent} from './customs/consignment-status/consignment-status.component';
 import {CurrencyFormatterComponent} from './currency-formatter/currency-formatter.component';
 import {CurrencyFormatterPipe} from "./currency-formatter.pipe";
+import { DateValidatorDirective } from './date-validator.directive';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import {CurrencyFormatterPipe} from "./currency-formatter.pipe";
         PreventDoubleClickDirective,
         ConsignmentStatusComponent,
         CurrencyFormatterComponent,
-        CurrencyFormatterPipe
+        CurrencyFormatterPipe,
+        DateValidatorDirective
     ],
     exports: [
         FilterPipe,

@@ -214,6 +214,7 @@ export class WorkPlanListComponent implements OnInit {
       rationale: ['', Validators.required],
       scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
+      timeActivityEndDate: ['', Validators.required],
       region: ['', Validators.required],
       county: ['', Validators.required],
       townMarketCenter: ['', Validators.required],
@@ -237,9 +238,9 @@ export class WorkPlanListComponent implements OnInit {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
     this.msService.loadMSWorkPlanList(String(page), String(records), referenceNumber, routeTake, 'false').subscribe(
-        (data) => {
-          console.log(`TEST DATA===${data}`);
-          this.loadedData = data;
+        (data2) => {
+          console.log(`TEST DATA===${data2}`);
+          this.loadedData = data2;
           this.totalCount = this.loadedData.workPlanList.length;
           this.dataSet.load(this.loadedData.workPlanList);
 
@@ -444,17 +445,23 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.addNewScheduleForm?.get('regionID')?.value;
+    this.selectedRegion = this.addNewScheduleForm?.get('region')?.value;
+    this.addNewScheduleForm.controls.county.enable();
+    // this.msCounties = this.msCounties.sort((a, b) => a.county > b.county ? 1 : -1);
+    // this.msCounties = this.msCounties.filter(x => String(this.dataSaveResourcesRequired.resourceName) === String(x.regionId));
     console.log(`region set to ${this.selectedRegion}`);
   }
 
   updateSelectedCounty() {
     this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
-    this.msService.msCountiesListDetails().subscribe(
-        (dataCounties: County[]) => {
-          this.selectedCountyName = dataCounties.find(x => x.id === this.selectedCounty).county;
-        },
-    );
+    this.addNewScheduleForm.controls.townMarketCenter.enable();
+    this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
+    // this.msTowns = this.msTowns.sort((a, b) => a.town > b.town ? 1 : -1);
+    // this.msService.msCountiesListDetails().subscribe(
+    //     (dataCounties: County[]) => {
+    //       this.selectedCountyName = dataCounties.find(x => x.id === this.selectedCounty).county;
+    //     },
+    // );
   }
 
   updateSelectedTown() {
@@ -554,7 +561,6 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   onChangeSelectedDepartment() {
-    this.disableDivision = false;
     this.addNewScheduleForm.controls.divisionId.enable();
     this.departmentSelected = this.addNewScheduleForm?.get('complaintDepartment')?.value;
     this.standardProductCategorySelected = this.addNewScheduleForm?.get('standardCategory')?.value;

@@ -265,7 +265,7 @@ data class WorkPlanInspectionDto(
         var chargeSheet: ChargeSheetDto? = null,
         var seizureDeclarationDto: List<SeizureDto>? = null,
         var inspectionInvestigationDto: InspectionInvestigationReportDto? = null,
-        var dataReportDto: DataReportDto? = null,
+        var dataReportDto: List<DataReportDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: List<SampleSubmissionDto>? = null,
         var sampleLabResults: List<MSSSFLabResultsDto>? = null,
@@ -390,6 +390,7 @@ data class RecommendationDto (
 )
 
 data class WorkPlanFeedBackDto(
+        var id: Long?= 0,
         @NotNull(message = "Required field")
         var hodFeedBackRemarks: String,
 )
@@ -524,6 +525,7 @@ data class DataReportDto(
         var town: String? = null,
         var marketCenter: String? = null,
         var outletDetails: String? = null,
+        var mostRecurringNonCompliant: String? = null,
         var personMet: String? = null,
         var summaryFindingsActionsTaken: String? = null,
         var finalActionSeizedGoods: String? = null,
@@ -534,6 +536,7 @@ data class DataReportDto(
 
 data class DataReportParamsDto(
         var id: Long?= 0,
+        var productName: String? = null,
         var typeBrandName: String? = null,
         var localImport: String? = null,
         var permitNumber: String? = null,

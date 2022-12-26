@@ -55,6 +55,10 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var outletDetails: String? = null
 
+    @Column(name = "MOST_RECURRING_NON_COMPLIANT")
+    @Basic
+    var mostRecurringNonCompliant: String? = null
+
     @Column(name = "PERSON_MET")
     @Basic
     var personMet: String? = null

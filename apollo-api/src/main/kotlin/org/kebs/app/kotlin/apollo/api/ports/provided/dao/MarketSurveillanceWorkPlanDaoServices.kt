@@ -1009,17 +1009,19 @@ class MarketSurveillanceWorkPlanDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        findDataReportByWorkPlanInspectionID(workPlanScheduled.id)?.let { dataReport->
-            with(dataReport) {
-                finalActionOnSized = map.activeStatus
-                finalActionSeizedGoods = body.hodFeedBackRemarks
-                modifiedBy= commonDaoServices.concatenateName(loggedInUser)
-                modifiedOn = commonDaoServices.getTimestamp()
-            }
-            dataReportRepo.save(dataReport)
+        body.id?.let {
+            findDataReportByWorkPlanInspectionIDAndID(workPlanScheduled.id, it)?.let { dataReport->
+                with(dataReport) {
+                    finalActionOnSized = map.activeStatus
+                    finalActionSeizedGoods = body.hodFeedBackRemarks
+                    modifiedBy= commonDaoServices.concatenateName(loggedInUser)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+                dataReportRepo.save(dataReport)
 
-            return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
-        }?: throw ExpectedDataNotFound("MISSING DATA REPORT FOR SCHEDULER WITH REF NUMBER : ${workPlanScheduled.referenceNumber}")
+                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+        } ?: throw ExpectedDataNotFound("MISSING DATA REPORT FOR ID NUMBER : ${body.id}")
 
     }
 
@@ -2329,7 +2331,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val dataReportFileSaved = workPlanInspectionDetailsAddDataReport(body, workPlanScheduled, map, loggedInUser)
 
@@ -2346,25 +2348,38 @@ class MarketSurveillanceWorkPlanDaoServices(
                 body.productsList?.forEach { param->
                     workPlanInspectionDetailsAddDataReportParams(param, dataReportFileSaved.second, map, loggedInUser)
                 }
-
-                with(workPlanScheduled) {
-                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
-                    dataReportStatus = map.activeStatus
-                    dataReportDate = commonDaoServices.getCurrentDate()
-                }
-                val fileSaved2 = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
-                when (fileSaved2.first.status) {
-                    map.successStatus -> {
-                        workPlanScheduled = fileSaved2.second
-                        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
-                    }
-                    else -> {
-                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
-                    }
-                }
+                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(dataReportFileSaved.first))
+            }
+        }
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun endAddingWorkPlanInspectionDetailsDataReport(
+        referenceNo: String,
+        batchReferenceNo: String
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        with(workPlanScheduled) {
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
+            dataReportStatus = map.activeStatus
+            dataReportDate = commonDaoServices.getCurrentDate()
+        }
+        val fileSaved2 = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+        when (fileSaved2.first.status) {
+            map.successStatus -> {
+                workPlanScheduled = fileSaved2.second
+                return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved2.first))
             }
         }
     }
@@ -3047,14 +3062,14 @@ class MarketSurveillanceWorkPlanDaoServices(
             nameActivity = body.nameActivity
             timeActivityDate = body.timeActivityDate
             timeActivityEndDate = body.timeActivityEndDate
+            region = body.region
             county = body.county
             townMarketCenter = body.townMarketCenter
             locationActivityOther = body.locationActivityOther
             standardCategory = body.standardCategory
-            broadProductCategory = body.broadProductCategory
-            productCategory = body.productCategory
-            product = body.product
-            productSubCategory = body.productSubCategory
+            rationale = body.rationale
+            scopeOfCoverage = body.scopeOfCoverage
+            productString = body.productString
             resourcesRequired =  body.resourcesRequired?.let { commonDaoServices.convertClassToJson(it) }
             budget = body.budget
             when (submittedForApprovalStatus) {
@@ -3705,6 +3720,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 town = body.town
                                 marketCenter = body.marketCenter
                                 outletDetails = body.outletDetails
+                                mostRecurringNonCompliant = body.mostRecurringNonCompliant
                                 personMet = body.personMet
                                 summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
                                 finalActionSeizedGoods = body.finalActionSeizedGoods
@@ -3727,6 +3743,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 town = body.town
                                 marketCenter = body.marketCenter
                                 outletDetails = body.outletDetails
+                                mostRecurringNonCompliant = body.mostRecurringNonCompliant
                                 personMet = body.personMet
                                 summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
                                 finalActionSeizedGoods = body.finalActionSeizedGoods
@@ -3777,6 +3794,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 dataReportParameterRepo.findByIdOrNull(body.id?: -1L)?.let { param->
                     with(param) {
                         typeBrandName= body.typeBrandName
+                        productName= body.productName
                         localImport= body.localImport
                         permitNumber= body.permitNumber
                         ucrNumber= body.ucrNumber
@@ -3793,6 +3811,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 } ?: kotlin.run {
                     with(saveDataReport) {
                         typeBrandName = body.typeBrandName
+                        productName = body.productName
                         localImport = body.localImport
                         permitNumber= body.permitNumber
                         ucrNumber= body.ucrNumber
@@ -4654,6 +4673,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     dataReport.town,
                     dataReport.marketCenter,
                     dataReport.outletDetails,
+                    dataReport.mostRecurringNonCompliant,
                     dataReport.personMet,
                     dataReport.summaryFindingsActionsTaken,
                     dataReport.finalActionSeizedGoods,
@@ -4698,6 +4718,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         return data.map {
             DataReportParamsDto(
                 it.id,
+                it.productName,
                 it.typeBrandName,
                 it.localImport,
                 it.permitNumber,
@@ -4834,10 +4855,17 @@ class MarketSurveillanceWorkPlanDaoServices(
         val seizureDeclaration  = findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduledDetails.id)
         val seizureDeclarationDto = seizureDeclaration?.let { mapSeizureDeclarationDetailsDto(it) }
 
-        val dataReport  = findDataReportByWorkPlanInspectionID(workPlanScheduledDetails.id)
-        val dataReportParameters  = dataReport?.id?.let { findDataReportParamsByDataReportID(it) }
-        val dataReportParametersDto = dataReportParameters?.let { mapDataReportParamListDto(it) }
-        val dataReportDto = dataReport?.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
+        val dataReportDtoList = mutableListOf<DataReportDto>()
+        findDataReportListByWorkPlanInspectionID(workPlanScheduledDetails.id)
+            ?.forEach { dataReport->
+                val dataReportParameters  = dataReport.id.let { findDataReportParamsByDataReportID(it) }
+                val dataReportParametersDto = dataReportParameters?.let { mapDataReportParamListDto(it) }
+                val dataReportDto = dataReport.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
+                if (dataReportDto != null) {
+                    dataReportDtoList.add(dataReportDto)
+                }
+            }
+
 
         val inspectionInvestigation  = findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduledDetails.id)
         val inspectionInvestigationDto = inspectionInvestigation?.let { mapInspectionInvestigationDetailsDto(it) }
@@ -4917,7 +4945,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             chargeSheetDto,
             seizureDeclarationDto,
             inspectionInvestigationDto,
-            dataReportDto,
+            dataReportDtoList,
             sampleCollectedDtoValues,
             sampleSubmittedDtoList,
             labResultsDtoList,
@@ -4974,7 +5002,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         chargeSheet: ChargeSheetDto?,
         seizureDeclarationDto: List<SeizureDto>?,
         inspectionInvestigationDto: InspectionInvestigationReportDto?,
-        dataReportDto: DataReportDto?,
+        dataReportDto: List<DataReportDto>?,
         sampleCollected: SampleCollectionDto?,
         sampleSubmitted: List<SampleSubmissionDto>?,
         sampleLabResults: List<MSSSFLabResultsDto>?,
@@ -5281,7 +5309,10 @@ class MarketSurveillanceWorkPlanDaoServices(
         return  seizureDeclarationRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
     }
 
-    fun findDataReportByWorkPlanInspectionID(workPlanInspectionID: Long): MsDataReportEntity? {
+    fun findDataReportByWorkPlanInspectionIDAndID(workPlanInspectionID: Long, ID: Long): MsDataReportEntity? {
+        return  dataReportRepo.findByWorkPlanGeneratedIDAndId(workPlanInspectionID, ID)
+    }
+    fun findDataReportListByWorkPlanInspectionID(workPlanInspectionID: Long): List<MsDataReportEntity>? {
         return  dataReportRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
     }
 
