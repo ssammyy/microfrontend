@@ -648,6 +648,16 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 val remarksSaved = fuelAddRemarksDetails(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID"),remarksDto, map, loggedInUser)
                  when (remarksSaved.first.status) {
                     map.successStatus -> {
+                        val complainantEmailComposed = complaintRejectedDTOEmailCompose(complaintUpdated.second)
+                        runBlocking {
+                            commonDaoServices.sendEmailWithUserEmail(
+                                findComplaintCustomerByComplaintID(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID")).emailAddress?: throw ExpectedDataNotFound("Missing Complainant Email Address"),
+                                applicationMapProperties.mapMsComplaintAcknowledgementAcceptedNotification,
+                                complainantEmailComposed,
+                                map,
+                                complaintUpdated.first
+                            )
+                        }
 
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
                     }

@@ -693,6 +693,8 @@ export class ApiEndpointService {
     public static MARKET_SURVEILLANCE_COMMON = {
         MS_OFFICER_LIST: `${ApiEndpointService.MS_COMMON_CONTEXT}/officer-list`,
         MS_DASHBOARD: `${ApiEndpointService.MS_COMMON_CONTEXT}/dashboard`,
+        MS_SEARCH_PERMIT_NUMBER: `${ApiEndpointService.MS_COMMON_CONTEXT}/search-permit-number`,
+        MS_SEARCH_UCR_NUMBER: `${ApiEndpointService.MS_COMMON_CONTEXT}/search-ucr-number`,
         MS_TOWNS: `${ApiEndpointService.MS_COMMON_CONTEXT}/towns`,
         MS_COUNTIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/counties`,
         MS_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regions/load`,
@@ -798,6 +800,7 @@ export class ApiEndpointService {
         UPDATE_FINAL_COMPLAINT_REMARKS_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/final-feed-back/save`,
         INSPECTION_SCHEDULED_ADD_CHARGE_SHEET: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/charge-sheet`,
         INSPECTION_SCHEDULED_ADD_DATA_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/data-report`,
+        INSPECTION_SCHEDULED_END_ADDING_DATA_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/end-data-report`,
         INSPECTION_SCHEDULED_ADD_SEIZURE_DECLARATION: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/seizure-declaration`,
         INSPECTION_SCHEDULED_END_SEIZURE_DECLARATION: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/end-seizure-declaration`,
         INSPECTION_SCHEDULED_ADD_INSPECTION_INVESTIGATION: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/inspection-investigation`,

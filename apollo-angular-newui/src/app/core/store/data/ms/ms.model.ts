@@ -140,6 +140,14 @@ export class MsNotificationTaskDto {
     readStatus: boolean;
 }
 
+export class PermitUcrSearch {
+    id: number;
+    permitNumber: string;
+    ucrNumber: string;
+    productName: string;
+    validityStatus: boolean;
+}
+
 export class NotificationBodyDto {
     taskRefNumber: string;
     fromName: string;
@@ -819,7 +827,7 @@ export class WorkPlanInspectionDto {
     chargeSheet: ChargeSheetDto;
     seizureDeclarationDto: SeizureDto[];
     inspectionInvestigationDto: InspectionInvestigationReportDto;
-    dataReportDto: DataReportDto;
+    dataReportDto: DataReportDto[];
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto[];
     sampleLabResults: MSSSFLabResultsDto[];
@@ -950,6 +958,7 @@ export class DataReportDto {
     town: string;
     marketCenter: string;
     outletDetails: string;
+    mostRecurringNonCompliant: string;
     personMet: string;
     summaryFindingsActionsTaken: string;
     finalActionSeizedGoods: string;
@@ -963,8 +972,11 @@ export class DataReportDto {
 
 export class DataReportParamsDto {
     id: number;
+    productName: string;
     typeBrandName: string;
     localImport: string;
+    permitNumber: string;
+    ucrNumber: string;
     complianceInspectionParameter: number;
     measurementsResults: string;
     remarks: string;

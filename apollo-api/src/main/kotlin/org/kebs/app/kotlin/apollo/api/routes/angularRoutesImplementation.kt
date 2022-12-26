@@ -734,6 +734,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     "/add".nest {
                         POST("/charge-sheet", handler::addWorkPlanScheduleChargeSheet)
                         POST("/data-report", handler::addWorkPlanDataReportSheet)
+                        POST("/end-data-report", handler::endAddingWorkPlanDataReportSheet)
                         POST("/seizure-declaration", handler::addWorkPlanSeizureDeclaration)
                         POST("/end-seizure-declaration", handler::addWorkPlanEndSeizureDeclaration)
                         POST("/inspection-investigation", handler::addWorkPlanInspectionInvestigationReport)
