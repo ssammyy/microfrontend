@@ -1,22 +1,21 @@
 package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
-import java.sql.Timestamp
+import java.sql.Date
 import javax.persistence.*
 
 
 @Entity
-@Table(name = "DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_DMARK")
+@Table(name = "DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_DM")
 class PermitMigrationApplicationsEntityDmark : Serializable {
-    @Column(name = "FIRM_ID")
-    @SequenceGenerator(
-        name = "DAT_KEBS_PERMIT_TRANSACTION_SEQ_GEN",
-        allocationSize = 1,
-        sequenceName = "DAT_KEBS_PERMIT_TRANSACTION_SEQ"
-    )
-    @GeneratedValue(generator = "DAT_KEBS_PERMIT_TRANSACTION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID")
     @Id
-    var id: Long? = 0
+    var id: Long? = null
+
+
+    @Column(name = "FIRM_ID")
+    @Basic
+    var firmId: Long? = null
 
     @Column(name = "POSITION")
     @Basic
@@ -37,16 +36,16 @@ class PermitMigrationApplicationsEntityDmark : Serializable {
 
     @Column(name = "DATE_OF_ISSUE")
     @Basic
-    var dateOfIssue: Timestamp? = null
+    var dateOfIssue: Date? = null
 
 
     @Column(name = "EFFECTIVE_DATE")
     @Basic
-    var effectiveDate: Timestamp? = null
+    var effectiveDate: Date? = null
 
     @Column(name = "DATE_OF_VISIT")
     @Basic
-    var dateOfVisit: Timestamp? = null
+    var dateOfVisit: String? = null
 
     @Column(name = "INSPECTOR_NAME")
     @Basic
@@ -94,7 +93,7 @@ class PermitMigrationApplicationsEntityDmark : Serializable {
 
     @Column(name = "DATE_OF_EXPIRY")
     @Basic
-    var dateOfExpiry: Timestamp? = null
+    var dateOfExpiry: Date? = null
 
     @Column(name = "COMMODITY_DESCRIPTION")
     @Basic

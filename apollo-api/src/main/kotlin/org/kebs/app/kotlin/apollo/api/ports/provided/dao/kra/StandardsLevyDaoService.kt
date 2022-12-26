@@ -166,9 +166,7 @@ class StandardsLevyDaoService(
      *
      * @return RequestResult
      */
-    fun getPermit(msg: DataBody): String {
-
-
+    fun getPermit(msg: DataBody, permitDetails: String): String {
         val config =
             commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapKebsMsgConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL FOR KRA")
@@ -181,18 +179,15 @@ class StandardsLevyDaoService(
             val phoneNumber = msg.mobile_number
             val profileCode = msg.profile_code
 
-            val headerBody = MsgRequestHeader().apply {
-                apiKey = applicationMapProperties.mapSearchForQAPermit
-            }
 
-            val profileBody = ProfileCode().apply {
-                profile_code = profileCode
 
-            }
+
+
+
 
             val msgBody = MESSAGE().apply {
                 mobile_number = phoneNumber
-                message = permitNo
+                message = permitDetails
                 message_ref = ""
                 link_id = linkId
 
@@ -202,8 +197,7 @@ class StandardsLevyDaoService(
             list.add(msgBody)
 
             val rootRequest = RequestMsg().apply {
-                header = headerBody
-                profile_code = profileBody
+                profile_code = profileCode
                 messages = list
             }
 

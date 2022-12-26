@@ -264,8 +264,8 @@ class SchedulerImpl(
                 cp.firmCategory = firmType
                 companyRepo.save(cp)
             } catch (e: Exception) {
-                KotlinLogging.logger { }.error(e.message)
-                KotlinLogging.logger { }.debug(e.message, e)
+//                KotlinLogging.logger { }.error(e.message)
+//                KotlinLogging.logger { }.debug(e.message, e)
 
                 continue
             }

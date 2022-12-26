@@ -49,7 +49,7 @@ class ReceiveSL2PaymentRequest {
     var loginId: String = ""
 
     @NotNull(message = "Required field")
-    var password: String= ""
+    var password: String = ""
 
     @NotEmpty(message = "Required field")
     var hash: String = ""
@@ -218,8 +218,10 @@ class PenaltyRequest {
 
 class DECLARATION {
     var commodityType: String? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var periodFrom: Date? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var periodTo: Date? = null
     var qtyManf: String? = null
@@ -240,9 +242,11 @@ class Header {
     var kraPin: String? = null
     var manufacturerName: String? = null
     var paymentSlipNo: String? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var paymentSlipDate: Date? = null
     var paymentType: String? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var paymentDate: Date? = null
     var totalDeclAmt: String? = null
@@ -265,11 +269,12 @@ class DataBody {
 }
 
 
-
 class PENALTY {
     var penaltyOrderNo: String? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var periodFrom: Date? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yy")
     var periodTo: Date? = null
     var penaltyPaid: String? = null
@@ -296,6 +301,10 @@ class RootKra {
 }
 
 class RootMsg {
+    var uid: String? = null
+    var actor_type: String? = null
+    var event_type: String? = null
+    var created_at: String? = null
     @JsonProperty("DATA")
     var request: DataBody? = null
 }
@@ -315,19 +324,19 @@ class KMessageBody {
 
 class RequestMsg {
 
-    var header: MsgRequestHeader? = null
-    var profile_code: ProfileCode? = null
+    //    var header: MsgRequestHeader? = null
+    var profile_code: String? = null
+
     @JsonProperty("messages")
     var messages: MutableList<MESSAGE>? = null
 }
 
 
-
-class MsgRequestHeader{
+class MsgRequestHeader {
     var apiKey: String? = null
 }
 
-class ProfileCode{
+class ProfileCode {
     var profile_code: String? = null
 
 }

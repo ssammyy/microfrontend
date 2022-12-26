@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 > {%
-    client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
+    client.global.set("auth_token", response.headers.valuesOf("accessToken")[0]);
 %}
 
 ###
@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 
 > {%
-    client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
+    client.global.set("auth_token", response.headers.valuesOf("accessToken")[0]);
 %}
 
 
@@ -239,7 +239,7 @@ Content-Type: application/json
 }
 
 > {%
-    client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
+    client.global.set("auth_token", response.headers.valuesOf("accessToken")[0]);
 %}
 
 ####
@@ -439,7 +439,7 @@ Content-Type: application/json
 }
 
 > {%
-    client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
+    client.global.set("auth_token", response.headers.valuesOf("accessToken")[0]);
 %}
 
 ####
@@ -691,7 +691,7 @@ Content-Type: application/json
 
 
 ###
-GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedSmarkPermits
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedDmarkPermits
 
 ###
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=SM#60008
@@ -702,13 +702,20 @@ POST https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwarded
 Content-Type: application/json
 
 {
+  "uid": "488807caf8b2425cb30646d841ac39e0",
+  "actor_type": "user",
+  "event_type": "sms_mo_inbound",
+  "created_at": "1671774281.610342",
   "data": {
     "profile_code": "2012112",
     "mobile_number": "254702882256",
-    "link_id": "00006110182050226888385241",
-    "message": "SM#22270"
+    "link_id": "00006110182214784548134937",
+    "message": "DM#1019"
   }
 }
+
+  
+
 
 
 
