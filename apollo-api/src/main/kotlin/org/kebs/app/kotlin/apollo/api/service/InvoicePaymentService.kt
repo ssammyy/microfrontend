@@ -81,6 +81,7 @@ class InvoicePaymentService(
             map["importerAddress"] = demandNote.address.toString()
             map["importerTelephone"] = demandNote.telephone.toString()
             map["ablNo"] = demandNote.entryAblNumber.toString()
+            map["ucrNo"] = demandNote.entryNo.toString()
             map["totalAmount"] = demandNote.totalAmount.toString()
             map["receiptNo"] = demandNote.receiptNo.toString()
             map["amountInWords"] = demandNote.totalAmount?.let { amountInWordsService.amountToWords(it) } ?: ""

@@ -627,7 +627,7 @@ class DestinationInspectionService(
 
             consignmentDocument = this.daoServices.updateCdDetailsInDB(consignmentDocument, supervisorDetails)
             // Update CD status if the current process is modifiable
-            // Unmodiafiable process are pending approval and changing such statuses causes the existing
+            // Un-modifiable process are pending approval and changing such statuses causes the existing
             // State to be lost, hence failed process or undesirable status
             if (consignmentDocument.approveRejectCdStatusType?.modificationAllowed == 1) {
                 daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.IO_REASSIGNED)
