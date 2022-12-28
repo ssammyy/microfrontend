@@ -611,9 +611,12 @@ interface IUsersCfsAssignmentsRepository : HazelcastRepository<UsersCfsAssignmen
     @Query("select CKCTC.CFS_CODE from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId", nativeQuery = true)
     fun findAllUserCfsCodes(@Param("profileId") Id: Long): List<String>
 
-    @Query("select count(CKCTC.CFS_CODE) from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId and CCA.CFS_ID=:cfsId", nativeQuery = true)
+    @Query(
+        "select count(CKCTC.CFS_CODE) from CFG_USERS_CFS_ASSIGNMENTS CCA left join CFG_KEBS_CFS_TYPE_CODES CKCTC on CCA.CFS_ID = CKCTC.ID where CCA.STATUS=1 and CCA.USER_PROFILE_ID=:profileId and CCA.CFS_ID=:cfsId",
+        nativeQuery = true
+    )
     fun countUserCfsCodes(@Param("profileId") Id: Long, @Param("cfsId") cfsId: Long): Long
-    fun findByUserProfileId(userProfileId: Long): List<UsersCfsAssignmentsEntity>?
+    fun findByUserProfileIdAndStatus(userProfileId: Long, status: Int): List<UsersCfsAssignmentsEntity>?
     fun findByUserProfileIdAndCfsId(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity?
     fun findByUserProfileIdAndCfsIdAndStatus(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity?
 }
