@@ -4236,10 +4236,6 @@ class QualityAssuranceHandler(
             var response = ""
             var validity = "Valid"
 
-            println("&&&&&&&&" + permitNumber)
-            println("&&&&&&&&" + permitNumberToBeRetrieved)
-            println("&&&&&&&&" + permitType)
-            println("########" + permitNumberFinal)
 
 
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
@@ -4308,7 +4304,7 @@ class QualityAssuranceHandler(
                                 "Product: " + permit.product_name + " Brand: " + permit.product_brand + " Firm: " + permit.companyName +
                                         " SM Issue Date: " + convertDateStringToDate(permit.issue_date!!) + " SM Expiry Date: " + convertDateStringToDate(
                                     permit.expiry_date!!
-                                ) + " Status: " + checkPermitValidity(permit.expiry_date!!)
+                                ) + " SM Status: " + checkPermitValidity(permit.expiry_date!!)
                         }
 
                         "FM" -> {
@@ -4316,7 +4312,7 @@ class QualityAssuranceHandler(
                                 "Product: " + permit.product_name + " Brand: " + permit.product_brand + " Firm: " + permit.companyName +
                                         " FM Issue Date: " + convertDateStringToDate(permit.issue_date!!) + " FM Expiry Date: " + convertDateStringToDate(
                                     permit.expiry_date!!
-                                ) + " Status: " + checkPermitValidity(permit.expiry_date!!)
+                                ) + " FM Status: " + checkPermitValidity(permit.expiry_date!!)
                         }
 
                         "DM" -> {
@@ -4324,7 +4320,7 @@ class QualityAssuranceHandler(
                                 "Product: " + permit.product_name + " Brand: " + permit.product_brand + " Firm: " + permit.companyName +
                                         " DM Issue Date: " + convertDateStringToDate(permit.issue_date!!) + " DM Expiry Date: " + convertDateStringToDate(
                                     permit.expiry_date!!
-                                ) + " Status: " + checkPermitValidity(permit.expiry_date!!)
+                                ) + " DM Status: " + checkPermitValidity(permit.expiry_date!!)
                         }
                     }
                 }
@@ -4436,7 +4432,7 @@ fun checkPermitValidity(expiryDate: String): String {
         val formatter = SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy")
         val date: java.util.Date? = formatter.parse(expiryDate)
         return if (System.currentTimeMillis() > date!!.time) {
-            "Invalid"
+            "Expired"
         } else {
             "Valid"
         }
@@ -4445,7 +4441,7 @@ fun checkPermitValidity(expiryDate: String): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         val strDate: java.util.Date? = sdf.parse(parts[0])
         return if (System.currentTimeMillis() > strDate!!.time) {
-            "Invalid"
+            "Expired"
         } else {
             "Valid"
         }
