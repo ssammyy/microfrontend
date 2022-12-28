@@ -65,6 +65,7 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
+import java.text.SimpleDateFormat
 
 
 @Component
@@ -4222,25 +4223,33 @@ class QualityAssuranceHandler(
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun getAllAwardedPermitsByPermitNumberSms(req: ServerRequest): ServerResponse {
+    fun getAllAwardedPermitsByPermitNumberSms(permitNumber: String): String {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitNumber = req.paramOrNull("permitNumber")
-                ?: throw ExpectedDataNotFound("Required Permit Number, check config")
-
             val parts = permitNumber.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val permitType = parts[0]
+            val permitType = parts[0].uppercase()
             val permitNumberToBeRetrieved = parts[1]
+//            val permitNumberToBeRetrievedB = parts[2]
+
+            val permitNumberFinal = "$permitType#$permitNumberToBeRetrieved"
+
+            var response = ""
+            var validity = "Valid"
+
+            println("&&&&&&&&" + permitNumber)
+            println("&&&&&&&&" + permitNumberToBeRetrieved)
+            println("&&&&&&&&" + permitType)
+            println("########" + permitNumberFinal)
+
 
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
-            println(qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved))
 
 
             when (permitType) {
                 "SM" -> {
 
                     permitListAllApplications =
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsite(
                                 qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumberToBeRetrieved), map
                             )
@@ -4248,7 +4257,7 @@ class QualityAssuranceHandler(
 
                             qaDaoServices.listPermitsWebsite(
                                 qaDaoServices.findPermitByPermitNumber(
-                                    permitNumber
+                                    permitNumberFinal
                                 ), map
                             )
                         }
@@ -4258,7 +4267,7 @@ class QualityAssuranceHandler(
                     permitListAllApplications =
 
 
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsiteFmark(
                                 qaDaoServices.findPermitByPermitNumberNotMigratedFmark(permitNumberToBeRetrieved), map
                             )
@@ -4266,7 +4275,7 @@ class QualityAssuranceHandler(
 
                             qaDaoServices.listPermitsWebsite(
                                 qaDaoServices.findPermitByPermitNumber(
-                                    permitNumber
+                                    permitNumberFinal
                                 ), map
                             )
                         }
@@ -4274,7 +4283,7 @@ class QualityAssuranceHandler(
 
                 "DM" -> {
                     permitListAllApplications =
-                        if (qaDaoServices.findPermitByPermitNumber(permitNumberToBeRetrieved).isEmpty()) {
+                        if (qaDaoServices.findPermitByPermitNumber(permitNumberFinal).isEmpty()) {
                             qaDaoServices.listPermitsNotMigratedWebsiteDmark(
                                 qaDaoServices.findPermitByPermitNumberNotMigratedDmark(permitNumberToBeRetrieved), map
                             )
@@ -4282,29 +4291,67 @@ class QualityAssuranceHandler(
 
                             qaDaoServices.listPermitsWebsite(
                                 qaDaoServices.findPermitByPermitNumber(
-                                    permitNumber
+                                    permitNumberFinal
                                 ), map
                             )
                         }
                 }
             }
+            if (permitListAllApplications?.isNotEmpty()!!) {
+                for (permit in permitListAllApplications) {
 
-            return ok().body(permitListAllApplications!!)
+                    when (permitType) {
+                        "SM" -> {
+
+
+                            response =
+                                "Product: " + permit.product_name + " Brand: " + permit.product_brand + " Firm: " + permit.companyName +
+                                        " SM Issue Date: " + convertDateStringToDate(permit.issue_date!!) + " SM Expiry Date: " + convertDateStringToDate(
+                                    permit.expiry_date!!
+                                ) + " Status: " + checkPermitValidity(permit.expiry_date!!)
+                        }
+
+                        "FM" -> {
+                            response =
+                                "Product: " + permit.product_name + " Brand: " + permit.product_brand + " Firm: " + permit.companyName +
+                                        " FM Issue Date: " + convertDateStringToDate(permit.issue_date!!) + " FM Expiry Date: " + convertDateStringToDate(
+                                    permit.expiry_date!!
+                                ) + " Status: " + checkPermitValidity(permit.expiry_date!!)
+                        }
+
+                        "DM" -> {
+                            response =
+                                "Product: " + permit.product_name + " Brand: " + permit.product_brand + " Firm: " + permit.companyName +
+                                        " DM Issue Date: " + convertDateStringToDate(permit.issue_date!!) + " DM Expiry Date: " + convertDateStringToDate(
+                                    permit.expiry_date!!
+                                ) + " Status: " + checkPermitValidity(permit.expiry_date!!)
+                        }
+                    }
+                }
+            } else {
+                response =
+                    "The Permit was not found. Kindly call KEBS Toll free line: 1545 or send email to qmarks@kebs.org for further assistance. Thank You"
+            }
+
+
+            return response
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.trace(e.message, e)
+
             KotlinLogging.logger { }.debug(e.message, e)
-            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            return "ERROR"
         }
 
     }
 
-     fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
+    fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
         return try {
 
             val stringData = req.body<String>()
             val mapper = ObjectMapper()
-            mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+            mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
 //            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 //            mapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
             val removedString = commonDaoServices.removeQuotesAndUnescape(stringData)
@@ -4314,11 +4361,14 @@ class QualityAssuranceHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
+                    val permitDetails = body.request?.message?.let { getAllAwardedPermitsByPermitNumberSms(it) }
 
                     val requestBody = body.request ?: throw ExpectedDataNotFound("Missing request value")
                     KotlinLogging.logger { }.info { "Message 4 $requestBody" }
-                    val response = service.getPermit(requestBody)
-                    ok().body(response)
+
+                    requestBody.message
+                    val response = permitDetails?.let { service.getPermit(requestBody, it) }
+                    ok().body(response!!)
                 }
 
                 else -> {
@@ -4344,8 +4394,7 @@ class QualityAssuranceHandler(
             }
 
         }
-        return ServerResponse
-            .badRequest()
+        return badRequest()
             .contentType(MediaType.APPLICATION_JSON)
             .body(errorMap)
 
@@ -4353,9 +4402,54 @@ class QualityAssuranceHandler(
     }
 
     fun onErrors(message: String?) =
-        ServerResponse
-            .badRequest()
+        badRequest()
             .contentType(MediaType.APPLICATION_JSON)
             .body(message ?: "UNKNOWN_ERROR")
 
 }
+
+//fun convertDateStringToDate(stringToBeConverted: String): java.util.Date? {
+//    val formatter = SimpleDateFormat("yyyy-MM-dd")
+//
+//    return formatter.parse(stringToBeConverted)
+//}
+fun convertDateStringToDate(stringToBeConverted: String): String? {
+    return if (!stringToBeConverted.contains("-")) {
+
+        val formatter = SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy")
+        val formatterOut = SimpleDateFormat("yyyy-MM-dd")
+        val date: java.util.Date? = formatter.parse(stringToBeConverted)
+        println(date)
+        formatterOut.format(date)
+    } else {
+        val parts = stringToBeConverted.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        parts[0]
+
+    }
+
+
+}
+
+
+fun checkPermitValidity(expiryDate: String): String {
+    if (!expiryDate.contains("-")) {
+        val formatter = SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy")
+        val date: java.util.Date? = formatter.parse(expiryDate)
+        return if (System.currentTimeMillis() > date!!.time) {
+            "Invalid"
+        } else {
+            "Valid"
+        }
+    } else {
+        val parts = expiryDate.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val strDate: java.util.Date? = sdf.parse(parts[0])
+        return if (System.currentTimeMillis() > strDate!!.time) {
+            "Invalid"
+        } else {
+            "Valid"
+        }
+
+    }
+}
+

@@ -17,7 +17,7 @@ import java.util.*
 @Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserIdAndVarField9IsNull(userId: Long): List<PermitApplicationsEntity>?
-    fun findByAwardedPermitNumber(awardedPermitNumber: String):  List<PermitApplicationsEntity>?
+    fun findByAwardedPermitNumber(awardedPermitNumber: String): List<PermitApplicationsEntity>?
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
     fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
     fun countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
@@ -295,7 +295,6 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long,
         permitAwardStatus: Int,
     ): List<PermitApplicationsEntity>?
-
 
 
     fun findByPermitTypeAndOldPermitStatusIsNotNullAndPermitAwardStatus(
@@ -612,7 +611,11 @@ interface IQaRemarksEntityRepository : HazelcastRepository<QaRemarksEntity, Long
 
     //    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
-    fun findFirstByPermitIdAndProcessByAndRemarksStatus(permitId: Long, processBy: String, remarksStatus:Int): QaRemarksEntity?
+    fun findFirstByPermitIdAndProcessByAndRemarksStatus(
+        permitId: Long,
+        processBy: String,
+        remarksStatus: Int
+    ): QaRemarksEntity?
 }
 
 @Repository
@@ -1059,13 +1062,31 @@ interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
 interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntity, Long> {
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 }
+
 @Repository
-interface IPermitMigrationApplicationsFmarkEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntityFmark, Long> {
+interface IPermitMigrationApplicationsFmarkEntityRepository :
+    HazelcastRepository<PermitMigrationApplicationsEntityFmark, Long> {
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
 }
 
 @Repository
-interface IPermitMigrationApplicationsDmarkEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntityDmark, Long> {
+interface IPermitMigrationApplicationsDmarkEntityRepository :
+    HazelcastRepository<PermitMigrationApplicationsEntityDmark, Long> {
+
+
+    @Query(
+        "SELECT u.* FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_DM u   WHERE u.PERMIT_NUMBER=:permitNumber",
+        nativeQuery = true
+    )
+    fun findAllPermitsByPermitNumber(
+        @Param("permitNumber") permitNumber: String,
+
+        ): List<PermitMigrationApplicationsEntityDmark>?
+
+
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
+
+
+
 }
 

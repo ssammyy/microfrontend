@@ -824,7 +824,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
             GET("/getAllAwardedPermits", handler::getAllAwardedPermitsByPermitNumber)
 
-            GET("/getAllAwardedPermitsByPermitNumberSms", handler::getAllAwardedPermitsByPermitNumberSms)
+//            GET("/getAllAwardedPermitsByPermitNumberSms", handler::getAllAwardedPermitsByPermitNumberSms)
 
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
             POST("/getAllAwardedPermitsByPermitNumberSmsRequest", handler::processReceiveMessageBody)
