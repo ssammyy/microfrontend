@@ -30,6 +30,14 @@ class MsSampleSubmissionEntity : Serializable{
     @Basic
     var nameProduct: String? = null
 
+    @Column(name = "PRODUCT_DESCRIPTION")
+    @Basic
+    var productDescription: String? = null
+
+    @Column(name = "SOURCE_PRODUCT_EVIDENCE")
+    @Basic
+    var sourceProductEvidence: String? = null
+
     @Column(name = "LB_ID_ANY_AOMARKING")
     @Basic
     var lbIdAnyAomarking: String? = null

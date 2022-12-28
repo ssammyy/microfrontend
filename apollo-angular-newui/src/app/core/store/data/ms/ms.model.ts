@@ -931,6 +931,7 @@ export class LaboratoryEntityDto {
 
 export class SeizureDto {
     id: number;
+    docID: number;
     marketTownCenter: string;
     nameOfOutlet: string;
     descriptionProductsSeized: string;
@@ -944,6 +945,7 @@ export class SeizureDto {
     estimatedCost: string;
     currentLocation: string;
     productsDestruction: string;
+    additionalOutletDetails: string;
     remarks: string;
 }
 
@@ -1356,6 +1358,8 @@ export class SampleSubmissionDto {
     scfNo: string;
     cocNumber: string;
     bsNumber: string;
+    productDescription: string;
+    sourceProductEvidence: string;
     parametersList: SampleSubmissionItemsDto[];
 }
 

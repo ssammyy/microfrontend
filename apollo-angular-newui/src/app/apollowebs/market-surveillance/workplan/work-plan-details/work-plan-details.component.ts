@@ -75,10 +75,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   currDivLabel!: string;
   submitted = false;
   addLabParamStatus = true;
+  addProductsStatus = true;
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
   selectedSFFDetails: SampleSubmissionDto;
+  selectedDataReportDetails: DataReportDto;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -196,6 +198,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
+  uploadedFilesSeizedGoods: FileList;
   fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
@@ -1036,6 +1039,110 @@ export class WorkPlanDetailsComponent implements OnInit {
     },
   };
 
+  public settingsDataReport = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      referenceNumber: {
+        title: 'FORM REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
+      inspectorName : {
+        title: 'NAME OF INSPECTOR',
+        type: 'string',
+        filter: false,
+      },
+      inspectionDate: {
+        title: 'DATE OF INSPECTION',
+        type: 'date',
+        filter: false,
+      },
+      totalComplianceScore: {
+        title: 'Total Compliance Score %',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsDataReportUpdate = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
+        {name: 'updateRecord', title: '<i  class="btn btn-sm btn-primary">UPDATE DATA REPORT DETAILS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      referenceNumber: {
+        title: 'FORM REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
+      inspectorName : {
+        title: 'NAME OF INSPECTOR',
+        type: 'string',
+        filter: false,
+      },
+      inspectionDate: {
+        title: 'DATE OF INSPECTION',
+        type: 'date',
+        filter: false,
+      },
+      totalComplianceScore: {
+        title: 'Total Compliance Score %',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+
   public settingsSampleSubmitted = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -1607,6 +1714,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.seizureDeclarationForm = this.formBuilder.group({
       id: null,
+      docID: null,
       marketTownCenter: ['', Validators.required],
       nameOfOutlet: ['', Validators.required],
       descriptionProductsSeized: ['', Validators.required],
@@ -1620,6 +1728,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       estimatedCost: ['', Validators.required],
       currentLocation: ['', Validators.required],
       productsDestruction: ['', Validators.required],
+      additionalOutletDetails: ['', Validators.required],
     });
 
     this.sampleCollectForm = this.formBuilder.group({
@@ -1657,7 +1766,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: null,
-      fileRefNumber: ['', Validators.required],
+      fileRefNumber: null,
       referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
@@ -1668,6 +1777,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       address: ['', Validators.required],
       sendersDate: ['', Validators.required],
       receiversName: null,
+      productDescription: null,
       receiversDate: null,
       lbIdAnyAomarking: null,
       lbIdBatchNo: null,
@@ -1683,6 +1793,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       invoiceNumber: null,
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
+      sourceProductEvidence: ['', Validators.required],
       sampleCollectionNumber: null,
     });
 
@@ -2266,7 +2377,6 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.totalComplianceValue = (complianceLabs / totalCount) * 100;
     }
 
-    this.updateDataReport();
     this.updateFieldReport();
     this.updateWorkPlan();
     this.updatePreliminaryReport();
@@ -2313,14 +2423,19 @@ export class WorkPlanDetailsComponent implements OnInit {
       }
     }
   }
-  updateDataReport() {
-    // if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus === false) {
-    //   this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
-    //   this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
-    //   this.dataSaveDataReportParamList = [];
-    //   for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
-    //     this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
-    //   }
+
+  updateDataReport(data: DataReportDto) {
+      this.dataReportForm.patchValue(data);
+      this.selectedDataReportDetails = data;
+    this.totalCompliantValue = data?.totalComplianceScore;
+      const paramDetails = data.productsList;
+      this.dataSaveDataReportParamList = [];
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveDataReportParamList.push(paramDetails[i]);
+      }
+      // this.dataReportForm.disable();
+      this.addProductsStatus = true;
+      window.$('#dataReportModal').modal('show');
     // }
   }
 
@@ -2382,6 +2497,17 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   }
 
+  public onCustomDataReportAction(event: any): void {
+    switch (event.action) {
+      case 'viewRecord':
+        this.viewDataReportRecord(event.data);
+        break;
+      case 'updateRecord':
+        this.updateDataReport(event.data);
+        break;
+    }
+  }
+
 
   public onCustomSSFAction(event: any): void {
     switch (event.action) {
@@ -2421,6 +2547,20 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.ssfSelectedID = data.id;
       window.$('#myModal1').modal('show');
     }
+  }
+
+  viewDataReportRecord(data: DataReportDto) {
+    this.dataReportForm.patchValue(data);
+    this.selectedDataReportDetails = data;
+    this.totalCompliantValue = data?.totalComplianceScore;
+    const paramDetails = data.productsList;
+    this.dataSaveDataReportParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveDataReportParamList.push(paramDetails[i]);
+    }
+    this.dataReportForm.disable();
+    this.addProductsStatus = false;
+    window.$('#dataReportModal').modal('show');
   }
 
   viewSSFRecord(data: SampleSubmissionDto) {
@@ -3822,8 +3962,10 @@ export class WorkPlanDetailsComponent implements OnInit {
               this.verificationPermitForm.patchValue(data);
               this.currDivLabel = `PERMIT FOUND WITH FOLLOWING DETAILS`;
               this.currDiv = 'verificationPermitDetails';
+              this.verificationPermitForm.disabled;
 
               window.$('#myModal2').modal('show');
+
               // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
             },
             error => {
@@ -3872,6 +4014,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
     this.totalCompliantValue = (compliantCount / totalCount) * 100;
+    this.isImport = 0;
     console.log('compliant count' + compliantCount);
     console.log('total count' + totalCount);
     console.log('complinace Value count' + this.totalCompliantValue);
@@ -4057,7 +4200,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
-    if (this.seizureDeclarationForm.valid) {
+    if (this.seizureDeclarationForm.valid && this.uploadedFilesSeizedGoods.length>0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
@@ -4069,12 +4212,18 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   saveSeizureDeclaration() {
     this.SpinnerService.show();
+    const file = this.uploadedFilesSeizedGoods;
     this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
-    this.msService.msWorkPlanScheduleSaveSeizureDeclaration(
-        this.workPlanInspection.batchDetails.referenceNumber,
-        this.workPlanInspection.referenceNumber,
-        this.dataSaveSeizureDeclaration,
-    ).subscribe(
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+    formData.append('docTypeName', 'SEIZURE_UPLOAD');
+    formData.append('data', JSON.stringify(this.dataSaveSeizureDeclaration));
+    for (let i = 0; i < file.length; i++) {
+      console.log(file[i]);
+      formData.append('docFile', file[i], file[i].name);
+    }
+    this.msService.msWorkPlanScheduleSaveSeizureDeclarationWithUpload(formData).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
           console.log(data);

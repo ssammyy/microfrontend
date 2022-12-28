@@ -598,6 +598,7 @@ data class SeizureListDto(
 
 data class SeizureDto(
         var id: Long?= 0,
+        var docID: Long?= 0,
         var marketTownCenter: String?=null,
         var nameOfOutlet: String?=null,
         var descriptionProductsSeized: String?=null,
@@ -611,6 +612,7 @@ data class SeizureDto(
         var estimatedCost: String?=null,
         var currentLocation: String?=null,
         var productsDestruction: String?=null,
+        var additionalOutletDetails: String?=null,
 
 )
 
@@ -712,6 +714,8 @@ data class SampleSubmissionDto(
         var scfNo: String? = null,
         var cocNumber: String? = null,
         var bsNumber : String? = null,
+        var productDescription : String? = null,
+        var sourceProductEvidence : String? = null,
         var parametersList: List<SampleSubmissionItemsDto>? = null,
 )
 

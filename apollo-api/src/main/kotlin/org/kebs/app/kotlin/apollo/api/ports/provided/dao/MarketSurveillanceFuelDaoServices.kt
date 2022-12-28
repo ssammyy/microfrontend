@@ -1848,6 +1848,8 @@ class MarketSurveillanceFuelDaoServices(
             labellingIdentification = body.labellingIdentification
             createdUserId = user.id
             referencesStandards = body.referencesStandards
+            productDescription = body.productDescription
+            sourceProductEvidence = body.sourceProductEvidence
             sizeTestSample = body.sizeTestSample
             sizeRefSample = body.sizeRefSample
             condition = body.condition
@@ -1879,12 +1881,11 @@ class MarketSurveillanceFuelDaoServices(
 
             if (fuelInspectionDetail != null) {
                 msFuelInspectionId = fuelInspectionDetail.id
-                fileRefNumber =
-                    "REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                fileRefNumber ="REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
 
             } else if (workPlanInspectionDetail != null) {
                 workPlanGeneratedID = workPlanInspectionDetail.id
-                fileRefNumber = body.sampleReferences
+                fileRefNumber ="REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             }
             status = map.activeStatus
             when {
@@ -3645,6 +3646,8 @@ class MarketSurveillanceFuelDaoServices(
             data.scfNo,
             data.cocNumber,
             data.bsNumber,
+            data.productDescription,
+            data.sourceProductEvidence,
             data2
         )
     }
