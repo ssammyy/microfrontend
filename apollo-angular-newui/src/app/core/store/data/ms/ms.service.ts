@@ -79,7 +79,7 @@ import {
     AcknowledgementDto,
     MsNotificationTaskDto,
     MsDashBoardIODto,
-    MsDashBoardALLDto, ComplaintViewSearchValues, SampleProductViewSearchValues, SeizedGoodsViewSearchValues,
+    MsDashBoardALLDto, ComplaintViewSearchValues, SampleProductViewSearchValues, SeizedGoodsViewSearchValues, PermitUcrSearch,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -110,6 +110,20 @@ export class MsService {
         console.log('validators called');
         return start.value !== null && end.value !== null && start.value < end.value
             ? null : { dateValid: true };
+    }
+
+    public validateDates(sDate: string, eDate: string): boolean {
+        let isValidDate = true;
+        if ((sDate == null || eDate == null)) {
+            isValidDate = false;
+            this.showSuccess('Start date and end date are required.');
+        }
+
+        if ((sDate != null && eDate != null) && (eDate) < (sDate)) {
+            isValidDate = false;
+            this.showSuccess('End date should be grater then start date.');
+        }
+        return isValidDate;
     }
 
 
@@ -676,6 +690,39 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public loadPermitDetailsSearch(permitNumber: string): Observable<PermitUcrSearch> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_SEARCH_PERMIT_NUMBER);
+        const params = new HttpParams()
+            .set('permitNumber', permitNumber);
+        return this.http.get<PermitUcrSearch>(url, {params}).pipe(
+            map(function (response: PermitUcrSearch) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadUCRDetailsSearch(ucrNumber: string): Observable<PermitUcrSearch> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_SEARCH_UCR_NUMBER);
+        const params = new HttpParams()
+            .set('ucrNumber', ucrNumber);
+        return this.http.get<PermitUcrSearch>(url, {params}).pipe(
+            map(function (response: PermitUcrSearch) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public loadNotificationRead(taskRefNumber: string): Observable<MsNotificationTaskDto[]> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_NOTIFICATIONS_READ);
@@ -1076,6 +1123,26 @@ export class MsService {
         );
     }
 
+    public msWorkPlanScheduleSaveSeizureDeclarationWithUpload(data: FormData): Observable<any> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SEIZURE_DECLARATION,
+        );
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
      // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleEndSeizureDeclaration(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
          // tslint:disable-next-line:max-line-length
@@ -1116,6 +1183,27 @@ export class MsService {
             }),
         );
     }
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleEndDataReportAdding(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_END_ADDING_DATA_REPORT,
+        );
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.post<WorkPlanInspectionDto>(url, null, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
 
     // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSaveInvestInspectReport(batchReferenceNo: string, referenceNo: string, data: InspectionInvestigationReportDto): Observable<WorkPlanInspectionDto> {

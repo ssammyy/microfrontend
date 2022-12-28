@@ -2291,14 +2291,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
   updateDataReport() {
-    if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus === false) {
-      this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
-      this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
-      this.dataSaveDataReportParamList = [];
-      for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
-        this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
-      }
-    }
+    // if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus === false) {
+    //   this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
+    //   this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
+    //   this.dataSaveDataReportParamList = [];
+    //   for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
+    //     this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
+    //   }
+    // }
   }
 
   updateFieldReport() {

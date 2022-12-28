@@ -317,7 +317,7 @@
                                     <div class="form-group">
                                         <label><b>Division</b></label>
                                         <select [class.is-invalid]="formNewScheduleForm.divisionId.errors && formNewScheduleForm.divisionId.invalid"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" [disabled]='disableDivision'
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" disabled
                                                 class="form-control" formControlName="divisionId" name="divisionId" required>
                                             <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>
@@ -335,11 +335,46 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
+                                        <label><b>Start Date of activity</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.timeActivityDate.invalid && formNewScheduleForm.timeActivityDate.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="timeActivityDate"
+                                               name="timeActivityDate" required type="date">
+                                        <div *ngIf="submitted && formNewScheduleForm.timeActivityDate.errors"
+                                             class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.timeActivityDate.errors.required">Date of
+                                                Activity is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>End Date of activity</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.timeActivityEndDate.invalid && formNewScheduleForm.timeActivityEndDate.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="timeActivityEndDate"
+                                               name="timeActivityEndDate" required type="date">
+                                        <div *ngIf="submitted && formNewScheduleForm.timeActivityEndDate.errors"
+                                             class="invalid-feedback">
+                                            <div *ngIf="formNewScheduleForm.timeActivityEndDate.errors.required">Date of
+                                                Activity is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
                                         <label><b>Name of Activity</b></label>
                                         <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors"
                                                 class="form-control two-column-input"
                                                 formControlName="nameActivity" name="nameActivity" required type="text">
-<!--                                            <option [value]="" selected>Please select</option>-->
+                                            <option [value]="" selected>Please select</option>
                                             <option  [value]="'Targeted, Routine Surveillance'" >Targeted, Routine Surveillance</option>
                                             <option  [value]="'reactive surveillance'" >Reactive surveillance</option>
                                         </select>
@@ -352,23 +387,6 @@
                                 </div>
 
                                 <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Date of activity</b> </label>
-                                        <input [class.is-invalid]="formNewScheduleForm.timeActivityDate.invalid && formNewScheduleForm.timeActivityDate.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="timeActivityDate"
-                                               name="timeActivityDate" required type="date">
-                                        <div *ngIf="submitted && formNewScheduleForm.timeActivityDate.errors" class="invalid-feedback">
-                                            <div *ngIf="formNewScheduleForm.timeActivityDate.errors.required">Date of Activity is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
                                     <div class="form-group" >
                                         <label><b>Region</b></label>
                                         <select (change)="updateSelectedRegion()"
@@ -377,7 +395,7 @@
                                                 class="form-control" formControlName="region" name="region" required>
                                             <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"
-                                                    >{{app.region}}</option>
+                                            >{{app.region}}</option>
                                         </select>
                                         <div *ngIf="submitted && formNewScheduleForm.region.errors" class="invalid-feedback">
                                             <div *ngIf="formNewScheduleForm.region.errors.required">Region is required</div>
@@ -385,15 +403,18 @@
                                     </div>
                                 </div>
 
+                            </div>
+
+                            <div class="row">
                                 <div class="col">
                                     <div class="form-group" >
                                         <label><b>County</b></label>
                                         <select (change)="updateSelectedCounty()"
                                                 [class.is-invalid]="formNewScheduleForm.county.invalid && formNewScheduleForm.county.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" disabled
                                                 class="form-control" formControlName="county" name="county" required>
                                             <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of msCounties| filterPipe: {status: true,regionId: selectedRegion}" [ngValue]="app.id"
+                                            <option *ngFor="let app of msCounties| filterPipe: {status: true, regionId: selectedRegion}" [ngValue]="app.id"
                                             >{{app.county}}</option>
                                         </select>
                                         <div *ngIf="submitted && formNewScheduleForm.county.errors" class="invalid-feedback">
@@ -401,15 +422,12 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
-                            <div class="row">
                                 <div class="col">
                                     <div class="form-group" >
                                         <label><b>Town/Market center</b></label>
                                         <select (change)="updateSelectedTown()"
                                                 [class.is-invalid]="formNewScheduleForm.townMarketCenter.invalid && formNewScheduleForm.townMarketCenter.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small" disabled
                                                 class="form-control" formControlName="townMarketCenter" name="townMarketCenter" required>
                                             <option [value]="" selected>Please select</option>
                                             <option *ngFor="let app of msTowns| filterPipe: {status: true, countyId: selectedCounty}"
@@ -420,6 +438,10 @@
                                         </div>
                                     </div>
                                 </div>
+
+                            </div>
+                            <div class="row">
+
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Other</b></label>
@@ -428,6 +450,20 @@
                                                [class.is-invalid]="formNewScheduleForm.locationActivityOther.invalid && formNewScheduleForm.locationActivityOther.errors">
                                         <div *ngIf="submitted && formNewScheduleForm.locationActivityOther.errors" class="invalid-feedback">
                                             <div *ngIf="formNewScheduleForm.locationActivityOther.errors.required">Other is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Budget</b> </label>
+                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
+                                               class="form-control two-column-input" formControlName="budget" placeholder="Please enter budget"
+                                               name="budget" required type="text">
+                                    </div>
+                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors"
+                                         class="invalid-feedback">
+                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required
                                         </div>
                                     </div>
                                 </div>
@@ -486,17 +522,17 @@
                                 </div>
 
                                 <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Budget</b> </label>
-                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"
-                                               class="form-control two-column-input" formControlName="budget"
-                                               name="budget" required type="text">
-                                    </div>
-                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors"
-                                         class="invalid-feedback">
-                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required
-                                        </div>
-                                    </div>
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Budget</b> </label>-->
+<!--                                        <input [class.is-invalid]="formNewScheduleForm.budget.invalid && formNewScheduleForm.budget.errors"-->
+<!--                                               class="form-control two-column-input" formControlName="budget"-->
+<!--                                               name="budget" required type="text">-->
+<!--                                    </div>-->
+<!--                                    <div *ngIf="submitted && formNewScheduleForm.budget.errors"-->
+<!--                                         class="invalid-feedback">-->
+<!--                                        <div *ngIf="formNewScheduleForm.budget.errors.required">The Budget is required-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                 </div>
 
                             </div>

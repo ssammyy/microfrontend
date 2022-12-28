@@ -141,7 +141,7 @@ export class ComplaintNewComponent implements OnInit {
 
     this.countyService.getAll().subscribe((data: County[]) => {
       // this.countyList = data.sort((a, b) => a.county - b.county);
-      this.countyList = data.sort((a, b) => a.county > b.county ? 1 : -1);
+      this.countyList = data.sort((a, b) => a.county > b.county ? 1 : -1)
         },
     );
 
