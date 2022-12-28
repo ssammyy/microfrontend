@@ -2950,8 +2950,8 @@ class DestinationInspectionDaoServices(
         return usersCfsRepo.countUserCfsCodes(userProfileID, cfsId)
     }
 
-    fun findAllCFSUserList(userProfileID: Long): List<UsersCfsAssignmentsEntity> {
-        usersCfsRepo.findByUserProfileId(userProfileID)
+    fun findAllCFSUserList(userProfileID: Long, status: Int = 1): List<UsersCfsAssignmentsEntity> {
+        usersCfsRepo.findByUserProfileIdAndStatus(userProfileID, status)
             ?.let {
                 return it
             }

@@ -7,7 +7,8 @@
 			<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
 		</box>
 	</style>
-	<style name="TextBankDetails" isDefault="true" hTextAlign="Left" vTextAlign="Middle" rotation="None" isBlankWhenNull="true" fontName="Times New Roman" fontSize="10" isBold="false">
+	<style name="TextBankDetails" isDefault="true" hTextAlign="Left" vTextAlign="Middle" rotation="None"
+		   isBlankWhenNull="true" fontName="Times New Roman" fontSize="10" isBold="false">
 		<paragraph rightIndent="5"/>
 	</style>
 	<parameter name="imagePath" class="java.lang.String"/>
@@ -16,6 +17,7 @@
 	<parameter name="importerAddress" class="java.lang.String"/>
 	<parameter name="importerTelephone" class="java.lang.String"/>
 	<parameter name="ablNo" class="java.lang.String"/>
+	<parameter name="ucrNo" class="java.lang.String"/>
 	<parameter name="totalAmount" class="java.lang.String"/>
 	<parameter name="amountInWords" class="java.lang.String"/>
 	<parameter name="receiptNo" class="java.lang.String"/>
@@ -784,15 +786,17 @@
 					<textFieldExpression><![CDATA[$P{totalAmount}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement style="TextStatic" x="11" y="21" width="80" height="20" uuid="bd298fdc-21ab-4a23-82b3-86a9ed37963b"/>
-					<text><![CDATA[ENTRY / ABL No]]></text>
+					<reportElement style="TextStatic" x="11" y="21" width="80" height="20"
+								   uuid="bd298fdc-21ab-4a23-82b3-86a9ed37963b"/>
+					<text><![CDATA[UCR No]]></text>
 				</staticText>
 				<textField>
-					<reportElement style="TextParamater" x="91" y="21" width="188" height="20" uuid="80a565b3-c41a-4f03-a15a-9dfd8af25e77">
+					<reportElement style="TextParamater" x="91" y="21" width="188" height="20"
+								   uuid="80a565b3-c41a-4f03-a15a-9dfd8af25e77">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center"/>
-					<textFieldExpression><![CDATA[$P{ablNo}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{ucrNo}]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
@@ -805,8 +809,9 @@
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<staticText>
-					<reportElement style="TextStatic" x="10" y="32" width="62" height="20" uuid="2a6eb7d0-60e7-4698-b60c-9423d8004137"/>
-					<text><![CDATA[Reciept No]]></text>
+					<reportElement style="TextStatic" x="10" y="32" width="62" height="20"
+								   uuid="2a6eb7d0-60e7-4698-b60c-9423d8004137"/>
+					<text><![CDATA[Reference No]]></text>
 				</staticText>
 				<staticText>
 					<reportElement style="TextStatic" x="11" y="8" width="88" height="20" uuid="a320fc1a-9e5b-4df6-8ac8-5755dd780ae0"/>

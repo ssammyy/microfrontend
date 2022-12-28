@@ -450,7 +450,7 @@ class GeneralController(
             map["imagePath"] = kebsLogoPath ?: ""
             val extractReport = reportsDaoService.extractReport(
                 map,
-                applicationMapProperties.mapReportDemandNoteWithItemsPath,
+                "classpath:reports/KebsDemandNoteItems.jrxml",
                 demandNoteItemList
             )
             val demandNoteNumber = map["demandNoteNo"] as String
