@@ -3908,6 +3908,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             descriptionProductsSeized = body.descriptionProductsSeized
             brand = body.brand
             sector = body.sector
+            docId = body.docID
+            additionalOutletDetails = body.additionalOutletDetails
             reasonSeizure = body.reasonSeizure
             nameSeizingOfficer = body.nameSeizingOfficer
             seizureSerial = body.seizureSerial
@@ -4640,6 +4642,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         return  data.map {seizureDeclaration->
                 SeizureDto(
                     seizureDeclaration.id,
+                    seizureDeclaration.docId,
                     seizureDeclaration.marketTownCenter,
                     seizureDeclaration.nameOfOutlet,
                     seizureDeclaration.descriptionProductsSeized,
@@ -4653,6 +4656,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     seizureDeclaration.estimatedCost,
                     seizureDeclaration.currentLocation,
                     seizureDeclaration.productsDestruction,
+                    seizureDeclaration.additionalOutletDetails,
                 )
         }
 

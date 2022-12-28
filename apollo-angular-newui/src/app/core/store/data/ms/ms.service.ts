@@ -1123,6 +1123,26 @@ export class MsService {
         );
     }
 
+    public msWorkPlanScheduleSaveSeizureDeclarationWithUpload(data: FormData): Observable<any> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SEIZURE_DECLARATION,
+        );
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
      // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleEndSeizureDeclaration(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
          // tslint:disable-next-line:max-line-length
