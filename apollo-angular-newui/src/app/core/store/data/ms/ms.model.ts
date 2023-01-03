@@ -589,6 +589,7 @@ export class PreliminaryReportDto {
 export class InspectionInvestigationReportDto {
     id: number;
     reportReference: string;
+    reportClassification: string;
     reportTo: string;
     reportThrough: string;
     reportFrom: string;
@@ -825,7 +826,7 @@ export class WorkPlanInspectionDto {
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
     chargeSheet: ChargeSheetDto;
-    seizureDeclarationDto: SeizureDto[];
+    seizureDeclarationDto: SeizureListDto[];
     inspectionInvestigationDto: InspectionInvestigationReportDto;
     dataReportDto: DataReportDto[];
     sampleCollected: SampleCollectionDto;
@@ -917,10 +918,10 @@ export class SeizureDeclarationDto {
     remarks: string;
 }
 
-
-export class SeizureListDto {
-    seizureList: SeizureDto[];
-}
+//
+// export class SeizureListDto {
+//     seizureList: SeizureDto[];
+// }
 
 export class LaboratoryEntityDto {
         id: number;
@@ -929,9 +930,20 @@ export class LaboratoryEntityDto {
         status: boolean;
 }
 
+export class SeizureListDto {
+    id: number;
+    docID: number;
+    marketTownCenter: string;
+    nameOfOutlet: string;
+    nameSeizingOfficer: string;
+    additionalOutletDetails: string;
+    seizureList: SeizureDto[];
+}
+
 export class SeizureDto {
     id: number;
     docID: number;
+    mainSeizureID: number;
     marketTownCenter: string;
     nameOfOutlet: string;
     descriptionProductsSeized: string;

@@ -15,9 +15,29 @@ class MsSeizureDeclarationEntity : Serializable{
     @Id
     var id: Long = 0
 
+    @Column(name = "DOC_ID")
+    @Basic
+    var docId: Long? = null
+
     @Column(name = "SEIZURE_TO")
     @Basic
     var seizureTo: String? = null
+
+    @Basic
+    @Column(name = "NAME_OF_OUTLET")
+    var nameOfOutlet: String? = null
+
+    @Basic
+    @Column(name = "MARKET_TOWN_CENTER")
+    var marketTownCenter: String? = null
+
+    @Basic
+    @Column(name = "ADDITIONAL_OUTLET_DETAILS")
+    var additionalOutletDetails: String? = null
+
+    @Basic
+    @Column(name = "NAME_SEIZING_OFFICER")
+    var nameSeizingOfficer: String? = null
 
     @Column(name = "SEIZURE_PREMISES")
     @Basic

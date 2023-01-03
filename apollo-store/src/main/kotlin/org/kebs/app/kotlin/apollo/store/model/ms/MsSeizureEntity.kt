@@ -30,6 +30,10 @@ class MsSeizureEntity : Serializable {
     @Basic
     var docId: Long? = null
 
+    @Column(name = "MAIN_SEIZURE_ID")
+    @Basic
+    var mainSeizureId: Long? = null
+
     @Basic
     @Column(name = "NAME_OF_OUTLET")
     var nameOfOutlet: String? = null

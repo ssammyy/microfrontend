@@ -54,6 +54,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val dataReportRepo: IDataReportRepository,
     private val dataReportParameterRepo: IDataReportParameterRepository,
     private val seizureDeclarationRepo: IMsSeizureRepository,
+    private val seizureRepo: IMSSeizureDeclarationRepository,
     private val investInspectReportRepo: IMSInvestInspectReportRepository,
     private val preliminaryRepo: IPreliminaryReportRepository,
     private val preliminaryOutletRepo: IPreliminaryOutletsRepository,
@@ -3864,9 +3865,9 @@ class MarketSurveillanceWorkPlanDaoServices(
 
             seizureDeclarationRepo.findByIdOrNull(body.id?: -1L)
                 ?.let {sd->
-                    saveData= saveSeizure(sd, body, workPlanScheduled, map, user, true)
+                    saveData= saveSeizureParams(sd, body, workPlanScheduled, map, user, true)
                 } ?: kotlin.run {
-                    saveData= saveSeizure(saveData, body, workPlanScheduled, map, user, false)
+                    saveData= saveSeizureParams(saveData, body, workPlanScheduled, map, user, false)
                 }
 
             saveData = seizureDeclarationRepo.save(saveData)
@@ -3894,7 +3895,82 @@ class MarketSurveillanceWorkPlanDaoServices(
         return Pair(sr, saveData)
     }
 
-     fun saveSeizure(
+    fun workPlanInspectionDetailsAddMainSeizure(
+        body: SeizureListDto,
+        workPlanScheduled: MsWorkPlanGeneratedEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsSeizureDeclarationEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveData = MsSeizureDeclarationEntity()
+        try {
+
+            seizureRepo.findByIdOrNull(body.id?: -1L)
+                ?.let {sd->
+                    saveData= saveSeizure(sd, body, workPlanScheduled, map, user, true)
+                } ?: kotlin.run {
+                    saveData= saveSeizure(saveData, body, workPlanScheduled, map, user, false)
+                }
+
+            saveData = seizureRepo.save(saveData)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveData)}"
+            sr.names = "Save Seizure DeclarationDetails"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveData)
+    }
+
+    fun saveSeizure(
+        saveData: MsSeizureDeclarationEntity,
+        body: SeizureListDto,
+        workPlanScheduled: MsWorkPlanGeneratedEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        update:Boolean
+    ): MsSeizureDeclarationEntity {
+        with(saveData) {
+            marketTownCenter = body.marketTownCenter
+            nameOfOutlet = body.nameOfOutlet
+            docId = body.docID
+            additionalOutletDetails = body.additionalOutletDetails
+            nameSeizingOfficer = body.nameSeizingOfficer
+            workPlanGeneratedID = workPlanScheduled.id
+            status = map.activeStatus
+            when {
+                update -> {
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+                else -> {
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+            }
+
+        }
+
+        return saveData
+    }
+
+     fun saveSeizureParams(
         saveData: MsSeizureEntity,
         body: SeizureDto,
         workPlanScheduled: MsWorkPlanGeneratedEntity,
@@ -3909,6 +3985,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             brand = body.brand
             sector = body.sector
             docId = body.docID
+            mainSeizureId = body.mainSeizureID
             additionalOutletDetails = body.additionalOutletDetails
             reasonSeizure = body.reasonSeizure
             nameSeizingOfficer = body.nameSeizingOfficer
@@ -3990,6 +4067,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
             reportReference = body.reportReference
+            reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough
             reportFrom = body.reportFrom
@@ -4636,6 +4714,22 @@ class MarketSurveillanceWorkPlanDaoServices(
         )
     }
 
+    fun mapSeizureDetailsDto(
+        data: MsSeizureDeclarationEntity,
+        data2: List<SeizureDto>
+    ): SeizureListDto {
+        return SeizureListDto(
+                    data.id,
+                    data.docId,
+                    data.marketTownCenter,
+                    data.nameOfOutlet,
+                    data.nameSeizingOfficer,
+                    data.additionalOutletDetails,
+                    data2
+                )
+
+    }
+
     fun mapSeizureDeclarationDetailsDto(
         data: List<MsSeizureEntity>
     ): List<SeizureDto> {
@@ -4643,6 +4737,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 SeizureDto(
                     seizureDeclaration.id,
                     seizureDeclaration.docId,
+                    seizureDeclaration.mainSeizureId,
                     seizureDeclaration.marketTownCenter,
                     seizureDeclaration.nameOfOutlet,
                     seizureDeclaration.descriptionProductsSeized,
@@ -4693,6 +4788,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         return InspectionInvestigationReportDto(
                     inspectionInvestigation.id,
                     inspectionInvestigation.reportReference,
+                    inspectionInvestigation.reportClassification,
                     inspectionInvestigation.reportTo,
                     inspectionInvestigation.reportThrough,
                     inspectionInvestigation.reportFrom,
@@ -4856,8 +4952,18 @@ class MarketSurveillanceWorkPlanDaoServices(
         val chargeSheet = findChargeSheetByWorkPlanInspectionID(workPlanScheduledDetails.id)
         val chargeSheetDto = chargeSheet?.let { mapChargeSheetDetailsDto(it) }
 
-        val seizureDeclaration  = findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduledDetails.id)
-        val seizureDeclarationDto = seizureDeclaration?.let { mapSeizureDeclarationDetailsDto(it) }
+        val seizureDtoList = mutableListOf<SeizureListDto>()
+       findSeizureByWorkPlanInspectionID(workPlanScheduledDetails.id)
+           ?.forEach { seizure->
+               val seizureDeclarationList  = findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduledDetails.id,  seizure.id)
+               val seizureDeclarationDtoList = seizureDeclarationList?.let { mapSeizureDeclarationDetailsDto(it) }
+               val seizureDto = seizureDeclarationDtoList?.let { mapSeizureDetailsDto(seizure, it) }
+               if (seizureDto != null) {
+                   seizureDtoList.add(seizureDto)
+               }
+       }
+
+
 
         val dataReportDtoList = mutableListOf<DataReportDto>()
         findDataReportListByWorkPlanInspectionID(workPlanScheduledDetails.id)
@@ -4947,7 +5053,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanInspectionRemarks,
             workPlanFiles,
             chargeSheetDto,
-            seizureDeclarationDto,
+            seizureDtoList,
             inspectionInvestigationDto,
             dataReportDtoList,
             sampleCollectedDtoValues,
@@ -5004,7 +5110,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         remarksList: List<MsRemarksEntity>?,
         workPlanFilesSaved: List<MsUploadsEntity>?,
         chargeSheet: ChargeSheetDto?,
-        seizureDeclarationDto: List<SeizureDto>?,
+        seizureDeclarationDto: List<SeizureListDto>?,
         inspectionInvestigationDto: InspectionInvestigationReportDto?,
         dataReportDto: List<DataReportDto>?,
         sampleCollected: SampleCollectionDto?,
@@ -5309,8 +5415,12 @@ class MarketSurveillanceWorkPlanDaoServices(
         return  chargeSheetRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
     }
 
-    fun findSeizureDeclarationByWorkPlanInspectionID(workPlanInspectionID: Long): List<MsSeizureEntity>? {
-        return  seizureDeclarationRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
+    fun findSeizureDeclarationByWorkPlanInspectionID(workPlanInspectionID: Long, mainSeizureId: Long): List<MsSeizureEntity>? {
+        return  seizureDeclarationRepo.findByWorkPlanGeneratedIDAndMainSeizureId(workPlanInspectionID, mainSeizureId)
+    }
+
+    fun findSeizureByWorkPlanInspectionID(workPlanInspectionID: Long): List<MsSeizureDeclarationEntity>? {
+        return  seizureRepo.findByWorkPlanGeneratedID(workPlanInspectionID)
     }
 
     fun findDataReportByWorkPlanInspectionIDAndID(workPlanInspectionID: Long, ID: Long): MsDataReportEntity? {
