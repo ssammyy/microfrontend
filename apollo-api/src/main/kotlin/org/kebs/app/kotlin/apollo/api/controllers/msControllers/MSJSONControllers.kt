@@ -297,24 +297,30 @@ class MSJSONControllers(
         val workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val gson = Gson()
-        val body = gson.fromJson(data, SeizureDto::class.java)
+        val body = gson.fromJson(data, SeizureListDto::class.java)
 
-        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"DESTRUCTION NOTICE",workPlanScheduled)
+        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"SEIZURE AND DECLARATION",workPlanScheduled)
 
         with(body){
             docID = fileDoc.second.id
         }
 
-        val productSized = msWorkPlanDaoService.workPlanInspectionDetailsAddSeizureDeclaration(body, workPlanScheduled, map, loggedInUser)
-        when (productSized.first.status) {
+        val mainSized = msWorkPlanDaoService.workPlanInspectionDetailsAddMainSeizure(body, workPlanScheduled, map, loggedInUser)
+        when (mainSized.first.status) {
             map.successStatus -> {
+                body.seizureList?.forEach { body2->
+                    body2.mainSeizureID = mainSized.second.id
+                    msWorkPlanDaoService.workPlanInspectionDetailsAddSeizureDeclaration(body2, workPlanScheduled, map, loggedInUser)
+                }?:throw ExpectedDataNotFound("MISSING PRODUCTS TO SEIZURE")
                 return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
             }
             else -> {
-                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(productSized.first))
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(mainSized.first))
             }
         }
+
     }
+
 
     @PostMapping("/update/destruction-report-upload")
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
@@ -493,18 +499,18 @@ class MSJSONControllers(
 
         fieldReport[0].kebsInspectors = officersNames
 
-//        if (user != null) {
-//            val mySignature: ByteArray?
-//            val image: ByteArrayInputStream?
-//            println("UserID is" + user.id)
-//            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
-//            if (signatureFromDb != null) {
-//                mySignature= signatureFromDb.signature
-//                image = ByteArrayInputStream(mySignature)
-//                map["signaturePath"] = image
-//
-//            }
-//        }
+        if (user != null) {
+            val mySignature: ByteArray?
+            val image: ByteArrayInputStream?
+            println("UserID is" + user.id)
+            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+            if (signatureFromDb != null) {
+                mySignature= signatureFromDb.signature
+                image = ByteArrayInputStream(mySignature)
+                map["signaturePath"] = image
+
+            }
+        }
 //        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
 
         val pdfReportStream = reportsDaoService.extractReport(

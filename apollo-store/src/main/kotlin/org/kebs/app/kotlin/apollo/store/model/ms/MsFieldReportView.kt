@@ -23,6 +23,10 @@ class MsFieldReportView : Serializable {
     var reportReference: String? = null
 
     @Basic
+    @Column(name = "REPORT_CLASSIFICATION")
+    var reportClassification: String? = null
+
+    @Basic
     @Column(name = "REPORT_TO")
     var reportTo: String? = null
 

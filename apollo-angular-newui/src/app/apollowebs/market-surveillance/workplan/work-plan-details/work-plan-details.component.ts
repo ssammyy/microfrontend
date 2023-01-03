@@ -57,6 +57,12 @@ import {
 } from '../../../../core/store/data/master/master.model';
 import {Observable, throwError} from 'rxjs';
 
+
+interface Post {
+  startDate: Date;
+  endDate: Date;
+}
+
 @Component({
   selector: 'app-work-plan-details',
   templateUrl: './work-plan-details.component.html',
@@ -76,10 +82,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   submitted = false;
   addLabParamStatus = true;
   addProductsStatus = true;
+  addSeizureProductsStatus = true;
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
   selectedSFFDetails: SampleSubmissionDto;
+  selectedSeizedDetails: SeizureListDto;
   selectedDataReportDetails: DataReportDto;
   defaultPage = 0;
   currentPage = 0;
@@ -102,6 +110,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataReportForm!: FormGroup;
   dataReportParamForm!: FormGroup;
   seizureDeclarationForm!: FormGroup;
+  seizureForm!: FormGroup;
   fieldReportAdditionalInfortForm!: FormGroup;
   preliminaryReportForm!: FormGroup;
   preliminaryReportFinalForm!: FormGroup;
@@ -139,6 +148,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveDataReportParamList: DataReportParamsDto[] = [];
   dataSaveDataReportParam: DataReportParamsDto;
   dataSaveDataInspectorInvest: DataInspectorInvestDto;
+  dataSaveSeizure: SeizureListDto;
   dataSaveSeizureDeclaration: SeizureDto;
   dataSaveSeizureDeclarationList: SeizureDto[] = [];
   dataSaveInvestInspectReport: InspectionInvestigationReportDto;
@@ -374,7 +384,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        // {name: 'updateRecords', title: '<i class="btn btn-sm btn-primary">UPDATE</i>'}
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">VIEW RECORD</i>'},
+        {name: 'viewUpload', title: '<i class="btn btn-sm btn-primary">VIEW UPLOAD</i>'},
       ],
       position: 'right', // left|right
     },
@@ -399,58 +410,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      descriptionProductsSeized: {
-        title: 'Description Products Seized',
-        type: 'string',
-        filter: false,
-      },
-      brand: {
-        title: 'Brand',
-        type: 'string',
-        filter: false,
-      },
-      sector: {
-        title: 'Sector',
-        type: 'string',
-        filter: false,
-      },
-      reasonSeizure: {
-        title: 'Reason Seizure',
-        type: 'string',
-        filter: false,
-      },
       nameSeizingOfficer: {
         title: 'Name Seizing Officer',
-        type: 'string',
-        filter: false,
-      },
-      seizureSerial: {
-        title: 'Seizure Serial',
-        type: 'string',
-        filter: false,
-      },
-      quantity: {
-        title: 'Quantity',
-        type: 'string',
-        filter: false,
-      },
-      unit: {
-        title: 'Unit',
-        type: 'string',
-        filter: false,
-      },
-      estimatedCost: {
-        title: 'Estimated Cost',
-        type: 'string',
-        filter: false,
-      },
-      currentLocation: {
-        title: 'Current Location',
-        type: 'string',
-        filter: false,
-      },
-      productsDestruction: {
-        title: 'Products Destruction',
         type: 'string',
         filter: false,
       },
@@ -471,6 +432,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">VIEW RECORD</i>'},
         {name: 'updateRecords', title: '<i class="btn btn-sm btn-primary">UPDATE</i>'},
       ],
       position: 'right', // left|right
@@ -496,58 +458,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      descriptionProductsSeized: {
-        title: 'Description Products Seized',
-        type: 'string',
-        filter: false,
-      },
-      brand: {
-        title: 'Brand',
-        type: 'string',
-        filter: false,
-      },
-      sector: {
-        title: 'Sector',
-        type: 'string',
-        filter: false,
-      },
-      reasonSeizure: {
-        title: 'Reason Seizure',
-        type: 'string',
-        filter: false,
-      },
       nameSeizingOfficer: {
         title: 'Name Seizing Officer',
-        type: 'string',
-        filter: false,
-      },
-      seizureSerial: {
-        title: 'Seizure Serial',
-        type: 'string',
-        filter: false,
-      },
-      quantity: {
-        title: 'Quantity',
-        type: 'string',
-        filter: false,
-      },
-      unit: {
-        title: 'Unit',
-        type: 'string',
-        filter: false,
-      },
-      estimatedCost: {
-        title: 'Estimated Cost',
-        type: 'string',
-        filter: false,
-      },
-      currentLocation: {
-        title: 'Current Location',
-        type: 'string',
-        filter: false,
-      },
-      productsDestruction: {
-        title: 'Products Destruction',
         type: 'string',
         filter: false,
       },
@@ -1561,6 +1473,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   msCountiesList: County[] = null;
   msTowns: Town[] = null;
 
+  currentDateDetails = new Date(Date.now());
+  post: Post = {
+    startDate: new Date(Date.now()),
+    endDate: new Date(Date.now()),
+  };
+
 
 
   constructor(
@@ -1672,6 +1590,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.investInspectReportForm = this.formBuilder.group({
       id: null,
       reportReference: ['', Validators.required],
+      reportClassification: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
       reportFrom: ['', Validators.required],
@@ -1715,19 +1634,25 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.seizureDeclarationForm = this.formBuilder.group({
       id: null,
       docID: null,
-      marketTownCenter: ['', Validators.required],
-      nameOfOutlet: ['', Validators.required],
+      mainSeizureID: null,
       descriptionProductsSeized: ['', Validators.required],
       brand: ['', Validators.required],
       sector: ['', Validators.required],
       reasonSeizure: ['', Validators.required],
-      nameSeizingOfficer: ['', Validators.required],
       seizureSerial: ['', Validators.required],
       quantity: ['', Validators.required],
       unit: ['', Validators.required],
       estimatedCost: ['', Validators.required],
       currentLocation: ['', Validators.required],
       productsDestruction: ['', Validators.required],
+    });
+
+    this.seizureForm = this.formBuilder.group({
+      id: null,
+      docID: null,
+      marketTownCenter: ['', Validators.required],
+      nameOfOutlet: ['', Validators.required],
+      nameSeizingOfficer: ['', Validators.required],
       additionalOutletDetails: ['', Validators.required],
     });
 
@@ -1775,7 +1700,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       sendersName: ['', Validators.required],
       designation: ['', Validators.required],
       address: ['', Validators.required],
-      sendersDate: ['', Validators.required],
+      sendersDate: [this.currentDateDetails, Validators.required],
       receiversName: null,
       productDescription: null,
       receiversDate: null,
@@ -1793,7 +1718,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       invoiceNumber: null,
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
-      sourceProductEvidence: ['', Validators.required],
+      sourceProductEvidence: null,
       sampleCollectionNumber: null,
     });
 
@@ -2052,7 +1977,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
 
-    if (this.workPlanInspection?.sampleSubmittedStatus === false && this.workPlanInspection?.scfDocId !== null) {
+    if (this.workPlanInspection?.sampleSubmittedStatus === false) {
       this.msService.msLaboratoriesListDetails().subscribe(
           (data1: LaboratoryEntityDto[]) => {
             this.laboratories = data1;
@@ -2207,6 +2132,10 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   get formSeizureDeclarationForm(): any {
     return this.seizureDeclarationForm.controls;
+  }
+
+  get formSeizureForm(): any {
+    return this.seizureForm.controls;
   }
 
   get formPdfSaveComplianceStatusForm(): any {
@@ -3375,7 +3304,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             this.uploadedFilesOnly = this.resetUploadedFiles;
             console.log(data);
-            this.loadStandards();
+            // this.loadStandards();
             this.SpinnerService.hide();
             this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
           },
@@ -3789,6 +3718,11 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
 
+  viewSeizedProductsFileSaved(data: SeizureListDto) {
+    const foundPdfFile = this.workPlanInspection?.workPlanFiles.find(lab => lab.id === data.docID);
+    this.viewPdfFile(String(foundPdfFile.id), foundPdfFile.documentType, foundPdfFile.fileContentType);
+  }
+
   // viewWorkPlanFileNotOnSiteSaved(fileID: number) {
   //   const data = this.workPlanInspection.workPlanFiles.filter(function (record) {return record.id === fileID});
   //   this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
@@ -3829,8 +3763,28 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
   }
 
-  updateSeizedDetails(data: SeizureDto) {
-    this.seizureDeclarationForm.patchValue(data);
+  updateSeizedDetails(data: SeizureListDto) {
+    this.seizureForm.patchValue(data);
+    this.selectedSeizedDetails = data;
+    const paramDetails = data.seizureList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    }
+    this.addSeizureProductsStatus = true;
+    window.$('#seizureDeclarationModal').modal('show');
+  }
+
+  viewSeizedDetails(data: SeizureListDto) {
+    this.seizureForm.patchValue(data);
+    this.selectedSeizedDetails = data;
+    const paramDetails = data.seizureList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    }
+    this.seizureForm.disable();
+    this.addSeizureProductsStatus = false;
     window.$('#seizureDeclarationModal').modal('show');
   }
 
@@ -3897,6 +3851,12 @@ export class WorkPlanDetailsComponent implements OnInit {
     switch (event.action) {
       case 'updateRecords':
         this.updateSeizedDetails(event.data);
+        break;
+      case 'viewRecord':
+        this.viewSeizedDetails(event.data);
+        break;
+      case 'viewUpload':
+        this.viewSeizedProductsFileSaved(event.data);
         break;
     }
   }
@@ -4019,6 +3979,23 @@ export class WorkPlanDetailsComponent implements OnInit {
     console.log('total count' + totalCount);
     console.log('complinace Value count' + this.totalCompliantValue);
   }
+
+
+  onClickAddSeizureItems() {
+    this.dataSaveSeizureDeclaration = this.seizureDeclarationForm.value;
+    this.dataSaveSeizureDeclarationList.push(this.dataSaveSeizureDeclaration);
+    this.seizureDeclarationForm?.reset();
+  }
+
+  removeSeizureProducts(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveSeizureDeclarationList.splice(index, 1);
+    } else {
+      this.dataSaveSeizureDeclarationList.splice(index, index);
+    }
+  }
+
 
   onClickAddDataInspectorOfficer() {
     this.dataSaveDataInspectorInvest = this.investInspectReportInspectorsForm.value;
@@ -4200,7 +4177,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
-    if (this.seizureDeclarationForm.valid && this.uploadedFilesSeizedGoods.length>0) {
+    if (this.seizureForm.valid && this.uploadedFilesSeizedGoods.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
@@ -4213,12 +4190,13 @@ export class WorkPlanDetailsComponent implements OnInit {
   saveSeizureDeclaration() {
     this.SpinnerService.show();
     const file = this.uploadedFilesSeizedGoods;
-    this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
+    this.dataSaveSeizure = {...this.dataSaveSeizure, ...this.seizureForm.value};
+    this.dataSaveSeizure.seizureList = this.dataSaveSeizureDeclarationList;
     const formData = new FormData();
     formData.append('referenceNo', this.workPlanInspection.referenceNumber);
     formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
     formData.append('docTypeName', 'SEIZURE_UPLOAD');
-    formData.append('data', JSON.stringify(this.dataSaveSeizureDeclaration));
+    formData.append('data', JSON.stringify(this.dataSaveSeizure));
     for (let i = 0; i < file.length; i++) {
       console.log(file[i]);
       formData.append('docFile', file[i], file[i].name);
@@ -4226,6 +4204,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.msService.msWorkPlanScheduleSaveSeizureDeclarationWithUpload(formData).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
+          this.seizureForm.reset();
+          this.dataSaveSeizureDeclarationList = [];
           console.log(data);
           this.SpinnerService.hide();
           this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
