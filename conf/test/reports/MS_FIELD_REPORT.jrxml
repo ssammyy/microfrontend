@@ -12,6 +12,7 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="signaturePath" class="java.io.InputStream"/>
 	<parameter name="imageFooterPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
@@ -19,6 +20,7 @@
 	<field name="msWorkplanGeneratedId" class="java.lang.String"/>
 	<field name="createdUserId" class="java.lang.String"/>
 	<field name="id" class="java.lang.String"/>
+	<field name="reportClassification" class="java.lang.String"/>
 	<field name="reportReference" class="java.lang.String"/>
 	<field name="reportTo" class="java.lang.String"/>
 	<field name="reportThrough" class="java.lang.String"/>
@@ -59,15 +61,6 @@
 	<detail>
 		<band height="946" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout"/>
-			<staticText>
-				<reportElement x="173" y="3" width="172" height="30" forecolor="#0070C0" uuid="1e7c202d-c5f5-4a05-99fe-43d71f7407c5">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="22" isBold="true"/>
-				</textElement>
-				<text><![CDATA[FIELD REPORT]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="42" y="67" width="116" height="20" forecolor="#0070C0" uuid="d0062211-6dd7-4df9-ba31-14cc41a51054">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -512,6 +505,13 @@
 					<font fontName="Times New Roman" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{findings}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="41" y="4" width="497" height="30" forecolor="#0070C0" uuid="3aef7c68-375e-4364-a0ce-e30be20c9bed"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Times New Roman" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{reportClassification}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

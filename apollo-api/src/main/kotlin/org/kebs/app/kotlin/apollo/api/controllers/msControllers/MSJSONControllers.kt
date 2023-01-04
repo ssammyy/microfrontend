@@ -149,6 +149,7 @@ class MSJSONControllers(
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }
 
+
     @PostMapping("/work-plan/final-feed-back/save")
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -280,6 +281,46 @@ class MSJSONControllers(
         }
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }
+
+    @PostMapping("/workPlan/inspection/add/seizure-declaration")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addWorkPlanInspectionDetailsSeizure(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        val gson = Gson()
+        val body = gson.fromJson(data, SeizureListDto::class.java)
+
+        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"SEIZURE AND DECLARATION",workPlanScheduled)
+
+        with(body){
+            docID = fileDoc.second.id
+        }
+
+        val mainSized = msWorkPlanDaoService.workPlanInspectionDetailsAddMainSeizure(body, workPlanScheduled, map, loggedInUser)
+        when (mainSized.first.status) {
+            map.successStatus -> {
+                body.seizureList?.forEach { body2->
+                    body2.mainSeizureID = mainSized.second.id
+                    msWorkPlanDaoService.workPlanInspectionDetailsAddSeizureDeclaration(body2, workPlanScheduled, map, loggedInUser)
+                }?:throw ExpectedDataNotFound("MISSING PRODUCTS TO SEIZURE")
+                return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(mainSized.first))
+            }
+        }
+
+    }
+
 
     @PostMapping("/update/destruction-report-upload")
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
@@ -458,18 +499,18 @@ class MSJSONControllers(
 
         fieldReport[0].kebsInspectors = officersNames
 
-//        if (user != null) {
-//            val mySignature: ByteArray?
-//            val image: ByteArrayInputStream?
-//            println("UserID is" + user.id)
-//            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
-//            if (signatureFromDb != null) {
-//                mySignature= signatureFromDb.signature
-//                image = ByteArrayInputStream(mySignature)
-//                map["signaturePath"] = image
-//
-//            }
-//        }
+        if (user != null) {
+            val mySignature: ByteArray?
+            val image: ByteArrayInputStream?
+            println("UserID is" + user.id)
+            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+            if (signatureFromDb != null) {
+                mySignature= signatureFromDb.signature
+                image = ByteArrayInputStream(mySignature)
+                map["signaturePath"] = image
+
+            }
+        }
 //        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
 
         val pdfReportStream = reportsDaoService.extractReport(

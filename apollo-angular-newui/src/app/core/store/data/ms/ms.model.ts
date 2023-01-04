@@ -140,6 +140,14 @@ export class MsNotificationTaskDto {
     readStatus: boolean;
 }
 
+export class PermitUcrSearch {
+    id: number;
+    permitNumber: string;
+    ucrNumber: string;
+    productName: string;
+    validityStatus: boolean;
+}
+
 export class NotificationBodyDto {
     taskRefNumber: string;
     fromName: string;
@@ -581,6 +589,7 @@ export class PreliminaryReportDto {
 export class InspectionInvestigationReportDto {
     id: number;
     reportReference: string;
+    reportClassification: string;
     reportTo: string;
     reportThrough: string;
     reportFrom: string;
@@ -817,9 +826,9 @@ export class WorkPlanInspectionDto {
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
     chargeSheet: ChargeSheetDto;
-    seizureDeclarationDto: SeizureDto[];
+    seizureDeclarationDto: SeizureListDto[];
     inspectionInvestigationDto: InspectionInvestigationReportDto;
-    dataReportDto: DataReportDto;
+    dataReportDto: DataReportDto[];
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto[];
     sampleLabResults: MSSSFLabResultsDto[];
@@ -909,10 +918,10 @@ export class SeizureDeclarationDto {
     remarks: string;
 }
 
-
-export class SeizureListDto {
-    seizureList: SeizureDto[];
-}
+//
+// export class SeizureListDto {
+//     seizureList: SeizureDto[];
+// }
 
 export class LaboratoryEntityDto {
         id: number;
@@ -921,8 +930,20 @@ export class LaboratoryEntityDto {
         status: boolean;
 }
 
+export class SeizureListDto {
+    id: number;
+    docID: number;
+    marketTownCenter: string;
+    nameOfOutlet: string;
+    nameSeizingOfficer: string;
+    additionalOutletDetails: string;
+    seizureList: SeizureDto[];
+}
+
 export class SeizureDto {
     id: number;
+    docID: number;
+    mainSeizureID: number;
     marketTownCenter: string;
     nameOfOutlet: string;
     descriptionProductsSeized: string;
@@ -936,6 +957,7 @@ export class SeizureDto {
     estimatedCost: string;
     currentLocation: string;
     productsDestruction: string;
+    additionalOutletDetails: string;
     remarks: string;
 }
 
@@ -950,6 +972,7 @@ export class DataReportDto {
     town: string;
     marketCenter: string;
     outletDetails: string;
+    mostRecurringNonCompliant: string;
     personMet: string;
     summaryFindingsActionsTaken: string;
     finalActionSeizedGoods: string;
@@ -963,8 +986,11 @@ export class DataReportDto {
 
 export class DataReportParamsDto {
     id: number;
+    productName: string;
     typeBrandName: string;
     localImport: string;
+    permitNumber: string;
+    ucrNumber: string;
     complianceInspectionParameter: number;
     measurementsResults: string;
     remarks: string;
@@ -1344,6 +1370,8 @@ export class SampleSubmissionDto {
     scfNo: string;
     cocNumber: string;
     bsNumber: string;
+    productDescription: string;
+    sourceProductEvidence: string;
     parametersList: SampleSubmissionItemsDto[];
 }
 

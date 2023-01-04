@@ -18,9 +18,21 @@ class MsSeizureEntity : Serializable {
     @Column(name = "MARKET_TOWN_CENTER")
     var marketTownCenter: String? = null
 
+    @Basic
+    @Column(name = "ADDITIONAL_OUTLET_DETAILS")
+    var additionalOutletDetails: String? = null
+
     @Column(name = "WORKPLAN_GENERATED_ID")
     @Basic
     var workPlanGeneratedID: Long? = null
+
+    @Column(name = "DOC_ID")
+    @Basic
+    var docId: Long? = null
+
+    @Column(name = "MAIN_SEIZURE_ID")
+    @Basic
+    var mainSeizureId: Long? = null
 
     @Basic
     @Column(name = "NAME_OF_OUTLET")

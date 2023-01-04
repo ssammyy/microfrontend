@@ -1202,41 +1202,41 @@
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus ==  false">
-                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
-                                                        data-target="#workPlanModal"
-                                                        class="btn btn-sm btn-primary mr-2"><span
-                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                    <div class="mat-button-focus-overlay"></div>
-                                                </button>
-                                            </div>
+<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus ==  false">-->
+<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                        data-target="#workPlanModal"-->
+<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                                    <div class="mat-button-focus-overlay"></div>-->
+<!--                                                </button>-->
+<!--                                            </div>-->
 
-                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus
-                                            && workPlanInspection?.updatedStatus ==false
-                                            && workPlanInspection?.resubmitStatus ==false
-                                            && workPlanInspection?.rejectedStatus">
-                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
-                                                        data-target="#workPlanModal"
-                                                        class="btn btn-sm btn-primary mr-2"><span
-                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                    <div class="mat-button-focus-overlay"></div>
-                                                </button>
-                                            </div>
+<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus-->
+<!--                                            && workPlanInspection?.updatedStatus ==false-->
+<!--                                            && workPlanInspection?.resubmitStatus ==false-->
+<!--                                            && workPlanInspection?.rejectedStatus">-->
+<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                        data-target="#workPlanModal"-->
+<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                                    <div class="mat-button-focus-overlay"></div>-->
+<!--                                                </button>-->
+<!--                                            </div>-->
 
-                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.onsiteStartStatus ==false
-                                            && workPlanInspection?.updatedStatus ==false
-                                            && workPlanInspection?.resubmitStatus ==false
-                                            && workPlanInspection?.approvedStatus">
-                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"
-                                                        data-target="#workPlanModal"
-                                                        class="btn btn-sm btn-primary mr-2"><span
-                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>
-                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                                    <div class="mat-button-focus-overlay"></div>
-                                                </button>
-                                            </div>
+<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.onsiteStartStatus ==false-->
+<!--                                            && workPlanInspection?.updatedStatus ==false-->
+<!--                                            && workPlanInspection?.resubmitStatus ==false-->
+<!--                                            && workPlanInspection?.approvedStatus">-->
+<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+<!--                                                        data-target="#workPlanModal"-->
+<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                                                    <div class="mat-button-focus-overlay"></div>-->
+<!--                                                </button>-->
+<!--                                            </div>-->
 
                                             <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus ==false
                                                 && workPlanInspection?.rejectedStatus && workPlanInspection?.submittedForApprovalStatus

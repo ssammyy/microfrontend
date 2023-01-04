@@ -17,7 +17,7 @@ import {
   MsDivisionDetails, MsProducts, MsProductSubcategory,
   MsRecommendationDto, MSRemarksDto, MSSSFLabResultsDto, MSSSFPDFListDetailsDto,
   MsStandardProductCategory,
-  PDFSaveComplianceStatusDto, PredefinedResourcesRequired,
+  PDFSaveComplianceStatusDto, PermitUcrSearch, PredefinedResourcesRequired,
   PreliminaryReportDto,
   PreliminaryReportFinal,
   PreliminaryReportItemsDto, RecommendationDto,
@@ -57,6 +57,12 @@ import {
 } from '../../../../core/store/data/master/master.model';
 import {Observable, throwError} from 'rxjs';
 
+
+interface Post {
+  startDate: Date;
+  endDate: Date;
+}
+
 @Component({
   selector: 'app-work-plan-details',
   templateUrl: './work-plan-details.component.html',
@@ -75,9 +81,14 @@ export class WorkPlanDetailsComponent implements OnInit {
   currDivLabel!: string;
   submitted = false;
   addLabParamStatus = true;
+  addProductsStatus = true;
+  addSeizureProductsStatus = true;
   disableDivision = true;
+  isImport = 0;
   defaultPageSize = 20;
   selectedSFFDetails: SampleSubmissionDto;
+  selectedSeizedDetails: SeizureListDto;
+  selectedDataReportDetails: DataReportDto;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -99,6 +110,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataReportForm!: FormGroup;
   dataReportParamForm!: FormGroup;
   seizureDeclarationForm!: FormGroup;
+  seizureForm!: FormGroup;
   fieldReportAdditionalInfortForm!: FormGroup;
   preliminaryReportForm!: FormGroup;
   preliminaryReportFinalForm!: FormGroup;
@@ -119,6 +131,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   sampleSubmitBSNumberForm!: FormGroup;
   pdfSaveComplianceStatusForm!: FormGroup;
   ssfSaveComplianceStatusForm!: FormGroup;
+  verificationPermitForm!: FormGroup;
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
   remediationForm!: FormGroup;
@@ -135,6 +148,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveDataReportParamList: DataReportParamsDto[] = [];
   dataSaveDataReportParam: DataReportParamsDto;
   dataSaveDataInspectorInvest: DataInspectorInvestDto;
+  dataSaveSeizure: SeizureListDto;
   dataSaveSeizureDeclaration: SeizureDto;
   dataSaveSeizureDeclarationList: SeizureDto[] = [];
   dataSaveInvestInspectReport: InspectionInvestigationReportDto;
@@ -194,6 +208,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
+  uploadedFilesSeizedGoods: FileList;
   fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
@@ -369,7 +384,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
-        // {name: 'updateRecords', title: '<i class="btn btn-sm btn-primary">UPDATE</i>'}
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">VIEW RECORD</i>'},
+        {name: 'viewUpload', title: '<i class="btn btn-sm btn-primary">VIEW UPLOAD</i>'},
       ],
       position: 'right', // left|right
     },
@@ -394,58 +410,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      descriptionProductsSeized: {
-        title: 'Description Products Seized',
-        type: 'string',
-        filter: false,
-      },
-      brand: {
-        title: 'Brand',
-        type: 'string',
-        filter: false,
-      },
-      sector: {
-        title: 'Sector',
-        type: 'string',
-        filter: false,
-      },
-      reasonSeizure: {
-        title: 'Reason Seizure',
-        type: 'string',
-        filter: false,
-      },
       nameSeizingOfficer: {
         title: 'Name Seizing Officer',
-        type: 'string',
-        filter: false,
-      },
-      seizureSerial: {
-        title: 'Seizure Serial',
-        type: 'string',
-        filter: false,
-      },
-      quantity: {
-        title: 'Quantity',
-        type: 'string',
-        filter: false,
-      },
-      unit: {
-        title: 'Unit',
-        type: 'string',
-        filter: false,
-      },
-      estimatedCost: {
-        title: 'Estimated Cost',
-        type: 'string',
-        filter: false,
-      },
-      currentLocation: {
-        title: 'Current Location',
-        type: 'string',
-        filter: false,
-      },
-      productsDestruction: {
-        title: 'Products Destruction',
         type: 'string',
         filter: false,
       },
@@ -466,6 +432,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       delete: false,
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">VIEW RECORD</i>'},
         {name: 'updateRecords', title: '<i class="btn btn-sm btn-primary">UPDATE</i>'},
       ],
       position: 'right', // left|right
@@ -491,58 +458,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      descriptionProductsSeized: {
-        title: 'Description Products Seized',
-        type: 'string',
-        filter: false,
-      },
-      brand: {
-        title: 'Brand',
-        type: 'string',
-        filter: false,
-      },
-      sector: {
-        title: 'Sector',
-        type: 'string',
-        filter: false,
-      },
-      reasonSeizure: {
-        title: 'Reason Seizure',
-        type: 'string',
-        filter: false,
-      },
       nameSeizingOfficer: {
         title: 'Name Seizing Officer',
-        type: 'string',
-        filter: false,
-      },
-      seizureSerial: {
-        title: 'Seizure Serial',
-        type: 'string',
-        filter: false,
-      },
-      quantity: {
-        title: 'Quantity',
-        type: 'string',
-        filter: false,
-      },
-      unit: {
-        title: 'Unit',
-        type: 'string',
-        filter: false,
-      },
-      estimatedCost: {
-        title: 'Estimated Cost',
-        type: 'string',
-        filter: false,
-      },
-      currentLocation: {
-        title: 'Current Location',
-        type: 'string',
-        filter: false,
-      },
-      productsDestruction: {
-        title: 'Products Destruction',
         type: 'string',
         filter: false,
       },
@@ -1034,6 +951,110 @@ export class WorkPlanDetailsComponent implements OnInit {
     },
   };
 
+  public settingsDataReport = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      referenceNumber: {
+        title: 'FORM REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
+      inspectorName : {
+        title: 'NAME OF INSPECTOR',
+        type: 'string',
+        filter: false,
+      },
+      inspectionDate: {
+        title: 'DATE OF INSPECTION',
+        type: 'date',
+        filter: false,
+      },
+      totalComplianceScore: {
+        title: 'Total Compliance Score %',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsDataReportUpdate = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
+        {name: 'updateRecord', title: '<i  class="btn btn-sm btn-primary">UPDATE DATA REPORT DETAILS</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      // id: {
+      //   title: '#',
+      //   type: 'string',
+      //   filter: false
+      // },
+      referenceNumber: {
+        title: 'FORM REFERENCE NO',
+        type: 'string',
+        filter: false,
+      },
+      inspectorName : {
+        title: 'NAME OF INSPECTOR',
+        type: 'string',
+        filter: false,
+      },
+      inspectionDate: {
+        title: 'DATE OF INSPECTION',
+        type: 'date',
+        filter: false,
+      },
+      totalComplianceScore: {
+        title: 'Total Compliance Score %',
+        type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+
   public settingsSampleSubmitted = {
     selectMode: 'single',  // single|multi
     hideHeader: false,
@@ -1452,6 +1473,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   msCountiesList: County[] = null;
   msTowns: Town[] = null;
 
+  currentDateDetails = new Date(Date.now());
+  post: Post = {
+    startDate: new Date(Date.now()),
+    endDate: new Date(Date.now()),
+  };
+
 
 
   constructor(
@@ -1552,6 +1579,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
       outletDetails: ['', Validators.required],
+      mostRecurringNonCompliant: ['', Validators.required],
       personMet: ['', Validators.required],
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
@@ -1562,6 +1590,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.investInspectReportForm = this.formBuilder.group({
       id: null,
       reportReference: ['', Validators.required],
+      reportClassification: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
       reportFrom: ['', Validators.required],
@@ -1586,8 +1615,11 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.dataReportParamForm = this.formBuilder.group({
       id: null,
+      productName: ['', Validators.required],
       typeBrandName: ['', Validators.required],
       localImport: ['', Validators.required],
+      permitNumber: 'N/A',
+      ucrNumber: 'N/A',
       complianceInspectionParameter: ['', Validators.required],
       measurementsResults: ['', Validators.required],
       remarks: ['', Validators.required],
@@ -1601,19 +1633,27 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.seizureDeclarationForm = this.formBuilder.group({
       id: null,
-      marketTownCenter: ['', Validators.required],
-      nameOfOutlet: ['', Validators.required],
+      docID: null,
+      mainSeizureID: null,
       descriptionProductsSeized: ['', Validators.required],
       brand: ['', Validators.required],
       sector: ['', Validators.required],
       reasonSeizure: ['', Validators.required],
-      nameSeizingOfficer: ['', Validators.required],
       seizureSerial: ['', Validators.required],
       quantity: ['', Validators.required],
       unit: ['', Validators.required],
       estimatedCost: ['', Validators.required],
       currentLocation: ['', Validators.required],
       productsDestruction: ['', Validators.required],
+    });
+
+    this.seizureForm = this.formBuilder.group({
+      id: null,
+      docID: null,
+      marketTownCenter: ['', Validators.required],
+      nameOfOutlet: ['', Validators.required],
+      nameSeizingOfficer: ['', Validators.required],
+      additionalOutletDetails: ['', Validators.required],
     });
 
     this.sampleCollectForm = this.formBuilder.group({
@@ -1651,7 +1691,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: null,
-      fileRefNumber: ['', Validators.required],
+      fileRefNumber: null,
       referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
@@ -1660,8 +1700,9 @@ export class WorkPlanDetailsComponent implements OnInit {
       sendersName: ['', Validators.required],
       designation: ['', Validators.required],
       address: ['', Validators.required],
-      sendersDate: ['', Validators.required],
+      sendersDate: [this.currentDateDetails, Validators.required],
       receiversName: null,
+      productDescription: null,
       receiversDate: null,
       lbIdAnyAomarking: null,
       lbIdBatchNo: null,
@@ -1677,6 +1718,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       invoiceNumber: null,
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
+      sourceProductEvidence: null,
       sampleCollectionNumber: null,
     });
 
@@ -1703,6 +1745,14 @@ export class WorkPlanDetailsComponent implements OnInit {
       complianceStatus: ['', Validators.required],
       complianceRemarks: ['', Validators.required],
       totalCompliance: ['', Validators.required],
+    });
+
+    this.verificationPermitForm = this.formBuilder.group({
+      id: null,
+      permitNumber: null,
+      ucrNumber: null,
+      productName: null,
+      validityStatus: null,
     });
 
     this.finalRecommendationDetailsForm = this.formBuilder.group({
@@ -1800,6 +1850,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       rationale: ['', Validators.required],
       scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
+      timeActivityEndDate: ['', Validators.required],
       region: ['', Validators.required],
       county: ['', Validators.required],
       townMarketCenter: ['', Validators.required],
@@ -1926,7 +1977,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
 
-    if (this.workPlanInspection?.sampleSubmittedStatus === false && this.workPlanInspection?.scfDocId !== null) {
+    if (this.workPlanInspection?.sampleSubmittedStatus === false) {
       this.msService.msLaboratoriesListDetails().subscribe(
           (data1: LaboratoryEntityDto[]) => {
             this.laboratories = data1;
@@ -2081,6 +2132,10 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   get formSeizureDeclarationForm(): any {
     return this.seizureDeclarationForm.controls;
+  }
+
+  get formSeizureForm(): any {
+    return this.seizureForm.controls;
   }
 
   get formPdfSaveComplianceStatusForm(): any {
@@ -2251,7 +2306,6 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.totalComplianceValue = (complianceLabs / totalCount) * 100;
     }
 
-    this.updateDataReport();
     this.updateFieldReport();
     this.updateWorkPlan();
     this.updatePreliminaryReport();
@@ -2298,15 +2352,20 @@ export class WorkPlanDetailsComponent implements OnInit {
       }
     }
   }
-  updateDataReport() {
-    if (this.workPlanInspection?.dataReportStatus && this.workPlanInspection?.onsiteEndStatus === false) {
-      this.dataReportForm.patchValue(this.workPlanInspection?.dataReportDto);
-      this.totalCompliantValue = this.workPlanInspection?.dataReportDto?.totalComplianceScore;
+
+  updateDataReport(data: DataReportDto) {
+      this.dataReportForm.patchValue(data);
+      this.selectedDataReportDetails = data;
+    this.totalCompliantValue = data?.totalComplianceScore;
+      const paramDetails = data.productsList;
       this.dataSaveDataReportParamList = [];
-      for (let prod = 0; prod < this.workPlanInspection?.dataReportDto?.productsList.length; prod++) {
-        this.dataSaveDataReportParamList.push(this.workPlanInspection?.dataReportDto.productsList[prod]);
+      for (let i = 0; i < paramDetails.length; i++) {
+        this.dataSaveDataReportParamList.push(paramDetails[i]);
       }
-    }
+      // this.dataReportForm.disable();
+      this.addProductsStatus = true;
+      window.$('#dataReportModal').modal('show');
+    // }
   }
 
   updateFieldReport() {
@@ -2367,6 +2426,17 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   }
 
+  public onCustomDataReportAction(event: any): void {
+    switch (event.action) {
+      case 'viewRecord':
+        this.viewDataReportRecord(event.data);
+        break;
+      case 'updateRecord':
+        this.updateDataReport(event.data);
+        break;
+    }
+  }
+
 
   public onCustomSSFAction(event: any): void {
     switch (event.action) {
@@ -2406,6 +2476,20 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.ssfSelectedID = data.id;
       window.$('#myModal1').modal('show');
     }
+  }
+
+  viewDataReportRecord(data: DataReportDto) {
+    this.dataReportForm.patchValue(data);
+    this.selectedDataReportDetails = data;
+    this.totalCompliantValue = data?.totalComplianceScore;
+    const paramDetails = data.productsList;
+    this.dataSaveDataReportParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveDataReportParamList.push(paramDetails[i]);
+    }
+    this.dataReportForm.disable();
+    this.addProductsStatus = false;
+    window.$('#dataReportModal').modal('show');
   }
 
   viewSSFRecord(data: SampleSubmissionDto) {
@@ -3220,7 +3304,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             this.uploadedFilesOnly = this.resetUploadedFiles;
             console.log(data);
-            this.loadStandards();
+            // this.loadStandards();
             this.SpinnerService.hide();
             this.msService.showSuccess('FILE(S) UPLOADED SAVED SUCCESSFULLY');
           },
@@ -3364,8 +3448,16 @@ export class WorkPlanDetailsComponent implements OnInit {
   onClickEndSampleSubmitted() {
     this.msService.showSuccessWith2Message('Are you sure your want to End Sample Submission?', 'You won\'t be able to revert back after submission!',
         // tslint:disable-next-line:max-line-length
-        'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+        'You can click the \'ADD SAMPLE SUBMISSION\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
           this.endSampleSubmitted();
+        });
+  }
+
+  onClickEndDataReportAdding() {
+    this.msService.showSuccessWith2Message('Are you sure your want to End Data Report Adding?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can click the \'ADD DATA REPORT\' button to update details Before Saving', 'DATA REPORT DETAILS SAVED SUCCESSFUL', () => {
+          this.endDataReportAdding();
         });
   }
 
@@ -3380,6 +3472,26 @@ export class WorkPlanDetailsComponent implements OnInit {
           console.log(data);
           this.SpinnerService.hide();
           this.msService.showSuccess('SAMPLE SUBMISSION ENDED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  endDataReportAdding() {
+    this.SpinnerService.show();
+    this.msService.msWorkPlanScheduleEndDataReportAdding(
+        this.workPlanInspection.batchDetails.referenceNumber,
+        this.workPlanInspection.referenceNumber,
+    ).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          console.log(data);
+          this.SpinnerService.hide();
+          this.msService.showSuccess('DATA REPORT ENDED SUCCESSFULLY');
         },
         error => {
           this.SpinnerService.hide();
@@ -3606,6 +3718,11 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
 
+  viewSeizedProductsFileSaved(data: SeizureListDto) {
+    const foundPdfFile = this.workPlanInspection?.workPlanFiles.find(lab => lab.id === data.docID);
+    this.viewPdfFile(String(foundPdfFile.id), foundPdfFile.documentType, foundPdfFile.fileContentType);
+  }
+
   // viewWorkPlanFileNotOnSiteSaved(fileID: number) {
   //   const data = this.workPlanInspection.workPlanFiles.filter(function (record) {return record.id === fileID});
   //   this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
@@ -3646,8 +3763,28 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
   }
 
-  updateSeizedDetails(data: SeizureDto) {
-    this.seizureDeclarationForm.patchValue(data);
+  updateSeizedDetails(data: SeizureListDto) {
+    this.seizureForm.patchValue(data);
+    this.selectedSeizedDetails = data;
+    const paramDetails = data.seizureList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    }
+    this.addSeizureProductsStatus = true;
+    window.$('#seizureDeclarationModal').modal('show');
+  }
+
+  viewSeizedDetails(data: SeizureListDto) {
+    this.seizureForm.patchValue(data);
+    this.selectedSeizedDetails = data;
+    const paramDetails = data.seizureList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    }
+    this.seizureForm.disable();
+    this.addSeizureProductsStatus = false;
     window.$('#seizureDeclarationModal').modal('show');
   }
 
@@ -3715,6 +3852,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       case 'updateRecords':
         this.updateSeizedDetails(event.data);
         break;
+      case 'viewRecord':
+        this.viewSeizedDetails(event.data);
+        break;
+      case 'viewUpload':
+        this.viewSeizedProductsFileSaved(event.data);
+        break;
     }
   }
 
@@ -3769,9 +3912,55 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickAddDataReportParam() {
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
+    const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
+
+    switch (valueSelected) {
+      case 'Local':
+        this.msService.loadPermitDetailsSearch(this.dataSaveDataReportParam.permitNumber).subscribe(
+            (data: PermitUcrSearch) => {
+              this.SpinnerService.hide();
+              this.verificationPermitForm.patchValue(data);
+              this.currDivLabel = `PERMIT FOUND WITH FOLLOWING DETAILS`;
+              this.currDiv = 'verificationPermitDetails';
+              this.verificationPermitForm.disabled;
+
+              window.$('#myModal2').modal('show');
+
+              // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+
+              console.log(error);
+              // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+        break;
+      case 'Import':
+        this.msService.loadUCRDetailsSearch(this.dataSaveDataReportParam.ucrNumber).subscribe(
+            (data: any) => {
+              this.SpinnerService.hide();
+              // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              console.log(error);
+              // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+        break;
+    }
+
+
+
     this.dataSaveDataReportParamList.push(this.dataSaveDataReportParam);
+    this.dataReportParamForm?.get('productName')?.reset();
     this.dataReportParamForm?.get('typeBrandName')?.reset();
     this.dataReportParamForm?.get('localImport')?.reset();
+    this.dataReportParamForm?.get('permitNumber')?.reset();
+    this.dataReportParamForm?.get('permitNumber')?.setValue('N/A');
+    this.dataReportParamForm?.get('ucrNumber')?.reset();
+    this.dataReportParamForm?.get('ucrNumber')?.setValue('N/A');
     this.dataReportParamForm?.get('complianceInspectionParameter')?.reset();
     this.dataReportParamForm?.get('measurementsResults')?.reset();
     this.dataReportParamForm?.get('remarks')?.reset();
@@ -3785,10 +3974,28 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
     this.totalCompliantValue = (compliantCount / totalCount) * 100;
+    this.isImport = 0;
     console.log('compliant count' + compliantCount);
     console.log('total count' + totalCount);
     console.log('complinace Value count' + this.totalCompliantValue);
   }
+
+
+  onClickAddSeizureItems() {
+    this.dataSaveSeizureDeclaration = this.seizureDeclarationForm.value;
+    this.dataSaveSeizureDeclarationList.push(this.dataSaveSeizureDeclaration);
+    this.seizureDeclarationForm?.reset();
+  }
+
+  removeSeizureProducts(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveSeizureDeclarationList.splice(index, 1);
+    } else {
+      this.dataSaveSeizureDeclarationList.splice(index, index);
+    }
+  }
+
 
   onClickAddDataInspectorOfficer() {
     this.dataSaveDataInspectorInvest = this.investInspectReportInspectorsForm.value;
@@ -3970,7 +4177,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
-    if (this.seizureDeclarationForm.valid) {
+    if (this.seizureForm.valid && this.uploadedFilesSeizedGoods.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
@@ -3982,14 +4189,23 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   saveSeizureDeclaration() {
     this.SpinnerService.show();
-    this.dataSaveSeizureDeclaration = {...this.dataSaveSeizureDeclaration, ...this.seizureDeclarationForm.value};
-    this.msService.msWorkPlanScheduleSaveSeizureDeclaration(
-        this.workPlanInspection.batchDetails.referenceNumber,
-        this.workPlanInspection.referenceNumber,
-        this.dataSaveSeizureDeclaration,
-    ).subscribe(
+    const file = this.uploadedFilesSeizedGoods;
+    this.dataSaveSeizure = {...this.dataSaveSeizure, ...this.seizureForm.value};
+    this.dataSaveSeizure.seizureList = this.dataSaveSeizureDeclarationList;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+    formData.append('docTypeName', 'SEIZURE_UPLOAD');
+    formData.append('data', JSON.stringify(this.dataSaveSeizure));
+    for (let i = 0; i < file.length; i++) {
+      console.log(file[i]);
+      formData.append('docFile', file[i], file[i].name);
+    }
+    this.msService.msWorkPlanScheduleSaveSeizureDeclarationWithUpload(formData).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
+          this.seizureForm.reset();
+          this.dataSaveSeizureDeclarationList = [];
           console.log(data);
           this.SpinnerService.hide();
           this.msService.showSuccess('SEIZURE AND DECLARATION DETAILS SAVED SUCCESSFULLY');
@@ -4200,8 +4416,28 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  onChangeSelectedImportType() {
+
+    const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
+
+    switch (valueSelected) {
+      case 'Local':
+        this.isImport = 1;
+        this.dataReportParamForm?.get('permitNumber')?.reset();
+        this.dataReportParamForm?.get('ucrNumber')?.setValue('N/A');
+        break;
+      case 'Import':
+        this.isImport = 2;
+        this.dataReportParamForm?.get('ucrNumber')?.reset();
+        this.dataReportParamForm?.get('permitNumber')?.setValue('N/A');
+        break;
+    }
+
+  }
+
+
   onChangeSelectedDepartment() {
-    this.disableDivision = false;
+    // this.disableDivision = false;
     this.addNewScheduleForm.controls.divisionId.enable();
     this.departmentSelected = this.addNewScheduleForm?.get('complaintDepartment')?.value;
     this.standardProductCategorySelected = this.addNewScheduleForm?.get('standardCategory')?.value;
@@ -4238,25 +4474,16 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.addNewScheduleForm?.get('regionID')?.value;
+    this.selectedRegion = this.addNewScheduleForm?.get('region')?.value;
+    this.addNewScheduleForm.controls.county.enable();
     console.log(`region set to ${this.selectedRegion}`);
   }
 
 
   updateSelectedCounty() {
     this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
-    console.log(`county set to ${this.selectedCounty}`);
-    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
-    this.store$.select(selectCountyIdData).subscribe(
-        (d) => {
-          if (d) {
-            console.log(`Select county inside is ${d}`);
-            return this.townService.getAll();
-          } else {
-            return throwError('Invalid request, County id is required');
-          }
-        },
-    );
+    this.addNewScheduleForm.controls.townMarketCenter.enable();
+    this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
 
   }
 

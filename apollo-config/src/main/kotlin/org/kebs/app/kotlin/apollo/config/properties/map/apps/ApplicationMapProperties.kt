@@ -970,6 +970,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.rejected.notification.compliant}")
     val mapMsComplaintAcknowledgementRejectionNotification: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.accepted.notification.compliant}")
+    val mapMsComplaintAcknowledgementAcceptedNotification: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.oga.mandate.notification.compliant}")
     val mapMsComplaintAcknowledgementRejectionWIthOGANotification: String = ""
 
