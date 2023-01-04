@@ -251,7 +251,7 @@ class InvoiceHandlers(
             )
             if (invoiceForm.presentment) {
                 val dt = mutableMapOf<String, Any>()
-                dt["demandNote"] = demandNote
+                dt["demandNote"] = DemandNoteDto.fromEntity(demandNote, true)
                 dt["items"] = demandNoteItems
                 response.data = dt
                 response.responseCode = ResponseCodes.SUCCESS_CODE
