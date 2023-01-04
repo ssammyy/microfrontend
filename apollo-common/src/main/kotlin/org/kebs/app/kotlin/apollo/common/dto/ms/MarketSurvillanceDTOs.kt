@@ -288,6 +288,7 @@ data class WorkPlanInspectionDto(
         var productList: List<WorkPlanProductDto>? = null,
         var batchRefNumber: String? = null,
         var totalComplianceValue: String? = null,
+        var currentDate : Date? = null,
 )
 
 data class FuelEntityDto(

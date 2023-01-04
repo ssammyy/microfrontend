@@ -1242,7 +1242,7 @@
                                                         <div class="mat-button-focus-overlay"></div>
                                                     </button>
                                                     <button *ngIf="workPlanInspection?.sampleSubmittedStatus ==false"  mat-raised-button="" data-toggle="modal"
-                                                            data-target="#sampleSubmitModal"
+                                                            data-target="#sampleSubmitModal" (click)="openModalAddDetails('openSampleSubmitModal')"
                                                             class="btn btn-sm btn-primary mr-2"><span
                                                             class="mat-button-wrapper">ADD SAMPLE SUBMISSION</span>
                                                         <div class="mat-button-focus-overlay"></div>
@@ -1308,7 +1308,7 @@
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">CREATE PROGRESS</span>
+                                                    class="mat-button-wrapper">CREATE PROGRESS REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -2017,10 +2017,10 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="complianceStatusSSF"><b>Final Compliance  %</b></label>
+                                        <label for="complianceStatusSSF"><b>Final Compliance %</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="totalCompliancetes" matInput type="text" placeholder="Please Enter final Total Compliance" formControlName="totalCompliance" name="totalCompliance"
-                                                   ngModel="{{totalComplianceValue}}"  disabled        [class.is-invalid]="formSSFSaveComplianceStatusForm.totalCompliance.invalid && formSSFSaveComplianceStatusForm.totalCompliance.touched">
+                                                   ngModel="{{totalComplianceValue}}"  [disabled]=true        [class.is-invalid]="formSSFSaveComplianceStatusForm.totalCompliance.invalid && formSSFSaveComplianceStatusForm.totalCompliance.touched">
                                         </mat-form-field>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
                                         <mat-form-field id="complianceStatusSSF">
@@ -3394,7 +3394,7 @@
 
                                         <div class="col">
                                             <div class="form-group">
-                                                <button *ngIf="dataReportParamForm.valid" mat-raised-button
+                                                <button *ngIf="seizureDeclarationForm.valid" mat-raised-button
                                                         class="btn btn-success" (click)="onClickAddSeizureItems()" type="button" >SAVE PARAMS
                                                 </button>
                                             </div>
@@ -3508,15 +3508,20 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Report Classification</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportClassification.invalid && formInvestInspectReportForm.reportClassification.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportClassification"
-                                               name="reportClassification" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportClassification.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportClassification.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                        <select [class.is-invalid]="formInvestInspectReportForm.reportClassification.invalid && formInvestInspectReportForm.reportClassification.errors"
+                                                class="form-control two-column-input"
+                                                formControlName="reportClassification"
+                                                name="reportClassification" required type="text">
+                                            <option [value]="" selected>Please select One</option>
+                                            <option  [value]="'Top Secret'">Top secret</option>
+                                            <option  [value]="'Secret'">Secret</option>
+                                            <option  [value]="'Confidential'">Confidential</option>
+                                            <option  [value]="'Restricted'">Restricted</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
                                     </div>
                                 </div>
 
@@ -3884,7 +3889,17 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <!--test-->
+                                        <label><b>Report Classification</b> </label>
+                                        <select [class.is-invalid]="formInvestInspectReportForm.reportClassification.invalid && formInvestInspectReportForm.reportClassification.errors"
+                                                class="form-control two-column-input"
+                                                formControlName="reportClassification"
+                                                name="reportClassification" required type="text">
+                                            <option [value]="" selected>Please select One</option>
+                                            <option  [value]="'Top Secret'">Top secret</option>
+                                            <option  [value]="'Secret'">Secret</option>
+                                            <option  [value]="'Confidential'">Confidential</option>
+                                            <option  [value]="'Restricted'">Restricted</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -5564,12 +5579,16 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
-                                        <select [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors"
-                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                                class="form-control" formControlName="referencesStandards" name="referencesStandards" required>
-                                            <option [value]="" selected>Please select</option>
-                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [ngValue]="app.standardTitle">{{app.standardTitle}}</option>
-                                        </select>
+                                        <ng-select aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                   class="form-control" formControlName="referencesStandards" name="referencesStandards">
+                                            <ng-option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardTitle}}</ng-option>
+                                        </ng-select>
+<!--                                        <select [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+<!--                                                class="form-control" formControlName="referencesStandards" name="referencesStandards" required>-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [ngValue]="app.standardTitle">{{app.standardTitle}}</option>-->
+<!--                                        </select>-->
                                         <div *ngIf="submitted && formSampleSubmitForm.referencesStandards.errors" class="invalid-feedback">
                                             <div *ngIf="formSampleSubmitForm.referencesStandards.errors.required">This field is
                                                 required
@@ -5677,7 +5696,7 @@
                                     <div class="form-group">
                                         <label><b>SUBMISSION DATE</b></label>
                                         <input type="date" class="form-control two-column-input"
-                                               formControlName="sendersDate" name="sendersDate" required disabled
+                                               formControlName="sendersDate" name="sendersDate" disabled
                                                [class.is-invalid]="formSampleSubmitForm.sendersDate.invalid && formSampleSubmitForm.sendersDate.errors">
                                         <div *ngIf="submitted && formSampleSubmitForm.sendersDate.errors" class="invalid-feedback">
                                             <div *ngIf="formSampleSubmitForm.sendersDate.errors.required">This field is
@@ -6625,8 +6644,8 @@
                                 <div class="form-group">
                                     <div>
                                         <mat-form-field class="example-full-width">
-                                            <input id="totalComplianceTest#" matInput type="text" placeholder="Please Enter final Total Compliance" formControlName="totalCompliance" name="totalCompliance"
-                                                   ngModel="{{totalComplianceValue}}"  disabled   hidden [class.is-invalid]="formSSFSaveComplianceStatusForm.totalCompliance.invalid && formSSFSaveComplianceStatusForm.totalCompliance.touched">
+                                            <input id="totalComplianceTest#" matInput type="text" formControlName="totalCompliance" name="totalCompliance"
+                                                   ngModel="{{totalComplianceValue}}"    hidden >
                                         </mat-form-field>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
                                         <mat-form-field id="complianceStatusSSF4">

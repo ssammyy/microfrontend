@@ -5254,7 +5254,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             analysisLabCountDone,
             productListRecommendationAddedCount,
             productList,
-            wKP.totalCompliance
+            wKP.totalCompliance,
+            commonDaoServices.getCurrentDate()
         )
     }
 

@@ -849,6 +849,9 @@ export class WorkPlanInspectionDto {
     analysisLabCountDone: number;
     productListRecommendationAddedCount: number;
     productList: WorkPlanProductDto[];
+    batchRefNumber: string;
+    totalComplianceValue: string;
+    currentDate: Date;
 }
 
 export class CountryListDto {

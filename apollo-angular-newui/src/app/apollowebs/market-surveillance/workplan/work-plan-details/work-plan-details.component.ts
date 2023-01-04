@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   ApprovalDto,
@@ -69,6 +69,8 @@ interface Post {
   styleUrls: ['./work-plan-details.component.css'],
 })
 export class WorkPlanDetailsComponent implements OnInit {
+  @ViewChild('demoForm') myForm;
+  // @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
   active: Number = 0;
   selectedFile: File;
@@ -433,6 +435,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">VIEW RECORD</i>'},
+        {name: 'viewUpload', title: '<i class="btn btn-sm btn-primary">VIEW UPLOAD</i>'},
         {name: 'updateRecords', title: '<i class="btn btn-sm btn-primary">UPDATE</i>'},
       ],
       position: 'right', // left|right
@@ -1472,8 +1475,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   msRegions: RegionsEntityDto[] = null;
   msCountiesList: County[] = null;
   msTowns: Town[] = null;
-
-  currentDateDetails = new Date(Date.now());
+  currentDateDetails = new Date();
   post: Post = {
     startDate: new Date(Date.now()),
     endDate: new Date(Date.now()),
@@ -1497,6 +1499,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentDateDetails = new Date();
+
+    console.log('currentdate'+ this.currentDateDetails);
+
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       this.userLoggedInID = u.id;
       this.userProfile = u;
@@ -1700,7 +1706,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       sendersName: ['', Validators.required],
       designation: ['', Validators.required],
       address: ['', Validators.required],
-      sendersDate: [this.currentDateDetails, Validators.required],
+      sendersDate: this.msService.formatDate(new Date()),
       receiversName: null,
       productDescription: null,
       receiversDate: null,
@@ -2278,7 +2284,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
-      'addNewScheduleDetails'];
+      'addNewScheduleDetails', 'openSampleSubmitModal'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2286,12 +2292,17 @@ export class WorkPlanDetailsComponent implements OnInit {
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
-      'UPDATE WORK-PLAN SCHEDULE DETAILS FILE'];
+      'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
         this.currDivLabel = arrHeadSave[h];
       }
+    }
+
+    if (divVal === 'openSampleSubmitModal') {
+      // this.sampleSubmitForm.get('sendersDate').patchValue(this.msService.formatDate(new Date()));
+      // this.sampleSubmitForm?.get('sendersDate')?.setValue(new Date());
     }
 
     if (divVal === 'finalLabComplianceStatus') {
@@ -3767,11 +3778,12 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.seizureForm.patchValue(data);
     this.selectedSeizedDetails = data;
     const paramDetails = data.seizureList;
-    this.dataSaveSampleSubmitParamList = [];
+    this.dataSaveSeizureDeclarationList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
     }
     this.addSeizureProductsStatus = true;
+    this.seizureForm.enable();
     window.$('#seizureDeclarationModal').modal('show');
   }
 
@@ -3779,7 +3791,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.seizureForm.patchValue(data);
     this.selectedSeizedDetails = data;
     const paramDetails = data.seizureList;
-    this.dataSaveSampleSubmitParamList = [];
+    this.dataSaveSeizureDeclarationList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
     }
@@ -3795,7 +3807,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.currDiv = 'viewPdfSaveCompliance';
     this.pdfSaveComplianceStatusForm.patchValue(data);
 
-    window.$('#myModal1').modal('show');
+    window.$('#myModal2').modal('show');
   }
 
   viewSavedRemarks(data: MSRemarksDto) {
@@ -4204,7 +4216,11 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.msService.msWorkPlanScheduleSaveSeizureDeclarationWithUpload(formData).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
+          this.workPlanInspection.currentDate = new Date();
+          console.log('currentdate'+ this.workPlanInspection.currentDate);
+          this.uploadedFilesSeizedGoods = null
           this.seizureForm.reset();
+          this.myForm.reset();
           this.dataSaveSeizureDeclarationList = [];
           console.log(data);
           this.SpinnerService.hide();
