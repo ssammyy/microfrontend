@@ -31,14 +31,16 @@ export class ProcessRejectionComponent implements OnInit {
     saveRecord() {
         this.loading = true
         let result = 'approve'
+        let description = ''
         if (this.form.value.approvalStatus !== '1') {
             result = 'reject'
+            description = 'A rejection will send the consignment to back to inspection officer for review'
         }
-        if (this.data.dataMap.compliantStatus !== 1 && this.form.value.approvalStatus !== '1') {
+        if (this.data.dataMap.compliantStatus !== 1) {
             // Check non compliance
-            if (this.data.dataMap.compliantStatus === 0) {
+            if (this.form.value.approvalStatus === '1') {
                 let icon: SweetAlertIcon = 'warning'
-                this.diService.showConfirmation(`Are you sure you want ${result} non-compliance request on this consignment? This will send a rejection message for all items in the consignment and this is not reversible`, (res) => {
+                this.diService.showConfirmation(`Are you sure you want ${result} non-compliance request on this consignment? \nThis will send a rejection message for all items in the consignment and the action is not reversible`, (res) => {
                     if (res) {
                         this.sendRequest()
                     } else {
@@ -55,17 +57,13 @@ export class ProcessRejectionComponent implements OnInit {
                 })
             }
         } else {
-            if (this.data.dataMap.compliantStatus) {
-                this.diService.showConfirmation(`Are you sure you want ${result} compliance on this consignment?`, (res) => {
-                    if (res) {
-                        this.sendRequest()
-                    } else {
-                        this.loading = false;
-                    }
-                })
-            } else {
-                this.sendRequest()
-            }
+            this.diService.showConfirmation(`Are you sure you want to ${result} compliance on this consignment? ${description}`, (res) => {
+                if (res) {
+                    this.sendRequest()
+                } else {
+                    this.loading = false;
+                }
+            })
         }
     }
 

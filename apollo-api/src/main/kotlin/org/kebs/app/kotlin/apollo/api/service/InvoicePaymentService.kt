@@ -43,7 +43,7 @@ import java.util.*
 import kotlin.math.ceil
 
 enum class PaymentStatus(val code: Int) {
-    NEW(0), PAID(1), DRAFT(3), BILLED(4), PARTIAL_PAYMENT(5), REJECTED(-1);
+    NEW(0), PAID(1), DRAFT(3), BILLED(4), PARTIAL_PAYMENT(5), REJECTED(-1), REJECTED_AMENDMENT(-5);
 }
 
 @Service("invoiceService")

@@ -1380,9 +1380,9 @@ class DestinationInspectionDaoServices(
         amount: Double,
         user: UsersEntity
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findFirstByCdIdAndStatusInAndPaymentStatusNoIn(
+        return iDemandNoteRepo.findFirstByCdIdAndStatusInAndPaymentStatusIn(
             consignmentDocument.id!!, listOf(map.workingStatus),
-            listOf(PaymentStatus.PAID.code, PaymentStatus.PARTIAL_PAYMENT.code, PaymentStatus.REJECTED.code)
+            listOf(PaymentStatus.DRAFT.code, PaymentStatus.REJECTED_AMENDMENT.code)
         )
             ?.let { demandNote ->
                 var demandNoteDetails = demandNote
@@ -1440,7 +1440,7 @@ class DestinationInspectionDaoServices(
                                 true
                             )
                         }".toUpperCase()
-                    paymentStatus = PaymentStatus.NEW.code
+                    paymentStatus = PaymentStatus.DRAFT.code
                     paymentPurpose = PaymentPurpose.CONSIGNMENT.code
                     dateGenerated = commonDaoServices.getCurrentDate()
                     generatedBy = commonDaoServices.concatenateName(user)
