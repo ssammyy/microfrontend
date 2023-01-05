@@ -23,9 +23,17 @@ export class DemandNoteListComponent implements OnInit {
             delete: false,
             custom: [
                 {name: 'viewNote', title: '<i class="btn btn-sm btn-primary">View</i>'},
-                {name: 'download', title: '<i class="btn btn-sm btn-primary">Download</i>'}
+                {name: 'download', title: '<i class="btn btn-sm btn-primary download-pdf">Download</i>'}
             ],
             position: 'right' // left|right
+        },
+        rowClassFunction: function (row) {
+            //console.log(row)
+            if (row.data.paymentStatus === -1 || row.data.paymentStatus === 2 || row.data.status === -1) {
+                // console.log("Hide download")
+                return 'hide-demand-note-download'
+            }
+            return ''
         },
         delete: {
             deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
@@ -74,17 +82,6 @@ export class DemandNoteListComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    paymentStatus(status: number): String {
-        switch (status) {
-            case 1:
-                return "PAYMENT_COMPLETED"
-            case 5:
-                return "PARTIAL PAYMENT"
-            default:
-                return "NOT PAID"
-        }
-    }
-
     viewDemandNote(demandNoteId: any) {
         this.dialog.open(ViewDemandNoteComponent, {
             data: {
@@ -103,7 +100,11 @@ export class DemandNoteListComponent implements OnInit {
     onCustomAction(action: any) {
         switch (action.action) {
             case 'download':
-                this.diService.downloadDocument("/api/v1/download/demand/note/" + action.data.id)
+                if (action.data.paymentStatus === -1 || action.data.status === -1 || action.data.paymentStatus == -2) {
+                    this.diService.showError("Download is not allowed for demand note in status: " + action.data.paymentStatusDesc)
+                } else {
+                    this.diService.downloadDocument("/api/v1/download/demand/note/" + action.data.id)
+                }
                 break
             case 'viewNote':
                 this.viewDemandNote(action.data.id)
