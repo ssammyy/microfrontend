@@ -34,9 +34,9 @@ export class ProcessRejectionComponent implements OnInit {
         if (this.form.value.approvalStatus !== '1') {
             result = 'reject'
         }
-        if (this.data.dataMap.compliantStatus && this.form.value.approvalStatus !== '1') {
+        if (this.data.dataMap.compliantStatus !== 1 && this.form.value.approvalStatus !== '1') {
             // Check non compliance
-            if (this.data.dataMap.compliantStatus !== 1) {
+            if (this.data.dataMap.compliantStatus === 0) {
                 let icon: SweetAlertIcon = 'warning'
                 this.diService.showConfirmation(`Are you sure you want ${result} non-compliance request on this consignment? This will send a rejection message for all items in the consignment and this is not reversible`, (res) => {
                     if (res) {

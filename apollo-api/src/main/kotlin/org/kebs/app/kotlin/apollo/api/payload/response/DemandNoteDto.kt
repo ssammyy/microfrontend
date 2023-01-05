@@ -119,8 +119,9 @@ class DemandNoteDto {
                 generatedBy = note.generatedBy
                 paymentStatus = note.paymentStatus
                 paymentStatusDesc = when (note.paymentStatus) {
-                    -1 -> "PAYMENT REJECTED"
+                    PaymentStatus.REJECTED.code -> "PAYMENT REJECTED"
                     PaymentStatus.NEW.code -> "PENDING PAYMENT"
+                    PaymentStatus.DRAFT.code -> "DRAFT(GENERATING)"
                     PaymentStatus.PAID.code -> "PAYMENT COMPLETED"
                     PaymentStatus.BILLED.code -> "PAYMENT BILLED"
                     PaymentStatus.PARTIAL_PAYMENT.code -> "PARTIALLY PAID"

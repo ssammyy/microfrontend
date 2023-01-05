@@ -43,7 +43,7 @@ import java.util.*
 import kotlin.math.ceil
 
 enum class PaymentStatus(val code: Int) {
-    NEW(0), PAID(1), BILLED(4), PARTIAL_PAYMENT(5);
+    NEW(0), PAID(1), DRAFT(3), BILLED(4), PARTIAL_PAYMENT(5), REJECTED(-1);
 }
 
 @Service("invoiceService")
@@ -98,6 +98,7 @@ class InvoicePaymentService(
                 val demand = demandNote.get()
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 demand.status = map.invalidStatus
+                demand.paymentStatus = PaymentStatus.REJECTED.code
                 demand.varField3 = "REJECTED"
                 demand.varField10 = remarks
                 consignmentDocument.varField10 = "Demand note rejected"
@@ -131,6 +132,7 @@ class InvoicePaymentService(
                 val demand = demandNote.get()
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 demand.status = map.initStatus
+                demand.paymentStatus = PaymentStatus.NEW.code
                 demand.varField3 = "APPROVED"
                 demand.varField10 = remarks
 
@@ -720,7 +722,11 @@ class InvoicePaymentService(
         purpose: PaymentPurpose,
         user: UsersEntity,
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findFirstByCdIdAndStatusIn(form.referenceId!!, listOf(map.workingStatus))
+        return iDemandNoteRepo.findFirstByCdIdAndStatusInAndPaymentStatusIn(
+            form.referenceId!!,
+            listOf(map.workingStatus),
+            listOf(PaymentStatus.DRAFT.code)
+        )
             ?.let { demandNote ->
                 var demandNoteDetails = demandNote
                 // Remove all items for update
@@ -782,7 +788,7 @@ class InvoicePaymentService(
                                 true
                             )
                         }".toUpperCase()
-                    paymentStatus = map.inactiveStatus
+                    paymentStatus = PaymentStatus.DRAFT.code
                     paymentPurpose = purpose.code
                     dateGenerated = commonDaoServices.getCurrentDate()
                     generatedBy = commonDaoServices.concatenateName(user)

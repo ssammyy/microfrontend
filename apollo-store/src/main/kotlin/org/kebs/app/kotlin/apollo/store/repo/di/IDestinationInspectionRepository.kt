@@ -351,7 +351,12 @@ interface TransactionStats {
 interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> {
     fun findByUcrNumber(ucrNumber: String): CdDemandNoteEntity?
     fun findAllByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): List<CdDemandNoteEntity>
-    fun findFirstByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): CdDemandNoteEntity?
+    fun findFirstByCdIdAndStatusInAndPaymentStatusIn(
+        cdId: Long,
+        statuses: List<Int>,
+        paymentStatuses: List<Int>
+    ): CdDemandNoteEntity?
+
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
     fun findFirstByCdId(cdId: Long): CdDemandNoteEntity?
     fun findByPostingReference(demandNoteNumber: String): CdDemandNoteEntity?

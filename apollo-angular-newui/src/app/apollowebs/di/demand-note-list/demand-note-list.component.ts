@@ -23,9 +23,15 @@ export class DemandNoteListComponent implements OnInit {
             delete: false,
             custom: [
                 {name: 'viewNote', title: '<i class="btn btn-sm btn-primary">View</i>'},
-                {name: 'download', title: '<i class="btn btn-sm btn-primary">Download</i>'}
+                {name: 'download', title: '<i class="btn btn-sm btn-primary download-demand-note">Download</i>'}
             ],
             position: 'right' // left|right
+        },
+        rowClassFunction: function (row) {
+            if (row.paymentSTatus === -1 || row.paymentSTatus === 2) {
+                return 'hide-download'
+            }
+            return ''
         },
         delete: {
             deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
@@ -72,17 +78,6 @@ export class DemandNoteListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-    }
-
-    paymentStatus(status: number): String {
-        switch (status) {
-            case 1:
-                return "PAYMENT_COMPLETED"
-            case 5:
-                return "PARTIAL PAYMENT"
-            default:
-                return "NOT PAID"
-        }
     }
 
     viewDemandNote(demandNoteId: any) {
