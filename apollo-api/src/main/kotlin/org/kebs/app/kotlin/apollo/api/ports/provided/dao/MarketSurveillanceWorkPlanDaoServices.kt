@@ -2742,6 +2742,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             } ?: kotlin.run {
             with(sampleSubmission){
                 bsNumber = body.bsNumber
+                sampleReferences = body.bsNumber
                 sampleBsNumberDate = body.submittedDate
                 sampleBsNumberRemarks = body.remarks
                 labResultsStatus = map.inactiveStatus

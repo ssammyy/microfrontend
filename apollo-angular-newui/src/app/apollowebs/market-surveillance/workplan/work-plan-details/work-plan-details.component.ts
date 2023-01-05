@@ -90,6 +90,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   defaultPageSize = 20;
   selectedSFFDetails: SampleSubmissionDto;
   selectedSeizedDetails: SeizureListDto;
+  selectedPreliminaryReportDetails: InspectionInvestigationReportDto;
   selectedDataReportDetails: DataReportDto;
   defaultPage = 0;
   currentPage = 0;
@@ -416,6 +417,58 @@ export class WorkPlanDetailsComponent implements OnInit {
       nameSeizingOfficer: {
         title: 'Name Seizing Officer',
         type: 'string',
+        filter: false,
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsPreliminaryReport = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">VIEW RECORD</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      reportReference: {
+        title: 'REPORT REFERENCE',
+        type: 'string',
+        filter: false,
+      },
+      reportTo: {
+        title: 'REPORT TO',
+        type: 'string',
+        filter: false,
+      },
+      reportFrom: {
+        title: 'REPORT FROM',
+        type: 'string',
+        filter: false,
+      },
+      reportSubject: {
+        title: 'REPORT SUBJECT',
+        type: 'string',
+        filter: false,
+      },
+      version: {
+        title: 'VERSION',
+        type: 'number',
         filter: false,
       },
     },
@@ -2301,9 +2354,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       }
     }
 
-    if (divVal === 'openSampleSubmitModal') {
-      // this.sampleSubmitForm.get('sendersDate').patchValue(this.msService.formatDate(new Date()));
-      // this.sampleSubmitForm?.get('sendersDate')?.setValue(new Date());
+    if (divVal === 'seizureDeclarationDetails') {
+      this.dataSaveSeizureDeclarationList = [];
+      this.seizureDeclarationForm.reset();
+      this.seizureForm.reset();
+      this.seizureForm.enable();
+      this.addSeizureProductsStatus = true;
     }
 
     if (divVal === 'finalLabComplianceStatus') {
@@ -2318,9 +2374,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.totalComplianceValue = (complianceLabs / totalCount) * 100;
     }
 
+    if (divVal === 'createPreliminary') {
+      this.updatePreliminaryReport();
+    }
+
     this.updateFieldReport();
     this.updateWorkPlan();
-    this.updatePreliminaryReport();
     this.addFinalPreliminaryReport();
     this.updateFinalPreliminaryReport();
     this.currDiv = divVal;
@@ -2357,7 +2416,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updatePreliminaryReport() {
-    if (this.workPlanInspection?.investInspectReportStatus &&  this.workPlanInspection?.onsiteEndStatus === false) {
+    if (this.workPlanInspection?.investInspectReportStatus &&  this.workPlanInspection?.onsiteEndStatus) {
       this.investInspectReportForm.patchValue(this.workPlanInspection?.inspectionInvestigationDto);
       this.dataSaveDataInspectorInvestList = [];
       for (let prod = 0; prod < this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors.length; prod++) {
@@ -2492,6 +2551,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.currDiv = 'addBsNumber';
       this.sampleSubmitBSNumberForm.reset();
       this.ssfSelectedID = data.id;
+      console.log('SSF ID BS NUMBER ADDING' + this.ssfSelectedID);
       window.$('#myModal1').modal('show');
     }
   }
@@ -3794,6 +3854,32 @@ export class WorkPlanDetailsComponent implements OnInit {
     window.$('#seizureDeclarationModal').modal('show');
   }
 
+  viewPreliminaryReportDetails(data: InspectionInvestigationReportDto) {
+    this.seizureForm.patchValue(data);
+    this.selectedPreliminaryReportDetails = data;
+    // const paramDetails = data.seizureList;
+    // this.dataSaveSeizureDeclarationList = [];
+    // for (let i = 0; i < paramDetails.length; i++) {
+    //   this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    // }
+    // this.seizureForm.disable();
+    // this.addSeizureProductsStatus = false;
+    // window.$('#seizureDeclarationModal').modal('show');
+  }
+
+  updatePreliminaryReportDetails(data: InspectionInvestigationReportDto) {
+    this.seizureForm.patchValue(data);
+    this.selectedPreliminaryReportDetails = data;
+    // const paramDetails = data.seizureList;
+    // this.dataSaveSeizureDeclarationList = [];
+    // for (let i = 0; i < paramDetails.length; i++) {
+    //   this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    // }
+    // this.seizureForm.disable();
+    // this.addSeizureProductsStatus = false;
+    window.$('#seizureDeclarationModal').modal('show');
+  }
+
   viewSeizedDetails(data: SeizureListDto) {
     this.seizureForm.patchValue(data);
     this.selectedSeizedDetails = data;
@@ -3873,6 +3959,20 @@ export class WorkPlanDetailsComponent implements OnInit {
         break;
       case 'viewRecord':
         this.viewSeizedDetails(event.data);
+        break;
+      case 'viewUpload':
+        this.viewSeizedProductsFileSaved(event.data);
+        break;
+    }
+  }
+
+  public onCustomPreliminaryReportAction(event: any): void {
+    switch (event.action) {
+      case 'updateRecords':
+        this.updateSeizedDetails(event.data);
+        break;
+      case 'viewRecord':
+        this.viewPreliminaryReportDetails(event.data);
         break;
       case 'viewUpload':
         this.viewSeizedProductsFileSaved(event.data);
