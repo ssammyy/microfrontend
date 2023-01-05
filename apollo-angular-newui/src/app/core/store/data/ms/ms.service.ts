@@ -104,6 +104,16 @@ export class MsService {
         };
     }
 
+    public formatDate(date) {
+        const d = new Date(date);
+        let month = '' + (d.getMonth() + 1);
+        let day = '' + d.getDate();
+        const year = d.getFullYear();
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        return [year, month, day].join('-');
+    }
+
     public dateValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
         const start = control.get('dateStart');
         const end = control.get('dateEnd');
@@ -1211,6 +1221,27 @@ export class MsService {
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
             ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_INSPECTION_INVESTIGATION,
+        );
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleSavePreliminaryReportData(batchReferenceNo: string, referenceNo: string, data: InspectionInvestigationReportDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT,
         );
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)

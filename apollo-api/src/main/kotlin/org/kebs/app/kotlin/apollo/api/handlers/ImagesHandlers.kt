@@ -54,8 +54,7 @@ class ImagesHandlers(
 
     fun permitQRCodeScanned(req: ServerRequest): ServerResponse {
         return try {
-            val permitNumber =
-                req.paramOrNull("permitNumber") ?: throw ExpectedDataNotFound("Required Permit Number, check config")
+            val permitNumber = req.paramOrNull("permitNumber") ?: throw ExpectedDataNotFound("Required Permit Number, check config")
             val permit = qaDaoServices.findPermitBYPermitNumber(permitNumber)
             qaDaoServices.mapDtoQRCodeQaDetailsView(permit).let {
                 ok().body(it)

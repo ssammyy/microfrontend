@@ -242,7 +242,10 @@ interface IPreliminaryOutletsRepository : HazelcastRepository<MsPreliminaryRepor
 interface IMSInvestInspectReportRepository : HazelcastRepository<MsInspectionInvestigationReportEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsInspectionInvestigationReportEntity>
 
-    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long):MsInspectionInvestigationReportEntity?
+    fun findByWorkPlanGeneratedIDAndIsPreliminaryReport(workPlanGeneratedID: Long, isPreliminaryReport: Int):MsInspectionInvestigationReportEntity?
+    fun findTopByWorkPlanGeneratedIDAndIsPreliminaryReportOrderByIdDesc(workPlanGeneratedID: Long, isPreliminaryReport: Int):MsInspectionInvestigationReportEntity?
+    fun findByIsPreliminaryReportAndWorkPlanGeneratedID(isPreliminaryReport: Int, workPlanGeneratedID: Long): List<MsInspectionInvestigationReportEntity>?
+//    fun findByWorkPlanGeneratedID(workPlanGeneratedID: Long):MsInspectionInvestigationReportEntity?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }

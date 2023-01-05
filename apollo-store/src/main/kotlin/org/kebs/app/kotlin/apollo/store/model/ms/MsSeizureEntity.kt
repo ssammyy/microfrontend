@@ -12,7 +12,7 @@ class MsSeizureEntity : Serializable {
     @SequenceGenerator(name = "DAT_MS_SEIZURE_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_MS_SEIZURE_SEQ")
     @GeneratedValue(generator = "DAT_MS_SEIZURE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long? = null
+    var id: Long = 0
 
     @Basic
     @Column(name = "MARKET_TOWN_CENTER")

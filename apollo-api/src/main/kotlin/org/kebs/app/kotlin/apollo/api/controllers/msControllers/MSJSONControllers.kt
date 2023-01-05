@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.springframework.core.io.ResourceLoader
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -37,8 +38,10 @@ class MSJSONControllers(
     private val commonDaoServices: CommonDaoServices,
     private val reportsDaoService: ReportsDaoService,
     private val investInspectReportRepo: IMSInvestInspectReportRepository,
+    private val msUploadRepo: IMsUploadsRepository,
     private val marketSurveillanceDaoComplaintServices: MarketSurveillanceComplaintProcessDaoServices,
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
+    private val seizureDeclarationRepo: IMsSeizureRepository,
     private val msFuelDaoService: MarketSurveillanceFuelDaoServices,
     private val usersSignatureRepository: UserSignatureRepository,
     private val limsServices: LimsServices,
@@ -121,7 +124,7 @@ class MSJSONControllers(
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        val fieldReport =  msWorkPlanDaoService.findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduled.id)?: throw ExpectedDataNotFound("Missing Filed report Not filled")
+        val fieldReport =  msWorkPlanDaoService.findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduled.id, map.inactiveStatus)?: throw ExpectedDataNotFound("Missing Filed report Not filled")
         val gson = Gson()
         val body = gson.fromJson(data, FieldReportAdditionalInfo::class.java)
         val stringData = commonDaoServices.convertClassToJson(body)
@@ -289,7 +292,7 @@ class MSJSONControllers(
         @RequestParam("referenceNo") referenceNo: String,
         @RequestParam("batchReferenceNo") batchReferenceNo: String,
         @RequestParam("data") data: String,
-        @RequestParam("docFile") docFile: MultipartFile,
+        @RequestParam("docFile") docFile: MultipartFile?,
         model: Model
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -299,15 +302,27 @@ class MSJSONControllers(
         val gson = Gson()
         val body = gson.fromJson(data, SeizureListDto::class.java)
 
-        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"SEIZURE AND DECLARATION",workPlanScheduled)
+        if (docFile!=null) {
+            body.docID?.let { msUploadRepo.deleteById(it) }
+        }
+
+        val fileDoc = docFile?.let { msWorkPlanDaoService.saveOnsiteUploadFiles(it,map,loggedInUser,"SEIZURE AND DECLARATION",workPlanScheduled) }
 
         with(body){
-            docID = fileDoc.second.id
+            docID = fileDoc?.second?.id
         }
 
         val mainSized = msWorkPlanDaoService.workPlanInspectionDetailsAddMainSeizure(body, workPlanScheduled, map, loggedInUser)
         when (mainSized.first.status) {
             map.successStatus -> {
+                val paramList = msWorkPlanDaoService.findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduled.id,mainSized.second.id)
+                paramList?.forEach { paramRemove->
+                    val result: SeizureDto? = body.seizureList?.find { actor -> actor.id==paramRemove.id }
+                    if (result == null) {
+                        seizureDeclarationRepo.deleteById(paramRemove.id)
+                    }
+                }
+
                 body.seizureList?.forEach { body2->
                     body2.mainSeizureID = mainSized.second.id
                     msWorkPlanDaoService.workPlanInspectionDetailsAddSeizureDeclaration(body2, workPlanScheduled, map, loggedInUser)
