@@ -124,7 +124,7 @@ class MSJSONControllers(
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        val fieldReport =  msWorkPlanDaoService.findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduled.id)?: throw ExpectedDataNotFound("Missing Filed report Not filled")
+        val fieldReport =  msWorkPlanDaoService.findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduled.id, map.inactiveStatus)?: throw ExpectedDataNotFound("Missing Filed report Not filled")
         val gson = Gson()
         val body = gson.fromJson(data, FieldReportAdditionalInfo::class.java)
         val stringData = commonDaoServices.convertClassToJson(body)

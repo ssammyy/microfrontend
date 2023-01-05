@@ -42,6 +42,10 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var product: Long? = null
 
+  @Column(name = "LATEST_PRELIMINARY_REPORT")
+  @Basic
+  var latestPreliminaryReport: Long? = null
+
   @Column(name = "PRODUCT_STRING")
   @Basic
   var productString: String? = null

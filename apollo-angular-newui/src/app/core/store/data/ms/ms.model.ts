@@ -612,6 +612,8 @@ export class InspectionInvestigationReportDto {
     remarks: string;
     additionalInformation: FieldReportAdditionalInfo;
     additionalInformationStatus: boolean;
+    bsNumbersList: string[];
+    version: number;
 }
 
 export class FieldReportAdditionalInfo {
@@ -828,6 +830,7 @@ export class WorkPlanInspectionDto {
     chargeSheet: ChargeSheetDto;
     seizureDeclarationDto: SeizureListDto[];
     inspectionInvestigationDto: InspectionInvestigationReportDto;
+    preliminaryReportListDto: InspectionInvestigationReportDto[];
     dataReportDto: DataReportDto[];
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto[];
@@ -852,6 +855,7 @@ export class WorkPlanInspectionDto {
     batchRefNumber: string;
     totalComplianceValue: string;
     currentDate: Date;
+    latestPreliminaryReport: number;
 }
 
 export class CountryListDto {
@@ -1003,6 +1007,10 @@ export class DataInspectorInvestDto {
     inspectorName: string;
     institution: string;
     designation: string;
+}
+
+export class BSNumberDto {
+    bsNumber: string;
 }
 
 export class TeamsFuelSaveDto {

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
-  ApprovalDto,
+  ApprovalDto, BSNumberDto,
   BSNumberSaveDto,
   ChargeSheetDto,
   ComplaintAssignDto, ComplaintsFilesFoundDto,
@@ -147,6 +147,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveActionOnSiezedGoods: FieldReportBackDto;
   dataSaveActionOnSiezedGoodsList: FieldReportBackDto[] = [];
   dataSaveDataInspectorInvestList: DataInspectorInvestDto[] = [];
+  dataSaveBsNumber: string[] = [];
   dataSaveDataReportParamList: DataReportParamsDto[] = [];
   dataSaveDataReportParam: DataReportParamsDto;
   dataSaveDataInspectorInvest: DataInspectorInvestDto;
@@ -2356,10 +2357,16 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updatePreliminaryReport() {
-    if (!this.workPlanInspection?.msPreliminaryReportStatus ) {
+    if (this.workPlanInspection?.investInspectReportStatus &&  this.workPlanInspection?.onsiteEndStatus === false) {
+      this.investInspectReportForm.patchValue(this.workPlanInspection?.inspectionInvestigationDto);
       this.dataSaveDataInspectorInvestList = [];
       for (let prod = 0; prod < this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors.length; prod++) {
         this.dataSaveDataInspectorInvestList.push(this.workPlanInspection?.inspectionInvestigationDto?.kebsInspectors[prod]);
+      }
+
+      this.dataSaveBsNumber = [];
+      for (let prod = 0; prod < this.workPlanInspection?.sampleSubmitted.length; prod++) {
+        this.dataSaveBsNumber.push(this.workPlanInspection?.sampleSubmitted[prod].bsNumber);
       }
     }
   }
@@ -4271,6 +4278,48 @@ export class WorkPlanDetailsComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('FIELD REPORT DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    } else if (this.investInspectReportForm.invalid) {
+      this.msService.showError('KINDLY FILL IN THE FIELDS REQUIRED');
+    }
+  }
+
+  onClickSavePreliminaryReportWhichWasDataReport() {
+    this.submitted = true;
+    if (this.investInspectReportForm.valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'ADD/UPDATE PROGRESS REPORT\' button to update details Before Saving', 'FIELD REPORT DETAILS SAVED SUCCESSFUL', () => {
+            this.savePreliminaryReportWhichWasDataReport();
+          });
+    }
+  }
+
+  savePreliminaryReportWhichWasDataReport() {
+    this.submitted = true;
+
+    if (this.investInspectReportForm.valid) {
+      this.SpinnerService.show();
+      this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
+      this.dataSaveInvestInspectReport.kebsInspectors = this.dataSaveDataInspectorInvestList;
+      this.dataSaveInvestInspectReport.bsNumbersList = this.dataSaveBsNumber;
+      this.msService.msWorkPlanScheduleSavePreliminaryReportData(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveInvestInspectReport,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('PROGRESS REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

@@ -265,6 +265,7 @@ data class WorkPlanInspectionDto(
         var chargeSheet: ChargeSheetDto? = null,
         var seizureDeclarationDto: List<SeizureListDto>? = null,
         var inspectionInvestigationDto: InspectionInvestigationReportDto? = null,
+        var preliminaryReportListDto: List<InspectionInvestigationReportDto>? = null,
         var dataReportDto: List<DataReportDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: List<SampleSubmissionDto>? = null,
@@ -289,6 +290,7 @@ data class WorkPlanInspectionDto(
         var batchRefNumber: String? = null,
         var totalComplianceValue: String? = null,
         var currentDate : Date? = null,
+        var latestPreliminaryReport : Long? = null,
 )
 
 data class FuelEntityDto(
@@ -586,6 +588,8 @@ data class InspectionInvestigationReportDto(
         var remarks: String? = null,
         var additionalInformation: FieldReportAdditionalInfo? = null,
         var additionalInformationStatus: Boolean,
+        var bsNumbersList: List<String>? = null,
+        var version: Int? = null,
 )
 
 data class KebsOfficersName (
