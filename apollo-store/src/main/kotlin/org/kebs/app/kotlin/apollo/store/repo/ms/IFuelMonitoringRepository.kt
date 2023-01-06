@@ -166,6 +166,7 @@ interface IMSSampleSubmissionRepository : HazelcastRepository<MsSampleSubmission
     fun findByWorkPlanGeneratedIDAndId(workPlanGeneratedID: Long,id: Long): MsSampleSubmissionEntity
 
     fun findByMsFuelInspectionId(msFuelInspectionId: Long): List<MsSampleSubmissionEntity>?
+    fun findByBsNumber(bsNumber: String): MsSampleSubmissionEntity?
     fun findAllById(id: Long): List<MsSampleSubmissionEntity>?
 
     fun findBySampleCollectionNumber(sampleCollectionNumber: Long): MsSampleSubmissionEntity?

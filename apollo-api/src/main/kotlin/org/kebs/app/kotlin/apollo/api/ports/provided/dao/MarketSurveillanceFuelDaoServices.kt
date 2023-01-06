@@ -2165,7 +2165,7 @@ class MarketSurveillanceFuelDaoServices(
             with(saveSSF) {
                 complianceRemarks = body.complianceRemarks
                 analysisDone = map.activeStatus
-                resultsAnalysis = when {body.complianceStatus -> { 1 }else -> { 0 } }
+                resultsAnalysis = when {body.complianceStatus -> {1}else -> {0}}
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }

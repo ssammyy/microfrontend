@@ -6840,10 +6840,10 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <mat-form-field class="example-full-width">
+<!--                                        <mat-form-field class="example-full-width">-->
                                             <input id="totalComplianceTest#" matInput type="text" formControlName="totalCompliance" name="totalCompliance"
-                                                   ngModel="{{totalComplianceValue}}"    hidden >
-                                        </mat-form-field>
+                                                   ngModel="{{totalComplianceValue}}" [hidden]="true" >
+<!--                                        </mat-form-field>-->
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
                                         <mat-form-field id="complianceStatusSSF4">
                                             <mat-select placeholder="Please Select an option"
@@ -6978,7 +6978,6 @@
                     <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"
                             [disabled]="!pdfSaveComplianceStatusForm.valid"
-                            data-dismiss="modal" data-toggle="modal"
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"

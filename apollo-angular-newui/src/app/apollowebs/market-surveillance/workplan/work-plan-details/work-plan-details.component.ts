@@ -70,6 +70,8 @@ interface Post {
 })
 export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('demoForm') myForm;
+  @ViewChild('closebutton') closebutton;
+
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
   active: Number = 0;
@@ -1555,7 +1557,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.currentDateDetails = new Date();
 
-    console.log('currentdate'+ this.currentDateDetails);
+    console.log('currentdate' + this.currentDateDetails);
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       this.userLoggedInID = u.id;
@@ -2533,7 +2535,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   viewSSFLabResultsRecord(data: SampleSubmissionDto) {
-
+    this.selectedSSFDetails = data;
     this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === data.bsNumber);
 
     window.$('#myModal2').modal('hide');
@@ -3630,8 +3632,11 @@ export class WorkPlanDetailsComponent implements OnInit {
           `You can click \'ADD BS NUMBER\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveBSNumber(valid);
           });
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
     }
   }
+
 
   saveBSNumber(valid: boolean) {
     if (valid) {
@@ -3655,7 +3660,21 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+
   onClickSavePDFSelected(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the PDF?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SAVE PDF\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.savePDFSelected(valid);
+          });
+    } else {
+      this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+    }
+  }
+
+  savePDFSelected(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataPDFSaveComplianceStatus = {...this.dataPDFSaveComplianceStatus, ...this.pdfSaveComplianceStatusForm.value};
@@ -3667,9 +3686,20 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
             (data: any) => {
               this.workPlanInspection = data;
+              // tslint:disable-next-line:max-line-length
+              this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+              this.pdfSaveComplianceStatusForm.reset();
               console.log(data);
               this.SpinnerService.hide();
               this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
+              window.$('#myModal2').modal('hide');
+              // window.$('.modal').remove();
+              window.$('body').removeClass('modal-open');
+              window.$('.modal-backdrop').remove();
+              window.$('#sampleLabResultsModal').modal('hide');
+              this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+                this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+              });
             },
             error => {
               this.SpinnerService.hide();
@@ -3678,27 +3708,49 @@ export class WorkPlanDetailsComponent implements OnInit {
             },
         );
       } else {
-        for (const savedPdf of this.selectedLabResults.savedPDFFiles) {
-          if (savedPdf.pdfName !== this.selectedPDFFileName) {
-            this.msService.msWorkPlanInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
-                this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
-                (data: any) => {
-                  this.workPlanInspection = data;
-                  console.log(data);
-                  this.SpinnerService.hide();
-                  this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY');
-                },
-                error => {
-                  this.SpinnerService.hide();
-                  console.log(error);
-                  this.msService.showError('AN ERROR OCCURRED');
-                },
-            );
-          } else {
-            this.SpinnerService.hide();
-            this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved');
-          }
+        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf.pdfName === this.selectedPDFFileName);
+        if (savedPdf === null) {
+          this.msService.msWorkPlanInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
+              this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
+              (data: any) => {
+                this.workPlanInspection = data;
+                // tslint:disable-next-line:max-line-length
+                this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+                this.pdfSaveComplianceStatusForm.reset();
+                console.log(data);
+                this.SpinnerService.hide();
+                window.$('#myModal2').modal('hide');
+                // window.$('.modal').remove();
+                window.$('body').removeClass('modal-open');
+                window.$('.modal-backdrop').remove();
+                window.$('#sampleLabResultsModal').modal('hide');
+                this.msService.showSuccess('PDF LIMS SAVED SUCCESSFULLY', () => {
+                  this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+                });
+              },
+              error => {
+                this.SpinnerService.hide();
+                console.log(error);
+                this.msService.showError('AN ERROR OCCURRED');
+              },
+          );
+        } else {
+          // tslint:disable-next-line:max-line-length
+          this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === this.dataPDFSaveComplianceStatus.bsNumber);
+          this.pdfSaveComplianceStatusForm.reset();
+          window.$('#myModal2').modal('hide');
+          window.$('#sampleLabResultsModal').modal('hide');
+          // window.$('.modal').remove();
+          window.$('body').removeClass('modal-open');
+          window.$('.modal-backdrop').remove();
+          this.SpinnerService.hide();
+          this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved',
+              () => {
+                this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+              });
+          // window.$('#sampleLabResultsModal').modal('show');
         }
+
       }
     }
   }
@@ -3737,7 +3789,9 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
           },
           error => {
             this.SpinnerService.hide();
@@ -4324,8 +4378,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
           this.workPlanInspection.currentDate = new Date();
-          console.log('currentdate'+ this.workPlanInspection.currentDate);
-          this.uploadedFilesSeizedGoods = null
+          console.log('currentdate' + this.workPlanInspection.currentDate);
+          this.uploadedFilesSeizedGoods = null;
           this.seizureForm.reset();
           this.myForm.reset();
           this.dataSaveSeizureDeclarationList = [];

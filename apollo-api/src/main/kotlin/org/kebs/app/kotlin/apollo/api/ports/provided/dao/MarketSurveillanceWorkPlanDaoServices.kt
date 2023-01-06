@@ -2740,31 +2740,36 @@ class MarketSurveillanceWorkPlanDaoServices(
             ?.let {
                 throw ExpectedDataNotFound("BS NUMBER ALREADY EXIST")
             } ?: kotlin.run {
-            with(sampleSubmission){
-                bsNumber = body.bsNumber
-                sampleReferences = body.bsNumber
-                sampleBsNumberDate = body.submittedDate
-                sampleBsNumberRemarks = body.remarks
-                labResultsStatus = map.inactiveStatus
-            }
-            val updatedSampleSubmission = msFuelDaoServices.sampleSubmissionUpdateDetails(sampleSubmission,map, loggedInUser)
-            val remarksDto = RemarksToAddDto()
-            with(remarksDto){
-                remarksDescription= body.remarks
-                remarksStatus= "N/A"
-                processID = workPlanScheduled.msProcessId
-                userId= loggedInUser.id
-            }
-
-            if (updatedSampleSubmission.first.status == map.successStatus) {
-                val remarksSaved = workPlanAddRemarksDetails(workPlanScheduled.id,remarksDto, map, loggedInUser)
-                if (remarksSaved.first.status == map.successStatus) {
-                    return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
-                } else {
-                    throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
+            sampleSubmitRepo.findByBsNumber(body.bsNumber.uppercase())
+                ?.let {
+                    throw ExpectedDataNotFound("BS NUMBER ALREADY EXIST")
+                } ?: kotlin.run {
+                with(sampleSubmission){
+                    bsNumber = body.bsNumber
+                    sampleReferences = body.bsNumber
+                    sampleBsNumberDate = body.submittedDate
+                    sampleBsNumberRemarks = body.remarks
+                    labResultsStatus = map.inactiveStatus
                 }
-            } else {
-                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(updatedSampleSubmission.first))
+                val updatedSampleSubmission = msFuelDaoServices.sampleSubmissionUpdateDetails(sampleSubmission,map, loggedInUser)
+                val remarksDto = RemarksToAddDto()
+                with(remarksDto){
+                    remarksDescription= body.remarks
+                    remarksStatus= "N/A"
+                    processID = workPlanScheduled.msProcessId
+                    userId= loggedInUser.id
+                }
+
+                if (updatedSampleSubmission.first.status == map.successStatus) {
+                    val remarksSaved = workPlanAddRemarksDetails(workPlanScheduled.id,remarksDto, map, loggedInUser)
+                    if (remarksSaved.first.status == map.successStatus) {
+                        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+                    } else {
+                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(remarksSaved.first))
+                    }
+                } else {
+                    throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(updatedSampleSubmission.first))
+                }
             }
         }
 
@@ -2874,7 +2879,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val savedSSfComplianceStatus = msFuelDaoServices.ssfLabUpdateDetails(body,loggedInUser,map)
 
