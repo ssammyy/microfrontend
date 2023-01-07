@@ -130,6 +130,12 @@ class FuelScheduledLabResultsDTO {
 
     var commentRemarks: String? = null
 
+    var failedResults: String? = null
+
+    var sourceProductEvidence: String? = null
+
+    var standardName: String? = null
+
     var compliantDetails: SSFCompliantStatusDto? = null
 
     var dateSubmitted: Date? = null

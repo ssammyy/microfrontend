@@ -27,7 +27,7 @@ import {
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
   SeizureDeclarationDto, SeizureDto, SeizureListDto,
-  SSFSaveComplianceStatusDto,
+  SSFSaveComplianceStatusDto, SSFSendingComplianceStatus,
   WorkPlanEntityDto,
   WorkPlanFeedBackDto,
   WorkPlanFinalRecommendationDto,
@@ -90,6 +90,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
+  latestProgressReport: InspectionInvestigationReportDto;
   selectedSFFDetails: SampleSubmissionDto;
   selectedSeizedDetails: SeizureListDto;
   selectedPreliminaryReportDetails: InspectionInvestigationReportDto;
@@ -123,6 +124,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   investInspectReportInspectorsForm!: FormGroup;
   actionOnSiezedGoodsForm!: FormGroup;
   clientEmailNotificationForm!: FormGroup;
+  ssfClientEmailNotificationForm!: FormGroup;
   // chargeSheetForm!: FormGroup;
 
   assignOfficerForm!: FormGroup;
@@ -184,6 +186,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveSampleSubmitBSNumber: BSNumberSaveDto;
   dataPDFSaveComplianceStatus: PDFSaveComplianceStatusDto;
   dataSSFSaveComplianceStatus: SSFSaveComplianceStatusDto;
+  dataSSFSendComplianceStatus: SSFSendingComplianceStatus;
   dataSaveScheduleRemediation: CompliantRemediationDto;
   dataSaveNotCompliantInvoice: CompliantRemediationDto;
   dataSaveRemediation: RemediationDto;
@@ -1580,6 +1583,15 @@ export class WorkPlanDetailsComponent implements OnInit {
       remarks: null,
     });
 
+    this.ssfClientEmailNotificationForm = this.formBuilder.group({
+      ssfID: null,
+      failedParameters: ['', Validators.required],
+      outLetEmail: ['', Validators.required],
+      manufactureEmail: ['', Validators.required],
+      complainantEmail: null,
+      remarks: null,
+    });
+
     this.approveScheduleForm = this.formBuilder.group({
       approvalStatus: ['', Validators.required],
       remarks: ['', Validators.required],
@@ -1793,7 +1805,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.sampleSubmitBSNumberForm = this.formBuilder.group({
       bsNumber: ['', Validators.required],
-      ssfID: ['', Validators.required],
+      ssfID: null,
       submittedDate: ['', Validators.required],
       remarks: ['', Validators.required],
     });
@@ -1806,7 +1818,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.ssfSaveComplianceStatusForm = this.formBuilder.group({
       complianceStatus: ['', Validators.required],
       complianceRemarks: ['', Validators.required],
-      totalCompliance: ['', Validators.required],
+      totalCompliance: null,
+      totalComplianceTest: null,
     });
 
     this.verificationPermitForm = this.formBuilder.group({
@@ -2131,6 +2144,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.clientEmailNotificationForm.controls;
   }
 
+  get formSSFClientEmailNotificationForm(): any {
+    return this.ssfClientEmailNotificationForm.controls;
+  }
+
   get formFinalRemarkHODForm(): any {
     return this.finalRemarkHODForm.controls;
   }
@@ -2340,7 +2357,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
-      'addNewScheduleDetails', 'openSampleSubmitModal'];
+      'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2348,7 +2365,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
-      'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal'];
+      'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -2372,12 +2389,17 @@ export class WorkPlanDetailsComponent implements OnInit {
           complianceLabs++;
         }
       }
-
+      this.ssfSaveComplianceStatusForm.controls.totalComplianceTest.disable();
       this.totalComplianceValue = (complianceLabs / totalCount) * 100;
     }
 
     if (divVal === 'createPreliminary') {
       this.updatePreliminaryReport();
+    }
+
+    if (divVal === 'updateHOFHODPreliminary') {
+      this.updatePreliminaryReportHOFHODIO();
+      console.log(divVal);
     }
 
     this.updateFieldReport();
@@ -2414,6 +2436,24 @@ export class WorkPlanDetailsComponent implements OnInit {
       for (let prod = 0; prod < this.workPlanInspection?.preliminaryReportFinal?.parametersList.length; prod++) {
         this.dataSavePreliminaryReportParamList.push(this.workPlanInspection?.preliminaryReportFinal?.parametersList[prod]);
       }
+    }
+  }
+
+  updatePreliminaryReportHOFHODIO() {
+    if (this.workPlanInspection?.msPreliminaryReportStatus) {
+      this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport)
+      this.investInspectReportForm.patchValue(this.selectedPreliminaryReportDetails);
+      this.dataSaveDataInspectorInvestList = [];
+      for (let prod = 0; prod < this.selectedPreliminaryReportDetails?.kebsInspectors.length; prod++) {
+        this.dataSaveDataInspectorInvestList.push(this.selectedPreliminaryReportDetails?.kebsInspectors[prod]);
+      }
+
+      this.dataSaveBsNumber = [];
+      for (let prod = 0; prod < this.selectedPreliminaryReportDetails.bsNumbersList.length; prod++) {
+        this.dataSaveBsNumber.push(this.selectedPreliminaryReportDetails.bsNumbersList[prod]);
+      }
+
+      console.log(this.selectedPreliminaryReportDetails)
     }
   }
 
@@ -2543,6 +2583,40 @@ export class WorkPlanDetailsComponent implements OnInit {
     window.$('body').removeClass('modal-open');
     window.$('.modal-backdrop').remove();
     window.$('#sampleLabResultsModal').modal('show');
+  }
+
+  closeSSFLabResultsRecord() {
+    window.$('#myModal2').modal('hide');
+    window.$('#sampleLabResultsModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+  }
+
+  closePopUpsModal3() {
+    window.$('#myModal3').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#dataReportModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#dataReportModal').modal('show');
+    }, 500);
+  }
+
+  closePopUpsModal2() {
+    window.$('#myModal2').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#sampleLabResultsModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#sampleLabResultsModal').modal('show');
+    }, 500);
   }
 
   addSSFBsNumberRecord(data: SampleSubmissionDto) {
@@ -3773,6 +3847,47 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickSendSSFLabResultsComplianceStatus(valid: boolean) {
+    this.submitted = true;
+    if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Send the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SEND RESULTS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+            this.sendSSFLabResultsComplianceStatus(valid);
+          });
+    }
+  }
+
+  sendSSFLabResultsComplianceStatus(valid: boolean) {
+    if (valid) {
+      this.SpinnerService.show();
+      this.dataSSFSendComplianceStatus = {...this.dataSSFSendComplianceStatus, ...this.ssfClientEmailNotificationForm.value};
+      this.dataSSFSendComplianceStatus.ssfID = this.selectedLabResults?.ssfResultsList?.sffId;
+      // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+      this.msService.msWorkPlanInspectionScheduledSendSSFComplianceStatus(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSSFSendComplianceStatus,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.closeSSFLabResultsRecord();
+            this.msService.showSuccess('SSF LAB RESULTS SENT SUCCESSFULLY', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+
   saveSSFLabResultsComplianceStatus(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
@@ -3789,6 +3904,8 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
+            this.ssfSaveComplianceStatusForm.reset();
+            this.closeSSFLabResultsRecord();
             this.msService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
               this.viewSSFLabResultsRecord(this.selectedSSFDetails);
             });
@@ -3911,14 +4028,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   viewPreliminaryReportDetails(data: InspectionInvestigationReportDto) {
     this.seizureForm.patchValue(data);
     this.selectedPreliminaryReportDetails = data;
-    // const paramDetails = data.seizureList;
-    // this.dataSaveSeizureDeclarationList = [];
-    // for (let i = 0; i < paramDetails.length; i++) {
-    //   this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
-    // }
-    // this.seizureForm.disable();
-    // this.addSeizureProductsStatus = false;
-    // window.$('#seizureDeclarationModal').modal('show');
+
+    window.$('#msProgressReportViewModal').modal('show');
   }
 
   updatePreliminaryReportDetails(data: InspectionInvestigationReportDto) {
@@ -4097,7 +4208,7 @@ export class WorkPlanDetailsComponent implements OnInit {
               this.currDiv = 'verificationPermitDetails';
               this.verificationPermitForm.disabled;
 
-              window.$('#myModal2').modal('show');
+              window.$('#myModal3').modal('show');
 
               // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
             },
@@ -4456,6 +4567,17 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickUpdateHODHOFPreliminaryReportWhichWasDataReport() {
+    this.submitted = true;
+    if (this.investInspectReportForm.valid) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Update the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'UPDATE PROGRESS REPORT\' button to update details Before Saving', 'FIELD REPORT DETAILS SAVED SUCCESSFUL', () => {
+            this.updatePreliminaryReportWhichWasDataReport();
+          });
+    }
+  }
+
   savePreliminaryReportWhichWasDataReport() {
     this.submitted = true;
 
@@ -4474,6 +4596,37 @@ export class WorkPlanDetailsComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('PROGRESS REPORT DETAILS SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+
+    } else if (this.investInspectReportForm.invalid) {
+      this.msService.showError('KINDLY FILL IN THE FIELDS REQUIRED');
+    }
+  }
+
+  updatePreliminaryReportWhichWasDataReport() {
+    this.submitted = true;
+
+    if (this.investInspectReportForm.valid) {
+      this.SpinnerService.show();
+      this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
+      this.dataSaveInvestInspectReport.kebsInspectors = this.dataSaveDataInspectorInvestList;
+      this.dataSaveInvestInspectReport.bsNumbersList = this.dataSaveBsNumber;
+      this.msService.msWorkPlanScheduleUpdatePreliminaryReportData(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSaveInvestInspectReport,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.msService.showSuccess('PROGRESS REPORT DETAILS UPDATED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

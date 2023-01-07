@@ -850,6 +850,7 @@ export class WorkPlanInspectionDto {
     recommendationDoneStatus: Boolean;
     bsNumberCountAdded: number;
     analysisLabCountDone: number;
+    analysisLabCountDoneAndSent: number;
     productListRecommendationAddedCount: number;
     productList: WorkPlanProductDto[];
     batchRefNumber: string;
@@ -1287,6 +1288,15 @@ export class MSSSFComplianceStatusDetailsDto {
     complianceRemarks: string;
     complianceStatus: boolean;
     analysisDone: boolean;
+    resultsSent: boolean;
+}
+
+export class SSFSendingComplianceStatus {
+    ssfID: number;
+    failedParameters: string;
+    outLetEmail: string;
+    manufactureEmail: string;
+    complainantEmail: string;
 }
 
 export class FuelRemediationDto {

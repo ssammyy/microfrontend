@@ -633,7 +633,7 @@
                                                     <div>
                                                         <div class="material-datatables">
                                                             <div class="table-responsive">
-                                                                <table id="datatablesInspector7s89"  class="table table-striped table-bordered table-hover">
+                                                                <table id="datatablesInspgfector7s89"  class="table table-striped table-bordered table-hover">
                                                                     <tbody>
                                                                     <tr *ngFor="let r of workPlanInspection?.inspectionInvestigationDto?.additionalInformation?.actionOnSeizedGoods; let i=index">
                                                                         <td style="font-size: 11px">{{r.actionOnSeizedGoodsDetails}}</td>
@@ -672,165 +672,11 @@
                                             MS PROGRESS REPORT
                                         </ng-template>
                                         <label style="color: #0082f3">MS PROGRESS REPORT DETAILS LIST</label>
-                                        <div *ngIf="workPlanInspection?.msPreliminaryReportStatus == false && workPlanInspection?.onsiteEndStatus" class="table-striped table-condensed table-responsive">
+                                        <div *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.onsiteEndStatus" class="table-striped table-condensed table-responsive">
                                             <ng2-smart-table  [settings]="settingsPreliminaryReport"
                                                               [source]="workPlanInspection?.preliminaryReportListDto"
                                                               (custom)="onCustomPreliminaryReportAction($event)"
                                             ></ng2-smart-table>
-                                        </div>
-                                        <label style="color: #0082f3">MS PROGRESS REPORT DETAILS LIST</label>
-                                        <div class="panel" style="max-height: 388px;">
-                                            <br>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Report reference</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportReference}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">To</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportTo}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Through</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportThrough}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">From</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportFrom}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Subject</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportSubject}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Title</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportTitle}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Date</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportDate| date}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Region</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportRegion}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Department</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportDepartment}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Function</div>
-                                                    <div class="list-text-accordion">
-                                                        {{selectedPreliminaryReportDetails?.reportFunction}}</div>
-                                                </li>
-                                                <br/>
-                                                <b class="text-secondary">Background Information</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.backgroundInformation}}</span></p>
-                                                <br/>
-                                                <b class="text-secondary">Objective of the Investigation</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.objectiveInvestigation}}</span></p>
-                                                <br/>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Date of Investigation/Inspection</div>
-                                                    <div class="list-text-accordion">{{selectedPreliminaryReportDetails?.dateInvestigationInspection}}</div>
-                                                </li>
-                                                <br/>
-                                                <div class="form-row">
-                                                    <div class="col-md-12 mb-3">
-                                                        <label class="text-secondary">KEBS Inspectors</label>
-                                                    </div>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="selectedPreliminaryReportDetails?.kebsInspectors"></ng2-smart-table>
-                                                    </div>
-                                                </div>
-                                                <br/>
-                                                <b class="text-secondary">Methodology Employed</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.methodologyEmployed}}</span></p>
-                                                <br/>
-                                                <b class="text-secondary">Findings</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.findings}}</span></p>
-                                                <br/>
-                                                <b class="text-secondary">Conclusion</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.conclusion}}</span></p>
-                                                <br/>
-                                                <b class="text-secondary">Recommendations</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.recommendations}}</span></p>
-                                                <br/>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Status Activity</div>
-                                                    <div class="list-text-accordion">{{selectedPreliminaryReportDetails?.statusActivity}}</div>
-                                                </li>
-                                                <b class="text-secondary" style="font-size: 12px">Bs Numbers</b>
-                                                <div>
-                                                    <div class="material-datatables">
-                                                        <div class="table-responsive">
-                                                            <table id="datatablesInspector7s89"  class="table table-striped table-bordered table-hover">
-                                                                <tbody>
-                                                                <tr *ngFor="let r of selectedPreliminaryReportDetails?.bsNumbersList; let i=index">
-                                                                    <td style="font-size: 11px">{{r}}</td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <br/>
-                                                <div *ngIf="selectedPreliminaryReportDetails?.additionalInformationStatus">
-                                                    <b class="text-secondary">Additional Information</b>
-                                                    <br/>
-                                                    <b class="text-secondary" style="font-size: 12px">a.Performance of test sample</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.performanceOnTestSamples}}</span></p>
-                                                    <b class="text-secondary" style="font-size: 12px">b.Action on seized goods</b>
-                                                    <div>
-                                                        <div class="material-datatables">
-                                                            <div class="table-responsive">
-                                                                <table id="datatablesInspector7s89"  class="table table-striped table-bordered table-hover">
-                                                                    <tbody>
-                                                                    <tr *ngFor="let r of selectedPreliminaryReportDetails?.additionalInformation?.actionOnSeizedGoods; let i=index">
-                                                                        <td style="font-size: 11px">{{r.actionOnSeizedGoodsDetails}}</td>
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <br/>
-                                                    <b class="text-secondary" style="font-size: 12px">Remarks</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.actionOnSeizedGoodsRemarks}}</span></p>
-                                                    <b class="text-secondary" style="font-size: 12px">c.Actions on recommendations given</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.actionsOnRecommendationGiven}}</span></p>
-                                                    <b class="text-secondary" style="font-size: 12px">d.Follow-up activities</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.followUpActivities}}</span></p>
-                                                    <b class="text-secondary" style="font-size: 12px">e.Others</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.others}}</span></p>
-                                                </div>
-
-
-
-                                            </ul>
-                                            <button mat-raised-button type="button"  class="btn btn-success"
-                                                    (click)="viewFieldReportPdfFile(workPlanInspection?.id, selectedPreliminaryReportDetails?.reportReference,'application/pdf')">Download</button>
-                                            <br>
                                         </div>
                                     </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.dataReportDto?.length!=0" label="16">
@@ -856,92 +702,6 @@
                                                                  (custom)="onCustomDataReportAction($event)"
                                                 ></ng2-smart-table>
                                             </div>
-                                        </div>
-                                    </mat-tab>
-                                    <mat-tab *ngIf="workPlanInspection?.preliminaryReport" label="17">
-                                        <!--                                    <mat-tab  label="6">-->
-                                        <ng-template mat-tab-label>
-                                            PROGRESS REPORT
-                                        </ng-template>
-                                        <!--                                        <b class="text-primary">Lab Results Details</b>-->
-                                        <label style="color: #0082f3">Progress Report Details</label>
-                                        <div class="panel" style="max-height: 388px;">
-                                            <br>
-                                            <ul class="w-list-unstyled">
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">TO</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.reportTo}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">FROM</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.reportFrom}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">SUBJECT</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.reportSubject}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">TITLE</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.reportTitle}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">DATE</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.reportDate}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">SURVEILLANCE DATE FROM</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.surveillanceDateFrom}}</div>
-                                                </li>
-                                                <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">SURVEILLANCE DATE TO</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.surveillanceDateTo}}</div>
-                                                </li>
-                                                <br/>
-                                                <b class="text-secondary">BACKGROUND DETAILS</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{workPlanInspection?.preliminaryReport?.reportBackground}}</span></p>
-                                                <br/>
-                                                <b class="text-secondary">OBJECTIVES DETAILS</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{workPlanInspection?.preliminaryReport?.surveillanceObjective}}</span></p>
-                                                <br/>
-                                                <li *ngIf="workPlanInspection?.preliminaryReport?.surveillanceConclusions != null" class="list-item-accordion">
-                                                    <div class="list-title-accordion">CONCLUSIONS DETAILS</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.surveillanceConclusions}}</div>
-                                                </li>
-                                                <li *ngIf="workPlanInspection?.preliminaryReport?.surveillanceRecommendation != null" class="list-item-accordion">
-                                                    <div class="list-title-accordion">RECOMMENDATIONS DETAILS</div>
-                                                    <div class="list-text-accordion">
-                                                        {{workPlanInspection?.preliminaryReport?.surveillanceRecommendation}}</div>
-                                                </li>
-                                            </ul>
-                                            <div class="form-row">
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Officers Details</label>
-                                                </div>
-                                                <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="workPlanInspection?.preliminaryReport?.kebsOfficersName"></ng2-smart-table>
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Outlets visited Details</label>
-                                                </div>
-                                                <div class="table-striped table-condensed table-responsive">
-                                                    <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"
-                                                                     [source]="workPlanInspection?.preliminaryReport?.parametersList"
-                                                    ></ng2-smart-table>
-                                                </div>
-                                            </div>
-                                            <br>
                                         </div>
                                     </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.preliminaryReportFinal && workPlanInspection?.finalReportGenerated" label="18">
@@ -1436,7 +1196,8 @@
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.sampleSubmittedStatus && this.workPlanInspection?.compliantStatusAdded == false
-                                                    && this.workPlanInspection?.analysisLabCountDone == this.workPlanInspection?.sampleSubmitted.length"
+                                                    && this.workPlanInspection?.analysisLabCountDone == this.workPlanInspection?.sampleSubmitted.length
+                                                    && this.workPlanInspection?.analysisLabCountDoneAndSent == this.workPlanInspection?.sampleSubmitted.length"
                                                     (click)="openModalAddDetails('finalLabComplianceStatus')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#myModal1"
                                                     class="btn btn-sm btn-primary mr-2"><span
@@ -1549,6 +1310,16 @@
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">RE-ASSIGN IO</span>
 
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatus == false && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+                                                    (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus == false
@@ -2098,7 +1869,6 @@
                             </div>
                         </form>
                     </div>
-
                     <div *ngIf="(currDiv == 'pdfSaveCompliance')">
                         <form [formGroup]="pdfSaveComplianceStatusForm" class="form">
                             <div class="form-body">
@@ -2158,10 +1928,11 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="complianceStatusSSF"><b>Final Compliance %</b></label>
+                                        <label for="totalCompliance"><b>Final Compliance %</b></label>
+                                        <input id="totalCompliance" type="hidden" formControlName="totalCompliance" name="totalCompliance" ngModel="{{totalComplianceValue| number : '1.2-2'}}">
                                         <mat-form-field class="example-full-width">
-                                            <input id="totalCompliancetes" matInput type="text" placeholder="Please Enter final Total Compliance" formControlName="totalCompliance" name="totalCompliance"
-                                                   ngModel="{{totalComplianceValue}}"  [disabled]=true        [class.is-invalid]="formSSFSaveComplianceStatusForm.totalCompliance.invalid && formSSFSaveComplianceStatusForm.totalCompliance.touched">
+                                            <input id="totalComplianceTest" matInput type="text" formControlName="totalComplianceTest" name="totalComplianceTest"
+                                                   ngModel="{{totalComplianceValue| number : '1.2-2'}}">
                                         </mat-form-field>
                                         <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>
                                         <mat-form-field id="complianceStatusSSF">
@@ -2430,6 +2201,7 @@
 <!--                    </button>-->
                     <button *ngIf="(currDiv == 'addBsNumber')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveBSNumber(sampleSubmitBSNumberForm.valid);"
+                            [disabled]="!sampleSubmitBSNumberForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -3283,6 +3055,58 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" class="close" (click)="closePopUpsModal3();" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="(currDiv == 'verificationPermitDetails')">
+                        <form [formGroup]="verificationPermitForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="complianceStatusSSF"><b>Permit Number</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="permitNumber2" matInput type="text" disabled formControlName="permitNumber" name="permitNumber">
+                                        </mat-form-field>
+                                        <!--                                        <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>-->
+                                        <!--                                        <mat-form-field class="example-full-width">-->
+                                        <!--                                            <input id="ucrNumber" matInput type="text" -->
+                                        <!--                                                   formControlName="ucrNumber" name="ucrNumber">-->
+                                        <!--                                        </mat-form-field>-->
+                                        <label for="complianceStatusSSF"><b>Product Name</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="productName" matInput type="text" disabled formControlName="productName" name="productName">
+                                        </mat-form-field>
+                                        <label for="complianceStatusSSF"><b>Validity Status</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <mat-select id="validityStatus" matInput type="text" disabled
+                                                        formControlName="validityStatus" name="validityStatus">
+                                                <mat-option [value]="true">VALID(ACTIVE)</mat-option>
+                                                <mat-option [value]="false">NOT-VALID(EXPIRED/SUSPENDED)</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button mat-raised-button type="button"
+                            class="btn btn-danger" data-dismiss="modal"  (click)="closePopUpsModal3();">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- End DATA Report Modal -->
 
     <!-- SEIZURE Modal -->
@@ -4029,17 +3853,6 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Report Classification</b> </label>
-                                        <select [class.is-invalid]="formInvestInspectReportForm.reportClassification.invalid && formInvestInspectReportForm.reportClassification.errors"
-                                                class="form-control two-column-input"
-                                                formControlName="reportClassification"
-                                                name="reportClassification" required type="text">
-                                            <option [value]="" selected>Please select One</option>
-                                            <option  [value]="'Top Secret'">Top secret</option>
-                                            <option  [value]="'Secret'">Secret</option>
-                                            <option  [value]="'Confidential'">Confidential</option>
-                                            <option  [value]="'Restricted'">Restricted</option>
-                                        </select>
                                     </div>
                                 </div>
 
@@ -4775,21 +4588,13 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Report Classification</b> </label>
-                                        <select [class.is-invalid]="formInvestInspectReportForm.reportClassification.invalid && formInvestInspectReportForm.reportClassification.errors"
-                                                class="form-control two-column-input"
-                                                formControlName="reportClassification"
-                                                name="reportClassification" required type="text">
-                                            <option [value]="" selected>Please select One</option>
-                                            <option  [value]="'Top Secret'">Top secret</option>
-                                            <option  [value]="'Secret'">Secret</option>
-                                            <option  [value]="'Confidential'">Confidential</option>
-                                            <option  [value]="'Restricted'">Restricted</option>
-                                        </select>
                                     </div>
                                 </div>
 
                             </div>
+                            <br>
+                            <h5 class="mb-3" style="color: black">BS NUMBERS LIST</h5>
+                            <br>
                             <div>
                                 <div class="material-datatables">
                                     <div class="table-responsive">
@@ -4821,11 +4626,20 @@
                                  data-dismiss="modal">
                             Close
                         </button>
-                        <button *ngIf="investInspectReportForm.valid" mat-raised-button   data-dismiss="modal"
-                                class="btn btn-success" (click)="onClickSavePreliminaryReportWhichWasDataReport()" type="button" >SUBMIT
-                        </button>
-                        <button *ngIf="investInspectReportForm.invalid" mat-raised-button (click)="onClickSavePreliminaryReportWhichWasDataReport()" class="btn btn-success" type="button" >SUBMIT
-                        </button>
+                        <div *ngIf="(currDiv == 'createPreliminary')">
+                            <button *ngIf="investInspectReportForm.valid" mat-raised-button   data-dismiss="modal"
+                                    class="btn btn-success" (click)="onClickSavePreliminaryReportWhichWasDataReport()" type="button" >SUBMIT
+                            </button>
+                            <button *ngIf="investInspectReportForm.invalid" mat-raised-button (click)="onClickSavePreliminaryReportWhichWasDataReport()" class="btn btn-success" type="button" >SUBMIT
+                            </button>
+                        </div>
+                        <div *ngIf="(currDiv == 'updateHOFHODPreliminary')">
+                            <button *ngIf="investInspectReportForm.valid" mat-raised-button   data-dismiss="modal"
+                                    class="btn btn-success" (click)="onClickUpdateHODHOFPreliminaryReportWhichWasDataReport()" type="button" >SUBMIT
+                            </button>
+                            <button *ngIf="investInspectReportForm.invalid" mat-raised-button (click)="onClickUpdateHODHOFPreliminaryReportWhichWasDataReport()" class="btn btn-success" type="button" >SUBMIT
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -6467,7 +6281,6 @@
                 <div class="modal-body">
                     <label style="color: #0082f3">Product Recommendation Details</label>
                     <div class="panel">
-
                         <br>
                         <div class="row">
                             <div class="col-md-7">
@@ -6643,56 +6456,254 @@
     </div>
     <!-- FINAL RECOMMENDATION Modal -->
 
+    <!-- Progress report Modal -->
+    <div class="modal fade" id="msProgressReportViewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">MS PROGRESS REPORT DETAILS</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" (click)="closeSSFLabResultsRecord();" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label style="color: #0082f3">MS PROGRESS REPORT DETAILS </label>
+                    <div class="panel">
+                        <br>
+                        <ul class="w-list-unstyled">
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Report reference</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportReference}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">To</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportTo}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Through</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportThrough}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">From</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportFrom}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Subject</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportSubject}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Title</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportTitle}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Date</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportDate| date}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Region</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportRegion}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Department</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportDepartment}}</div>
+                            </li>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Function</div>
+                                <div class="list-text-accordion">
+                                    {{selectedPreliminaryReportDetails?.reportFunction}}</div>
+                            </li>
+                            <br/>
+                            <b class="text-secondary">Background Information</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.backgroundInformation}}</span></p>
+                            <br/>
+                            <b class="text-secondary">Objective of the Investigation</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.objectiveInvestigation}}</span></p>
+                            <br/>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Date of Investigation/Inspection</div>
+                                <div class="list-text-accordion">{{selectedPreliminaryReportDetails?.dateInvestigationInspection}}</div>
+                            </li>
+                            <br/>
+                            <div class="form-row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="text-secondary">KEBS Inspectors</label>
+                                </div>
+                                <div class="table-striped table-condensed table-responsive">
+                                    <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="selectedPreliminaryReportDetails?.kebsInspectors"></ng2-smart-table>
+                                </div>
+                            </div>
+                            <br/>
+                            <b class="text-secondary">Methodology Employed</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.methodologyEmployed}}</span></p>
+                            <br/>
+                            <b class="text-secondary">Findings</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.findings}}</span></p>
+                            <br/>
+                            <b class="text-secondary">Conclusion</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.conclusion}}</span></p>
+                            <br/>
+                            <b class="text-secondary">Recommendations</b>
+                            <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.recommendations}}</span></p>
+                            <br/>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">Status Activity</div>
+                                <div class="list-text-accordion">{{selectedPreliminaryReportDetails?.statusActivity}}</div>
+                            </li>
+                            <br/>
+                            <b class="text-secondary" style="font-size: 12px">Bs Numbers</b>
+                            <div>
+                                <div class="material-datatables">
+                                    <div class="table-responsive">
+                                        <table id="datatablesInspector7s89"  class="table table-striped table-bordered table-hover">
+                                            <tbody>
+                                            <tr *ngFor="let r of selectedPreliminaryReportDetails?.bsNumbersList; let i=index">
+                                                <td style="font-size: 11px">{{r}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div *ngIf="selectedPreliminaryReportDetails?.additionalInformationStatus">
+                                <b class="text-secondary">Additional Information</b>
+                                <br/>
+                                <b class="text-secondary" style="font-size: 12px">a.Performance of test sample</b>
+                                <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.performanceOnTestSamples}}</span></p>
+                                <b class="text-secondary" style="font-size: 12px">b.Action on seized goods</b>
+                                <div>
+                                    <div class="material-datatables">
+                                        <div class="table-responsive">
+                                            <table id="datatablesInspector7s89"  class="table table-striped table-bordered table-hover">
+                                                <tbody>
+                                                <tr *ngFor="let r of selectedPreliminaryReportDetails?.additionalInformation?.actionOnSeizedGoods; let i=index">
+                                                    <td style="font-size: 11px">{{r.actionOnSeizedGoodsDetails}}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+                                <b class="text-secondary" style="font-size: 12px">Remarks</b>
+                                <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.actionOnSeizedGoodsRemarks}}</span></p>
+                                <b class="text-secondary" style="font-size: 12px">c.Actions on recommendations given</b>
+                                <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.actionsOnRecommendationGiven}}</span></p>
+                                <b class="text-secondary" style="font-size: 12px">d.Follow-up activities</b>
+                                <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.followUpActivities}}</span></p>
+                                <b class="text-secondary" style="font-size: 12px">e.Others</b>
+                                <p class="list-paragraph-accordion"><span>
+                                                    {{selectedPreliminaryReportDetails?.additionalInformation?.others}}</span></p>
+                            </div>
+
+
+
+                        </ul>
+<!--                        <button mat-raised-button type="button"  class="btn btn-success"-->
+<!--                                (click)="viewFieldReportPdfFile(workPlanInspection?.id, selectedPreliminaryReportDetails?.reportReference,'application/pdf')">Download</button>-->
+                        <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger" (click)="closeSSFLabResultsRecord();"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress report Modal END HERE -->
+
     <!-- Sample Submit Lab Results Modal -->
     <div class="modal fade" id="sampleLabResultsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Lab Results Details</h4>
-                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <button mat-button type="button" class="close" data-dismiss="modal" (click)="closeSSFLabResultsRecord();" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
                 <div class="modal-body">
                     <label style="color: #0082f3">Lab Results Details</label>
                     <div class="panel">
-                        <div *ngFor="let role of roles">
-                            <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+                        <div class="row">
+                            <div class="col-md-7">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">BS Number</div>
+                                        <div class="list-text-accordion">
+                                            {{selectedLabResults?.ssfResultsList?.bsNumber}}</div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Compliance Remarks</div>
+                                        <div class="list-text-accordion">
+                                            {{selectedLabResults?.ssfResultsList?.complianceRemarks}}</div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Compliance Status</div>
+
+                                        <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus && selectedLabResults?.ssfResultsList?.analysisDone"
+                                             class="list-text-accordion">COMPLIANT</div>
+                                        <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone"
+                                             class="list-text-accordion">NON-COMPLIANT</div>
+                                        <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone==false"
+                                             class="list-text-accordion"> </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3 p-0">
+                                <b>Action:</b>
+                                <div *ngFor="let role of roles">
+                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone == false
                                     && workPlanInspection?.officerDetails?.id == userLoggedInID
                                     && selectedLabResults?.savedPDFFiles?.length != 0"
-                                     (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
-                                     data-target="#myModal2"
-                                     class="btn btn-sm btn-primary mr-3"><span
-                                    class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
-                                <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                                <div class="mat-button-focus-overlay"></div>
-                            </button>
+                                             (click)="openModalAddDetails('ssfAddComplianceStatus')" mat-raised-button="" data-toggle="modal"
+                                             data-target="#myModal2"
+                                             class="btn btn-sm btn-primary mr-3"><span
+                                            class="mat-button-wrapper">ADD COMPLIANCE STATUS</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+                                    && selectedLabResults?.ssfResultsList?.analysisDone
+                                    && selectedLabResults?.ssfResultsList?.resultsSent == false
+                                    && workPlanInspection?.officerDetails?.id == userLoggedInID
+                                    && selectedLabResults?.savedPDFFiles?.length != 0"
+                                             (click)="openModalAddDetails('ssfSendResultsStatus')" mat-raised-button="" data-toggle="modal"
+                                             data-target="#myModal2"
+                                             class="btn btn-sm btn-primary mr-3"><span
+                                            class="mat-button-wrapper">SEND RESULTS</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                </div>
+                                <br>
+                            </div>
                         </div>
-                        <br>
-                        <ul class="w-list-unstyled">
-                            <li class="list-item-accordion">
-                                <div class="list-title-accordion">BS Number</div>
-                                <div class="list-text-accordion">
-                                    {{selectedLabResults?.ssfResultsList?.bsNumber}}</div>
-                            </li>
-                            <li class="list-item-accordion">
-                                <div class="list-title-accordion">Compliance Remarks</div>
-                                <div class="list-text-accordion">
-                                    {{selectedLabResults?.ssfResultsList?.complianceRemarks}}</div>
-                            </li>
-                            <li class="list-item-accordion">
-                                <div class="list-title-accordion">Compliance Status</div>
-
-                                <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus && selectedLabResults?.ssfResultsList?.analysisDone"
-                                     class="list-text-accordion">COMPLIANT</div>
-                                <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone"
-                                     class="list-text-accordion">NON-COMPLIANT</div>
-                                <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone==false"
-                                     class="list-text-accordion"> </div>
-                            </li>
-                        </ul>
-
                         <div class="form-row">
                             <div class="col-md-12 mb-3">
                                 <label style="color: #0082f3">Lab Results Param</label>
@@ -6730,7 +6741,7 @@
                         <br>
                     </div>
                     <div class="modal-footer">
-                        <button  mat-raised-button type="button" class="btn btn-danger"
+                        <button  mat-raised-button type="button" class="btn btn-danger" (click)="closeSSFLabResultsRecord();"
                                  data-dismiss="modal">
                             Close
                         </button>
@@ -6746,7 +6757,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">{{currDivLabel}}</h4>
-                    <button mat-button type="button"  class="close" data-dismiss="modal" aria-hidden="true">
+                    <button mat-button type="button" (click)="closePopUpsModal2();" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
@@ -6798,37 +6809,6 @@
                                                       formControlName="complianceRemarks"
                                                       name="complianceRemarks">
                                             </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div *ngIf="(currDiv == 'verificationPermitDetails')">
-                        <form [formGroup]="verificationPermitForm" class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <div>
-                                        <label for="complianceStatusSSF"><b>Permit Number</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="permitNumber" matInput type="text" disabled formControlName="permitNumber" name="permitNumber">
-                                        </mat-form-field>
-<!--                                        <label for="complianceStatusSSF"><b>Select Compliance Status</b></label>-->
-<!--                                        <mat-form-field class="example-full-width">-->
-<!--                                            <input id="ucrNumber" matInput type="text" -->
-<!--                                                   formControlName="ucrNumber" name="ucrNumber">-->
-<!--                                        </mat-form-field>-->
-                                        <label for="complianceStatusSSF"><b>Product Name</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="productName" matInput type="text" disabled formControlName="productName" name="productName">
-                                        </mat-form-field>
-                                        <label for="complianceStatusSSF"><b>Validity Status</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <mat-select id="validityStatus" matInput type="text" disabled
-                                                        formControlName="validityStatus" name="validityStatus">
-                                                <mat-option [value]="true">VALID(ACTIVE)</mat-option>
-                                                <mat-option [value]="false">NOT-VALID(EXPIRED/SUSPENDED)</mat-option>
-                                            </mat-select>
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -6894,6 +6874,38 @@
                                                       formControlName="remarks"
                                                       name="remarks" required>
                                             </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'ssfSendResultsStatus')">
+                        <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="failedParameters"><b>Failed Parameters</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g sugar,salt" formControlName="failedParameters" name="failedParameters"
+                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.failedParameters.invalid
+                                                    && formSSFClientEmailNotificationForm.failedParameters.touched">
+                                        </mat-form-field>
+                                        <label for="outLetEmail"><b>OutLet Email</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="outLetEmail" matInput type="text" placeholder="Please Enter outLet Email" formControlName="outLetEmail" name="outLetEmail"
+                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.outLetEmail.invalid
+                                                    && formSSFClientEmailNotificationForm.outLetEmail.touched">
+                                        </mat-form-field>
+                                        <label for="manufactureEmail"><b>Manufacture Email</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacture Email" formControlName="manufactureEmail" name="manufactureEmail"
+                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.manufactureEmail.invalid
+                                                    && formSSFClientEmailNotificationForm.manufactureEmail.touched">
+                                        </mat-form-field>
+                                        <label for="complainantEmail"><b>Complainant Email</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="complainantEmail" matInput type="text" placeholder="Please Enter complainant Email" formControlName="complainantEmail" name="complainantEmail">
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -6973,7 +6985,7 @@
                 <div class="modal-footer">
 
                     <button mat-raised-button type="button"
-                            class="btn btn-danger" data-dismiss="modal" >Close
+                            class="btn btn-danger" data-dismiss="modal" (click)="closePopUpsModal2();" >Close
                     </button>
                     <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"
@@ -6983,6 +6995,12 @@
                     <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
                             [disabled]="!ssfSaveComplianceStatusForm.valid"
+                            data-dismiss="modal" data-toggle="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'ssfSendResultsStatus')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSendSSFLabResultsComplianceStatus(ssfClientEmailNotificationForm.valid);"
+                            [disabled]="!ssfClientEmailNotificationForm.valid"
                             data-dismiss="modal" data-toggle="modal"
                     >SUBMIT
                     </button>

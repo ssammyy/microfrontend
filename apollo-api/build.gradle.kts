@@ -135,6 +135,10 @@ dependencies {
      * Maven OGNL
      */
     implementation("ognl:ognl:3.2.15")
+    /**
+     * PDF MERGING
+     */
+    implementation("org.apache.pdfbox:pdfbox:3.0.0-alpha2")
 
     /**
      * Joda Time

@@ -3319,7 +3319,8 @@ class MarketSurveillanceFuelDaoServices(
             ssf.bsNumber,
             ssf.complianceRemarks,
             ssf.resultsAnalysis == 1,
-            ssf.analysisDone == 1
+            ssf.analysisDone == 1,
+            ssf.resultsSent == 1
         )
 
     }
