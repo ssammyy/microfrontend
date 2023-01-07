@@ -291,7 +291,6 @@ class MSJSONControllers(
     fun updateWorkPlanUploadFinalReport(
         @RequestParam("referenceNo") referenceNo: String,
         @RequestParam("batchReferenceNo") batchReferenceNo: String,
-        @RequestParam("data") data: String,
         @RequestParam("docFile") docFile: MultipartFile,
         model: Model
     ): WorkPlanInspectionDto {
@@ -318,7 +317,6 @@ class MSJSONControllers(
     fun updateWorkPlanUploadFinalReportHODHOF(
         @RequestParam("referenceNo") referenceNo: String,
         @RequestParam("batchReferenceNo") batchReferenceNo: String,
-        @RequestParam("data") data: String,
         @RequestParam("docFile") docFile: MultipartFile,
         model: Model
     ): WorkPlanInspectionDto {

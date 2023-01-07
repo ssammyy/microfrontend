@@ -1252,10 +1252,10 @@
                                             && workPlanInspection?.preliminaryReport?.approvedStatusHod
                                             && workPlanInspection?.finalReportGenerated == false
                                             && workPlanInspection?.preliminaryReport?.rejectedStatusHod== false"
-                                                     (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#preliminaryReportFinalModal"
+                                            (click)="openModalAddDetails('uploadFilesFinalReport')" mat-raised-button="" data-toggle="modal"
+                                                      data-target="#myModalUpload"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">ADD FINAL REPORT</span>
+                                                    class="mat-button-wrapper">UPLOAD FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1518,6 +1518,11 @@
                     </button>
                     <button *ngIf="(currDiv == 'uploadDataReportFiles')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveFilesResults('DATA_REPORT_FILE');"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadFilesFinalReport')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFinalReportOfficerResults();"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
