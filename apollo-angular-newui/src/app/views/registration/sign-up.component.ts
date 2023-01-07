@@ -113,7 +113,6 @@ export class SignUpComponent implements OnInit {
         this.timer = interval(1000).pipe(takeUntil(this.ispause));
 
         this.timerObserver = {
-
             next: (_: number) => {
                 if (this.time === 0) {
                     // tslint:disable-next-line:no-unused-expression

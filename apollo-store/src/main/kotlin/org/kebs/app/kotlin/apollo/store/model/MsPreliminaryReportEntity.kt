@@ -111,6 +111,10 @@ class MsPreliminaryReportEntity: Serializable {
     @Basic
     var rejectedStatusHod: Int? = 0
 
+    @Column(name = "LATEST_VERSION_ID")
+    @Basic
+    var latestVersionID: Long? = 0
+
 
 
     @Column(name = "REJECTED_BY_HOD_FINAL")

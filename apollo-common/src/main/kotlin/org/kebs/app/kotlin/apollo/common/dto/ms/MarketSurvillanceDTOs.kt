@@ -285,6 +285,7 @@ data class WorkPlanInspectionDto(
         val recommendationDoneStatus: Boolean? = null,
         var bsNumberCountAdded: Int? = null,
         var analysisLabCountDone: Int? = null,
+        var analysisLabCountDoneAndSent: Int? = null,
         var productListRecommendationAddedCount: Int? = null,
         var productList: List<WorkPlanProductDto>? = null,
         var batchRefNumber: String? = null,
@@ -829,6 +830,7 @@ data class MSSSFComplianceStatusDetailsDto(
         var complianceRemarks: String? = null,
         var complianceStatus: Boolean? = null,
         var analysisDone: Boolean? = null,
+        var resultsSent: Boolean? = null,
 )
 
 data class LIMSFilesFoundDto(
@@ -881,6 +883,14 @@ data class SSFSaveComplianceStatusDto(
         var complianceRemarks: String,
         @NotNull(message = "Required field")
         var totalCompliance: String,
+)
+
+data class SSFSendingComplianceStatus(
+        var ssfID: Long? = null,
+        var failedParameters: String? = null,
+        var outLetEmail: String? = null,
+        var manufactureEmail: String? = null,
+        var complainantEmail: String? = null,
 )
 
 data class PreliminaryReportDto(
