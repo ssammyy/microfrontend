@@ -816,7 +816,6 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     }
 
 
-
     @Bean
     fun KebsWebsiteApiRoutes(handler: QualityAssuranceHandler) = router {
         "/api/v1/migration/anonymous/kebsWebsite".nest {
@@ -824,8 +823,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/getAwardedFmarkPermits", handler::loadAllFmarksAwardedPermitsForReportsApi)
             GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
             GET("/getAllAwardedPermits", handler::getAllAwardedPermitsByPermitNumber)
+            GET("/getAllAwardedPermitsByCompanyName", handler::getAllAwardedPermitsByCompanyName)
 
 //            GET("/getAllAwardedPermitsByPermitNumberSms", handler::getAllAwardedPermitsByPermitNumberSms)
+
 
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
             POST("/getAllAwardedPermitsByPermitNumberSmsRequest", handler::processReceiveMessageBody)

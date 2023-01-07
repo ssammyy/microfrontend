@@ -694,25 +694,46 @@ Content-Type: application/json
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedDmarkPermits
 
 ###
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedSmarkPermits
+
+###
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=SM#60008
 
 
 ###
+POST https://kims.kebs.org:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByPermitNumberSmsRequest
+Content-Type: application/json
+
+{
+  "uid": "7ff62f038cd340299cb966e5ebeff56e",
+  "actor_type": "user",
+  "event_type": "sms_mo_inbound",
+  "created_at": "1672656605.73599",
+  "data": {
+    "profile_code": "2206151",
+    "mobile_number": "254702882256",
+    "link_id": "00006110183091557771324128",
+    "message": "SM#60122"
+  }
+}
+###
+
 POST https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByPermitNumberSmsRequest
 Content-Type: application/json
 
 {
-  "uid": "488807caf8b2425cb30646d841ac39e0",
-  "actor_type": "user",
-  "event_type": "sms_mo_inbound",
-  "created_at": "1671774281.610342",
-  "data": {
-    "profile_code": "2012112",
-    "mobile_number": "254702882256",
-    "link_id": "00006110182214784548134937",
-    "message": "FM#17"
-  }
+"uid": "eb782ae143ef47e28c261b72db58d303",
+"actor_type": "user",
+"event_type": "sms_mo_inbound",
+"created_at": "1672569176.589193",
+"data": {
+"profile_code": "2206151",
+"mobile_number": "254702882256",
+"link_id": "00006110183004132121106409",
+"message": "sm#9314"
 }
+}
+
 
   
 

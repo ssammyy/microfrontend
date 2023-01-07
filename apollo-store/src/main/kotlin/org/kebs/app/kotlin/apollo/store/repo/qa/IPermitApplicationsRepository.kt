@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.store.repo.qa
 import org.jetbrains.annotations.Nullable
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
+import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaRepository
@@ -18,6 +19,7 @@ import java.util.*
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserIdAndVarField9IsNull(userId: Long): List<PermitApplicationsEntity>?
     fun findByAwardedPermitNumber(awardedPermitNumber: String): List<PermitApplicationsEntity>?
+
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
     fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
     fun countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
@@ -32,6 +34,18 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         userId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?
+
+
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        companyId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByCompanyIdAndOldPermitStatusIsNullAndPermitAwardStatus(
+        companyId: Long,
+        permitAwardStatus: Int,
+    ): List<PermitApplicationsEntity>?
+
 
 //    fun findByRegioAndOldPermitStatusIsNullAndUserTaskId(
 //        companyId: Long,userTaskId: Long
@@ -1061,12 +1075,22 @@ interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
 @Repository
 interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntity, Long> {
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntity>?
+
+    fun findAllByMigratedStatusIsNotNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
+
+    fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntity>?
+
 }
 
 @Repository
 interface IPermitMigrationApplicationsFmarkEntityRepository :
     HazelcastRepository<PermitMigrationApplicationsEntityFmark, Long> {
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
+    fun findAllByMigratedStatusIsNotNull(pageable: Pageable): List<PermitMigrationApplicationsEntityFmark>?
+
+    fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntityFmark>?
+
+
 }
 
 @Repository
@@ -1085,7 +1109,9 @@ interface IPermitMigrationApplicationsDmarkEntityRepository :
 
 
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
+    fun findAllByMigratedStatusIsNotNull(pageable: Pageable): List<PermitMigrationApplicationsEntityDmark>?
 
+    fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntityDmark>?
 
 
 }

@@ -25,6 +25,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.ICfgMoneyTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
@@ -35,7 +36,6 @@ import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.stream.Collectors
 
@@ -1722,6 +1722,15 @@ class QADaoServices(
         manufacturePlantRepository.findByIdOrNull(plantID)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Plant details found with the following [id=$plantID]")
+    }
+
+    fun findPlantDetailsB(plantID: Long): ManufacturePlantDetailsEntity? {
+//        manufacturePlantRepository.findByIdOrNull(plantID)?.let {
+//            return it
+//        } ?: "null")
+
+        return manufacturePlantRepository.findByIdOrNull(plantID)
+
     }
 
 
@@ -6995,6 +7004,22 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found ")
     }
 
+    fun findByCompanyIdAllAwardedPermitsKebsWebsite(
+        companyID: Long,
+        status: Int,
+        fmarkGeneratedStatus: Int
+    ): List<PermitApplicationsEntity> {
+        permitRepo.findByCompanyIdAndOldPermitStatusIsNullAndPermitAwardStatus(
+            companyID,
+            status
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+    }
+
     fun listPermitsWebsite(
         permits: List<PermitApplicationsEntity>,
         map: ServiceMapsEntity
@@ -7004,7 +7029,7 @@ class QADaoServices(
                 if (p.firmName == null) {
                     p.attachedPlantId?.let {
                         commonDaoServices.findCompanyProfileWithID(
-                            findPlantDetails(it).companyProfileId ?: -1L
+                            findPlantDetailsB(it)?.companyProfileId ?: -1L
                         ).name
                     }
                 } else {
@@ -7013,7 +7038,7 @@ class QADaoServices(
                 if (p.physicalAddress == null) {
                     p.attachedPlantId?.let {
                         commonDaoServices.findCompanyProfileWithID(
-                            findPlantDetails(it).companyProfileId ?: -1L
+                            findPlantDetailsB(it)?.companyProfileId ?: -1L
                         ).physicalAddress
                     }
                 } else {
@@ -7119,18 +7144,51 @@ class QADaoServices(
 
     }
 
+    fun findSmarkPermitsNotMigrated(
+    ): List<PermitMigrationApplicationsEntity> {
+
+        permitMigratedRepo.findAllByMigratedStatusIsNotNull(PageRequest.of(0, 10000))
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findSmarkPermitsNotMigratedByCompanyName(
+        companyName: String
+    ): List<PermitMigrationApplicationsEntity> {
+
+        permitMigratedRepo.findAllByCompanyName(companyName)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
     fun findPermitByPermitNumberNotMigratedDmark(
         awardedPermitNumber: String
     ): List<PermitMigrationApplicationsEntityDmark> {
-        println("^^^^^^^^^^^^^^"+awardedPermitNumber)
 
         permitMigratedRepoDmark.findAllPermitsByPermitNumber(awardedPermitNumber)
             ?.let { permitList ->
-
-                println("^^^^^^^^^^^^^^"+permitList)
                 return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+    }
 
+    fun findDmarkPermitsNotMigratedByCompanyName(
+        companyName: String
+    ): List<PermitMigrationApplicationsEntityDmark> {
 
+        permitMigratedRepoDmark.findAllByCompanyName(companyName)
+            ?.let { permitList ->
+                return permitList
             }
 
             ?: throw ExpectedDataNotFound("No Permit Found ")
@@ -7143,6 +7201,46 @@ class QADaoServices(
     ): List<PermitMigrationApplicationsEntityFmark> {
 
         permitMigratedRepoFmark.findByPermitNumber(awardedPermitNumber)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findFmarkPermitsNotMigratedByCompanyName(
+        companyName: String
+    ): List<PermitMigrationApplicationsEntityFmark> {
+
+        permitMigratedRepoFmark.findAllByCompanyName(companyName)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findFmarkPermitsNotMigrated(
+    ): List<PermitMigrationApplicationsEntityFmark> {
+
+        permitMigratedRepoFmark.findAllByMigratedStatusIsNotNull(PageRequest.of(0, 10000))
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findDmarkPermitsNotMigrated(
+    ): List<PermitMigrationApplicationsEntityDmark> {
+
+        permitMigratedRepoDmark.findAllByMigratedStatusIsNotNull(PageRequest.of(0, 10000))
             ?.let { permitList ->
                 return permitList
             }
