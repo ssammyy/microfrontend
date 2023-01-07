@@ -36,34 +36,29 @@ export class ProcessRejectionComponent implements OnInit {
             result = 'reject'
             description = 'A rejection will send the consignment to back to inspection officer for review'
         }
-        if (this.data.dataMap.compliantStatus !== 1) {
+        // Validate compliance needs confirmation
+        if (this.data.dataMap.hasOwnProperty('compliantStatus')) {
             // Check non compliance
-            if (this.form.value.approvalStatus === '1') {
+            if (this.form.value.approvalStatus === '1' && this.data.dataMap.compliantStatus === 0) {
                 let icon: SweetAlertIcon = 'warning'
                 this.diService.showConfirmation(`Are you sure you want ${result} non-compliance request on this consignment? \nThis will send a rejection message for all items in the consignment and the action is not reversible`, (res) => {
                     if (res) {
-                        this.sendRequest()
+                        // this.sendRequest()
                     } else {
                         this.loading = false;
                     }
                 }, icon)
             } else {
-                this.diService.showConfirmation(`Are you sure you want ${result} compliance on this consignment?`, (res) => {
+                this.diService.showConfirmation(`Are you sure you want ${result} compliance/non-compliance on this consignment?`, (res) => {
                     if (res) {
-                        this.sendRequest()
+                        // this.sendRequest()
                     } else {
                         this.loading = false;
                     }
                 })
             }
         } else {
-            this.diService.showConfirmation(`Are you sure you want to ${result} compliance on this consignment? ${description}`, (res) => {
-                if (res) {
-                    this.sendRequest()
-                } else {
-                    this.loading = false;
-                }
-            })
+            //this.sendRequest()
         }
     }
 
