@@ -263,8 +263,9 @@ data class WorkPlanInspectionDto(
         var remarksDetails: List<MSRemarksDto>? = null,
         var workPlanFiles: List<WorkPlanFilesFoundDto>? = null,
         var chargeSheet: ChargeSheetDto? = null,
-        var seizureDeclarationDto: List<SeizureDto>? = null,
+        var seizureDeclarationDto: List<SeizureListDto>? = null,
         var inspectionInvestigationDto: InspectionInvestigationReportDto? = null,
+        var preliminaryReportListDto: List<InspectionInvestigationReportDto>? = null,
         var dataReportDto: List<DataReportDto>? = null,
         var sampleCollected: SampleCollectionDto? = null,
         var sampleSubmitted: List<SampleSubmissionDto>? = null,
@@ -284,10 +285,13 @@ data class WorkPlanInspectionDto(
         val recommendationDoneStatus: Boolean? = null,
         var bsNumberCountAdded: Int? = null,
         var analysisLabCountDone: Int? = null,
+        var analysisLabCountDoneAndSent: Int? = null,
         var productListRecommendationAddedCount: Int? = null,
         var productList: List<WorkPlanProductDto>? = null,
         var batchRefNumber: String? = null,
         var totalComplianceValue: String? = null,
+        var currentDate : Date? = null,
+        var latestPreliminaryReport : Long? = null,
 )
 
 data class FuelEntityDto(
@@ -562,6 +566,7 @@ data class FieldReportAdditionalInfo(
 data class InspectionInvestigationReportDto(
         var id: Long?= 0,
         var reportReference: String? = null,
+        var reportClassification: String? = null,
         var reportTo: String? = null,
         var reportThrough: String? = null,
         var reportFrom: String? = null,
@@ -584,6 +589,8 @@ data class InspectionInvestigationReportDto(
         var remarks: String? = null,
         var additionalInformation: FieldReportAdditionalInfo? = null,
         var additionalInformationStatus: Boolean,
+        var bsNumbersList: List<String>? = null,
+        var version: Int? = null,
 )
 
 data class KebsOfficersName (
@@ -593,12 +600,19 @@ data class KebsOfficersName (
 )
 
 data class SeizureListDto(
+        var id: Long?= 0,
+        var docID: Long?= 0,
+        var marketTownCenter: String?=null,
+        var nameOfOutlet: String?=null,
+        var nameSeizingOfficer: String?=null,
+        var additionalOutletDetails: String?=null,
         var seizureList: List<SeizureDto>?= null,
 )
 
 data class SeizureDto(
         var id: Long?= 0,
         var docID: Long?= 0,
+        var mainSeizureID: Long?= 0,
         var marketTownCenter: String?=null,
         var nameOfOutlet: String?=null,
         var descriptionProductsSeized: String?=null,
@@ -816,6 +830,7 @@ data class MSSSFComplianceStatusDetailsDto(
         var complianceRemarks: String? = null,
         var complianceStatus: Boolean? = null,
         var analysisDone: Boolean? = null,
+        var resultsSent: Boolean? = null,
 )
 
 data class LIMSFilesFoundDto(
@@ -868,6 +883,14 @@ data class SSFSaveComplianceStatusDto(
         var complianceRemarks: String,
         @NotNull(message = "Required field")
         var totalCompliance: String,
+)
+
+data class SSFSendingComplianceStatus(
+        var ssfID: Long? = null,
+        var failedParameters: String? = null,
+        var outLetEmail: String? = null,
+        var manufactureEmail: String? = null,
+        var complainantEmail: String? = null,
 )
 
 data class PreliminaryReportDto(

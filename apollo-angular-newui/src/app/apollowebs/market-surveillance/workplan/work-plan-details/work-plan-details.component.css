@@ -7,6 +7,11 @@
     /*background: #D33;*/
 }
 
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .list-item-accordion {
     display: -webkit-box;
     display: -webkit-flex;

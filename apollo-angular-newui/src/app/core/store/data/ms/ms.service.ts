@@ -79,7 +79,12 @@ import {
     AcknowledgementDto,
     MsNotificationTaskDto,
     MsDashBoardIODto,
-    MsDashBoardALLDto, ComplaintViewSearchValues, SampleProductViewSearchValues, SeizedGoodsViewSearchValues, PermitUcrSearch,
+    MsDashBoardALLDto,
+    ComplaintViewSearchValues,
+    SampleProductViewSearchValues,
+    SeizedGoodsViewSearchValues,
+    PermitUcrSearch,
+    SSFSendingComplianceStatus,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -102,6 +107,16 @@ export class MsService {
             const forbidden = input.test(control.value);
             return forbidden ? {notAllowed: {value: control.value}} : null;
         };
+    }
+
+    public formatDate(date) {
+        const d = new Date(date);
+        let month = '' + (d.getMonth() + 1);
+        let day = '' + d.getDate();
+        const year = d.getFullYear();
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        return [year, month, day].join('-');
     }
 
     public dateValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -1227,6 +1242,48 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleSavePreliminaryReportData(batchReferenceNo: string, referenceNo: string, data: InspectionInvestigationReportDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT,
+        );
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleUpdatePreliminaryReportData(batchReferenceNo: string, referenceNo: string, data: InspectionInvestigationReportDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_UPDATE_HOF_HOD_PRELIMINARY_REPORT,
+        );
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleSavePreliminaryReport(batchReferenceNo: string, referenceNo: string, data: PreliminaryReportDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
@@ -1805,6 +1862,25 @@ export class MsService {
         console.log(data);
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_SSF_COMPLIANCE_STATUS_SAVE);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+     // tslint:disable-next-line:max-line-length
+    public msWorkPlanInspectionScheduledSendSSFComplianceStatus(batchReferenceNo: string, referenceNo: string, data: SSFSendingComplianceStatus): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_SEND_SSF_COMPLIANCE_STATUS_SAVE);
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);

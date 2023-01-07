@@ -1072,6 +1072,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.lab.results.notification}")
     val mapMsFuelInspectionLabResultsNotification: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.surveillance.lab.results.compliant.notification}")
+    val mapMsWorkPlanInspectionLabResultsCompliantNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.surveillance.lab.results.notCompliant.notification}")
+    val mapMsWorkPlanInspectionLabResultsNotCompliantNotification: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lab.results.notification.io}")
     val mapMsLabResultsIONotification: String = ""
 

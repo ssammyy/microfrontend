@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
+import org.kebs.app.kotlin.apollo.api.service.PaymentStatus
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -337,7 +338,7 @@ class InvoiceDaoService(
     }
 
     fun findDemandNoteCdId(cdId: Long): CdDemandNoteEntity? {
-        return iDemandNoteRepository.findFirstByCdIdAndStatusIn(cdId, listOf(10, 1))
+        return iDemandNoteRepository.findFirstByCdIdAndPaymentStatusIn(cdId, listOf(PaymentStatus.PAID.code))
     }
 
     fun findDemandNoteItemsCdId(dnId: Long): List<CdDemandNoteItemsDetailsEntity> {

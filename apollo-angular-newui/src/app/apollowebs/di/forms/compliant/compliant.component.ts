@@ -24,7 +24,7 @@ export class CompliantComponent implements OnInit {
         console.log(this.data)
         const DocumentTypeSelectionValidator: ValidatorFn = (fg: FormGroup) => {
             const status = fg.get('compliantStatus').value;
-            if (status && status === "1") {
+            if (status === '1') {
                 const documentType = fg.get("documentType").value
                 if (!documentType || documentType.length <= 0) {
                     return {documentType: true}
@@ -43,20 +43,24 @@ export class CompliantComponent implements OnInit {
         }, DocumentTypeSelectionValidator)
     }
 
-    processResult(res) {
-        this.loading = false
-        if (res.responseCode === "00") {
-            this.diService.showSuccess(res.message, () => {
-                this.dialogRef.close(true)
-            })
-        } else {
-            this.message = res.message
-        }
-    }
-
-    processError(err: any) {
-        this.loading = false
-        console.log(err)
+    sendRequest() {
+        this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
+            .subscribe(
+                res => {
+                    this.loading = false
+                    if (res.responseCode === "00") {
+                        this.diService.showSuccess(res.message, () => {
+                            this.dialogRef.close(true)
+                        })
+                    } else {
+                        this.message = res.message
+                    }
+                },
+                error => {
+                    this.loading = false
+                    console.log(error)
+                }
+            )
     }
 
     saveRecord() {
@@ -64,22 +68,14 @@ export class CompliantComponent implements OnInit {
         if (this.form.value.compliantStatus === '0') {
             this.diService.showConfirmation(`Are you sure you want to reject thi consignment with UCR  ${this.data.ucr}?`, (result) => {
                 if (result) {
-                    this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
-                        .subscribe(
-                            res => this.processResult(res),
-                            error => this.processError(error)
-                        )
+                    this.sendRequest()
                 } else {
                     this.loading = false
                 }
             })
         } else {
             if (this.form.value.documentType && this.form.value.documentType?.length > 0) {
-                this.diService.sendConsignmentDocumentAction(this.form.value, this.data.uuid, "mark-compliant")
-                    .subscribe(
-                        res => this.processResult(res),
-                        error => this.processError(error)
-                    )
+                this.sendRequest()
             } else {
                 this.loading = false;
                 this.message = "Please select the certificate to issue"

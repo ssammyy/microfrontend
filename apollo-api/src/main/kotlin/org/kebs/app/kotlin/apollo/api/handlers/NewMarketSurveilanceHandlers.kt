@@ -2527,6 +2527,31 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun saveWorkPlanScheduleSSFComplianceStatusSend(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<SSFSendingComplianceStatus>()
+            val errors: Errors = BeanPropertyBindingResult(body, SSFSendingComplianceStatus::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.sendWorkPlanInspectionDetailsSSFSavedComplianceStatusFile(referenceNo,batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun saveWorkPlanScheduleFinalSSFComplianceStatusAdd(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
@@ -2556,13 +2581,37 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
-            val finalReportStatus = req.paramOrNull("finalReportStatus") ?: throw ExpectedDataNotFound("Required  finalReportStatus, check parameters")
-            val body = req.body<PreliminaryReportDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, PreliminaryReportDto::class.java.name)
+            val body = req.body<InspectionInvestigationReportDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, InspectionInvestigationReportDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsPreliminaryReport(referenceNo,batchReferenceNo,body,finalReportStatus.toInt()==1)
+                    marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsPreliminaryReport(referenceNo,batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun addWorkPlanSchedulePreliminaryReportHofHodDirector(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val body = req.body<InspectionInvestigationReportDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, InspectionInvestigationReportDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.addWorkPlanInspectionDetailsPreliminaryReportHodHofDirecterVersions(referenceNo,batchReferenceNo,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }

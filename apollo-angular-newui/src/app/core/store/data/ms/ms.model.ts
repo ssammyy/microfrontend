@@ -589,6 +589,7 @@ export class PreliminaryReportDto {
 export class InspectionInvestigationReportDto {
     id: number;
     reportReference: string;
+    reportClassification: string;
     reportTo: string;
     reportThrough: string;
     reportFrom: string;
@@ -611,6 +612,8 @@ export class InspectionInvestigationReportDto {
     remarks: string;
     additionalInformation: FieldReportAdditionalInfo;
     additionalInformationStatus: boolean;
+    bsNumbersList: string[];
+    version: number;
 }
 
 export class FieldReportAdditionalInfo {
@@ -825,8 +828,9 @@ export class WorkPlanInspectionDto {
     remarksDetails: MSRemarksDto[];
     workPlanFiles: WorkPlanFilesFoundDto[];
     chargeSheet: ChargeSheetDto;
-    seizureDeclarationDto: SeizureDto[];
+    seizureDeclarationDto: SeizureListDto[];
     inspectionInvestigationDto: InspectionInvestigationReportDto;
+    preliminaryReportListDto: InspectionInvestigationReportDto[];
     dataReportDto: DataReportDto[];
     sampleCollected: SampleCollectionDto;
     sampleSubmitted: SampleSubmissionDto[];
@@ -846,8 +850,13 @@ export class WorkPlanInspectionDto {
     recommendationDoneStatus: Boolean;
     bsNumberCountAdded: number;
     analysisLabCountDone: number;
+    analysisLabCountDoneAndSent: number;
     productListRecommendationAddedCount: number;
     productList: WorkPlanProductDto[];
+    batchRefNumber: string;
+    totalComplianceValue: string;
+    currentDate: Date;
+    latestPreliminaryReport: number;
 }
 
 export class CountryListDto {
@@ -917,10 +926,10 @@ export class SeizureDeclarationDto {
     remarks: string;
 }
 
-
-export class SeizureListDto {
-    seizureList: SeizureDto[];
-}
+//
+// export class SeizureListDto {
+//     seizureList: SeizureDto[];
+// }
 
 export class LaboratoryEntityDto {
         id: number;
@@ -929,9 +938,20 @@ export class LaboratoryEntityDto {
         status: boolean;
 }
 
+export class SeizureListDto {
+    id: number;
+    docID: number;
+    marketTownCenter: string;
+    nameOfOutlet: string;
+    nameSeizingOfficer: string;
+    additionalOutletDetails: string;
+    seizureList: SeizureDto[];
+}
+
 export class SeizureDto {
     id: number;
     docID: number;
+    mainSeizureID: number;
     marketTownCenter: string;
     nameOfOutlet: string;
     descriptionProductsSeized: string;
@@ -988,6 +1008,10 @@ export class DataInspectorInvestDto {
     inspectorName: string;
     institution: string;
     designation: string;
+}
+
+export class BSNumberDto {
+    bsNumber: string;
 }
 
 export class TeamsFuelSaveDto {
@@ -1264,6 +1288,15 @@ export class MSSSFComplianceStatusDetailsDto {
     complianceRemarks: string;
     complianceStatus: boolean;
     analysisDone: boolean;
+    resultsSent: boolean;
+}
+
+export class SSFSendingComplianceStatus {
+    ssfID: number;
+    failedParameters: string;
+    outLetEmail: string;
+    manufactureEmail: string;
+    complainantEmail: string;
 }
 
 export class FuelRemediationDto {
