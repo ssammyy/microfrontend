@@ -292,6 +292,7 @@ data class WorkPlanInspectionDto(
         var totalComplianceValue: String? = null,
         var currentDate : Date? = null,
         var latestPreliminaryReport : Long? = null,
+        var latestFinalPreliminaryReport : Long? = null,
 )
 
 data class FuelEntityDto(

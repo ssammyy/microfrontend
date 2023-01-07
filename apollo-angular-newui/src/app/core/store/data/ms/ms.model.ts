@@ -857,6 +857,7 @@ export class WorkPlanInspectionDto {
     totalComplianceValue: string;
     currentDate: Date;
     latestPreliminaryReport: number;
+    latestFinalPreliminaryReport: number;
 }
 
 export class CountryListDto {

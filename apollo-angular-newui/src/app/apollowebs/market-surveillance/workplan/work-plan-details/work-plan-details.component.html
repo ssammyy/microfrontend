@@ -977,6 +977,17 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod == false
+                                                && workPlanInspection?.preliminaryReport?.rejectedStatus == false && workPlanInspection?.msPreliminaryReportStatus
+                                                && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
+                                                    (click)="openModalAddDetails('updateHOFHODPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    data-target="#preliminaryReportModal"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
                                             <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.preliminaryReport?.approvedStatus
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus== false
                                                 && workPlanInspection?.preliminaryReport?.approvedStatusHod== false
@@ -1218,7 +1229,7 @@
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
-                                                    (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    (click)="openModalAddDetails('updateIOPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
@@ -1228,7 +1239,7 @@
                                                 && workPlanInspection?.preliminaryReport?.approvedStatus == false && workPlanInspection?.preliminaryReport?.rejectedStatusHod
                                                 && workPlanInspection?.preliminaryReport?.rejectedStatus && workPlanInspection?.msPreliminaryReportStatus
                                                 && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
-                                                    (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
+                                                    (click)="openModalAddDetails('updateIOPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
                                                     class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPDATE PROGRESS REPORT</span>
@@ -4627,6 +4638,13 @@
                             Close
                         </button>
                         <div *ngIf="(currDiv == 'createPreliminary')">
+                            <button *ngIf="investInspectReportForm.valid" mat-raised-button   data-dismiss="modal"
+                                    class="btn btn-success" (click)="onClickSavePreliminaryReportWhichWasDataReport()" type="button" >SUBMIT
+                            </button>
+                            <button *ngIf="investInspectReportForm.invalid" mat-raised-button (click)="onClickSavePreliminaryReportWhichWasDataReport()" class="btn btn-success" type="button" >SUBMIT
+                            </button>
+                        </div>
+                        <div *ngIf="(currDiv == 'updateIOPreliminary')">
                             <button *ngIf="investInspectReportForm.valid" mat-raised-button   data-dismiss="modal"
                                     class="btn btn-success" (click)="onClickSavePreliminaryReportWhichWasDataReport()" type="button" >SUBMIT
                             </button>

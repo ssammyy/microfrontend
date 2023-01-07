@@ -285,6 +285,60 @@ class MSJSONControllers(
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
     }
 
+    @PostMapping("/update/upload-final-report")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanUploadFinalReport(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        var versionNumber =1L
+        val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReport(workPlanScheduled.id,1,1)
+
+        if (uploadFound!=null){
+            versionNumber= uploadFound.versionNumber?.plus(1L)!!
+        }
+
+        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"FINAL_REPORT",workPlanScheduled, versionNumber, 1)
+
+        return msWorkPlanDaoService.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,fileDoc.second.id?:throw ExpectedDataNotFound("MISSING DOC ID"),true)
+    }
+
+    @PostMapping("/update/upload-final-report-hod-hof")
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY') or hasAuthority('MS_HOF_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanUploadFinalReportHODHOF(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        var versionNumber =1L
+        val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReport(workPlanScheduled.id,1,1)
+
+        if (uploadFound!=null){
+            versionNumber= uploadFound.versionNumber?.plus(1L)!!
+        }
+
+        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"FINAL_REPORT",workPlanScheduled, versionNumber, 1)
+
+        return msWorkPlanDaoService.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,fileDoc.second.id?:throw ExpectedDataNotFound("MISSING DOC ID"),false)
+    }
+
     @PostMapping("/workPlan/inspection/add/seizure-declaration")
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

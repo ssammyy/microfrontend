@@ -2192,24 +2192,27 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     }
 
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(
         referenceNo: String,
         batchReferenceNo: String,
-        body: PreliminaryReportDto,
-        finalReportStatus: Boolean
+        uploadDocID: Long,
+        officerUpdate: Boolean
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
-//        val dataFileSaved = workPlanInspectionDetailsAddPreliminaryReport(body, workPlanScheduled, map, loggedInUser,finalReportStatus)
+        val preliminaryDetailsFound = findPreliminaryReportByWorkPlanGeneratedIDAndFinalReportStatus(workPlanScheduled.id, map.activeStatus)
+        workPlanInspectionDetailsPreliminaryReport(workPlanScheduled, map, loggedInUser, null,preliminaryDetailsFound?.id,true)
+    if(officerUpdate){
         with(workPlanScheduled){
             if (finalReportGenerated == map.activeStatus){
                 resubmitStatus = map.activeStatus
                 updatedStatus = map.activeStatus
             }
+            latestFinalPreliminaryReport =uploadDocID
             reportPendingReview = map.activeStatus
             finalReportGenerated= map.activeStatus
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionGenerateFinalPreliminaryReport
@@ -2221,44 +2224,37 @@ class MarketSurveillanceWorkPlanDaoServices(
         when (fileSaved.first.status) {
             map.successStatus -> {
                 workPlanScheduled = fileSaved.second
-                val remarksDto = RemarksToAddDto()
-                with(remarksDto){
-                    remarksDescription= body.remarks
-                    remarksStatus= "N/A"
-                    processID = workPlanScheduled.msProcessId
-                    userId= loggedInUser.id
-                }
-                val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id,remarksDto, map, loggedInUser)
-                when (remarksSaved.first.status) {
-                    map.successStatus -> {
-                        runBlocking {
-                            val hofDetails = workPlanScheduled.hofAssigned?.let { commonDaoServices.findUserByID(it) }
-                            val scheduleEmailDetails =  WorkPlanScheduledDTO()
-                            with(scheduleEmailDetails){
-                                baseUrl= applicationMapProperties.baseUrlValue
-                                fullName = hofDetails?.let { commonDaoServices.concatenateName(it) }
-                                refNumber = referenceNo
-                                batchRefNumber = batchReferenceNo
-                                yearCodeName = batchDetails.yearNameId?.yearName
-                                dateSubmitted = commonDaoServices.getCurrentDate()
+                runBlocking {
+                    val hofDetails = workPlanScheduled.hofAssigned?.let { commonDaoServices.findUserByID(it) }
+                    val scheduleEmailDetails =  WorkPlanScheduledDTO()
+                    with(scheduleEmailDetails){
+                        baseUrl= applicationMapProperties.baseUrlValue
+                        fullName = hofDetails?.let { commonDaoServices.concatenateName(it) }
+                        refNumber = referenceNo
+                        batchRefNumber = batchReferenceNo
+                        yearCodeName = batchDetails.yearNameId?.yearName
+                        dateSubmitted = commonDaoServices.getCurrentDate()
 
-                            }
-                            if (hofDetails != null) {
-                                commonDaoServices.sendEmailWithUserEntity(hofDetails, applicationMapProperties.mapMsWorkPlanFinalPreliminarySubmitedApprovalEmailHOF, scheduleEmailDetails, map, remarksSaved.first)
-                            }
+                    }
+                    if (hofDetails != null) {
+                        commonDaoServices.sendEmailWithUserEntity(hofDetails, applicationMapProperties.mapMsWorkPlanFinalPreliminarySubmitedApprovalEmailHOF, scheduleEmailDetails, map, fileSaved.first)
+                    }
 
-                        }
-                        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
-                    }
-                    else -> {
-                        throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
-                    }
                 }
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
             }
         }
+    }else{
+        with(workPlanScheduled){
+            latestFinalPreliminaryReport =uploadDocID
+        }
+
+        workPlanScheduled = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser).second
+    }
+
+    return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
 
     }
 
@@ -4283,19 +4279,21 @@ class MarketSurveillanceWorkPlanDaoServices(
             when {
                 saveDataFound!=null -> {
                     versionValue = saveDataFound.version?.plus(1)!!
+                    saveData.id = null
                     saveData= msFieldReportWhichIsPreliminaryReport(saveData, body, workPlanScheduled, map, user, versionValue,false)
                 }
                 else -> {
+                    saveData.id = null
                     saveData= msFieldReportWhichIsPreliminaryReport(saveData, body, workPlanScheduled, map, user, versionValue,false)
                 }
             }
 
-            investInspectReportRepo.findByIdOrNull(body.id?: -1L)
-                ?.let { fdr->
-                    saveData= msFieldReportWhichIsPreliminaryReport(fdr, body, workPlanScheduled, map, user, versionValue,false)
-                }?: kotlin.run {
-
-            }
+//            investInspectReportRepo.findByIdOrNull(body.id?: -1L)
+//                ?.let { fdr->
+//                    saveData= msFieldReportWhichIsPreliminaryReport(fdr, body, workPlanScheduled, map, user, versionValue,false)
+//                }?: kotlin.run {
+//
+//            }
 
             saveData = investInspectReportRepo.save(saveData)
             sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveData)}"
@@ -4325,7 +4323,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         workPlanScheduled: MsWorkPlanGeneratedEntity,
         map: ServiceMapsEntity,
         user: UsersEntity,
-        preliminaryReportID: Long,
+        preliminaryReportID: Long?,
         updateID: Long?,
         finalReport:Boolean
     ): Pair<ServiceRequestsEntity, MsPreliminaryReportEntity> {
@@ -4515,16 +4513,29 @@ class MarketSurveillanceWorkPlanDaoServices(
         map: ServiceMapsEntity,
         user: UsersEntity,
         docTypeName: String,
-        workPlanDetails: MsWorkPlanGeneratedEntity
+        workPlanDetails: MsWorkPlanGeneratedEntity,
+        versionNumberDetails: Long? = null,
+        isFinalReport: Int? = null
     ): Pair<ServiceRequestsEntity, MsUploadsEntity> {
         var upload = MsUploadsEntity()
             var sr = commonDaoServices.createServiceRequest(map)
             try {
                 with(upload) {
                     msWorkplanGeneratedId = workPlanDetails.id
+                    if(isFinalReport==1){
+                        isUploadFinalReport = 1
+                    }
                     workPlanUploads = 1
                     ordinaryStatus = 0
-                    versionNumber = 1
+                    versionNumber = when {
+                        versionNumberDetails != null -> {
+                            versionNumberDetails
+                        }
+                        else -> {
+                            1
+                        }
+                    }
+
                     name = docFile.originalFilename
                     fileType = docFile.contentType
                     documentType = docTypeName
@@ -5546,7 +5557,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.totalCompliance,
             wKP.totalCompliance,
             commonDaoServices.getCurrentDate(),
-            wKP.latestPreliminaryReport
+            wKP.latestPreliminaryReport,
+            wKP.latestFinalPreliminaryReport
         )
     }
 
