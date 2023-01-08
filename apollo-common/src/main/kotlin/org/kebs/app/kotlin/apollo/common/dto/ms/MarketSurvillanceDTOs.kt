@@ -592,6 +592,8 @@ data class InspectionInvestigationReportDto(
         var additionalInformationStatus: Boolean,
         var bsNumbersList: List<String>? = null,
         var version: Int? = null,
+        var createdBy: String? = null,
+        var createdOn: Timestamp? = null
 )
 
 data class KebsOfficersName (
@@ -851,6 +853,11 @@ data class WorkPlanFilesFoundDto(
         var fileName: String? = null,
         var documentType: String? = null,
         var fileContentType: String? = null,
+        var ordinaryStatus: Int? = null,
+        var isUploadFinalReport: Int? = null,
+        var versionNumber: Long? = null,
+        var createdBy: String? = null,
+        var createdOn: Timestamp? = null
 )
 
 data class FuelFilesFoundDto(

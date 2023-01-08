@@ -709,106 +709,21 @@
                                         <ng-template mat-tab-label>
                                             FINAL REPORT
                                         </ng-template>
-                                        <!--                                        <b class="text-primary">Lab Results Details</b>-->
-                                        <label style="color: #0082f3">Final Report Details</label>
                                         <div class="panel" style="max-height: 388px;">
-                                            <br>
-                                            <div *ngIf="workPlanInspection?.hodRecommendationStatus">
-                                                <div class="col-md-12 mb-3">
-                                                    <b class="text-secondary">FINAL RECOMMENDATIONS DETAILS BY HOD/RM</b>
-                                                    <p class="list-paragraph-accordion"><span>
-                                                        {{workPlanInspection?.hodRecommendationRemarks}}</span></p>
-                                                    <br/>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="col-md-12 mb-3">
-                                                    <label style="color: #0082f3">Final Report Details</label>
-                                                    <ul class="w-list-unstyled">
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">TO</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReportFinal?.reportTo}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">FROM</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReportFinal?.reportFrom}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">SUBJECT</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReportFinal?.reportSubject}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">TITLE</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReportFinal?.reportTitle}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">DATE</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReportFinal?.reportDate}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">SURVEILLANCE DATE FROM</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReportFinal?.surveillanceDateFrom}}</div>
-                                                        </li>
-                                                        <li class="list-item-accordion">
-                                                            <div class="list-title-accordion">SURVEILLANCE DATE TO</div>
-                                                            <div class="list-text-accordion">
-                                                                {{workPlanInspection?.preliminaryReportFinal?.surveillanceDateTo}}</div>
-                                                        </li>
-                                                        <br/>
-                                                        <b class="text-secondary">BACKGROUND DETAILS</b>
-                                                        <br/>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.preliminaryReportFinal?.reportBackground}}</span></p>
-                                                        <br/>
-                                                        <b class="text-secondary">OBJECTIVES DETAILS</b>
-                                                        <br/>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.preliminaryReportFinal?.surveillanceObjective}}</span></p>
-                                                        <br/>
-                                                        <br/>
-                                                        <b class="text-secondary">CONCLUSIONS DETAILS</b>
-                                                        <br/>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.preliminaryReportFinal?.surveillanceConclusions}}</span></p>
-                                                        <br/>
-                                                        <b class="text-secondary">RECOMMENDATIONS DETAILS</b>
-                                                        <br/>
-                                                        <p class="list-paragraph-accordion"><span>
-                                                            {{workPlanInspection?.preliminaryReportFinal?.surveillanceRecommendation}}</span></p>
-                                                        <br/>
-                                                    </ul>
-                                                    <br>
-                                                    <label style="color: #0082f3">Officers Details</label>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOfficers" [source]="workPlanInspection?.preliminaryReportFinal?.kebsOfficersName"></ng2-smart-table>
-                                                    </div>
-                                                    <br>
-                                                    <label style="color: #0082f3">Outlets visited Details</label>
-                                                    <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsPreliminaryReportOutlets"
-                                                                         [source]="workPlanInspection?.preliminaryReportFinal?.parametersList"
-                                                        ></ng2-smart-table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div>
+                                            <div *ngIf="workPlanInspection?.workPlanFiles.length!=0">
                                                 <div class="form-row">
-                                                    <br>
-                                                    <label style="color: #0082f3">Sampled Product Details</label>
+                                                    <!--                                                    <div class="col-md-12 mb-3">-->
+                                                    <!--                                                        <label style="color: #0082f3">Photos/Documents</label>-->
+                                                    <!--                                                    </div>-->
                                                     <div class="table-striped table-condensed table-responsive">
-                                                        <ng2-smart-table [settings]="settingsSampleSubmitted"
-                                                                         [source]="workPlanInspection?.sampleSubmitted"
-                                                                         (custom)="onCustomSSFAction($event)"
+                                                        <ng2-smart-table [settings]="settingsFinalReportFiles"
+                                                                         [source]="workPlanInspection?.workPlanFiles | filterPipe: {fileName: 'FINAL_REPORT'}"
+                                                                         (custom)="onCustomWorkPlanFileViewAction($event)"
                                                         ></ng2-smart-table>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <br>
                                         </div>
                                     </mat-tab>
                                     <mat-tab *ngIf="workPlanInspection?.productList?.length!=0 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
@@ -1010,6 +925,21 @@
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                     (click)="openModalAddDetails('uploadFilesFinalReportHOFHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModalUpload"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE FINAL REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+
                                             <button  *ngIf="workPlanInspection?.finalReportGenerated
                                                 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
@@ -1265,8 +1195,8 @@
                                             && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal == false
                                             && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal
                                             && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
-                                                     (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#preliminaryReportFinalModal"
+                                                     (click)="openModalAddDetails('uploadFilesFinalReport')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModalUpload"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPDATE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
@@ -1278,8 +1208,8 @@
                                             && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal
                                             && workPlanInspection?.preliminaryReport?.rejectedStatusHod == false && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal
                                             && workPlanInspection?.updatedStatus ==false && workPlanInspection?.resubmitStatus ==false"
-                                                     (click)="openModalAddDetails('addPreliminaryRecommendation')" mat-raised-button="" data-toggle="modal"
-                                                     data-target="#preliminaryReportFinalModal"
+                                                     (click)="openModalAddDetails('uploadFilesFinalReport')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModalUpload"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">UPDATE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
@@ -1363,6 +1293,18 @@
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
 
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                     (click)="openModalAddDetails('uploadFilesFinalReportHOFHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModalUpload"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
 
@@ -1523,6 +1465,11 @@
                     </button>
                     <button *ngIf="(currDiv == 'uploadFilesFinalReport')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveFinalReportOfficerResults();"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadFilesFinalReportHOFHOD')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveFinalReportHOFHODResults();"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

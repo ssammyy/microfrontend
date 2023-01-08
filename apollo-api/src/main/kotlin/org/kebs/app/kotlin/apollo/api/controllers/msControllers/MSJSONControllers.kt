@@ -300,7 +300,7 @@ class MSJSONControllers(
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
 
         var versionNumber =1L
-        val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReport(workPlanScheduled.id,1,1)
+        val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReportOrderByIdDesc(workPlanScheduled.id,1,1)
 
         if (uploadFound!=null){
             versionNumber= uploadFound.versionNumber?.plus(1L)!!
@@ -326,7 +326,7 @@ class MSJSONControllers(
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
 
         var versionNumber =1L
-        val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReport(workPlanScheduled.id,1,1)
+        val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReportOrderByIdDesc(workPlanScheduled.id,1,1)
 
         if (uploadFound!=null){
             versionNumber= uploadFound.versionNumber?.plus(1L)!!
@@ -565,6 +565,7 @@ class MSJSONControllers(
         }
 
         fieldReport[0].kebsInspectors = officersNames
+        fieldReport[0].reportClassification?.uppercase()
 
         if (user != null) {
             val mySignature: ByteArray?
@@ -579,10 +580,25 @@ class MSJSONControllers(
             }
         }
 //        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+        var pathFileToSelect = applicationMapProperties.mapMSFieldReportPathTopSecret
+        when (fieldReport[0].reportClassification) {
+            "TOP SECRET" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathTopSecret
+            }
+            "SECRET" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathSecret
+            }
+            "CONFIDENTIAL" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathConfidential
+            }
+            "RESTRICTED" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathRestricted
+            }
+        }
 
         val pdfReportStream = reportsDaoService.extractReport(
             map,
-            applicationMapProperties.mapMSFieldReportPath,
+            pathFileToSelect,
             fieldReport
         )
 

@@ -201,7 +201,7 @@ interface IMsUploadsRepository : HazelcastRepository<MsUploadsEntity, Long> {
 
     fun findAllByMsComplaintIdAndComplaintUploads(msComplaintId: Long, complaintUploads: Int): List<MsUploadsEntity>?
     fun findAllByMsWorkplanGeneratedIdAndWorkPlanUploads(msWorkplanGeneratedId: Long, workPlanUploads: Int): List<MsUploadsEntity>?
-    fun findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReport(msWorkplanGeneratedId: Long, workPlanUploads: Int, isUploadFinalReport: Int): MsUploadsEntity?
+    fun findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReportOrderByIdDesc(msWorkplanGeneratedId: Long, workPlanUploads: Int, isUploadFinalReport: Int): MsUploadsEntity?
     fun findAllByMsFuelInspectionIdAndFuelPlanUploads(msFuelInspectionId: Long, fuelPlanUploads: Int): List<MsUploadsEntity>?
 
 }

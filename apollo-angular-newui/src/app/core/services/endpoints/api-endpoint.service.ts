@@ -796,6 +796,8 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_NOTIFICATION_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-notice-upload`,
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_REPORT_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-report-upload`,
         UPLOAD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/file/save`,
+        UPLOAD_FINAL_REPORT_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/update/upload-final-report`,
+        UPLOAD_FINAL_REPORT_HOF_HOD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/update/upload-final-report-hod-hof`,
         UPDATE_FIELD_REPORT_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/additional-info-field-report/save`,
         UPDATE_FINAL_COMPLAINT_REMARKS_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/final-feed-back/save`,
         INSPECTION_SCHEDULED_ADD_CHARGE_SHEET: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/charge-sheet`,

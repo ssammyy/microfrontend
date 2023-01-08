@@ -431,6 +431,11 @@ export class  WorkPlanFilesFoundDto {
     fileName: string;
     documentType: string;
     fileContentType: string;
+    ordinaryStatus: number;
+    isUploadFinalReport: number;
+    versionNumber: number;
+    createdBy: string;
+    createdOn: Date;
 }
 
 export class  FuelFilesFoundDto {
@@ -614,6 +619,8 @@ export class InspectionInvestigationReportDto {
     additionalInformationStatus: boolean;
     bsNumbersList: string[];
     version: number;
+    createdBy: string;
+    createdOn: Date;
 }
 
 export class FieldReportAdditionalInfo {

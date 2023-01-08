@@ -663,6 +663,18 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.path}")
     val mapMSFieldReportPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.top.secret.path}")
+    val mapMSFieldReportPathTopSecret: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.secret.path}")
+    val mapMSFieldReportPathSecret: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.confidential.path}")
+    val mapMSFieldReportPathConfidential: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.restricted.path}")
+    val mapMSFieldReportPathRestricted: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.payment.collection.path}")
     val mapSLPaymentPath: String = ""
 

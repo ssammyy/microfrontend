@@ -476,6 +476,16 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'number',
         filter: false,
       },
+      createdBy: {
+        title: 'CREATED BY',
+        type: 'string',
+        filter: false,
+      },
+      // createdOn: {
+      //   title: 'CREATED ON',
+      //   type: 'date',
+      //   filter: false,
+      // },
     },
     pager: {
       display: true,
@@ -865,6 +875,59 @@ export class WorkPlanDetailsComponent implements OnInit {
       //   type: 'custom',
       //   renderComponent: ConsignmentStatusComponent
       // }
+    },
+    pager: {
+      display: true,
+      perPage: 20,
+    },
+  };
+  public settingsFinalReportFiles = {
+    selectMode: 'single',  // single|multi
+    hideHeader: false,
+    hideSubHeader: false,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: false,
+      delete: false,
+      custom: [
+        // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
+        // {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
+        {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View</i>'},
+      ],
+      position: 'right', // left|right
+    },
+    delete: {
+      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      documentType: {
+        title: 'File NAME',
+        type: 'string',
+        filter: false,
+      },
+      fileName: {
+        title: 'DOCUMENT TYPE',
+        type: 'string',
+        filter: false,
+      },
+      versionNumber: {
+        title: 'VERSION NUMBER',
+        type: 'string',
+        filter: false,
+      },
+      createdBy: {
+        title: 'CREATED BY',
+        type: 'string',
+        filter: false,
+      },
+      // createdOn: {
+      //   title: 'CREATED ON',
+      //   type: 'date',
+      //   filter: false,
+      // },
     },
     pager: {
       display: true,
@@ -2357,7 +2420,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
-      'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport'];
+      'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2365,7 +2428,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
-      'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT'];
+      'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -3450,12 +3513,85 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Files(Final Report) Selected?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
-            // this.saveFilesResults();
+            this.saveFilesUploadFinalReportResults();
           });
     } else {
       this.msService.showError('NO FILE SELECTED FOR UPLOADED');
     }
 
+  }
+
+  onClickSaveFinalReportHOFHODResults() {
+    if (this.uploadedFilesOnly.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Files(Final Report) Selected?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
+            this.saveFilesUploadFinalReportResultsHOFHOD();
+          });
+    } else {
+      this.msService.showError('NO FILE SELECTED FOR UPLOADED');
+    }
+
+  }
+
+  saveFilesUploadFinalReportResults() {
+    if (this.uploadedFilesOnly.length > 0) {
+      this.SpinnerService.show();
+      const file = this.uploadedFilesOnly;
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+        // this.uploadedFiles.item(i).slice();
+      }
+      this.msService.saveWorkPlanFilesFinalReportIO(formData).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            this.uploadedFilesOnly = this.resetUploadedFiles;
+            console.log(data);
+            // this.loadStandards();
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  saveFilesUploadFinalReportResultsHOFHOD() {
+    if (this.uploadedFilesOnly.length > 0) {
+      this.SpinnerService.show();
+      const file = this.uploadedFilesOnly;
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+        // this.uploadedFiles.item(i).slice();
+      }
+      this.msService.saveWorkPlanFilesFinalReportHOFHOD(formData).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            this.uploadedFilesOnly = this.resetUploadedFiles;
+            console.log(data);
+            // this.loadStandards();
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
   }
 
   saveFilesResults(docTypeName: string) {
