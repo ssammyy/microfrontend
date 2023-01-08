@@ -660,6 +660,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.submission.path}")
     val mapMSSampleSubmissionPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.complaint.pdf.path}")
+    val mapMSComplaintPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.path}")
     val mapMSFieldReportPath: String = ""
 

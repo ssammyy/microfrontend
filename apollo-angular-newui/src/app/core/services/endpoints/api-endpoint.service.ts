@@ -651,6 +651,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
+        VIEW_PDF_COMPLAINT: `${ApiEndpointService.MS_CONTEXT}/report/complaint`,
         VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
         VIEW_PDF_FIELD_REPORT: `${ApiEndpointService.MS_CONTEXT}/report/ms-field-report`,
     };

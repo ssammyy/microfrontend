@@ -106,6 +106,13 @@ interface IMsSampleSubmittedCpViewRepository : HazelcastRepository<MsSampleSubmi
 }
 
 @Repository
+interface IMsComplaintPdfGenerationViewRepository : HazelcastRepository<MsComplaintPdfGenerationEntityView, Long> {
+    override fun findAll(pageable: Pageable): Page<MsComplaintPdfGenerationEntityView>
+
+    fun findAllByReferenceNumber(referenceNumber: String): List<MsComplaintPdfGenerationEntityView>
+}
+
+@Repository
 interface IMsAllocatedTasksCpViewRepository : HazelcastRepository<MsAllocatedTasksCpViewEntity, Long> {
     override fun findAll(pageable: Pageable): Page<MsAllocatedTasksCpViewEntity>
 

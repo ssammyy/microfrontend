@@ -729,6 +729,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                                 "/end-recommendation",
                                 handler::addWorkPlanScheduleEndFinalRecommendationAddingByDirector
                             )
+                            PUT(
+                                "/approval-final-preliminary-report",
+                                handler::updateWorkPlanScheduleApprovalPreliminaryReportDirector
+                            )
                         }
                     }
                     "/add".nest {

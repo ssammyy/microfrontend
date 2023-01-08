@@ -15,7 +15,6 @@ import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
 import org.springframework.core.io.ResourceLoader
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -32,6 +31,7 @@ class MSJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
     private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
+    private val iComplaintPdfViewRepo: IMsComplaintPdfGenerationViewRepository,
     private val iFieldReportViewRepo: IMsFieldReportViewRepository,
     private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
@@ -312,7 +312,7 @@ class MSJSONControllers(
     }
 
     @PostMapping("/update/upload-final-report-hod-hof")
-    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY') or hasAuthority('MS_HOF_MODIFY')")
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY') or hasAuthority('MS_HOF_MODIFY') or hasAuthority('MS_DIRECTOR_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateWorkPlanUploadFinalReportHODHOF(
         @RequestParam("referenceNo") referenceNo: String,
@@ -533,6 +533,51 @@ class MSJSONControllers(
         response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Dispostion", "inline; Sample-Submission-${ssfFile[0].sampleReferences}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
+    @RequestMapping(value = ["/report/complaint"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintPDF(
+        response: HttpServletResponse,
+        @RequestParam(value = "refNumber") refNumber: String
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val complaintFile = iComplaintPdfViewRepo.findAllByReferenceNumber(refNumber)
+
+//        val user = ssfFile[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
+
+//        if (user != null) {
+//            val mySignature: ByteArray?
+//            val image: ByteArrayInputStream?
+//            println("UserID is" + user.id)
+//            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+//            if (signatureFromDb != null) {
+//                mySignature= signatureFromDb.signature
+//                image = ByteArrayInputStream(mySignature)
+//                map["signaturePath"] = image
+//
+//            }
+//        }
+//        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            applicationMapProperties.mapMSComplaintPath,
+            complaintFile
+        )
+
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Complaint-${complaintFile[0].referenceNumber}.pdf;")
         response.outputStream.let { responseOutputStream ->
             responseOutputStream.write(pdfReportStream.toByteArray())
             responseOutputStream.close()
