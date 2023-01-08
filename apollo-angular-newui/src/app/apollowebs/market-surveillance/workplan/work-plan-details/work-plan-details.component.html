@@ -5560,10 +5560,10 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
-                                        <ng-select aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                    class="form-control" formControlName="referencesStandards" name="referencesStandards">
-                                            <ng-option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardTitle}}</ng-option>
-                                        </ng-select>
+                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
+                                        </select>
 <!--                                        <select [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors"-->
 <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
 <!--                                                class="form-control" formControlName="referencesStandards" name="referencesStandards" required>-->
@@ -5913,7 +5913,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Fill in bellow activity Details</h4>
+                    <h4 class="modal-title">Fill in below the activity Details</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
