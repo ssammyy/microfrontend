@@ -2511,7 +2511,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   updatePreliminaryReportHOFHODIO() {
     if (this.workPlanInspection?.msPreliminaryReportStatus) {
-      this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport)
+      this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport);
       this.investInspectReportForm.patchValue(this.selectedPreliminaryReportDetails);
       this.dataSaveDataInspectorInvestList = [];
       for (let prod = 0; prod < this.selectedPreliminaryReportDetails?.kebsInspectors.length; prod++) {
@@ -2523,7 +2523,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         this.dataSaveBsNumber.push(this.selectedPreliminaryReportDetails.bsNumbersList[prod]);
       }
 
-      console.log(this.selectedPreliminaryReportDetails)
+      console.log(this.selectedPreliminaryReportDetails);
     }
   }
 

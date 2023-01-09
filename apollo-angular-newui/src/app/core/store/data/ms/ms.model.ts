@@ -306,15 +306,18 @@ export class WorkPlanEntityDto {
     productCategoryString: string;
     productString: string;
     productSubCategoryString: string;
+    workPlanCountiesTowns: WorkPlanCountyTownDto[];
 }
 
-// export class ComplaintsListDto {
-//     referenceNumber: string;
-//     complaintTitle: string;
-//     targetedProducts: string;
-//     transactionDate: Date;
-//     progressStep: string;
-// }
+export class WorkPlanCountyTownDto {
+    id: number;
+    regionId: string;
+    regionName: string;
+    countyId: string;
+    countyName: string;
+    townsId: string;
+    townsName: string;
+}
 export class ComplaintClassificationDto {
     productClassification: number;
     broadProductCategory: number;

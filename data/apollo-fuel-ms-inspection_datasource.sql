@@ -820,3 +820,50 @@ FROM DAT_KEBS_MS_COMPLAINT a
          JOIN  DAT_KEBS_MS_COMPLAINT_CUSTOMERS c ON a.id= c.COMPLAINT_ID;
 
 
+create table DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS
+(
+    ID                       NUMBER PRIMARY KEY,
+    COUNTY_ID              NUMBER REFERENCES CFG_KEBS_COUNTIES(ID),
+    TOWNS_ID              NUMBER REFERENCES CFG_KEBS_TOWNS(ID),
+    WORK_PLAN_ID              NUMBER REFERENCES DAT_KEBS_MS_WORKPLAN_GENARATED(ID),
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS_SEQ_trg
+    before
+        insert
+    on DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+
+create index DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS_seq_idx on DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS (STATUS,COUNTY_ID,TOWNS_ID,WORK_PLAN_ID) TABLESPACE qaimssdb_idx;
+/

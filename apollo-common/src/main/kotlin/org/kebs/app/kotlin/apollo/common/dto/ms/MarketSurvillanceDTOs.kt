@@ -288,6 +288,7 @@ data class WorkPlanInspectionDto(
         var analysisLabCountDoneAndSent: Int? = null,
         var productListRecommendationAddedCount: Int? = null,
         var productList: List<WorkPlanProductDto>? = null,
+        var workPlanCountiesTowns: List<WorkPlanCountyTownDto>? = null,
         var batchRefNumber: String? = null,
         var totalComplianceValue: String? = null,
         var currentDate : Date? = null,
@@ -368,6 +369,14 @@ data class WorkPlanEntityDto(
         var productCategoryString: String? = null,
         var productString: String? = null,
         var productSubCategoryString: String? = null,
+        var workPlanCountiesTowns: List<WorkPlanCountyTownDto>? = null,
+)
+
+data class WorkPlanCountyTownDto(
+        var id: Long? = null,
+        var regionId: String? = null,
+        var countyId: String? = null,
+        var townsId: String? = null,
 )
 
 data class WorkPlanScheduleApprovalDto(

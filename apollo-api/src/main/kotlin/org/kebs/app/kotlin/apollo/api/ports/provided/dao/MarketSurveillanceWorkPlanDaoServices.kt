@@ -49,6 +49,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val workPlanYearsCodesRepository: IWorkplanYearsCodesRepository,
     private val workPlanCreatedRepository: IWorkPlanCreatedRepository,
+    private val workPlanCountiesTownsRepo: IMsWorkPlanCountiesTownsRepository,
     private val generateWorkPlanRepo: IWorkPlanGenerateRepository,
     private val chargeSheetRepo: IChargeSheetRepository,
     private val dataReportRepo: IDataReportRepository,
@@ -3801,6 +3802,9 @@ class MarketSurveillanceWorkPlanDaoServices(
         val fileSaved = saveNewWorkPlanActivity(body, msType, batchDetail, map, loggedInUser)
         when (fileSaved.first.status) {
             map.successStatus -> {
+                body.workPlanCountiesTowns?.forEach { param ->
+                    workPlanInspectionDetailsAddCountiesTowns(param, fileSaved.second, map, loggedInUser)
+                }
                 val workPlanList = findALlWorkPlanDetailsAssociatedWithWorkPlanID(batchDetail.id, page).toList()
                 return mapWorkPlanInspectionListDto(workPlanList, mapWorkPlanBatchDetailsDto(batchDetail, map))
             }
@@ -3835,9 +3839,9 @@ class MarketSurveillanceWorkPlanDaoServices(
             nameActivity = body.nameActivity
             timeActivityDate = body.timeActivityDate
             timeActivityEndDate = body.timeActivityEndDate
-            region = body.region
-            county = body.county
-            townMarketCenter = body.townMarketCenter
+            region = commonDaoServices.findUserProfileByUserID(loggedInUser).regionId?.id
+            county = commonDaoServices.findUserProfileByUserID(loggedInUser).countyID?.id
+            townMarketCenter =  commonDaoServices.findUserProfileByUserID(loggedInUser).townID?.id
             locationActivityOther = body.locationActivityOther
             standardCategory = body.standardCategory
             rationale = body.rationale
@@ -3867,6 +3871,18 @@ class MarketSurveillanceWorkPlanDaoServices(
         }
 
         val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
+
+        val dataCountiesTownsList = fileSaved.second.id.let { findCountiesTownsByWorkPlanID(it) }
+        dataCountiesTownsList?.forEach { paramRemove ->
+            val result: WorkPlanCountyTownDto? = body.workPlanCountiesTowns?.find { actor -> actor.id == paramRemove.id }
+            if (result == null) {
+                workPlanCountiesTownsRepo.deleteById(paramRemove.id)
+            }
+        }
+
+        body.workPlanCountiesTowns?.forEach { param ->
+            workPlanInspectionDetailsAddCountiesTowns(param, fileSaved.second, map, loggedInUser)
+        }
 
         val remarksDto = RemarksToAddDto()
         with(remarksDto) {
@@ -4575,6 +4591,66 @@ class MarketSurveillanceWorkPlanDaoServices(
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, saveDataReport)
     }
+
+    fun workPlanInspectionDetailsAddCountiesTowns(
+        body: WorkPlanCountyTownDto,
+        workPlanScheduled: MsWorkPlanGeneratedEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, MsWorkPlanCountiesTownsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveDataCountiesTowns = MsWorkPlanCountiesTownsEntity()
+        try {
+            workPlanCountiesTownsRepo.findByIdOrNull(body.id ?: -1L)?.let { param ->
+                with(param) {
+                    regionID = body.regionId?.toLong()
+                    countyId = body.countyId?.toLong()
+                    townsId = body.townsId?.toLong()
+                    workPlanId = workPlanScheduled.id
+                    status = map.activeStatus
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+
+                }
+                saveDataCountiesTowns = workPlanCountiesTownsRepo.save(param)
+            } ?: kotlin.run {
+                with(saveDataCountiesTowns) {
+                    regionID = body.regionId?.toLong()
+                    countyId = body.countyId?.toLong()
+                    townsId = body.townsId?.toLong()
+                    workPlanId = workPlanScheduled.id
+                    status = map.activeStatus
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+
+                }
+                saveDataCountiesTowns = workPlanCountiesTownsRepo.save(saveDataCountiesTowns)
+            }
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(saveDataCountiesTowns)}"
+            sr.names = "Save Data Counties Towns Details"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepo.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepo.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveDataCountiesTowns)
+    }
+
 
     fun workPlanInspectionDetailsAddDataReportParams(
         body: DataReportParamsDto,
@@ -5346,8 +5422,9 @@ class MarketSurveillanceWorkPlanDaoServices(
             scopeOfCoverage = body.scopeOfCoverage
             timeActivityDate = body.timeActivityDate
             timeActivityEndDate = body.timeActivityEndDate
-            county = body.county
-            townMarketCenter = body.townMarketCenter
+            region = commonDaoServices.findUserProfileByUserID(usersEntity).regionId?.id
+            county = commonDaoServices.findUserProfileByUserID(usersEntity).countyID?.id
+            townMarketCenter =  commonDaoServices.findUserProfileByUserID(usersEntity).townID?.id
             locationActivityOther = body.locationActivityOther
             standardCategory = body.standardCategory
             broadProductCategory = body.broadProductCategory
@@ -6000,6 +6077,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val batchDetailsDto = mapWorkPlanBatchDetailsDto(batchDetails, map)
         val workPlanInspectionRemarks = findRemarksForWorkPlan(workPlanScheduledDetails.id)
         val workPlanFiles = findUploadedFileForWorkPlans(workPlanScheduledDetails.id)
+        val workPlanCountiesTowns = findCountiesTownsByWorkPlanID(workPlanScheduledDetails.id)
         val officerList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID,
             workPlanScheduledDetails.county ?: throw ExpectedDataNotFound("MISSING WORK-PLAN COUNTY ID"),
@@ -6151,6 +6229,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         return mapWorkPlanInspectionDto(
             workPlanScheduledDetails,
+            workPlanCountiesTowns,
             officerList,
             hofList,
             map,
@@ -6210,6 +6289,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     fun mapWorkPlanInspectionDto(
         wKP: MsWorkPlanGeneratedEntity,
+        workPlanCountiesTowns: List<MsWorkPlanCountiesTownsEntity>?,
         officerList: List<UsersEntity>?,
         hofList: List<UsersEntity>?,
         map: ServiceMapsEntity,
@@ -6368,6 +6448,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             analysisLabCountDoneAndSent,
             productListRecommendationAddedCount,
             productList,
+            workPlanCountiesTowns?.let { mapCountiesTownsListDto(it, map) },
             wKP.totalCompliance,
             wKP.totalCompliance,
             commonDaoServices.getCurrentDate(),
@@ -6388,6 +6469,17 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.versionNumber,
                 it.createdBy,
                 it.createdOn
+            )
+        }
+    }
+
+    fun mapCountiesTownsListDto(dataFoundList: List<MsWorkPlanCountiesTownsEntity>, map:ServiceMapsEntity): List<WorkPlanCountyTownDto> {
+        return dataFoundList.map {
+            WorkPlanCountyTownDto(
+                it.id,
+                it.regionID?.let { it1 -> commonDaoServices.findRegionEntityByRegionID(it1, map.activeStatus).region  },
+                it.countyId?.let { it1 -> commonDaoServices.findCountiesEntityByCountyId(it1, map.activeStatus).county },
+                it.townsId?.let { it1 -> commonDaoServices.findTownEntityByTownId(it1).town },
             )
         }
     }
@@ -6625,6 +6717,10 @@ class MarketSurveillanceWorkPlanDaoServices(
 
     fun findDataReportParamsByDataReportID(dataReportID: Long): List<MsDataReportParametersEntity>? {
         return dataReportParameterRepo.findByDataReportId(dataReportID)
+    }
+
+    fun findCountiesTownsByWorkPlanID(workPlanInspectionID: Long): List<MsWorkPlanCountiesTownsEntity>? {
+        return workPlanCountiesTownsRepo.findAllByWorkPlanID(workPlanInspectionID)
     }
 
     fun findSampleCollectedDetailByWorkPlanInspectionID(workPlanInspectionID: Long): MsSampleCollectionEntity? {
