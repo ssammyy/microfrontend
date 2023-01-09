@@ -4604,9 +4604,9 @@ class MarketSurveillanceWorkPlanDaoServices(
         try {
             workPlanCountiesTownsRepo.findByIdOrNull(body.id ?: -1L)?.let { param ->
                 with(param) {
-                    regionID = body.regionId?.toLong()
-                    countyId = body.countyId?.toLong()
-                    townsId = body.townsId?.toLong()
+                    regionID = body.regionId
+                    countyId = body.countyId
+                    townsId = body.townsId
                     workPlanId = workPlanScheduled.id
                     status = map.activeStatus
                     modifiedBy = commonDaoServices.concatenateName(user)
@@ -4616,9 +4616,9 @@ class MarketSurveillanceWorkPlanDaoServices(
                 saveDataCountiesTowns = workPlanCountiesTownsRepo.save(param)
             } ?: kotlin.run {
                 with(saveDataCountiesTowns) {
-                    regionID = body.regionId?.toLong()
-                    countyId = body.countyId?.toLong()
-                    townsId = body.townsId?.toLong()
+                    regionID = body.regionId
+                    countyId = body.countyId
+                    townsId = body.townsId
                     workPlanId = workPlanScheduled.id
                     status = map.activeStatus
                     createdBy = commonDaoServices.concatenateName(user)
@@ -6203,7 +6203,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         var updateWorkPlan: WorkPlanEntityDto? = null
         if (workPlanScheduledDetails.onsiteStartStatus != map.activeStatus) {
-            updateWorkPlan = mapWorkPlanUpdateEntity(workPlanScheduledDetails)
+            updateWorkPlan = mapWorkPlanUpdateEntity(workPlanScheduledDetails, map,workPlanCountiesTowns)
         }
 
 
@@ -6257,7 +6257,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         )
     }
 
-    private fun mapWorkPlanUpdateEntity(wkp: MsWorkPlanGeneratedEntity): WorkPlanEntityDto {
+    private fun mapWorkPlanUpdateEntity(wkp: MsWorkPlanGeneratedEntity, map:ServiceMapsEntity,workPlanCountiesTowns: List<MsWorkPlanCountiesTownsEntity>?): WorkPlanEntityDto {
         return WorkPlanEntityDto(
             wkp.id,
             wkp.complaintDepartment,
@@ -6284,6 +6284,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             wkp.productCategoryString,
             wkp.productString,
             wkp.productSubCategoryString,
+            workPlanCountiesTowns?.let { mapCountiesTownsListDto(it, map) },
         )
     }
 
@@ -6477,8 +6478,11 @@ class MarketSurveillanceWorkPlanDaoServices(
         return dataFoundList.map {
             WorkPlanCountyTownDto(
                 it.id,
+                it.regionID?.let { it1 -> commonDaoServices.findRegionEntityByRegionID(it1, map.activeStatus).id  },
                 it.regionID?.let { it1 -> commonDaoServices.findRegionEntityByRegionID(it1, map.activeStatus).region  },
+                it.countyId?.let { it1 -> commonDaoServices.findCountiesEntityByCountyId(it1, map.activeStatus).id },
                 it.countyId?.let { it1 -> commonDaoServices.findCountiesEntityByCountyId(it1, map.activeStatus).county },
+                it.townsId?.let { it1 -> commonDaoServices.findTownEntityByTownId(it1).id },
                 it.townsId?.let { it1 -> commonDaoServices.findTownEntityByTownId(it1).town },
             )
         }

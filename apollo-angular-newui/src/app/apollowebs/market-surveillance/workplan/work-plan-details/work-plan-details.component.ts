@@ -27,7 +27,7 @@ import {
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
   SeizureDeclarationDto, SeizureDto, SeizureListDto,
-  SSFSaveComplianceStatusDto, SSFSendingComplianceStatus,
+  SSFSaveComplianceStatusDto, SSFSendingComplianceStatus, WorkPlanCountyTownDto,
   WorkPlanEntityDto,
   WorkPlanFeedBackDto,
   WorkPlanFinalRecommendationDto,
@@ -90,6 +90,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
+  dataSaveWorkPlanCounties: WorkPlanCountyTownDto;
+  dataSaveWorkPlanCountiesList: WorkPlanCountyTownDto[] = [];
   latestProgressReport: InspectionInvestigationReportDto;
   selectedSFFDetails: SampleSubmissionDto;
   selectedSeizedDetails: SeizureListDto;
@@ -123,6 +125,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   preliminaryReportParamForm!: FormGroup;
   investInspectReportInspectorsForm!: FormGroup;
   actionOnSiezedGoodsForm!: FormGroup;
+  addCountyTownForm!: FormGroup;
   clientEmailNotificationForm!: FormGroup;
   ssfClientEmailNotificationForm!: FormGroup;
   // chargeSheetForm!: FormGroup;
@@ -223,6 +226,9 @@ export class WorkPlanDetailsComponent implements OnInit {
   selectedCounty = 0;
   selectedRegion = 0;
   selectedTown = 0;
+  selectedRegionName: string;
+  selectedTownName: string;
+  selectedCountyName: string;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
 
@@ -1915,6 +1921,16 @@ export class WorkPlanDetailsComponent implements OnInit {
       // remarks : ['', Validators.required],
     });
 
+    this.addCountyTownForm = this.formBuilder.group({
+      regionId: ['', Validators.required],
+      countyId: ['', Validators.required],
+      townsId: ['', Validators.required],
+      regionName: 'N/A',
+      countyName: 'N/A',
+      townsName: 'N/A',
+    });
+
+
     this.preliminaryReportFinalForm = this.formBuilder.group({
       id : null,
       reportTo : ['', Validators.required],
@@ -1989,9 +2005,9 @@ export class WorkPlanDetailsComponent implements OnInit {
       scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
       timeActivityEndDate: ['', Validators.required],
-      region: ['', Validators.required],
-      county: ['', Validators.required],
-      townMarketCenter: ['', Validators.required],
+      region: null,
+      county: null,
+      townMarketCenter: null,
       locationActivityOther: ['', Validators.required],
       productString: ['', Validators.required],
       resourcesRequired: null,
@@ -2195,6 +2211,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.actionOnSiezedGoodsForm.controls;
   }
 
+  get formAddCountyTownForm(): any {
+    return this.addCountyTownForm.controls;
+  }
+
   get formAssignOfficerForm(): any {
     return this.assignOfficerForm.controls;
   }
@@ -2329,11 +2349,22 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  // public onFileSelected(event: EventEmitter<File[]>) {
-  //   const file: File = event[0];
-  //   console.log(file);
-  //
-  // }
+  onClickAddCountyTown() {
+    this.dataSaveWorkPlanCounties = this.addCountyTownForm.value;
+    console.log(this.dataSaveWorkPlanCounties);
+    this.dataSaveWorkPlanCountiesList.push(this.dataSaveWorkPlanCounties);
+    this.addCountyTownForm.reset();
+  }
+
+  // Remove Form repeater values
+  removeDataCountyTown(index) {
+    console.log(index);
+    if (index === 0) {
+      this.dataSaveWorkPlanCountiesList.splice(index, 1);
+    } else {
+      this.dataSaveWorkPlanCountiesList.splice(index, index);
+    }
+  }
 
   updateSelectedRecommendation() {
     this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
@@ -2573,6 +2604,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSaveResourcesRequiredList = [];
       for (let prod = 0; prod < this.workPlanInspection?.updateWorkPlan?.resourcesRequired.length; prod++) {
         this.dataSaveResourcesRequiredList.push(this.workPlanInspection?.updateWorkPlan.resourcesRequired[prod]);
+      }
+
+      this.dataSaveWorkPlanCountiesList = [];
+      for (let prod = 0; prod < this.workPlanInspection?.updateWorkPlan?.workPlanCountiesTowns.length; prod++) {
+        this.dataSaveWorkPlanCountiesList.push(this.workPlanInspection?.updateWorkPlan.workPlanCountiesTowns[prod]);
       }
     }
   }
@@ -5026,22 +5062,34 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.addNewScheduleForm?.get('region')?.value;
-    this.addNewScheduleForm.controls.county.enable();
+    this.selectedRegion = this.addCountyTownForm?.get('regionId')?.value;
+    this.selectedRegionName = this.msRegions.find(pr => pr.id === this.selectedRegion)?.region;
+    this.addCountyTownForm.controls.countyId.enable();
+    // this.msCounties = this.msCounties.sort((a, b) => a.county > b.county ? 1 : -1);
+    // this.msCounties = this.msCounties.filter(x => String(this.dataSaveResourcesRequired.resourceName) === String(x.regionId));
     console.log(`region set to ${this.selectedRegion}`);
   }
 
 
   updateSelectedCounty() {
-    this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
-    this.addNewScheduleForm.controls.townMarketCenter.enable();
+    this.selectedCounty = this.addCountyTownForm?.get('countyId')?.value;
+    this.selectedCountyName = this.msCountiesList.find(pr => pr.id === this.selectedCounty)?.county;
+    this.addCountyTownForm.controls.townsId.enable();
     this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
-
+    // this.msTowns = this.msTowns.sort((a, b) => a.town > b.town ? 1 : -1);
+    // this.msService.msCountiesListDetails().subscribe(
+    //     (dataCounties: County[]) => {
+    //       this.selectedCountyName = dataCounties.find(x => x.id === this.selectedCounty).county;
+    //     },
+    // );
   }
 
   updateSelectedTown() {
-    this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
-    console.log(`town set to ${this.selectedTown}`);
+    this.selectedTown = this.addCountyTownForm?.get('townsId')?.value;
+    this.selectedTownName = this.msTowns.find(pr => pr.id === this.selectedTown)?.town;
+    // // tslint:disable-next-line:no-shadowed-variable
+    // this.selectedTownName = this.msTowns?.find(x => x.id === this.selectedTown).town;
+    // console.log(`town set to ${this.selectedTown}`);
   }
 
   onChangeSelectedProductSubcategory() {
@@ -5066,6 +5114,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       if (this.workPlanInspection.submittedForApprovalStatus) {
         this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
         this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
+        this.dataSaveWorkPlan.workPlanCountiesTowns = this.dataSaveWorkPlanCountiesList;
         if (this.dataSaveWorkPlan?.remarks !== null) {
           this.msService.msUpdateWorkPlanScheduleDetails(
               this.workPlanInspection.batchDetails.referenceNumber,

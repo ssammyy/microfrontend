@@ -311,11 +311,11 @@ export class WorkPlanEntityDto {
 
 export class WorkPlanCountyTownDto {
     id: number;
-    regionId: string;
+    regionId: number;
     regionName: string;
-    countyId: string;
+    countyId: number;
     countyName: string;
-    townsId: string;
+    townsId: number;
     townsName: string;
 }
 export class ComplaintClassificationDto {
@@ -865,6 +865,7 @@ export class WorkPlanInspectionDto {
     analysisLabCountDoneAndSent: number;
     productListRecommendationAddedCount: number;
     productList: WorkPlanProductDto[];
+    workPlanCountiesTowns: WorkPlanCountyTownDto[];
     batchRefNumber: string;
     totalComplianceValue: string;
     currentDate: Date;

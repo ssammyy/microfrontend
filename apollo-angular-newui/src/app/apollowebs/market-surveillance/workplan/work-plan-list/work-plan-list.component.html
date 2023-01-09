@@ -412,6 +412,7 @@
                                         <div class="col">
                                             <div class="form-group" >
                                                 <label><b>Region</b></label>
+                                                <input id="regionName" type="hidden" formControlName="regionName" name="regionName" ngModel="{{selectedRegionName}}">
                                                 <select (change)="updateSelectedRegion()"
                                                         [class.is-invalid]="formAddCountyTownForm.regionId.invalid && formAddCountyTownForm.regionId.errors"
                                                         aria-describedby="inputGroup-sizing-lg" aria-label="Small"
@@ -428,6 +429,7 @@
                                         <div class="col">
                                             <div class="form-group" >
                                                 <label><b>County</b></label>
+                                                <input id="countyName" type="hidden" formControlName="countyName" name="countyName" ngModel="{{selectedCountyName}}">
                                                 <select (change)="updateSelectedCounty()"
                                                         [class.is-invalid]="formAddCountyTownForm.countyId.invalid && formAddCountyTownForm.countyId.errors"
                                                         aria-describedby="inputGroup-sizing-lg" aria-label="Small" disabled
@@ -447,6 +449,7 @@
                                         <div class="col">
                                             <div class="form-group" >
                                                 <label><b>Town/Market center</b></label>
+                                                <input id="townsName" type="hidden" formControlName="townsName" name="townsName" ngModel="{{selectedTownName}}">
                                                 <select (change)="updateSelectedTown()"
                                                         [class.is-invalid]="formAddCountyTownForm.townsId.invalid && formAddCountyTownForm.townsId.errors"
                                                         aria-describedby="inputGroup-sizing-lg" aria-label="Small" disabled
@@ -501,7 +504,8 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <br>
+                            <br>
 
                             <div class="row">
 

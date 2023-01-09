@@ -374,9 +374,12 @@ data class WorkPlanEntityDto(
 
 data class WorkPlanCountyTownDto(
         var id: Long? = null,
-        var regionId: String? = null,
-        var countyId: String? = null,
-        var townsId: String? = null,
+        var regionId: Long? = null,
+        var regionName: String? = null,
+        var countyId: Long? = null,
+        var countyName: String? = null,
+        var townsId: Long? = null,
+        var townsName: String? = null,
 )
 
 data class WorkPlanScheduleApprovalDto(

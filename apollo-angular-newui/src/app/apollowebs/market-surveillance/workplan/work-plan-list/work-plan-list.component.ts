@@ -45,6 +45,7 @@ export class WorkPlanListComponent implements OnInit {
   selectedRegion = 0;
   selectedCounty = 0;
   selectedTown = 0;
+  selectedRegionName: string;
   selectedTownName: string;
   selectedCountyName: string;
   county$: Observable<County[]>;
@@ -156,7 +157,7 @@ export class WorkPlanListComponent implements OnInit {
   loadedData!: WorkPlanScheduleListDetailsDto;
   dataSaveWorkPlan: WorkPlanEntityDto;
   dataSaveWorkPlanCounties: WorkPlanCountyTownDto;
-  dataSaveWorkPlanCountiesList: WorkPlanCountyTownDto[];
+  dataSaveWorkPlanCountiesList: WorkPlanCountyTownDto[] = [];
   dataSaveAllWorkPlan: AllWorkPlanDetails;
 
   addResourceRequiredForm!: FormGroup;
@@ -205,9 +206,9 @@ export class WorkPlanListComponent implements OnInit {
       regionId: ['', Validators.required],
       countyId: ['', Validators.required],
       townsId: ['', Validators.required],
-      regionName: null,
-      countyName: null,
-      townsName: null,
+      regionName: 'N/A',
+      countyName: 'N/A',
+      townsName: 'N/A',
     });
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -422,12 +423,6 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   onClickAddCountyTown() {
-    // tslint:disable-next-line:max-line-length
-    this.addCountyTownForm?.get('regionName')?.setValue(this.msRegions.find(pr => String(pr.id) === this.addCountyTownForm.get('regionId').value));
-    // tslint:disable-next-line:max-line-length
-    this.addCountyTownForm?.get('countyName')?.setValue(this.msCounties.find(pr => String(pr.id) === this.addCountyTownForm.get('countyId').value));
-    // tslint:disable-next-line:max-line-length
-    this.addCountyTownForm?.get('townsName')?.setValue(this.msTowns.find(pr => String(pr.id) === this.addCountyTownForm.get('townsId').value));
     this.dataSaveWorkPlanCounties = this.addCountyTownForm.value;
     console.log(this.dataSaveWorkPlanCounties);
     this.dataSaveWorkPlanCountiesList.push(this.dataSaveWorkPlanCounties);
@@ -456,6 +451,7 @@ export class WorkPlanListComponent implements OnInit {
 
   updateSelectedRegion() {
     this.selectedRegion = this.addCountyTownForm?.get('regionId')?.value;
+    this.selectedRegionName = this.msRegions.find(pr => pr.id === this.selectedRegion)?.region;
     this.addCountyTownForm.controls.countyId.enable();
     // this.msCounties = this.msCounties.sort((a, b) => a.county > b.county ? 1 : -1);
     // this.msCounties = this.msCounties.filter(x => String(this.dataSaveResourcesRequired.resourceName) === String(x.regionId));
@@ -464,6 +460,7 @@ export class WorkPlanListComponent implements OnInit {
 
   updateSelectedCounty() {
     this.selectedCounty = this.addCountyTownForm?.get('countyId')?.value;
+    this.selectedCountyName = this.msCounties.find(pr => pr.id === this.selectedCounty)?.county;
     this.addCountyTownForm.controls.townsId.enable();
     this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
     // this.msTowns = this.msTowns.sort((a, b) => a.town > b.town ? 1 : -1);
@@ -476,6 +473,7 @@ export class WorkPlanListComponent implements OnInit {
 
   updateSelectedTown() {
     this.selectedTown = this.addCountyTownForm?.get('townsId')?.value;
+    this.selectedTownName = this.msTowns.find(pr => pr.id === this.selectedTown)?.town;
     // // tslint:disable-next-line:no-shadowed-variable
     // this.selectedTownName = this.msTowns?.find(x => x.id === this.selectedTown).town;
     // console.log(`town set to ${this.selectedTown}`);
