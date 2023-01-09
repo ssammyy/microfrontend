@@ -589,6 +589,8 @@ export class PreliminaryReportDto {
     rejectedStatusHodFinal: boolean;
     approvedStatusHod: boolean;
     rejectedStatusHod: boolean;
+    approvedStatusDirectorFinal: boolean;
+    rejectedStatusDirectorFinal: boolean;
 }
 
 export class InspectionInvestigationReportDto {

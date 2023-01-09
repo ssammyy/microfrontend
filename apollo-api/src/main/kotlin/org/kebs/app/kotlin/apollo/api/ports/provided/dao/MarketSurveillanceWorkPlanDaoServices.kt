@@ -1758,8 +1758,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
                         runBlocking {
                             if (body.approvalStatus) {
-                                val hodDetails =
-                                    workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                                val hodDetails =workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
                                 val taskNotify = NotificationBodyDto().apply {
                                     fromName = commonDaoServices.concatenateName(loggedInUser)
                                     toName = hodDetails?.let { commonDaoServices.concatenateName(it) }
@@ -1957,7 +1956,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                             msFinalReportStatus = map.activeStatus
                             reportPendingReview = map.inactiveStatus
                             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalReportApprovedHODRM
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameDirector
                             val directorDetails = commonDaoServices.findAllUsersByDesignation(
                                 map,
                                 applicationMapProperties.mapMsComplaintAndWorkPlanDesignationDirector
@@ -2112,65 +2111,31 @@ class MarketSurveillanceWorkPlanDaoServices(
         var remarkStatusValue = "N/A"
         when {
             body.approvalStatus -> {
-                when {
-                    finalReportStatus -> {
-                        with(fetchedPreliminary) {
-                            approvedHodFinal = "APPROVED"
-                            approvedRemarksHodFinal = body.remarks
-                            approvedByHodFinal = commonDaoServices.concatenateName(loggedInUser)
-                            approvedStatusHodFinal = map.activeStatus
-                            rejectedStatusHodFinal = map.inactiveStatus
-                            approvedOnHodFinal = commonDaoServices.getCurrentDate()
-                            remarkStatusValue = approvedHodFinal as String
-                            scheduleEmailDetails.approvalStatus = remarkStatusValue
-                            emailDetails = applicationMapProperties.mapMsWorkPlanFinalPreliminaryApprovalByHODEmail
-                        }
-                    }
-                    else -> {
-                        with(fetchedPreliminary) {
-                            approvedHod = "APPROVED"
-                            approvedRemarksHod = body.remarks
-                            approvedByHod = commonDaoServices.concatenateName(loggedInUser)
-                            approvedStatusHod = map.activeStatus
-                            rejectedStatusHod = map.inactiveStatus
-                            approvedOnHod = commonDaoServices.getCurrentDate()
-                            remarkStatusValue = approvedHod as String
-                            scheduleEmailDetails.approvalStatus = remarkStatusValue
-                            emailDetails = applicationMapProperties.mapMsWorkPlanPreliminaryApprovalByHODEmail
-                        }
-                    }
+                with(fetchedPreliminary) {
+                    approvedDirectorFinal = "APPROVED"
+                    approvedRemarksDirectorFinal = body.remarks
+                    approvedByDirectorFinal = commonDaoServices.concatenateName(loggedInUser)
+                    approvedStatusDirectorFinal = map.activeStatus
+                    rejectedStatusDirectorFinal = map.inactiveStatus
+                    approvedOnDirectorFinal = commonDaoServices.getCurrentDate()
+                    remarkStatusValue = approvedDirectorFinal as String
+                    scheduleEmailDetails.approvalStatus = remarkStatusValue
+                    emailDetails = applicationMapProperties.mapMsWorkPlanFinalPreliminaryApprovalByDirectorEmail
                 }
 
 
             }
             else -> {
-                when {
-                    finalReportStatus -> {
-                        with(fetchedPreliminary) {
-                            rejectedHodFinal = "REJECTED"
-                            rejectedRemarksHodFinal = body.remarks
-                            rejectedByHodFinal = commonDaoServices.concatenateName(loggedInUser)
-                            approvedStatusHodFinal = map.inactiveStatus
-                            rejectedStatusHodFinal = map.activeStatus
-                            rejectedOnHodFinal = commonDaoServices.getCurrentDate()
-                            remarkStatusValue = rejectedHodFinal as String
-                            scheduleEmailDetails.approvalStatus = remarkStatusValue
-                            emailDetails = applicationMapProperties.mapMsWorkPlanFinalPreliminaryRejectedByHODEmail
-                        }
-                    }
-                    else -> {
-                        with(fetchedPreliminary) {
-                            rejectedHod = "REJECTED"
-                            rejectedRemarksHod = body.remarks
-                            rejectedByHod = commonDaoServices.concatenateName(loggedInUser)
-                            approvedStatusHod = map.inactiveStatus
-                            rejectedStatusHod = map.activeStatus
-                            rejectedOnHod = commonDaoServices.getCurrentDate()
-                            remarkStatusValue = rejectedHod as String
-                            scheduleEmailDetails.approvalStatus = remarkStatusValue
-                            emailDetails = applicationMapProperties.mapMsWorkPlanPreliminaryRejectedByHODEmail
-                        }
-                    }
+                with(fetchedPreliminary) {
+                    rejectedDirectorFinal = "REJECTED"
+                    rejectedRemarksDirectorFinal = body.remarks
+                    rejectedByDirectorFinal = commonDaoServices.concatenateName(loggedInUser)
+                    approvedStatusDirectorFinal = map.inactiveStatus
+                    rejectedStatusDirectorFinal = map.activeStatus
+                    rejectedOnDirectorFinal = commonDaoServices.getCurrentDate()
+                    remarkStatusValue = rejectedDirectorFinal as String
+                    scheduleEmailDetails.approvalStatus = remarkStatusValue
+                    emailDetails = applicationMapProperties.mapMsWorkPlanFinalPreliminaryRejectedByDirectorEmail
                 }
             }
         }
@@ -2179,65 +2144,43 @@ class MarketSurveillanceWorkPlanDaoServices(
 
         with(workPlanScheduled) {
             when {
-                finalReportStatus -> {
-                    when {
-                        fetchedPreliminary.approvedStatusHodFinal == map.activeStatus -> {
-                            msFinalReportStatus = map.activeStatus
-                            reportPendingReview = map.inactiveStatus
-                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalReportApprovedHODRM
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
-                            val directorDetails = commonDaoServices.findAllUsersByDesignation(
-                                map,
-                                applicationMapProperties.mapMsComplaintAndWorkPlanDesignationDirector
-                            )
-                            directorDetails.forEach { dt ->
-                                val taskNotify = NotificationBodyDto().apply {
-                                    fromName = commonDaoServices.concatenateName(loggedInUser)
-                                    toName = dt.userId?.let { commonDaoServices.concatenateName(it) }
-                                    batchReferenceNoFound = batchReferenceNo
-                                    referenceNoFound = workPlanScheduled.referenceNumber
-                                    dateAssigned = commonDaoServices.getCurrentDate()
-                                    processType = when {
-                                        workPlanScheduled.complaintId != null -> {
-                                            "COMPLAINT-PLAN"
-                                        }
-                                        else -> {
-                                            "WORK-PLAN"
-                                        }
-                                    }
-                                }
+                fetchedPreliminary.approvedStatusDirectorFinal == map.activeStatus -> {
+                    msFinalReportStatus = map.activeStatus
+                    reportPendingReview = map.inactiveStatus
+                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalReportApprovedDIRECTOR
+                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+                    directorAssigned = loggedInUser.id
 
-                                createNotificationTask(
-                                    taskNotify,
-                                    applicationMapProperties.mapMsNotificationNewTask,
-                                    map, null, loggedInUser, dt.userId
-                                )
+                    val hodDetails =workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
+                    val taskNotify = NotificationBodyDto().apply {
+                        fromName = commonDaoServices.concatenateName(loggedInUser)
+                        toName = hodDetails?.let { commonDaoServices.concatenateName(it) }
+                        batchReferenceNoFound = batchReferenceNo
+                        referenceNoFound = workPlanScheduled.referenceNumber
+                        dateAssigned = commonDaoServices.getCurrentDate()
+                        processType = when {
+                            workPlanScheduled.complaintId != null -> {
+                                "COMPLAINT-PLAN"
+                            }
+                            else -> {
+                                "WORK-PLAN"
                             }
                         }
-                        fetchedPreliminary.rejectedStatusHodFinal == map.activeStatus -> {
-                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalReportRejectedHODRM
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
-                            updatedStatus = map.inactiveStatus
-                            resubmitStatus = map.inactiveStatus
-                        }
                     }
+
+                    createNotificationTask(
+                        taskNotify,
+                        applicationMapProperties.mapMsNotificationNewTask,
+                        map, null, loggedInUser, hodDetails
+                    )
+                }
+                fetchedPreliminary.rejectedStatusDirectorFinal == map.activeStatus -> {
+                    msProcessId = applicationMapProperties.mapMSWorkPlanInspectionFinalReportRejectedDirector
+                    userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+                    updatedStatus = map.inactiveStatus
+                    resubmitStatus = map.inactiveStatus
                 }
                 else -> {
-                    when {
-                        fetchedPreliminary.approvedStatusHod == map.activeStatus -> {
-                            msFinalReportStatus = map.inactiveStatus
-                            preliminaryApprovedStatus = map.activeStatus
-                            reportPendingReview = map.inactiveStatus
-                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportApprovedHODRM
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
-                        }
-                        fetchedPreliminary.rejectedStatusHod == map.activeStatus -> {
-                            msProcessId = applicationMapProperties.mapMSWorkPlanInspectionPreliminaryReportRejectedHODRM
-                            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
-                            updatedStatus = map.inactiveStatus
-                            resubmitStatus = map.inactiveStatus
-                        }
-                    }
 
                 }
             }
@@ -6559,6 +6502,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             data.rejectedStatusHodFinal == 1,
             data.approvedStatusHod == 1,
             data.rejectedStatusHod == 1,
+            data.approvedStatusDirectorFinal == 1,
+            data.rejectedStatusDirectorFinal == 1,
         )
     }
 

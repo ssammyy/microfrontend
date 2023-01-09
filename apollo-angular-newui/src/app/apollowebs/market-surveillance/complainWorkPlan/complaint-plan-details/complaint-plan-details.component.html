@@ -868,6 +868,52 @@
                                                     class="mat-button-wrapper">END ADDING FINAL REMARKS</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusDirectorFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusDirectorFinal == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                     (click)="openModalAddDetails('uploadFilesFinalReportHOFHOD')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModalUpload"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">UPDATE FINAL REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusDirectorFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusDirectorFinal == false
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                     (click)="openModalAddDetails('approveFinalPreliminaryDirector')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
+
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+                                            <button  *ngIf="workPlanInspection?.finalReportGenerated && workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
+                                                 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHodFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.approvedStatusDirectorFinal == false
+                                                && workPlanInspection?.preliminaryReportFinal?.rejectedStatusDirectorFinal
+                                                && workPlanInspection?.preliminaryReport?.approvedStatus
+                                                && workPlanInspection?.preliminaryReport?.approvedStatusHod"
+                                                     (click)="openModalAddDetails('approveFinalPreliminaryDirector')" mat-raised-button="" data-toggle="modal"
+                                                     data-target="#myModal1"
+                                                     class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
                                         </div>
                                         <div *ngIf="role == 'MS_HOD_MODIFY' || role == 'MS_RM_MODIFY'">
                                             <button  *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.approvedStatus ==false && workPlanInspection?.rejectedStatus ==false"
@@ -1704,6 +1750,33 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'approveFinalPreliminaryDirector')">
+                        <form [formGroup]="approvePreliminaryForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label ><b>Select Status</b></label>
+                                        <mat-form-field>
+                                            <mat-select placeholder="Please Select an option"
+                                                        [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
+                                                        formControlName="approvalStatus"  name="approvalStatus" >
+                                                <mat-option [value]="true">APPROVE</mat-option>
+                                                <mat-option [value]="false">DEFER</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks" required>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'addFinalRecommendationHOD')">
                         <form [formGroup]="finalRecommendationForm" class="form">
                             <div class="form-body">
@@ -2088,6 +2161,12 @@
                     </button>
                     <button *ngIf="(currDiv == 'approveFinalPreliminaryHOD')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveApproveFinalPreliminaryHOD(approvePreliminaryForm.valid);"
+                            [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'approveFinalPreliminaryDirector')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickSaveApproveFinalPreliminaryDirector(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -5560,10 +5639,10 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
-                                        <ng-select aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                                   class="form-control" formControlName="referencesStandards" name="referencesStandards">
-                                            <ng-option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardTitle}}</ng-option>
-                                        </ng-select>
+                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"
+                                                class="form-control" formControlName="referencesStandards" name="referencesStandards">
+                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
+                                        </select>
                                         <!--                                        <select [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors"-->
                                         <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
                                         <!--                                                class="form-control" formControlName="referencesStandards" name="referencesStandards" required>-->

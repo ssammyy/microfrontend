@@ -870,8 +870,12 @@ class ApplicationMapProperties {
     val mapMSWorkPlanInspectionFinalReportModified: Long = 0L
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportApprovedHODRM}")
     val mapMSWorkPlanInspectionFinalReportApprovedHODRM: Long = 0L
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportApprovedDIRECTOR}")
+    val mapMSWorkPlanInspectionFinalReportApprovedDIRECTOR: Long = 0L
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportRejectedHODRM}")
     val mapMSWorkPlanInspectionFinalReportRejectedHODRM: Long = 0L
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportRejectedDIRECTOR}")
+    val mapMSWorkPlanInspectionFinalReportRejectedDirector: Long = 0L
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.recommendationsADDED}")
     val mapMSWorkPlanInspectionRecommendationsADDED: Long = 0L
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.directorRemarksADDED}")
@@ -1027,8 +1031,14 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.HodApproveFinalPreliminaryEmail}")
     val mapMsWorkPlanFinalPreliminaryApprovalByHODEmail: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.DirectorApproveFinalPreliminaryEmail}")
+    val mapMsWorkPlanFinalPreliminaryApprovalByDirectorEmail: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.HodRejectedFinalPreliminaryEmail}")
     val mapMsWorkPlanFinalPreliminaryRejectedByHODEmail: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.DirectorRejectedFinalPreliminaryEmail}")
+    val mapMsWorkPlanFinalPreliminaryRejectedByDirectorEmail: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerWorkPlanRejectedEmail}")
     val mapMsWorkPlanScheduleSubmitedApprovalRejected: String = ""

@@ -925,6 +925,8 @@ data class PreliminaryReportDto(
         var rejectedStatusHodFinal: Boolean? = null,
         var approvedStatusHod: Boolean? = null,
         var rejectedStatusHod: Boolean? = null,
+        var approvedStatusDirectorFinal: Boolean? = null,
+        var rejectedStatusDirectorFinal: Boolean? = null,
 
 )
 

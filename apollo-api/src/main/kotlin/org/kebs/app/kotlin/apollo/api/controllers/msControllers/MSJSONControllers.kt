@@ -311,7 +311,7 @@ class MSJSONControllers(
         return msWorkPlanDaoService.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,fileDoc.second.id?:throw ExpectedDataNotFound("MISSING DOC ID"),true)
     }
 
-    @PostMapping("/update/upload-final-report-hod-hof")
+    @PostMapping("/update/upload-final-report-hod-hof-director")
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY') or hasAuthority('MS_HOF_MODIFY') or hasAuthority('MS_DIRECTOR_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateWorkPlanUploadFinalReportHODHOF(
