@@ -1070,6 +1070,13 @@
                                                 </button>
                                             </div>
 
+                                            <button  mat-raised-button="" data-toggle="modal"
+                                                    data-target="#sampleSubmitModal" (click)="openModalAddDetails('openSampleSubmitModal')"
+                                                    class="btn btn-sm btn-primary mr-2"><span
+                                                    class="mat-button-wrapper">ADD SAMPLE SUBMISSION</span>
+                                                <div class="mat-button-focus-overlay"></div>
+                                            </button>
+
                                             <div *ngIf="workPlanInspection?.submittedForApprovalStatus
                                             && workPlanInspection?.updatedStatus ==false
                                             && workPlanInspection?.resubmitStatus ==false
@@ -5665,7 +5672,7 @@
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
                                         <div class="refStandardsDesign">
-                                            <input type="text" list="refStandards" class="form-control two-column-input">
+                                            <input type="text" list="refStandards" formControlName="referencesStandards" name="referencesStandards" class="form-control two-column-input">
                                             <datalist id="refStandards">
                                                 <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
                                             </datalist>
@@ -6195,8 +6202,8 @@
                                                         aria-describedby="inputGroup-sizing-lg" aria-label="Small" disabled
                                                         class="form-control" formControlName="townsId" name="townsId" required>
                                                     <option [value]="" selected>Please select</option>
-                                                    <option *ngFor="let app of msTowns| filterPipe: {status: true, countyId: selectedCounty}"
-                                                            [ngValue]="app.id">{{app.town}}</option>
+                                                    <option *ngFor="let app of msTowns"
+                                                            [ngValue]="app?.id">{{app?.town}}</option>
                                                 </select>
                                                 <div *ngIf="submitted && formAddCountyTownForm.townsId.errors" class="invalid-feedback">
                                                     <div *ngIf="formAddCountyTownForm.townsId.errors.required">Town/Market center is required</div>

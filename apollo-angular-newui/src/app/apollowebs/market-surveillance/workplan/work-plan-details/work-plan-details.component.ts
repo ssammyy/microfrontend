@@ -1603,6 +1603,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   msRegions: RegionsEntityDto[] = null;
   msCountiesList: County[] = null;
   msTowns: Town[] = null;
+  msTownsOriginal: Town[] = [];
   currentDateDetails = new Date();
   post: Post = {
     startDate: new Date(Date.now()),
@@ -2352,8 +2353,21 @@ export class WorkPlanDetailsComponent implements OnInit {
   onClickAddCountyTown() {
     this.dataSaveWorkPlanCounties = this.addCountyTownForm.value;
     console.log(this.dataSaveWorkPlanCounties);
-    this.dataSaveWorkPlanCountiesList.push(this.dataSaveWorkPlanCounties);
-    this.addCountyTownForm.reset();
+    // tslint:disable-next-line:max-line-length
+    const  countyDetails = this.dataSaveWorkPlanCountiesList.filter(x => this.dataSaveWorkPlanCounties.regionId === x.regionId && this.dataSaveWorkPlanCounties.countyId === x.countyId && this.dataSaveWorkPlanCounties.townsId === x.townsId).length;
+    if (countyDetails > 0) {
+      // tslint:disable-next-line:max-line-length
+      this.msService.showWarning('You have already added this Region Name (' + this.dataSaveWorkPlanCounties.regionName + ') ,County Name (' + this.dataSaveWorkPlanCounties.countyName + ') and Town Name (' + this.dataSaveWorkPlanCounties.townsName + ')');
+    } else {
+      this.dataSaveWorkPlanCountiesList.push(this.dataSaveWorkPlanCounties);
+    }
+    this.msTowns = this.msTownsOriginal;
+    this.addCountyTownForm.controls.countyId.disable();
+    this.addCountyTownForm.controls.townsId.disable();
+    this.addCountyTownForm.get('regionId').reset();
+    this.addCountyTownForm.get('countyId').reset();
+    this.addCountyTownForm.get('townsId').reset();
+    // console.log(this.addCountyTownForm.value);
   }
 
   // Remove Form repeater values
@@ -2426,6 +2440,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.msService.msTownsListDetails().subscribe(
         (dataTowns: Town[]) => {
           this.msTowns = dataTowns;
+          this.msTownsOriginal = dataTowns;
         },
         error => {
           console.log(error);
@@ -5075,7 +5090,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.selectedCounty = this.addCountyTownForm?.get('countyId')?.value;
     this.selectedCountyName = this.msCountiesList.find(pr => pr.id === this.selectedCounty)?.county;
     this.addCountyTownForm.controls.townsId.enable();
-    // this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
+    console.log(`county selectedCountyName to ${this.selectedCountyName}`);
+    console.log(`county set to ${this.selectedCounty}`);
+    this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
+    console.log(`towns list set to ${this.msTowns}`);
     // this.msTowns = this.msTowns.sort((a, b) => a.town > b.town ? 1 : -1);
     // this.msService.msCountiesListDetails().subscribe(
     //     (dataCounties: County[]) => {

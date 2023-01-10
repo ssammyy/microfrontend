@@ -292,7 +292,7 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="addNewScheduleForm">
-                        <div class="form-group bmd-form-group is-filled">
+
                             <h5 class="mb-3" style="color: #0066B1">Work-Plan Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -455,8 +455,8 @@
                                                         aria-describedby="inputGroup-sizing-lg" aria-label="Small" disabled
                                                         class="form-control" formControlName="townsId" name="townsId" required>
                                                     <option [value]="" selected>Please select</option>
-                                                    <option *ngFor="let app of msTowns| filterPipe: {status: true, countyId: selectedCounty}"
-                                                            [ngValue]="app.id">{{app.town}}</option>
+                                                    <option *ngFor="let app of msTowns"
+                                                            [ngValue]="app?.id">{{app?.town}}</option>
                                                 </select>
                                                 <div *ngIf="submitted && formAddCountyTownForm.townsId.errors" class="invalid-feedback">
                                                     <div *ngIf="formAddCountyTownForm.townsId.errors.required">Town/Market center is required</div>
@@ -487,9 +487,9 @@
                                             </thead>
                                             <tbody>
                                             <tr *ngFor="let r of dataSaveWorkPlanCountiesList; let i=index">
-                                                <td>{{r.regionName}}</td>
-                                                <td>{{r.countyName}}</td>
-                                                <td>{{r.townsName}}</td>
+                                                <td>{{r?.regionName}}</td>
+                                                <td>{{r?.countyName}}</td>
+                                                <td>{{r?.townsName}}</td>
                                                 <td>
                                                     <button (click)="removeDataCountyTown(i)"
                                                             type="button"
@@ -603,7 +603,6 @@
                                 </div>
 
                             </div>
-                        </div>
                     </form>
                     <br>
                     <form [formGroup]="addResourceRequiredForm">

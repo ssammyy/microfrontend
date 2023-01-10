@@ -427,11 +427,21 @@ export class WorkPlanListComponent implements OnInit {
   onClickAddCountyTown() {
     this.dataSaveWorkPlanCounties = this.addCountyTownForm.value;
     console.log(this.dataSaveWorkPlanCounties);
-    this.dataSaveWorkPlanCountiesList.push(this.dataSaveWorkPlanCounties);
+    // tslint:disable-next-line:max-line-length
+    const  countyDetails = this.dataSaveWorkPlanCountiesList.filter(x => this.dataSaveWorkPlanCounties.regionId === x.regionId && this.dataSaveWorkPlanCounties.countyId === x.countyId && this.dataSaveWorkPlanCounties.townsId === x.townsId).length;
+    if (countyDetails > 0) {
+      // tslint:disable-next-line:max-line-length
+      this.msService.showWarning('You have already added this Region Name (' + this.dataSaveWorkPlanCounties.regionName + ') ,County Name (' + this.dataSaveWorkPlanCounties.countyName + ') and Town Name (' + this.dataSaveWorkPlanCounties.townsName + ')');
+    } else {
+      this.dataSaveWorkPlanCountiesList.push(this.dataSaveWorkPlanCounties);
+    }
     this.msTowns = this.msTownsOriginal;
+    this.addCountyTownForm.controls.countyId.disable();
+    this.addCountyTownForm.controls.townsId.disable();
     this.addCountyTownForm.get('regionId').reset();
     this.addCountyTownForm.get('countyId').reset();
     this.addCountyTownForm.get('townsId').reset();
+    // console.log(this.addCountyTownForm.value);
   }
 
   // Remove Form repeater values
