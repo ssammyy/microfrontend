@@ -5075,7 +5075,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.selectedCounty = this.addCountyTownForm?.get('countyId')?.value;
     this.selectedCountyName = this.msCountiesList.find(pr => pr.id === this.selectedCounty)?.county;
     this.addCountyTownForm.controls.townsId.enable();
-    this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
+    // this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
     // this.msTowns = this.msTowns.sort((a, b) => a.town > b.town ? 1 : -1);
     // this.msService.msCountiesListDetails().subscribe(
     //     (dataCounties: County[]) => {

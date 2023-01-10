@@ -6724,7 +6724,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     }
 
     fun findCountiesTownsByWorkPlanID(workPlanInspectionID: Long): List<MsWorkPlanCountiesTownsEntity>? {
-        return workPlanCountiesTownsRepo.findAllByWorkPlanID(workPlanInspectionID)
+        return workPlanCountiesTownsRepo.findAllByWorkPlanId(workPlanInspectionID)
     }
 
     fun findSampleCollectedDetailByWorkPlanInspectionID(workPlanInspectionID: Long): MsSampleCollectionEntity? {

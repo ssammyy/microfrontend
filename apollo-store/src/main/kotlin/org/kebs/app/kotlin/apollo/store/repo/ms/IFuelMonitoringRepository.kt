@@ -165,7 +165,7 @@ interface IMsWorkPlanCountiesTownsRepository : HazelcastRepository<MsWorkPlanCou
 //    @Query("SELECT * FROM DAT_KEBS_MS_SAMPLE_COLLECTION a INNER JOIN DAT_KEBS_MS_COLLECTION_PARAMETERS b ON a.ID = b.SAMPLE_COLLECTION_ID where a.ID = $P{ITEM_ID}")
 //    fun filterDateRange(@Param("fromDate") fromDate: Time, @Param("toDate") toDate: Time): List<ConsignmentDocumentEntity>?
 
-    fun findAllByWorkPlanID(workPlanGeneratedID: Long): List<MsWorkPlanCountiesTownsEntity>?
+    fun findAllByWorkPlanId(workPlanGeneratedID: Long): List<MsWorkPlanCountiesTownsEntity>?
 //    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
 //    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
 }

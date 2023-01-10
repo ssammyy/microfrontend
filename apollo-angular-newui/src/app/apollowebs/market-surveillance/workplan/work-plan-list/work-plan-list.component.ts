@@ -45,9 +45,9 @@ export class WorkPlanListComponent implements OnInit {
   selectedRegion = 0;
   selectedCounty = 0;
   selectedTown = 0;
-  selectedRegionName: string;
-  selectedTownName: string;
-  selectedCountyName: string;
+  selectedRegionName = '';
+  selectedTownName = '';
+  selectedCountyName = '';
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
   loading = false;
@@ -56,6 +56,7 @@ export class WorkPlanListComponent implements OnInit {
   msRegions: RegionsEntityDto[] = [];
   msCounties: County[] = [];
   msTowns: Town[] = [];
+  msTownsOriginal: Town[] = [];
   msDepartments: MsDepartment[] = [];
   msDivisions: MsDivisionDetails[] = [];
   standardProductCategory!: StandardProductCategory[];
@@ -279,6 +280,7 @@ export class WorkPlanListComponent implements OnInit {
           this.msService.msTownsListDetails().subscribe(
               (dataTowns: Town[]) => {
                 this.msTowns = dataTowns;
+                this.msTownsOriginal = dataTowns;
               },
               error => {
                 console.log(error);
@@ -426,7 +428,10 @@ export class WorkPlanListComponent implements OnInit {
     this.dataSaveWorkPlanCounties = this.addCountyTownForm.value;
     console.log(this.dataSaveWorkPlanCounties);
     this.dataSaveWorkPlanCountiesList.push(this.dataSaveWorkPlanCounties);
-    this.addCountyTownForm.reset();
+    this.msTowns = this.msTownsOriginal;
+    this.addCountyTownForm.get('regionId').reset();
+    this.addCountyTownForm.get('countyId').reset();
+    this.addCountyTownForm.get('townsId').reset();
   }
 
   // Remove Form repeater values
@@ -455,6 +460,7 @@ export class WorkPlanListComponent implements OnInit {
     this.addCountyTownForm.controls.countyId.enable();
     // this.msCounties = this.msCounties.sort((a, b) => a.county > b.county ? 1 : -1);
     // this.msCounties = this.msCounties.filter(x => String(this.dataSaveResourcesRequired.resourceName) === String(x.regionId));
+    console.log(`region selectedRegionName to ${this.selectedRegionName}`);
     console.log(`region set to ${this.selectedRegion}`);
   }
 
@@ -462,7 +468,10 @@ export class WorkPlanListComponent implements OnInit {
     this.selectedCounty = this.addCountyTownForm?.get('countyId')?.value;
     this.selectedCountyName = this.msCounties.find(pr => pr.id === this.selectedCounty)?.county;
     this.addCountyTownForm.controls.townsId.enable();
+    console.log(`county selectedCountyName to ${this.selectedCountyName}`);
+    console.log(`county set to ${this.selectedCounty}`);
     this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
+    console.log(`towns list set to ${this.msTowns}`);
     // this.msTowns = this.msTowns.sort((a, b) => a.town > b.town ? 1 : -1);
     // this.msService.msCountiesListDetails().subscribe(
     //     (dataCounties: County[]) => {
