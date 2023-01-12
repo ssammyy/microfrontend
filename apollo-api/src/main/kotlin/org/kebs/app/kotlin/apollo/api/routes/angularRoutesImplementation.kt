@@ -650,11 +650,29 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 POST("/add/complaint-work-plan", handler::addComplaintToWorkPlanDetails)
                 "/reports".nest {
                     PUT("/complaint-search", handler::putAllComplaintSearchList)
+                    PUT("/complaint-search", handler::putAllComplaintSearchList)
                     PUT("/sample-products-search", handler::putAllSampleProductsSearchList)
                     PUT("/seized-goods-search", handler::putAllSeizedGoodsSearchList)
                     GET("/seized-goods", handler::getAllSeizedGoodsViewList)
-                    "/timeline".nest {
-                        GET("/complaint", handler::getAllComplaintReportTimeLineList)
+                    "/seized-goods".nest {
+                        GET("/view-all", handler::getAllSeizedGoodsReportList)
+                        PUT("/search", handler::putAllSeizedGoodsViewSearchList)
+                    }
+                    "/consumer-complaint".nest {
+                        GET("/view-all", handler::getAllConsumerComplaintReportList)
+                        PUT("/search", handler::putAllConsumerComplaintSearchList)
+                    }
+                    "/submitted-samples-summary".nest {
+                        GET("/view-all", handler::getAllSubmittedSamplesSummaryReportList)
+                        PUT("/search", handler::putAllSubmittedSamplesSummarySearchList)
+                    }
+                    "/field-inspection-summary".nest {
+                        GET("/view-all", handler::getAllFieldInspectionSummaryReportList)
+                        PUT("/search", handler::putAllFieldInspectionSummarySearchList)
+                    }
+                    "/work-plan-monitoring-tool".nest {
+                        GET("/view-all", handler::getAllWorkPlanMonitoringToolReportList)
+                        PUT("/search", handler::putAllWorkPlanMonitoringToolSearchList)
                     }
                     "/statusReport".nest {
                         GET("/complaint-investigation", handler::getStatusReportComplaintInvestigationList)
@@ -729,6 +747,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                                 "/end-recommendation",
                                 handler::addWorkPlanScheduleEndFinalRecommendationAddingByDirector
                             )
+                            PUT(
+                                "/approval-final-preliminary-report",
+                                handler::updateWorkPlanScheduleApprovalPreliminaryReportDirector
+                            )
                         }
                     }
                     "/add".nest {
@@ -750,7 +772,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
                         POST("/preliminary-report-hod-hof-director", handler::addWorkPlanSchedulePreliminaryReportHofHodDirector)
 //                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
-                        POST("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
+//                        POST("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
                 }
 

@@ -76,6 +76,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
     private val performanceOfSelectedProductViewRepo: IMsPerformanceOfSelectedProductViewRepository,
     private val seizedGoodsViewRepo: IMsSeizedGoodsViewRepository,
+    private val consumerComplaintsReportViewRepo: IConsumerComplaintsReportViewRepository,
+    private val submittedSamplesSummaryReportViewRepo: ISubmittedSamplesSummaryReportViewRepository,
+    private val fieldInspectionSummaryReportViewRepo: IFieldInspectionSummaryReportViewRepository,
+    private val workPlanMonitoringToolReportViewRepo: IWorkPlanMonitoringToolReportViewRepository,
+    private val seizedGoodsReportViewRepo: IMsSeizedGoodsReportViewRepository,
     private val complaintsInvestigationsViewRepo: IMsComplaintsInvestigationsViewRepository,
     private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
     private val complaintFeedbackTimelineViewRepo: IMsComplaintFeedbackViewRepository,
@@ -367,6 +372,97 @@ class MarketSurveillanceComplaintProcessDaoServices(
         return   response
 
     }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msAllConsumerComplaintReportLists(page: PageRequest): ApiResponseModel {
+        val complaintList = consumerComplaintsReportViewRepo.findAll(page);
+        return   commonDaoServices.setSuccessResponse(complaintList.toList(),complaintList.totalPages,complaintList.number,complaintList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msConsumerComplaintViewSearchLists(page: PageRequest,search: ConsumerComplaintViewSearchValues): ApiResponseModel {
+        val complaintList = consumerComplaintsReportViewRepo.findFilteredConsumerComplaintReport(search.startDate, search.endDate, search.refNumber, search.assignIO, search.sectorID);
+        val sampleProductPage: PageImpl<ConsumerComplaintsReportViewEntity>? = complaintList?.size?.let { PageImpl(complaintList, page, it.toLong()) }
+        return   commonDaoServices.setSuccessResponse(complaintList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msAllWorkPlanMonitoringToolReportLists(page: PageRequest): ApiResponseModel {
+        val workPlanMonitoringTool = workPlanMonitoringToolReportViewRepo.findAll(page);
+        return   commonDaoServices.setSuccessResponse(workPlanMonitoringTool.toList(),workPlanMonitoringTool.totalPages,workPlanMonitoringTool.number,workPlanMonitoringTool.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msWorkPlanMonitoringToolViewSearchLists(page: PageRequest,search: ConsumerComplaintViewSearchValues): ApiResponseModel {
+        val workPlanMonitoringToolList = workPlanMonitoringToolReportViewRepo.findFilteredWorkPlanMonitoringToolReport(search.startDate, search.endDate, search.assignIO, search.sectorID);
+        val sampleProductPage: PageImpl<WorkPlanMonitoringToolEntity>? = workPlanMonitoringToolList?.size?.let { PageImpl(workPlanMonitoringToolList, page, it.toLong()) }
+        return   commonDaoServices.setSuccessResponse(workPlanMonitoringToolList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msAllFieldInspectionSummaryReportLists(page: PageRequest): ApiResponseModel {
+        val fieldInspectionSummary = fieldInspectionSummaryReportViewRepo.findAll(page);
+        return   commonDaoServices.setSuccessResponse(fieldInspectionSummary.toList(),fieldInspectionSummary.totalPages,fieldInspectionSummary.number,fieldInspectionSummary.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msFieldInspectionSummaryViewSearchLists(page: PageRequest,search: ConsumerComplaintViewSearchValues): ApiResponseModel {
+        val fieldInspectionSummaryList = fieldInspectionSummaryReportViewRepo.findFilteredFieldInspectionSummaryReport(search.startDate, search.endDate, search.assignIO, search.sectorID);
+        val sampleProductPage: PageImpl<FieldInspectionSummaryReportViewEntity>? = fieldInspectionSummaryList?.size?.let { PageImpl(fieldInspectionSummaryList, page, it.toLong()) }
+        return   commonDaoServices.setSuccessResponse(fieldInspectionSummaryList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msAllSubmittedSamplesSummaryReportLists(page: PageRequest): ApiResponseModel {
+        val submittedSampleSummary = submittedSamplesSummaryReportViewRepo.findAll(page);
+        return   commonDaoServices.setSuccessResponse(submittedSampleSummary.toList(),submittedSampleSummary.totalPages,submittedSampleSummary.number,submittedSampleSummary.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msSubmittedSamplesSummaryViewSearchLists(page: PageRequest,search: SubmittedSamplesSummaryViewSearchValues): ApiResponseModel {
+        val submittedSampleSummary = submittedSamplesSummaryReportViewRepo.findFilteredSubmittedSamplesSummaryReport(
+            search.startDate, search.endDate, search.sampleReferences, search.assignIO, search.sectorID
+        );
+        val sampleProductPage: PageImpl<SubmittedSamplesSummaryReportViewEntity>? = submittedSampleSummary?.size?.let { PageImpl(submittedSampleSummary, page, it.toLong()) }
+        return   commonDaoServices.setSuccessResponse(submittedSampleSummary,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msAllSeizedGoodsReportLists(page: PageRequest): ApiResponseModel {
+        val seizedGoodsList = seizedGoodsReportViewRepo.findAll(page);
+        return   commonDaoServices.setSuccessResponse(seizedGoodsList.toList(),seizedGoodsList.totalPages,seizedGoodsList.number,seizedGoodsList.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msSeizeViewSearchLists(page: PageRequest,search: SeizeViewSearchValues): ApiResponseModel {
+        val seizeList = seizedGoodsReportViewRepo.findFilteredSeizedGoodsReport(
+            search.startDate,
+            search.endDate,
+            search.sector,
+            search.brand,
+            search.marketCentre,
+            search.nameOutlet,
+            search.productsDueForDestruction,
+            search.productsDueForRelease
+        );
+        val sampleProductPage: PageImpl<MsSeizedGoodsReportViewEntity>? = seizeList?.size?.let { PageImpl(seizeList, page, it.toLong()) }
+        return   commonDaoServices.setSuccessResponse(seizeList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
+    }
+
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
