@@ -2542,7 +2542,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 commonDaoServices.sendEmailWithUserEmail(it,
                                     applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
                                     complaintDetailsFound!!, map, remarksSaved.first,
-                                    docFile?.let { doc -> commonDaoServices.convertMultipartFileToFile(doc).absolutePath })
+                                    docFile?.let { doc -> commonDaoServices.convertMultipartFileToFile(doc)?.absolutePath })
                             }
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val scheduleEmailDetails = WorkPlanScheduledDTO()

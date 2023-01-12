@@ -2641,7 +2641,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   viewSSFLabResultsRecord(data: SampleSubmissionDto) {
     this.selectedSSFDetails = data;
-    this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === data.bsNumber);
+    this.selectedLabResults = this.workPlanInspection?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === data?.bsNumber);
 
     window.$('#myModal2').modal('hide');
     // window.$('.modal').remove();

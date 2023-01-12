@@ -1126,7 +1126,7 @@ class MarketSurveillanceFuelDaoServices(
                 fileInspectionDetail,
                 map,
                 fetched.first,
-                commonDaoServices.convertMultipartFileToFile(docFile).path
+                commonDaoServices.convertMultipartFileToFile(docFile)?.path
             )
         }
 
