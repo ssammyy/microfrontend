@@ -85,6 +85,10 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var resultsSent: Int? = null
 
+    @Column(name = "RESULT_SENT_DATE")
+    @Basic
+    var resultSentDate: Date? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null

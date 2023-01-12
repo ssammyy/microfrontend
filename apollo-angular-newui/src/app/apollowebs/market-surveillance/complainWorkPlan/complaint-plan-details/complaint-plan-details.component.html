@@ -4227,7 +4227,6 @@
     </div>
     <!-- End Final Recommendation Modal -->
 
-
     <!-- PROGRESS REPORT Modal -->
     <div class="modal fade" id="preliminaryReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
@@ -5639,10 +5638,17 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
-                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"
-                                                class="form-control" formControlName="referencesStandards" name="referencesStandards">
-                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
-                                        </select>
+                                        <div class="refStandardsDesign">
+                                            <input type="text" list="refStandards" formControlName="referencesStandards" name="referencesStandards" class="form-control two-column-input">
+                                            <datalist id="refStandards">
+                                                <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
+                                            </datalist>
+                                        </div>
+
+                                        <!--                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+                                        <!--                                                   class="form-control" formControlName="referencesStandards" name="referencesStandards">-->
+                                        <!--                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>-->
+                                        <!--                                        </select>-->
                                         <!--                                        <select [class.is-invalid]="formSampleSubmitForm.referencesStandards.invalid && formSampleSubmitForm.referencesStandards.errors"-->
                                         <!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
                                         <!--                                                class="form-control" formControlName="referencesStandards" name="referencesStandards" required>-->
@@ -5810,7 +5816,6 @@
                                         <label><b>RECEIPT LPO NUMBER</b> </label>
                                         <input type="text" class="form-control two-column-input"
                                                formControlName="receiptLpoNumber" name="receiptLpoNumber" >
-
                                     </div>
                                 </div>
 

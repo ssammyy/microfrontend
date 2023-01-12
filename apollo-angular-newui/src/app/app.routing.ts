@@ -611,6 +611,9 @@ import {
 import {
     WorkplanMonitoringToolComponent
 } from "./apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component";
+import {
+    SampleSubmittedTimelineComponent
+} from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 
 export const routes: Routes = [
     {
@@ -2060,8 +2063,16 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'complaintMonitoring',
+                path: 'consumerComplaint',
+                component: AcknowledgementComponent,
+            },
+            {
+                path: 'seizeGoods',
                 component: ComplaintMonitoringComponent,
+            },
+            {
+                path: 'submittedSamplesSummary',
+                component: SampleSubmittedTimelineComponent,
             },
             {
                 path: 'fieldInspectionSummary',

@@ -84,7 +84,7 @@ import {
     SampleProductViewSearchValues,
     SeizedGoodsViewSearchValues,
     PermitUcrSearch,
-    SSFSendingComplianceStatus,
+    SSFSendingComplianceStatus, ConsumerComplaintViewSearchValues, SeizeViewSearchValues, SubmittedSamplesSummaryViewSearchValues,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -778,6 +778,78 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public loadSearchConsumerComplaintViewList(page: string, records: string, complaintViewSearchValues: ConsumerComplaintViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_CONSUMER_COMPLAINT_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadSearchSubmittedSamplesSummaryViewList(page: string, records: string, complaintViewSearchValues: SubmittedSamplesSummaryViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SUBMITTED_SAMPLES_SUMMARY_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadSearchFieldInspectionSummaryViewList(page: string, records: string, complaintViewSearchValues: ConsumerComplaintViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SUBMITTED_SAMPLES_SUMMARY_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadSearchSeizeReportViewList(page: string, records: string, seizeViewSearchValues: SeizeViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SEIZED_GOODS_VIEW_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, seizeViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public loadSearchSampleProductsSelectedViewList(page: string, records: string, sampleProductViewSearchValues: SampleProductViewSearchValues, searchType: string): Observable<ApiResponseModel> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SAMPLE_PRODUCTS_SEARCH);
@@ -838,6 +910,66 @@ export class MsService {
             }),
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllConsumerComplaintReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_CONSUMER_COMPLAINT_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllSubmittedSamplesSummaryReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SUBMITTED_SAMPLES_SUMMARY_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllFieldInspectionSummaryReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_FIELD_INSPECTION_SUMMARY_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllSeizeReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SEIZED_GOODS_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
                 return throwError(fault);
             }),
         );

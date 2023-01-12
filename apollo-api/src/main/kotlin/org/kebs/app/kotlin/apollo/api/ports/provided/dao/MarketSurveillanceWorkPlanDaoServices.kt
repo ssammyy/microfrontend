@@ -2273,13 +2273,17 @@ class MarketSurveillanceWorkPlanDaoServices(
         var emailDetails = ""
         val scheduleEmailDetails = WorkPlanScheduledDTO()
         val recommendationList = mutableListOf<String>()
+        var recommendationDetailsValues:String? = null
         var destructionFound = false
+        var numberTest = 1
         body.recommendationId.forEach { rec ->
             val recommendationDetails = recommendationRepo.findByIdOrNull(rec.recommendationId)
                 ?: throw ExpectedDataNotFound("Missing Recommendation details with ID ${body.recommendationId}, do Not Exists")
             if (recommendationDetails.id == applicationMapProperties.mapMsWorkPlanDestrctionID) {
                 destructionFound = true
             }
+            recommendationDetailsValues = " $numberTest. ${recommendationDetails.recommendationName}; "
+            numberTest++
         }
 
         with(workPlanProduct) {
@@ -2288,6 +2292,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 recommendation = commonDaoServices.convertClassToJson(body.recommendationId)
                 remarkStatusValue = commonDaoServices.convertClassToJson(body.recommendationId).toString()
                 hodRecommendationStatus = map.activeStatus
+                varField1 = recommendationDetailsValues
                 when {
                     destructionFound -> {
                         destructionRecommended = map.activeStatus
@@ -3503,6 +3508,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         var savedSSfComplianceStatus =
             msFuelDaoServices.findSampleSubmittedBYID(body.ssfID ?: throw ExpectedDataNotFound("Missing SSF ID"))
         with(savedSSfComplianceStatus) {
+            resultSentDate = commonDaoServices.getCurrentDate()
             resultsSent = map.activeStatus
             varField1 = body.failedParameters
         }
@@ -4850,6 +4856,10 @@ class MarketSurveillanceWorkPlanDaoServices(
     ): MsSeizureEntity {
         with(saveData) {
             marketTownCenter = body.marketTownCenter
+            dateSeizure = body.dateSeizure
+            dateDestructed = body.dateDestructed
+            dateRelease = body.dateRelease
+            productsRelease = body.productsRelease
             nameOfOutlet = body.nameOfOutlet
             descriptionProductsSeized = body.descriptionProductsSeized
             brand = body.brand

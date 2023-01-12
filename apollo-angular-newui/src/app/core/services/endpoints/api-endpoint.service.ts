@@ -716,6 +716,18 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_REPORTS = {
+        MS_CONSUMER_COMPLAINT_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/consumer-complaint/view-all`,
+        MS_CONSUMER_COMPLAINT_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/consumer-complaint/search`,
+
+        MS_SUBMITTED_SAMPLES_SUMMARY_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/submitted-samples-summary/view-all`,
+        MS_SUBMITTED_SAMPLES_SUMMARY_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/submitted-samples-summary/search`,
+
+        MS_FIELD_INSPECTION_SUMMARY_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/field-inspection-summary/view-all`,
+        MS_FIELD_INSPECTION_SUMMARY_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/field-inspection-summary/search`,
+
+        MS_SEIZED_GOODS_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods/view-all`,
+        MS_SEIZED_GOODS_VIEW_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods/search`,
+
         MS_COMPLAINT_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/complaint-search`,
         MS_SAMPLE_PRODUCTS_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/sample-products-search`,
         MS_SEIZED_GOODS_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods-search`,

@@ -649,6 +649,133 @@ export class ComplaintLocationDto {
     businessAddress: string;
 }
 
+export class ConsumerComplaintViewSearchValues {
+    refNumber: string;
+    assignIO: number;
+    startDate: Date;
+    endDate: Date;
+    sectorID: number;
+}
+
+export class SubmittedSamplesSummaryViewSearchValues {
+    sampleReferences: string;
+    assignIO: number;
+    startDate: Date;
+    endDate: Date;
+    sectorID: number;
+}
+
+export class SeizeViewSearchValues {
+    startDate: Date;
+    endDate: Date;
+    sector: string;
+    brand: string;
+    marketCentre: string;
+    nameOutlet: string;
+    productsDueForDestruction: string;
+    productsDueForRelease: string;
+}
+
+export class MsSeizedGoodsReportViewEntity {
+    id: number;
+    dateofSeizure: string;
+    marketCentre: string;
+    nameOutlet: string;
+    descriptionProductsSeized: string;
+    brand: string;
+    sector: string;
+    quantity: string;
+    unit: string;
+    estimatedCost: string;
+    currentLocationSeizedProducts: string;
+    productsDueForDestruction: string;
+    productsDueForRelease: string;
+    dateofDestructed: string;
+    dateofRelease: string;
+    dateSeizure: Date;
+    dateDestructed: Date;
+    dateRelease: Date;
+}
+
+export class SubmittedSamplesSummaryReportViewEntity {
+    id: number;
+    sendersDate: Date;
+    dateVisit: Date;
+    sampleReferences: string;
+    resultsDate: Date;
+    resultSentDate: Date;
+    officerId: number;
+    complaintDepartment: number;
+    dateofVisit: string;
+    sampleSubmissionDate: string;
+    marketCentre: string;
+    nameAddressOutlet: string;
+    productDescription: string;
+    sector: string;
+    ucrPermitNo: string;
+    sourceProductEvidence: string;
+    brandAndManufacturer: string;
+    noSamplesTested: string;
+    natureFailure: string;
+    actionsTaken: string;
+    dateofTestReport: string;
+    dateofForwardingTestResults: string;
+    complianceTesting: string;
+    tcxb: string;
+    timeTakenSubmitSample: string;
+    submissionWithin2Days: string;
+    timeTakenForwardLetters: string;
+    forwardingWithin14DaysTesting: string;
+    batchNoDateManufacture: string;
+}
+
+export class FieldInspectionSummaryReportViewEntity {
+    id: number;
+    inspectionDate: Date;
+    marketCenter: string;
+    outletDetails: string;
+    complaintDepartment: number;
+    officerId: number;
+    totalComplianceScore: string;
+    reportDate: Date;
+    dateofVisit: string;
+    dateofSurveillanceReport: string;
+    marketCentre: string;
+    nameOutlet: string;
+    noSamplesDrawnSubmitted: string;
+    compliancePhysicalInspection: string;
+    mostRecurringNonCompliant: string;
+    pcxa: string;
+    sectorName: string;
+    noOfSamplesPhysicallyInspected: number;
+    visitAspermsSchedule: string;
+    timeTakenFileSurveillanceReport: string;
+    filingWithin1DayafterVisit: string;
+}
+
+export class ConsumerComplaintsReportViewEntity {
+    id: number;
+    referenceNumber: string;
+    complainant: string;
+    natureComplaint: string;
+    sector: string;
+    dateReceived: string;
+    dateAcknowledged: string;
+    investigatingOfficer: string;
+    dateCompletionInvestigation: string;
+    dateFeedbackComplainant: string;
+    resolution: string;
+    timeTakenAcknowledge: string;
+    acknowledgedWithin2DaysReceipt: string;
+    timeTakenProvideFeedback: string;
+    feedbackWithin5DaysCompInvestigation: string;
+    timeTakenAddressComplaint: string;
+    addressedWithin28DaysReceipt: string;
+    assignedIo: number;
+    transactionDate: Date;
+    complaintDepartment: number;
+}
+
 export class ComplaintViewSearchValues {
     refNumber: string;
     assignedIo: number;

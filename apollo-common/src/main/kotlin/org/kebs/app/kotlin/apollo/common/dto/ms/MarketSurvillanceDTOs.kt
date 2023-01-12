@@ -642,6 +642,10 @@ data class SeizureDto(
         var currentLocation: String?=null,
         var productsDestruction: String?=null,
         var additionalOutletDetails: String?=null,
+        var productsRelease: String?=null,
+        var dateSeizure: Date?=null,
+        var dateDestructed: Date?=null,
+        var dateRelease: Date?=null,
 
 )
 
@@ -1016,6 +1020,34 @@ data class ComplaintSearchValues(
 //        var assignedIOStatus: Int? = null,
 //        var rejectedStatus: Int? = null,
 //        var lastName: String? = null
+)
+
+
+data class SubmittedSamplesSummaryViewSearchValues(
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var sampleReferences: String? = null,
+        var assignIO: Long? = null,
+        var sectorID: Long? = null
+)
+
+data class ConsumerComplaintViewSearchValues(
+        var refNumber: String? = null,
+        var assignIO: Long? = null,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var sectorID: Long? = null
+)
+
+data class SeizeViewSearchValues(
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var sector: String? = null,
+        var brand: String? = null,
+        var marketCentre: String? = null,
+        var nameOutlet: String? = null,
+        var productsDueForDestruction: String? = null,
+        var productsDueForRelease: String? = null,
 )
 
 data class ComplaintViewSearchValues(

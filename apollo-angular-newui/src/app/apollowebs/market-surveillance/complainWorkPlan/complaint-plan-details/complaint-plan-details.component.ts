@@ -4718,7 +4718,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('FIELD REPORT DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('INITIAL REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

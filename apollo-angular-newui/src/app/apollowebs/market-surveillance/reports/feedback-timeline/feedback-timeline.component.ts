@@ -328,10 +328,11 @@ export class FeedbackTimelineComponent implements OnInit {
 
   rerender(): void {
     this.dtElements.forEach((dtElement: DataTableDirective) => {
-      if (dtElement.dtInstance)
+      if (dtElement.dtInstance) {
         dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           dtInstance.destroy();
         });
+      }
     });
     setTimeout(() => {
       this.dtTrigger1.next();
@@ -353,23 +354,12 @@ export class FeedbackTimelineComponent implements OnInit {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
     this.msService.loadAllComplaintTimelineAndStatusReportList(String(page), String(records), routeTake, searchType).subscribe(
-        (data: ApiResponseModel) => {
-          if (data.responseCode === '00') {
-            switch (routeTake) {
-              case 'complaint':
-                this.loadedData = data.data;
-                this.totalCount = this.loadedData.length;
-                this.dataSet.load(this.loadedData);
-                this.rerender();
-                break;
-              case 'sample-products':
-                this.loadedData2 = data.data;
-                this.totalCount = this.loadedData2.length;
-                this.dataSet2.load(this.loadedData2);
-                this.rerender();
-                break;
-            }
-
+        (dataResponse: ApiResponseModel) => {
+          if (dataResponse.responseCode === '00') {
+            this.loadedData = dataResponse.data;
+            this.totalCount = this.loadedData.length;
+            this.dataSet.load(this.loadedData);
+            this.rerender();
 
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {

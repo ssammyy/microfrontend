@@ -997,6 +997,62 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun getAllConsumerComplaintReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllConsumerComplaintReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllSubmittedSamplesSummaryReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllSubmittedSamplesSummaryReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllFieldInspectionSummaryReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllFieldInspectionSummaryReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllSeizedGoodsReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllSeizedGoodsReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun getAllSeizedGoodsViewList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req, "referenceNumber")
@@ -1022,6 +1078,103 @@ class NewMarketSurveillanceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     marketSurveillanceComplaintDaoServices.msComplaintViewSearchLists(page,body,reportType)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun putAllConsumerComplaintSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<ConsumerComplaintViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, ConsumerComplaintViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msConsumerComplaintViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun putAllSubmittedSamplesSummarySearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<SubmittedSamplesSummaryViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, SubmittedSamplesSummaryViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msSubmittedSamplesSummaryViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun putAllFieldInspectionSummarySearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<ConsumerComplaintViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, ConsumerComplaintViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msFieldInspectionSummaryViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+
+    fun putAllSeizedGoodsViewSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<SeizeViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, SeizeViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msSeizeViewSearchLists(page,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }

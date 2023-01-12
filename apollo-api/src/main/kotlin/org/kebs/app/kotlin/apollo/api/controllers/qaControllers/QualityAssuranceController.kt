@@ -1643,7 +1643,6 @@ class QualityAssuranceController(
             QaInspectionReportRecommendationEntity.submittedInspectionReportStatus == 1 -> {
                 permitFound.inspectionReportGenerated = 1
 
-
                 when (permitFound.resubmitApplicationStatus) {
                     1 -> {
 
