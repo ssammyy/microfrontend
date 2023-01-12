@@ -753,6 +753,34 @@ export class FieldInspectionSummaryReportViewEntity {
     filingWithin1DayafterVisit: string;
 }
 
+export class WorkPlanMonitoringToolEntity {
+    officerId: number;
+    regionId: number;
+    complaintDepartment: number;
+    timeActivityDate: Date;
+    timeActivityEndDate: Date;
+    id: number;
+    referenceNumber: string;
+    targetedMonth: string;
+    productString: string;
+    officers: string;
+    region: string;
+    county: string;
+    town: string;
+    july: string;
+    august: string;
+    september: string;
+    october: string;
+    november: string;
+    december: string;
+    january: string;
+    february: string;
+    march: string;
+    april: string;
+    may: string;
+    june: string;
+}
+
 export class ConsumerComplaintsReportViewEntity {
     id: number;
     referenceNumber: string;

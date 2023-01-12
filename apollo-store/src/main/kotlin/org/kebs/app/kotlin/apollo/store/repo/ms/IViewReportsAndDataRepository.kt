@@ -174,6 +174,25 @@ interface IFieldInspectionSummaryReportViewRepository : HazelcastRepository<Fiel
     ): List<FieldInspectionSummaryReportViewEntity>?
 }
 
+
+@Repository
+interface IWorkPlanMonitoringToolReportViewRepository : HazelcastRepository<WorkPlanMonitoringToolEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<WorkPlanMonitoringToolEntity>
+
+    @Query(
+        value = "SELECT a.* from APOLLO.WORK_PLAN_MONITORING_TOOL a WHERE\n" +
+                "    (:startDate is null or a.TIME_ACTIVITY_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TIME_ACTIVITY_END_DATE <=TO_DATE(:endDate))\n" +
+                "and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))",
+        nativeQuery = true
+    )
+    fun findFilteredWorkPlanMonitoringToolReport(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("sectorID") sectorID: Long?
+    ): List<WorkPlanMonitoringToolEntity>?
+}
+
 @Repository
 interface IMsComplaintFeedbackViewRepository : HazelcastRepository<MsComplaintFeedbackViewEntity, Long>, JpaSpecificationExecutor<MsComplaintFeedbackViewEntity> {
     override fun findAll(pageable: Pageable): Page<MsComplaintFeedbackViewEntity>

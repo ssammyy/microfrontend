@@ -574,7 +574,7 @@ alter table DAT_KEBS_MS_WORKPLAN_GENARATED
 
 /***************************CREATED VIEWS FOR DOWNLOAD*****************************************/
 
--- create OR REPLACE view MS_SAMPLE_SUBMISSION as
+create OR REPLACE view MS_SAMPLE_SUBMISSION as
 SELECT nvl(TO_CHAR(samp.id),'N/A') AS id,nvl(samp.name_product,'N/A') AS name_product,nvl(samp.packaging,'N/A') AS packaging,nvl(samp.labelling_identification,'N/A') AS labelling_identification,nvl(samp.file_ref_number,'N/A') AS file_ref_number,nvl(samp.references_standards,'N/A') AS references_standards,nvl(samp.size_test_sample,'N/A') AS size_test_sample,
        nvl(samp.size_ref_sample,'N/A') AS size_ref_sample,nvl(samp.condition,'N/A') AS condition,nvl(samp.sample_references,'N/A') AS sample_references,nvl(samp.senders_name,'N/A') AS senders_name,nvl(samp.designation,'N/A') AS designation,nvl(samp.address,'N/A') AS address,nvl(TO_CHAR(TRUNC(samp.senders_date),'DD/MM/YYYY'),'N/A') AS senders_date,
        nvl(samp.receivers_name,'N/A') AS receivers_name,nvl(TO_CHAR(samp.test_charges_ksh),'N/A') AS test_charges_ksh,nvl(samp.receipt_lpo_number,'N/A') AS receipt_lpo_number,nvl(samp.invoice_number,'N/A') AS invoice_number,nvl(samp.disposal,'N/A') AS disposal,nvl(samp.remarks,'N/A') AS remarks,
@@ -1030,11 +1030,81 @@ SELECT a.* from APOLLO.FIELD_INSPECTION_SUMMARY_REPORT_VIEW a where
     (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))
     and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID));
 
+create OR REPLACE view WORK_PLAN_MONITORING_TOOL as
+SELECT DISTINCT a.OFFICER_ID,b.REGION_ID,a.COMPLAINT_DEPARTMENT,a.ID,a.REFERENCE_NUMBER,a.TIME_ACTIVITY_DATE,a.TIME_ACTIVITY_END_DATE,
+                nvl(TO_CHAR(TRUNC(a.TIME_ACTIVITY_DATE),'DD/MM/YYYY')||' - '||TO_CHAR(TRUNC(a.TIME_ACTIVITY_END_DATE),'DD/MM/YYYY'),'N/A') AS TARGETED_MONTH,
+                a.PRODUCT_STRING,
+                (SELECT nvl(u.FIRST_NAME||' '||u.LAST_NAME,'N/A') AS OFFICER_NAME FROM DAT_KEBS_USERS u WHERE u.ID = a.OFFICER_ID) AS OFFICERS,
+                (SELECT nvl(u.REGION,'N/A') AS REGION_NAME FROM CFG_KEBS_REGIONS u WHERE u.ID = b.REGION_ID) AS REGION,
+                (SELECT nvl(u.COUNTY,'N/A') AS COUNTY_NAME FROM CFG_KEBS_COUNTIES u WHERE u.ID = b.COUNTY_ID) AS COUNTY,
+                (SELECT nvl(u.TOWN,'N/A') AS TOWN_NAME FROM CFG_KEBS_TOWNS u WHERE u.ID = b.TOWNS_ID) AS TOWN,
+                CASE
+                    WHEN 'July' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                    from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                    connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS JULY,
+                CASE
+                    WHEN 'August' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                      from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                      connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS AUGUST,
+                CASE
+                    WHEN 'September' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                         from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                         connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS SEPTEMBER,
+                CASE
+                    WHEN 'October' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                       from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                       connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS OCTOBER,
+                CASE
+                    WHEN 'November' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                        from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                        connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS NOVEMBER,
+                CASE
+                    WHEN 'December' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                        from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                        connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS DECEMBER,
+                CASE
+                    WHEN 'January' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                       from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                       connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS JANUARY,
+                CASE
+                    WHEN 'February' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                        from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                        connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS FEBRUARY,
+                CASE
+                    WHEN 'March' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                     from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                     connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS MARCH,
+                CASE
+                    WHEN 'April' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                     from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                     connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS APRIL,
+                CASE
+                    WHEN 'May' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                   from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                   connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS MAY,
+                CASE
+                    WHEN 'June' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                    from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                    connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS JUNE
+FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
+         JOIN  DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b ON a.id= b.WORK_PLAN_ID;
+/
 
-
-
-
-
+SELECT a.* from APOLLO.WORK_PLAN_MONITORING_TOOL a WHERE
+    (:startDate is null or a.TIME_ACTIVITY_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TIME_ACTIVITY_END_DATE <=TO_DATE(:endDate))
+and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))
 
 
 

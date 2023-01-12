@@ -79,6 +79,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val consumerComplaintsReportViewRepo: IConsumerComplaintsReportViewRepository,
     private val submittedSamplesSummaryReportViewRepo: ISubmittedSamplesSummaryReportViewRepository,
     private val fieldInspectionSummaryReportViewRepo: IFieldInspectionSummaryReportViewRepository,
+    private val workPlanMonitoringToolReportViewRepo: IWorkPlanMonitoringToolReportViewRepository,
     private val seizedGoodsReportViewRepo: IMsSeizedGoodsReportViewRepository,
     private val complaintsInvestigationsViewRepo: IMsComplaintsInvestigationsViewRepository,
     private val acknowledgementTimelineViewRepo: IMsAcknowledgementTimelineViewRepository,
@@ -385,6 +386,22 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val complaintList = consumerComplaintsReportViewRepo.findFilteredConsumerComplaintReport(search.startDate, search.endDate, search.refNumber, search.assignIO, search.sectorID);
         val sampleProductPage: PageImpl<ConsumerComplaintsReportViewEntity>? = complaintList?.size?.let { PageImpl(complaintList, page, it.toLong()) }
         return   commonDaoServices.setSuccessResponse(complaintList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msAllWorkPlanMonitoringToolReportLists(page: PageRequest): ApiResponseModel {
+        val workPlanMonitoringTool = workPlanMonitoringToolReportViewRepo.findAll(page);
+        return   commonDaoServices.setSuccessResponse(workPlanMonitoringTool.toList(),workPlanMonitoringTool.totalPages,workPlanMonitoringTool.number,workPlanMonitoringTool.totalElements)
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msWorkPlanMonitoringToolViewSearchLists(page: PageRequest,search: ConsumerComplaintViewSearchValues): ApiResponseModel {
+        val workPlanMonitoringToolList = workPlanMonitoringToolReportViewRepo.findFilteredWorkPlanMonitoringToolReport(search.startDate, search.endDate, search.assignIO, search.sectorID);
+        val sampleProductPage: PageImpl<WorkPlanMonitoringToolEntity>? = workPlanMonitoringToolList?.size?.let { PageImpl(workPlanMonitoringToolList, page, it.toLong()) }
+        return   commonDaoServices.setSuccessResponse(workPlanMonitoringToolList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
 
     }
 

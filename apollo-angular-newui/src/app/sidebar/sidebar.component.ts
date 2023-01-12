@@ -537,7 +537,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'submittedSamplesSummary', title: 'Submitted Samples view', ab: 'SSV'},
             // {path: 'complaintMonitoring', title: 'Complaint Monitoring', ab: 'CM'},
             {path: 'fieldInspectionSummary', title: 'Field Inspection Summary', ab: 'FIS'},
-            // {path: 'workPlanMonitoringTool', title: 'Workplan Monitoring Tool', ab: 'WMT'},
+            {path: 'workPlanMonitoringTool', title: 'Work-Plan Monitoring Tool', ab: 'WMT'},
             // {path: 'acknowledgement', title: 'Acknowledgement', ab: 'ACK'},
             // {path: 'feedbackTimeline', title: 'Feedback Timeline', ab: 'FT'},
             // {path: 'statusReport', title: 'Status Report', ab: 'SR'},

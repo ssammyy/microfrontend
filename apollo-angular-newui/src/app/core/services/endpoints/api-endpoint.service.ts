@@ -725,6 +725,9 @@ export class ApiEndpointService {
         MS_FIELD_INSPECTION_SUMMARY_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/field-inspection-summary/view-all`,
         MS_FIELD_INSPECTION_SUMMARY_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/field-inspection-summary/search`,
 
+        MS_WORK_PLAN_MONITORING_TOOL_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/work-plan-monitoring-tool/view-all`,
+        MS_WORK_PLAN_MONITORING_TOOL_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/work-plan-monitoring-tool/search`,
+
         MS_SEIZED_GOODS_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods/view-all`,
         MS_SEIZED_GOODS_VIEW_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods/search`,
 

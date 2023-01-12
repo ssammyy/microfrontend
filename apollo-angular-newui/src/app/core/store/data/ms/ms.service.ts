@@ -832,6 +832,24 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public loadSearchWorkPlanMonitoringToolViewList(page: string, records: string, complaintViewSearchValues: ConsumerComplaintViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_WORK_PLAN_MONITORING_TOOL_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public loadSearchSeizeReportViewList(page: string, records: string, seizeViewSearchValues: SeizeViewSearchValues): Observable<ApiResponseModel> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SEIZED_GOODS_VIEW_SEARCH);
@@ -947,6 +965,21 @@ export class MsService {
 
     public loadAllFieldInspectionSummaryReportList(page: string, records: string): Observable<ApiResponseModel> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_FIELD_INSPECTION_SUMMARY_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllWorkPlanMonitoringToolReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_WORK_PLAN_MONITORING_TOOL_VIEW);
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);
