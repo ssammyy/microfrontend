@@ -575,10 +575,41 @@ alter table DAT_KEBS_MS_WORKPLAN_GENARATED
 /***************************CREATED VIEWS FOR DOWNLOAD*****************************************/
 
 create OR REPLACE view MS_SAMPLE_SUBMISSION as
-SELECT nvl(TO_CHAR(samp.id),'N/A') AS id,nvl(samp.name_product,'N/A') AS name_product,nvl(samp.packaging,'N/A') AS packaging,nvl(samp.labelling_identification,'N/A') AS labelling_identification,nvl(samp.file_ref_number,'N/A') AS file_ref_number,nvl(samp.references_standards,'N/A') AS references_standards,nvl(samp.size_test_sample,'N/A') AS size_test_sample,
-       nvl(samp.size_ref_sample,'N/A') AS size_ref_sample,nvl(samp.condition,'N/A') AS condition,nvl(samp.sample_references,'N/A') AS sample_references,nvl(samp.senders_name,'N/A') AS senders_name,nvl(samp.designation,'N/A') AS designation,nvl(samp.address,'N/A') AS address,nvl(TO_CHAR(TRUNC(samp.senders_date),'DD/MM/YYYY'),'N/A') AS senders_date,
-       nvl(samp.receivers_name,'N/A') AS receivers_name,nvl(TO_CHAR(samp.test_charges_ksh),'N/A') AS test_charges_ksh,nvl(samp.receipt_lpo_number,'N/A') AS receipt_lpo_number,nvl(samp.invoice_number,'N/A') AS invoice_number,nvl(samp.disposal,'N/A') AS disposal,nvl(samp.remarks,'N/A') AS remarks,
-       nvl(TO_CHAR(samp.sample_collection_number),'N/A') AS sample_collection_number,nvl(samp.bs_number,'N/A') AS bs_number,param.parameters,param.laboratory_name
+SELECT nvl(TO_CHAR(samp.id),'N/A') AS id,
+       nvl(samp.name_product,'N/A') AS name_product,
+       nvl(samp.packaging,'N/A') AS packaging,
+       nvl(samp.labelling_identification,'N/A') AS labelling_identification,
+       nvl(samp.file_ref_number,'N/A') AS file_ref_number,
+       nvl(samp.references_standards,'N/A') AS references_standards,
+       nvl(samp.size_test_sample,'N/A') AS size_test_sample,
+       nvl(samp.size_ref_sample,'N/A') AS size_ref_sample,
+       nvl(samp.condition,'N/A') AS condition,
+       nvl(samp.sample_references,'N/A') AS sample_references,
+       nvl(samp.senders_name,'N/A') AS senders_name,
+       nvl(samp.designation,'N/A') AS designation,
+       nvl(samp.address,'N/A') AS address,
+       nvl(TO_CHAR(TRUNC(samp.senders_date),'DD/MM/YYYY'),'N/A') AS senders_date,
+       nvl(samp.receivers_name,'N/A') AS receivers_name,
+       nvl(TO_CHAR(samp.test_charges_ksh),'N/A') AS test_charges_ksh,
+       nvl(samp.receipt_lpo_number,'N/A') AS receipt_lpo_number,
+       nvl(samp.invoice_number,'N/A') AS invoice_number,
+       nvl(samp.disposal,'N/A') AS disposal,
+       nvl(samp.remarks,'N/A') AS remarks,
+       nvl(TO_CHAR(samp.sample_collection_number),'N/A') AS sample_collection_number,
+       nvl(samp.bs_number,'N/A') AS bs_number,
+       nvl(samp.COC_NUMBER,'N/A') AS COC_NUMBER,
+       nvl(samp.LB_ID_ANY_AOMARKING,'N/A') AS LB_ID_ANY_AOMARKING,
+       nvl(samp.LB_ID_BATCH_NO,'N/A') AS LB_ID_BATCH_NO,
+       nvl(samp.LB_ID_CONT_DECL,'N/A') AS LB_ID_CONT_DECL,
+       nvl(TO_CHAR(TRUNC(samp.LB_ID_DATE_OF_MANF),'DD/MM/YYYY'),'N/A') AS LB_ID_DATE_OF_MANF,
+       nvl(TO_CHAR(TRUNC(samp.LB_ID_EXPIRY_DATE),'DD/MM/YYYY'),'N/A') AS LB_ID_EXPIRY_DATE,
+       nvl(TO_CHAR(TRUNC(samp.RECEIVERS_DATE),'DD/MM/YYYY'),'N/A') AS RECEIVERS_DATE,
+       nvl(samp.LB_ID_TRADE_MARK,'N/A') AS LB_ID_TRADE_MARK,
+       nvl(samp.NOTE_TRANS_RESULTS,'N/A') AS NOTE_TRANS_RESULTS,
+       nvl(samp.SCF_NO,'N/A') AS SCF_NO,
+       TO_CHAR(samp.CREATED_USER_ID) AS CREATED_USER_ID,
+       param.parameters,
+       param.laboratory_name
 FROM DAT_KEBS_MS_SAMPLE_SUBMISSION samp
          INNER JOIN DAT_KEBS_MS_LABORATORY_PARAMETERS param ON samp.ID = param.SAMPLE_SUBMISSION_ID;
 /
@@ -1102,7 +1133,7 @@ FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
          JOIN  DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b ON a.id= b.WORK_PLAN_ID;
 /
 
-SELECT a.* from APOLLO.WORK_PLAN_MONITORING_TOOL a WHERE
+SELECT DISTINCT a.* from APOLLO.WORK_PLAN_MONITORING_TOOL a WHERE
     (:startDate is null or a.TIME_ACTIVITY_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TIME_ACTIVITY_END_DATE <=TO_DATE(:endDate))
 and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))
 

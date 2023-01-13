@@ -800,7 +800,7 @@ data class BSNumberSaveDto(
         @NotNull(message = "Required field")
         var submittedDate: Date,
         @NotNull(message = "Required field")
-        var ssfID: Long,
+        var ssfID: Long? = null,
         var remarks: String? = null,
 )
 

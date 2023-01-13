@@ -2542,7 +2542,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 commonDaoServices.sendEmailWithUserEmail(it,
                                     applicationMapProperties.mapMshodFinalFeedBackNotificationEmailComplinat,
                                     complaintDetailsFound!!, map, remarksSaved.first,
-                                    docFile?.let { doc -> commonDaoServices.convertMultipartFileToFile(doc).absolutePath })
+                                    docFile?.let { doc -> commonDaoServices.convertMultipartFileToFile(doc)?.absolutePath })
                             }
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val scheduleEmailDetails = WorkPlanScheduledDTO()
@@ -3312,7 +3312,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        val sampleSubmission = findSampleSubmissionDetailByWorkPlanGeneratedIDAndSSFID(workPlanScheduled.id, body.ssfID)
+        val sampleSubmission = findSampleSubmissionDetailByWorkPlanGeneratedIDAndSSFID(workPlanScheduled.id, body.ssfID?:throw ExpectedDataNotFound("MISSING SSF ID"))
             ?: throw ExpectedDataNotFound("MISSING SAMPLE SUBMITTED FOR WORK-PLAN SCHEDULED WITH REF NO $referenceNo")
         sampleSubmissionLabRepo.findByBsNumber(body.bsNumber.uppercase())
             ?.let {
@@ -3323,14 +3323,13 @@ class MarketSurveillanceWorkPlanDaoServices(
                     throw ExpectedDataNotFound("BS NUMBER ALREADY EXIST")
                 } ?: kotlin.run {
                 with(sampleSubmission) {
-                    bsNumber = body.bsNumber
-                    sampleReferences = body.bsNumber
+                    bsNumber = body.bsNumber.uppercase()
+                    sampleReferences = body.bsNumber.uppercase()
                     sampleBsNumberDate = body.submittedDate
                     sampleBsNumberRemarks = body.remarks
                     labResultsStatus = map.inactiveStatus
                 }
-                val updatedSampleSubmission =
-                    msFuelDaoServices.sampleSubmissionUpdateDetails(sampleSubmission, map, loggedInUser)
+                val updatedSampleSubmission = msFuelDaoServices.sampleSubmissionUpdateDetails(sampleSubmission, map, loggedInUser)
                 val remarksDto = RemarksToAddDto()
                 with(remarksDto) {
                     remarksDescription = body.remarks

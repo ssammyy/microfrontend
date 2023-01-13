@@ -2641,7 +2641,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   viewSSFLabResultsRecord(data: SampleSubmissionDto) {
     this.selectedSSFDetails = data;
-    this.selectedLabResults = this.workPlanInspection.sampleLabResults.find(lab => lab.ssfResultsList.bsNumber === data.bsNumber);
+    this.selectedLabResults = this.workPlanInspection?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === data?.bsNumber);
 
     window.$('#myModal2').modal('hide');
     // window.$('.modal').remove();
@@ -2691,7 +2691,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.currDivLabel = `ADD BS NUMBER FOR FILE REFERENCE NUMBER # ${data.fileRefNumber}`;
       this.currDiv = 'addBsNumber';
       this.sampleSubmitBSNumberForm.reset();
+      this.selectedSSFDetails = data;
       this.ssfSelectedID = data.id;
+      this.sampleSubmitBSNumberForm?.get('ssfID')?.setValue(this.ssfSelectedID);
       console.log('SSF ID BS NUMBER ADDING' + this.ssfSelectedID);
       window.$('#myModal1').modal('show');
     }
