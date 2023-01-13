@@ -718,7 +718,7 @@ class MarketSurveillanceFuelDaoServices(
         val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
         val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
-        val sampleSubmission = findSampleSubmissionDetailBySampleCollectedIDAndSSFId(sampleCollected?.id?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"),body.ssfID)?: throw ExpectedDataNotFound("MISSING SAMPLE SUBMITTED FOR FUEL INSPECTION WITH REF NO $referenceNo")
+        val sampleSubmission = findSampleSubmissionDetailBySampleCollectedIDAndSSFId(sampleCollected?.id?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"),body.ssfID?: throw ExpectedDataNotFound("MISSING SSF ID"))?: throw ExpectedDataNotFound("MISSING SAMPLE SUBMITTED FOR FUEL INSPECTION WITH REF NO $referenceNo")
         with(sampleSubmission){
             bsNumber = body.bsNumber
             sampleBsNumberDate = body.submittedDate
