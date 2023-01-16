@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.apache.http.HttpStatus
-import org.apache.poi.util.IOUtils
 import org.kebs.app.kotlin.apollo.api.handlers.reports.ReportRequest
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -20,7 +19,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.io.ByteArrayOutputStream
-import java.io.FileInputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.servlet.http.HttpServletResponse
@@ -41,6 +39,7 @@ class GeneralController(
     private val auctionService: AuctionService,
     private val pvocService: PvocService,
     private val diReports: DIReports,
+    private val utils: UtilitiesHandler
 ) {
     val monthFormatter = DateTimeFormatter.ofPattern("MMMM")
     val dateFormatter = DateTimeFormatter.ofPattern("dd/MMMM/yyyy")
@@ -85,7 +84,7 @@ class GeneralController(
 
             val stream =
                 reportsDaoService.extractReportMapDataSource(map, "classpath:reports/allChecklist.jrxml", dataSources)
-            download(stream, fileName, httResponse)
+            utils.download(stream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO READ DATA", ex)
             httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
@@ -150,7 +149,7 @@ class GeneralController(
             } ?: run {
                 reportsDaoService.extractReportEmptyDataSource(map, designPath)
             }
-            download(stream, fileName, httResponse)
+            utils.download(stream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO READ DATA", ex)
             httResponse.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
@@ -168,7 +167,7 @@ class GeneralController(
             KotlinLogging.logger { }.info("COR DATA: $data")
             val pdfStream =
                 reportsDaoService.extractReportEmptyDataSource(data, "classpath:reports/LocalCoRReport.jrxml")
-            download(pdfStream, fileName, httResponse)
+            utils.download(pdfStream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO DOWNLOAD COC", ex)
         }
@@ -208,7 +207,7 @@ class GeneralController(
                     )
                 }
             }
-            download(pdfStream, fileName, httResponse)
+            utils.download(pdfStream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED TO DOWNLOAD COC/COI/NCR", ex)
             httResponse.status = 500
@@ -224,7 +223,7 @@ class GeneralController(
             this.checklistService.findInspectionMotorVehicleById(inspectionId)?.let { inspectionGeneral ->
                 inspectionGeneral.ministryReportFile?.let {
                     val name = "MINISTRY_CHECKLIST-${inspectionId}.pdf"
-                    downloadBytes(it, name, httResponse)
+                    utils.downloadBytes(it, name, httResponse)
                 } ?: throw ExpectedDataNotFound("Ministry file has not been uploaded")
             } ?: throw ExpectedDataNotFound("MVIR not found")
             return
@@ -247,7 +246,7 @@ class GeneralController(
             )
             val serialNumber = data["mvirNum"] as String
             val fileName = "MVIR-${serialNumber}.pdf"
-            download(pdfStream, fileName, httResponse)
+            utils.download(pdfStream, fileName, httResponse)
 
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("MVIR DOWNLOAD FAILED", ex)
@@ -273,7 +272,7 @@ class GeneralController(
             )
             val serialNumber = data.getOrDefault("SerialNo", Random(mvInspectionChecklistid).nextLong())
             val fileName = "INSPECTION_REPORT_${serialNumber}.pdf"
-            download(pdfStream, fileName, httpResponse)
+            utils.download(pdfStream, fileName, httpResponse)
         } catch (ex: Exception) {
             val response = ApiResponseModel()
             KotlinLogging.logger { }.error("Download failed", ex)
@@ -305,7 +304,7 @@ class GeneralController(
                 map,
                 applicationMapProperties.mapReportMinistryChecklistPath
             )
-            download(stream, "MINISTRY-CHECKLIST-${checklistId}.pdf", httResponse)
+            utils.download(stream, "MINISTRY-CHECKLIST-${checklistId}.pdf", httResponse)
             return
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("MINISTRY CHECKLIST", ex)
@@ -316,47 +315,12 @@ class GeneralController(
         httResponse.writer.println(response.message)
     }
 
-    fun download(stream: ByteArrayOutputStream, fileName: String, httResponse: HttpServletResponse): Boolean {
-        httResponse.setHeader("Content-Disposition", "inline; filename=\"${fileName}\";")
-        httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-        httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-        httResponse.setContentLengthLong(stream.size().toLong())
-        httResponse.outputStream
-            .let { responseOutputStream ->
-                responseOutputStream.write(stream.toByteArray())
-                responseOutputStream.close()
-            }
-        return true
-    }
-
-    fun downloadFile(stream: FileInputStream, fileName: String, httResponse: HttpServletResponse): Boolean {
-        httResponse.setHeader("Content-Disposition", "inline; filename=\"${fileName}\";")
-        httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-        httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-        httResponse.setContentLengthLong(stream.channel.size())
-        IOUtils.copy(stream, httResponse.outputStream)
-        return true
-    }
-
-    fun downloadBytes(bytes: ByteArray, fileName: String, httResponse: HttpServletResponse): Boolean {
-        httResponse.setHeader("Content-Disposition", "inline; filename=\"${fileName}\";")
-        httResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-        httResponse.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-        httResponse.setContentLength(bytes.size)
-        httResponse.outputStream
-            .let { responseOutputStream ->
-                responseOutputStream.write(bytes)
-                responseOutputStream.close()
-            }
-        return true
-    }
-
     @GetMapping("/waiver/attachment/{uploadId}")
     fun downloadWaiverAttachment(@PathVariable("uploadId") uploadId: String, httResponse: HttpServletResponse) {
         pvocService.findPvoceDocument(uploadId)?.let { diUpload ->
             // Response with file
             diUpload.documentType?.let { doc ->
-                downloadBytes(doc, "ATTACHMENT-${diUpload.id}-${diUpload.name?.toUpperCase()}", httResponse)
+                utils.downloadBytes(doc, "ATTACHMENT-${diUpload.id}-${diUpload.name?.toUpperCase()}", httResponse)
             } ?: throw ExpectedDataNotFound("Attachment file not found")
         } ?: throw ExpectedDataNotFound("Attachment file not found")
     }
@@ -369,7 +333,7 @@ class GeneralController(
         val diUpload: DiUploadsEntity = daoServices.findDiUploadById(uploadId)
         diUpload.document?.let {
             // Response with file
-            downloadBytes(it, "ATTACHMENT-${diUpload.id}-${diUpload.name}", httResponse)
+            utils.downloadBytes(it, "ATTACHMENT-${diUpload.id}-${diUpload.name}", httResponse)
         } ?: throw ExpectedDataNotFound("Attachment file not found")
     }
 
@@ -382,7 +346,7 @@ class GeneralController(
         auctionService.downloadAuctionAttachment(auctionId, recordId)?.let {
             // Response with file
             it.document?.let { doc ->
-                downloadBytes(doc, "AUCTION-ATTACHMENT-${it.id}-${it.name?.toUpperCase()}", httResponse)
+                utils.downloadBytes(doc, "AUCTION-ATTACHMENT-${it.id}-${it.name?.toUpperCase()}", httResponse)
             } ?: throw ExpectedDataNotFound("Attachment file not found")
         } ?: throw ExpectedDataNotFound("Attachment file not found")
     }
@@ -430,7 +394,7 @@ class GeneralController(
             )
             val serialNumber = "${startDate}-${endDate}"
             val fileName = "AUCTION-GOODS-${serialNumber}.pdf"
-            download(pdfStream, fileName, httResponse)
+            utils.download(pdfStream, fileName, httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Auction report", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -455,7 +419,7 @@ class GeneralController(
             )
             val demandNoteNumber = map["demandNoteNo"] as String
             // Response with file
-            download(extractReport, "DEMAND-NOTE-${demandNoteId}-${demandNoteNumber}.pdf", httResponse)
+            utils.download(extractReport, "DEMAND-NOTE-${demandNoteId}-${demandNoteNumber}.pdf", httResponse)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Download failed", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
@@ -486,7 +450,7 @@ class GeneralController(
                     data.get("fields") as Map<String, String>
                 )
                 // Response with file
-                downloadFile(extractReport, fileName, httResponse)
+                utils.downloadFile(extractReport, fileName, httResponse)
             } else {
                 httResponse.status = HttpStatus.SC_BAD_REQUEST
                 httResponse.contentType = MediaType.APPLICATION_JSON_VALUE

@@ -71,24 +71,46 @@ class InvoicePaymentService(
 ) {
     final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     var dateTimeFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
+    fun invoiceDetails(demandNoteRef: String, ucrNumber: String? = null): Pair<Long, HashMap<String, Any>> {
+        var map = hashMapOf<String, Any>()
+        var demandNoteId: Long = 0
+        daoServices.findDemandNoteWithReference(demandNoteRef)?.let { demandNote ->
+            if (demandNote.ucrNumber?.equals(ucrNumber, true) == true) {
+                demandNoteId = demandNote.id ?: 0
+                map = this.invoidDetailsMap(demandNote)
+            } else {
+                throw ExpectedDataNotFound("Invalid UCR number for demand note number ${demandNoteRef}")
+            }
+
+        } ?: throw ExpectedDataNotFound("Invalid demand note number")
+        return Pair(demandNoteId, map)
+    }
+
+    fun invoidDetailsMap(demandNote: CdDemandNoteEntity): HashMap<String, Any> {
+        val map = hashMapOf<String, Any>()
+        map["preparedBy"] = demandNote.generatedBy.toString()
+        map["datePrepared"] = demandNote.dateGenerated.toString()
+        map["demandNoteNo"] = demandNote.postingReference ?: "UNKNOWN"
+        map["importerName"] = demandNote.nameImporter.toString()
+        map["importerAddress"] = demandNote.address.toString()
+        map["importerTelephone"] = demandNote.telephone.toString()
+        map["ablNo"] = demandNote.entryAblNumber.toString()
+        map["ucrNo"] = demandNote.entryNo.toString()
+        map["totalAmount"] = demandNote.totalAmount.toString()
+        map["receiptNo"] = demandNote.receiptNo.toString()
+        map["amountInWords"] = demandNote.totalAmount?.let { amountInWordsService.amountToWords(it) } ?: ""
+        return reportsDaoService.addBankAndMPESADetails(map, demandNote.postingReference ?: "UNKNOWN")
+    }
+
     fun invoiceDetails(demandNoteId: Long): HashMap<String, Any> {
         var map = hashMapOf<String, Any>()
         daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
-            map["preparedBy"] = demandNote.generatedBy.toString()
-            map["datePrepared"] = demandNote.dateGenerated.toString()
-            map["demandNoteNo"] = demandNote.postingReference ?: "UNKNOWN"
-            map["importerName"] = demandNote.nameImporter.toString()
-            map["importerAddress"] = demandNote.address.toString()
-            map["importerTelephone"] = demandNote.telephone.toString()
-            map["ablNo"] = demandNote.entryAblNumber.toString()
-            map["ucrNo"] = demandNote.entryNo.toString()
-            map["totalAmount"] = demandNote.totalAmount.toString()
-            map["receiptNo"] = demandNote.receiptNo.toString()
-            map["amountInWords"] = demandNote.totalAmount?.let { amountInWordsService.amountToWords(it) } ?: ""
-            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.postingReference ?: "UNKNOWN")
+            map = this.invoidDetailsMap(demandNote)
         }
         return map
     }
+
 
     fun rejectDemandNoteGeneration(cdUuid: String, demandNoteId: Long, remarks: String): Boolean {
         try {

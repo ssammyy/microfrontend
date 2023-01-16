@@ -31,10 +31,8 @@ export class ProcessRejectionComponent implements OnInit {
     saveRecord() {
         this.loading = true
         let result = 'approve'
-        let description = ''
         if (this.form.value.approvalStatus !== '1') {
             result = 'reject'
-            description = 'A rejection will send the consignment to back to inspection officer for review'
         }
         // Validate compliance needs confirmation
         if (this.data.dataMap.hasOwnProperty('compliantStatus')) {

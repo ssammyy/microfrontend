@@ -655,10 +655,11 @@ class DestinationInspectionService(
                 if (cdType.autoTargetStatus == map.activeStatus) {
                     KotlinLogging.logger { }.info("START AUTO TARGET PROCESS")
                     val conditions = cdType.autoTargetCondition?.toUpperCase()?.split(",") ?: listOf()
-
+                    // Auto target on LOCAL coc/cor(DES_IN) and courier goods
                     if (conditions.isEmpty() || conditions.contains(
                             consignmentDocument.cdStandardsTwo?.localCocType.orEmpty().toUpperCase()
                         )
+                        || conditions.contains(cdType.category)
                     ) {
                         with(consignmentDocument) {
                             targetStatus = map.activeStatus
