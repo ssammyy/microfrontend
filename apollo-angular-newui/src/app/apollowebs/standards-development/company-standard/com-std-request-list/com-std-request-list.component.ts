@@ -1,6 +1,6 @@
 import {
     Component,
-    ElementRef,
+    ElementRef, NgZone,
     OnDestroy,
     OnInit,
     QueryList,
@@ -9,14 +9,18 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import {NgxSpinnerService} from "ngx-spinner";
-import {Subject} from "rxjs";
+import {ReplaySubject, Subject} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ComHodTasks, ComStdAction, ComStdRequest, UsersEntity} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {DataTableDirective} from "angular-datatables";
 import swal from "sweetalert2";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {take, takeUntil} from "rxjs/operators";
+import {MatSelect} from "@angular/material/select";
+import {IDropdownSettings} from "ng-multiselect-dropdown";
+import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
 
 @Component({
   selector: 'app-com-std-request-list',
@@ -29,6 +33,12 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     dtElements: QueryList<DataTableDirective>;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
+    public websiteCtrl: FormControl = new FormControl();
+    public websiteFilterCtrl: FormControl = new FormControl();
+    public filteredWebsites: ReplaySubject<UsersEntity[]> = new ReplaySubject<UsersEntity[]>(1);
+    @ViewChild('singleSelect') singleSelect: MatSelect;
+    /** Subject that emits when the component has been destroyed. */
+    protected _onDestroy = new Subject();
   public users !: UsersEntity[] ;
     selectedUser: number;
   tasks: ComStdRequest[] = [];
@@ -36,18 +46,25 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     public committeeFormGroup!: FormGroup;
     public uploadDraftFormGroup!: FormGroup;
   blob: Blob;
+   // public dropdownSettings: IDropdownSettings = {};
+    //dropdownList: any[] = [];
+
   constructor(
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
       private formBuilder: FormBuilder,
+      public  zone: NgZone,
   ) { }
+
+
 
   ngOnInit(): void {
     this.getCompanyStandardRequest();
     this.getUserList();
       this.committeeFormGroup = this.formBuilder.group({
           name:['', Validators.required],
+          names:['', Validators.required],
           requestId:['', Validators.required]
       });
       this.uploadDraftFormGroup = this.formBuilder.group({
@@ -67,10 +84,70 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
 
       });
 
+      // this.dropdownSettings = {
+      //     singleSelection: false,
+      //     idField: 'email',
+      //     textField: 'firstName',
+      //     selectAllText: 'Select All',
+      //     unSelectAllText: 'UnSelect All',
+      //     itemsShowLimit: 3,
+      //     allowSearchFilter: true
+      // };
+
+      this.websiteCtrl.setValue(this.users[1]);
+      this.filteredWebsites.next(this.users.slice());
+
+      this.websiteFilterCtrl.valueChanges
+          .pipe(takeUntil(this._onDestroy))
+          .subscribe(() => {
+              this.filterBanks();
+          });
+
 
   }
+
+    // onItemSelect(item: ListItem) {
+    //     console.log(item);
+    // }
+    //
+    // onSelectAll(items: any) {
+    //     console.log(items);
+    // }
+
+    ngAfterViewInit() {
+        this.setInitialValue();
+    }
+
     ngOnDestroy(): void {
         this.dtTrigger.unsubscribe();
+        this._onDestroy.next();
+        this._onDestroy.complete();
+    }
+
+    protected setInitialValue() {
+        this.filteredWebsites
+            .pipe(take(1), takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this.singleSelect.compareWith = (a: UsersEntity, b: UsersEntity) => a && b && a.id === b.id;
+            });
+    }
+
+    protected filterBanks() {
+        if (!this.users) {
+            return;
+        }
+
+        let search = this.websiteFilterCtrl.value;
+        if (!search) {
+            this.filteredWebsites.next(this.users.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+        }
+
+        this.filteredWebsites.next(
+            this.users.filter(bank => bank.firstName.toLowerCase().indexOf(search) > -1)
+        );
     }
 
     showToasterSuccess(title:string,message:string){
@@ -182,6 +259,8 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         (response: UsersEntity[]) => {
           this.SpinnerService.hide();
           this.users = response;
+          //console.log(this.users)
+          //this.dropdownList = response;
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

@@ -451,6 +451,10 @@ import { RegisterTivetComponent } from './views/registration/register-tivet/regi
 import { ComplaintMonitoringComponent } from './apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component';
 import { FieldInspectionSummaryComponent } from './apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component';
 import { WorkplanMonitoringToolComponent } from './apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component';
+import { ComStdAppDraftComponent } from './apollowebs/standards-development/company-standard/com-std-app-draft/com-std-app-draft.component';
+import { IntStdPublishingComponent } from './apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component';
+import { ComStdPublishingComponent } from './apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component';
+import { ComStdEditorComponent } from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -935,6 +939,10 @@ import { WorkplanMonitoringToolComponent } from './apollowebs/market-surveillanc
         ComplaintMonitoringComponent,
         FieldInspectionSummaryComponent,
         WorkplanMonitoringToolComponent,
+        ComStdAppDraftComponent,
+        IntStdPublishingComponent,
+        ComStdPublishingComponent,
+        ComStdEditorComponent,
 
     ],
     entryComponents: [LoaderComponent],

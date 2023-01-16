@@ -611,6 +611,10 @@ import {
 import {
     WorkplanMonitoringToolComponent
 } from "./apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component";
+import {ComStdAppDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-app-draft/com-std-app-draft.component";
+import {IntStdPublishingComponent} from "./apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component";
+import {ComStdPublishingComponent} from "./apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component";
+import {ComStdEditorComponent} from "./apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component";
 
 export const routes: Routes = [
     {
@@ -1436,6 +1440,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdGazzetteComponent}],
     },
+    {
+        path: 'isStdPublishingTask', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdPublishingComponent}],
+    },
+
     // SD SYSTEMIC REVIEW
     {
         path: 'requestStandardReview', component: AdminLayoutComponent,
@@ -1553,15 +1563,26 @@ export const routes: Routes = [
         component: ComStdDraftCommentComponent,
     },
 
-    // {
-    //     path: 'comStdListed', component: AdminLayoutComponent,
-    //     children: [{path: '', component: ComStdListComponent}],
-    // },
+    {
+        path: 'comStdApproved', component: AdminLayoutComponent,
+        children: [{path: '', component: ComStdAppDraftComponent}],
+    },
     {
         path: 'comStdTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComTasksComponent}],
     },
+    {
+        path: 'comStdEdit', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdEditorComponent}],
+    },
+    {
+        path: 'comStdPublishing', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdPublishingComponent}],
+    },
+
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
         children: [{path: '', component: InformationcheckComponent}],

@@ -39,6 +39,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <th class="knw">Normative Reference</th>
 <th class="sl">Symbols Abbreviated Terms</th>
 <th class="knw">Special</th>
+<th class="knw">Deadline</th>
 <th class="action">Action</th>
 <th></th>
 </tr>
@@ -54,8 +55,12 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.normativeReference}}</td>
 <td>{{task.symbolsAbbreviatedTerms}}</td>
 <td>{{task.special}}</td>
-<td *ngIf="task.status==0" ><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-success btn-sm tooltips" data-placement="top" style=" " data-original-title="preparePD">Approve Draft</a></td>
-<td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
+<td>{{task.deadlineDate | date: 'yyyy-MM-dd'}}</td>
+<td *ngIf="task.status==0" ><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Approve Draft</a></td>
+<td *ngIf="task.status==0"><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
+<td *ngIf="task.status==3" ><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Approve Draft--</a></td>
+<td *ngIf="task.status==3"><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject--</button></td>
+
 </tr>
 </tbody>
 </table>
@@ -172,6 +177,8 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 </div>
 
 <input type="hidden" name="requestId" ngModel="{{actionRequest?.requestId}}" >
+<input type="hidden" name="id" ngModel="{{actionRequest?.id}}" >
+<input type="hidden" name="accentTo" ngModel="Yes" >
 
 
 <div class="modal-footer">
@@ -293,7 +300,8 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 </div>
 
 <input type="hidden" name="requestId" ngModel="{{actionRequest?.requestId}}" >
-
+    <input type="hidden" name="id" ngModel="{{actionRequest?.id}}" >
+    <input type="hidden" name="accentTo" ngModel="No" >
 
 <div class="modal-footer">
 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>

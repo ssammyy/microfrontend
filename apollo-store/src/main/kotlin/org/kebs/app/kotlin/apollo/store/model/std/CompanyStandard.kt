@@ -55,7 +55,7 @@ class CompanyStandard {
 
     @Column(name = "REQUEST_NUMBER")
     @Basic
-    var requestNumber: Long? = null
+    var requestNumber: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -80,4 +80,8 @@ class CompanyStandard {
     @Column(name = "DRAUGHTING")
     @Basic
     var draughting: String? = null
+
+    @Column(name = "REQUEST_ID")
+    @Basic
+    var requestId: Long? = null
 }

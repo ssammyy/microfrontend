@@ -57,6 +57,15 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
+                "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber,STATUS as status,REQUEST_ID as requestId FROM SD_COM_STANDARD " +
+                "WHERE  STATUS IN('0','1','3','4','5','6','7') ",
+        nativeQuery = true
+    )
+    fun getComStdPublishing(): MutableList<COMUploadedDraft>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
                 "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber FROM SD_COM_STANDARD " +
                 "WHERE  STATUS='1' ",
         nativeQuery = true
@@ -244,7 +253,7 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, L
             "r.COMPANY_PHONE as companyPhone,r.COMPANY_EMAIL as companyEmail,t.NAME as tcName,d.NAME as departmentName,p.NAME as productName," +
             "s.NAME as productSubCategoryName,r.STATUS as status" +
             "  FROM SD_COM_STANDARD_REQUEST r LEFT JOIN SD_TECHNICAL_COMMITTEE t ON r.TC_ID=t.ID LEFT JOIN SD_DEPARTMENT d ON r.DEPARTMENT=d.ID LEFT JOIN SD_PRODUCTS p " +
-            "ON r.PRODUCT=p.ID LEFT JOIN SD_PRODUCT_SUBCATEGORY s ON r.PRODUCT_SUB_CATEGORY=s.ID  ", nativeQuery = true)
+            "ON r.PRODUCT=p.ID LEFT JOIN SD_PRODUCT_SUBCATEGORY s ON r.PRODUCT_SUB_CATEGORY=s.ID WHERE r.STATUS IN ('0','1','2')", nativeQuery = true)
     fun getCompanyStandardRequest(): MutableList<ComStdRequest>
 
     @Query(value = "SELECT r.ID as id,r.REQUEST_NUMBER as requestNumber,r.SUBMISSION_DATE as submissionDate,r.COMPANY_NAME as companyName,r.STATUS as status," +
@@ -273,7 +282,7 @@ interface ComStdDraftRepository : JpaRepository<ComStdDraft, Long> {
     @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='0'  ", nativeQuery = true)
     fun getUploadedStdDraftForComment(): MutableList<ComStdDraft>
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT   ", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS IN ('0')  ", nativeQuery = true)
     fun getUploadedStdDraft(): MutableList<ComStdDraft>
 
     @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='1'  ", nativeQuery = true)
@@ -351,6 +360,15 @@ interface ISGazetteNoticeRepository : JpaRepository<ISGazetteNotice, Long> {
 
 interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ISUploadStandard>
+
+    @Query(
+        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,cast(UPLOAD_DATE as varchar(200)) AS uploadDate," +
+                "JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId,DEADLINE_DATE as deadLine FROM SD_IS_STANDARD_TB " +
+                "WHERE  STATUS IN('0','1','3','4','5','6','7') ",
+        nativeQuery = true
+    )
+    fun getIsPublishingTasks(): MutableList<ISUploadedDraft>
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
@@ -566,6 +584,10 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID FROM DAT_KEBS_USERS u JOIN CFG_USER_ROLES_ASSIGNMENTS c ON u.ID=c.USER_ID " +
             "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SL_PL_OFFICER') ", nativeQuery = true)
     fun getPlList(): List<UserDetailHolder>
+
+    @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID,u.EMAIL as EMAIL " +
+            "FROM DAT_KEBS_USERS u ", nativeQuery = true)
+    fun getUserList(): MutableList<UserDetailHolder>
 
     @Query(value = "SELECT * FROM DAT_KEBS_USERS  WHERE USER_TYPE IN ('61') ", nativeQuery = true)
     fun getPlListv(): List<UsersEntity>

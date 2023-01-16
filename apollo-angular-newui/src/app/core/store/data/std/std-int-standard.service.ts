@@ -103,6 +103,13 @@ export class StdIntStandardService {
         const params = new HttpParams();
         return this.http.get<ISCheckRequirements>(url, {params}).pipe();
     }
+
+    public getIsPublishingTasks(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PB_STANDARD);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+    }
+
     public getApprovedDraft(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_APPROVED_DRAFT_STANDARD);
         const params = new HttpParams();

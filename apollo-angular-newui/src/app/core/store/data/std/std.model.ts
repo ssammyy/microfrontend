@@ -655,8 +655,10 @@ export interface IStandardUpload {
     taskId: string;
     accentTo: boolean;
     proposalId: number;
+    requestId: number;
     id: number;
     standardNumber: string;
+    comStdNumber: string;
     preparedBy: string;
     docName: string;
 }
@@ -754,6 +756,7 @@ export interface ISDraftDecision {
     accentTo: string;
     justificationId: number;
     proposalId: number;
+    requestId: number;
     draftId: number;
 }
 
@@ -940,6 +943,7 @@ export interface ComStandardJC {
     processId: string;
     requestId: number;
     name: string[];
+    names: string[];
 }
 
 export interface ComJcJustification {
@@ -1120,7 +1124,9 @@ export interface ApproveDraft {
     taskId: string;
     accentTo: boolean;
     approvalID: bigint;
+    requestId: bigint;
     comments: string;
+    response: string;
 }
 
 export interface COMPreliminaryDraft {
@@ -1135,9 +1141,11 @@ export interface COMPreliminaryDraft {
     processId: string;
     diJNumber: number;
     requestNumber: string;
+    comStdNumber: string;
     requestId: number;
     draftNumber: string;
     status: number;
+    deadlineDate: Timestamp<any>;
 }
 export interface ComApproveDraft{
     accentTo: boolean;
@@ -1393,6 +1401,7 @@ export interface ReviewStandardsComments {
     dateOfRemark: Timestamp<any>;
 }
 
+
 export interface StakeholderProposalComments {
     id: number;
     user_id: number;
@@ -1568,6 +1577,7 @@ export interface ISCheckRequirements {
     status: string;
     uploadDate: string;
     isNumber: string;
+    requestId: number;
     documentType: string;
     preparedBy: string;
 }
@@ -1610,4 +1620,15 @@ export interface SchemeMembership {
     invoicePaymentDate: Date;
 
 
+}
+
+export interface ComStdRemarks{
+    id: number;
+    requestId: number;
+    remarks: string;
+    remarkBy: string;
+    status: number;
+    role: string;
+    description: string;
+    dateOfRemark: Timestamp<any>;
 }

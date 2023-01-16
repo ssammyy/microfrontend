@@ -406,6 +406,7 @@ export class ApiEndpointService {
         IST_VIEW_APP_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedISJustification`,
         IST_UPLOAD_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftForEditing`,
         IST_VIEW_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getUploadedDraft`,
+        IST_VIEW_PB_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getIsPublishingTasks`,
         IST_VIEW_APPROVED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedDraft`,
         IST_EDIT_APPROVED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/editStandardDraft`,
         IST_VIEW_EDITED_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getEditedDraft`,
@@ -471,7 +472,7 @@ export class ApiEndpointService {
         ICT_UPLOAD_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/draft-file-upload`,
         ICT_JC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getJcSecTasks`,
         ICT_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/view/comDraft`,
-        ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnCompanyStdDraft`,
+        ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnStdDraft`,
         ICT_COM_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnComStdDraft`,
         ICT_COM_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComSecTasks`,
         ICT_PREPARE_COM_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadComStandard`,
@@ -485,6 +486,16 @@ export class ApiEndpointService {
         ICT_COM_STD_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraft`,
         ICT_COM_STD_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraftForComment`,
         ICT_COM_STD_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/commentOnDraft`,
+        ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getApprovedStdDraft`,
+        ICT_COM_STD_EDITS_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdDraftForEditing`,
+        ICT_COM_STD_PB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComStdPublishing`,
+        ICT_COM_STD_COMMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAllComments`,
+        ICT_COM_STD_REQUIREMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/checkRequirements`,
+        ICT_COM_STD_EDIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/editStandardDraft`,
+        ICT_COM_STD_DRAFTING: `${ApiEndpointService.SD_ICT_CONTEXT}/draughtStandard`,
+        ICT_COM_STD_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/proofReadStandard`,
+        ICT_COM_STD_DEC_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/approveProofReadStandard`,
+        ICT_COM_STD_SUBMIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftForEditing`,
 
 
 

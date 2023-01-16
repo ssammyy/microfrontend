@@ -400,6 +400,28 @@ data class ISDraftDto(
 
 }
 
+data class CSDraftDto(
+    var proposalId:Long?=null,
+    var justificationNo:Long?=null,
+    var id:Long,
+    var title:String?=null,
+    var scope:String?=null,
+    var normativeReference:String?=null,
+    var symbolsAbbreviatedTerms:String?=null,
+    var clause:String?=null,
+    var standardNumber:String?=null,
+    var preparedBy:String?=null,
+    var docName:String?=null,
+    var special:String?=null,
+    var draughting:String?=null,
+    var requestNumber:String?=null,
+    var comStdNumber:String?=null,
+    var documentType:String?=null,
+    var requestId:Long?=null,
+){
+
+}
+
 data class ISCompanyStdRequestDto(
     var companyName: String?=null,
     var departmentId: String?=null,
@@ -416,7 +438,8 @@ data class ISCompanyStdRequestDto(
 
 data class JointCommitteeDto(
     var requestId: Long?=null,
-    var name: List<String>?=null
+    var name: List<String>?=null,
+    var names: List<String>?=null
 ){
 
 }
