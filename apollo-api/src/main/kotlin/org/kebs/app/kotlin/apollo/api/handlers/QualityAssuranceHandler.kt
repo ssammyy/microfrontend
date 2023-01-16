@@ -90,6 +90,7 @@ class QualityAssuranceHandler(
     private val reactiveAuthenticationManager: CustomAuthenticationProvider,
     private val validator: Validator,
     private val service: StandardsLevyDaoService,
+    private val companyProfileEntity: ICompanyProfileRepository,
 
 
     ) {
@@ -4399,6 +4400,45 @@ class QualityAssuranceHandler(
         }
 
     }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllCompanies(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val company = companyProfileEntity.findAllByStatus(1)
+
+
+            var allCompanies: List<companyDto>? = null
+            var allCompaniesNotListed: List<companyDto>? = null //smarks
+            var allCompaniesNotListedDmark: List<companyDto>? = null //smarks
+            var allCompaniesNotListedFmark: List<companyDto>? = null //smarks
+
+            allCompanies = qaDaoServices.listFirmsWebsite(company, map)
+            println(allCompanies)
+
+            allCompaniesNotListed = qaDaoServices.listFirmsWebsiteNotMigratedSmark(
+                qaDaoServices.findCompaniesNotMigratedSmark(), map
+            )
+            allCompaniesNotListedDmark = qaDaoServices.listFirmsWebsiteNotMigratedDmark(
+                qaDaoServices.findCompaniesNotMigratedDmark(), map
+            )
+            allCompaniesNotListedFmark = qaDaoServices.listFirmsWebsiteNotMigratedFmark(
+                qaDaoServices.findCompaniesNotMigratedFmark(), map
+            )
+
+
+
+
+            return ok().body(allCompanies + allCompaniesNotListed + allCompaniesNotListedDmark + allCompaniesNotListedFmark)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
 
     fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
         return try {

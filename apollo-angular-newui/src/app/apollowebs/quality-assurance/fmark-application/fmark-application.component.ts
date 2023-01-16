@@ -47,7 +47,7 @@ export class FmarkApplicationComponent implements OnInit {
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
             (d) => {
                 if (d) {
-                    //  console.log(`${d.status}`);
+                    // //(`${d.status}`);
                     // return this.status = d.status;
                     if (d.status == 0) {
                         swal.fire({
@@ -73,34 +73,34 @@ export class FmarkApplicationComponent implements OnInit {
                                 window.location.href = "/dashboard";
                             }
                         })
-                    } else {
-                        let formattedArray = [];
-                        this.dataTable;
-
-                        this.qaService.loadPermitAwardedListToGenerateFMarkAllAwarded(String(this.SMarkTypeID)).subscribe(
-                            (data: any) => {
-
-                                this.allPermitData = data;
-                                // tslint:disable-next-line:max-line-length
-                                formattedArray = data.map(i => [i.productName, i.tradeMark, i.awardedPermitNumber]);
-
-                                this.dataTable = {
-                                    headerRow: ['Product', 'Brand Name', 'Permit Number'],
-                                    footerRow: ['Product', 'Brand Name', 'Permit Number'],
-                                    dataRows: formattedArray
-
-                                };
-
-                            });
-
-                        this.fmarkForm = this.formBuilder.group({
-                            smarkPermitID: ['', Validators.required]
-
-                        });
-                        //
                     }
                 }
             })
+
+        this.fmarkForm = this.formBuilder.group({
+            smarkPermitID: ['', Validators.required]
+
+        });
+        let formattedArray = [];
+        this.dataTable;
+
+        this.qaService.loadPermitAwardedListToGenerateFMarkAllAwarded(String(this.SMarkTypeID)).subscribe(
+            (data: any) => {
+
+                this.allPermitData = data;
+                // tslint:disable-next-line:max-line-length
+                formattedArray = data.map(i => [i.productName, i.tradeMark, i.awardedPermitNumber]);
+
+                this.dataTable = {
+                    headerRow: ['Product', 'Brand Name', 'Permit Number'],
+                    footerRow: ['Product', 'Brand Name', 'Permit Number'],
+                    dataRows: formattedArray
+
+                };
+
+            });
+
+
     }
 
     get formFmarkForm(): any {
@@ -135,7 +135,7 @@ export class FmarkApplicationComponent implements OnInit {
                 (data) => {
                     this.allPermitDetails = data;
                     this.permitID = this.allPermitDetails.permitDetails.id;
-                    console.log(data);
+                   //(data);
                     swal.fire({
                         title: 'FMARK GENERATED SUCCESSFULLY. PROCEED TO SUBMIT',
                         buttonsStyling: false,

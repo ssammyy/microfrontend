@@ -768,9 +768,15 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         PUT("/ssf-send-result-saved", handler::saveWorkPlanScheduleSSFComplianceStatusSend)
-                        PUT("/final-ssf-compliance-status-save", handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd)
+                        PUT(
+                            "/final-ssf-compliance-status-save",
+                            handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd
+                        )
                         POST("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
-                        POST("/preliminary-report-hod-hof-director", handler::addWorkPlanSchedulePreliminaryReportHofHodDirector)
+                        POST(
+                            "/preliminary-report-hod-hof-director",
+                            handler::addWorkPlanSchedulePreliminaryReportHofHodDirector
+                        )
 //                        PUT("/preliminary-report", handler::addWorkPlanSchedulePreliminaryReport)
 //                        POST("/final-report", handler::addWorkPlanScheduleFinalPreliminaryReport)
                     }
@@ -845,10 +851,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
             GET("/getAllAwardedPermits", handler::getAllAwardedPermitsByPermitNumber)
             GET("/getAllAwardedPermitsByCompanyName", handler::getAllAwardedPermitsByCompanyName)
-
-//            GET("/getAllAwardedPermitsByPermitNumberSms", handler::getAllAwardedPermitsByPermitNumberSms)
-
-
+            GET("/getAllCompanies", handler::getAllCompanies)
+//          GET("/getAllAwardedPermitsByPermitNumberSms", handler::getAllAwardedPermitsByPermitNumberSms)
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
             POST("/getAllAwardedPermitsByPermitNumberSmsRequest", handler::processReceiveMessageBody)
 

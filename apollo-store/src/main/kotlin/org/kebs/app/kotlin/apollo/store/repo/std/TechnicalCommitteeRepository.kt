@@ -20,7 +20,12 @@ interface TechnicalCommitteeRepository : JpaRepository<TechnicalCommittee, Long>
     )
     fun findAllWithDescriptionQuery(): List<DataHolder>
 
-    fun findTechnicalCommitteeByDepartmentId(departmentId: Long?):TechnicalCommittee?
+    fun findTechnicalCommitteeByDepartmentId(departmentId: Long?): TechnicalCommittee?
     fun existsTechnicalCommitteeByDepartmentId(departmentId: Long?): Boolean
+
+    fun findAllByOrderByIdDesc(): MutableList<TechnicalCommittee>
+
+    fun findByTechnicalCommitteeNo(technicalCommitteeNo: String?): MutableList<TechnicalCommittee>
+
 
 }

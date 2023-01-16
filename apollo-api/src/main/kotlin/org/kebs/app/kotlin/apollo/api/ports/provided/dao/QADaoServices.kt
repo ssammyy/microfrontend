@@ -2006,7 +2006,7 @@ class QADaoServices(
                 p.id,
                 p.attachedPlantId?.let {
                     commonDaoServices.findCompanyProfileWithID(
-                        findPlantDetails(it).companyProfileId ?: -1L
+                        findPlantDetailsB(it)?.companyProfileId ?: -1L
                     ).name
                 },
                 p.permitRefNumber,
@@ -2020,17 +2020,17 @@ class QADaoServices(
                 p.createdOn,
                 p.attachedPlantId?.let {
                     commonDaoServices.findCountiesEntityByCountyId(
-                        findPlantDetails(it).county ?: -1L, map.activeStatus
+                        findPlantDetailsB(it)?.county ?: -1L, map.activeStatus
                     ).county
                 },
                 p.attachedPlantId?.let {
                     commonDaoServices.findTownEntityByTownId(
-                        findPlantDetails(it).town ?: -1L
+                        findPlantDetailsB(it)?.town ?: -1L
                     ).town
                 },
                 p.attachedPlantId?.let {
                     commonDaoServices.findRegionEntityByRegionID(
-                        findPlantDetails(it).region ?: -1L, map.activeStatus
+                        findPlantDetailsB(it)?.region ?: 1L, map.activeStatus
                     ).region
                 },
                 p.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
@@ -7055,6 +7055,54 @@ class QADaoServices(
         }
     }
 
+    fun listFirmsWebsite(
+        company: List<CompanyProfileEntity>,
+        map: ServiceMapsEntity
+    ): List<companyDto> {
+        return company.map { p ->
+            companyDto(
+                p.name
+
+            )
+        }
+    }
+
+    fun listFirmsWebsiteNotMigratedDmark(
+        company: List<PermitMigrationApplicationsEntityDmark>,
+        map: ServiceMapsEntity
+    ): List<companyDto> {
+        return company.map { p ->
+            companyDto(
+                p.companyName
+
+            )
+        }
+    }
+
+    fun listFirmsWebsiteNotMigratedSmark(
+        company: List<PermitMigrationApplicationsEntity>,
+        map: ServiceMapsEntity
+    ): List<companyDto> {
+        return company.map { p ->
+            companyDto(
+                p.companyName
+
+            )
+        }
+    }
+
+    fun listFirmsWebsiteNotMigratedFmark(
+        company: List<PermitMigrationApplicationsEntityFmark>,
+        map: ServiceMapsEntity
+    ): List<companyDto> {
+        return company.map { p ->
+            companyDto(
+                p.companyName
+
+            )
+        }
+    }
+
     fun listPermitsNotMigratedWebsite(
         permits: List<PermitMigrationApplicationsEntity>,
         map: ServiceMapsEntity
@@ -7241,6 +7289,45 @@ class QADaoServices(
     ): List<PermitMigrationApplicationsEntityDmark> {
 
         permitMigratedRepoDmark.findAllByMigratedStatusIsNotNull(PageRequest.of(0, 10000))
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findCompaniesNotMigratedDmark(
+    ): List<PermitMigrationApplicationsEntityDmark> {
+
+        permitMigratedRepoDmark.getallCompanies()
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findCompaniesNotMigratedSmark(
+    ): List<PermitMigrationApplicationsEntity> {
+
+        permitMigratedRepo.getallCompanies()
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found ")
+
+
+    }
+
+    fun findCompaniesNotMigratedFmark(
+    ): List<PermitMigrationApplicationsEntityFmark> {
+
+        permitMigratedRepoFmark.getallCompanies()
             ?.let { permitList ->
                 return permitList
             }

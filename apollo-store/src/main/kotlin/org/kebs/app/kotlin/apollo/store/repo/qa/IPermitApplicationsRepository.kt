@@ -1080,6 +1080,13 @@ interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<Per
 
     fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntity>?
 
+    @Query(
+        "SELECT * FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION WHERE ROWID IN ( SELECT MAX(ROWID) FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION GROUP BY COMPANY_NAME )",
+        nativeQuery = true
+    )
+    fun getallCompanies(): List<PermitMigrationApplicationsEntity>?
+
+
 }
 
 @Repository
@@ -1089,6 +1096,12 @@ interface IPermitMigrationApplicationsFmarkEntityRepository :
     fun findAllByMigratedStatusIsNotNull(pageable: Pageable): List<PermitMigrationApplicationsEntityFmark>?
 
     fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntityFmark>?
+
+    @Query(
+        "SELECT * FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_FMARK WHERE ROWID IN ( SELECT MAX(ROWID) FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_FMARK GROUP BY COMPANY_NAME )",
+        nativeQuery = true
+    )
+    fun getallCompanies(): List<PermitMigrationApplicationsEntityFmark>?
 
 
 }
@@ -1112,6 +1125,13 @@ interface IPermitMigrationApplicationsDmarkEntityRepository :
     fun findAllByMigratedStatusIsNotNull(pageable: Pageable): List<PermitMigrationApplicationsEntityDmark>?
 
     fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntityDmark>?
+
+
+    @Query(
+        "SELECT * FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_DM WHERE ROWID IN ( SELECT MAX(ROWID) FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_DM GROUP BY COMPANY_NAME )",
+        nativeQuery = true
+    )
+    fun getallCompanies(): List<PermitMigrationApplicationsEntityDmark>?
 
 
 }
