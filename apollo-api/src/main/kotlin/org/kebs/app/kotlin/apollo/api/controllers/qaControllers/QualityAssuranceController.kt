@@ -1643,7 +1643,6 @@ class QualityAssuranceController(
             QaInspectionReportRecommendationEntity.submittedInspectionReportStatus == 1 -> {
                 permitFound.inspectionReportGenerated = 1
 
-
                 when (permitFound.resubmitApplicationStatus) {
                     1 -> {
 
@@ -1741,7 +1740,7 @@ class QualityAssuranceController(
                             "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitId}"
                     }
                     0 -> {
-
+                        qaInspectionReportRecommendation.submittedInspectionReportStatus = 0
                         qaDaoServices.inspectionRecommendationUpdate(
                             qaInspectionReportRecommendation,
                             map,

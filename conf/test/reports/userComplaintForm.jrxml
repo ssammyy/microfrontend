@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MS_FIELD_REPORT" pageWidth="650" pageHeight="1191" columnWidth="610" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" uuid="f9eaccdc-84fb-4a68-8efb-1184c9a168b0">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="signaturePath" class="java.io.InputStream"/>
+	<parameter name="imageFooterPath" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="referenceNumber" class="java.lang.String"/>
+	<field name="firstName" class="java.lang.String"/>
+	<field name="lastName" class="java.lang.String"/>
+	<field name="mobilePhoneNumber" class="java.lang.String"/>
+	<field name="idNumber" class="java.lang.String"/>
+	<field name="postalAddress" class="java.lang.String"/>
+	<field name="physicalAddress" class="java.lang.String"/>
+	<field name="emailAddress" class="java.lang.String"/>
+	<field name="building" class="java.lang.String"/>
+	<field name="businessAddress" class="java.lang.String"/>
+	<field name="telephoneNumber" class="java.lang.String"/>
+	<field name="phoneNumber" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="nameContactPerson" class="java.lang.String"/>
+	<field name="complaintDetails" class="java.lang.String"/>
+	<field name="complaintSampleDetails" class="java.lang.String"/>
+	<field name="remedySought" class="java.lang.String"/>
+	<field name="createdOn" class="java.lang.String"/>
+	<field name="createdBy" class="java.lang.String"/>
+	<field name="physicalAddressCustomer" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="81" splitType="Stretch">
+			<image>
+				<reportElement x="180" y="0" width="200" height="81" uuid="a91d61e3-e41f-4203-8e4d-e6ed83d14c53"/>
+				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="950" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout"/>
+			<break>
+				<reportElement x="0" y="580" width="98" height="1" uuid="4fbe05ac-a596-4f72-899a-e5547b22904e"/>
+			</break>
+			<staticText>
+				<reportElement x="79" y="780" width="470" height="20" uuid="6a805e40-e9e3-4339-940e-ed8fba349901"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.0"/>
+				</textElement>
+				<text><![CDATA[5. Information supplied by yourself shall be used for investigation. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="610" width="471" height="30" uuid="3ed613e5-bb4c-4f0f-9f08-05877dda1d26"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+				</textElement>
+				<text><![CDATA[1. Kindly complete this form to register your complaint.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="640" width="470" height="70" uuid="1e7000fe-2756-4db9-89ff-49d5699625cf"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.0"/>
+				</textElement>
+				<text><![CDATA[2. Make sure your complaint is objective, stating clearly the issues you feel need to be addressed. In order to resolve this complaint, you are requested to cooperate with the investigating officer. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="710" width="470" height="50" uuid="556e041f-d664-4d78-9044-5579f081db56"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.0"/>
+				</textElement>
+				<text><![CDATA[3. Copies of supporting documents which shall be certified with originals require to be supplied.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="760" width="470" height="19" uuid="57567eb8-412c-4d61-b32b-fff170d3bf0b"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.0"/>
+				</textElement>
+				<text><![CDATA[4. Ensure that the remedy sought is reasonable and realistic. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="800" width="470" height="40" uuid="47013e88-625c-44cb-99aa-707aea3b9b2e"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.0"/>
+				</textElement>
+				<text><![CDATA[6. If the space provided in this form is inadequate a separate sheet of paper shall be availed on request. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="840" width="470" height="110" uuid="de9fdf42-a8c8-4c0b-a046-56b8f0533cf8"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14" isBold="true"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="1.0"/>
+				</textElement>
+				<text><![CDATA[7. *Any sample brought and left in the custody of KEBS by yourself at the time of recording of this complaint shall be deemed to have been forfeited to KEBS if uncollected within ninety (90) days after the date of final communication of investigation findings and shall thereafter be up for destruction/disposal as per KEBS procedures without further reference to yourself. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="220" y="0" width="90" height="20" uuid="c4a5d251-02ee-49bc-a9ed-4d394568b819"/>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CONFIDENTIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="85" y="30" width="80" height="26" uuid="172d2f3f-4813-43fa-8a07-e2b469436e91"/>
+				<box topPadding="10"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[MS/OP/02/F1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="220" y="30" width="120" height="26" uuid="f7dd3337-26f8-4e1e-938e-090f4f5d8bde"/>
+				<box topPadding="0" leftPadding="5"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSUMER/USER
+COMPLAINT FORM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="30" width="120" height="26" uuid="0c8ff7ca-5d42-4859-9767-60ca422f0691"/>
+				<box topPadding="4" leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="60" width="172" height="21" uuid="f9836ddb-0ffb-467b-ba72-00360b22b4a3"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1. Particulars of the complainant]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="79" y="83" width="138" height="18" uuid="92ca0286-0931-4bf3-a4af-7ff42711e013"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[First Name:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="79" y="101" width="138" height="18" uuid="3a9e68ac-96dc-479e-94e5-d2e7d2706693"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Surname:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="119" width="138" height="18" uuid="52af917d-4310-4ecc-b02a-68af3935680c"/>
+				<box leftPadding="3"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ID Number:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="137" width="138" height="18" uuid="7803fbf0-59ff-4231-bc3e-40f594dc4cda"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Mobile Phone No:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="79" y="154" width="138" height="18" uuid="39b8409d-3c65-4039-827b-08ae4103d360"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Postal Address:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="172" width="138" height="18" uuid="1033a5c9-a4b2-42cf-8574-e69f2b0866e2"/>
+				<box leftPadding="1"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Physical Address:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="190" width="138" height="18" uuid="0944c3c8-cf75-4fa7-a38a-5a04f0577991"/>
+				<box leftPadding="1"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Email Address:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="191" width="260" height="18" uuid="c2cf8704-51e8-47fc-b60c-a6cd2bc96c9d"/>
+				<textFieldExpression><![CDATA[$F{emailAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="173" width="260" height="18" uuid="85dee97b-eba8-476f-9b69-f76347ef4f5c"/>
+				<textFieldExpression><![CDATA[$F{physicalAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="155" width="260" height="18" uuid="cd0ecb43-58b1-43fe-8143-6cc948f6a7cd"/>
+				<textFieldExpression><![CDATA[$F{postalAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="137" width="260" height="18" uuid="af2774b4-87c8-4712-9ea7-323aa1c74afe"/>
+				<textFieldExpression><![CDATA[$F{mobilePhoneNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="119" width="260" height="18" uuid="8de4e076-644f-40e0-84bb-9ed9fe456b2a"/>
+				<textFieldExpression><![CDATA[$F{idNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="101" width="260" height="18" uuid="b5a56296-49d9-4c32-b243-1da189b87253"/>
+				<textFieldExpression><![CDATA[$F{lastName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="83" width="260" height="18" uuid="3bf818bf-551d-4a2a-9479-af34ae134524"/>
+				<textFieldExpression><![CDATA[$F{firstName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="70" y="209" width="267" height="21" uuid="93c1b394-fc87-4237-a7c3-90ea911f6254"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2: Particulars of Outlet/Business complained about:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="230" width="138" height="18" uuid="fffc4d38-957f-4db0-9ee0-bba16c5660a4"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Name of Outlet/Company]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="230" width="260" height="18" uuid="3ff8e7dd-b4ce-4108-8205-b2343415831d"/>
+				<textFieldExpression><![CDATA[$F{building}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="77" y="248" width="138" height="18" uuid="e519dfb5-640f-4c2a-8200-2341d338e8a6"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Business Address:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="248" width="260" height="18" uuid="463cc00e-5dd0-4af7-9364-ca48bfe9cb75"/>
+				<textFieldExpression><![CDATA[$F{businessAddress}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="77" y="266" width="138" height="18" uuid="dcdb8e85-ea8f-43e4-8ab6-ee71cbf0304c"/>
+				<box leftPadding="3"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Telephone Number:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="266" width="260" height="18" uuid="a1804002-daa6-4944-a9ba-aa9631a2f5c7"/>
+				<textFieldExpression><![CDATA[$F{telephoneNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="75" y="284" width="138" height="18" uuid="88188031-b041-4726-90b1-2824c1bf5d17"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Mobile Phone No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="284" width="260" height="18" uuid="3a307d21-217d-48bd-b8be-11d5c1d448c4"/>
+				<textFieldExpression><![CDATA[$F{telephoneNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="77" y="301" width="138" height="18" uuid="b5e0d2b0-5e29-4868-9fa2-096b723724b4"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Email Address:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="302" width="260" height="18" uuid="ef8304c2-3b3d-441b-9236-1f9560e7479e"/>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="75" y="319" width="138" height="18" uuid="4e3132f3-9d01-4018-bbeb-c8386d7e3f33"/>
+				<box leftPadding="1"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Name of Contact Person]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="320" width="260" height="18" uuid="ef27ece2-2771-4aa3-bfe3-c19b0c7a06c3"/>
+				<textFieldExpression><![CDATA[$F{nameContactPerson}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="75" y="337" width="138" height="18" uuid="42629f53-1677-4c85-8814-dffe961b4479"/>
+				<box leftPadding="1"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Physical Address:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="338" width="260" height="18" uuid="93dbe97a-4b69-4093-bac5-5abbad2e1974"/>
+				<textFieldExpression><![CDATA[$F{physicalAddressCustomer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="70" y="350" width="172" height="21" uuid="e5042310-3f37-4a75-a46a-581e03334fe0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3: Complaint Details:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="82" y="374" width="438" height="26" uuid="53015f5c-3d2e-4a86-a9a5-314e331de4cf"/>
+				<textFieldExpression><![CDATA[$F{complaintDetails}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="78" y="408" width="138" height="18" uuid="c7df3de6-c457-49d2-8d4d-ec2cac689288"/>
+				<box leftPadding="1"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Complainant Sample Details:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="78" y="426" width="138" height="18" uuid="09388f32-061e-4535-908a-90e831456172"/>
+				<box leftPadding="1"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Remedy Sought:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="426" width="260" height="18" uuid="d5f43ac3-4bcf-4f75-83bb-3c70aacc345d"/>
+				<textFieldExpression><![CDATA[$F{remedySought}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="408" width="260" height="18" uuid="f741709e-5fd1-4705-9f73-7dcf32dc03a2"/>
+				<textFieldExpression><![CDATA[$F{complaintSampleDetails}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="68" y="444" width="160" height="16" uuid="9d8cf9c9-c62b-4ef4-ac2c-d967c4523c3a"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4: Complainant's Declaration:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="228" y="444" width="360" height="16" uuid="8ca56d08-945d-4d3e-8559-d083dbb11e7d"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[I hereby certify that the information provided above is true.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="82" y="458" width="48" height="18" uuid="d61d4284-ec00-4673-a63d-1917060ebc92"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Name:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="130" y="460" width="85" height="18" uuid="817972e3-c73f-444b-b037-26480acf2ba2"/>
+				<textFieldExpression><![CDATA[$F{createdBy}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="220" y="458" width="50" height="18" uuid="f04f9261-c7ec-4944-9f10-5a42462541cd"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Signature:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="270" y="458" width="140" height="18" uuid="7cf60da2-653c-4f2e-9b2c-ba34102306e1"/>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="420" y="458" width="38" height="18" uuid="b8d3fd15-3a23-4636-9283-55e9a4ea886c"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="458" y="458" width="72" height="18" uuid="bb59a278-cb34-49d7-808c-2e19f23414cd"/>
+				<textFieldExpression><![CDATA[$F{createdOn}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="68" y="480" width="172" height="21" uuid="8a4cd59f-9827-45a6-a1da-ec212fb9e56b"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5: Remarks by KEBS Officer:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="76" y="501" width="438" height="19" uuid="7cf5913e-1095-4a49-9e03-33c666eecd32"/>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="518" width="48" height="18" uuid="11258cbd-d633-4040-9290-e7395400d04b"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Name:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="128" y="520" width="85" height="18" uuid="84ce509e-8017-4281-9ee9-ee415c938bc5"/>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="218" y="518" width="50" height="18" uuid="04f8f5e1-3be9-4839-894a-b6376b3c49e7"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Signature:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="268" y="518" width="140" height="18" uuid="ab68ab3a-8063-4289-9b10-11efcf4efe7e"/>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="418" y="518" width="38" height="18" uuid="10a2aa83-409b-45ba-b36d-42f373e598a2"/>
+				<box leftPadding="0"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="456" y="518" width="72" height="18" uuid="c779c244-60ff-44b3-b90d-ae05e8d1d8ea"/>
+				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="213" y="590" width="127" height="20" uuid="c80989d3-b46a-46ed-abe3-293384690105"/>
+				<textElement>
+					<font fontName="Times New Roman" size="14"/>
+				</textElement>
+				<text><![CDATA[INSTRUCTIONS]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="42" splitType="Stretch">
+			<image>
+				<reportElement x="84" y="2" width="396" height="28" uuid="c13f178a-48b0-48e0-a734-f78d07381f7f"/>
+				<imageExpression><![CDATA[$P{imageFooterPath}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="63" y="25" width="55" height="15" uuid="96df96d3-27b5-49ee-9c22-bc7a234ab5ee">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="11" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="120" y="25" width="55" height="15" uuid="83156fae-b5e3-48fa-8a06-5e5c29c7d1fb">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" size="11" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

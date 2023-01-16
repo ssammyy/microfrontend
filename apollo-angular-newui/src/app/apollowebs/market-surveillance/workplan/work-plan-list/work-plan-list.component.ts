@@ -9,7 +9,7 @@ import {
   MsDepartment,
   MsDivisionDetails,
   MsProducts, MsProductSubcategory,
-  MsStandardProductCategory, PredefinedResourcesRequired, WorkPlanEntityDto,
+  MsStandardProductCategory, PredefinedResourcesRequired, WorkPlanCountyTownDto, WorkPlanEntityDto,
   WorkPlanListDto,
   WorkPlanScheduleListDetailsDto, WorkPlanTownsDto,
 } from '../../../../core/store/data/ms/ms.model';
@@ -45,8 +45,9 @@ export class WorkPlanListComponent implements OnInit {
   selectedRegion = 0;
   selectedCounty = 0;
   selectedTown = 0;
-  selectedTownName: string;
-  selectedCountyName: string;
+  selectedRegionName = '';
+  selectedTownName = '';
+  selectedCountyName = '';
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
   loading = false;
@@ -55,6 +56,7 @@ export class WorkPlanListComponent implements OnInit {
   msRegions: RegionsEntityDto[] = [];
   msCounties: County[] = [];
   msTowns: Town[] = [];
+  msTownsOriginal: Town[] = [];
   msDepartments: MsDepartment[] = [];
   msDivisions: MsDivisionDetails[] = [];
   standardProductCategory!: StandardProductCategory[];
@@ -155,6 +157,8 @@ export class WorkPlanListComponent implements OnInit {
   loadedListData: ComplaintsTaskAndAssignedDto;
   loadedData!: WorkPlanScheduleListDetailsDto;
   dataSaveWorkPlan: WorkPlanEntityDto;
+  dataSaveWorkPlanCounties: WorkPlanCountyTownDto;
+  dataSaveWorkPlanCountiesList: WorkPlanCountyTownDto[] = [];
   dataSaveAllWorkPlan: AllWorkPlanDetails;
 
   addResourceRequiredForm!: FormGroup;
@@ -200,11 +204,12 @@ export class WorkPlanListComponent implements OnInit {
     });
 
     this.addCountyTownForm = this.formBuilder.group({
-      countyID: ['', Validators.required],
-      townID: ['', Validators.required],
-      locationName: ['', Validators.required],
-      countyName: ['', Validators.required],
-      townName: ['', Validators.required],
+      regionId: ['', Validators.required],
+      countyId: ['', Validators.required],
+      townsId: ['', Validators.required],
+      regionName: 'N/A',
+      countyName: 'N/A',
+      townsName: 'N/A',
     });
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -215,9 +220,9 @@ export class WorkPlanListComponent implements OnInit {
       scopeOfCoverage: ['', Validators.required],
       timeActivityDate: ['', Validators.required],
       timeActivityEndDate: ['', Validators.required],
-      region: ['', Validators.required],
-      county: ['', Validators.required],
-      townMarketCenter: ['', Validators.required],
+      region: null,
+      county: null,
+      townMarketCenter: null,
       locationActivityOther: ['', Validators.required],
       productString: ['', Validators.required],
       resourcesRequired: null,
@@ -275,6 +280,7 @@ export class WorkPlanListComponent implements OnInit {
           this.msService.msTownsListDetails().subscribe(
               (dataTowns: Town[]) => {
                 this.msTowns = dataTowns;
+                this.msTownsOriginal = dataTowns;
               },
               error => {
                 console.log(error);
@@ -419,9 +425,23 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   onClickAddCountyTown() {
-    this.dataCountyTown = this.addCountyTownForm.value;
-    this.dataCountyTownList.push(this.dataCountyTown);
-    this.addCountyTownForm.reset();
+    this.dataSaveWorkPlanCounties = this.addCountyTownForm.value;
+    console.log(this.dataSaveWorkPlanCounties);
+    // tslint:disable-next-line:max-line-length
+    const  countyDetails = this.dataSaveWorkPlanCountiesList.filter(x => this.dataSaveWorkPlanCounties.regionId === x.regionId && this.dataSaveWorkPlanCounties.countyId === x.countyId && this.dataSaveWorkPlanCounties.townsId === x.townsId).length;
+    if (countyDetails > 0) {
+      // tslint:disable-next-line:max-line-length
+      this.msService.showWarning('You have already added this Region Name (' + this.dataSaveWorkPlanCounties.regionName + ') ,County Name (' + this.dataSaveWorkPlanCounties.countyName + ') and Town Name (' + this.dataSaveWorkPlanCounties.townsName + ')');
+    } else {
+      this.dataSaveWorkPlanCountiesList.push(this.dataSaveWorkPlanCounties);
+    }
+    this.msTowns = this.msTownsOriginal;
+    this.addCountyTownForm.controls.countyId.disable();
+    this.addCountyTownForm.controls.townsId.disable();
+    this.addCountyTownForm.get('regionId').reset();
+    this.addCountyTownForm.get('countyId').reset();
+    this.addCountyTownForm.get('townsId').reset();
+    // console.log(this.addCountyTownForm.value);
   }
 
   // Remove Form repeater values
@@ -438,24 +458,30 @@ export class WorkPlanListComponent implements OnInit {
   removeDataCountyTown(index) {
     console.log(index);
     if (index === 0) {
-      this.dataCountyTownList.splice(index, 1);
+      this.dataSaveWorkPlanCountiesList.splice(index, 1);
     } else {
-      this.dataCountyTownList.splice(index, index);
+      this.dataSaveWorkPlanCountiesList.splice(index, index);
     }
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.addNewScheduleForm?.get('region')?.value;
-    this.addNewScheduleForm.controls.county.enable();
+    this.selectedRegion = this.addCountyTownForm?.get('regionId')?.value;
+    this.selectedRegionName = this.msRegions.find(pr => pr.id === this.selectedRegion)?.region;
+    this.addCountyTownForm.controls.countyId.enable();
     // this.msCounties = this.msCounties.sort((a, b) => a.county > b.county ? 1 : -1);
     // this.msCounties = this.msCounties.filter(x => String(this.dataSaveResourcesRequired.resourceName) === String(x.regionId));
+    console.log(`region selectedRegionName to ${this.selectedRegionName}`);
     console.log(`region set to ${this.selectedRegion}`);
   }
 
   updateSelectedCounty() {
-    this.selectedCounty = this.addNewScheduleForm?.get('county')?.value;
-    this.addNewScheduleForm.controls.townMarketCenter.enable();
+    this.selectedCounty = this.addCountyTownForm?.get('countyId')?.value;
+    this.selectedCountyName = this.msCounties.find(pr => pr.id === this.selectedCounty)?.county;
+    this.addCountyTownForm.controls.townsId.enable();
+    console.log(`county selectedCountyName to ${this.selectedCountyName}`);
+    console.log(`county set to ${this.selectedCounty}`);
     this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
+    console.log(`towns list set to ${this.msTowns}`);
     // this.msTowns = this.msTowns.sort((a, b) => a.town > b.town ? 1 : -1);
     // this.msService.msCountiesListDetails().subscribe(
     //     (dataCounties: County[]) => {
@@ -465,7 +491,8 @@ export class WorkPlanListComponent implements OnInit {
   }
 
   updateSelectedTown() {
-    this.selectedTown = this.addNewScheduleForm?.get('town')?.value;
+    this.selectedTown = this.addCountyTownForm?.get('townsId')?.value;
+    this.selectedTownName = this.msTowns.find(pr => pr.id === this.selectedTown)?.town;
     // // tslint:disable-next-line:no-shadowed-variable
     // this.selectedTownName = this.msTowns?.find(x => x.id === this.selectedTown).town;
     // console.log(`town set to ${this.selectedTown}`);
@@ -543,8 +570,8 @@ export class WorkPlanListComponent implements OnInit {
     let resultStatus = false;
     console.log(this.loadedData.createdWorkPlan.referenceNumber);
     this.msService.closeMSWorkPlanBatch(this.selectedBatchRefNo).subscribe(
-        (data: any) => {
-          console.log(data);
+        (data3: any) => {
+          console.log(data3);
           this.SpinnerService.hide();
           resultStatus  = true;
           this.msService.showSuccess('YEARLY WORK-PLAN SENT FOR APPROVAL SUCCESSFUL');
@@ -618,6 +645,7 @@ export class WorkPlanListComponent implements OnInit {
 
       this.dataSaveWorkPlan = {...this.dataSaveWorkPlan, ...this.addNewScheduleForm.value};
       this.dataSaveWorkPlan.resourcesRequired = this.dataSaveResourcesRequiredList;
+      this.dataSaveWorkPlan.workPlanCountiesTowns = this.dataSaveWorkPlanCountiesList;
       // this.dataSaveAllWorkPlan.mainDetails =  this.dataSaveWorkPlan;
       // this.dataSaveAllWorkPlan.countyTownDetails =  this.dataCountyTownList;
       // tslint:disable-next-line:max-line-length

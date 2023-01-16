@@ -615,6 +615,9 @@ import {ComStdAppDraftComponent} from "./apollowebs/standards-development/compan
 import {IntStdPublishingComponent} from "./apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component";
 import {ComStdPublishingComponent} from "./apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component";
 import {ComStdEditorComponent} from "./apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component";
+import {
+    SampleSubmittedTimelineComponent
+} from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 
 export const routes: Routes = [
     {
@@ -2081,8 +2084,16 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [
             {
-                path: 'complaintMonitoring',
+                path: 'consumerComplaint',
+                component: AcknowledgementComponent,
+            },
+            {
+                path: 'seizeGoods',
                 component: ComplaintMonitoringComponent,
+            },
+            {
+                path: 'submittedSamplesSummary',
+                component: SampleSubmittedTimelineComponent,
             },
             {
                 path: 'fieldInspectionSummary',

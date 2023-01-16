@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="targetConsignmentDocument" name="Target Consignment Document" isExecutable="true" activiti:candidateStarterUsers="supervisor">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+  <process id="targetConsignmentDocument" name="Target Consignment Document" isExecutable="true"
+           activiti:candidateStarterUsers="supervisor">
     <startEvent id="startTargetConsignmentDocument" name="Start Targeting"></startEvent>
-    <userTask id="usertask1" name="ApproveTargeting" activiti:assignee="${supervisor}" activiti:candidateUsers="supervisor" activiti:candidateGroups="${cfs_code}" activiti:category="${cfs_code}"></userTask>
+    <userTask id="usertask1" name="ApproveTargeting" activiti:assignee="${supervisor}"
+              activiti:candidateUsers="supervisor" activiti:candidateGroups="${cfs_code}"
+              activiti:category="${cfs_code}"></userTask>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="exclusivegateway1"></sequenceFlow>
     <sequenceFlow id="flow3" name="Approved" sourceRef="exclusivegateway1" targetRef="targetingApprovedStatus">
@@ -16,16 +23,21 @@
     <sequenceFlow id="flow6" sourceRef="updateTargetRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
     <serviceTask id="updateConsignmentDocumentProcessFields" name="Clear CD Proccess" activiti:async="true" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
     <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
-    <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields" targetRef="endTargetConsignmentDocument"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields"
+                  targetRef="endTargetConsignmentDocument"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="usertask1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!isSupervisor}]]></conditionExpression>
     </sequenceFlow>
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow10" sourceRef="startTargetConsignmentDocument" targetRef="exclusivegateway2"></sequenceFlow>
-    <sequenceFlow id="flow11" name="Supervisor Targeting" sourceRef="exclusivegateway2" targetRef="targetingApprovedStatus">
+    <sequenceFlow id="flow11" name="Supervisor Targeting" sourceRef="exclusivegateway2"
+                  targetRef="targetingApprovedStatus">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isSupervisor}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow12" sourceRef="targetingApprovedStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="targetingApprovedStatus"
+                  targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
+    <sequenceFlow sourceRef="targetingApprovedStatus" targetRef="targetingApprovedStatus"
+                  id="targetingApprovedStatus-targetingApprovedStatus"/>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_targetConsignmentDocument">
     <bpmndi:BPMNPlane bpmnElement="targetConsignmentDocument" id="BPMNPlane_targetConsignmentDocument">
@@ -100,6 +112,10 @@
         <omgdi:waypoint x="675.0" y="272.0"></omgdi:waypoint>
         <omgdi:waypoint x="803.0" y="272.0"></omgdi:waypoint>
         <omgdi:waypoint x="803.0" y="360.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="targetingApprovedStatus-targetingApprovedStatus">
+        <omgdi:waypoint x="622.5" y="272.5"/>
+        <omgdi:waypoint x="622.5" y="272.5"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

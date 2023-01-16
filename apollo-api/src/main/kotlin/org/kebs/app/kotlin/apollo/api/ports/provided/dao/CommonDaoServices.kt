@@ -54,6 +54,8 @@ import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.apache.commons.text.StringEscapeUtils
+import org.apache.pdfbox.multipdf.PDFMergerUtility
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
@@ -113,10 +115,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
 import java.util.*
+import java.util.function.Consumer
 import javax.activation.MimetypesFileTypeMap
 import javax.servlet.http.HttpServletResponse
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLOutputFactory
+
 
 enum class UserTypes(val typeName: String) {
     MINISTRY_USER("MINISTRY"), PVOC_USER("PVOC")
@@ -386,6 +390,7 @@ class CommonDaoServices(
         }
     }
 
+
     fun hashString(plainText: List<HashedStringDto>): List<HashedStringDto> {
         val hashedList = mutableListOf<HashedStringDto>()
         plainText.forEach {
@@ -623,12 +628,12 @@ class CommonDaoServices(
         }
     }
 
-    fun convertMultipartFileToFile(file: MultipartFile): File {
-        val convFile = File(file.originalFilename)
-        convFile.createNewFile()
-        val fos = FileOutputStream(convFile)
-        fos.write(file.bytes)
-        fos.close()
+    fun convertMultipartFileToFile(file: MultipartFile): File? {
+        val convFile = file.originalFilename?.let { File(it) }
+        convFile?.createNewFile()
+        val fos = convFile?.let { FileOutputStream(it) }
+        fos?.write(file.bytes)
+        fos?.close()
         return convFile
     }
 

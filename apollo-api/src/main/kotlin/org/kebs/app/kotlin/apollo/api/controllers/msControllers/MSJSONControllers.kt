@@ -31,14 +31,17 @@ class MSJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
     private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
     private val iSampleSubmissionViewRepo: IMsSampleSubmissionViewRepository,
+    private val iComplaintPdfViewRepo: IMsComplaintPdfGenerationViewRepository,
     private val iFieldReportViewRepo: IMsFieldReportViewRepository,
     private val sampleSubmitRepo: IMSSampleSubmissionRepository,
     private val fuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
     private val commonDaoServices: CommonDaoServices,
     private val reportsDaoService: ReportsDaoService,
     private val investInspectReportRepo: IMSInvestInspectReportRepository,
+    private val msUploadRepo: IMsUploadsRepository,
     private val marketSurveillanceDaoComplaintServices: MarketSurveillanceComplaintProcessDaoServices,
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
+    private val seizureDeclarationRepo: IMsSeizureRepository,
     private val msFuelDaoService: MarketSurveillanceFuelDaoServices,
     private val usersSignatureRepository: UserSignatureRepository,
     private val limsServices: LimsServices,
@@ -121,7 +124,7 @@ class MSJSONControllers(
         val map = commonDaoServices.serviceMapDetails(appId)
         var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        val fieldReport =  msWorkPlanDaoService.findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduled.id)?: throw ExpectedDataNotFound("Missing Filed report Not filled")
+        val fieldReport =  msWorkPlanDaoService.findInspectionInvestigationByWorkPlanInspectionID(workPlanScheduled.id, map.inactiveStatus)?: throw ExpectedDataNotFound("Missing Filed report Not filled")
         val gson = Gson()
         val body = gson.fromJson(data, FieldReportAdditionalInfo::class.java)
         val stringData = commonDaoServices.convertClassToJson(body)
@@ -276,10 +279,63 @@ class MSJSONControllers(
             workPlanProduct.destructionClientEmail?.let {
                 commonDaoServices.sendEmailWithUserEmail(it,
                     applicationMapProperties.mapMsOfficerSendDestructionNotificationEmail,
-                scheduleEmailDetails, map, remarksSaved.first,commonDaoServices.convertMultipartFileToFile(docFile).absolutePath)
+                scheduleEmailDetails, map, remarksSaved.first, commonDaoServices.convertMultipartFileToFile(docFile)?.absolutePath
+                )
             }
         }
         return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+    }
+
+    @PostMapping("/update/upload-final-report")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanUploadFinalReport(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        var versionNumber =1L
+        val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReportOrderByIdDesc(workPlanScheduled.id,1,1)
+
+        if (uploadFound!=null){
+            versionNumber= uploadFound.versionNumber?.plus(1L)!!
+        }
+
+        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"FINAL_REPORT",workPlanScheduled, versionNumber, 1)
+
+        return msWorkPlanDaoService.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,fileDoc.second.id?:throw ExpectedDataNotFound("MISSING DOC ID"),true)
+    }
+
+    @PostMapping("/update/upload-final-report-hod-hof-director")
+    @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY') or hasAuthority('MS_HOF_MODIFY') or hasAuthority('MS_DIRECTOR_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanUploadFinalReportHODHOF(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+
+        var versionNumber =1L
+        val uploadFound = msUploadRepo.findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReportOrderByIdDesc(workPlanScheduled.id,1,1)
+
+        if (uploadFound!=null){
+            versionNumber= uploadFound.versionNumber?.plus(1L)!!
+        }
+
+        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"FINAL_REPORT",workPlanScheduled, versionNumber, 1)
+
+        return msWorkPlanDaoService.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,fileDoc.second.id?:throw ExpectedDataNotFound("MISSING DOC ID"),false)
     }
 
     @PostMapping("/workPlan/inspection/add/seizure-declaration")
@@ -289,7 +345,7 @@ class MSJSONControllers(
         @RequestParam("referenceNo") referenceNo: String,
         @RequestParam("batchReferenceNo") batchReferenceNo: String,
         @RequestParam("data") data: String,
-        @RequestParam("docFile") docFile: MultipartFile,
+        @RequestParam("docFile") docFile: MultipartFile?,
         model: Model
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -299,15 +355,27 @@ class MSJSONControllers(
         val gson = Gson()
         val body = gson.fromJson(data, SeizureListDto::class.java)
 
-        val fileDoc = msWorkPlanDaoService.saveOnsiteUploadFiles(docFile,map,loggedInUser,"SEIZURE AND DECLARATION",workPlanScheduled)
+        if (docFile!=null) {
+            body.docID?.let { msUploadRepo.deleteById(it) }
+        }
+
+        val fileDoc = docFile?.let { msWorkPlanDaoService.saveOnsiteUploadFiles(it,map,loggedInUser,"SEIZURE AND DECLARATION",workPlanScheduled) }
 
         with(body){
-            docID = fileDoc.second.id
+            docID = fileDoc?.second?.id
         }
 
         val mainSized = msWorkPlanDaoService.workPlanInspectionDetailsAddMainSeizure(body, workPlanScheduled, map, loggedInUser)
         when (mainSized.first.status) {
             map.successStatus -> {
+                val paramList = msWorkPlanDaoService.findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduled.id,mainSized.second.id)
+                paramList?.forEach { paramRemove->
+                    val result: SeizureDto? = body.seizureList?.find { actor -> actor.id==paramRemove.id }
+                    if (result == null) {
+                        seizureDeclarationRepo.deleteById(paramRemove.id)
+                    }
+                }
+
                 body.seizureList?.forEach { body2->
                     body2.mainSeizureID = mainSized.second.id
                     msWorkPlanDaoService.workPlanInspectionDetailsAddSeizureDeclaration(body2, workPlanScheduled, map, loggedInUser)
@@ -473,6 +541,51 @@ class MSJSONControllers(
         }
     }
 
+    @RequestMapping(value = ["/report/complaint"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintPDF(
+        response: HttpServletResponse,
+        @RequestParam(value = "refNumber") refNumber: String
+    ) {
+        val map = hashMapOf<String, Any>()
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+
+        val complaintFile = iComplaintPdfViewRepo.findAllByReferenceNumber(refNumber)
+
+//        val user = ssfFile[0].createdUserId?.let { commonDaoServices.findUserByID(it.toLong()) }
+
+//        if (user != null) {
+//            val mySignature: ByteArray?
+//            val image: ByteArrayInputStream?
+//            println("UserID is" + user.id)
+//            val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
+//            if (signatureFromDb != null) {
+//                mySignature= signatureFromDb.signature
+//                image = ByteArrayInputStream(mySignature)
+//                map["signaturePath"] = image
+//
+//            }
+//        }
+//        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+
+        val pdfReportStream = reportsDaoService.extractReport(
+            map,
+            applicationMapProperties.mapMSComplaintPath,
+            complaintFile
+        )
+
+        response.contentType = "text/html"
+        response.contentType = "application/pdf"
+        response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Dispostion", "inline; Complaint-${complaintFile[0].referenceNumber}.pdf;")
+        response.outputStream.let { responseOutputStream ->
+            responseOutputStream.write(pdfReportStream.toByteArray())
+            responseOutputStream.close()
+            pdfReportStream.close()
+        }
+    }
+
     @RequestMapping(value = ["/report/ms-field-report"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -498,6 +611,7 @@ class MSJSONControllers(
         }
 
         fieldReport[0].kebsInspectors = officersNames
+        fieldReport[0].reportClassification?.uppercase()
 
         if (user != null) {
             val mySignature: ByteArray?
@@ -512,10 +626,25 @@ class MSJSONControllers(
             }
         }
 //        map["recieversSignaturePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsTestSignaturePath)
+        var pathFileToSelect = applicationMapProperties.mapMSFieldReportPathTopSecret
+        when (fieldReport[0].reportClassification) {
+            "TOP SECRET" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathTopSecret
+            }
+            "SECRET" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathSecret
+            }
+            "CONFIDENTIAL" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathConfidential
+            }
+            "RESTRICTED" -> {
+                pathFileToSelect = applicationMapProperties.mapMSFieldReportPathRestricted
+            }
+        }
 
         val pdfReportStream = reportsDaoService.extractReport(
             map,
-            applicationMapProperties.mapMSFieldReportPath,
+            pathFileToSelect,
             fieldReport
         )
 

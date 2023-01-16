@@ -660,8 +660,23 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.fuel.sample.submission.path}")
     val mapMSSampleSubmissionPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.complaint.pdf.path}")
+    val mapMSComplaintPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.path}")
     val mapMSFieldReportPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.top.secret.path}")
+    val mapMSFieldReportPathTopSecret: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.secret.path}")
+    val mapMSFieldReportPathSecret: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.confidential.path}")
+    val mapMSFieldReportPathConfidential: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ms.work.field.report.restricted.path}")
+    val mapMSFieldReportPathRestricted: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.sl.payment.collection.path}")
     val mapSLPaymentPath: String = ""
@@ -855,8 +870,12 @@ class ApplicationMapProperties {
     val mapMSWorkPlanInspectionFinalReportModified: Long = 0L
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportApprovedHODRM}")
     val mapMSWorkPlanInspectionFinalReportApprovedHODRM: Long = 0L
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportApprovedDIRECTOR}")
+    val mapMSWorkPlanInspectionFinalReportApprovedDIRECTOR: Long = 0L
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportRejectedHODRM}")
     val mapMSWorkPlanInspectionFinalReportRejectedHODRM: Long = 0L
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportRejectedDIRECTOR}")
+    val mapMSWorkPlanInspectionFinalReportRejectedDirector: Long = 0L
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.recommendationsADDED}")
     val mapMSWorkPlanInspectionRecommendationsADDED: Long = 0L
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.directorRemarksADDED}")
@@ -1012,8 +1031,14 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.HodApproveFinalPreliminaryEmail}")
     val mapMsWorkPlanFinalPreliminaryApprovalByHODEmail: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.DirectorApproveFinalPreliminaryEmail}")
+    val mapMsWorkPlanFinalPreliminaryApprovalByDirectorEmail: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.HodRejectedFinalPreliminaryEmail}")
     val mapMsWorkPlanFinalPreliminaryRejectedByHODEmail: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.DirectorRejectedFinalPreliminaryEmail}")
+    val mapMsWorkPlanFinalPreliminaryRejectedByDirectorEmail: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.officerWorkPlanRejectedEmail}")
     val mapMsWorkPlanScheduleSubmitedApprovalRejected: String = ""
@@ -1071,6 +1096,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.lab.results.notification}")
     val mapMsFuelInspectionLabResultsNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.surveillance.lab.results.compliant.notification}")
+    val mapMsWorkPlanInspectionLabResultsCompliantNotification: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.surveillance.lab.results.notCompliant.notification}")
+    val mapMsWorkPlanInspectionLabResultsNotCompliantNotification: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lab.results.notification.io}")
     val mapMsLabResultsIONotification: String = ""

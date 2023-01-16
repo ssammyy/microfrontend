@@ -7,6 +7,11 @@
     /*background: #D33;*/
 }
 
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .list-item-accordion {
     display: -webkit-box;
     display: -webkit-flex;
@@ -126,4 +131,9 @@ ul, ol {
 .card-footer button{
     font-size: 0.75em;
     max-width: available;
+}
+.refStandardsDesign{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }

@@ -662,6 +662,7 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
+        VIEW_PDF_COMPLAINT: `${ApiEndpointService.MS_CONTEXT}/report/complaint`,
         VIEW_PDF_SSF: `${ApiEndpointService.MS_CONTEXT}/report/sample-submission`,
         VIEW_PDF_FIELD_REPORT: `${ApiEndpointService.MS_CONTEXT}/report/ms-field-report`,
     };
@@ -726,6 +727,21 @@ export class ApiEndpointService {
     };
 
     public static MARKET_SURVEILLANCE_REPORTS = {
+        MS_CONSUMER_COMPLAINT_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/consumer-complaint/view-all`,
+        MS_CONSUMER_COMPLAINT_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/consumer-complaint/search`,
+
+        MS_SUBMITTED_SAMPLES_SUMMARY_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/submitted-samples-summary/view-all`,
+        MS_SUBMITTED_SAMPLES_SUMMARY_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/submitted-samples-summary/search`,
+
+        MS_FIELD_INSPECTION_SUMMARY_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/field-inspection-summary/view-all`,
+        MS_FIELD_INSPECTION_SUMMARY_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/field-inspection-summary/search`,
+
+        MS_WORK_PLAN_MONITORING_TOOL_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/work-plan-monitoring-tool/view-all`,
+        MS_WORK_PLAN_MONITORING_TOOL_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/work-plan-monitoring-tool/search`,
+
+        MS_SEIZED_GOODS_VIEW: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods/view-all`,
+        MS_SEIZED_GOODS_VIEW_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods/search`,
+
         MS_COMPLAINT_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/complaint-search`,
         MS_SAMPLE_PRODUCTS_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/sample-products-search`,
         MS_SEIZED_GOODS_SEARCH: `${ApiEndpointService.MS_COMPLAINT_REPORT_CONTEXT}/seized-goods-search`,
@@ -795,6 +811,7 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_APPROVE_HOD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/approval-preliminary-report`,
         INSPECTION_SCHEDULED_UPDATE_ASSIGN_HOF: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/assign-hof`,
         INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/approval-final-preliminary-report`,
+        INSPECTION_SCHEDULED_APPROVE_DIRECTOR_FINAL_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/director/approval-final-preliminary-report`,
         INSPECTION_SCHEDULED_APPROVE_HOD_FINAL_REMARKS: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/feedBack-notification`,
         INSPECTION_SCHEDULED_ADD_DIRECTOR_FINAL_REMARKS_RECOMMENDATION: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/director/recommendation`,
         INSPECTION_SCHEDULED_HOD_ADD_FINAL_RECOMMENDATION: `${ApiEndpointService.MS_WORK_PLAN_UPDATE_CONTEXT}/hod/final-recommendation`,
@@ -807,6 +824,8 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_NOTIFICATION_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-notice-upload`,
         INSPECTION_SCHEDULED_ADD_DESTRUCTION_REPORT_UPLOAD: `${ApiEndpointService.MS_CONTEXT}/update/destruction-report-upload`,
         UPLOAD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/file/save`,
+        UPLOAD_FINAL_REPORT_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/update/upload-final-report`,
+        UPLOAD_FINAL_REPORT_HOF_HOD_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/update/upload-final-report-hod-hof-director`,
         UPDATE_FIELD_REPORT_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/additional-info-field-report/save`,
         UPDATE_FINAL_COMPLAINT_REMARKS_WORK_PLAN_FILE: `${ApiEndpointService.MS_CONTEXT}/work-plan/final-feed-back/save`,
         INSPECTION_SCHEDULED_ADD_CHARGE_SHEET: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/charge-sheet`,
@@ -822,8 +841,10 @@ export class ApiEndpointService {
         INSPECTION_SCHEDULED_END_SAMPLE_SUBMISSION_BS_NUMBER: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/end-sample-submission-bs-number`,
         INSPECTION_SCHEDULED_ADD_LAB_RESULTS_PDF_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/lab-results-pdf-save`,
         INSPECTION_SCHEDULED_ADD_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-compliance-status-save`,
+        INSPECTION_SCHEDULED_SEND_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/ssf-send-result-saved`,
         INSPECTION_SCHEDULED_ADD_FINAL_SSF_COMPLIANCE_STATUS_SAVE: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-ssf-compliance-status-save`,
         INSPECTION_SCHEDULED_ADD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/preliminary-report`,
+        INSPECTION_SCHEDULED_UPDATE_HOF_HOD_PRELIMINARY_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/preliminary-report-hod-hof-director`,
         INSPECTION_SCHEDULED_ADD_FINAL_REPORT: `${ApiEndpointService.MS_WORK_PLAN_ADD_CONTEXT}/final-report`,
 
     };

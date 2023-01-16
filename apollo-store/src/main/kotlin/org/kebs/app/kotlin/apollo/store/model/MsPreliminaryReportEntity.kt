@@ -111,19 +111,47 @@ class MsPreliminaryReportEntity: Serializable {
     @Basic
     var rejectedStatusHod: Int? = 0
 
+    @Column(name = "LATEST_VERSION_ID")
+    @Basic
+    var latestVersionID: Long? = 0
+
 
 
     @Column(name = "REJECTED_BY_HOD_FINAL")
     @Basic
     var rejectedByHodFinal: String? = null
 
+    @Column(name = "APPROVED_BY_DIRECTOR_FINAL")
+    @Basic
+    var approvedByDirectorFinal: String? = null
+
+    @Column(name = "REJECTED_BY_DIRECTOR_FINAL")
+    @Basic
+    var rejectedByDirectorFinal: String? = null
+
     @Column(name = "REJECTED_HOD_FINAL")
     @Basic
     var rejectedHodFinal: String? = null
 
+    @Column(name = "APPROVED_DIRECTOR_FINAL")
+    @Basic
+    var approvedDirectorFinal: String? = null
+
+    @Column(name = "REJECTED_DIRECTOR_FINAL")
+    @Basic
+    var rejectedDirectorFinal: String? = null
+
     @Column(name = "REJECTED_REMARKS_HOD_FINAL")
     @Basic
     var rejectedRemarksHodFinal: String? = null
+
+    @Column(name = "APPROVED_REMARKS_DIRECTOR_FINAL")
+    @Basic
+    var approvedRemarksDirectorFinal: String? = null
+
+    @Column(name = "REJECTED_REMARKS_DIRECTOR_FINAL")
+    @Basic
+    var rejectedRemarksDirectorFinal: String? = null
 
     @Column(name = "APPROVED_REMARKS_HOD_FINAL")
     @Basic
@@ -141,6 +169,10 @@ class MsPreliminaryReportEntity: Serializable {
     @Basic
     var approvedStatusHodFinal: Int? = 0
 
+    @Column(name = "APPROVED_STATUS_DIRECTOR_FINAL")
+    @Basic
+    var approvedStatusDirectorFinal: Int? = 0
+
     @Column(name = "APPROVED_HOD_FINAL")
     @Basic
     var approvedHodFinal: String? = null
@@ -149,9 +181,21 @@ class MsPreliminaryReportEntity: Serializable {
     @Basic
     var rejectedOnHodFinal: Date? = null
 
+    @Column(name = "APPROVED_ON_DIRECTOR_FINAL")
+    @Basic
+    var approvedOnDirectorFinal: Date? = null
+
+    @Column(name = "REJECTED_ON_DIRECTOR_FINAL")
+    @Basic
+    var rejectedOnDirectorFinal: Date? = null
+
     @Column(name = "REJECTED_STATUS_HOD_FINAL")
     @Basic
     var rejectedStatusHodFinal: Int? = 0
+
+    @Column(name = "REJECTED_STATUS_DIRECTOR_FINAL")
+    @Basic
+    var rejectedStatusDirectorFinal: Int? = 0
 
 
     @Column(name = "REJECTED_BY_HOF_FINAL")

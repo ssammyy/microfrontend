@@ -718,7 +718,7 @@ class MarketSurveillanceFuelDaoServices(
         val teamsDetail = findFuelTeamsDetailByReferenceNumber(teamsReferenceNo)
         val countyDetail = findFuelCountyDetailByReferenceNumber(countyReferenceNo)
         val sampleCollected = findSampleCollectedDetailByFuelInspectionID(fileInspectionDetail.id)
-        val sampleSubmission = findSampleSubmissionDetailBySampleCollectedIDAndSSFId(sampleCollected?.id?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"),body.ssfID)?: throw ExpectedDataNotFound("MISSING SAMPLE SUBMITTED FOR FUEL INSPECTION WITH REF NO $referenceNo")
+        val sampleSubmission = findSampleSubmissionDetailBySampleCollectedIDAndSSFId(sampleCollected?.id?: throw ExpectedDataNotFound("MISSING SAMPLE COLLECTED FOR FUEL INSPECTION REF NO $referenceNo"),body.ssfID?: throw ExpectedDataNotFound("MISSING SSF ID"))?: throw ExpectedDataNotFound("MISSING SAMPLE SUBMITTED FOR FUEL INSPECTION WITH REF NO $referenceNo")
         with(sampleSubmission){
             bsNumber = body.bsNumber
             sampleBsNumberDate = body.submittedDate
@@ -1126,7 +1126,7 @@ class MarketSurveillanceFuelDaoServices(
                 fileInspectionDetail,
                 map,
                 fetched.first,
-                commonDaoServices.convertMultipartFileToFile(docFile).path
+                commonDaoServices.convertMultipartFileToFile(docFile)?.path
             )
         }
 
@@ -2165,7 +2165,7 @@ class MarketSurveillanceFuelDaoServices(
             with(saveSSF) {
                 complianceRemarks = body.complianceRemarks
                 analysisDone = map.activeStatus
-                resultsAnalysis = when {body.complianceStatus -> { 1 }else -> { 0 } }
+                resultsAnalysis = when {body.complianceStatus -> {1}else -> {0}}
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }
@@ -3319,7 +3319,8 @@ class MarketSurveillanceFuelDaoServices(
             ssf.bsNumber,
             ssf.complianceRemarks,
             ssf.resultsAnalysis == 1,
-            ssf.analysisDone == 1
+            ssf.analysisDone == 1,
+            ssf.resultsSent == 1
         )
 
     }

@@ -574,11 +574,42 @@ alter table DAT_KEBS_MS_WORKPLAN_GENARATED
 
 /***************************CREATED VIEWS FOR DOWNLOAD*****************************************/
 
--- create OR REPLACE view MS_SAMPLE_SUBMISSION as
-SELECT nvl(TO_CHAR(samp.id),'N/A') AS id,nvl(samp.name_product,'N/A') AS name_product,nvl(samp.packaging,'N/A') AS packaging,nvl(samp.labelling_identification,'N/A') AS labelling_identification,nvl(samp.file_ref_number,'N/A') AS file_ref_number,nvl(samp.references_standards,'N/A') AS references_standards,nvl(samp.size_test_sample,'N/A') AS size_test_sample,
-       nvl(samp.size_ref_sample,'N/A') AS size_ref_sample,nvl(samp.condition,'N/A') AS condition,nvl(samp.sample_references,'N/A') AS sample_references,nvl(samp.senders_name,'N/A') AS senders_name,nvl(samp.designation,'N/A') AS designation,nvl(samp.address,'N/A') AS address,nvl(TO_CHAR(TRUNC(samp.senders_date),'DD/MM/YYYY'),'N/A') AS senders_date,
-       nvl(samp.receivers_name,'N/A') AS receivers_name,nvl(TO_CHAR(samp.test_charges_ksh),'N/A') AS test_charges_ksh,nvl(samp.receipt_lpo_number,'N/A') AS receipt_lpo_number,nvl(samp.invoice_number,'N/A') AS invoice_number,nvl(samp.disposal,'N/A') AS disposal,nvl(samp.remarks,'N/A') AS remarks,
-       nvl(TO_CHAR(samp.sample_collection_number),'N/A') AS sample_collection_number,nvl(samp.bs_number,'N/A') AS bs_number,param.parameters,param.laboratory_name
+create OR REPLACE view MS_SAMPLE_SUBMISSION as
+SELECT nvl(TO_CHAR(samp.id),'N/A') AS id,
+       nvl(samp.name_product,'N/A') AS name_product,
+       nvl(samp.packaging,'N/A') AS packaging,
+       nvl(samp.labelling_identification,'N/A') AS labelling_identification,
+       nvl(samp.file_ref_number,'N/A') AS file_ref_number,
+       nvl(samp.references_standards,'N/A') AS references_standards,
+       nvl(samp.size_test_sample,'N/A') AS size_test_sample,
+       nvl(samp.size_ref_sample,'N/A') AS size_ref_sample,
+       nvl(samp.condition,'N/A') AS condition,
+       nvl(samp.sample_references,'N/A') AS sample_references,
+       nvl(samp.senders_name,'N/A') AS senders_name,
+       nvl(samp.designation,'N/A') AS designation,
+       nvl(samp.address,'N/A') AS address,
+       nvl(TO_CHAR(TRUNC(samp.senders_date),'DD/MM/YYYY'),'N/A') AS senders_date,
+       nvl(samp.receivers_name,'N/A') AS receivers_name,
+       nvl(TO_CHAR(samp.test_charges_ksh),'N/A') AS test_charges_ksh,
+       nvl(samp.receipt_lpo_number,'N/A') AS receipt_lpo_number,
+       nvl(samp.invoice_number,'N/A') AS invoice_number,
+       nvl(samp.disposal,'N/A') AS disposal,
+       nvl(samp.remarks,'N/A') AS remarks,
+       nvl(TO_CHAR(samp.sample_collection_number),'N/A') AS sample_collection_number,
+       nvl(samp.bs_number,'N/A') AS bs_number,
+       nvl(samp.COC_NUMBER,'N/A') AS COC_NUMBER,
+       nvl(samp.LB_ID_ANY_AOMARKING,'N/A') AS LB_ID_ANY_AOMARKING,
+       nvl(samp.LB_ID_BATCH_NO,'N/A') AS LB_ID_BATCH_NO,
+       nvl(samp.LB_ID_CONT_DECL,'N/A') AS LB_ID_CONT_DECL,
+       nvl(TO_CHAR(TRUNC(samp.LB_ID_DATE_OF_MANF),'DD/MM/YYYY'),'N/A') AS LB_ID_DATE_OF_MANF,
+       nvl(TO_CHAR(TRUNC(samp.LB_ID_EXPIRY_DATE),'DD/MM/YYYY'),'N/A') AS LB_ID_EXPIRY_DATE,
+       nvl(TO_CHAR(TRUNC(samp.RECEIVERS_DATE),'DD/MM/YYYY'),'N/A') AS RECEIVERS_DATE,
+       nvl(samp.LB_ID_TRADE_MARK,'N/A') AS LB_ID_TRADE_MARK,
+       nvl(samp.NOTE_TRANS_RESULTS,'N/A') AS NOTE_TRANS_RESULTS,
+       nvl(samp.SCF_NO,'N/A') AS SCF_NO,
+       TO_CHAR(samp.CREATED_USER_ID) AS CREATED_USER_ID,
+       param.parameters,
+       param.laboratory_name
 FROM DAT_KEBS_MS_SAMPLE_SUBMISSION samp
          INNER JOIN DAT_KEBS_MS_LABORATORY_PARAMETERS param ON samp.ID = param.SAMPLE_SUBMISSION_ID;
 /
@@ -809,3 +840,319 @@ SELECT a.REFERENCE_NUMBER,a.DIVISION_ID,a.COMPLAINT_DEPARTMENT,a.REGION,a.COUNTY
 FROM DAT_KEBS_MS_WORKPLAN_GENARATED a;
 
 SELECT * FROM DAT_MS_SEIZURE;
+
+
+create OR REPLACE view MS_COMPLAINT_PDF_GENERATION as
+SELECT a.ID,a.REFERENCE_NUMBER,FIRST_NAME,LAST_NAME,MOBILE_PHONE_NUMBER,ID_NUMBER,c.POSTAL_ADDRESS,c.PHYSICAL_ADDRESS,c.EMAIL_ADDRESS,
+       b.BUILDING,b.BUSINESS_ADDRESS,b.TELEPHONE_NUMBER,b.PHONE_NUMBER,b.EMAIL,b.NAME_CONTACT_PERSON,nvl(c.PHYSICAL_ADDRESS,'N/A') AS PHYSICAL_ADDRESS_CUSTOMER,
+       a.COMPLAINT_DETAILS,a.COMPLAINT_SAMPLE_DETAILS,a.REMEDY_SOUGHT,nvl(TO_CHAR(TRUNC(a.CREATED_ON),'DD/MM/YYYY'),'N/A') AS CREATED_ON, a.CREATED_BY
+FROM DAT_KEBS_MS_COMPLAINT a
+         JOIN  DAT_KEBS_MS_COMPLAINT_LOCATION b ON a.id= b.COMPLAINT_ID
+         JOIN  DAT_KEBS_MS_COMPLAINT_CUSTOMERS c ON a.id= c.COMPLAINT_ID;
+
+
+create table DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS
+(
+    ID                       NUMBER PRIMARY KEY,
+    COUNTY_ID              NUMBER REFERENCES CFG_KEBS_COUNTIES(ID),
+    TOWNS_ID              NUMBER REFERENCES CFG_KEBS_TOWNS(ID),
+    WORK_PLAN_ID              NUMBER REFERENCES DAT_KEBS_MS_WORKPLAN_GENARATED(ID),
+    STATUS                   NUMBER(2, 0),
+    DESCRIPTION              VARCHAR2(200),
+    VAR_FIELD_1              VARCHAR2(350 char),
+    VAR_FIELD_2              VARCHAR2(350 char),
+    VAR_FIELD_3              VARCHAR2(350 char),
+    VAR_FIELD_4              VARCHAR2(350 char),
+    VAR_FIELD_5              VARCHAR2(350 char),
+    VAR_FIELD_6              VARCHAR2(350 char),
+    VAR_FIELD_7              VARCHAR2(350 char),
+    VAR_FIELD_8              VARCHAR2(350 char),
+    VAR_FIELD_9              VARCHAR2(350 char),
+    VAR_FIELD_10             VARCHAR2(350 char),
+    CREATED_BY               VARCHAR2(100 char)          default 'admin' not null,
+    CREATED_ON               TIMESTAMP(6) WITH TIME ZONE default sysdate not null,
+    MODIFIED_BY              VARCHAR2(100 char)          default 'admin',
+    MODIFIED_ON              TIMESTAMP(6) WITH TIME ZONE default sysdate,
+    DELETE_BY                VARCHAR2(100 char)          default 'admin',
+    DELETED_ON               TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS_SEQ minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS_SEQ_trg
+    before
+        insert
+    on DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS_SEQ.nextval
+            into :new.id
+            from dual;
+
+        end if;
+    end if;
+end;
+
+
+create index DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS_seq_idx on DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS (STATUS,COUNTY_ID,TOWNS_ID,WORK_PLAN_ID) TABLESPACE qaimssdb_idx;
+/
+-- CONCAT
+-- create OR REPLACE view CONSUMER_COMPLAINTS_REPORT_VIEW as
+SELECT a.ID,a.REFERENCE_NUMBER,nvl(c.FIRST_NAME||' '||c.LAST_NAME,'N/A') AS COMPLAINANT,nvl(a.COMPLAINT_SAMPLE_DETAILS,'N/A') AS NATURE_COMPLAINT,
+       (SELECT dv.DEPARTMENT FROM CFG_KEBS_DEPARTMENTS dv WHERE dv.ID = a.COMPLAINT_DEPARTMENT) AS SECTOR,
+       nvl(TO_CHAR(TRUNC(a.TRANSACTION_DATE),'DD/MM/YYYY'),'N/A') AS DATE_RECEIVED,
+       CASE
+           WHEN a.APPROVED = 1 THEN nvl(TO_CHAR(TRUNC(a.APPROVED_DATE),'DD/MM/YYYY'),'N/A')
+           ELSE 'NOT YET ACKNOWLEDGED/DECLINED' END AS DATE_ACKNOWLEDGED,
+       (SELECT nvl(u.FIRST_NAME||' '||u.LAST_NAME,'N/A') AS OFFICER_NAME FROM DAT_KEBS_USERS u WHERE u.ID = a.ASSIGNED_IO) AS INVESTIGATING_OFFICER,
+       nvl(TO_CHAR(TRUNC(a.MS_PROCESS_ENDED_ON),'DD/MM/YYYY'),'N/A') AS DATE_COMPLETION_INVESTIGATION,
+       nvl(TO_CHAR(TRUNC(a.MS_PROCESS_ENDED_ON),'DD/MM/YYYY'),'N/A') AS DATE_FEEDBACK_COMPLAINANT,
+       CASE
+           WHEN a.MS_COMPLAINT_ENDED_STATUS = 1 THEN '1'
+           ELSE '0' END AS RESOLUTION,
+       CASE
+           WHEN a.APPROVED = 1 THEN TO_CHAR(ROUND((a.APPROVED_DATE - a.TRANSACTION_DATE)))
+           ELSE 'NOT YET ACKNOWLEDGED/DECLINED' END AS TIME_TAKEN_ACKNOWLEDGE,
+       CASE
+           WHEN a.APPROVED = 1 AND ((ROUND((a.APPROVED_DATE - a.TRANSACTION_DATE))) <= 2) THEN '1'
+           ELSE '0' END AS ACKNOWLEDGED_WITHIN2_DAYS_RECEIPT,
+       CASE
+           WHEN a.MS_COMPLAINT_ENDED_STATUS = 1 THEN TO_CHAR(ROUND((a.MS_PROCESS_ENDED_ON - a.MS_PROCESS_ENDED_ON)))
+           ELSE 'NOT YET ENDED' END AS TIME_TAKEN_PROVIDE_FEEDBACK,
+       CASE
+           WHEN a.MS_COMPLAINT_ENDED_STATUS = 1 AND ((ROUND((a.MS_PROCESS_ENDED_ON - a.MS_PROCESS_ENDED_ON))) <= 5) THEN '1'
+           ELSE '0' END AS FEEDBACK_WITHIN5DAYS_COMP_INVESTIGATION,
+       CASE
+           WHEN a.MS_COMPLAINT_ENDED_STATUS = 1 THEN TO_CHAR(ROUND((a.MS_PROCESS_ENDED_ON - a.TRANSACTION_DATE)))
+           ELSE 'NOT YET ADDRESSED' END AS TIME_TAKEN_ADDRESS_COMPLAINT,
+       CASE
+           WHEN a.MS_COMPLAINT_ENDED_STATUS = 1 AND ((ROUND((a.MS_PROCESS_ENDED_ON - a.TRANSACTION_DATE))) <= 28) THEN '1'
+           ELSE '0' END AS ADDRESSED_WITHIN28_DAYS_RECEIPT,
+       a.ASSIGNED_IO, a.TRANSACTION_DATE, a.COMPLAINT_DEPARTMENT
+FROM DAT_KEBS_MS_COMPLAINT a
+         JOIN  DAT_KEBS_MS_COMPLAINT_LOCATION b ON a.id= b.COMPLAINT_ID
+         JOIN  DAT_KEBS_MS_COMPLAINT_CUSTOMERS c ON a.id= c.COMPLAINT_ID;
+
+
+SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where
+    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))
+    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and
+   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID));
+
+
+create OR REPLACE view SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW as
+SELECT b.ID,b.SENDERS_DATE,b.DATE_VISIT,b.SAMPLE_REFERENCES,c.RESULTS_DATE,c.RESULT_SENT_DATE,a.OFFICER_ID,a.COMPLAINT_DEPARTMENT,
+       nvl(TO_CHAR(TRUNC(b.DATE_VISIT),'DD/MM/YYYY'),'N/A') AS DATEOF_VISIT,
+       nvl(TO_CHAR(TRUNC(b.SENDERS_DATE),'DD/MM/YYYY'),'N/A') AS SAMPLE_SUBMISSION_DATE,
+       b.MARKET_CENTRE,b.NAME_ADDRESS_OUTLET,b.PRODUCT_DESCRIPTION,b.SECTOR,b.UCR_PERMIT_NO,b.SOURCE_PRODUCT_EVIDENCE,
+        nvl(b.LB_ID_TRADE_MARK||' / '||b.MANUFACTURE_NAME,'N/A') AS BRAND_AND_MANUFACTURER,
+        nvl(b.VAR_FIELD_3,'N/A') AS NO_SAMPLES_TESTED,
+        nvl(b.VAR_FIELD_2,'N/A') AS NATURE_FAILURE,
+        nvl(d.VAR_FIELD_1,'N/A') AS ACTIONS_TAKEN,
+       nvl(TO_CHAR(TRUNC(c.RESULTS_DATE),'DD/MM/YYYY'),'N/A') AS DATEOF_TEST_REPORT	,
+       nvl(TO_CHAR(TRUNC(c.RESULT_SENT_DATE),'DD/MM/YYYY'),'N/A') AS DATEOF_FORWARDING_TEST_RESULTS	,
+       CASE
+           WHEN c.RESULTS_ANALYSIS = 1 THEN '100'
+           WHEN c.RESULTS_ANALYSIS = 0 THEN '0'
+           ELSE 'NOT YET ANALYSED' END AS COMPLIANCE_TESTING,
+       CASE
+           WHEN c.RESULTS_ANALYSIS = 1 THEN TO_CHAR(ROUND((b.VAR_FIELD_3 * 100)))
+           WHEN c.RESULTS_ANALYSIS = 0 THEN TO_CHAR(ROUND((b.VAR_FIELD_3 * 0)))
+           ELSE 'NOT YET ANALYSED' END AS TCXB,
+       CASE
+           WHEN a.BS_NUMBER_STATUS = 1 THEN TO_CHAR(ROUND(((b.SENDERS_DATE)-(b.DATE_VISIT))))
+           ELSE 'NOT YET SUBMITTED'  END AS TIME_TAKEN_SUBMIT_SAMPLE,
+       CASE
+           WHEN a.BS_NUMBER_STATUS = 1 AND ((ROUND((b.SENDERS_DATE-b.DATE_VISIT))) <= 2) THEN '1'
+           ELSE '0'  END AS SUBMISSION_WITHIN2_DAYS,
+       CASE
+           WHEN c.RESULTS_SENT = 1 THEN TO_CHAR(ROUND((c.RESULT_SENT_DATE-c.RESULTS_DATE)))
+           ELSE 'NOT YET SENT'  END AS TIME_TAKEN_FORWARD_LETTERS,
+       CASE
+           WHEN c.RESULTS_SENT = 1 AND ((ROUND((c.RESULT_SENT_DATE-c.RESULTS_DATE))) <= 14) THEN '1'
+           ELSE '0'  END AS FORWARDING_WITHIN14_DAYS_TESTING,
+       nvl(b.LB_ID_BATCH_NO||' / '||TO_CHAR(TRUNC(b.LB_ID_DATE_OF_MANF),'DD/MM/YYYY'),'N/A') AS BATCH_NO_DATE_MANUFACTURE
+FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
+     JOIN  DAT_KEBS_MS_SAMPLE_SUBMISSION b ON a.id= b.MS_WORKPLAN_GENERATED_ID
+     JOIN  DAT_KEBS_QA_SAMPLE_SUBMISSION c ON a.id= c.WORKPLAN_GENERATED_ID AND c.BS_NUMBER = b.BS_NUMBER
+     JOIN  DAT_KEBS_MS_WORKPLAN_PRODUCTS d ON a.id= d.WORK_PLAN_ID AND b.id = d.SSF_ID
+;
+
+SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where
+    (:startDate is null or a.DATE_VISIT >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_VISIT <=TO_DATE(:endDate))
+    AND (:sampleReferences is null or a.SAMPLE_REFERENCES =:sampleReferences) and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO))
+    AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID));
+
+alter table DAT_KEBS_QA_SAMPLE_SUBMISSION
+    add RESULT_SENT_DATE    DATE
+/
+
+alter table DAT_KEBS_MS_SAMPLE_SUBMISSION
+    add UCR_PERMIT_NO       VARCHAR2(1000)
+/
+
+-- create OR REPLACE view MS_SEIZED_GOODS_REPORT_VIEW as
+SELECT c.ID,
+       nvl(TO_CHAR(TRUNC(c.DATE_SEIZURE),'DD/MM/YYYY'),'N/A') AS DATEOF_SEIZURE,
+       nvl(b.MARKET_TOWN_CENTER,'N/A') AS MARKET_CENTRE,
+       nvl(b.NAME_OF_OUTLET,'N/A') AS NAME_OUTLET,
+       nvl(c.DESCRIPTION_PRODUCTS_SEIZED,'N/A') AS DESCRIPTION_PRODUCTS_SEIZED,
+       nvl(c.BRAND,'N/A') AS BRAND,
+       nvl(c.SECTOR,'N/A') AS SECTOR,
+       nvl(c.QUANTITY,'N/A') AS QUANTITY,
+       nvl(c.UNIT,'N/A') AS UNIT,
+       nvl(c.ESTIMATED_COST,'N/A') AS ESTIMATED_COST ,
+       nvl(c.CURRENT_LOCATION,'N/A') AS CURRENT_LOCATION_SEIZED_PRODUCTS ,
+       nvl(c.PRODUCTS_DESTRUCTION,'N/A') AS PRODUCTS_DUE_FOR_DESTRUCTION ,
+       nvl(c.PRODUCTS_RELEASE,'N/A') AS PRODUCTS_DUE_FOR_RELEASE,
+       nvl(TO_CHAR(TRUNC(c.DATE_DESTRUCTED),'DD/MM/YYYY'),'N/A') AS DATEOF_DESTRUCTED,
+       nvl(TO_CHAR(TRUNC(c.DATE_RELEASE),'DD/MM/YYYY'),'N/A') AS DATEOF_RELEASE,
+       c.DATE_SEIZURE AS DATE_SEIZURE,
+       c.DATE_DESTRUCTED AS DATE_DESTRUCTED,
+       c.DATE_RELEASE AS DATE_RELEASE
+FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
+         JOIN  DAT_KEBS_MS_SEIZURE_DECLARATION b ON a.id= b.MS_WORKPLAN_GENERATED_ID
+         JOIN  DAT_MS_SEIZURE c ON a.id= c.WORKPLAN_GENERATED_ID AND c.MAIN_SEIZURE_ID = b.ID;
+
+SELECT a.* from APOLLO.MS_SEIZED_GOODS_REPORT_VIEW a where
+    (:startDate is null or a.DATE_SEIZURE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_SEIZURE <=TO_DATE(:endDate))
+    AND (:sector is null or a.SECTOR =:sector) AND (:brand is null or a.BRAND =:brand) AND (:marketCentre is null or a.MARKET_CENTRE =:marketCentre)
+    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)
+    AND (:productsDueForRelease is null or a.PRODUCTS_DUE_FOR_RELEASE =:productsDueForRelease);
+
+
+-- alter table DAT_MS_SEIZURE
+--     add DATE_RELEASE    DATE
+-- /
+--
+-- alter table DAT_MS_SEIZURE
+--     add PRODUCTS_RELEASE        VARCHAR2(1000)
+-- /
+
+CREATE OR REPLACE view FIELD_INSPECTION_SUMMARY_REPORT_VIEW as
+SELECT DISTINCT b.ID,b.INSPECTION_DATE,b.MARKET_CENTER,b.OUTLET_DETAILS,a.COMPLAINT_DEPARTMENT,a.OFFICER_ID,b.TOTAL_COMPLIANCE_SCORE,d.REPORT_DATE,
+       nvl(TO_CHAR(TRUNC(b.INSPECTION_DATE),'DD/MM/YYYY'),'N/A') AS DATEOF_VISIT,
+       nvl(TO_CHAR(TRUNC(d.REPORT_DATE),'DD/MM/YYYY'),'N/A') AS DATEOF_SURVEILLANCE_REPORT,
+       nvl(b.MARKET_CENTER,'N/A') AS MARKET_CENTRE,
+       nvl(b.OUTLET_DETAILS,'N/A') AS NAME_OUTLET,
+       nvl(b.VAR_FIELD_10,'N/A') AS NO_SAMPLES_DRAWN_SUBMITTED,
+       nvl(b.TOTAL_COMPLIANCE_SCORE,'N/A') AS COMPLIANCE_PHYSICAL_INSPECTION,
+       nvl(b.MOST_RECURRING_NON_COMPLIANT,'N/A') AS MOST_RECURRING_NON_COMPLIANT,
+       nvl(TO_CHAR(ROUND(((SELECT COUNT(*) FROM DAT_KEBS_MS_DATA_REPORT_PARAMETERS p WHERE p.DATA_REPORT_ID= b.ID) * b.TOTAL_COMPLIANCE_SCORE))),'N/A')  AS PCXA,
+       (SELECT nvl(u.DEPARTMENT,'N/A') AS DIVISION_NAME FROM CFG_KEBS_DEPARTMENTS u WHERE u.ID = a.COMPLAINT_DEPARTMENT) AS SECTOR_NAME,
+       (SELECT COUNT(*) FROM DAT_KEBS_MS_DATA_REPORT_PARAMETERS p WHERE p.DATA_REPORT_ID= b.ID) AS NO_OF_SAMPLES_PHYSICALLY_INSPECTED,
+        CASE
+            WHEN (b.INSPECTION_DATE BETWEEN a.TIME_ACTIVITY_DATE AND a.TIME_ACTIVITY_END_DATE) THEN '1'
+            ELSE '0' END AS VISIT_ASPERMS_SCHEDULE,
+        CASE
+            WHEN a.INVEST_INSPECT_REPORT_STATUS = 1 THEN TO_CHAR(ROUND((d.REPORT_DATE-b.INSPECTION_DATE)))
+            ELSE 'NOT YET FILLED'  END AS TIME_TAKEN_FILE_SURVEILLANCE_REPORT,
+        CASE
+            WHEN a.INVEST_INSPECT_REPORT_STATUS = 1  AND ((ROUND((d.REPORT_DATE-b.INSPECTION_DATE))) <= 1) THEN '1'
+            ELSE '0'  END AS FILING_WITHIN1_DAYAFTER_VISIT
+FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
+         JOIN  DAT_KEBS_MS_INSPECTION_INVESTIGATION_REPORT d ON a.id= d.MS_WORKPLAN_GENERATED_ID
+         JOIN  DAT_KEBS_MS_DATA_REPORT b ON a.id= b.MS_WORKPLAN_GENERATED_ID
+         JOIN  DAT_KEBS_MS_DATA_REPORT_PARAMETERS c ON  c.DATA_REPORT_ID = b.ID;
+
+SELECT a.* from APOLLO.FIELD_INSPECTION_SUMMARY_REPORT_VIEW a where
+    (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))
+    and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID));
+
+create OR REPLACE view WORK_PLAN_MONITORING_TOOL as
+SELECT DISTINCT a.OFFICER_ID,b.REGION_ID,a.COMPLAINT_DEPARTMENT,a.ID,a.REFERENCE_NUMBER,a.TIME_ACTIVITY_DATE,a.TIME_ACTIVITY_END_DATE,
+                nvl(TO_CHAR(TRUNC(a.TIME_ACTIVITY_DATE),'DD/MM/YYYY')||' - '||TO_CHAR(TRUNC(a.TIME_ACTIVITY_END_DATE),'DD/MM/YYYY'),'N/A') AS TARGETED_MONTH,
+                a.PRODUCT_STRING,
+                (SELECT nvl(u.FIRST_NAME||' '||u.LAST_NAME,'N/A') AS OFFICER_NAME FROM DAT_KEBS_USERS u WHERE u.ID = a.OFFICER_ID) AS OFFICERS,
+                (SELECT nvl(u.REGION,'N/A') AS REGION_NAME FROM CFG_KEBS_REGIONS u WHERE u.ID = b.REGION_ID) AS REGION,
+                (SELECT nvl(u.COUNTY,'N/A') AS COUNTY_NAME FROM CFG_KEBS_COUNTIES u WHERE u.ID = b.COUNTY_ID) AS COUNTY,
+                (SELECT nvl(u.TOWN,'N/A') AS TOWN_NAME FROM CFG_KEBS_TOWNS u WHERE u.ID = b.TOWNS_ID) AS TOWN,
+                CASE
+                    WHEN 'July' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                    from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                    connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS JULY,
+                CASE
+                    WHEN 'August' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                      from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                      connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS AUGUST,
+                CASE
+                    WHEN 'September' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                         from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                         connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS SEPTEMBER,
+                CASE
+                    WHEN 'October' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                       from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                       connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS OCTOBER,
+                CASE
+                    WHEN 'November' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                        from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                        connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS NOVEMBER,
+                CASE
+                    WHEN 'December' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                        from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                        connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS DECEMBER,
+                CASE
+                    WHEN 'January' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                       from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                       connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS JANUARY,
+                CASE
+                    WHEN 'February' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                        from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                        connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS FEBRUARY,
+                CASE
+                    WHEN 'March' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                     from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                     connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS MARCH,
+                CASE
+                    WHEN 'April' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                     from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                     connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS APRIL,
+                CASE
+                    WHEN 'May' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                   from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                   connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS MAY,
+                CASE
+                    WHEN 'June' IN (select to_char( add_months( start_date, level-1 ), 'fmMonth' )
+                                    from (select a.TIME_ACTIVITY_DATE start_date, a.MS_PROCESS_ENDED_ON end_date from dual)
+                                    connect by level <= months_between(trunc(end_date,'MM'),trunc(start_date,'MM') )) THEN '1'
+                    ELSE '0' END AS JUNE
+FROM DAT_KEBS_MS_WORKPLAN_GENARATED a
+         JOIN  DAT_KEBS_MS_WORK_PLAN_COUNTIES_TOWNS b ON a.id= b.WORK_PLAN_ID;
+/
+
+SELECT DISTINCT a.* from APOLLO.WORK_PLAN_MONITORING_TOOL a WHERE
+    (:startDate is null or a.TIME_ACTIVITY_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TIME_ACTIVITY_END_DATE <=TO_DATE(:endDate))
+and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

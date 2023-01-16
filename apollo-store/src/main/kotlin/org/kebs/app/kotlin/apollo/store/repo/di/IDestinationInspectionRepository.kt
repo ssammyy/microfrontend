@@ -351,7 +351,12 @@ interface TransactionStats {
 interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> {
     fun findByUcrNumber(ucrNumber: String): CdDemandNoteEntity?
     fun findAllByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): List<CdDemandNoteEntity>
-    fun findFirstByCdIdAndStatusIn(cdId: Long, statuses: List<Int>): CdDemandNoteEntity?
+    fun findFirstByCdIdAndStatusInAndPaymentStatusIn(
+        cdId: Long,
+        statuses: List<Int>,
+        paymentStatuses: List<Int>
+    ): CdDemandNoteEntity?
+
     fun findByCdId(cdId: Long): CdDemandNoteEntity?
     fun findFirstByCdId(cdId: Long): CdDemandNoteEntity?
     fun findByPostingReference(demandNoteNumber: String): CdDemandNoteEntity?
@@ -411,15 +416,31 @@ interface IDemandNoteRepository : HazelcastRepository<CdDemandNoteEntity, Long> 
         purpose: String
     ): CdDemandNoteEntity?
 
+    fun findFirstByCdIdAndPaymentStatusIn(
+        cdId: Long,
+        paymentStatus: List<Int>
+    ): CdDemandNoteEntity?
+
     fun findFirstByUcrNumberAndPaymentStatusIn(refNum: String, paymentStatuses: List<Int>): CdDemandNoteEntity?
     fun findByCdIdAndPaymentStatusIn(cdId: Long, paymentStatuses: List<Int>): List<CdDemandNoteEntity>
-    fun findAllByPaymentStatusAndSwStatusInAndPaymentPurpose(paymentStatus: Int, swStatus: List<Int?>, paymentPurpose: String): List<CdDemandNoteEntity>
+    fun findAllByPaymentStatusAndSwStatusInAndPaymentPurpose(
+        paymentStatus: Int,
+        swStatus: List<Int?>,
+        paymentPurpose: String
+    ): List<CdDemandNoteEntity>
+
     fun findAllByPaymentStatus(paymentStatus: Int): List<CdDemandNoteEntity>?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNull(paymentStatus: Int): CdDemandNoteEntity?
     fun findFirstByPaymentStatusAndCdRefNoIsNotNullOrderByCreatedOnDesc(paymentStatus: Int): CdDemandNoteEntity?
-    fun findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(paymentStatus: Int, importerPin: String): CdDemandNoteEntity?
+    fun findFirstByPaymentStatusAndCdRefNoIsNotNullAndImporterPinOrderByCreatedOnDesc(
+        paymentStatus: Int,
+        importerPin: String
+    ): CdDemandNoteEntity?
 
-    @Query("select count(*) as totalCount, sum(AMOUNT_PAYABLE) totalAmount,paymentStatus from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date group by PAYMENT_STATUS", nativeQuery = true)
+    @Query(
+        "select count(*) as totalCount, sum(AMOUNT_PAYABLE) totalAmount,paymentStatus from DAT_KEBS_CD_DEMAND_NOTE where  to_char(DATE_GENERATED,'DD-MM-YYYY')=:date group by PAYMENT_STATUS",
+        nativeQuery = true
+    )
     fun transactionStats(date: String): List<TransactionStats>
 }
 

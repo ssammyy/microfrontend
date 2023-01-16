@@ -1045,7 +1045,7 @@
                                                     <b>GENERATED DOCUMENT:</b>
                                                     <p>{{task.map.documentType}}</p>
                                                 </div>
-                                                <div *ngIf="task.map.compliantStatus||task.map.compliantStatus===0">
+                                                <div *ngIf="task.map.hasOwnProperty('compliantStatus')">
                                                     <b>COMPLIANCE:</b>
                                                     <p>{{task.map.compliantStatus === 1 ? 'COMPLIANT' : 'NON-COMPLIANT'}}</p>
                                                 </div>
