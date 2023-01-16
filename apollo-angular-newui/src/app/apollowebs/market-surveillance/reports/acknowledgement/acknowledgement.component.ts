@@ -11,7 +11,7 @@ import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {
   AcknowledgementDto,
   ApiResponseModel,
-  ComplaintsInvestigationListDto, ComplaintViewSearchValues,
+  ComplaintsInvestigationListDto, ComplaintViewSearchValues, ConsumerComplaintsReportViewEntity, ConsumerComplaintViewSearchValues,
   MsDepartment, MsDivisionDetails,
   MsUsersDto,
 } from '../../../../core/store/data/ms/ms.model';
@@ -46,8 +46,8 @@ export class AcknowledgementComponent implements OnInit {
 
   searchTypeValue = 'ACKNOWLEDGEMENT';
   endPointStatusValue = 'complaint';
-  activeStatus = 'acknowledgement-of-complaint';
-  previousStatus = 'acknowledgement-of-complaint';
+  activeStatus = 'consumerComplaintsView';
+  previousStatus = 'consumerComplaintsView';
   selectedBatchRefNo: string;
   searchStatus: any;
   message: any;
@@ -56,245 +56,14 @@ export class AcknowledgementComponent implements OnInit {
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
-  complaintViewSearchValues: ComplaintViewSearchValues;
+  complaintViewSearchValues: ConsumerComplaintViewSearchValues;
   selectedNotification: AcknowledgementDto;
-  loadedData!: ComplaintsInvestigationListDto[];
+  loadedData: ConsumerComplaintsReportViewEntity[] = [];
   msOfficerLists!: MsUsersDto[];
   msRegions: RegionsEntityDto[] = [];
   msDepartments: MsDepartment[] = [];
   msDivisions: MsDivisionDetails[] = [];
   totalCount = 12;
-  public settingsAcknowledgment = {
-    selectMode: 'single',  // single|multi
-    hideHeader: false,
-    hideSubHeader: false,
-    actions: {
-      columnTitle: 'Actions',
-      add: false,
-      edit: false,
-      delete: false,
-      // custom: [
-      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
-      // ],
-      // position: 'right', // left|right
-    },
-    delete: {
-      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true,
-    },
-    noDataMessage: 'No data found',
-    columns: {
-      referenceNumber: {
-        title: 'REFERENCE NUMBER',
-        type: 'string',
-        filter: false,
-      },
-      complaintTitle: {
-        title: 'COMPLAINT TITLE',
-        type: 'string',
-        filter: false,
-      },
-      targetedProducts: {
-        title: 'TARGETED PRODUCTS',
-        type: 'string',
-        filter: false,
-      },
-      transactionDate: {
-        title: 'TRANSACTION DATE',
-        type: 'date',
-        filter: false,
-      },
-      assignedIo: {
-        title: 'OFFICER NAME',
-        type: 'string',
-        filter: false,
-      },
-      region: {
-        title: 'REGION',
-        type: 'string',
-        filter: false,
-      },
-      complaintDepartment: {
-        title: 'DEPARTMENT',
-        type: 'string',
-        filter: false,
-      },
-      division: {
-        title: 'FUNCTION',
-        type: 'string',
-        filter: false,
-      },
-      status: {
-        title: 'STATUS',
-        type: 'string',
-        filter: false,
-      },
-      timeTakenForAcknowledgement: {
-        title: 'TIME TAKEN',
-        type: 'string',
-        filter: false,
-      },
-    },
-    pager: {
-      display: true,
-      perPage: 10,
-    },
-  };
-  public settingsFeedBack = {
-    selectMode: 'single',  // single|multi
-    hideHeader: false,
-    hideSubHeader: false,
-    actions: {
-      columnTitle: 'Actions',
-      add: false,
-      edit: false,
-      delete: false,
-      // custom: [
-      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
-      // ],
-      // position: 'right', // left|right
-    },
-    delete: {
-      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true,
-    },
-    noDataMessage: 'No data found',
-    columns: {
-      referenceNumber: {
-        title: 'REFERENCE NUMBER',
-        type: 'string',
-        filter: false,
-      },
-      complaintTitle: {
-        title: 'COMPLAINT TITLE',
-        type: 'string',
-        filter: false,
-      },
-      targetedProducts: {
-        title: 'TARGETED PRODUCTS',
-        type: 'string',
-        filter: false,
-      },
-      transactionDate: {
-        title: 'TRANSACTION DATE',
-        type: 'date',
-        filter: false,
-      },
-      assignedIo: {
-        title: 'OFFICER NAME',
-        type: 'string',
-        filter: false,
-      },
-      region: {
-        title: 'REGION',
-        type: 'string',
-        filter: false,
-      },
-      complaintDepartment: {
-        title: 'DEPARTMENT',
-        type: 'string',
-        filter: false,
-      },
-      division: {
-        title: 'FUNCTION',
-        type: 'string',
-        filter: false,
-      },
-      feedbackSent: {
-        title: 'FEED BACK SENT STATUS',
-        type: 'string',
-        filter: false,
-      },
-      timeTakenForFeedbackSent: {
-        title: 'TIME TAKEN',
-        type: 'string',
-        filter: false,
-      },
-    },
-    pager: {
-      display: true,
-      perPage: 10,
-    },
-  };
-  public settingsCompletionOfComplaint = {
-    selectMode: 'single',  // single|multi
-    hideHeader: false,
-    hideSubHeader: false,
-    actions: {
-      columnTitle: 'Actions',
-      add: false,
-      edit: false,
-      delete: false,
-      // custom: [
-      //   //  { name: 'editRecord', title: '<i class="btn btn-sm btn-primary">View More</i>' },
-      //   // {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary" >View Message</i>'},
-      // ],
-      // position: 'right', // left|right
-    },
-    delete: {
-      deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
-      confirmDelete: true,
-    },
-    noDataMessage: 'No data found',
-    columns: {
-      referenceNumber: {
-        title: 'REFERENCE NUMBER',
-        type: 'string',
-        filter: false,
-      },
-      complaintTitle: {
-        title: 'COMPLAINT TITLE',
-        type: 'string',
-        filter: false,
-      },
-      targetedProducts: {
-        title: 'TARGETED PRODUCTS',
-        type: 'string',
-        filter: false,
-      },
-      transactionDate: {
-        title: 'TRANSACTION DATE',
-        type: 'date',
-        filter: false,
-      },
-      assignedIo: {
-        title: 'OFFICER NAME',
-        type: 'string',
-        filter: false,
-      },
-      region: {
-        title: 'REGION',
-        type: 'string',
-        filter: false,
-      },
-      complaintDepartment: {
-        title: 'DEPARTMENT',
-        type: 'string',
-        filter: false,
-      },
-      division: {
-        title: 'FUNCTION',
-        type: 'string',
-        filter: false,
-      },
-      feedbackSent: {
-        title: 'INVESTIGATION ENDED STATUS',
-        type: 'string',
-        filter: false,
-      },
-      timeTakenForFeedbackSent: {
-        title: 'TIME TAKEN',
-        type: 'string',
-        filter: false,
-      },
-    },
-    pager: {
-      display: true,
-      perPage: 10,
-    },
-  };
   dataSet: LocalDataSource = new LocalDataSource();
   search: Subject<string>;
 
@@ -326,14 +95,14 @@ export class AcknowledgementComponent implements OnInit {
     });
 
     this.searchFormGroup = this.formBuilder.group({
+      startDate: ['', null],
+      endDate: ['', null],
       refNumber: ['', null],
-      assignedIo: ['', null],
-      region: ['', null],
-      complaintDepartment: ['', null],
-      division: ['', null],
+      assignIO: ['', null],
+      sectorID: ['', null],
     });
 
-    this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
+    this.loadData(this.defaultPage, this.defaultPageSize);
   }
 
   get formSearch(): any {
@@ -342,10 +111,11 @@ export class AcknowledgementComponent implements OnInit {
 
   rerender(): void {
     this.dtElements.forEach((dtElement: DataTableDirective) => {
-      if (dtElement.dtInstance)
+      if (dtElement.dtInstance) {
         dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           dtInstance.destroy();
         });
+      }
     });
     setTimeout(() => {
       this.dtTrigger1.next();
@@ -355,15 +125,15 @@ export class AcknowledgementComponent implements OnInit {
 
   }
 
-  private loadData(page: number, records: number, routeTake: string, searchType: string): any {
+  private loadData(page: number, records: number): any {
     this.SpinnerService.show();
     const params = {'personal': this.personalTasks};
-    this.msService.loadAllComplaintTimelineAndStatusReportList(String(page), String(records), routeTake, searchType).subscribe(
-        (data: ApiResponseModel) => {
-          if (data.responseCode === '00') {
-            this.loadedData = data.data;
+    this.msService.loadAllConsumerComplaintReportList(String(page), String(records)).subscribe(
+        (dataResponse: ApiResponseModel) => {
+          if (dataResponse.responseCode === '00') {
+            // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
+            this.loadedData = dataResponse?.data as ConsumerComplaintsReportViewEntity[];
             this.totalCount = this.loadedData.length;
-            this.dataSet.load(this.loadedData);
             this.rerender();
             this.msService.msOfficerListDetails().subscribe(
                 (dataOfficer: MsUsersDto[]) => {
@@ -401,7 +171,7 @@ export class AcknowledgementComponent implements OnInit {
     if (pageIndex) {
       this.currentPageInternal = pageIndex - 1;
       this.currentPage = pageIndex;
-      this.loadData(this.currentPageInternal, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
+      this.loadData(this.currentPageInternal, this.defaultPageSize);
     }
   }
 
@@ -410,7 +180,7 @@ export class AcknowledgementComponent implements OnInit {
     this.submitted = true;
     this.complaintViewSearchValues = this.searchFormGroup.value;
     // tslint:disable-next-line:max-line-length
-    this.msService.loadSearchComplaintViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues, this.searchTypeValue).subscribe(
+    this.msService.loadSearchConsumerComplaintViewList(String(this.defaultPage), String(this.defaultPageSize), this.complaintViewSearchValues).subscribe(
         (data: ApiResponseModel) => {
           if (data.responseCode === '00') {
             this.loadedData = data.data;
@@ -436,15 +206,13 @@ export class AcknowledgementComponent implements OnInit {
     this.departmentSelected = this.searchFormGroup?.get('complaintDepartment')?.value;
   }
 
-  toggleStatus(status: string, endPointStatus: string, searchType: string): void {
+  toggleStatus(status: string): void {
     this.message = null;
     this.searchStatus = null;
     if (status !== this.activeStatus) {
       this.activeStatus = status;
-      this.endPointStatusValue = endPointStatus;
-      this.searchTypeValue = searchType;
-      // this.loadData(this.defaultPage, this.defaultPageSize);
-      this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
+      this.loadData(this.defaultPage, this.defaultPageSize);
+      // this.loadData(this.defaultPage, this.defaultPageSize, this.endPointStatusValue, this.searchTypeValue);
     }
   }
 }

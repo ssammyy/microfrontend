@@ -997,6 +997,76 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun getAllConsumerComplaintReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllConsumerComplaintReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllSubmittedSamplesSummaryReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllSubmittedSamplesSummaryReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllFieldInspectionSummaryReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllFieldInspectionSummaryReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllWorkPlanMonitoringToolReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllWorkPlanMonitoringToolReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun getAllSeizedGoodsReportList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msAllSeizedGoodsReportLists(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun getAllSeizedGoodsViewList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req, "referenceNumber")
@@ -1022,6 +1092,127 @@ class NewMarketSurveillanceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     marketSurveillanceComplaintDaoServices.msComplaintViewSearchLists(page,body,reportType)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun putAllConsumerComplaintSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<ConsumerComplaintViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, ConsumerComplaintViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msConsumerComplaintViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun putAllSubmittedSamplesSummarySearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<SubmittedSamplesSummaryViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, SubmittedSamplesSummaryViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msSubmittedSamplesSummaryViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun putAllFieldInspectionSummarySearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<ConsumerComplaintViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, ConsumerComplaintViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msFieldInspectionSummaryViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun putAllWorkPlanMonitoringToolSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<ConsumerComplaintViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, ConsumerComplaintViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msWorkPlanMonitoringToolViewSearchLists(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+
+    fun putAllSeizedGoodsViewSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val body = req.body<SeizeViewSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, SeizeViewSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceComplaintDaoServices.msSeizeViewSearchLists(page,body)
                         .let {
                             ServerResponse.ok().body(it)
                         }
@@ -2135,6 +2326,32 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun updateWorkPlanScheduleApprovalPreliminaryReportDirector(req: ServerRequest): ServerResponse {
+        return try {
+            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+            val finalReportStatus = req.paramOrNull("finalReportStatus") ?: throw ExpectedDataNotFound("Required  finalReportStatus, check parameters")
+            val body = req.body<ApprovalDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ApprovalDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsApprovalPreliminaryReportDirector(referenceNo,batchReferenceNo,body, finalReportStatus.toInt()==1)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun addWorkPlanScheduleFinalRecommendationByHOD(req: ServerRequest): ServerResponse {
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
@@ -2627,31 +2844,31 @@ class NewMarketSurveillanceHandler(
         }
     }
 
-    fun addWorkPlanScheduleFinalPreliminaryReport(req: ServerRequest): ServerResponse {
-        return try {
-            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
-            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
-            val finalReportStatus = req.paramOrNull("finalReportStatus") ?: throw ExpectedDataNotFound("Required  finalReportStatus, check parameters")
-            val body = req.body<PreliminaryReportDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, PreliminaryReportDto::class.java.name)
-            validator.validate(body, errors)
-            when {
-                errors.allErrors.isEmpty() -> {
-                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,body,finalReportStatus.toInt()==1)
-                        .let {
-                            ServerResponse.ok().body(it)
-                        }
-                }
-                else -> {
-                    onValidationErrors(errors)
-                }
-            }
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
-        }
-    }
+//    fun addWorkPlanScheduleFinalPreliminaryReport(req: ServerRequest): ServerResponse {
+//        return try {
+//            val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
+//            val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
+//            val finalReportStatus = req.paramOrNull("finalReportStatus") ?: throw ExpectedDataNotFound("Required  finalReportStatus, check parameters")
+//            val body = req.body<PreliminaryReportDto>()
+//            val errors: Errors = BeanPropertyBindingResult(body, PreliminaryReportDto::class.java.name)
+//            validator.validate(body, errors)
+//            when {
+//                errors.allErrors.isEmpty() -> {
+//                    marketSurveillanceWorkPlanDaoServices.updateWorkPlanScheduleInspectionDetailsFinalPreliminaryReport(referenceNo,batchReferenceNo,body,finalReportStatus.toInt()==1)
+//                        .let {
+//                            ServerResponse.ok().body(it)
+//                        }
+//                }
+//                else -> {
+//                    onValidationErrors(errors)
+//                }
+//            }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+//        }
+//    }
 
 
 

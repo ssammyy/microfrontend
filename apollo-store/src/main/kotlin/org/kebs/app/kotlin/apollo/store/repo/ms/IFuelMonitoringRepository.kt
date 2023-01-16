@@ -159,6 +159,18 @@ interface ISampleCollectionRepository : HazelcastRepository<MsSampleCollectionEn
 }
 
 @Repository
+interface IMsWorkPlanCountiesTownsRepository : HazelcastRepository<MsWorkPlanCountiesTownsEntity, Long> {
+    override fun findAll( pageable: Pageable): Page<MsWorkPlanCountiesTownsEntity>
+
+//    @Query("SELECT * FROM DAT_KEBS_MS_SAMPLE_COLLECTION a INNER JOIN DAT_KEBS_MS_COLLECTION_PARAMETERS b ON a.ID = b.SAMPLE_COLLECTION_ID where a.ID = $P{ITEM_ID}")
+//    fun filterDateRange(@Param("fromDate") fromDate: Time, @Param("toDate") toDate: Time): List<ConsignmentDocumentEntity>?
+
+    fun findAllByWorkPlanId(workPlanGeneratedID: Long): List<MsWorkPlanCountiesTownsEntity>?
+//    fun findByUserId(userId: UsersEntity): List<WorkplanEntity>?
+//    fun findByUserId(userId: UsersEntity, pages: Pageable?): Page<WorkplanEntity>?
+}
+
+@Repository
 interface IMSSampleSubmissionRepository : HazelcastRepository<MsSampleSubmissionEntity, Long> {
     override fun findAll( pageable: Pageable): Page<MsSampleSubmissionEntity>
 
@@ -201,6 +213,7 @@ interface IMsUploadsRepository : HazelcastRepository<MsUploadsEntity, Long> {
 
     fun findAllByMsComplaintIdAndComplaintUploads(msComplaintId: Long, complaintUploads: Int): List<MsUploadsEntity>?
     fun findAllByMsWorkplanGeneratedIdAndWorkPlanUploads(msWorkplanGeneratedId: Long, workPlanUploads: Int): List<MsUploadsEntity>?
+    fun findTopByMsWorkplanGeneratedIdAndWorkPlanUploadsAndIsUploadFinalReportOrderByIdDesc(msWorkplanGeneratedId: Long, workPlanUploads: Int, isUploadFinalReport: Int): MsUploadsEntity?
     fun findAllByMsFuelInspectionIdAndFuelPlanUploads(msFuelInspectionId: Long, fuelPlanUploads: Int): List<MsUploadsEntity>?
 
 }

@@ -80,6 +80,10 @@ class MsUploadsEntity : Serializable {
     var fuelPlanUploads: Int? = null
 
     @Basic
+    @Column(name = "IS_UPLOAD_FINAL_REPORT")
+    var isUploadFinalReport: Int? = null
+
+    @Basic
     @Column(name = "STATUS")
     var status: Int? = null
 

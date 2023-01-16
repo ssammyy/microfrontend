@@ -132,3 +132,8 @@ ul, ol {
     font-size: 0.75em;
     max-width: available;
 }
+.refStandardsDesign{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}

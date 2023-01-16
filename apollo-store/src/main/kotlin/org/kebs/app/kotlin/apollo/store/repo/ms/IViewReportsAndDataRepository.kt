@@ -23,11 +23,15 @@ package org.kebs.app.kotlin.apollo.store.repo.ms
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.*
+import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 interface ISampleCollectionViewRepository : HazelcastRepository<MsSampleCollectionView, Long> {
@@ -83,6 +87,113 @@ interface IMsAcknowledgementTimelineViewRepository : HazelcastRepository<MsAckno
 }
 
 @Repository
+interface IConsumerComplaintsReportViewRepository : HazelcastRepository<ConsumerComplaintsReportViewEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<ConsumerComplaintsReportViewEntity>
+
+    fun findAllByReferenceNumber(referenceNumber: String): List<ConsumerComplaintsReportViewEntity>
+
+    @Query(
+        value = "SELECT a.* from APOLLO.CONSUMER_COMPLAINTS_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.TRANSACTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TRANSACTION_DATE <=TO_DATE(:endDate))\n" +
+                "    and (:assignIO is null or a.ASSIGNED_IO =TO_NUMBER(:assignIO)) and\n" +
+                "     (:refNumber is null or a.REFERENCE_NUMBER =:refNumber) and\n" +
+                "   (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))",
+        nativeQuery = true
+    )
+    fun findFilteredConsumerComplaintReport(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("refNumber") refNumber: String?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("sectorID") sectorID: Long?
+    ): List<ConsumerComplaintsReportViewEntity>?
+}
+
+
+@Repository
+interface IMsSeizedGoodsReportViewRepository : HazelcastRepository<MsSeizedGoodsReportViewEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<MsSeizedGoodsReportViewEntity>
+
+    @Query(
+        value = "SELECT a.* from APOLLO.MS_SEIZED_GOODS_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.DATE_SEIZURE >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_SEIZURE <=TO_DATE(:endDate))\n" +
+                "    AND (:sector is null or a.SECTOR =:sector) AND (:brand is null or a.BRAND =:brand) AND (:marketCentre is null or a.MARKET_CENTRE =:marketCentre)\n" +
+                "    AND (:nameOutlet is null or a.NAME_OUTLET =:nameOutlet) AND (:productsDueForDestruction is null or a.PRODUCTS_DUE_FOR_DESTRUCTION =:productsDueForDestruction)\n" +
+                "    AND (:productsDueForRelease is null or a.PRODUCTS_DUE_FOR_RELEASE =:productsDueForRelease)",
+        nativeQuery = true
+    )
+    fun findFilteredSeizedGoodsReport(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("sector") sector: String?,
+        @Param("brand") brand: String?,
+        @Param("marketCentre") marketCentre: String?,
+        @Param("nameOutlet") nameOutlet: String?,
+        @Param("productsDueForDestruction") productsDueForDestruction: String?,
+        @Param("productsDueForRelease") productsDueForRelease: String?,
+    ): List<MsSeizedGoodsReportViewEntity>?
+}
+
+
+
+@Repository
+interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<SubmittedSamplesSummaryReportViewEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<SubmittedSamplesSummaryReportViewEntity>
+
+    @Query(
+        value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.DATE_VISIT >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_VISIT <=TO_DATE(:endDate))\n" +
+                "    AND (:sampleReferences is null or a.SAMPLE_REFERENCES =:sampleReferences) and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO))\n" +
+                "    AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))",
+        nativeQuery = true
+    )
+    fun findFilteredSubmittedSamplesSummaryReport(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("sampleReferences") sampleReferences: String?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("sectorID") sectorID: Long?
+    ): List<SubmittedSamplesSummaryReportViewEntity>?
+}
+
+@Repository
+interface IFieldInspectionSummaryReportViewRepository : HazelcastRepository<FieldInspectionSummaryReportViewEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<FieldInspectionSummaryReportViewEntity>
+
+    @Query(
+        value = "SELECT a.* from APOLLO.FIELD_INSPECTION_SUMMARY_REPORT_VIEW a where\n" +
+                "    (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))\n" +
+                "    and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n",
+        nativeQuery = true
+    )
+    fun findFilteredFieldInspectionSummaryReport(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("sectorID") sectorID: Long?
+    ): List<FieldInspectionSummaryReportViewEntity>?
+}
+
+
+@Repository
+interface IWorkPlanMonitoringToolReportViewRepository : HazelcastRepository<WorkPlanMonitoringToolEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<WorkPlanMonitoringToolEntity>
+
+    @Query(
+        value = "SELECT a.* from APOLLO.WORK_PLAN_MONITORING_TOOL a WHERE\n" +
+                "    (:startDate is null or a.TIME_ACTIVITY_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.TIME_ACTIVITY_END_DATE <=TO_DATE(:endDate))\n" +
+                "and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))",
+        nativeQuery = true
+    )
+    fun findFilteredWorkPlanMonitoringToolReport(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("assignIO") assignIO: Long?,
+        @Param("sectorID") sectorID: Long?
+    ): List<WorkPlanMonitoringToolEntity>?
+}
+
+@Repository
 interface IMsComplaintFeedbackViewRepository : HazelcastRepository<MsComplaintFeedbackViewEntity, Long>, JpaSpecificationExecutor<MsComplaintFeedbackViewEntity> {
     override fun findAll(pageable: Pageable): Page<MsComplaintFeedbackViewEntity>
 
@@ -103,6 +214,13 @@ interface IMsSampleSubmittedCpViewRepository : HazelcastRepository<MsSampleSubmi
     override fun findAll(pageable: Pageable): Page<MsSampleSubmittedCpViewEntity>
 
     fun findAllByReferenceNumber(referenceNumber: String): List<MsSampleSubmittedCpViewEntity>
+}
+
+@Repository
+interface IMsComplaintPdfGenerationViewRepository : HazelcastRepository<MsComplaintPdfGenerationEntityView, Long> {
+    override fun findAll(pageable: Pageable): Page<MsComplaintPdfGenerationEntityView>
+
+    fun findAllByReferenceNumber(referenceNumber: String): List<MsComplaintPdfGenerationEntityView>
 }
 
 @Repository

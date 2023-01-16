@@ -84,7 +84,7 @@ import {
     SampleProductViewSearchValues,
     SeizedGoodsViewSearchValues,
     PermitUcrSearch,
-    SSFSendingComplianceStatus,
+    SSFSendingComplianceStatus, ConsumerComplaintViewSearchValues, SeizeViewSearchValues, SubmittedSamplesSummaryViewSearchValues,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -778,6 +778,96 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
+    public loadSearchConsumerComplaintViewList(page: string, records: string, complaintViewSearchValues: ConsumerComplaintViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_CONSUMER_COMPLAINT_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadSearchSubmittedSamplesSummaryViewList(page: string, records: string, complaintViewSearchValues: SubmittedSamplesSummaryViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SUBMITTED_SAMPLES_SUMMARY_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadSearchFieldInspectionSummaryViewList(page: string, records: string, complaintViewSearchValues: ConsumerComplaintViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SUBMITTED_SAMPLES_SUMMARY_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadSearchWorkPlanMonitoringToolViewList(page: string, records: string, complaintViewSearchValues: ConsumerComplaintViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_WORK_PLAN_MONITORING_TOOL_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, complaintViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public loadSearchSeizeReportViewList(page: string, records: string, seizeViewSearchValues: SeizeViewSearchValues): Observable<ApiResponseModel> {
+        // console.log(data);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SEIZED_GOODS_VIEW_SEARCH);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.put<ApiResponseModel>(url, seizeViewSearchValues, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public loadSearchSampleProductsSelectedViewList(page: string, records: string, sampleProductViewSearchValues: SampleProductViewSearchValues, searchType: string): Observable<ApiResponseModel> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SAMPLE_PRODUCTS_SEARCH);
@@ -838,6 +928,81 @@ export class MsService {
             }),
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllConsumerComplaintReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_CONSUMER_COMPLAINT_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllSubmittedSamplesSummaryReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SUBMITTED_SAMPLES_SUMMARY_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllFieldInspectionSummaryReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_FIELD_INSPECTION_SUMMARY_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllWorkPlanMonitoringToolReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_WORK_PLAN_MONITORING_TOOL_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadAllSeizeReportList(page: string, records: string): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SEIZED_GOODS_VIEW);
+        const params = new HttpParams()
+            .set('page', page)
+            .set('records', records);
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
                 return throwError(fault);
             }),
         );
@@ -1445,7 +1610,27 @@ export class MsService {
         );
     }
 
-  // tslint:disable-next-line:max-line-length
+    // tslint:disable-next-line:max-line-length
+    public msWorkPlanScheduleDetailsApproveFinalPreliminaryDirector(batchReferenceNo: string, referenceNo: string, data: ApprovalDto): Observable<WorkPlanInspectionDto> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_APPROVE_DIRECTOR_FINAL_PRELIMINARY_REPORT);
+        const params = new HttpParams()
+            .set('batchReferenceNo', batchReferenceNo)
+            .set('finalReportStatus', '1')
+            .set('referenceNo', referenceNo);
+        return this.http.put<WorkPlanInspectionDto>(url, data, {params}).pipe(
+            map(function (response: WorkPlanInspectionDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    // tslint:disable-next-line:max-line-length
     public msWorkPlanScheduleDetailsFinalRemarksHOD(batchReferenceNo: string, referenceNo: string, data: WorkPlanFeedBackDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
@@ -1736,6 +1921,51 @@ export class MsService {
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
             ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPLOAD_WORK_PLAN_FILE,
+        );
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    public saveWorkPlanFilesFinalReportIO(data: FormData): Observable<any> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPLOAD_FINAL_REPORT_WORK_PLAN_FILE,
+        );
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public saveWorkPlanFilesFinalReportHOFHOD(data: FormData): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPLOAD_FINAL_REPORT_HOF_HOD_WORK_PLAN_FILE,
         );
         // const params = new HttpParams()
         //     .set('permitID', permitID);
@@ -2701,6 +2931,23 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_PDF_ENDPOINT.VIEW_PDF_SSF);
         const params = new HttpParams()
             .set('ssfID', ssfID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadComplaintDetailsPDF(refNumber: string): Observable<any> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_PDF_ENDPOINT.VIEW_PDF_COMPLAINT);
+        const params = new HttpParams()
+            .set('refNumber', refNumber);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
