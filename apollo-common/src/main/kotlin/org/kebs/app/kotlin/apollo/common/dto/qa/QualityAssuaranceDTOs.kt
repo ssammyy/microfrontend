@@ -131,7 +131,7 @@ data class NewBatchInvoiceDto(
     var permitInvoicesID: Array<Long>? = null,
     var isWithHolding: Long? = null,
 
-) {
+    ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -661,6 +661,11 @@ data class KebsWebistePermitEntityDto(
     var issue_date: String? = null,
     var expiry_date: String? = null,
 
+
+    )
+
+data class companyDto(
+    var companyName: String? = null,
 
     )
 

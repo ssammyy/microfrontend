@@ -589,6 +589,11 @@ class IntStandardService(
         return iSUploadStandardRepository.getUploadedDraft()
     }
 
+    fun getIsPublishingTasks(): MutableList<ISUploadedDraft> {
+        return iSUploadStandardRepository.getIsPublishingTasks()
+    }
+
+
     fun checkRequirements(
         iSUploadStandard: ISUploadStandard,
         internationalStandardRemarks: InternationalStandardRemarks
@@ -666,6 +671,9 @@ class IntStandardService(
         iSUploadStandard.iSNumber=iSUploadStandard.iSNumber
         iSUploadStandard.draughting=iSUploadStandard.draughting
         val draughting=iSUploadStandard.draughting
+        val uploadDate = Timestamp(System.currentTimeMillis())
+        val deadline: Timestamp = Timestamp.valueOf(uploadDate.toLocalDateTime().plusDays(30))
+        iSUploadStandard.deadlineDate=deadline
 
 
         iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->

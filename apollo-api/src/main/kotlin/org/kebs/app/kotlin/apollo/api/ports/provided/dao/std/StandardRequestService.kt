@@ -615,7 +615,6 @@ class StandardRequestService(
         var finalValue = 1
 
         for (item in allRequests) {
-            println(item)
             lastId = item.requestNumber
             break
         }

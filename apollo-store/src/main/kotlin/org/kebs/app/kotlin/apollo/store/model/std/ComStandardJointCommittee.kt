@@ -22,6 +22,10 @@ class ComStandardJointCommittee {
     @Basic
     var name: String?=null
 
+    @Column(name="NAMES")
+    @Basic
+    var names: String?=null
+
     @Column(name="EMAIL")
     @Basic
     var email: String?=null
