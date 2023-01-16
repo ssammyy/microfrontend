@@ -224,8 +224,8 @@ class IntStandardController(
             remarks=iSDecisions.comments
         }
 
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDecisions) }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDecisions) }
 
         return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnProposal(iSAdoptionProposal,internationalStandardRemarks))
 
@@ -402,6 +402,16 @@ class IntStandardController(
     {
         return internationalStandardService.getUploadedDraft()
     }
+
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getIsPublishingTasks")
+    @ResponseBody
+    fun getIsPublishingTasks(): MutableList<ISUploadedDraft>
+    {
+        return internationalStandardService.getIsPublishingTasks()
+    }
+
+
 
     //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")

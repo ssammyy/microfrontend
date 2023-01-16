@@ -45,6 +45,7 @@ class ComStdDraftDecisionDto(
     var uploadedBy: String?=null,
     var requestNumber: String?=null,
     var accentTo: String?=null,
+    var response: String?=null,
     var id: Long?=null,
     var requestId: Long?=null,
     var comments: String?=null

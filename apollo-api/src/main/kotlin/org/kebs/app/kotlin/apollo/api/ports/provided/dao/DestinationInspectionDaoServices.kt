@@ -1713,6 +1713,10 @@ class DestinationInspectionDaoServices(
         return iDemandNoteRepo.findByIdOrNull(cdID)
     }
 
+    fun findDemandNoteWithReference(dnRef: String): CdDemandNoteEntity? {
+        return iDemandNoteRepo.findByDemandNoteNumber(dnRef)
+    }
+
     fun findDemandNoteItemByID(itemId: Long): CdDemandNoteItemsDetailsEntity? {
         val items = iDemandNoteItemRepo.findByItemId(itemId)
         for (item in items) {

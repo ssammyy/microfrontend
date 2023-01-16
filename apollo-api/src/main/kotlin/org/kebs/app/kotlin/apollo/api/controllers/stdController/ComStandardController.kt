@@ -146,6 +146,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     fun formJointCommittee(@RequestBody jointCommitteeDto: JointCommitteeDto): ServerResponse{
         val comStandardJointCommittee=ComStandardJointCommittee().apply {
             name= jointCommitteeDto.name?.let { commonDaoServices.convertClassToJson(it) }
+            names= jointCommitteeDto.names?.let { commonDaoServices.convertClassToJson(it) }
             requestId=jointCommitteeDto.requestId
         }
         return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.formJointCommittee(comStandardJointCommittee))
@@ -453,6 +454,9 @@ class ComStandardController (val comStandardService: ComStandardService,
             remarks=comStdDraftDecisionDto.comments
         }
 
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraftDecisionDto) }
+
         return ServerResponse(HttpStatus.OK,"Decision",comStandardService.decisionOnStdDraft(comStdDraft,companyStandardRemarks))
 
     }
@@ -489,7 +493,7 @@ class ComStandardController (val comStandardService: ComStandardService,
             remarks=comStdDraftDecisionDto.comments
         }
 
-        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.decisionOnStdDraft(comStdDraft,companyStandardRemarks))
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.decisionOnComStdDraft(comStdDraft,companyStandardRemarks))
 
     }
     @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -503,12 +507,11 @@ class ComStandardController (val comStandardService: ComStandardService,
     @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/submitDraftForEditing")
     @ResponseBody
-    fun submitDraftForEditing(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    fun submitDraftForEditing(@RequestBody isDraftDto: CSDraftDto): ServerResponse
     {
         val companyStandard= CompanyStandard().apply {
             requestNumber=isDraftDto.requestNumber
             comStdNumber=isDraftDto.comStdNumber
-            id=isDraftDto.id
             title=isDraftDto.title
             scope=isDraftDto.scope
             normativeReference=isDraftDto.normativeReference
@@ -518,11 +521,15 @@ class ComStandardController (val comStandardService: ComStandardService,
             preparedBy=isDraftDto.preparedBy
             documentType=isDraftDto.docName
             special=isDraftDto.special
+            requestId=isDraftDto.requestId
         }
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
+        val comStdDraft= ComStdDraft().apply {
+            id=isDraftDto.id
+        }
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
 
-        return ServerResponse(HttpStatus.OK,"Successfully Edited Draft",comStandardService.submitDraftForEditing(companyStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Draft",comStandardService.submitDraftForEditing(companyStandard,comStdDraft))
     }
 
     @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -532,6 +539,15 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
         return comStandardService.getUploadedDraft()
     }
+
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getComStdPublishing")
+    @ResponseBody
+    fun getComStdPublishing(): MutableList<COMUploadedDraft>
+    {
+        return comStandardService.getComStdPublishing()
+    }
+
 
     //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -563,7 +579,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/editStandardDraft")
     @ResponseBody
-    fun editStandardDraft(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    fun editStandardDraft(@RequestBody isDraftDto: CSDraftDto): ServerResponse
     {
 
         val companyStandard= CompanyStandard().apply {
@@ -594,7 +610,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/draughtStandard")
     @ResponseBody
-    fun draughtStandard(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    fun draughtStandard(@RequestBody isDraftDto: CSDraftDto): ServerResponse
     {
 
         val companyStandard= CompanyStandard().apply {
@@ -623,7 +639,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     @PreAuthorize("hasAuthority('PROOFREADER_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/company_standard/proofReadStandard")
     @ResponseBody
-    fun proofReadStandard(@RequestBody isDraftDto: ISDraftDto): ServerResponse
+    fun proofReadStandard(@RequestBody isDraftDto: CSDraftDto): ServerResponse
     {
 
         val companyStandard= CompanyStandard().apply {
@@ -846,7 +862,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
     @GetMapping("/company_standard/getUserList")
     @ResponseBody
-    fun getUserList(): MutableList<UsersEntity> {
+    fun getUserList(): MutableList<UserDetailHolder> {
         return comStandardService.getUserList()
     }
 
