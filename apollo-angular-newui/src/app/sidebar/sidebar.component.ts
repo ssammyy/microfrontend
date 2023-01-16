@@ -311,6 +311,12 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN', 'DI_ADMIN_READ'],
             },
             {
+                path: 'bills',
+                title: 'Corporate Bills',
+                ab: 'CB',
+                privilege: ['DI_INSPECTION_OFFICER_READ', 'DI_OFFICER_CHARGE_READ', 'DI_ADMIN', 'DI_ADMIN_READ'],
+            },
+            {
                 path: 'corporates-customers',
                 title: 'Corporate Customers',
                 ab: 'CC',

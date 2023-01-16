@@ -82,10 +82,32 @@ interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
     fun findAllByBillNumberPrefixAndPaymentStatus(billNumberPrefix: String, status: Int): List<BillPayments>
     fun countByCorporateIdAndBillNumber(corporateId: Long?, billNumber: String): Long
     fun countByCorporateId(corporateId: Long?): Long
-    fun findFirstByCorporateIdAndBillNumberAndPaymentStatus(corporateId: Long?, billNumber: String, status: Int): Optional<BillPayments>
+    fun findFirstByCorporateIdAndBillNumberAndPaymentStatus(
+        corporateId: Long?,
+        billNumber: String,
+        status: Int
+    ): Optional<BillPayments>
 
-    @Query(value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT from DAT_KEBS_BILL_TRANSACTIONS bt  where CORPORATE_ID=:corporateId and BILL_ID=:billId", nativeQuery = true)
-    fun sumTotalAmountByCorporateIdAndBillId(@Param("corporateId") corporateId: Long?, @Param("billId") billId: Long): BigDecimal?
+    @Query(
+        value = "select sum(CASE WHEN bt.AMOUNT>0 then bt.AMOUNT else 0.0 END) TOTAL_AMOUNT from DAT_KEBS_BILL_TRANSACTIONS bt  where CORPORATE_ID=:corporateId and BILL_ID=:billId",
+        nativeQuery = true
+    )
+    fun sumTotalAmountByCorporateIdAndBillId(
+        @Param("corporateId") corporateId: Long?,
+        @Param("billId") billId: Long
+    ): BigDecimal?
+
     fun findAllByCorporateIdAndPaymentStatusIn(corporateId: Long?, status: List<Int>): List<BillPayments>
-    fun findFirstByBillStatusAndPaymentStatusAndPostingStatusOrderByCreateOnDesc(billStatus: Int, paymentStatus: Int, postingStatus: Int): BillPayments?
+    fun findAllByPaymentStatusIn(status: List<Int>, page: Pageable): Page<BillPayments>
+    fun findAllByBillNumberContainsAndPaymentStatusIn(
+        billNumber: String,
+        status: List<Int>,
+        page: Pageable
+    ): Page<BillPayments>
+
+    fun findFirstByBillStatusAndPaymentStatusAndPostingStatusOrderByCreateOnDesc(
+        billStatus: Int,
+        paymentStatus: Int,
+        postingStatus: Int
+    ): BillPayments?
 }

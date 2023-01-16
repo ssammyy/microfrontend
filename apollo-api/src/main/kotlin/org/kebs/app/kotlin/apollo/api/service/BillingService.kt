@@ -42,17 +42,17 @@ enum class BillingPurpose(val code: String) {
 
 @Component
 class BillingService(
-        private val corporateCustomerRepository: ICorporateCustomerRepository,
-        private val billPaymentRepository: IBillPaymentsRepository,
-        private val billingLimitsRepository: IBillingLimitsRepository,
-        private val batchInvoiceRepository: InvoiceBatchDetailsRepo,
-        private val invoiceDaoService: InvoiceDaoService,
-        private val amountInWordsService: AmountInWordsService,
-        private val diServiceDao: DestinationInspectionDaoServices,
-        private val billTransactionRepo: IBillTransactionsEntityRepository,
-        private val commonDaoServices: CommonDaoServices,
+    private val corporateCustomerRepository: ICorporateCustomerRepository,
+    private val billPaymentRepository: IBillPaymentsRepository,
+    private val billingLimitsRepository: IBillingLimitsRepository,
+    private val batchInvoiceRepository: InvoiceBatchDetailsRepo,
+    private val invoiceDaoService: InvoiceDaoService,
+    private val amountInWordsService: AmountInWordsService,
+    private val diServiceDao: DestinationInspectionDaoServices,
+    private val billTransactionRepo: IBillTransactionsEntityRepository,
+    private val commonDaoServices: CommonDaoServices,
 
-        private val properties: ApplicationMapProperties
+    private val properties: ApplicationMapProperties
 ) {
     final val DATE_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM")
     final val INVOICE_DATE_FORMATER = DateTimeFormatter.ofPattern("yyyyMM")
@@ -60,7 +60,11 @@ class BillingService(
 
     fun addBillTransaction(transaction: BillTransactionsEntity, corporate: CorporateCustomerAccounts): BillPayments {
         val billNumber = creteBillPrefix(corporate.accountLimits)
-        val billOptional = this.billPaymentRepository.findFirstByCorporateIdAndBillNumberAndPaymentStatus(corporate.id, billNumber, BillStatus.OPEN.status)
+        val billOptional = this.billPaymentRepository.findFirstByCorporateIdAndBillNumberAndPaymentStatus(
+            corporate.id,
+            billNumber,
+            BillStatus.OPEN.status
+        )
         if (billOptional.isPresent) {
             val bill = billOptional.get()
             transaction.billId = bill.id
@@ -79,7 +83,8 @@ class BillingService(
         } else {
             val bill = BillPayments()
             bill.corporateId = corporate.id
-            bill.billNumberSequence = this.billPaymentRepository.countByCorporateIdAndBillNumber(corporate.id, billNumber) + 1
+            bill.billNumberSequence =
+                this.billPaymentRepository.countByCorporateIdAndBillNumber(corporate.id, billNumber) + 1
             bill.billNumber = billNumber
             bill.paymentStatus = BillStatus.OPEN.status
             bill.customerName = corporate.corporateName
@@ -93,17 +98,25 @@ class BillingService(
             bill.totalAmount = transaction.amount
             bill.status = 1
             val paymentDate = when {
-                corporate.paymentDays?.compareTo(0) ?: 0 > 0 -> LocalDate.now().withDayOfMonth(corporate.paymentDays
-                        ?: 15)
+                corporate.paymentDays?.compareTo(0) ?: 0 > 0 -> LocalDate.now().withDayOfMonth(
+                    corporate.paymentDays
+                        ?: 15
+                )
                 else -> corporate.accountLimits?.let { LocalDate.now().withDayOfMonth(it.billPaymentDay ?: 15) }
-                        ?: LocalDate.now().withDayOfMonth(15)
+                    ?: LocalDate.now().withDayOfMonth(15)
             }
             bill.paymentDate = Date.valueOf(paymentDate)
             val dt = Timestamp.from(Instant.now())
             bill.createOn = dt
-            bill.billNumberPrefix = "BN${commonDaoServices.convertDateToString(dt.toLocalDateTime(), "yyMM")}${this.billPaymentRepository.countByCorporateId(corporate.id) + 1}"
+            bill.billNumberPrefix = "BN${
+                commonDaoServices.convertDateToString(
+                    dt.toLocalDateTime(),
+                    "yyMM"
+                )
+            }${this.billPaymentRepository.countByCorporateId(corporate.id) + 1}"
             bill.billRefNumber = "${bill.billNumberPrefix}${bill.billNumber}"
-            bill.billDescription = "Bill payment for the month of " + commonDaoServices.convertDateToString(bill.paymentDate, "MMMM")
+            bill.billDescription =
+                "Bill payment for the month of " + commonDaoServices.convertDateToString(bill.paymentDate, "MMMM")
             val saved = this.billPaymentRepository.save(bill)
             transaction.billId = saved.id
             this.billTransactionRepo.save(transaction)
@@ -120,7 +133,12 @@ class BillingService(
      * @param demandNote demand node to add for billing
      * @param map application properties
      */
-    fun registerBillTransaction(demandNote: CdDemandNoteEntity, identifier: String?, cdType: String?, map: ServiceMapsEntity): BillTransactionsEntity? {
+    fun registerBillTransaction(
+        demandNote: CdDemandNoteEntity,
+        identifier: String?,
+        cdType: String?,
+        map: ServiceMapsEntity
+    ): BillTransactionsEntity? {
         // Find corporate by supplied indentifier(Courier Good) or importer Pin
         KotlinLogging.logger { }.info("Importer: ${demandNote.importerPin}, Courier: $identifier, CdType: $cdType")
         if (!CdTypeCodes.COURIER_GOODS.code.equals(cdType, true)) { // Only courier documents allowed
@@ -176,16 +194,23 @@ class BillingService(
      * @param transactionEntity demand node to add for billing
      * @param partner application properties
      */
-    fun registerPvocTransaction(transactionEntity: BillTransactionsEntity, partner: PvocPartnersEntity): BillTransactionsEntity? {
+    fun registerPvocTransaction(
+        transactionEntity: BillTransactionsEntity,
+        partner: PvocPartnersEntity
+    ): BillTransactionsEntity? {
         // Find corporate by supplied indentifier(Courier Good) or importer Pin
         val corporate = corporateCustomerRepository.findById(partner.billingId!!)
         val map = commonDaoServices.serviceMapDetails(properties.mapImportInspection)
         // Add transaction to billing if corporate billing exists
         if (corporate.isPresent) {
-            transactionEntity.fobAmount = this.diServiceDao.convertAmount(transactionEntity.fobAmount, transactionEntity.currency
-                    ?: "USD")
-            transactionEntity.amount = this.diServiceDao.convertAmount(transactionEntity.amount, transactionEntity.currency
-                    ?: "USD")
+            transactionEntity.fobAmount = this.diServiceDao.convertAmount(
+                transactionEntity.fobAmount, transactionEntity.currency
+                    ?: "USD"
+            )
+            transactionEntity.amount = this.diServiceDao.convertAmount(
+                transactionEntity.amount, transactionEntity.currency
+                    ?: "USD"
+            )
             transactionEntity.currency = "KES"
             transactionEntity.corporateId = corporate.get().id
             transactionEntity.transactionType = "PVOC_CHARGE"
@@ -245,6 +270,40 @@ class BillingService(
             KotlinLogging.logger { }.error("Failed to load bills", ex)
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Corporate bills not found"
+        }
+        return response
+    }
+
+    fun corporateBillByPaymentStatus(page: PageRequest, keyword: String?, paymentStatus: List<Int>): ApiResponseModel {
+        val response = ApiResponseModel()
+        when {
+            !keyword.isNullOrEmpty() -> {
+                val pg =
+                    billPaymentRepository.findAllByBillNumberContainsAndPaymentStatusIn(
+                        keyword ?: "",
+                        paymentStatus,
+                        page
+                    )
+                response.data = pg.toList()
+                response.pageNo = pg.number
+                response.totalPages = pg.totalPages
+                response.totalCount = pg.totalElements
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Search success"
+            }
+            paymentStatus.isNotEmpty() -> {
+                val pg2 = billPaymentRepository.findAllByPaymentStatusIn(paymentStatus, page)
+                response.data = pg2.toList()
+                response.pageNo = pg2.number
+                response.totalPages = pg2.totalPages
+                response.totalCount = pg2.totalElements
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Success"
+            }
+            else -> {
+                response.responseCode = ResponseCodes.NOT_FOUND
+                response.message = "Invalid payment status in requets"
+            }
         }
         return response
     }
@@ -327,7 +386,10 @@ class BillingService(
         val date = LocalDate.now()
         limits.forEach {
             val billPrefix = creteBillPrefix(it, false)
-            val bills = this.billPaymentRepository.findAllByBillNumberPrefixAndPaymentStatus(billPrefix, BillStatus.CLOSED.status)
+            val bills = this.billPaymentRepository.findAllByBillNumberPrefixAndPaymentStatus(
+                billPrefix,
+                BillStatus.CLOSED.status
+            )
             bills.forEach { bill ->
                 bill.billStatus = BillStatus.CLOSED.status
                 bill.billDate = commonDaoServices.getTimestamp()
@@ -367,7 +429,10 @@ class BillingService(
     @Scheduled(fixedDelay = 180_000)
     fun generateBills() {
         val today = Date.from(Instant.now())
-        val bills = this.billPaymentRepository.findAllByPaymentStatusAndNextNoticeDateGreaterThan(BillStatus.CLOSED.status, today)
+        val bills = this.billPaymentRepository.findAllByPaymentStatusAndNextNoticeDateGreaterThan(
+            BillStatus.CLOSED.status,
+            today
+        )
         bills.forEach { bill ->
             if (this.generateBatchInvoice(bill)) {
                 return
@@ -387,10 +452,10 @@ class BillingService(
         batch.description = bill.billNumber + "-" + bill.billNumberSequence
         batch.batchNumber = "KIMSAR${bill.billNumber}${
             generateRandomText(
-                    5,
-                    map.secureRandom,
-                    map.messageDigestAlgorithm,
-                    true
+                5,
+                map.secureRandom,
+                map.messageDigestAlgorithm,
+                true
             )
         }".toUpperCase()
         batch.status = map.inactiveStatus
@@ -429,8 +494,10 @@ class BillingService(
         if (optionAccoint.isPresent) {
             val corporate = optionAccoint.get()
             penaltyBill.corporateId = bill.corporateId
-            penaltyBill.billNumberSequence = this.billPaymentRepository.countByCorporateIdAndBillNumber(corporate.id, bill.billNumber
-                    ?: "") + 1
+            penaltyBill.billNumberSequence = this.billPaymentRepository.countByCorporateIdAndBillNumber(
+                corporate.id, bill.billNumber
+                    ?: ""
+            ) + 1
             penaltyBill.billNumber = bill.billNumber
             penaltyBill.paymentStatus = 0
             penaltyBill.status = 1
@@ -439,10 +506,12 @@ class BillingService(
             penaltyBill.billStatusDesc = BillStatus.CLOSED.name
 
             val paymentDate = when {
-                corporate.paymentDays?.compareTo(0) ?: 0 > 0 -> LocalDate.now().withDayOfMonth(corporate.paymentDays
-                        ?: 15)
+                corporate.paymentDays?.compareTo(0) ?: 0 > 0 -> LocalDate.now().withDayOfMonth(
+                    corporate.paymentDays
+                        ?: 15
+                )
                 else -> corporate.accountLimits?.let { LocalDate.now().withDayOfMonth(it.billPaymentDay ?: 15) }
-                        ?: LocalDate.now().withDayOfMonth(15)
+                    ?: LocalDate.now().withDayOfMonth(15)
             }
             penaltyBill.paymentDate = Date.valueOf(paymentDate)
             penaltyBill.createOn = Timestamp.from(Instant.now())
@@ -457,7 +526,8 @@ class BillingService(
                             else -> penalty
                         }
                         transactionEntity.corporateId = corporate.id
-                        transactionEntity.description = "Penalty for late payment on bill " + bill.billNumber + " " + bill.billNumberSequence
+                        transactionEntity.description =
+                            "Penalty for late payment on bill " + bill.billNumber + " " + bill.billNumberSequence
                         transactionEntity.invoiceNumber = bill.billNumber
                         transactionEntity.transactionType = "BILL_PENALTY"
                         transactionEntity.paidStatus = 0
@@ -470,7 +540,8 @@ class BillingService(
                         val saved = billTransactionRepo.save(transactionEntity)
                         penaltyBill.totalAmount = transactionEntity.amount
                         this.billTransactionRepo.save(transactionEntity)
-                        penaltyBill.billAmount = this.billPaymentRepository.sumTotalAmountByCorporateIdAndBillId(corporate.id, saved.id)
+                        penaltyBill.billAmount =
+                            this.billPaymentRepository.sumTotalAmountByCorporateIdAndBillId(corporate.id, saved.id)
                         this.billPaymentRepository.save(penaltyBill)
                     }
                 }
@@ -497,17 +568,24 @@ class BillingService(
             if (corporate.isPresent) {
                 val billPrefix = getInvoiceDate(dateStr)
                 KotlinLogging.logger { }.info("Bill Number: $billPrefix => ${corporate.get().id}")
-                val bills = billPaymentRepository.findAllByCorporateIdAndBillNumberAndBillStatusIn(corporate.get().id, billPrefix, listOf(BillStatus.CLOSED.status, BillStatus.PENDING_PAYMENT.status, BillStatus.PAID.status), pg)
+                val bills = billPaymentRepository.findAllByCorporateIdAndBillNumberAndBillStatusIn(
+                    corporate.get().id,
+                    billPrefix,
+                    listOf(BillStatus.CLOSED.status, BillStatus.PENDING_PAYMENT.status, BillStatus.PAID.status),
+                    pg
+                )
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "Success"
                 val bank1Details = invoiceDaoService.findPaymentMethodtype(properties.mapBankOneDetails)
                 val bank2Details = invoiceDaoService.findPaymentMethodtype(properties.mapBankTwoDetails)
                 val bank3Details = invoiceDaoService.findPaymentMethodtype(properties.mapBankThreeDetails)
                 val responseData = mutableMapOf<String, Any>()
-                responseData["invoices"] = PvocInvoiceData.fromList(bills.toList(),
-                        corporate.get().corporateIdentifier.orEmpty(),
-                        corporate.get().corporateCode.orEmpty(),
-                        amountInWordsService)
+                responseData["invoices"] = PvocInvoiceData.fromList(
+                    bills.toList(),
+                    corporate.get().corporateIdentifier.orEmpty(),
+                    corporate.get().corporateCode.orEmpty(),
+                    amountInWordsService
+                )
                 responseData["paymentMethods"] = PaymentModes.fromList(listOf(bank1Details, bank2Details, bank3Details))
                 response.data = responseData
                 response.pageNo = bills.number

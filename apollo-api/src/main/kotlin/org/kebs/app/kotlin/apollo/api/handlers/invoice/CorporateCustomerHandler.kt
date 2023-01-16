@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.payload.request.CorporateForm
 import org.kebs.app.kotlin.apollo.api.payload.request.CorporateStatusUpdateForm
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.service.BillStatus
 import org.kebs.app.kotlin.apollo.api.service.BillingService
 import org.kebs.app.kotlin.apollo.api.service.CorporateCustomerService
@@ -14,12 +15,14 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 
 @Component
 class CorporateCustomerHandler(
-        private val corporateService: CorporateCustomerService,
-        private val billService: BillingService,
-        private val daoValidatorService: DaoValidatorService
+    private val corporateService: CorporateCustomerService,
+    private val billService: BillingService,
+    private val commonDaoServices: CommonDaoServices,
+    private val daoValidatorService: DaoValidatorService
 ) {
     fun corporateDetails(req: ServerRequest): ServerResponse {
         val corporateId = req.pathVariable("corporateId").toLong()
@@ -60,6 +63,53 @@ class CorporateCustomerHandler(
         return ServerResponse.ok().body(billService.corporateBillByPaymentStatus(corporateId, statues))
     }
 
+    fun listCorporateBill(req: ServerRequest): ServerResponse {
+        val keywords = req.paramOrNull("keyword")
+        val billStatus = req.paramOrNull("billStatus")
+        val page = extractPage(req)
+        val statues = mutableListOf<Int>()
+        if (keywords.isNullOrEmpty()) {
+            when (billStatus) {
+                "paid" -> {
+                    statues.add(BillStatus.PAID.status)
+                }
+                "open" -> {
+                    statues.add(BillStatus.OPEN.status)
+                }
+                "pending" -> {
+                    statues.add(BillStatus.PENDING_PAYMENT.status)
+                    statues.add(BillStatus.CLOSED.status)
+                }
+                else -> {
+                    val res = ApiResponseModel()
+                    res.message = "Invalid bill status: $billStatus"
+                    res.responseCode = ResponseCodes.INVALID_CODE
+                    return ServerResponse.ok().body(res)
+                }
+            }
+        } else {
+            // Remove open bills on search result
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
+                    statues.add(BillStatus.PENDING_PAYMENT.status)
+                    statues.add(BillStatus.CLOSED.status)
+                    statues.add(BillStatus.OPEN.status)
+                    statues.add(BillStatus.PAID.status)
+
+                }
+                else -> {
+                    statues.add(BillStatus.PAID.status)
+                    statues.add(BillStatus.PENDING_PAYMENT.status)
+                    statues.add(BillStatus.CLOSED.status)
+                }
+            }
+
+        }
+        return ServerResponse.ok().body(billService.corporateBillByPaymentStatus(page, keywords, statues))
+    }
+
     fun listCorporateBillingLimits(req: ServerRequest): ServerResponse {
         return ServerResponse.ok().body(corporateService.listTransactionLimits())
     }
@@ -68,7 +118,7 @@ class CorporateCustomerHandler(
         val page = extractPage(req)
         val keywords = req.param("keywords")
         return ServerResponse.ok()
-                .body(corporateService.listCorporateCustomers(keywords.orElse(null), page))
+            .body(corporateService.listCorporateCustomers(keywords.orElse(null), page))
     }
 
     fun addCorporateCustomer(req: ServerRequest): ServerResponse {

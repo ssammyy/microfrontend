@@ -16,6 +16,7 @@ class InvoiceRouter {
             POST("/add", handler::addCorporateCustomer)
             GET("/details/{corporateId}", handler::corporateDetails)
             GET("/bills/{corporateId}", handler::currentCorporateBills)
+            GET("/list/bills", handler::listCorporateBill)
             GET("/bills/{corporateId}/status/{billStatus}", handler::corporateBillStatus)
             GET("/bill/{corporateId}/details/{billId}", handler::corporateBillDetails)
             PUT("/update/{corporateId}", handler::updateCorporateCustomer)
