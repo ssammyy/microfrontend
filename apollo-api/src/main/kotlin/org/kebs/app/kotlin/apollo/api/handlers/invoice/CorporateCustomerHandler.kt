@@ -89,22 +89,10 @@ class CorporateCustomerHandler(
             }
         } else {
             // Remove open bills on search result
-            val auth = commonDaoServices.loggedInUserAuthentication()
-            when {
-                auth.authorities.stream()
-                    .anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
-                    statues.add(BillStatus.PENDING_PAYMENT.status)
-                    statues.add(BillStatus.CLOSED.status)
-                    statues.add(BillStatus.OPEN.status)
-                    statues.add(BillStatus.PAID.status)
-
-                }
-                else -> {
-                    statues.add(BillStatus.PAID.status)
-                    statues.add(BillStatus.PENDING_PAYMENT.status)
-                    statues.add(BillStatus.CLOSED.status)
-                }
-            }
+            statues.add(BillStatus.PENDING_PAYMENT.status)
+            statues.add(BillStatus.CLOSED.status)
+            statues.add(BillStatus.OPEN.status)
+            statues.add(BillStatus.PAID.status)
 
         }
         return ServerResponse.ok().body(billService.corporateBillByPaymentStatus(page, keywords, statues))

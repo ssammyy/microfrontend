@@ -279,8 +279,10 @@ class BillingService(
         when {
             !keyword.isNullOrEmpty() -> {
                 val pg =
-                    billPaymentRepository.findAllByBillNumberContainsAndPaymentStatusIn(
+                    billPaymentRepository.findAllByBillNumberContainsAndPaymentStatusInOrCustomerNameContainsAndPaymentStatusIn(
                         keyword ?: "",
+                        paymentStatus,
+                        keyword,
                         paymentStatus,
                         page
                     )

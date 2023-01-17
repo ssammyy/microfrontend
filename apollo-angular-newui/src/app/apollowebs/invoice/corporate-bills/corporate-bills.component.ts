@@ -70,6 +70,10 @@ export class CorporateBillsComponent implements OnInit {
             paymentDate: {
                 title: 'Receipt Date',
                 type: 'string'
+            },
+            billStatusDesc: {
+                title: 'Status',
+                type: 'string'
             }
         }
     }
@@ -82,8 +86,7 @@ export class CorporateBillsComponent implements OnInit {
     totalCount: any
     previousStatus = 'paid'
     activeStatus = 'pending'
-    active = 1
-    allowedStatuses = ['paid', 'pending', 'open']
+    allowedStatuses = ['paid', 'pending', 'open', 'search']
     supervisorCharge = false;
 
     constructor(private activatedRoute: ActivatedRoute, private dialog: MatDialog, private store$: Store<any>, private router: Router, private  fiService: FinanceInvoiceService, private diService: DestinationInspectionService) {
@@ -93,9 +96,11 @@ export class CorporateBillsComponent implements OnInit {
         this.activatedRoute.paramMap.subscribe(
             res => {
                 if (res.has("tab")) {
+                    console.log(res.get("tab"))
                     this.previousStatus = this.activeStatus
                     if (this.allowedStatuses.includes(res.get("tab"))) {
                         this.activeStatus = res.get("tab")
+                        this.keywords = res.get('kw')
                     }
                 }
                 this.billList = new LocalDataSource()
@@ -133,7 +138,12 @@ export class CorporateBillsComponent implements OnInit {
         }
     }
 
+    searchRecord() {
+        this.toggleStatus('search', true)
+    }
+
     loadBills(search?: boolean) {
+
         this.fiService.loadAllBillsStatus(search ? this.keywords : null, this.activeStatus, this.page, this.pageSize)
             .subscribe(
                 res => {
@@ -148,18 +158,22 @@ export class CorporateBillsComponent implements OnInit {
             )
     }
 
-    toggleStatus(status: string): void {
-        console.log(status)
-        if (status !== this.activeStatus) {
+    toggleStatus(status: string, search?: boolean): void {
+        if (status !== this.activeStatus || search) {
             this.activeStatus = status;
+            let params = {
+                tab: status,
+            }
+            if (search) {
+                params['kw'] = this.keywords
+            }
+            //console.log(params)
             this.router.navigate([], {
-                queryParams: {
-                    tab: status
-                }
+                queryParams: params
             }).then((res) => {
                 console.log(res)
             })
-            this.loadBills()
+            this.loadBills(search)
         }
     }
 

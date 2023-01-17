@@ -158,7 +158,8 @@ export class ConsignmentDocumentListComponent implements OnInit {
 
     ngOnInit(): void {
         this.documentTypeUuid = null;
-        this.activeRoute.queryParamMap.subscribe(res => {
+        this.activeRoute.paramMap.subscribe(res => {
+            console.log(res)
             if (res.has("tab")) {
                 this.previousStatus = this.activeStatus
                 if (this.allowedStatuses.includes(res.get("tab"))) {

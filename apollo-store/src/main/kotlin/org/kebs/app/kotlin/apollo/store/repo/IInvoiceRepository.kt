@@ -99,9 +99,11 @@ interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
 
     fun findAllByCorporateIdAndPaymentStatusIn(corporateId: Long?, status: List<Int>): List<BillPayments>
     fun findAllByPaymentStatusIn(status: List<Int>, page: Pageable): Page<BillPayments>
-    fun findAllByBillNumberContainsAndPaymentStatusIn(
+    fun findAllByBillNumberContainsAndPaymentStatusInOrCustomerNameContainsAndPaymentStatusIn(
         billNumber: String,
         status: List<Int>,
+        customerName: String,
+        status2: List<Int>,
         page: Pageable
     ): Page<BillPayments>
 

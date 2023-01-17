@@ -14,10 +14,11 @@
                             <div class="search-bar">
                                 <p>Search bill by bill number</p>
                                 <div class="input-group form-inline">
+                                    <label for="transaction-no" [hidden]="true">Key words</label>
                                     <input id="transaction-no" type="text" class="search-form-input"
                                            [(ngModel)]="keywords" placeholder="Bill No">
                                     <button type="button" class="btn btn-primary btn-background"
-                                            (click)="loadBills(true)">
+                                            (click)="searchRecord()">
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </div>
@@ -34,6 +35,10 @@
                                 <button type="button" (click)="toggleStatus('open')"
                                         [className]="activeStatus == 'open' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
                                     OPEN BILLS
+                                </button>
+                                <button *ngIf="activeStatus=='search'" type="button" (click)="toggleStatus('search')"
+                                        [className]="activeStatus == 'search' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    Search Result
                                 </button>
                             </div>
                         </div>

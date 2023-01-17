@@ -93,17 +93,19 @@ class ConsignmentEnableUI {
                 ui.demandNoteRequired = "DES_INSP".equals(it.localCocType, true)
                 ui.foreignDocument = it.cocType?.equals("F", true) ?: false
             }
-            ui.complianceDisabled = (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled || ui.targetRejected || ui.foreignDocument
+            ui.complianceDisabled =
+                (cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus) || !ui.checklistFilled && cd.cdType?.inspectionStatus == map.activeStatus || ui.targetRejected || ui.foreignDocument
             ui.approveReject = !(ui.targetDisabled && ui.demandNoteDisabled && ui.complianceDisabled)
             ui.complianceRejected = !ui.complianceDisabled && !(cd.compliantStatus == map.activeStatus || cd.compliantStatus == map.initStatus)
             cd.cdType?.let {
-                ui.cocAvailable = it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus || cd.localCoi == map.activeStatus)
+                ui.cocAvailable =
+                    it.localCocStatus == map.activeStatus && (cd.localCocOrCorStatus == map.activeStatus || cd.localCoi == map.activeStatus)
                 ui.corAvailable = it.localCorStatus == map.activeStatus && cd.localCocOrCorStatus == map.activeStatus
                 ui.coiAvailable = it.localCocStatus == map.activeStatus && cd.localCoi == map.activeStatus
                 ui.corRequest = it.localCorStatus == map.activeStatus
 
                 ui.cocRequest = it.localCocStatus == map.activeStatus
-                ui.canInspect = it.inspectionStatus == map.activeStatus
+                ui.canInspect = it.inspectionStatus == map.activeStatus // Checklist is madatory
             }
             return ui
         }
