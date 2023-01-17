@@ -2,12 +2,14 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -140,7 +142,7 @@ class ComStandardService(
         return gson.fromJson(officersName, userListType)
     }
 
-    fun formJointCommittee(comStandardJointCommittee: ComStandardJointCommittee) : String
+    fun formJointCommittee(comStandardJointCommittee: ComStandardJointCommittee, detailBody: MutableList<NamesList>?) : String
     {
         var result= CompanyStandardRequest()
         comStandardJointCommittee.name=comStandardJointCommittee.name
@@ -148,9 +150,8 @@ class ComStandardService(
         comStandardJointCommittee.requestId=comStandardJointCommittee.requestId
         comStdJointCommitteeRepository.save(comStandardJointCommittee)
 
-        val jointLists= comStandardJointCommittee.name?.let { mapKEBSOfficersNameListDto(it) }
-        val jointList= comStandardJointCommittee.names?.let { mapKEBSOfficersNameListDto(it) }
 
+        val jointLists= comStandardJointCommittee.name?.let { mapKEBSOfficersNameListDto(it) }
         if (jointLists != null) {
             for (recipient in jointLists) {
                 val subject = "New Standard Request"
@@ -161,15 +162,18 @@ class ComStandardService(
 
         }
 
-        if (jointList != null) {
-            for (recipient in jointList) {
-                val subject = "New Standard Request"
-                val messageBody= "Hope You are Well,A new standard request has been received.You have been selected to be in the Joint Committee. "
+        detailBody?.forEach { d ->
+            val subject = "New Standard Request"
+            val recipient = d.email
+            val user = d.name
+                val messageBody= "Dear $user ,A new standard request has been received.You have been selected to be in the Joint Committee. "
+            if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
-
             }
-
         }
+
+        //val gson = Gson()
+       // KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(detailBody) }
 
         comStandardRequestRepository.findByIdOrNull(comStandardJointCommittee.requestId)?.let { companyStandardRequest ->
             with(companyStandardRequest) {
@@ -369,8 +373,8 @@ class ComStandardService(
         return productSubCategoryRepository.findAll()
     }
 
-    fun getUserList(): MutableList<UserDetailHolder> {
-        return userListRepository.getUserList()
+    fun getUsers(): MutableList<UserHolder> {
+        return userListRepository.getUsers()
     }
 
 

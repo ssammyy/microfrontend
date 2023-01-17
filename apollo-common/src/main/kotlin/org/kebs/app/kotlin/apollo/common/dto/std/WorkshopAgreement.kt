@@ -439,11 +439,15 @@ data class ISCompanyStdRequestDto(
 data class JointCommitteeDto(
     var requestId: Long?=null,
     var name: List<String>?=null,
-    var names: List<String>?=null
+    var names: MutableList<NamesList>?=null
 ){
 
 }
 
+class NamesList {
+    var email: String? = null
+    var name: String? = null
+}
 
 
 data class ComTcJustificationDto(

@@ -585,6 +585,10 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
             "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SL_PL_OFFICER') ", nativeQuery = true)
     fun getPlList(): List<UserDetailHolder>
 
+    @Query(value = "SELECT (FIRST_NAME || ' '|| LAST_NAME) AS NAME,ID AS ID,EMAIL as EMAIL " +
+            "FROM DAT_KEBS_USERS ", nativeQuery = true)
+    fun getUsers(): MutableList<UserHolder>
+
     @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID,u.EMAIL as EMAIL " +
             "FROM DAT_KEBS_USERS u ", nativeQuery = true)
     fun getUserList(): MutableList<UserDetailHolder>

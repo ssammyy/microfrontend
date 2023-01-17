@@ -23,7 +23,7 @@ import {
   NWAWDDecision,
   NWAWorkShopDraft,
   Product,
-  StakeholderProposalComments,
+  StakeholderProposalComments, UserEntity,
   UsersEntity
 } from './std.model';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
@@ -57,10 +57,10 @@ export class StdComStandardService {
     const params = new HttpParams();
     return this.http.get<Department[]>(url, {params}).pipe();
   }
-  public getUserList(): Observable<UsersEntity[]> {
+  public getUserList(): Observable<UserEntity[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_USERS);
     const params = new HttpParams();
-    return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    return this.http.get<UserEntity[]>(url, {params}).pipe();
   }
 
   public getDepartment(): any {

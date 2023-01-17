@@ -6,7 +6,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
@@ -146,10 +145,13 @@ class ComStandardController (val comStandardService: ComStandardService,
     fun formJointCommittee(@RequestBody jointCommitteeDto: JointCommitteeDto): ServerResponse{
         val comStandardJointCommittee=ComStandardJointCommittee().apply {
             name= jointCommitteeDto.name?.let { commonDaoServices.convertClassToJson(it) }
-            names= jointCommitteeDto.names?.let { commonDaoServices.convertClassToJson(it) }
             requestId=jointCommitteeDto.requestId
         }
-        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.formJointCommittee(comStandardJointCommittee))
+        val detailBody = jointCommitteeDto.names
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(detailBody) }
+
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.formJointCommittee(comStandardJointCommittee,detailBody))
     }
 
     //********************************************************** process Assign Standard Request **********************************************************
@@ -860,10 +862,10 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getRQNumber()
     }
 
-    @GetMapping("/company_standard/getUserList")
+    @GetMapping("/company_standard/getUsers")
     @ResponseBody
-    fun getUserList(): MutableList<UserDetailHolder> {
-        return comStandardService.getUserList()
+    fun getUsers(): MutableList<UserHolder> {
+        return comStandardService.getUsers()
     }
 
 }

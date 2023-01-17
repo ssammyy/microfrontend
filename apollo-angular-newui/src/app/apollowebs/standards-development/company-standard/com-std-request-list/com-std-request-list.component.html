@@ -77,9 +77,9 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                         <div class="form-body">
                             <div class="row col-12">
                                 <div class="form-group col-12">
-                                    <label>Assign To</label>
-                                    <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo" >
-                                        <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                    <label>Assign To one</label>
+                                    <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo"  >
+                                        <ng-option *ngFor="let user of users" [value]="user.id" >{{user.name}} </ng-option>
                                     </ng-select>
 
                                 </div>
@@ -110,25 +110,25 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                     <div class="form-body">
                         <div class="form-group col-12">
                             <label><b>Select Members to add to Joint Committee</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<!--                            <ng-multiselect-dropdown-->
-<!--                                    [placeholder]="'Select Joint Committee Members'"-->
-<!--                                    [settings]="dropdownSettings"-->
-<!--                                    [data]="dropdownList"-->
-<!--                                    (onSelect)="onItemSelect($event)"-->
-<!--                                    (onSelectAll)="onSelectAll($event)"-->
-<!--                                    formControlName="names"-->
-<!--                                    name="names">-->
-<!--                            </ng-multiselect-dropdown>-->
-                            <mat-form-field>
-                                <mat-select [formControl]="websiteCtrl" formControlName="names" name="names" placeholder="Members"  multiple >
-                                    <mat-option>
-                                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"></ngx-mat-select-search>
-                                    </mat-option>
-                                    <mat-option *ngFor="let user of users " [value]="user.email">
-                                        {{user.firstName}} {{user.lastName}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
+                            <ng-multiselect-dropdown
+                                    [placeholder]="'Select Joint Committee Members'"
+                                    [settings]="dropdownSettings"
+                                    [data]="dropdownList"
+                                    (onSelect)="onItemSelect($event)"
+                                    (onSelectAll)="onSelectAll($event)"
+                                    formControlName="names"
+                                    name="names">
+                            </ng-multiselect-dropdown>
+<!--                            <mat-form-field>-->
+<!--                                <mat-select [formControl]="websiteCtrl" formControlName="names" name="names" placeholder="Members"  multiple >-->
+<!--                                    <mat-option>-->
+<!--                                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"></ngx-mat-select-search>-->
+<!--                                    </mat-option>-->
+<!--                                    <mat-option *ngFor="let user of users " [value]="user.email">-->
+<!--                                        {{user.name}} -->
+<!--                                    </mat-option>-->
+<!--                                </mat-select>-->
+<!--                            </mat-form-field>-->
                         </div>
                         <div class="form-group col-12">
                             <label><b>Enter Emails of Committee members(Comma Separated)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>

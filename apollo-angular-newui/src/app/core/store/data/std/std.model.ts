@@ -31,6 +31,14 @@ export interface Department {
 
 }
 
+export interface UserEntity {
+    id: number;
+    name: string;
+    email: string;
+
+
+}
+
 export interface UsersEntity {
     id: number;
     lastName: string;

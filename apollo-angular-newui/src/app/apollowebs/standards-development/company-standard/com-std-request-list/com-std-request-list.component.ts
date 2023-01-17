@@ -11,7 +11,13 @@ import {
 import {NgxSpinnerService} from "ngx-spinner";
 import {ReplaySubject, Subject} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ComHodTasks, ComStdAction, ComStdRequest, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {
+    ComHodTasks,
+    ComStdAction,
+    ComStdRequest,
+    UserEntity,
+    UsersEntity
+} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {DataTableDirective} from "angular-datatables";
@@ -35,19 +41,20 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     dtTrigger: Subject<any> = new Subject<any>();
     public websiteCtrl: FormControl = new FormControl();
     public websiteFilterCtrl: FormControl = new FormControl();
-    public filteredWebsites: ReplaySubject<UsersEntity[]> = new ReplaySubject<UsersEntity[]>(1);
-    @ViewChild('singleSelect') singleSelect: MatSelect;
+    public filteredWebsites: ReplaySubject<UserEntity[]> = new ReplaySubject<UserEntity[]>(1);
+    //@ViewChild('singleSelect') singleSelect: MatSelect;
+    @ViewChild('singleSelect', { static: false }) singleSelect: MatSelect;
     /** Subject that emits when the component has been destroyed. */
     protected _onDestroy = new Subject();
-  public users !: UsersEntity[] ;
+  public users !: UserEntity[] ;
     selectedUser: number;
   tasks: ComStdRequest[] = [];
   public actionRequest: ComStdRequest | undefined;
     public committeeFormGroup!: FormGroup;
     public uploadDraftFormGroup!: FormGroup;
   blob: Blob;
-   // public dropdownSettings: IDropdownSettings = {};
-    //dropdownList: any[] = [];
+   public dropdownSettings: IDropdownSettings = {};
+    dropdownList: any[] = [];
 
   constructor(
       private stdComStandardService:StdComStandardService,
@@ -60,6 +67,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
 
 
   ngOnInit(): void {
+
     this.getCompanyStandardRequest();
     this.getUserList();
       this.committeeFormGroup = this.formBuilder.group({
@@ -84,71 +92,71 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
 
       });
 
-      // this.dropdownSettings = {
-      //     singleSelection: false,
-      //     idField: 'email',
-      //     textField: 'firstName',
-      //     selectAllText: 'Select All',
-      //     unSelectAllText: 'UnSelect All',
-      //     itemsShowLimit: 3,
-      //     allowSearchFilter: true
-      // };
+      this.dropdownSettings = {
+          singleSelection: false,
+          idField: 'email',
+          textField: 'name',
+          selectAllText: 'Select All',
+          unSelectAllText: 'UnSelect All',
+          itemsShowLimit: 1,
+          allowSearchFilter: true
+      };
 
-      this.websiteCtrl.setValue(this.users[1]);
-      this.filteredWebsites.next(this.users.slice());
-
-      this.websiteFilterCtrl.valueChanges
-          .pipe(takeUntil(this._onDestroy))
-          .subscribe(() => {
-              this.filterBanks();
-          });
+      // this.websiteCtrl.setValue(this.users[1]);
+      // this.filteredWebsites.next(this.users.slice());
+      //
+      // this.websiteFilterCtrl.valueChanges
+      //     .pipe(takeUntil(this._onDestroy))
+      //     .subscribe(() => {
+      //         this.filterBanks();
+      //     });
 
 
   }
 
-    // onItemSelect(item: ListItem) {
-    //     console.log(item);
-    // }
-    //
-    // onSelectAll(items: any) {
-    //     console.log(items);
-    // }
-
-    ngAfterViewInit() {
-        this.setInitialValue();
+    onItemSelect(item: ListItem) {
+        console.log(item);
     }
+
+    onSelectAll(items: any) {
+        console.log(items);
+    }
+
+    // ngAfterViewInit() {
+    //     this.setInitialValue();
+    // }
 
     ngOnDestroy(): void {
         this.dtTrigger.unsubscribe();
-        this._onDestroy.next();
-        this._onDestroy.complete();
+        //this._onDestroy.next();
+        //this._onDestroy.complete();
     }
 
-    protected setInitialValue() {
-        this.filteredWebsites
-            .pipe(take(1), takeUntil(this._onDestroy))
-            .subscribe(() => {
-                this.singleSelect.compareWith = (a: UsersEntity, b: UsersEntity) => a && b && a.id === b.id;
-            });
-    }
+    // protected setInitialValue() {
+    //     this.filteredWebsites
+    //         .pipe(take(1), takeUntil(this._onDestroy))
+    //         .subscribe(() => {
+    //             this.singleSelect.compareWith = (a: UserEntity, b: UserEntity) => a && b && a.id === b.id;
+    //         });
+    // }
 
-    protected filterBanks() {
-        if (!this.users) {
-            return;
-        }
-
-        let search = this.websiteFilterCtrl.value;
-        if (!search) {
-            this.filteredWebsites.next(this.users.slice());
-            return;
-        } else {
-            search = search.toLowerCase();
-        }
-
-        this.filteredWebsites.next(
-            this.users.filter(bank => bank.firstName.toLowerCase().indexOf(search) > -1)
-        );
-    }
+    // protected filterBanks() {
+    //     if (!this.users) {
+    //         return;
+    //     }
+    //
+    //     let search = this.websiteFilterCtrl.value;
+    //     if (!search) {
+    //         this.filteredWebsites.next(this.users.slice());
+    //         return;
+    //     } else {
+    //         search = search.toLowerCase();
+    //     }
+    //
+    //     this.filteredWebsites.next(
+    //         this.users.filter(bank => bank.name.toLowerCase().indexOf(search) > -1)
+    //     );
+    // }
 
     showToasterSuccess(title:string,message:string){
         this.notifyService.showSuccess(message, title)
@@ -256,11 +264,11 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
   public getUserList(): void {
     this.SpinnerService.show();
     this.stdComStandardService.getUserList().subscribe(
-        (response: UsersEntity[]) => {
+        (response: UserEntity[]) => {
           this.SpinnerService.hide();
           this.users = response;
-          //console.log(this.users)
-          //this.dropdownList = response;
+          console.log(this.users)
+          this.dropdownList = response;
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -281,6 +289,10 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
           link.download = fileName;
           link.click();
         },
+        (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            alert(error.message);
+        }
     );
   }
     rerender(): void {

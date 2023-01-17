@@ -74,6 +74,12 @@ interface UserDetailHolder {
     fun getEmail(): String?
 }
 
+interface UserHolder {
+    fun getId(): Long?
+    fun getName(): String?
+    fun getEmail(): String?
+}
+
 interface BusinessLineHolder{
    fun getId(): Long?
    fun getName(): String?
