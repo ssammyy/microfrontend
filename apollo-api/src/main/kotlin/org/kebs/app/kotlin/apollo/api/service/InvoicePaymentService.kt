@@ -5,6 +5,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandGroupItem
@@ -55,6 +56,7 @@ class InvoicePaymentService(
     private val reportsDaoService: ReportsDaoService,
     private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
     private val service: DaoService,
+    private val notifications: Notifications,
     private val diBpmn: DestinationInspectionBpmn,
     private val auctionRequestsRepository: IAuctionRequestsRepository,
     private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
@@ -103,6 +105,22 @@ class InvoicePaymentService(
         return reportsDaoService.addBankAndMPESADetails(map, demandNote.postingReference ?: "UNKNOWN")
     }
 
+    fun generateDemandNoteFile(demandNote: CdDemandNoteEntity): String {
+        val demandNoteItemList = daoServices.findDemandNoteItemDetails(demandNote.id ?: 0)
+        val map = invoidDetailsMap(demandNote)
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+        val extractReport = reportsDaoService.extractReport(
+            map,
+            "classpath:reports/KebsDemandNoteItems.jrxml",
+            demandNoteItemList
+        )
+        val demandNoteNumber = map["demandNoteNo"] as String
+        // Response with file
+        val filePath = "/tmp/DEMAND-NOTE-${demandNote.ucrNumber}-${demandNoteNumber}.pdf"
+        reportsDaoService.createFileFromBytes(extractReport, filePath)
+        return filePath
+    }
+
     fun invoiceDetails(demandNoteId: Long): HashMap<String, Any> {
         var map = hashMapOf<String, Any>()
         daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
@@ -148,7 +166,7 @@ class InvoicePaymentService(
 
     fun approveDemandNoteGeneration(cdUuid: String, demandNoteId: Long, supervisor: String, remarks: String): Boolean {
         try {
-            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
             if (demandNote.isPresent) {
                 val demand = demandNote.get()
@@ -172,9 +190,25 @@ class InvoicePaymentService(
                 )
             }
 
+
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("DEMAND NOTE ERROR", ex)
         }
+        return true
+    }
+
+    fun sendDemandNoteEmail(recipientEmail: String, filePath: String, demandNote: String): Boolean {
+        val subject = "Demand Note: $demandNote"
+        val messageBody =
+            "Dear Customer,  \n" +
+                    "\n " +
+                    "A demand note related to your consignment has been generated on KIMS. Kindly make payment using the reference number and payment methods indicated in the attachment." +
+                    "\nWarm regard,"
+        var emailAddress = recipientEmail
+        if (!applicationMapProperties.defaultTestEmailAddres.isNullOrEmpty()) {
+            emailAddress = applicationMapProperties.defaultTestEmailAddres.orEmpty()
+        }
+        notifications.sendEmail(emailAddress, subject, messageBody, filePath)
         return true
     }
 
@@ -203,6 +237,17 @@ class InvoicePaymentService(
                         consignmentDocument,
                         ConsignmentDocumentStatus.PAYMENT_APPROVED
                     )
+                    // Send demand note to vendor, only non-billed demand notes should be sent
+                    try {
+                        consignmentDocument.cdImporter?.let {
+                            daoServices.findCDImporterDetails(it)
+                        }?.let { importer ->
+                            val filePath = generateDemandNoteFile(demand)
+                            this.sendDemandNoteEmail(importer.email ?: "", filePath, demand.demandNoteNumber ?: "")
+                        }
+                    } catch (ex: Exception) {
+                        KotlinLogging.logger { }.error("Failed to send demand note to importer", ex)
+                    }
                 }
                 // Update Demand note status
                 this.iDemandNoteRepo.save(demand)

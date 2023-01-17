@@ -359,7 +359,11 @@ interface BranchDetailsRepository : HazelcastRepository<BranchDetailsEntity, Lon
 @Repository
 interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, Long> {
     fun findByStatus(status: Int): List<CompanyProfileEntity>?
+
+    fun findAllByStatus(status: Int):List<CompanyProfileEntity>
     fun findByKraPin(kraPin: String): CompanyProfileEntity?
+
+    fun findByName(companyName:String):CompanyProfileEntity
     fun findByUserId(userId: Long): CompanyProfileEntity?
     fun findByRegistrationNumber(registrationNumber: String): CompanyProfileEntity?
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?

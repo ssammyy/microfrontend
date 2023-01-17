@@ -1272,6 +1272,13 @@ class CommonDaoServices(
         return companyProfileRepo.findByIdOrNull(id)
     }
 
+    fun findCompanyProfileByName(companyName: String): CompanyProfileEntity? {
+        return companyProfileRepo.findByName(companyName)
+//                ?.let { userCompanyDetails ->
+//                     userCompanyDetails
+//                }
+    }
+
 
     fun findAllUsers(): List<UsersEntity> {
         usersRepo.findAllByOrderByIdAsc()

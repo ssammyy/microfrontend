@@ -14,7 +14,7 @@ class TechnicalCommittee {
 
     @Column(name = "TECHNICAL_COMMITTEE_NO")
     @Basic
-    var technical_committee_no: String?=null
+    var technicalCommitteeNo: String?=null
 
     @Column(name = "TC_TYPE")
     @Basic
@@ -69,7 +69,7 @@ class TechnicalCommittee {
         other as TechnicalCommittee
 
         if (id != other.id) return false
-        if (technical_committee_no != other.technical_committee_no) return false
+        if (technicalCommitteeNo != other.technicalCommitteeNo) return false
         if (type != other.type) return false
         if (tc != other.tc) return false
         if (sc != other.sc) return false
@@ -87,7 +87,7 @@ class TechnicalCommittee {
 
     override fun hashCode(): Int {
         var result = id.hashCode()
-        result = 31 * result + (technical_committee_no?.hashCode() ?: 0)
+        result = 31 * result + (technicalCommitteeNo?.hashCode() ?: 0)
         result = 31 * result + (type?.hashCode() ?: 0)
         result = 31 * result + (tc ?: 0)
         result = 31 * result + (sc ?: 0)
@@ -102,7 +102,7 @@ class TechnicalCommittee {
     }
 
     override fun toString(): String {
-        return "TechnicalCommittee(id=$id, technical_committee_no=$technical_committee_no, type=$type, tc=$tc, sc=$sc, wg=$wg, parentCommitte=$parentCommitte, title=$title, status=$status," +
+        return "TechnicalCommittee(id=$id, technical_committee_no=$technicalCommitteeNo, type=$type, tc=$tc, sc=$sc, wg=$wg, parentCommitte=$parentCommitte, title=$title, status=$status," +
                 " comment=$comment,createdBy=$createdBy,createdOn=$createdOn)"
     }
 

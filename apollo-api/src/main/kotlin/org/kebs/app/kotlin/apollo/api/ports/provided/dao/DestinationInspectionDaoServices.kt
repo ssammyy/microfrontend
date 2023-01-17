@@ -3596,6 +3596,7 @@ class DestinationInspectionDaoServices(
         }
     }
 
+
     fun sendLocalCocReportEmail(recipientEmail: String, filePath: String): Boolean {
         val subject = "Local COC Certificate"
         val messageBody =
