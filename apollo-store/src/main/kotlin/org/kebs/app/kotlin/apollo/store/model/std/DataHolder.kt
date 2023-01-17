@@ -70,6 +70,7 @@ interface UserRoleHolder {
 interface UserDetailHolder {
     fun getId(): Long?
     fun getFirstName(): String?
+    fun getName(): String?
     fun getLastName(): String?
     fun getEmail(): String?
 }

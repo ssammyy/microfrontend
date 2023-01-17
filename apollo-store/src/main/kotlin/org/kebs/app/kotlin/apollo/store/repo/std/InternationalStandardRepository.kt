@@ -652,11 +652,13 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     fun getHeadOfSic(): List<UserDetailHolder>
 
     @Query(
-        "SELECT  u.FIRST_NAME as firstName,u.LAST_NAME as lastName,u.ID as id,u.EMAIL as email from APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID and r.ROLE_ID = 2522",
+        "SELECT  (FIRST_NAME || ' '|| LAST_NAME) AS NAME,u.ID as id,u.EMAIL as email from APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID and r.ROLE_ID = 2522",
         nativeQuery = true
     )
     // Check for users who have sd access: Role Id:2522
     fun findStandardStakeholders(): List<UserDetailHolder>?
+
+
 
 
 

@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ISJustificationDecision
 import org.kebs.app.kotlin.apollo.common.dto.std.InternationalStandardTasks
+import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -88,7 +89,7 @@ class IntStandardService(
 
 
     //prepare Adoption Proposal
-    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal) : ISAdoptionProposal
+    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal, stakeholders: MutableList<NamesList>?) : ISAdoptionProposal
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
@@ -107,22 +108,23 @@ class IntStandardService(
 
         val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
 
-        iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
+        //iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
         iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
 
-        val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
+        //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-
         val targetUrl = "https://kimsint.kebs.org/";
-        if (listOne != null) {
-            for (recipient in listOne) {
-                val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
-                val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
+        stakeholders?.forEach { s ->
+            val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
+            val recipient = s.email
+            val user = s.name
+            val messageBody= "Dear $user,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. $targetUrl "
+            if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
-
             }
         }
+
         if (listTwo != null) {
             for (recipient in listTwo) {
                 val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber

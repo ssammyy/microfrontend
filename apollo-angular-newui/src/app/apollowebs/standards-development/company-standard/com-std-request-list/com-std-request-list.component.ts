@@ -39,11 +39,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     dtElements: QueryList<DataTableDirective>;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
-    public websiteCtrl: FormControl = new FormControl();
-    public websiteFilterCtrl: FormControl = new FormControl();
-    public filteredWebsites: ReplaySubject<UserEntity[]> = new ReplaySubject<UserEntity[]>(1);
-    //@ViewChild('singleSelect') singleSelect: MatSelect;
-    @ViewChild('singleSelect', { static: false }) singleSelect: MatSelect;
+
     /** Subject that emits when the component has been destroyed. */
     protected _onDestroy = new Subject();
   public users !: UserEntity[] ;

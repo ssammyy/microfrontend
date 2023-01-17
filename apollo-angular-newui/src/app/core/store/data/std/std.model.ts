@@ -42,6 +42,7 @@ export interface UserEntity {
 export interface UsersEntity {
     id: number;
     lastName: string;
+    name: string;
     firstName: string;
     userTypes: number;
     email: string;

@@ -320,12 +320,14 @@ data class ISAdoptionProposalDto(
     var nameOfOrganization: String?=null,
     var dateOfApplication: String?=null,
     var uploadedBy: String?=null,
-    var stakeholdersList: List<String>?=null,
+    var stakeholdersList: MutableList<NamesList>?=null,
     var addStakeholdersList: List<String>?=null,
 
 ){
 
 }
+
+
 
 data class ISAdoptionProposalComments(
     var user_id:String? =null,
