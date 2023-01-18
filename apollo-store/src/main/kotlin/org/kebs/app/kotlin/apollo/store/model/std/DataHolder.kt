@@ -637,15 +637,17 @@ interface ISAdoptionProposalJustification{
 
 interface COMUploadedDraft{
     fun getId(): Long?
+    fun getRequestId(): Long?
     fun getTitle(): String?
     fun getScope(): String?
     fun getNormativeReference(): String?
     fun getSymbolsAbbreviatedTerms(): String?
     fun getClause(): String?
     fun getSpecial(): String?
+    fun getStatus(): Long?
     fun getComStdNumber(): String?
     fun getUploadDate(): String?
-    fun getRequestNumber(): Long?
+    fun getRequestNumber(): String?
     fun getProposalId(): Long?
     fun getDocumentType():String?
     fun getPreparedBy():String?

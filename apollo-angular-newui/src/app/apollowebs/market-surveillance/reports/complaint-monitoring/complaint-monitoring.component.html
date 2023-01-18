@@ -1,4 +1,3 @@
-
 <div class="main-content">
     <div class="loading-spinner ">
         <ngx-spinner
@@ -17,366 +16,183 @@
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title">Consumer Complaints Reports</h4>
+                        <h4 class="card-title">SEIZED GOODS SUMMARY REPORT
+                        </h4>
                     </div>
                     <div class="card-body">
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
                                 <h6 class="card-title">Search Details</h6>
                                 <br>
-                                <form>
-                                    <!--                                    <div class="form-body">-->
-                                    <!--                                        <div class="row">-->
-                                    <!--                                            <div class="col-4 col-md-3 ">-->
-                                    <!--                                                <div class="form-group">-->
-                                    <!--                                                    <label><b>Officer Name</b></label>-->
-                                    <!--                                                    <select id="assignedIo" class="form-control" formControlName="assignedIo" type="number"-->
-                                    <!--                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignedIo">-->
-                                    <!--                                                        <option  selected>Please select</option>-->
-                                    <!--                                                        <option >Officers list</option>-->
-                                    <!--                                                        &lt;!&ndash;                                                        <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id"&ndash;&gt;-->
-                                    <!--                                                        &lt;!&ndash;                                                        >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>&ndash;&gt;-->
-                                    <!--                                                    </select>-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                            <div class="col-4 col-md-3 ">-->
-                                    <!--                                                <div class="form-group">-->
-                                    <!--                                                    <label><b>Region</b></label>-->
-                                    <!--                                                    <select id="region" class="form-control" formControlName="region" type="number"-->
-                                    <!--                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">-->
-                                    <!--                                                        <option  selected>Please select</option>-->
-                                    <!--                                                        <option >List of regions</option>-->
-                                    <!--                                                        &lt;!&ndash;                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"&ndash;&gt;-->
-                                    <!--                                                        &lt;!&ndash;                                                        >{{app.region}}</option>&ndash;&gt;-->
-                                    <!--                                                    </select>-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                            <div class="col-4 col-md-3 ">-->
-                                    <!--                                                <div class="form-group">-->
-                                    <!--                                                    <label><b>Date of Activity</b></label>-->
-                                    <!--                                                    <input type="date" placeholder="Start date">-->
+                                <form  [formGroup]="searchFormGroup">
 
-                                    <!--                                                    &lt;!&ndash;                                                    <select id="date" class="form-control" formControlName="region" type="number"&ndash;&gt;-->
-                                    <!--                                                    &lt;!&ndash;                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="region">&ndash;&gt;-->
-                                    <!--                                                    &lt;!&ndash;                                                        &ndash;&gt;-->
-                                    <!--                                                    &lt;!&ndash;                                                        &lt;!&ndash;                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"&ndash;&gt;&ndash;&gt;-->
-                                    <!--                                                    &lt;!&ndash;                                                        &lt;!&ndash;                                                        >{{app.region}}</option>&ndash;&gt;&ndash;&gt;-->
-                                    <!--                                                    &lt;!&ndash;                                                    </select>&ndash;&gt;-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
+                                    <div class="form-body">
 
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="row">-->
-                                    <!--                                            <div class="col-4 col-md-3">-->
-                                    <!--                                                <div class="form-group">-->
-                                    <!--                                                    <label><b>Product</b></label>-->
-                                    <!--                                                    <select id="product" class="form-control" formControlName="product" type="number"-->
-                                    <!--                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="product">-->
-                                    <!--                                                        <option selected>Please select</option>-->
-                                    <!--                                                        <option>Product list</option>-->
-                                    <!--                                                        &lt;!&ndash;                                                        <option *ngFor = "let app of msRegions| filterPipe: {status: true}" [ngValue]="app.id"&ndash;&gt;-->
-                                    <!--                                                        &lt;!&ndash;                                                        >{{app.region}}</option>&ndash;&gt;-->
-                                    <!--                                                    </select>-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                            <div class="col-4 col-md-3">-->
-                                    <!--                                                <div class="form-group">-->
-                                    <!--                                                    <label><b>Department</b></label>-->
-                                    <!--                                                    &lt;!&ndash;                                                    <select (change)="onChangeSelectedDepartment()"&ndash;&gt;-->
-                                    <!--                                                    &lt;!&ndash;                                         remove this select and use the above one    &ndash;&gt;-->
-                                    <!--                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"-->
-                                    <!--                                                            class="form-control" formControlName="complaintDepartment" name="complaintDepartment">-->
-                                    <!--                                                        <option selected>Please select</option>-->
-                                    <!--                                                        <option>Departments List</option>-->
-                                    <!--                                                        &lt;!&ndash;                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>&ndash;&gt;-->
-                                    <!--                                                    </select>-->
-                                    <!--                                                </div>-->
-
-                                    <!--                                            </div>-->
-                                    <!--                                            <div class="col-4 col-md-3">-->
-                                    <!--                                                <div class="form-group">-->
-                                    <!--                                                    <label><b>Division</b> </label>-->
-                                    <!--                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"-->
-                                    <!--                                                            class="form-control" formControlName="division" name="division">-->
-                                    <!--                                                        <option  selected>Please select</option>-->
-                                    <!--                                                        <option >Division list</option>-->
-                                    <!--                                                        &lt;!&ndash;                                                        <option *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}" [value]="app.id">{{app.division}}</option>&ndash;&gt;-->
-                                    <!--                                                    </select>-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div  >-->
+                                        <div class="row">
+<!--                                            <div class="col-6 col-md-3">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Officer Name</b></label>-->
+<!--                                                    <select id="assignIO" class="form-control" formControlName="assignIO" type="number"-->
+<!--                                                            aria-describedby="inputGroup-sizing-lg" aria-label="Small" name="assignIO">-->
+<!--                                                        <option  selected>Please select</option>-->
+<!--                                                        <option *ngFor ="let integCustomer of msOfficerLists| filterPipe: {status: true}" [ngValue]="integCustomer.id"-->
+<!--                                                        >{{integCustomer.firstName}} {{integCustomer.lastName}}</option>-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-6 col-md-3">-->
+<!--                                                <div class="form-group">-->
+<!--                                                    <label><b>Department</b> </label>-->
+<!--                                                    <select aria-describedby="inputGroup-sizing-lg" aria-label="Small" type="number"-->
+<!--                                                            class="form-control" formControlName="sectorID" name="sectorID">-->
+<!--                                                        <option  selected>Please select</option>-->
+<!--                                                        <option *ngFor="let app of msDepartments | filterPipe: {status: true}" [value]="app.id">{{app.department}}</option>-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Start Date</b></label>
+                                                    <input class="form-control two-column-input" formControlName="startDate"
+                                                           name="startDate"  type="date">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>End Date</b></label>
+                                                    <input class="form-control two-column-input" formControlName="endDate"
+                                                           name="endDate"  type="date">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Sector</b></label>
+                                                    <input class="form-control two-column-input" formControlName="sector"
+                                                           name="sector"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Brand</b></label>
+                                                    <input class="form-control two-column-input" formControlName="brand"
+                                                           name="brand"  type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Market Centre</b></label>
+                                                    <input class="form-control two-column-input" formControlName="marketCentre"
+                                                           name="marketCentre"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Name Out let</b></label>
+                                                    <input class="form-control two-column-input" formControlName="nameOutlet"
+                                                           name="nameOutlet"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Products Due For Destruction</b></label>
+                                                    <input class="form-control two-column-input" formControlName="productsDueForDestruction"
+                                                           name="productsDueForDestruction"  type="text">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Products Due For Release</b></label>
+                                                    <input class="form-control two-column-input" formControlName="productsDueForRelease"
+                                                           name="productsDueForRelease"  type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
+                                        <!--                                        <div class="float-right" role="group" aria-label="Applications Status">-->
                                         <div class="col-6 col-md-3">
-                                            <button class="btn btn-success" type="button">APPLY FILTER</button>
-                                            <!--                                            <button [disabled]="!searchFormGroup.valid"  (click)="onSubmitSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>-->
+                                            <button [disabled]="!searchFormGroup.valid"  (click)="onSubmitSearch()" class="btn btn-success" type="button" >APPLY FILTER</button>
                                         </div>
-                                        <!--                                        <div *ngIf="submitted" class="col-6 col-md-3">-->
-                                        <!--                                            <button  (click)="clearSearch()" class="btn btn-default" type="button" >CLEAR FILTER</button>-->
+                                        <div *ngIf="submitted" class="col-6 col-md-3">
+                                            <button  (click)="clearSearch()" class="btn btn-default" type="button" >CLEAR FILTER</button>
+                                        </div>
                                         <!--                                        </div>-->
-                                        <div class="col-6 col-md-3">
-                                            <button class="btn btn-success" type="button">CLEAR FILTER</button>
-                                        </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-
                         <div class="toolbar">
-<!--                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">-->
-<!--                                <button type="button" (click)="toggle('consumer-complaints-report')" [className]="activeStatus == 'consumer-complaints-report' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">CONSUMER COMPLAINTS REPORT</button>-->
-<!--                                <button type="button" (click)="toggle('complaint-analysis')" [className]="activeStatus == 'complaint-analysis' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">COMPLAINT ANALYSIS</button>-->
-<!--                                <button type="button" (click)="toggle('summary')" [className]="activeStatus == 'summary' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">SUMMARY</button>-->
-
-<!--                                &lt;!&ndash;                                <button type="button" (click)="toggleStatus('acknowledgement-of-complaint', 'complaint', 'ACKNOWLEDGEMENT')"&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                        [className]="activeStatus == 'acknowledgement-of-complaint' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                    CONSUMER COMPLAINTS REPORT&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                </button>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                <button type="button" (click)="toggleStatus('give-feedback-to-complainant', 'complaint', 'FEEDBACK_SENT')"&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                        [className]="activeStatus == 'give-feedback-to-complainant' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                    COMPLAINT ANALYSIS&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                </button>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                <button type="button" (click)="toggleStatus('completion-of-complaint-investigation', 'complaint', 'FEEDBACK_SENT')"&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                        [className]="activeStatus == 'completion-of-complaint-investigation' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                    SUMMARY&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                </button>&ndash;&gt;-->
-
-<!--                            </div>-->
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                                <button type="button" (click)="toggleStatus('consumerComplaintsView')"
+                                        [className]="activeStatus == 'consumerComplaintsView' ? 'btn btn-sm btn-primary pr-2' : 'btn btn-sm btn-default pr-2'">
+                                    SEIZED GOODS SUMMARY
+                                </button>
+                            </div>
                         </div>
+
                         <div widget class="card border-0 box-shadow">
                             <div class="card-body pt-0 widget-body">
-                                <div *ngIf="activeStatus == 'consumer-complaints-report'"  class="material-datatables table-responsive col-md-12">
+                                <div *ngIf="activeStatus == 'consumerComplaintsView'"  class="material-datatables table-responsive col-md-12">
                                     <table
-                                            class="table table-striped table-bordered table-hover"
-                                    >
-                                        <!--          add this to the table attribute     datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"-->
+                                            class="table table-striped table-bordered table-hover "
+                                            datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"   >
                                         <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th class="knw">REFERENCE NUMBER</th>
-                                            <th class="knw">COMPLAINANT</th>
-                                            <th class="knw">NATURE OF COMPLAINT</th>
+                                            <th class="knw">DATE OF SEIZURE</th>
+                                            <th class="knw">MARKET CENTRE</th>
+                                            <th class="knw">NAME OUTLET</th>
+                                            <th class="knw">DESCRIPTION PRODUCTS SEIZED</th>
+                                            <th class="knw">BRAND</th>
                                             <th class="knw">SECTOR</th>
-                                            <th class="sl">DATE RECEIVED</th>
-                                            <th class="sl">DATE ACKNOWLEDGED</th>
-                                            <th class="knw">INVESTIGATING OFFICER</th>
-                                            <th class="sl">DATE OF INVESTIGATION COMPLETION</th>
-                                            <th class="sl">DATE OF FEEDBACK TO COMPLAINANT</th>
-                                            <th class="knw">RESOLUTION? (YES/NO)</th>
-                                            <th class="sl">TIME TAKEN TO PROVIDE FEEDBACK</th>
-                                            <th class="knw">FEEDBACK WITHIN 5 DAYS? (YES/NO)</th>
-                                            <th class="sl">TIME TAKEN TO ADDRESS THE COMPLAINT</th>
-                                            <th class="knw">ADDRESSED WITHIN 28 DAYS? (YES/NO)</th>
+                                            <th class="knw">QUANTITY</th>
+                                            <th class="knw">UNIT</th>
+                                            <th class="knw">ESTIMATED COST</th>
+                                            <th class="knw">CURRENT LOCATION SEIZED PRODUCTS</th>
+                                            <th class="knw">PRODUCTS DUE FOR DESTRUCTION</th>
+                                            <th class="knw">PRODUCTS DUE FOR RELEASE</th>
+                                            <th class="knw">DATE OF DESTRUCTED</th>
+                                            <th class="knw">DATE OF RELEASE</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <!--                                        <tr  *ngFor="let companyModel of loadedData let i=index">-->
-                                        <!--                                            -->
-                                        <!--                                            <td >{{i+1}} </td>-->
-                                        <!--                                            <td>{{companyModel.referenceNumber}}</td>-->
-                                        <!--                                            <td>{{companyModel.complaintTitle }}</td>-->
-                                        <!--                                            <td>{{companyModel.targetedProducts}}</td>-->
-                                        <!--                                            <td>{{companyModel.transactionDate}}</td>-->
-                                        <!--                                            <td>{{companyModel.assignedIo}}</td>-->
-                                        <!--                                            <td>{{companyModel.region}}</td>-->
-                                        <!--                                            <td>{{companyModel.complaintDepartment}}</td>-->
-                                        <!--                                            <td>{{companyModel.division}}</td>-->
-                                        <!--                                            <td>{{companyModel.status}}</td>-->
-                                        <!--                                            <td>{{companyModel.timeTakenForAcknowledgement}}</td>-->
+                                        <tr  *ngFor="let companyModel of loadedData let i=index ">
+                                            <td >{{i+1}} </td>
+                                            <td>{{companyModel?.dateofSeizure}}</td>
+                                            <td>{{companyModel?.marketCentre }}</td>
+                                            <td>{{companyModel?.nameOutlet}}</td>
+                                            <td>{{companyModel?.descriptionProductsSeized}}</td>
+                                            <td>{{companyModel?.brand}}</td>
+                                            <td>{{companyModel?.sector}}</td>
+                                            <td>{{companyModel?.quantity}}</td>
+                                            <td>{{companyModel?.unit}}</td>
+                                            <td>{{companyModel?.estimatedCost}}</td>
+                                            <td>{{companyModel?.currentLocationSeizedProducts}}</td>
+                                            <td>{{companyModel?.productsDueForDestruction}}</td>
+                                            <td>{{companyModel?.productsDueForRelease}}</td>
+                                            <td>{{companyModel?.dateofDestructed}}</td>
+                                            <td>{{companyModel?.dateofRelease}}</td>
 
-                                        <!--                                        </tr>-->
-                                        <tr>
-                                            <td>1</td>
-                                            <td>REF 1234</td>
-                                            <td>CHRISTINE</td>
-                                            <td>Expired Toss</td>
-                                            <td>Food & Chemical</td>
-                                            <td>12/12/2022</td>
-                                            <td>13/12/2022</td>
-                                            <td>MSIO</td>
-                                            <td>19/12/2022</td>
-                                            <td>14/12/2022</td>
-                                            <td>YES</td>
-                                            <td>5</td>
-                                            <td>YES</td>
-                                            <td>7</td>
-                                            <td>YES</td>
                                         </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>REF 5678</td>
-                                            <td>CATE</td>
-                                            <td>Expired Cement</td>
-                                            <td>Engineering</td>
-                                            <td>12/12/2022</td>
-                                            <td>13/12/2022</td>
-                                            <td>CATE MSIO</td>
-                                            <td>19/12/2022</td>
-                                            <td>14/12/2022</td>
-                                            <td>YES</td>
-                                            <td>5</td>
-                                            <td>YES</td>
-                                            <td>7</td>
-                                            <td>YES</td>
-                                        </tr>
-
                                         </tbody>
                                     </table>
                                 </div>
-                                <div *ngIf="activeStatus == 'complaint-analysis'" class="material-datatables table-responsive col-md-12">
-                                    <table
-                                            class="table table-striped table-bordered table-hover "
-                                    >
-                                        <!--          add this to the table attribute     datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"-->
-                                        <thead>
-                                        <tr>
-                                            <th rowspan="2">#</th>
-                                            <th rowspan="2" class="knw">SERIAL NUMBER</th>
-                                            <th rowspan="2" class="knw">SECTOR</th>
-                                            <th colspan="5" style="text-align: center"><b>Q1 analysis</b></th>
-
-                                        </tr>
-                                        <tr>
-                                            <th class="knw">NUMBER OF COMPLAINTS RECEIVED</th>
-                                            <th class="knw">% OF TOTAL RECEIVED</th>
-                                            <th class="sl">NUMBER OF COMPLAINTS RESOLVED</th>
-                                            <th class="sl">% OF TOTAL RESOLVED</th>
-                                            <th class="knw">% RESOLUTION</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <!--                                        <tr  *ngFor="let companyModel of loadedData let i=index">-->
-                                        <!--                                            -->
-                                        <!--                                            <td >{{i+1}} </td>-->
-                                        <!--                                            <td>{{companyModel.referenceNumber}}</td>-->
-                                        <!--                                            <td>{{companyModel.complaintTitle }}</td>-->
-                                        <!--                                            <td>{{companyModel.targetedProducts}}</td>-->
-                                        <!--                                            <td>{{companyModel.transactionDate}}</td>-->
-                                        <!--                                            <td>{{companyModel.assignedIo}}</td>-->
-                                        <!--                                            <td>{{companyModel.region}}</td>-->
-                                        <!--                                            <td>{{companyModel.complaintDepartment}}</td>-->
-                                        <!--                                            <td>{{companyModel.division}}</td>-->
-                                        <!--                                            <td>{{companyModel.status}}</td>-->
-                                        <!--                                            <td>{{companyModel.timeTakenForAcknowledgement}}</td>-->
-
-
-                                        <tr>
-                                            <td>1</td>
-                                            <td>SER 1234</td>
-                                            <td>ENGINEERING</td>
-                                            <td>300</td>
-                                            <td>75%</td>
-                                            <td>150</td>
-                                            <td>50%</td>
-                                            <td>50%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>SER 5478</td>
-                                            <td>Food & Chemical</td>
-                                            <td>100</td>
-                                            <td>25%</td>
-                                            <td>50</td>
-                                            <td>45%</td>
-                                            <td>40%</td>
-                                        </tr>
-
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div *ngIf="activeStatus == 'summary'" class="material-datatables table-responsive col-md-12">
-                                    <div class="summaryTables">
-                                        <table class="table table-striped table-bordered ">
-                                            <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th colspan="2" style="text-align: center"><b>Summary</b></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="success">
-                                                <td>(i)</td>
-                                                <td>Complaints Received: </td>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr class="success">
-                                                <td>(ii)</td>
-                                                <td>Complaints Resolved/Closed: </td>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr class="success">
-                                                <td>(v)</td>
-                                                <td>Percentage Compliance: </td>
-                                                <td>0</td>
-                                            </tr>
-                                            </tbody>
-
-                                        </table>
-                                        <table class="table table-striped table-bordered  ">
-                                            <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th colspan="2" style="text-align: center"><b>Compliance With Timelines (5 days feedback)</b></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="info">
-                                                <td>(vii)</td>
-                                                <td>Number of feedback provided within 5 days: </td>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr class="info">
-                                                <td>(vii)</td>
-                                                <td>% Compliance: </td>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr class="info">
-                                                <td>(ix)</td>
-                                                <td>Average feedback time (Days): </td>
-                                                <td>0</td>
-                                            </tr>
-                                            </tbody>
-
-                                        </table>
-                                        <table class="table table-striped table-bordered  ">
-                                            <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th colspan="2" style="text-align: center"><b>Compliance With Timelines (28 days for addressing)</b></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="active">
-                                                <td>(x)</td>
-                                                <td>Number of complaints resolved within 28 days: </td>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr class="active">
-                                                <td>(xi)</td>
-                                                <td>% Compliance to 28-day timelines: </td>
-                                                <td>0</td>
-                                            </tr>
-                                            <tr class="active">
-                                                <td>xii)</td>
-                                                <td>Average time to address complaints (Days): </td>
-                                                <td>0</td>
-                                            </tr>
-                                            </tbody>
-
-                                        </table>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
 
                     </div>
+                    <!-- end content-->
                 </div>
+                <!--  end card  -->
             </div>
+            <!-- end col-md-12 -->
         </div>
+        <!-- end row -->
     </div>
 
 </div>
+

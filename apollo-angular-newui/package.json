@@ -84,6 +84,7 @@
     "moment": "2.29.1",
     "moment-timezone": "0.5.31",
     "ng-multiselect-dropdown": "^0.3.8",
+    "ng-nicedit": "^0.1.1",
     "ng-template": "^1.0.0",
     "ng2-completer": "^9.0.1",
     "ng2-file-upload": "^1.4.0",

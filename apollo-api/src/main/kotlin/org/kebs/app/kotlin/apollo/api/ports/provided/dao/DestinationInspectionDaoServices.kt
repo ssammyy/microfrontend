@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentCertificatesIssues
 import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
+import org.kebs.app.kotlin.apollo.api.service.PaymentStatus
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationVerificationMessage
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -1379,7 +1380,10 @@ class DestinationInspectionDaoServices(
         amount: Double,
         user: UsersEntity
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findFirstByCdIdAndStatusIn(consignmentDocument.id!!, listOf(map.workingStatus))
+        return iDemandNoteRepo.findFirstByCdIdAndStatusInAndPaymentStatusIn(
+            consignmentDocument.id!!, listOf(map.workingStatus),
+            listOf(PaymentStatus.DRAFT.code, PaymentStatus.REJECTED_AMENDMENT.code)
+        )
             ?.let { demandNote ->
                 var demandNoteDetails = demandNote
                 // Remove all items for update
@@ -1436,7 +1440,7 @@ class DestinationInspectionDaoServices(
                                 true
                             )
                         }".toUpperCase()
-                    paymentStatus = map.inactiveStatus
+                    paymentStatus = PaymentStatus.DRAFT.code
                     paymentPurpose = PaymentPurpose.CONSIGNMENT.code
                     dateGenerated = commonDaoServices.getCurrentDate()
                     generatedBy = commonDaoServices.concatenateName(user)
@@ -1480,7 +1484,7 @@ class DestinationInspectionDaoServices(
     ): CdDemandNoteEntity {
         return iDemandNoteRepo.findFirstByUcrNumberAndPaymentStatusIn(
             auctionRequest.auctionLotNo!!,
-            listOf(map.workingStatus)
+            listOf(PaymentStatus.DRAFT.code)
         )
             ?.let { demandNote ->
                 var demandNoteDetails = demandNote
@@ -1534,7 +1538,7 @@ class DestinationInspectionDaoServices(
                             true
                         )
                     }".toUpperCase()
-                    paymentStatus = map.inactiveStatus
+                    paymentStatus = PaymentStatus.NEW.code
                     dateGenerated = commonDaoServices.getCurrentDate()
                     generatedBy = commonDaoServices.concatenateName(user)
                     status = map.workingStatus
@@ -1707,6 +1711,10 @@ class DestinationInspectionDaoServices(
 
     fun findDemandNoteWithID(cdID: Long): CdDemandNoteEntity? {
         return iDemandNoteRepo.findByIdOrNull(cdID)
+    }
+
+    fun findDemandNoteWithReference(dnRef: String): CdDemandNoteEntity? {
+        return iDemandNoteRepo.findByDemandNoteNumber(dnRef)
     }
 
     fun findDemandNoteItemByID(itemId: Long): CdDemandNoteItemsDetailsEntity? {
@@ -3587,6 +3595,7 @@ class DestinationInspectionDaoServices(
                     .info { "Consignment document for declaration: ${declarationVerificationDocumentMessage.data?.dataIn?.sad?.sadId} not found" }
         }
     }
+
 
     fun sendLocalCocReportEmail(recipientEmail: String, filePath: String): Boolean {
         val subject = "Local COC Certificate"

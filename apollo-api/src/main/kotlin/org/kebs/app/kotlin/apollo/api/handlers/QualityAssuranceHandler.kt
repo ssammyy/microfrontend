@@ -90,6 +90,7 @@ class QualityAssuranceHandler(
     private val reactiveAuthenticationManager: CustomAuthenticationProvider,
     private val validator: Validator,
     private val service: StandardsLevyDaoService,
+    private val companyProfileEntity: ICompanyProfileRepository,
 
 
     ) {
@@ -4114,6 +4115,7 @@ class QualityAssuranceHandler(
             val permitTypeID = 3
 
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+            var permitListAllApplicationsNotMigrated: List<KebsWebistePermitEntityDto>? = null
 
 
             permitListAllApplications = qaDaoServices.listPermitsWebsite(
@@ -4124,8 +4126,11 @@ class QualityAssuranceHandler(
                 ), map
             )
 
-            return ok().body(permitListAllApplications)
+            permitListAllApplicationsNotMigrated = qaDaoServices.listPermitsNotMigratedWebsiteFmark(
+                qaDaoServices.findFmarkPermitsNotMigrated(), map
+            )
 
+            return ok().body(permitListAllApplications + permitListAllApplicationsNotMigrated)
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -4141,6 +4146,7 @@ class QualityAssuranceHandler(
             val permitTypeID = 2
 
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+            var permitListAllApplicationsNotMigrated: List<KebsWebistePermitEntityDto>? = null
 
 
             permitListAllApplications = qaDaoServices.listPermitsWebsite(
@@ -4151,7 +4157,11 @@ class QualityAssuranceHandler(
                 ), map
             )
 
-            return ok().body(permitListAllApplications)
+            permitListAllApplicationsNotMigrated = qaDaoServices.listPermitsNotMigratedWebsite(
+                qaDaoServices.findSmarkPermitsNotMigrated(), map
+            )
+
+            return ok().body(permitListAllApplications + permitListAllApplicationsNotMigrated)
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -4168,6 +4178,7 @@ class QualityAssuranceHandler(
             val permitTypeID = 1
 
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+            var permitListAllApplicationsNotMigrated: List<KebsWebistePermitEntityDto>? = null
 
 
             permitListAllApplications = qaDaoServices.listPermitsWebsite(
@@ -4178,8 +4189,11 @@ class QualityAssuranceHandler(
                 ), map
             )
 
-            return ok().body(permitListAllApplications)
+            permitListAllApplicationsNotMigrated = qaDaoServices.listPermitsNotMigratedWebsiteDmark(
+                qaDaoServices.findDmarkPermitsNotMigrated(), map
+            )
 
+            return ok().body(permitListAllApplications + permitListAllApplicationsNotMigrated)
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -4235,7 +4249,6 @@ class QualityAssuranceHandler(
 
             var response = ""
             var validity = "Valid"
-
 
 
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
@@ -4342,6 +4355,91 @@ class QualityAssuranceHandler(
 
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllAwardedPermitsByCompanyName(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val companyName = req.paramOrNull("companyName")
+                ?: throw ExpectedDataNotFound("Required Company Name, check config")
+
+            commonDaoServices.findCompanyProfileByName(companyName)
+            val companyId = commonDaoServices.findCompanyProfileByName(companyName)?.id
+                ?: throw ExpectedDataNotFound("Required Company Name, check config")
+
+            var permitListAllApplicationsSmark: List<KebsWebistePermitEntityDto>? = null
+            var permitListAllApplicationsDmark: List<KebsWebistePermitEntityDto>? = null //smarks
+            var permitListAllApplicationsFmark: List<KebsWebistePermitEntityDto>? = null //smarks
+            var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
+
+            permitListAllApplications = qaDaoServices.listPermitsWebsite(
+                qaDaoServices.findByCompanyIdAllAwardedPermitsKebsWebsite(
+                    companyId, map.activeStatus,
+                    map.inactiveStatus
+                ), map
+            )
+
+            permitListAllApplicationsSmark = qaDaoServices.listPermitsNotMigratedWebsite(
+                qaDaoServices.findSmarkPermitsNotMigratedByCompanyName(companyName), map
+            )
+
+            permitListAllApplicationsDmark = qaDaoServices.listPermitsNotMigratedWebsiteDmark(
+                qaDaoServices.findDmarkPermitsNotMigratedByCompanyName(companyName), map
+            )
+            permitListAllApplicationsFmark = qaDaoServices.listPermitsNotMigratedWebsiteFmark(
+                qaDaoServices.findFmarkPermitsNotMigratedByCompanyName(companyName), map
+            )
+
+
+
+            return ok().body(permitListAllApplications + permitListAllApplicationsSmark + permitListAllApplicationsFmark + permitListAllApplicationsDmark)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun getAllCompanies(req: ServerRequest): ServerResponse {
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val company = companyProfileEntity.findAllByStatus(1)
+
+
+            var allCompanies: List<companyDto>? = null
+            var allCompaniesNotListed: List<companyDto>? = null //smarks
+            var allCompaniesNotListedDmark: List<companyDto>? = null //smarks
+            var allCompaniesNotListedFmark: List<companyDto>? = null //smarks
+
+            allCompanies = qaDaoServices.listFirmsWebsite(company, map)
+            println(allCompanies)
+
+            allCompaniesNotListed = qaDaoServices.listFirmsWebsiteNotMigratedSmark(
+                qaDaoServices.findCompaniesNotMigratedSmark(), map
+            )
+            allCompaniesNotListedDmark = qaDaoServices.listFirmsWebsiteNotMigratedDmark(
+                qaDaoServices.findCompaniesNotMigratedDmark(), map
+            )
+            allCompaniesNotListedFmark = qaDaoServices.listFirmsWebsiteNotMigratedFmark(
+                qaDaoServices.findCompaniesNotMigratedFmark(), map
+            )
+
+
+
+
+            return ok().body(allCompanies + allCompaniesNotListed + allCompaniesNotListedDmark + allCompaniesNotListedFmark)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+
     fun processReceiveMessageBody(req: ServerRequest): ServerResponse {
         return try {
 
@@ -4404,11 +4502,6 @@ class QualityAssuranceHandler(
 
 }
 
-//fun convertDateStringToDate(stringToBeConverted: String): java.util.Date? {
-//    val formatter = SimpleDateFormat("yyyy-MM-dd")
-//
-//    return formatter.parse(stringToBeConverted)
-//}
 fun convertDateStringToDate(stringToBeConverted: String): String? {
     return if (!stringToBeConverted.contains("-")) {
 
@@ -4448,4 +4541,6 @@ fun checkPermitValidity(expiryDate: String): String {
 
     }
 }
+
+
 

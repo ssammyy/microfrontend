@@ -83,6 +83,22 @@ export class FinanceInvoiceService {
         })
     }
 
+    loadAllBillsStatus(keywords: any, status: any, page: number, pageSize: number): Observable<any> {
+        let params = {
+            'billStatus': status
+        }
+        if (pageSize) {
+            params['page'] = page
+            params['size'] = pageSize
+        }
+        if (keywords) {
+            params['keyword'] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/corporate/list/bills"), {
+            params: params
+        })
+    }
+
     loadBillTransactions(billId: any, corporateId: number, page: number, pageSize: number): Observable<any> {
         let params = {}
         if (pageSize) {

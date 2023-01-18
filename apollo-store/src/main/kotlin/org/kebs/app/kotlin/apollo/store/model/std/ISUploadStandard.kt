@@ -85,4 +85,8 @@ class ISUploadStandard {
     @Basic
     var draughting: String? = null
 
+    @Column(name="DEADLINE_DATE")
+    @Basic
+    var deadlineDate: Timestamp?=null
+
 }

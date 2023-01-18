@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {TableData} from '../../md/md-table/md-table.component';
 
 import * as Chartist from 'chartist';
@@ -13,9 +13,8 @@ import {
 } from 'src/app/core/store';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../core/store/data/ms/ms.service';
-import {ComplaintsListDto, MsDashBoardALLDto, WorkPlanListDto, WorkPlanScheduleListDetailsDto} from '../../core/store/data/ms/ms.model';
+import {ComplaintsListDto, MsDashBoardALLDto, WorkPlanListDto} from '../../core/store/data/ms/ms.model';
 import {LocalDataSource} from 'ng2-smart-table';
-import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 
 declare const $: any;
 
@@ -210,7 +209,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
             (d) => {
                 if (d) {
-                    console.log(`${d.companyId} and ${d.branchId}`);
+                    //(`${d.companyId} and ${d.branchId}`);
                     this.store$.dispatch(loadCompanyId({payload: d.companyId, company: null}));
                     this.store$.dispatch(loadBranchId({payload: d.branchId, branch: null}));
                     this.branchCount = d.branchCount;
@@ -221,7 +220,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             },
         );
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            console.log(u.roles);
+            //(u.roles);
             this.roles = u.roles;
             return this.roles = u.roles;
         });
@@ -236,7 +235,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         }
 
 
-
     }
 
     private loadMSData(): any {
@@ -248,12 +246,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             },
             error => {
                 this.SpinnerService.hide();
-                console.log(error);
+                //(error);
                 // this.msService.showError('AN ERROR OCCURRED');
             },
         );
     }
-
 
 
     ngAfterViewInit() {
@@ -300,10 +297,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/fmark/application']);
 
     }
+
     gotoSL1Application() {
         this.router.navigate(['/standardsLevy/levyRegistration']);
 
     }
+
     gotoHome() {
         this.router.navigate(['/dashboard']);
     }
@@ -408,15 +407,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     private loadAllocatedCPTask(page: number, records: number): any {
-          this.msService.loadMSDashBoardTaskListView(String(page), String(records), this.currDiv).subscribe(
-              (data) => {
-                  this.loadedDataCP = data.data;
-                  this.totalCount = this.loadedDataCP.length;
-                  this.dataSet.load(this.loadedDataCP);
-                  window.$('#msAllDashBoardViewData').modal('show');
-                  this.SpinnerService.hide();
-              },
-          );
+        this.msService.loadMSDashBoardTaskListView(String(page), String(records), this.currDiv).subscribe(
+            (data) => {
+                this.loadedDataCP = data.data;
+                this.totalCount = this.loadedDataCP.length;
+                this.dataSet.load(this.loadedDataCP);
+                window.$('#msAllDashBoardViewData').modal('show');
+                this.SpinnerService.hide();
+            },
+        );
     }
 
     private loadAllocatedCPWPTask(page: number, records: number): any {

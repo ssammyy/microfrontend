@@ -40,7 +40,7 @@ class ConsignmentDocumentTypesEntity : Serializable {
 
     @Column(name = "INSPECTION_STATUS")
     @Basic
-    var inspectionStatus: Int? = null
+    var inspectionStatus: Int? = null // Indicates if an inspection is required before compliance is issued
 
     @Column(name = "AUTO_TARGET_STATUS")
     @Basic

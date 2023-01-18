@@ -5,6 +5,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.payload.request.DemandGroupItem
@@ -43,7 +44,7 @@ import java.util.*
 import kotlin.math.ceil
 
 enum class PaymentStatus(val code: Int) {
-    NEW(0), PAID(1), BILLED(4), PARTIAL_PAYMENT(5);
+    NEW(0), PAID(1), DRAFT(3), BILLED(4), PARTIAL_PAYMENT(5), REJECTED(-1), REJECTED_AMENDMENT(-5);
 }
 
 @Service("invoiceService")
@@ -55,6 +56,7 @@ class InvoicePaymentService(
     private val reportsDaoService: ReportsDaoService,
     private val exchangeRateRepository: ICfgCurrencyExchangeRateRepository,
     private val service: DaoService,
+    private val notifications: Notifications,
     private val diBpmn: DestinationInspectionBpmn,
     private val auctionRequestsRepository: IAuctionRequestsRepository,
     private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
@@ -71,24 +73,62 @@ class InvoicePaymentService(
 ) {
     final val DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     var dateTimeFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
+    fun invoiceDetails(demandNoteRef: String, ucrNumber: String? = null): Pair<Long, HashMap<String, Any>> {
+        var map = hashMapOf<String, Any>()
+        var demandNoteId: Long = 0
+        daoServices.findDemandNoteWithReference(demandNoteRef)?.let { demandNote ->
+            if (demandNote.ucrNumber?.equals(ucrNumber, true) == true) {
+                demandNoteId = demandNote.id ?: 0
+                map = this.invoidDetailsMap(demandNote)
+            } else {
+                throw ExpectedDataNotFound("Invalid UCR number for demand note number ${demandNoteRef}")
+            }
+
+        } ?: throw ExpectedDataNotFound("Invalid demand note number")
+        return Pair(demandNoteId, map)
+    }
+
+    fun invoidDetailsMap(demandNote: CdDemandNoteEntity): HashMap<String, Any> {
+        val map = hashMapOf<String, Any>()
+        map["preparedBy"] = demandNote.generatedBy.toString()
+        map["datePrepared"] = demandNote.dateGenerated.toString()
+        map["demandNoteNo"] = demandNote.postingReference ?: "UNKNOWN"
+        map["importerName"] = demandNote.nameImporter.toString()
+        map["importerAddress"] = demandNote.address.toString()
+        map["importerTelephone"] = demandNote.telephone.toString()
+        map["ablNo"] = demandNote.entryAblNumber.toString()
+        map["ucrNo"] = demandNote.entryNo.toString()
+        map["totalAmount"] = demandNote.totalAmount.toString()
+        map["receiptNo"] = demandNote.receiptNo.toString()
+        map["amountInWords"] = demandNote.totalAmount?.let { amountInWordsService.amountToWords(it) } ?: ""
+        return reportsDaoService.addBankAndMPESADetails(map, demandNote.postingReference ?: "UNKNOWN")
+    }
+
+    fun generateDemandNoteFile(demandNote: CdDemandNoteEntity): String {
+        val demandNoteItemList = daoServices.findDemandNoteItemDetails(demandNote.id ?: 0)
+        val map = invoidDetailsMap(demandNote)
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+        val extractReport = reportsDaoService.extractReport(
+            map,
+            "classpath:reports/KebsDemandNoteItems.jrxml",
+            demandNoteItemList
+        )
+        val demandNoteNumber = map["demandNoteNo"] as String
+        // Response with file
+        val filePath = "/tmp/DEMAND-NOTE-${demandNote.ucrNumber}-${demandNoteNumber}.pdf"
+        reportsDaoService.createFileFromBytes(extractReport, filePath)
+        return filePath
+    }
+
     fun invoiceDetails(demandNoteId: Long): HashMap<String, Any> {
         var map = hashMapOf<String, Any>()
         daoServices.findDemandNoteWithID(demandNoteId)?.let { demandNote ->
-            map["preparedBy"] = demandNote.generatedBy.toString()
-            map["datePrepared"] = demandNote.dateGenerated.toString()
-            map["demandNoteNo"] = demandNote.postingReference ?: "UNKNOWN"
-            map["importerName"] = demandNote.nameImporter.toString()
-            map["importerAddress"] = demandNote.address.toString()
-            map["importerTelephone"] = demandNote.telephone.toString()
-            map["ablNo"] = demandNote.entryAblNumber.toString()
-            map["ucrNo"] = demandNote.entryNo.toString()
-            map["totalAmount"] = demandNote.totalAmount.toString()
-            map["receiptNo"] = demandNote.receiptNo.toString()
-            map["amountInWords"] = demandNote.totalAmount?.let { amountInWordsService.amountToWords(it) } ?: ""
-            map = reportsDaoService.addBankAndMPESADetails(map, demandNote.postingReference ?: "UNKNOWN")
+            map = this.invoidDetailsMap(demandNote)
         }
         return map
     }
+
 
     fun rejectDemandNoteGeneration(cdUuid: String, demandNoteId: Long, remarks: String): Boolean {
         try {
@@ -98,6 +138,7 @@ class InvoicePaymentService(
                 val demand = demandNote.get()
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 demand.status = map.invalidStatus
+                demand.paymentStatus = PaymentStatus.REJECTED.code
                 demand.varField3 = "REJECTED"
                 demand.varField10 = remarks
                 consignmentDocument.varField10 = "Demand note rejected"
@@ -125,12 +166,13 @@ class InvoicePaymentService(
 
     fun approveDemandNoteGeneration(cdUuid: String, demandNoteId: Long, supervisor: String, remarks: String): Boolean {
         try {
-            var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
+            val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             val demandNote = iDemandNoteRepo.findById(demandNoteId)
             if (demandNote.isPresent) {
                 val demand = demandNote.get()
                 val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
                 demand.status = map.initStatus
+                demand.paymentStatus = PaymentStatus.NEW.code
                 demand.varField3 = "APPROVED"
                 demand.varField10 = remarks
 
@@ -148,9 +190,25 @@ class InvoicePaymentService(
                 )
             }
 
+
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("DEMAND NOTE ERROR", ex)
         }
+        return true
+    }
+
+    fun sendDemandNoteEmail(recipientEmail: String, filePath: String, demandNote: String): Boolean {
+        val subject = "Demand Note: $demandNote"
+        val messageBody =
+            "Dear Customer,  \n" +
+                    "\n " +
+                    "A demand note related to your consignment has been generated on KIMS. Kindly make payment using the reference number and payment methods indicated in the attachment." +
+                    "\nWarm regard,"
+        var emailAddress = recipientEmail
+        if (!applicationMapProperties.defaultTestEmailAddres.isNullOrEmpty()) {
+            emailAddress = applicationMapProperties.defaultTestEmailAddres.orEmpty()
+        }
+        notifications.sendEmail(emailAddress, subject, messageBody, filePath)
         return true
     }
 
@@ -179,6 +237,17 @@ class InvoicePaymentService(
                         consignmentDocument,
                         ConsignmentDocumentStatus.PAYMENT_APPROVED
                     )
+                    // Send demand note to vendor, only non-billed demand notes should be sent
+                    try {
+                        consignmentDocument.cdImporter?.let {
+                            daoServices.findCDImporterDetails(it)
+                        }?.let { importer ->
+                            val filePath = generateDemandNoteFile(demand)
+                            this.sendDemandNoteEmail(importer.email ?: "", filePath, demand.demandNoteNumber ?: "")
+                        }
+                    } catch (ex: Exception) {
+                        KotlinLogging.logger { }.error("Failed to send demand note to importer", ex)
+                    }
                 }
                 // Update Demand note status
                 this.iDemandNoteRepo.save(demand)
@@ -720,7 +789,11 @@ class InvoicePaymentService(
         purpose: PaymentPurpose,
         user: UsersEntity,
     ): CdDemandNoteEntity {
-        return iDemandNoteRepo.findFirstByCdIdAndStatusIn(form.referenceId!!, listOf(map.workingStatus))
+        return iDemandNoteRepo.findFirstByCdIdAndStatusInAndPaymentStatusIn(
+            form.referenceId!!,
+            listOf(map.workingStatus),
+            listOf(PaymentStatus.DRAFT.code)
+        )
             ?.let { demandNote ->
                 var demandNoteDetails = demandNote
                 // Remove all items for update
@@ -782,7 +855,7 @@ class InvoicePaymentService(
                                 true
                             )
                         }".toUpperCase()
-                    paymentStatus = map.inactiveStatus
+                    paymentStatus = PaymentStatus.DRAFT.code
                     paymentPurpose = purpose.code
                     dateGenerated = commonDaoServices.getCurrentDate()
                     generatedBy = commonDaoServices.concatenateName(user)

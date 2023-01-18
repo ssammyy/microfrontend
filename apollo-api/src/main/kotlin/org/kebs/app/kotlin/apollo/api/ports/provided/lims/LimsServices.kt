@@ -253,7 +253,7 @@ class LimsServices(
                     results = true
                 }
             } catch (ex: Exception) {
-                KotlinLogging.logger { }.error("Failed to decode reponse", ex)
+                KotlinLogging.logger { }.error("Failed to decode response", ex)
             }
         }
         return results

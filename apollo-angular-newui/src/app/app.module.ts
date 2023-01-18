@@ -418,27 +418,27 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {SpinnerComponent} from './shared/loader/spinner/spinner/spinner.component';
 import {GenerateDnReportComponent} from './apollowebs/di/transaction-view/generate-dn-report/generate-dn-report.component';
 import {DeclarationDocumentsComponent} from './apollowebs/di/other-documents/declaration-documents/declaration-documents.component';
-import { NotificationsComponent } from './apollowebs/system/notifications/notifications.component';
-import { AcknowledgementComponent } from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
-import { FeedbackTimelineComponent } from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
-import { ReportSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
-import { SampleSubmittedTimelineComponent } from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
+import {NotificationsComponent} from './apollowebs/system/notifications/notifications.component';
+import {AcknowledgementComponent} from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
+import {FeedbackTimelineComponent} from './apollowebs/market-surveillance/reports/feedback-timeline/feedback-timeline.component';
+import {ReportSubmittedTimelineComponent} from './apollowebs/market-surveillance/reports/report-submitted-timeline/report-submitted-timeline.component';
+import {SampleSubmittedTimelineComponent} from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
-import { IntStdProposalsComponent } from './apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component';
-import { IntStdApprovedProposalsComponent } from './apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component';
-import { IntStdJustificationComponent } from './apollowebs/standards-development/international-standard/int-std-justification/int-std-justification.component';
-import { IntStdEditorComponent } from './apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component';
+import {IntStdProposalsComponent} from './apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component';
+import {IntStdApprovedProposalsComponent} from './apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component';
+import {IntStdJustificationComponent} from './apollowebs/standards-development/international-standard/int-std-justification/int-std-justification.component';
+import {IntStdEditorComponent} from './apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component';
 import {GenerateDeclarationReportComponent} from './apollowebs/di/other-documents/declaration-documents/generate-declaration-report/generate-declaration-report.component';
 import {MatCardModule} from "@angular/material/card";
 // import { PrepareDraftComponent } from './apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component';
-import { IntStdCheckRequirementsComponent } from './apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component';
-import { IntStdEditDraftComponent } from './apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component';
-import { IntStdDraughtComponent } from './apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component';
-import { IntStdProofReadComponent } from './apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component';
-import { IntStdApproveDraftComponent } from './apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component';
-import { IntStdEditedDraftComponent } from './apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component';
-import { IntStdSacApprovalComponent } from './apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component';
+import {IntStdCheckRequirementsComponent} from './apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component';
+import {IntStdEditDraftComponent} from './apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component';
+import {IntStdDraughtComponent} from './apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component';
+import {IntStdProofReadComponent} from './apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component';
+import {IntStdApproveDraftComponent} from './apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component';
+import {IntStdEditedDraftComponent} from './apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component';
+import {IntStdSacApprovalComponent} from './apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component';
 // import {RichTextEditorModule} from "@syncfusion/ej2-angular-richtexteditor";
 // import {DocumentEditorContainerAllModule} from "@syncfusion/ej2-angular-documenteditor";
 import { IntStdGazetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component';
@@ -451,6 +451,11 @@ import { RegisterTivetComponent } from './views/registration/register-tivet/regi
 import { ComplaintMonitoringComponent } from './apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component';
 import { FieldInspectionSummaryComponent } from './apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component';
 import { WorkplanMonitoringToolComponent } from './apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component';
+import { ComStdAppDraftComponent } from './apollowebs/standards-development/company-standard/com-std-app-draft/com-std-app-draft.component';
+import { IntStdPublishingComponent } from './apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component';
+import { ComStdPublishingComponent } from './apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component';
+import { ComStdEditorComponent } from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
+import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corporate-bills.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -935,6 +940,11 @@ import { WorkplanMonitoringToolComponent } from './apollowebs/market-surveillanc
         ComplaintMonitoringComponent,
         FieldInspectionSummaryComponent,
         WorkplanMonitoringToolComponent,
+        ComStdAppDraftComponent,
+        IntStdPublishingComponent,
+        ComStdPublishingComponent,
+        ComStdEditorComponent,
+        CorporateBillsComponent,
 
     ],
     entryComponents: [LoaderComponent],

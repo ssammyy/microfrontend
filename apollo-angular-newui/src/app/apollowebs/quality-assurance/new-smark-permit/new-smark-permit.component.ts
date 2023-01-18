@@ -85,15 +85,101 @@ export class NewSmarkPermitComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.sta1Form = this.formBuilder.group({
+            commodityDescription: ['', Validators.required],
+            applicantName: [],
+            sectionId: ['', Validators.required],
+            permitForeignStatus: [],
+            attachedPlant: ['', Validators.required],
+            tradeMark: ['', Validators.required],
+            createFmark: [],
+            // inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
+
+
+        });
+        this.sta10Form = this.formBuilder.group({
+            // firmName: ['', Validators.required],
+            // statusCompanyBusinessRegistration: ['', Validators.required],
+            // ownerNameProprietorDirector: ['', Validators.required],
+            // postalAddress: ['', Validators.required],
+            // contactPerson: ['', Validators.required],
+            // telephone: ['', Validators.required],
+            // emailAddress: ['', Validators.required],
+            // physicalLocationMap: ['', Validators.required],
+            // county: ['', Validators.required],
+            // town: ['', Validators.required],
+            totalNumberFemale: ['', Validators.required],
+            totalNumberMale: ['', Validators.required],
+            totalNumberPermanentEmployees: ['', Validators.required],
+            totalNumberCasualEmployees: ['', Validators.required],
+            averageVolumeProductionMonth: ['', Validators.required]
+
+        });
+
+
+        this.sta10FormA = this.formBuilder.group({
+            personnelName: [],
+            qualificationInstitution: [],
+            dateOfEmployment: []
+
+        });
+
+        this.sta10FormB = this.formBuilder.group({
+            productName: [],
+            productBrand: [],
+            // productStandardNumber: [],
+            // available: [],
+            // permitNo: []
+        });
+
+        this.sta10FormC = this.formBuilder.group({
+            name: [],
+            origin: [],
+            specifications: [],
+            qualityChecksTestingRecords: []
+        });
+
+        this.sta10FormD = this.formBuilder.group({
+            typeModel: [],
+            machineName: [],
+            countryOfOrigin: [],
+        });
+
+        this.sta10FormE = this.formBuilder.group({
+            processFlowOfProduction: [],
+            operations: [],
+            criticalProcessParametersMonitored: [],
+            frequency: [],
+            processMonitoringRecords: []
+        });
+        this.sta10FormG = this.formBuilder.group({});
+
+        this.sta10FormF = this.formBuilder.group({
+            handledManufacturingProcessRawMaterials: ['', Validators.required],
+            handledManufacturingProcessInprocessProducts: ['', Validators.required],
+            handledManufacturingProcessFinalProduct: ['', Validators.required],
+            strategyInplaceRecallingProducts: ['', Validators.required],
+            stateFacilityConditionsRawMaterials: ['', Validators.required],
+            stateFacilityConditionsEndProduct: ['', Validators.required],
+            testingFacilitiesExistSpecifyEquipment: ['', Validators.required],
+            testingFacilitiesExistStateParametersTested: ['', Validators.required],
+            testingFacilitiesSpecifyParametersTested: ['', Validators.required],
+            calibrationEquipmentLastCalibrated: ['', Validators.required],
+            handlingConsumerComplaints: ['', Validators.required],
+            companyRepresentative: ['', Validators.required],
+            applicationDate: ['', Validators.required]
+        });
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
             (d) => {
                 if (d) {
-                    console.log(`${d.penaltyStatus}`);
+                   //(`${d.penaltyStatus}`);
                     // return this.status = d.status;
                     if(d.status == 0)
                     {
-                        console.log("lklklklkl")
+                       //("lklklklkl")
                         swal.fire({
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
                             title: 'Cancelled',
                             text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
                             icon: 'error',
@@ -108,6 +194,8 @@ export class NewSmarkPermitComponent implements OnInit {
                     else if(d.status==2)
                     {
                         swal.fire({
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
                             title: 'Cancelled',
                             text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
                             icon: 'error',
@@ -122,6 +210,8 @@ export class NewSmarkPermitComponent implements OnInit {
                     else {
                     if(d.penaltyStatus == 1){
                         swal.fire({
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
                             title: 'Pending Levy Remittance',
                             text: 'Your Company has defaulted on Levy Payment.You are Reminded to Remit your Monthly Payment.',
                             icon: 'error',
@@ -133,102 +223,19 @@ export class NewSmarkPermitComponent implements OnInit {
                             // }
                         } )
                     }else{
-                        this.sta1Form = this.formBuilder.group({
-                            commodityDescription: ['', Validators.required],
-                            applicantName: [],
-                            sectionId: ['', Validators.required],
-                            permitForeignStatus: [],
-                            attachedPlant: ['', Validators.required],
-                            tradeMark: ['', Validators.required],
-                            createFmark: [],
-                            // inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
 
-
-                        });
-                        this.sta10Form = this.formBuilder.group({
-                            // firmName: ['', Validators.required],
-                            // statusCompanyBusinessRegistration: ['', Validators.required],
-                            // ownerNameProprietorDirector: ['', Validators.required],
-                            // postalAddress: ['', Validators.required],
-                            // contactPerson: ['', Validators.required],
-                            // telephone: ['', Validators.required],
-                            // emailAddress: ['', Validators.required],
-                            // physicalLocationMap: ['', Validators.required],
-                            // county: ['', Validators.required],
-                            // town: ['', Validators.required],
-                            totalNumberFemale: ['', Validators.required],
-                            totalNumberMale: ['', Validators.required],
-                            totalNumberPermanentEmployees: ['', Validators.required],
-                            totalNumberCasualEmployees: ['', Validators.required],
-                            averageVolumeProductionMonth: ['', Validators.required]
-
-                        });
-
-
-                        this.sta10FormA = this.formBuilder.group({
-                            personnelName: [],
-                            qualificationInstitution: [],
-                            dateOfEmployment: []
-
-                        });
-
-                        this.sta10FormB = this.formBuilder.group({
-                            productName: [],
-                            productBrand: [],
-                            // productStandardNumber: [],
-                            // available: [],
-                            // permitNo: []
-                        });
-
-                        this.sta10FormC = this.formBuilder.group({
-                            name: [],
-                            origin: [],
-                            specifications: [],
-                            qualityChecksTestingRecords: []
-                        });
-
-                        this.sta10FormD = this.formBuilder.group({
-                            typeModel: [],
-                            machineName: [],
-                            countryOfOrigin: [],
-                        });
-
-                        this.sta10FormE = this.formBuilder.group({
-                            processFlowOfProduction: [],
-                            operations: [],
-                            criticalProcessParametersMonitored: [],
-                            frequency: [],
-                            processMonitoringRecords: []
-                        });
-                        this.sta10FormG = this.formBuilder.group({});
-
-                        this.sta10FormF = this.formBuilder.group({
-                            handledManufacturingProcessRawMaterials: ['', Validators.required],
-                            handledManufacturingProcessInprocessProducts: ['', Validators.required],
-                            handledManufacturingProcessFinalProduct: ['', Validators.required],
-                            strategyInplaceRecallingProducts: ['', Validators.required],
-                            stateFacilityConditionsRawMaterials: ['', Validators.required],
-                            stateFacilityConditionsEndProduct: ['', Validators.required],
-                            testingFacilitiesExistSpecifyEquipment: ['', Validators.required],
-                            testingFacilitiesExistStateParametersTested: ['', Validators.required],
-                            testingFacilitiesSpecifyParametersTested: ['', Validators.required],
-                            calibrationEquipmentLastCalibrated: ['', Validators.required],
-                            handlingConsumerComplaints: ['', Validators.required],
-                            companyRepresentative: ['', Validators.required],
-                            applicationDate: ['', Validators.required]
-                        });
 
                         this.qaService.loadSectionList().subscribe(
                             (data: any) => {
                                 this.sections = data;
-                                console.log(data);
+                               //(data);
                             }
                         );
 
                         this.qaService.loadPlantList().subscribe(
                             (data: any) => {
                                 this.plants = data;
-                                console.log(data);
+                               //(data);
                             }
                         );
 
@@ -253,7 +260,7 @@ export class NewSmarkPermitComponent implements OnInit {
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
             this.permitID = params;
-            console.log(this.permitID);
+           //(this.permitID);
             if (this.permitID) {
                 this.SpinnerService.show();
                 this.qaService.viewSTA1Details(this.permitID).subscribe(
@@ -265,7 +272,7 @@ export class NewSmarkPermitComponent implements OnInit {
                             (data1) => {
                                 this.allSta10Details = data1;
 
-                                console.log('TEST ALL STA10' + this.allSta10Details);
+                               //('TEST ALL STA10' + this.allSta10Details);
                                 this.sta10Details = this.allSta10Details.sta10FirmDetails;
                                 this.sta10Form.patchValue(this.sta10Details);
                                 this.sta10PersonnelDetails = this.allSta10Details.sta10PersonnelDetails;
@@ -343,7 +350,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     break;
             }
             this.step += 1;
-            console.log(`Clicked and step = ${this.step}`);
+           //(`Clicked and step = ${this.step}`);
         }
     }
 
@@ -356,7 +363,7 @@ export class NewSmarkPermitComponent implements OnInit {
     }
 
     selectStepTwoClass(step: number): string {
-        console.log(`${step}`);
+       //(`${step}`);
         if (step === 1) {
             return 'active';
         }
@@ -459,7 +466,7 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         this.step += 1;
                         this.currBtn = 'B';
                         swal.fire({
@@ -480,7 +487,7 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.onClickUpdateStep(this.step);
                         this.step += 1;
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         swal.fire({
                             title: 'STA1 Form updated!',
                             buttonsStyling: false,
@@ -498,14 +505,14 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTA10(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            console.log(this.sta1.id.toString());
+           //(this.sta1.id.toString());
             if (this.sta10Details == null) {
                 this.qaService.saveFirmDetailsSta10(this.sta1.id.toString(), this.sta10Form.value).subscribe(
                     (data) => {
                         this.sta10Details = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Firm Details Saved!',
@@ -525,7 +532,7 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.sta10Details = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Firm Details Updated!',
@@ -544,14 +551,14 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTA10F(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            console.log(this.sta1.id.toString());
+           //(this.sta1.id.toString());
 
             this.qaService.updateFirmDetailsSta10(this.sta1.id.toString(), this.sta10FormF.value).subscribe(
                 (data) => {
                     this.sta10Details = data;
                     this.onClickUpdateStep(this.step);
                     this.SpinnerService.hide();
-                    console.log(data);
+                   //(data);
                     this.step += 1;
                     swal.fire({
                         title: 'Non-Conforming Products Manufacturing Process saved!.',
@@ -568,7 +575,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
     // onClickSaveSTA10G(valid: boolean) {
     //     if (valid) {
-    //         console.log(this.sta1.id.toString());
+    //        //(this.sta1.id.toString());
     //         swal.fire({
     //             title: 'STA10 Form Completed! Proceed to submit application.!',
     //             buttonsStyling: false,
@@ -588,13 +595,13 @@ export class NewSmarkPermitComponent implements OnInit {
 
             if (this.sta10PersonnelDetails.length > 0) {
                 this.SpinnerService.show();
-                console.log(this.sta10Details.id.toString());
+               //(this.sta10Details.id.toString());
                 this.qaService.savePersonnelDetailsSta10(this.sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
                     (data) => {
                         this.sta10PersonnelDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Key Personnel Details Saved!',
@@ -621,7 +628,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAProductsManufactured(valid: boolean) {
         if (valid) {
-            console.log(this.sta10Details.id.toString());
+           //(this.sta10Details.id.toString());
             if (this.sta10ProductsManufactureDetails.length === 0) {
                 this.SpinnerService.show();
                 this.sta10ProductsManufactureDetail = this.sta10FormB.value;
@@ -632,7 +639,7 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.sta10ProductsManufactureDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Products being Manufactured Saved!',
@@ -655,13 +662,13 @@ export class NewSmarkPermitComponent implements OnInit {
         if (valid) {
             if (this.sta10RawMaterialsDetails.length > 0) {
                 this.SpinnerService.show();
-                console.log(this.sta10Details.id.toString());
+               //(this.sta10Details.id.toString());
                 this.qaService.saveRawMaterialsDetailsSta10(this.sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
                     (data) => {
                         this.sta10RawMaterialsDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Raw Materials Details saved!',
@@ -690,13 +697,13 @@ export class NewSmarkPermitComponent implements OnInit {
         if (valid) {
             if (this.sta10MachineryAndPlantDetails.length > 0) {
                 this.SpinnerService.show();
-                console.log(this.sta10Details.id.toString());
+               //(this.sta10Details.id.toString());
                 this.qaService.saveMachineryPlantDetailsSta10(this.sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
                     (data) => {
                         this.sta10MachineryAndPlantDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Machinery And Plant Details saved!',
@@ -725,14 +732,14 @@ export class NewSmarkPermitComponent implements OnInit {
         if (valid) {
             if (this.sta10ManufacturingProcessDetails.length > 0) {
                 this.SpinnerService.show();
-                console.log(this.sta10Details.id.toString());
+               //(this.sta10Details.id.toString());
                 // tslint:disable-next-line:max-line-length
                 this.qaService.saveManufacturingProcessDetailsSta10(this.sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
                     (data) => {
                         this.sta10ManufacturingProcessDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                        console.log(data);
+                       //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Manufacturing Process Details saved!',
@@ -832,7 +839,7 @@ export class NewSmarkPermitComponent implements OnInit {
         const file = this.uploadedFiles;
         const formData = new FormData();
         for (let i = 0; i < file.length; i++) {
-            console.log(file[i]);
+           //(file[i]);
             formData.append('docFile', file[i], file[i].name);
         }
 
@@ -840,7 +847,7 @@ export class NewSmarkPermitComponent implements OnInit {
         this.qaService.uploadSTA10File(this.sta1.id.toString(), formData).subscribe(
             (data: any) => {
                 this.SpinnerService.hide();
-                console.log(data);
+               //(data);
                 this.onClickUpdateStep(this.step);
                 this.step += 1;
                 swal.fire({
@@ -899,7 +906,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
 // Remove Form repeater values
     removePersonnelDetails(index) {
-        console.log(index);
+       //(index);
         if (index === 0) {
             this.sta10PersonnelDetails.splice(index, 1);
         } else {
@@ -941,7 +948,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
 
     onselectSection() {
-        console.log(this.SelectedSectionId);
+       //(this.SelectedSectionId);
         // this.SelectedSectionId=sselect;
         // this.SelectedSectionId = Selectedfood;
     }

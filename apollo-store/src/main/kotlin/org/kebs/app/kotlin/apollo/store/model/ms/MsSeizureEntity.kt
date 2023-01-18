@@ -12,7 +12,7 @@ class MsSeizureEntity : Serializable {
     @SequenceGenerator(name = "DAT_MS_SEIZURE_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_MS_SEIZURE_SEQ")
     @GeneratedValue(generator = "DAT_MS_SEIZURE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long? = null
+    var id: Long = 0
 
     @Basic
     @Column(name = "MARKET_TOWN_CENTER")
@@ -47,8 +47,24 @@ class MsSeizureEntity : Serializable {
     var brand: String? = null
 
     @Basic
+    @Column(name = "DATE_SEIZURE")
+    var dateSeizure: Date? = null
+
+    @Basic
+    @Column(name = "DATE_DESTRUCTED")
+    var dateDestructed: Date? = null
+
+    @Basic
+    @Column(name = "DATE_RELEASE")
+    var dateRelease: Date? = null
+
+    @Basic
     @Column(name = "SECTOR")
     var sector: String? = null
+
+    @Basic
+    @Column(name = "PRODUCTS_RELEASE")
+    var productsRelease: String? = null
 
     @Basic
     @Column(name = "REASON_SEIZURE")

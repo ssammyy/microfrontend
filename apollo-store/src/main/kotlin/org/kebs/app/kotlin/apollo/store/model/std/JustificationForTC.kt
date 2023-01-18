@@ -1,62 +1,63 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
-@Table(name="SD_JUSTIFICATION_FOR_TC")
+@Table(name = "SD_JUSTIFICATION_FOR_TC")
 class JustificationForTC {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ID")
-    var id:Long =0
+    @Column(name = "ID")
+    var id: Long = 0
 
-    @Column(name="SUBJECT")
+    @Column(name = "SUBJECT")
     @Basic
-    var subject:String? = null
+    var subject: String? = null
 
-    @Column(name="PROPOSER")
+    @Column(name = "PROPOSER")
     @Basic
-    var proposer:String? = null
+    var proposer: String? = null
 
-    @Column(name="PURPOSE")
+    @Column(name = "PURPOSE")
     @Basic
-    var purpose:String? = null
+    var purpose: String? = null
 
-    @Column(name="NAME_OF_TC")
+    @Column(name = "NAME_OF_TC")
     @Basic
-    var nameOfTC:String? = null
+    var nameOfTC: String? = null
 
-    @Column(name="SCOPE")
+    @Column(name = "SCOPE")
     @Basic
-    var scope:String? = null
+    var scope: String? = null
 
-    @Column(name="COM_REQUEST_ID")
+    @Column(name = "COM_REQUEST_ID")
     @Basic
-    var comRequestId:Long? = null
+    var comRequestId: Long? = null
 
-    @Column(name="STATUS")
+    @Column(name = "STATUS")
     @Basic
-    var status:Long? = null
+    var status: Long? = null
 
-    @Column(name="PROPOSED_TC_REPRESENTATION")
+    @Column(name = "PROPOSED_TC_REPRESENTATION")
     @Basic
-    var proposedRepresentation:String? = null
+    var proposedRepresentation: String? = null
 
-    @Column(name="PROGRAMME_OF_WORK")
+    @Column(name = "PROGRAMME_OF_WORK")
     @Basic
-    var programmeOfWork:String? = null
+    var programmeOfWork: String? = null
 
-    @Column(name="LIAISONS_ORGANIZATION")
+    @Column(name = "LIAISONS_ORGANIZATION")
     @Basic
-    var liaisonOrganization:String? = null
+    var liaisonOrganization: String? = null
 
-    @Column(name="ORGANIZATION")
+    @Column(name = "ORGANIZATION")
     @Basic
-    var organization:String? = null
+    var organization: String? = null
 
-    @Column(name="REFERENCE_NUMBER")
+    @Column(name = "REFERENCE_NUMBER")
     @Basic
-    var referenceNumber:String? = null
+    var referenceNumber: String? = null
 
     @Column(name = "TARGET_DATE")
     @Basic
@@ -74,51 +75,55 @@ class JustificationForTC {
     @Basic
     var tcNumber: String? = null
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    @Column(name = "CREATED_ON")
+    @Basic
+    var createdOn: Timestamp? = null
 
-        other as JustificationForTC
+    @Column(name = "CREATED_BY")
+    @Basic
+    var createdBy: Long? = null
 
-        if (id != other.id) return false
-        if (subject != other.subject) return false
-        if (proposer != other.proposer) return false
-        if (purpose != other.purpose) return false
-        if (nameOfTC != other.nameOfTC) return false
-        if (scope != other.scope) return false
-        if (proposedRepresentation != other.proposedRepresentation) return false
-        if (programmeOfWork != other.programmeOfWork) return false
-        if (liaisonOrganization != other.liaisonOrganization) return false
-        if (organization != other.organization) return false
-        if (referenceNumber != other.referenceNumber) return false
-        if (targetDate != other.targetDate) return false
-        if (dateOfPresentation != other.dateOfPresentation) return false
-        if (accentTo != other.accentTo) return false
+    @Column(name = "VERSION")
+    @Basic
+    var version: String? = null
 
-        return true
-    }
+    @Column(name = "COMMENTS")
+    @Basic
+    var comments: String? = null
 
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (subject?.hashCode() ?: 0)
-        result = 31 * result + (proposer?.hashCode() ?: 0)
-        result = 31 * result + (purpose?.hashCode() ?: 0)
-        result = 31 * result + (nameOfTC?.hashCode() ?: 0)
-        result = 31 * result + (scope?.hashCode() ?: 0)
-        result = 31 * result + (proposedRepresentation?.hashCode() ?: 0)
-        result = 31 * result + (programmeOfWork?.hashCode() ?: 0)
-        result = 31 * result + (liaisonOrganization?.hashCode() ?: 0)
-        result = 31 * result + (organization?.hashCode() ?: 0)
-        result = 31 * result + (referenceNumber?.hashCode() ?: 0)
-        result = 31 * result + (targetDate?.hashCode() ?: 0)
-        result = 31 * result + (dateOfPresentation?.hashCode() ?: 0)
-        result = 31 * result + (accentTo?.hashCode() ?: 0)
-        return result
-    }
+    @Column(name = "HOF_ID")
+    @Basic
+    var hofId: Long? = null
 
-    override fun toString(): String {
-        return "JustificationForTC(id=$id, subject=$subject, proposer=$proposer, purpose=$purpose, nameOfTC=$nameOfTC, scope=$scope, proposedRepresentation=$proposedRepresentation, programmeOfWork=$programmeOfWork, liaisonOrganization=$liaisonOrganization, organization=$organization, referenceNumber=$referenceNumber, targetDate=$targetDate, dateOfPresentation=$dateOfPresentation,accentTo=$accentTo)"
-    }
+    @Column(name = "SPC_ID")
+    @Basic
+    var spcId: Long? = null
+
+    @Column(name = "SAC_ID")
+    @Basic
+    var sacId: Long? = null
+
+    @Column(name = "COMMENTSSPC")
+    @Basic
+    var commentsSpc: String? = null
+
+
+    @Column(name = "HOFREVIEWDATE")
+    @Basic
+    var hofReviewDate: Timestamp? = null
+
+    @Column(name = "SPCREVIEWDATE")
+    @Basic
+    var spcReviewDate: Timestamp? = null
+
+    @Column(name = "SACREVIEWDATE")
+    @Basic
+    var sacReviewDate: Timestamp? = null
+
+    @Column(name = "DEPARTMENT_ID")
+    @Basic
+    var departmentId: Long? = null
+
 
 
 }

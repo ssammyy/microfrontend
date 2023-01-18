@@ -507,8 +507,17 @@
 				<textFieldExpression><![CDATA[$F{findings}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="41" y="4" width="497" height="30" forecolor="#0070C0" uuid="3aef7c68-375e-4364-a0ce-e30be20c9bed"/>
-				<textElement textAlignment="Center" verticalAlignment="Top">
+				<reportElement x="143" y="4" width="173" height="37" forecolor="#C00010" uuid="3aef7c68-375e-4364-a0ce-e30be20c9bed">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C00010"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C00010"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C00010"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C00010"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{reportClassification}]]></textFieldExpression>
