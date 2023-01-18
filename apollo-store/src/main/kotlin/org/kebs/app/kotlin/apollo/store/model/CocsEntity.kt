@@ -157,7 +157,7 @@ class CocsEntity : Serializable {
     @Basic
     var exporterEmail: String? = null
 
-    @Column(name = "PLACE_OF_INSPECTION", nullable = false, length = 4000)
+    @Column(name = "PLACE_OF_INSPECTION", length = 4000)
     @Basic
     var placeOfInspection: String? = null
 
@@ -170,7 +170,7 @@ class CocsEntity : Serializable {
     @Basic
     var inspectionProvince: String? = null
 
-    @Column(name = "DATE_OF_INSPECTION", nullable = false)
+    @Column(name = "DATE_OF_INSPECTION")
     @Basic
     var dateOfInspection: Timestamp? = null
 

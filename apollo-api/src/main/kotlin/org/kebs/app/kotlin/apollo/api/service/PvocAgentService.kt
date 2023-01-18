@@ -33,15 +33,15 @@ enum class ComplaintStatus(val code: Int) {
 
 @Service("pvocAgentService")
 class PvocAgentService(
-        private val commonDaoServices: CommonDaoServices,
-        private val timelinesRepository: IPvocTimelinesDataEntityRepository,
-        private val partnerService: PvocPartnerService,
-        private val apiClientService: ApiClientService,
-        private val partnerQuerriesRepository: IPvocQuerriesRepository,
-        private val partnerQueryResponseRepository: IPvocQueryResponseRepository,
-        private val daoServices: DestinationInspectionDaoServices,
-        private val pvocIntegrations: ForeignPvocIntegrations,
-        private val properties: ApplicationMapProperties
+    private val commonDaoServices: CommonDaoServices,
+    private val timelinesRepository: IPvocTimelinesDataEntityRepository,
+    private val partnerService: PvocPartnerService,
+    private val apiClientService: ApiClientService,
+    private val partnerQuerriesRepository: IPvocQuerriesRepository,
+    private val partnerQueryResponseRepository: IPvocQueryResponseRepository,
+    private val daoServices: DestinationInspectionDaoServices,
+    private val pvocIntegrations: ForeignPvocIntegrations,
+    private val properties: ApplicationMapProperties
 ) {
     val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
     val TIMELINE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMM")
@@ -58,12 +58,17 @@ class PvocAgentService(
     }
 
 
-
     fun timelineIssues(yearMonth: Optional<String>): ApiResponseModel {
         val partner = commonDaoServices.loggedInPartnerDetails()
         val issues = when {
-            yearMonth.isPresent -> this.timelinesRepository.findByRecordYearMonthAndPartnerId(yearMonth.get(), partner.id)
-            else -> this.timelinesRepository.findByRecordYearMonthAndPartnerId(TIMELINE_DATE_FORMAT.format(LocalDateTime.now()), partner.id)
+            yearMonth.isPresent -> this.timelinesRepository.findByRecordYearMonthAndPartnerId(
+                yearMonth.get(),
+                partner.id
+            )
+            else -> this.timelinesRepository.findByRecordYearMonthAndPartnerId(
+                TIMELINE_DATE_FORMAT.format(LocalDateTime.now()),
+                partner.id
+            )
         }
         val response = ApiResponseModel()
         response.data = PvocPartnerTimelinesDataDto.fromList(issues)
@@ -74,14 +79,15 @@ class PvocAgentService(
     }
 
 
-
-
-
     fun receiveCoc(coc: CocEntityForm): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val actiVerUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignCoc(actiVerUser, coc, commonDaoServices.serviceMapDetails(properties.mapImportInspection))?.let { cocEntity ->
+            this.pvocIntegrations.foreignCoc(
+                actiVerUser,
+                coc,
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection)
+            )?.let { cocEntity ->
                 this.daoServices.sendLocalCoc(cocEntity)
                 response.data = coc
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -105,7 +111,11 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val activerUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignCor(cor, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activerUser)?.let { corEntity ->
+            this.pvocIntegrations.foreignCor(
+                cor,
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection),
+                activerUser
+            )?.let { corEntity ->
                 // Send COR to KWS
                 this.daoServices.submitCoRToKesWS(corEntity)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -129,7 +139,11 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val activerUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignCoi(activerUser, form, commonDaoServices.serviceMapDetails(properties.mapImportInspection))?.let { corEntity ->
+            this.pvocIntegrations.foreignCoi(
+                activerUser,
+                form,
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection)
+            )?.let { corEntity ->
                 // Send Foreign COI to KEWS
                 this.daoServices.sendLocalCoi(corEntity)
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -152,7 +166,12 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val activeUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignRfc(form, "COI", commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { rfcEntity ->
+            this.pvocIntegrations.foreignRfc(
+                form,
+                "COI",
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection),
+                activeUser
+            )?.let { rfcEntity ->
                 response.data = form
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "RFC with number: " + form.rfcNumber + " received"
@@ -178,7 +197,12 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val activeUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignRfc(form, "COC", commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { rfcEntity ->
+            this.pvocIntegrations.foreignRfc(
+                form,
+                "COC",
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection),
+                activeUser
+            )?.let { rfcEntity ->
                 response.data = form
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "RFC for COC with number: " + form.rfcNumber + " received"
@@ -205,7 +229,11 @@ class PvocAgentService(
         response.data = form
         try {
             val activeUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignRfcCor(form, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { rfcEntity ->
+            this.pvocIntegrations.foreignRfcCor(
+                form,
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection),
+                activeUser
+            )?.let { rfcEntity ->
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "RFC for COR with number: " + form.rfcNumber + " received"
                 response
@@ -231,7 +259,11 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val activerUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignNcr(activerUser, ncr, commonDaoServices.serviceMapDetails(properties.mapImportInspection))?.let { ncrEntity ->
+            this.pvocIntegrations.foreignNcr(
+                activerUser,
+                ncr,
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection)
+            )?.let { ncrEntity ->
                 // Create response
                 response.data = ncr
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -254,7 +286,11 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val activeUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignNcrCor(ncr, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { ncrEntity ->
+            this.pvocIntegrations.foreignNcrCor(
+                ncr,
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection),
+                activeUser
+            )?.let { ncrEntity ->
                 // Create response
                 response.data = ncr
                 response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -277,7 +313,11 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val activeUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignRiskProfile(form, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { riskEntity ->
+            this.pvocIntegrations.foreignRiskProfile(
+                form,
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection),
+                activeUser
+            )?.let { riskEntity ->
                 response.data = form
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "RISK for HS Code: " + form.hsCode + " received"
@@ -329,7 +369,11 @@ class PvocAgentService(
         val response = ApiResponseModel()
         try {
             val activeUser = commonDaoServices.loggedInPartnerDetails()
-            this.pvocIntegrations.foreignIdfData(form, commonDaoServices.serviceMapDetails(properties.mapImportInspection), activeUser)?.let { riskEntity ->
+            this.pvocIntegrations.foreignIdfData(
+                form,
+                commonDaoServices.serviceMapDetails(properties.mapImportInspection),
+                activeUser
+            )?.let { riskEntity ->
                 response.data = form
                 response.responseCode = ResponseCodes.SUCCESS_CODE
                 response.message = "IDF for ucr: " + form.ucrNumber + " received"
@@ -349,6 +393,7 @@ class PvocAgentService(
     }
 
     fun certificateExists(documentType: String, certificateNumber: String, partnerId: Long?): Boolean {
+        KotlinLogging.logger { }.info("Find $documentType Certificate $certificateNumber with parterId=$partnerId")
         return when (documentType.toUpperCase()) {
             "COC", "COI", "NCR" -> {
                 daoServices.findCocByCocNumber(certificateNumber)?.let { coc ->
@@ -370,42 +415,37 @@ class PvocAgentService(
             val auth = commonDaoServices.loggedInUserAuthentication()
             val partner = this.commonDaoServices.loggedInPartnerDetails()
             if (certificateExists(form.documentType.orEmpty().toUpperCase(), form.certNumber.orEmpty(), partner.id)) {
+                val query = PvocQueriesEntity()
+                query.serialNumber = queryReference("PVOC")
+                query.partnerId = partner.id
                 daoServices.findCdWithUcrNumberLatest(form.ucrNumber.orEmpty())?.let { cd ->
-                    val query = PvocQueriesEntity()
-                    query.serialNumber = queryReference("PVOC")
-                    query.partnerId = partner.id
                     query.varField1 = cd.id.toString()
-                    query.certNumber = form.certNumber
-                    query.certType = form.documentType?.toUpperCase()
-                    query.queryOrigin = "PVOC"
-                    query.ucrNumber = form.ucrNumber
-                    query.rfcNumber = form.rfcNumber
-                    query.idfNumber = form.idfNumber
-                    query.invoiceNumber = form.invoiceNumber
-                    query.queryDetails = form.partnerQuery
-                    query.pvocAgentReplyStatus = 1
-                    query.kebsReplyReplyStatus = 0
-                    query.conclusionStatus = 0
-                    query.status = 1
-                    query.varField10 = auth.name
-                    query.createdBy = auth.name
-                    query.createdOn = Timestamp.from(Instant.now())
-                    query.modifiedOn = Timestamp.from(Instant.now())
-                    this.partnerQuerriesRepository.save(query)
-                    val data = mutableMapOf<String, Any>()
-                    data["certNumber"] = form.certNumber ?: "UNKNOWN"
-                    data["certType"] = form.documentType ?: "UNKNOWN"
-                    data["serialNumber"] = query.serialNumber ?: "NA"
-                    response.data = data
-                    response.responseCode = ResponseCodes.SUCCESS_CODE
-                    response.message = "Query received"
-                    response
-                } ?: run {
-                    response.data = form
-                    response.responseCode = ResponseCodes.NOT_FOUND
-                    response.message = "Invalid UCR number, no such consignment"
-                    response
+                    query.cdId = cd.id
                 }
+                query.certNumber = form.certNumber
+                query.certType = form.documentType?.toUpperCase()
+                query.queryOrigin = "PVOC"
+                query.ucrNumber = form.ucrNumber
+                query.rfcNumber = form.rfcNumber
+                query.idfNumber = form.idfNumber
+                query.invoiceNumber = form.invoiceNumber
+                query.queryDetails = form.partnerQuery
+                query.pvocAgentReplyStatus = 1
+                query.kebsReplyReplyStatus = 0
+                query.conclusionStatus = 0
+                query.status = 1
+                query.modifiedBy = auth.name
+                query.createdBy = auth.name
+                query.createdOn = Timestamp.from(Instant.now())
+                query.modifiedOn = Timestamp.from(Instant.now())
+                this.partnerQuerriesRepository.save(query)
+                val data = mutableMapOf<String, Any>()
+                data["certNumber"] = form.certNumber ?: "UNKNOWN"
+                data["certType"] = form.documentType ?: "UNKNOWN"
+                data["serialNumber"] = query.serialNumber ?: "NA"
+                response.data = data
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+                response.message = "Query received"
             } else {
                 response.data = form
                 response.responseCode = ResponseCodes.NOT_FOUND
@@ -462,7 +502,8 @@ class PvocAgentService(
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                     response.message = "Response Received"
                 } else {
-                    KotlinLogging.logger { }.warn("Received query response from unexpected partner: ${partner.partnerRefNo}-Expected: ${query.partnerId}")
+                    KotlinLogging.logger { }
+                        .warn("Received query response from unexpected partner: ${partner.partnerRefNo}-Expected: ${query.partnerId}")
                     response.responseCode = ResponseCodes.INVALID_CODE
                     response.message = "Invalid response received"
                 }
@@ -523,7 +564,8 @@ class PvocAgentService(
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                     response.message = "Response Received"
                 } else {
-                    KotlinLogging.logger { }.warn("Received query response from unexpected partner: ${partner?.partnerRefNo}-Expected: ${query.partnerId}")
+                    KotlinLogging.logger { }
+                        .warn("Received query response from unexpected partner: ${partner?.partnerRefNo}-Expected: ${query.partnerId}")
                     response.responseCode = ResponseCodes.INVALID_CODE
                     response.message = "Invalid response received"
                 }
@@ -556,7 +598,12 @@ class PvocAgentService(
         try {
             partnerService.getPartner(form.partnerId!!)?.let { partner ->
                 partnerService.getPartnerApiClient(form.partnerId!!)?.let { apiClient ->
-                    if (documentExists(form.documentType.orEmpty(), form.ucrNumber.orEmpty(), form.certNumber.orEmpty())) {
+                    if (documentExists(
+                            form.documentType.orEmpty(),
+                            form.ucrNumber.orEmpty(),
+                            form.certNumber.orEmpty()
+                        )
+                    ) {
                         val query = PvocQueriesEntity()
                         query.serialNumber = queryReference("KEBS")
                         query.partnerId = partner.id
@@ -659,7 +706,8 @@ class PvocAgentService(
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                     response.message = "Response Received"
                 } else {
-                    KotlinLogging.logger { }.warn("Received query response from unexpected partner: ${partner?.partnerRefNo}-Expected: ${query.partnerId}")
+                    KotlinLogging.logger { }
+                        .warn("Received query response from unexpected partner: ${partner?.partnerRefNo}-Expected: ${query.partnerId}")
                     response.responseCode = ResponseCodes.INVALID_CODE
                     response.message = "Invalid response received"
                 }

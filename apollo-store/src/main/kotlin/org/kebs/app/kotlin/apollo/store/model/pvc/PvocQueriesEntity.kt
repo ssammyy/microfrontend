@@ -10,13 +10,21 @@ import javax.persistence.*
 class PvocQueriesEntity : Serializable {
     @Column(name = "ID", nullable = false, precision = 0)
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_PVOC_QUERIES_SEQ_GEN", sequenceName = "DAT_KEBS_PVOC_QUERIES_SEQ", allocationSize = 1)
+    @SequenceGenerator(
+        name = "DAT_KEBS_PVOC_QUERIES_SEQ_GEN",
+        sequenceName = "DAT_KEBS_PVOC_QUERIES_SEQ",
+        allocationSize = 1
+    )
     @GeneratedValue(generator = "DAT_KEBS_PVOC_QUERIES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
 
     @Column(name = "PARTNER_ID", nullable = true, length = 4000)
     @Basic
     var partnerId: Long? = null
+
+    @Column(name = "CD_ID", nullable = true, length = 4000)
+    @Basic
+    var cdId: Long? = null
 
     @Column(name = "SERIAL_NUMBER", nullable = true, length = 50)
     @Basic

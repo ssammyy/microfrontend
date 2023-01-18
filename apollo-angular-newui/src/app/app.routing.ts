@@ -275,6 +275,8 @@ import {ComStdPublishingComponent} from "./apollowebs/standards-development/comp
 import {ComStdEditorComponent} from "./apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component";
 import {SampleSubmittedTimelineComponent} from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 import {CorporateBillsComponent} from "./apollowebs/invoice/corporate-bills/corporate-bills.component";
+import {ViewRfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
+import {ViewRfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
 
 export const routes: Routes = [
     {
@@ -679,15 +681,15 @@ export const routes: Routes = [
                     },
                     {
                         path: 'document/rfc/cor/:id',
-                        component: ViewCorComponent,
+                        component: ViewRfcCorDocumentsComponent,
                     },
                     {
-                        path: 'documents/rfc/other',
+                        path: 'documents/rfc/coc',
                         component: RfcCocDocumentsComponent,
                     },
                     {
-                        path: 'document/rfc/other/:id',
-                        component: ViewCorComponent,
+                        path: 'document/rfc/coc/:id',
+                        component: ViewRfcCocDocumentsComponent,
                     },
                 ],
             },
