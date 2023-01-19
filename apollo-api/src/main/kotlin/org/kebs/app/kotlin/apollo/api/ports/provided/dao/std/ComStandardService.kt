@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -708,8 +709,16 @@ class ComStandardService(
     fun findUploadedFileBYId(comDraftDocumentId: Long): ComStandardDraftUploads {
         comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$comDraftDocumentId]")
+        }
     }
+
+    fun viewCompanyDraft(comStdDraftID: Long): ComStandardDraftUploads {
+        comStandardDraftUploadsRepository.findByComDraftDocumentId(comStdDraftID)?.let {
+            return it
+        }
+    }
+
+
 
 
 

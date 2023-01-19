@@ -417,6 +417,17 @@ class ComStandardController (val comStandardService: ComStandardService,
         commonDaoServices.downloadFile(response, mappedFileClass)
     }
 
+    @GetMapping("/company_standard/viewCompanyDraft")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun viewCompanyDraft(
+        response: HttpServletResponse,
+        @RequestParam("comStdDraftID") comStdDraftID: Long
+    ) {
+        val fileUploaded = comStandardService.viewCompanyDraft(comStdDraftID)
+        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+        commonDaoServices.downloadFile(response, mappedFileClass)
+    }
+
     @GetMapping("/company_standard/getDraftDocumentList")
     fun getDraftDocumentList(
         response: HttpServletResponse,
@@ -424,6 +435,8 @@ class ComStandardController (val comStandardService: ComStandardService,
     ): List<SiteVisitListHolder> {
         return comStandardService.getDraftDocumentList(comStdDraftID)
     }
+
+
 
     @GetMapping("/company_standard/view/comDraft")
     fun viewCompanyDraftFile(
