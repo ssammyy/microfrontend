@@ -320,10 +320,9 @@ class CocEntityForm {
     @JsonAlias("EXPORTER_EMAIL")
     var exporterEmail: String? = null
 
-    @NotEmpty(message = "Required field")
     @Size(max = 150, message = "should be upto 150 characters")
     @JsonAlias("PLACE_OF_INSPECTION")
-    var placeOfInspection: String? = null
+    var placeOfInspection: String? = null // Optional
 
     @Size(max = 250, message = "should be upto 250 characters")
     var inspectionZone: String? = null
@@ -331,10 +330,9 @@ class CocEntityForm {
     @Size(max = 250, message = "should be upto 250 characters")
     var inspectionProvince: String? = null
 
-    @NotNull(message = "Required field")
     @JsonAlias("DATE_OF_INSPECTION")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-    var dateOfInspection: Timestamp? = null
+    var dateOfInspection: Timestamp? = null // Optional
 
     @NotEmpty(message = "Required field")
     @Size(max = 150, message = "should be upto 150 characters")
@@ -568,15 +566,13 @@ class NcrEntityForm {
     @JsonAlias("SHIPMENT_MODE")
     var shipmentMode: String? = null
 
-    @NotEmpty(message = "Required field")
     @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("SHIPMENT_SEAL_NUMBER")
-    var shipmentSealNumbers: String? = null
+    var shipmentSealNumbers: String? = null // optional
 
-    @NotEmpty(message = "Required field")
     @Size(max = 150, message = "Should be upto 150 characters")
     @JsonAlias("SHIPMENT_CONTAINER_NUMBER")
-    var shipmentContainerNumber: String? = null
+    var shipmentContainerNumber: String? = null // optional
 
     @NotNull(message = "Required field")
     @Min(value = 0, message = "Gross weight should not be negative")
@@ -1359,9 +1355,8 @@ class RfcEntityForm {
     @Size(max = 400, message = "Should be upto 150 characters")
     var exporterName: String? = null
 
-    @NotEmpty(message = "Required field")
     @Size(max = 100, message = "Should be upto 100 characters")
-    var exporterPin: String? = null
+    var exporterPin: String? = null // optional for rfc
 
     @NotEmpty(message = "Required field")
     @Size(max = 150, message = "Should be upto 150 characters")
@@ -1443,7 +1438,6 @@ class RfcEntityForm {
     @Size(max = 150, message = "Should be upto 150 characters")
     var assemblyState: String? = null
 
-    @NotEmpty(message = "Required field")
     @Size(min = 0, max = 25, message = "Should be upto 25 attachments")
     var linkToAttachedDocuments: List<String>? = null
 
@@ -1727,7 +1721,7 @@ class RfcCorForm {
     var assemblyState: String? = null
 
     @Size(min = 0, max = 25, message = "Should be upto 25 attachments")
-    var linkToAttachedDocuments: List<String>? = null
+    var linkToAttachedDocuments: List<String>? = null //Optional
 
     @NotNull(message = "Required field")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
