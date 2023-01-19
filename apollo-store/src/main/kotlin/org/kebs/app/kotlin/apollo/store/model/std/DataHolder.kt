@@ -413,6 +413,11 @@ interface UserEmailListHolder{
     fun getLastName(): String?;
 }
 
+interface EmailList{
+   fun getEmail(): String?
+   fun getName(): String?
+}
+
 interface UserIdHolder{
     fun getUserId();
 }
@@ -645,6 +650,7 @@ interface ISAdoptionProposalJustification{
 interface COMUploadedDraft{
     fun getId(): Long?
     fun getRequestId(): Long?
+    fun getDraftId(): Long?
     fun getTitle(): String?
     fun getScope(): String?
     fun getNormativeReference(): String?
@@ -658,6 +664,21 @@ interface COMUploadedDraft{
     fun getProposalId(): Long?
     fun getDocumentType():String?
     fun getPreparedBy():String?
+    fun getDepartmentid(): String?
+    fun getDepartmentname(): String?
+    fun getSubject(): String?
+    fun getDescription(): String?
+    fun getContactonefullname(): String?
+    fun getContactonetelephone(): String?
+    fun getContactoneemail(): String?
+    fun getContacttwofullname(): String?
+    fun getContacttwotelephone(): String?
+    fun getContacttwoemail(): String?
+    fun getContactthreefullname(): String?
+    fun getContactthreetelephone(): String?
+    fun getContactthreeemail(): String?
+    fun getCompanyname(): String?
+    fun getCompanyphone(): String?
 }
 
 interface ComStdRequest{
@@ -669,9 +690,21 @@ interface ComStdRequest{
     fun getCompanyEmail(): String?
     fun getTcName(): String?
     fun getDepartmentName(): String?
+    fun getDepartmentId(): Long?
     fun getProductName(): String?
     fun getProductSubCategoryName(): String?
     fun getStatus(): Long?
+    fun getSubject(): String?
+    fun getDescription(): String?
+    fun getContactOneFullName(): String?
+    fun getContactOneTelephone(): String?
+    fun getContactOneEmail(): String?
+    fun getContactTwoFullName(): String?
+    fun getContactTwoTelephone(): String?
+    fun getContactTwoEmail(): String?
+    fun getContactThreeFullName(): String?
+    fun getContactThreeTelephone(): String?
+    fun getContactThreeEmail(): String?
 }
 
 

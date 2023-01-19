@@ -48,7 +48,8 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
   public actionRequest: ComStdRequest | undefined;
     public committeeFormGroup!: FormGroup;
     public uploadDraftFormGroup!: FormGroup;
-  blob: Blob;
+    blob: Blob;
+    public uploadedFiles:  FileList;
    public dropdownSettings: IDropdownSettings = {};
     dropdownList: any[] = [];
 
@@ -84,7 +85,21 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
           docName:[],
           standardNumber:[],
           requestNumber: [],
-          requestId:[]
+          requestId:[],
+          departmentId:[],
+          subject:[],
+          description:[],
+          contactOneFullName:[],
+          contactOneTelephone:[],
+          contactOneEmail:[],
+          contactTwoFullName:[],
+          contactTwoTelephone:[],
+          contactTwoEmail:[],
+          contactThreeFullName:[],
+          contactThreeTelephone:[],
+          contactThreeEmail:[],
+          companyName:[],
+          companyPhone:[]
 
       });
 
@@ -94,7 +109,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
           textField: 'name',
           selectAllText: 'Select All',
           unSelectAllText: 'UnSelect All',
-          itemsShowLimit: 1,
+          itemsShowLimit: 5,
           allowSearchFilter: true
       };
 
@@ -181,6 +196,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         }
     );
   }
+
   public onOpenModal(task: ComStdRequest,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
@@ -201,7 +217,21 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
           this.uploadDraftFormGroup.patchValue(
               {
                   requestNumber: this.actionRequest.requestNumber,
-                  requestId: this.actionRequest.id
+                  requestId: this.actionRequest.id,
+                  departmentId:this.actionRequest.departmentId,
+                  subject:this.actionRequest.subject,
+                  description:this.actionRequest.description,
+                  contactOneFullName:this.actionRequest.contactOneFullName,
+                  contactOneTelephone:this.actionRequest.contactOneTelephone,
+                  contactOneEmail:this.actionRequest.contactOneEmail,
+                  contactTwoFullName:this.actionRequest.contactTwoFullName,
+                  contactTwoTelephone:this.actionRequest.contactTwoTelephone,
+                  contactTwoEmail:this.actionRequest.contactTwoEmail,
+                  contactThreeFullName:this.actionRequest.contactThreeFullName,
+                  contactThreeTelephone:this.actionRequest.contactThreeTelephone,
+                  contactThreeEmail:this.actionRequest.contactThreeEmail,
+                  companyName:this.actionRequest.companyName,
+                  companyPhone:this.actionRequest.companyPhone
               }
           );
       }
@@ -263,7 +293,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         (response: UserEntity[]) => {
           this.SpinnerService.hide();
           this.users = response;
-          console.log(this.users)
+          //console.log(this.users)
           this.dropdownList = response;
         },
         (error: HttpErrorResponse) => {
@@ -309,9 +339,11 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
             (response ) => {
                 //console.log(response);
                 this.getCompanyStandardRequest();
-                this.SpinnerService.hide();
-                this.showToasterSuccess('Success', `Draft Uploaded`);
                 this.uploadDraftFormGroup.reset();
+                this.onClickSaveUploads(response.body.id)
+                this.showToasterSuccess('Success', `Draft Uploaded`);
+                this.SpinnerService.hide();
+
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -320,6 +352,57 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
             }
         );
         this.hideModalUploadDraft();
+    }
+    onClickSaveUploads(comStdDraftID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.stdComStandardService.uploadPDFileDetails(comStdDraftID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Thank you....',
+                        html:'Company Standard Draft Uploaded',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    }).then(r => this.uploadDraftFormGroup.reset());
+                },
+            );
+        }
+
+    }
+
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+            }
+        );
     }
 
     @ViewChild('closeModalAssign') private closeModalAssign: ElementRef | undefined;

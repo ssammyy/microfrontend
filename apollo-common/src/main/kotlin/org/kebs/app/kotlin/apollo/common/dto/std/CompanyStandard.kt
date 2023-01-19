@@ -30,7 +30,21 @@ class ComStdDraftDto(
     var special: String?=null,
     var uploadedBy: String?=null,
     var requestNumber: String?=null,
-    var requestId: Long?=null
+    var requestId: Long?=null,
+    var departmentId: Long?=null,
+    var subject: String?=null,
+    var description: String?=null,
+    var contactOneFullName: String?=null,
+    var contactOneTelephone: String?=null,
+    var contactOneEmail: String?=null,
+    var contactTwoFullName: String?=null,
+    var contactTwoTelephone: String?=null,
+    var contactTwoEmail: String?=null,
+    var contactThreeFullName: String?=null,
+    var contactThreeTelephone: String?=null,
+    var contactThreeEmail: String?=null,
+    var companyName: String?=null,
+    var companyPhone: String?=null
 ){
 
 }

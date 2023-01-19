@@ -496,6 +496,7 @@ export class ApiEndpointService {
         ICT_COM_STD_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/proofReadStandard`,
         ICT_COM_STD_DEC_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/approveProofReadStandard`,
         ICT_COM_STD_SUBMIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftForEditing`,
+        ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getDraftDocumentList`,
 
 
 

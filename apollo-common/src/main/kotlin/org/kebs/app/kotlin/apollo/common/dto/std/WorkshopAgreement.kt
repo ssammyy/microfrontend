@@ -184,7 +184,8 @@ class ISDraftDecisions(
     @JsonProperty("justificationId") val justificationId: Long,
     @JsonProperty("draftId") val draftId: Long,
     @JsonProperty("comments") val comments: String,
-    @JsonProperty("requestId") val requestId: Long
+    @JsonProperty("requestId") val requestId: Long,
+    @JsonProperty("id") val id: Long
 ){
 
 }
@@ -420,20 +421,45 @@ data class CSDraftDto(
     var comStdNumber:String?=null,
     var documentType:String?=null,
     var requestId:Long?=null,
+    var departmentId: Long?=null,
+    var subject: String?=null,
+    var description: String?=null,
+    var contactOneFullName: String?=null,
+    var contactOneTelephone: String?=null,
+    var contactOneEmail: String?=null,
+    var contactTwoFullName: String?=null,
+    var contactTwoTelephone: String?=null,
+    var contactTwoEmail: String?=null,
+    var contactThreeFullName: String?=null,
+    var contactThreeTelephone: String?=null,
+    var contactThreeEmail: String?=null,
+    var companyName: String?=null,
+    var companyPhone: String?=null
 ){
 
 }
 
 data class ISCompanyStdRequestDto(
     var companyName: String?=null,
-    var departmentId: String?=null,
     var tcId: String?=null,
     var productId: String?=null,
     var productSubCategoryId: String?=null,
     var companyPhone: String?=null,
     var assignedTo: Long?=null,
     var companyEmail: String?=null,
-    var requestId: Long
+    var requestId: Long,
+    var departmentId: String?=null,
+    var subject: String?=null,
+    var description: String?=null,
+    var contactOneFullName: String?=null,
+    var contactOneTelephone: String?=null,
+    var contactOneEmail: String?=null,
+    var contactTwoFullName: String?=null,
+    var contactTwoTelephone: String?=null,
+    var contactTwoEmail: String?=null,
+    var contactThreeFullName: String?=null,
+    var contactThreeTelephone: String?=null,
+    var contactThreeEmail: String?=null
 ){
 
 }

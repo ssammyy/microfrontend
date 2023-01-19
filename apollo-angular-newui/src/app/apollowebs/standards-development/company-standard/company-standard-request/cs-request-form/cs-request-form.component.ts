@@ -6,7 +6,7 @@ import {
   ProductSubCategory,
   TechnicalCommittee
 } from "../../../../../core/store/data/std/std.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {StdComStandardService} from "../../../../../core/store/data/std/std-com-standard.service";
 import Swal from "sweetalert2";
@@ -45,13 +45,24 @@ export class CsRequestFormComponent implements OnInit {
       this.getDepartments();
 
     this.stdRequestFormGroup = this.formBuilder.group({
-      companyName:['', Validators.required],
-      companyPhone:['', Validators.required],
-      departmentId:['', Validators.required],
-      tcId: ['', Validators.required],
-      productId: ['', Validators.required],
-      productSubCategoryId:['', Validators.required],
-      companyEmail:['', Validators.required]
+    companyName:['', Validators.required],
+    companyPhone:['', Validators.required],
+    departmentId:['', Validators.required],
+    // tcId: ['', Validators.required],
+    // productId: ['', Validators.required],
+    // productSubCategoryId:['', Validators.required],
+    companyEmail:['', Validators.required],
+    subject: ['',Validators.required],
+    description: ['',Validators.required],
+    contactOneFullName: ['',Validators.required],
+    contactOneTelephone: ['',Validators.required],
+    contactOneEmail: ['',Validators.required]
+    // contactTwoFullName: [],
+    // contactTwoTelephone: [],
+    // contactTwoEmail: [],
+    // contactThreeFullName: [],
+    // contactThreeTelephone: [],
+    // contactThreeEmail: []
     });
   }
   get formStdRequest(): any{
@@ -68,6 +79,7 @@ export class CsRequestFormComponent implements OnInit {
             }
         );
     }
+
 
 
 
@@ -219,5 +231,7 @@ export class CsRequestFormComponent implements OnInit {
                 '</div>'
         });
     }
+
+
 
 }

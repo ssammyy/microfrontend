@@ -28,7 +28,7 @@ import {
 } from './std.model';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
-import {SiteVisitRemarks} from "../levy/levy.model";
+import {DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -254,6 +254,7 @@ export class StdComStandardService {
     );
   }
 
+
   public prepareCompanyPreliminaryDraft(comPreliminaryDraft: COMPreliminaryDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_PREPARE_PRELIMINARY_DRAFT);
     const params = new HttpParams();
@@ -266,6 +267,8 @@ export class StdComStandardService {
         })
     );
   }
+
+
   //upload Draft Document
   public uploadPDFileDetails(comStdDraftID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_PD);
@@ -305,6 +308,12 @@ export class StdComStandardService {
           return throwError(fault);
         })
     );
+  }
+
+  public getDraftDocumentList(comStdDraftID: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT_DOCUMENT_LIST);
+    const params = new HttpParams().set('comStdDraftID', comStdDraftID);
+    return this.http.get<DocumentDTO[]>(url, {params}).pipe();
   }
 
 
