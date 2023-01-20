@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {
@@ -40,6 +40,7 @@ import {
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 
+
 @Component({
   selector: 'app-complaint-new',
   templateUrl: './complaint-new.component.html',
@@ -52,8 +53,10 @@ export class ComplaintNewComponent implements OnInit {
   timer!: Observable<number>;
   timerObserver!: PartialObserver<number>;
   step = 1;
+  regionName: string;
   countyName: string;
   townName: string;
+  pdfUrls: string[] = [];
 
   public clicked = false;
   clickedInstructions = true;
@@ -69,6 +72,8 @@ export class ComplaintNewComponent implements OnInit {
   stepFiveForm!: FormGroup;
 
   uploadedFiles: FileList;
+  arrayOfUploadedFiles = [];
+
   savedDetails: MSComplaintSubmittedSuccessful;
   customerDetails: ComplaintCustomersDto;
   complaintDetails: ComplaintDto;
@@ -96,6 +101,7 @@ export class ComplaintNewComponent implements OnInit {
   submitted = false;
 
 
+
   constructor(
       private msService: MsService,
       private service: RegistrationPayloadService,
@@ -107,6 +113,7 @@ export class ComplaintNewComponent implements OnInit {
       private townService: TownService,
       private formBuilder: FormBuilder,
       private store$: Store<any>,
+
   ) {
 
 
@@ -122,8 +129,9 @@ export class ComplaintNewComponent implements OnInit {
     naturesService.getAll().subscribe();
     linesService.getAll().subscribe();
 
-
   }
+
+
 
   ngOnInit(): void {
     this.timer = interval(1000).pipe(takeUntil(this.ispause));
@@ -139,9 +147,10 @@ export class ComplaintNewComponent implements OnInit {
       },
     };
 
+
     this.countyService.getAll().subscribe((data: County[]) => {
       // this.countyList = data.sort((a, b) => a.county - b.county);
-      this.countyList = data.sort((a, b) => a.county > b.county ? 1 : -1)
+      this.countyList = data.sort((a, b) => a.county > b.county ? 1 : -1);
         },
     );
 
@@ -173,6 +182,7 @@ export class ComplaintNewComponent implements OnInit {
       // complaintCategory: new FormControl('', [Validators.required]),
       // myProduct: new FormControl('', [Validators.required]),
       productBrand: new FormControl('', [Validators.required]),
+      productName: new FormControl('',[Validators.required]),
     });
 
     this.stepThreeForm = new FormGroup({
@@ -207,6 +217,7 @@ export class ComplaintNewComponent implements OnInit {
 
   }
 
+
   get formStepZeroForm(): any {
     return this.stepZeroForm.controls;
   }
@@ -239,6 +250,9 @@ export class ComplaintNewComponent implements OnInit {
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
+    // this.regionService.getAll().subscribe((data: Region[]) => {
+    //   this.regionName = data?.find(x => x.id === this.selectedRegion).region;
+    // },);
   }
 
   updateSelectedCounty() {
@@ -312,8 +326,17 @@ export class ComplaintNewComponent implements OnInit {
 
   }
 
-  reviewComplaint() {
 
+  resetPreviewDocs() {
+    this.arrayOfUploadedFiles.splice(0);
+  }
+
+  reviewComplaint() {
+    if (this.uploadedFiles){
+      for( let i =0; i<this.uploadedFiles.length; i++){
+        this.arrayOfUploadedFiles.push(this.uploadedFiles[i]);
+      }
+    }
     this.customerDetails = this.stepOneForm.value;
     this.complaintDetails = this.stepTwoForm.value;
     this.locationDetails = this.stepThreeForm.value;
@@ -535,4 +558,7 @@ export class ComplaintNewComponent implements OnInit {
 
   }
 
+
+
 }
+

@@ -1005,11 +1005,33 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col">
+                            <div class="form-group" style="margin-top: 3%">
+                                <label class="input-placeholder"><b>Product Name</b></label>
+                                <input style="color: white;font-size: 14px;"
+                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.productName.errors }"
+                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                       class="form-control two-column-input" formControlName="productName"
+                                       id="productName"
+                                       name="productName" placeholder="The Product Name" required="required"
+                                       type="text">
+                                <div *ngIf="submitted && formStepTwoForm.productName.errors"
+                                     class="invalid-feedback">
+                                    <div *ngIf="formStepTwoForm.productName.errors.required">The Product Name is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+
+
+                    </div>
+                    <div class="row input-row">
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Product Brand</b></label>
-                                <input style="color: white;font-size: 14px;"
+                                <input style="color: white;font-size: 14px;width: 100%"
                                        [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.productBrand.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="productBrand"
@@ -1024,11 +1046,9 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="row input-row">
-
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Complaint Description</b></label>
@@ -1045,10 +1065,11 @@
                                 </div>
                             </div>
                         </div>
+
                     </div><div class="row input-row">
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
-                                <label class="input-placeholder"><b>Complaint sample Details</b></label>
+                                <label class="input-placeholder"><b>Complaint sample Details</b>  (Brand Name, Batch No, Flavor, Condition, Expiry /Manufacturing dates)</label>
                                 <textarea style="color: white;font-size: 14px;"
                                        [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.complaintSampleDetails.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -1140,6 +1161,7 @@
                     </div>
 
                 </div>
+
                 <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
@@ -1164,7 +1186,7 @@
                     </div>
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
-                            <label class="input-placeholder" for="town">Town</label>
+                            <label class="input-placeholder" for="town">Nearest Town/Area</label>
                             <br>
                             <ng-container *ngIf="town$ | async as apps">
                                 <select (ngModelChange)="updateSelectedTown()"
@@ -1300,16 +1322,16 @@
                 <div class="row">
                     <h4 class="welcome">Step 4/4: Upload Supporting Documents Here</h4>
                 </div>
-                <ul>
+                <ul class="docDescription">
                     <li>Purchase documents</li>
                     <li>Warranty documents</li>
                     <li>Pictures</li>
                     <li>Others (Mention and Upload)</li>
                 </ul>
                     <form #demoForm="ngForm">
-                        <file-upload [(ngModel)]="uploadedFiles" name="files"
-                                     fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
+                        <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="5" accept=".pdf, .png, .jpg"></file-upload>
                     </form>
+
 <!--                </div>-->
 
                 <div class="row">
@@ -1386,6 +1408,11 @@
                         </li>
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Targeted Product</div>
+                            <div class="list-text-accordion">{{complaintDetails?.productName}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
+                            <div class="list-title-accordion">Targeted Brand</div>
                             <div class="list-text-accordion">{{complaintDetails?.productBrand}}
                             </div>
                         </li>
@@ -1457,9 +1484,31 @@
                                 {{locationDetails?.telephoneNumber}}</div>
                         </li>
                     </ul>
+                    <div *ngIf="arrayOfUploadedFiles.length > 0">
+                        <b class="text-primary">Uploaded Documents & Images</b>
+                        <ul class="w-list-unstyled">
+                            <div *ngFor="let userUpload of arrayOfUploadedFiles">
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">{{userUpload.name}}</div>
+                                    <div class="list-text-accordion">
+                                        <a class="btn btn-info">View</a>
+                                    </div>
+                                </li>
+                            </div>
+
+                        </ul>
+                    </div>
+                    <div *ngIf="arrayOfUploadedFiles.length == 0">
+                        <b class="text-primary">No Uploaded Documents & Images</b>
+                    </div>
+
+
+
+
+
                     <div class="modal-footer">
                         <button   mat-raised-button type="button" class="btn btn-danger"
-                                 data-dismiss="modal">
+                                 data-dismiss="modal" (click)="resetPreviewDocs()">
                             Close
                         </button>
                         <button mat-raised-button type="button" data-dismiss="modal" class="btn btn-success"

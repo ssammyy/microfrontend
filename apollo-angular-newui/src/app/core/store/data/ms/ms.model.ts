@@ -461,6 +461,8 @@ export class ComplaintDto {
     // complaintCategory: number;
     complaintTitle: string;
     productBrand: string;
+
+    productName: string;
     complaintDescription: string;
     complaintSampleDetails: string;
     remedySought: string;
