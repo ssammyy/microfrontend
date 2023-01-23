@@ -52,7 +52,7 @@ export class ComplaintNewComponent implements OnInit {
   time = 59;
   timer!: Observable<number>;
   timerObserver!: PartialObserver<number>;
-  step = 1;
+  step = 4;
   regionName: string;
   countyName: string;
   townName: string;
