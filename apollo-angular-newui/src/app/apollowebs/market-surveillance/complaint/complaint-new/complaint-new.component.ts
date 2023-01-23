@@ -84,6 +84,7 @@ export class ComplaintNewComponent implements OnInit {
   businessNatures$: Observable<BusinessNatures[]>;
   region$: Observable<Region[]>;
   county$: Observable<County[]>;
+  regionList: Region[];
   countyList: County[];
   town$: Observable<Town[]>;
   selectedBusinessLine = 0;
@@ -154,6 +155,10 @@ export class ComplaintNewComponent implements OnInit {
         },
     );
 
+    this.regionService.getAll().subscribe((regionData: Region[]) => {
+      this.regionList = regionData.sort((a, b) => a.region > b.region ? 1: -1);
+    });
+
     this.stepZeroForm = this.formBuilder.group({
       registrationNumber: ['', Validators.required],
       directorIdNumber: ['', Validators.required],
@@ -186,7 +191,8 @@ export class ComplaintNewComponent implements OnInit {
     });
 
     this.stepThreeForm = new FormGroup({
-      county: new FormControl(),
+      region: new FormControl(),
+      county: new FormControl('', [Validators.required]),
       town: new FormControl('', [Validators.required]),
       marketCenter: new FormControl('', [Validators.required]),
       buildingName: new FormControl('', [Validators.required]),
@@ -250,9 +256,10 @@ export class ComplaintNewComponent implements OnInit {
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
-    // this.regionService.getAll().subscribe((data: Region[]) => {
-    //   this.regionName = data?.find(x => x.id === this.selectedRegion).region;
-    // },);
+    this.regionService.getAll().subscribe((regionData : Region[]) =>{
+      this.regionName = regionData?.find(x => x.id === this.selectedRegion).region;
+    });
+    console.log("Region selected is: " + this.selectedRegion);
   }
 
   updateSelectedCounty() {
@@ -560,5 +567,9 @@ export class ComplaintNewComponent implements OnInit {
 
 
 
+  getFileUrl(fileUploaded: File){
+    let createdUrl = URL.createObjectURL(fileUploaded);
+    return createdUrl;
+  }
 }
 

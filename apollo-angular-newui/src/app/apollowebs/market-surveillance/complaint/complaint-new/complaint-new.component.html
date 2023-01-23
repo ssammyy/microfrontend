@@ -1005,6 +1005,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Product Name</b></label>
@@ -1165,6 +1166,27 @@
                 <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
+                            <label class="input-placeholder"><b>Region</b></label>
+                            <br>
+                            <ng-container>
+                                <select (ngModelChange)="updateSelectedRegion()"
+                                        [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
+                                        formControlName="region" id="region"
+                                        name="region" required="required" style="width: 100%; height: 60%">
+                                    <option ngValue="null" selected disabled>Please select</option>
+                                    <option
+                                            *ngFor="let app of regionList| filterPipe: {status: true}"
+                                            [ngValue]="app.id"
+                                            class="dropdown-item">{{app.region}}</option>
+                                </select>
+                                <div *ngIf="submitted && formStepThreeForm.region.errors" class="invalid-feedback">
+                                    <div *ngIf="formStepThreeForm.region.errors.required">The Region is required</div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>County</b></label>
                             <br>
                             <ng-container>
@@ -1184,6 +1206,10 @@
                             </ng-container>
                         </div>
                     </div>
+
+
+                </div>
+                <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder" for="town">Nearest Town/Area</label>
@@ -1204,8 +1230,6 @@
                             </ng-container>
                         </div>
                     </div>
-                </div>
-                <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>Email</b></label>
@@ -1223,6 +1247,8 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>Name of Contact Person</b></label>
@@ -1239,9 +1265,6 @@
                             </div>
                         </div>
                     </div>
-
-                </div>
-                <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>Phone Number</b></label>
@@ -1259,6 +1282,8 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>Telephone Number</b></label>
@@ -1267,16 +1292,13 @@
                                    class="form-control two-column-input" formControlName="telephoneNumber"
                                    id="telephoneNumber"
                                    name="telephoneNumber" placeholder="Telephone Number" required="required" type="text">
-<!--                            <div *ngIf="submitted && formStepThreeForm.telephoneNumber.errors" class="invalid-feedback">-->
-<!--                                <div *ngIf="formStepThreeForm.telephoneNumber.errors.required">The Telephone Number is-->
-<!--                                    required-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <!--                            <div *ngIf="submitted && formStepThreeForm.telephoneNumber.errors" class="invalid-feedback">-->
+                            <!--                                <div *ngIf="formStepThreeForm.telephoneNumber.errors.required">The Telephone Number is-->
+                            <!--                                    required-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
                         </div>
                     </div>
-
-                </div>
-                <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>Business/Physical Address</b></label>
@@ -1292,10 +1314,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col">
-
                     </div>
 
                 </div>
@@ -1438,6 +1456,12 @@
                     <b class="text-primary">Complaint Location Details</b>
                     <ul class="w-list-unstyled">
                         <li class="list-item-accordion">
+                            <div class="list-title-accordion">Region</div>
+                            <div class="list-text-accordion">
+                                {{regionName}}
+                            </div>
+                        </li>
+                        <li class="list-item-accordion">
                             <div class="list-title-accordion">County</div>
                             <div class="list-text-accordion">
                                 {{countyName}}
@@ -1490,8 +1514,23 @@
                             <div *ngFor="let userUpload of arrayOfUploadedFiles">
                                 <li class="list-item-accordion">
                                     <div class="list-title-accordion">{{userUpload.name}}</div>
-                                    <div class="list-text-accordion">
-                                        <a class="btn btn-info">View</a>
+                                    <div class="list-text-accordion" style="text-align: center">
+<!--                                        <a-->
+<!--                                                target="_blank"-->
+<!--                                                class="btn btn-info"-->
+<!--                                                style="color: white"-->
+<!--                                                [href]="getFileUrl(userUpload)"-->
+<!--                                                download-->
+<!--                                        >VIEW</a>-->
+                                        <a
+                                                target="_blank"
+                                                class="btn btn-info"
+                                                style="color: white"
+
+                                        >VIEW</a>
+
+
+
                                     </div>
                                 </li>
                             </div>
