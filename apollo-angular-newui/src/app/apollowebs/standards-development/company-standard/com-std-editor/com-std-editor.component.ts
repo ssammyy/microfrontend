@@ -18,6 +18,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 
 @Component({
   selector: 'app-com-std-editor',
@@ -43,6 +44,8 @@ export class ComStdEditorComponent implements OnInit {
   isShowCommentsTab= true;
   isShowProposalTab=true;
   public uploadDraftStandardFormGroup!: FormGroup;
+  documentDTOs: DocumentDTO[] = [];
+  blob: Blob;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -68,7 +71,21 @@ export class ComStdEditorComponent implements OnInit {
       comStdNumber:[],
       preparedBy: [],
       docName:[],
-      requestNumber:[]
+      requestNumber:[],
+        departmentId:[],
+        subject:[],
+        description:[],
+        contactOneFullName:[],
+        contactOneTelephone:[],
+        contactOneEmail:[],
+        contactTwoFullName:[],
+        contactTwoTelephone:[],
+        contactTwoEmail:[],
+        contactThreeFullName:[],
+        contactThreeTelephone:[],
+        contactThreeEmail:[],
+        companyName:[],
+        companyPhone:[]
 
     });
   }
@@ -124,12 +141,23 @@ export class ComStdEditorComponent implements OnInit {
     this.hideModalDraftEditing();
   }
 
-  public onOpenModal(task: COMPreliminaryDraft,mode:string): void{
+  public onOpenModal(task: COMPreliminaryDraft,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+    this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+        (response: DocumentDTO[]) => {
+          this.documentDTOs = response;
+          this.SpinnerService.hide();
+          //console.log(this.documentDTOs)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          //console.log(error.message);
+        }
+    );
     if (mode==='draftStandardEditing') {
       this.actionRequest = task;
       button.setAttribute('data-target', '#draftStandardEditing');
@@ -144,7 +172,21 @@ export class ComStdEditorComponent implements OnInit {
             symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
             clause:this.actionRequest.clause,
             special:this.actionRequest.special,
-            comStdNumber:this.actionRequest.comStdNumber
+            comStdNumber:this.actionRequest.comStdNumber,
+              departmentId:this.actionRequest.departmentId,
+              subject:this.actionRequest.subject,
+              description:this.actionRequest.description,
+              contactOneFullName:this.actionRequest.contactOneFullName,
+              contactOneTelephone:this.actionRequest.contactOneTelephone,
+              contactOneEmail:this.actionRequest.contactOneEmail,
+              contactTwoFullName:this.actionRequest.contactTwoFullName,
+              contactTwoTelephone:this.actionRequest.contactTwoTelephone,
+              contactTwoEmail:this.actionRequest.contactTwoEmail,
+              contactThreeFullName:this.actionRequest.contactThreeFullName,
+              contactThreeTelephone:this.actionRequest.contactThreeTelephone,
+              contactThreeEmail:this.actionRequest.contactThreeEmail,
+              companyName:this.actionRequest.companyName,
+              companyPhone:this.actionRequest.companyPhone
           }
       );
 
@@ -153,6 +195,31 @@ export class ComStdEditorComponent implements OnInit {
     container.appendChild(button);
     button.click();
 
+  }
+
+  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Processing Request`);
+          console.log(error.message);
+          this.getStdDraftForEditing();
+          //alert(error.message);
+        }
+    );
   }
 
   @ViewChild('closeModalDraftEditing') private closeModalDraftEditing: ElementRef | undefined;

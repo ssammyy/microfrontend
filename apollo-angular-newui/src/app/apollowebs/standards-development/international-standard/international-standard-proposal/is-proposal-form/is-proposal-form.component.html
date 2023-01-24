@@ -61,18 +61,18 @@ placeholder="name" type="text" disabled>
                     placeholder="closingDate" type="date" >
         </div>
         <div class="form-group col-12">
-            <label><b>Select Stakeholders to send Adoption proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <mat-form-field>
-                <mat-select [formControl]="websiteCtrl" formControlName="stakeholdersList" name="stakeholdersList" placeholder="Stake holders"  multiple>
-                    <mat-option>
-                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"></ngx-mat-select-search>
-                    </mat-option>
-                    <mat-option *ngFor="let user of stakeholdersLists " [value]="user.email">
-                        {{user.firstName}} {{user.lastName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <label><b>Select Members to add to Joint Committee</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <ng-multiselect-dropdown
+                    [placeholder]="'Select Stakeholders to send Adoption proposal'"
+                    [settings]="dropdownSettings"
+                    [data]="dropdownList"
+                    (onSelect)="onItemSelect($event)"
+                    (onSelectAll)="onSelectAll($event)"
+                    formControlName="stakeholdersList"
+                    name="stakeholdersList">
+            </ng-multiselect-dropdown>
         </div>
+
         <div class="form-group col-12">
             <p style="color: red">(*)Type Emails of stake holders that are not on the Dropdown Select List(Comma Separated)</p>
             <label><b>Stake Holders Email</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>

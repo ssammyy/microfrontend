@@ -79,5 +79,49 @@ class CompanyStandardRequest {
     @Basic
     var status: Long? = null
 
+    @Column(name = "SUBJECT")
+    @Basic
+    var subject: String? = null
+
+    @Column(name = "DESCRIPTION")
+    @Basic
+    var description: String? = null
+
+    @Column(name="CONTACT_ONE_FULL_NAME")
+    @Basic
+    var contactOneFullName: String?=null
+
+    @Column(name="CONTACT_ONE_TELEPHONE")
+    @Basic
+    var contactOneTelephone: String?=null
+
+    @Column(name="CONTACT_ONE_EMAIL")
+    @Basic
+    var contactOneEmail: String?=null
+
+    @Column(name="CONTACT_TWO_FULL_NAME")
+    @Basic
+    var contactTwoFullName: String?=null
+
+    @Column(name="CONTACT_TWO_TELEPHONE")
+    @Basic
+    var contactTwoTelephone: String?=null
+
+    @Column(name="CONTACT_TWO_EMAIL")
+    @Basic
+    var contactTwoEmail: String?=null
+
+    @Column(name="CONTACT_THREE_FULL_NAME")
+    @Basic
+    var contactThreeFullName: String?=null
+
+    @Column(name="CONTACT_THREE_TELEPHONE")
+    @Basic
+    var contactThreeTelephone: String?=null
+
+    @Column(name="CONTACT_THREE_EMAIL")
+    @Basic
+    var contactThreeEmail: String?=null
+
 
 }

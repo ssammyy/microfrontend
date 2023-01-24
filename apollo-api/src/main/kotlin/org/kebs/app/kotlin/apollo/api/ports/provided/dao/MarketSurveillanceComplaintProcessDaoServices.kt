@@ -638,7 +638,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                         || authority.authority == "MS_HOF_READ"
                         || authority.authority == "MS_DIRECTOR_READ"
                         || authority.authority == "MS_RM_READ" } -> {
-                val complaintList = complaintsRepo.findNewComplaint(applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm, applicationMapProperties.msComplaintProcessOnlineSubmitted?: throw ExpectedDataNotFound("Missing Process ID, Complaint Submitted"),userProfile.regionId?.id ?: throw ExpectedDataNotFound("Missing Logged In Region ID"),userProfile.countyID?.id ?: throw ExpectedDataNotFound("Missing Logged In County ID"))
+                val complaintList = complaintsRepo.findNewComplaint(applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm, applicationMapProperties.msComplaintProcessOnlineSubmitted?: throw ExpectedDataNotFound("Missing Process ID, Complaint Submitted"),userProfile.regionId?.id ?: throw ExpectedDataNotFound("Missing Logged In Region ID"))
                 val usersPage: Page<ComplaintEntity> = PageImpl(complaintList, page, complaintList.size.toLong())
                 response = listMsComplaints(usersPage,map)
             }
@@ -1034,7 +1034,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             county = body.countyID
             town = body.townID
 //            region = body.regionID
-            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
+            region = body.regionID?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).id }
         }
         complaintLocationDetails = complaintLocationRepo.save(complaintLocationDetails)
 

@@ -4,7 +4,7 @@ import {
     ComJcJustificationDec, CompanyStdRemarks,
     ComStandardJC,
     ComStdAction,
-    NwaTasks,
+    NwaTasks, UserEntity,
     UsersEntity
 } from "../../../../core/store/data/std/std.model";
 import {Router} from "@angular/router";
@@ -32,7 +32,7 @@ export class ComTasksComponent implements OnInit {
   tasks: ComJcJustificationDec[] = [];
   public actionRequest: ComJcJustificationDec | undefined;
   public uploadedFiles: FileList;
-  public users !: UsersEntity[] ;
+  public users !: UserEntity[] ;
     companyStdRemarks: CompanyStdRemarks[] = [];
   user_id: number ;
   selectedUser: number;
@@ -229,7 +229,7 @@ export class ComTasksComponent implements OnInit {
   public getUserList(): void {
     this.SpinnerService.show();
     this.stdComStandardService.getUserList().subscribe(
-        (response: UsersEntity[]) => {
+        (response: UserEntity[]) => {
           this.SpinnerService.hide();
           this.users = response;
         },

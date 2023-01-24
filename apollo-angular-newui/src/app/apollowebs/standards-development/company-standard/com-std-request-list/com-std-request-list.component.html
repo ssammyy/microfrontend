@@ -35,10 +35,11 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <th class="knw">Request Number</th>
 <th class="sl">Company Name</th>
 <th class="requestNumber">Department </th>
-<th class="knw">Product</th>
-<th class="sl">Sub Category</th>
 <th class="requestNumber">Submission Date </th>
 <th class="sl">Phone Number</th>
+    <th class="knw">Company Contact Name</th>
+    <th class="sl">Company Contact Telephone</th>
+    <th class="sl">Company Contact Email</th>
 <th class="sl">Commitment Letter</th>
 <th class="action">Action</th>
 </tr>
@@ -49,10 +50,11 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.requestNumber}}</td>
 <td>{{task.companyName}}</td>
 <td>{{task.departmentName}}</td>
-<td>{{task.productName}}</td>
-<td>{{task.productSubCategoryName}}</td>
 <td>{{task.submissionDate | date: 'dd/MM/yyyy'}}</td>
 <td>{{task.companyPhone}}</td>
+    <td>{{task.contactOneFullName}}</td>
+    <td>{{task.contactOneTelephone}}</td>
+    <td>{{task.contactOneEmail}}</td>
     <td><button mat-raised-button type="button" (click)="viewCommitmentLetter( task.id,'Letter'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
       <i class="material-icons">visibility</i> </button></td>
 <td *ngIf="task.status==0"><a  (click)="onOpenModal(task,'assignProjectLeader')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Assign To Project Leader</a></td>
@@ -77,9 +79,9 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                         <div class="form-body">
                             <div class="row col-12">
                                 <div class="form-group col-12">
-                                    <label>Assign To</label>
-                                    <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo" >
-                                        <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                    <label>Assign To one</label>
+                                    <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo"  >
+                                        <ng-option *ngFor="let user of users" [value]="user.id" >{{user.name}} </ng-option>
                                     </ng-select>
 
                                 </div>
@@ -110,25 +112,25 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                     <div class="form-body">
                         <div class="form-group col-12">
                             <label><b>Select Members to add to Joint Committee</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<!--                            <ng-multiselect-dropdown-->
-<!--                                    [placeholder]="'Select Joint Committee Members'"-->
-<!--                                    [settings]="dropdownSettings"-->
-<!--                                    [data]="dropdownList"-->
-<!--                                    (onSelect)="onItemSelect($event)"-->
-<!--                                    (onSelectAll)="onSelectAll($event)"-->
-<!--                                    formControlName="names"-->
-<!--                                    name="names">-->
-<!--                            </ng-multiselect-dropdown>-->
-                            <mat-form-field>
-                                <mat-select [formControl]="websiteCtrl" formControlName="names" name="names" placeholder="Members"  multiple >
-                                    <mat-option>
-                                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"></ngx-mat-select-search>
-                                    </mat-option>
-                                    <mat-option *ngFor="let user of users " [value]="user.email">
-                                        {{user.firstName}} {{user.lastName}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
+                            <ng-multiselect-dropdown
+                                    [placeholder]="'Select Joint Committee Members'"
+                                    [settings]="dropdownSettings"
+                                    [data]="dropdownList"
+                                    (onSelect)="onItemSelect($event)"
+                                    (onSelectAll)="onSelectAll($event)"
+                                    formControlName="names"
+                                    name="names">
+                            </ng-multiselect-dropdown>
+<!--                            <mat-form-field>-->
+<!--                                <mat-select [formControl]="websiteCtrl" formControlName="names" name="names" placeholder="Members"  multiple >-->
+<!--                                    <mat-option>-->
+<!--                                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"></ngx-mat-select-search>-->
+<!--                                    </mat-option>-->
+<!--                                    <mat-option *ngFor="let user of users " [value]="user.email">-->
+<!--                                        {{user.name}} -->
+<!--                                    </mat-option>-->
+<!--                                </mat-select>-->
+<!--                            </mat-form-field>-->
                         </div>
                         <div class="form-group col-12">
                             <label><b>Enter Emails of Committee members(Comma Separated)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -180,44 +182,70 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                                               placeholder="Title" type="text" ></textarea>
 
                                 </div>
-                                <div class="form-group col-12">
-                                    <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                              class="form-control one-column-input"  formControlName="normativeReference" name="normativeReference"
-                                              placeholder="Normative Reference" type="text" ></textarea>
+<!--                                <div class="form-group col-12">-->
+<!--                                    <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                              class="form-control one-column-input"  formControlName="normativeReference" name="normativeReference"-->
+<!--                                              placeholder="Normative Reference" type="text" ></textarea>-->
 
-                                </div>
-                                <div class="form-group col-12">
-                                    <label><b>Symbols Abbreviated Terms</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                              class="form-control one-column-input"  formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms"
-                                              placeholder="Symbols Abbreviated Terms" type="text" ></textarea>
+<!--                                </div>-->
+<!--                                <div class="form-group col-12">-->
+<!--                                    <label><b>Symbols Abbreviated Terms</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                              class="form-control one-column-input"  formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms"-->
+<!--                                              placeholder="Symbols Abbreviated Terms" type="text" ></textarea>-->
 
-                                </div>
+<!--                                </div>-->
 
-                                <div class="form-group col-12">
-                                    <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                              class="form-control one-column-input"  formControlName="clause" name="clause"
-                                              placeholder="Clause" type="text" ></textarea>
+<!--                                <div class="form-group col-12">-->
+<!--                                    <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                              class="form-control one-column-input"  formControlName="clause" name="clause"-->
+<!--                                              placeholder="Clause" type="text" ></textarea>-->
 
-                                </div>
-                                <div class="form-group col-12">
-                                    <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                              class="form-control one-column-input"  formControlName="scope" name="scope"
-                                              placeholder="Scope" type="text" ></textarea>
+<!--                                </div>-->
+<!--                                <div class="form-group col-12">-->
+<!--                                    <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                              class="form-control one-column-input"  formControlName="scope" name="scope"-->
+<!--                                              placeholder="Scope" type="text" ></textarea>-->
 
-                                </div>
-                                <div class="form-group col-12">
-                                    <label><b>Special</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                              class="form-control one-column-input"   formControlName="special" name="special"
-                                              placeholder="Special" type="text" ></textarea>
+<!--                                </div>-->
+<!--                                <div class="form-group col-12">-->
+<!--                                    <label><b>Special</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
+<!--                                    <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                              class="form-control one-column-input"   formControlName="special" name="special"-->
+<!--                                              placeholder="Special" type="text" ></textarea>-->
 
+<!--                                </div>-->
+                                <div class="row col-12">
+                                    <div class="form-group col-12">
+                                        <label><b>Attach Draft</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".docx" ></file-upload>
+                                            <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                             <input type="hidden" formControlName="requestId" value="{{actionRequest?.id}}" name="requestId" >
+
+                            <input type="hidden" formControlName="departmentId" value="{{actionRequest?.departmentId}}" name="departmentId" >
+                            <input type="hidden" formControlName="subject" value="{{actionRequest?.subject}}" name="subject" >
+                            <input type="hidden" formControlName="description" value="{{actionRequest?.description}}" name="description" >
+                            <input type="hidden" formControlName="contactOneFullName" value="{{actionRequest?.contactOneFullName}}" name="contactOneFullName" >
+                            <input type="hidden" formControlName="contactOneTelephone" value="{{actionRequest?.contactOneTelephone}}" name="contactOneTelephone" >
+                            <input type="hidden" formControlName="contactOneEmail" value="{{actionRequest?.contactOneEmail}}" name="contactOneEmail" >
+
+                            <input type="hidden" formControlName="contactTwoFullName" value="{{actionRequest?.contactTwoFullName}}" name="contactTwoFullName" >
+                            <input type="hidden" formControlName="contactTwoTelephone" value="{{actionRequest?.contactTwoTelephone}}" name="contactTwoTelephone" >
+                            <input type="hidden" formControlName="contactTwoEmail" value="{{actionRequest?.contactTwoEmail}}" name="contactTwoEmail" >
+                            <input type="hidden" formControlName="contactThreeFullName" value="{{actionRequest?.contactThreeFullName}}" name="contactThreeFullName" >
+                            <input type="hidden" formControlName="contactThreeTelephone" value="{{actionRequest?.contactThreeTelephone}}" name="contactThreeTelephone" >
+                            <input type="hidden" formControlName="contactThreeEmail" value="{{actionRequest?.contactThreeEmail}}" name="contactThreeEmail" >
+
+                            <input type="hidden" formControlName="companyName" value="{{actionRequest?.companyName}}" name="companyName" >
+                            <input type="hidden" formControlName="companyPhone" value="{{actionRequest?.companyPhone}}" name="companyPhone" >
 
                         </div>
                     </div>

@@ -49,16 +49,19 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
                 "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber FROM SD_COM_STANDARD " +
-                "WHERE  STATUS='0' ",
+                "WHERE  STATUS='0' ORDER BY ID DESC ",
         nativeQuery = true
     )
     fun getUploadedDraft(): MutableList<COMUploadedDraft>
 
     @Query(
-        value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
-                "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
-                "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber,STATUS as status,REQUEST_ID as requestId FROM SD_COM_STANDARD " +
-                "WHERE  STATUS IN('0','1','3','4','5','6','7') ",
+        value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
+                "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
+                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
+                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
+                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,\n" +
+                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+                "WHERE  s.STATUS IN('0','1','3','4','5','6','7') ORDER BY s.ID DESC",
         nativeQuery = true
     )
     fun getComStdPublishing(): MutableList<COMUploadedDraft>
@@ -67,7 +70,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
                 "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber FROM SD_COM_STANDARD " +
-                "WHERE  STATUS='1' ",
+                "WHERE  STATUS='1' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getApprovedEditedDraft(): MutableList<COMUploadedDraft>
@@ -76,7 +79,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
                 "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber FROM SD_COM_STANDARD " +
-                "WHERE  STATUS='3' ",
+                "WHERE  STATUS='3' ORDER BY ID DESC ",
         nativeQuery = true
     )
     fun getComEditedDraft(): MutableList<COMUploadedDraft>
@@ -85,7 +88,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
                 "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber FROM SD_COM_STANDARD " +
-                "WHERE  STATUS='4' ",
+                "WHERE  STATUS='4' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getDraughtedDraft(): MutableList<COMUploadedDraft>
@@ -94,7 +97,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
                 "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber FROM SD_COM_STANDARD " +
-                "WHERE  STATUS='5' ",
+                "WHERE  STATUS='5' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getProofReadDraft(): MutableList<COMUploadedDraft>
@@ -103,7 +106,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
                 "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber FROM SD_COM_STANDARD " +
-                "WHERE  STATUS='6' ",
+                "WHERE  STATUS='6' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getApprovedProofReadDraft(): MutableList<COMUploadedDraft>
@@ -112,7 +115,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,COMPANY_STANDARD_NUMBER as comStdNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy," +
                 "cast(UPLOAD_DATE as varchar(200)) AS uploadDate,REQUEST_NUMBER AS requestNumber FROM SD_COM_STANDARD " +
-                "WHERE  STATUS='7' ",
+                "WHERE  STATUS='7' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getApprovedCompanyStdDraft(): MutableList<COMUploadedDraft>
@@ -250,10 +253,12 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, L
 
 
     @Query(value = "SELECT r.ID as id,r.REQUEST_NUMBER as requestNumber,r.SUBMISSION_DATE as submissionDate,r.COMPANY_NAME as companyName," +
-            "r.COMPANY_PHONE as companyPhone,r.COMPANY_EMAIL as companyEmail,t.NAME as tcName,d.NAME as departmentName,p.NAME as productName," +
-            "s.NAME as productSubCategoryName,r.STATUS as status" +
-            "  FROM SD_COM_STANDARD_REQUEST r LEFT JOIN SD_TECHNICAL_COMMITTEE t ON r.TC_ID=t.ID LEFT JOIN SD_DEPARTMENT d ON r.DEPARTMENT=d.ID LEFT JOIN SD_PRODUCTS p " +
-            "ON r.PRODUCT=p.ID LEFT JOIN SD_PRODUCT_SUBCATEGORY s ON r.PRODUCT_SUB_CATEGORY=s.ID WHERE r.STATUS IN ('0','1','2')", nativeQuery = true)
+            "r.COMPANY_PHONE as companyPhone,r.COMPANY_EMAIL as companyEmail,t.NAME as tcName,d.NAME as departmentName,d.ID as departmentId,p.NAME as productName," +
+            "s.NAME as productSubCategoryName,r.STATUS as status,r.SUBJECT as subject,r.DESCRIPTION as description,r.CONTACT_ONE_FULL_NAME as contactOneFullName," +
+            "r.CONTACT_ONE_TELEPHONE as contactOneTelephone,r.CONTACT_ONE_EMAIL as contactOneEmail,r.CONTACT_TWO_FULL_NAME as contactTwoFullName," +
+            "r.CONTACT_TWO_TELEPHONE as contactTwoTelephone,r.CONTACT_TWO_EMAIL as contactTwoEmail,r.CONTACT_THREE_FULL_NAME as contactThreeFullName," +
+            "r.CONTACT_THREE_TELEPHONE as contactThreeTelephone,r.CONTACT_THREE_EMAIL as contactThreeEmail FROM SD_COM_STANDARD_REQUEST r LEFT JOIN SD_TECHNICAL_COMMITTEE t ON r.TC_ID=t.ID LEFT JOIN SD_DEPARTMENT d ON r.DEPARTMENT=d.ID LEFT JOIN SD_PRODUCTS p " +
+            "ON r.PRODUCT=p.ID LEFT JOIN SD_PRODUCT_SUBCATEGORY s ON r.PRODUCT_SUB_CATEGORY=s.ID WHERE r.STATUS IN ('0','1','2') ORDER BY r.ID DESC", nativeQuery = true)
     fun getCompanyStandardRequest(): MutableList<ComStdRequest>
 
     @Query(value = "SELECT r.ID as id,r.REQUEST_NUMBER as requestNumber,r.SUBMISSION_DATE as submissionDate,r.COMPANY_NAME as companyName,r.STATUS as status," +
@@ -267,8 +272,8 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, L
 }
 
 interface ComStdJointCommitteeRepository : JpaRepository<ComStandardJointCommittee, Long> {
-    @Query(value = "SELECT NAME FROM DAT_KEBS_COM_JOINT_COMMITTEE WHERE REQUEST_ID=:requestId  ", nativeQuery = true)
-    fun getCommitteeList(@Param("requestId") requestId: Long?): String
+    @Query(value = "SELECT NAME as name,EMAIL as email FROM DAT_KEBS_COM_JOINT_COMMITTEE WHERE REQUEST_ID=:requestId  ", nativeQuery = true)
+    fun getCommitteeList(@Param("requestId") requestId: Long?): MutableList<EmailList>
 }
 interface ComStdActionRepository : JpaRepository<ComStdAction, Long> {
 }
@@ -279,22 +284,30 @@ interface ComStdDraftRepository : JpaRepository<ComStdDraft, Long> {
     @Query("SELECT MAX(ID) FROM SD_COM_STANDARD_DRAFT", nativeQuery = true)
     fun getMaxDraftId(): String
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='0'  ", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='0' ORDER BY ID DESC", nativeQuery = true)
     fun getUploadedStdDraftForComment(): MutableList<ComStdDraft>
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS IN ('0')  ", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS IN ('0')  ORDER BY ID DESC", nativeQuery = true)
     fun getUploadedStdDraft(): MutableList<ComStdDraft>
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='1'  ", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='1' ORDER BY ID DESC ", nativeQuery = true)
     fun getApprovedStdDraft(): MutableList<ComStdDraft>
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='3'  ", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='3'  ORDER BY ID DESC", nativeQuery = true)
     fun getStdDraftForEditing(): MutableList<ComStdDraft>
 
 }
 
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
     fun findByComDraftDocumentId(id: Long): ComStandardDraftUploads
+    fun findAllById(id: Long): ComStandardDraftUploads
+
+    @Query(
+        value = "SELECT ID as id  FROM SD_COM_STD_DRAFT_UPLOADS  WHERE COM_DRAFT_DOCUMENT_ID= :id ",
+        nativeQuery = true
+    )
+    fun findAllDocumentId(@Param("id") id: Long?): List<SiteVisitListHolder>
+
 }
 
 interface ComStandardUploadsRepository : JpaRepository<ComStandardUploads, Long> {
@@ -310,7 +323,7 @@ interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustificat
             "TC_ACCEPTANCE_DATE as tcAcceptanceDate,REFERENCE_MATERIAL AS referenceMaterial,DEPARTMENT as department,REMARKS as remarks," +
             "cast(SUBMISSION_DATE as varchar(200)) AS submissionDate,TC_COMMITTEE as tcCommittee,DEPARTMENT_NAME as departmentName,POSITIVE_VOTES as positiveVotes," +
             "NEGATIVE_VOTES as negativeVotes,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms," +
-            "CLAUSE as clause,SPECIAL as special,PROPOSAL_ID as proposalId FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  STATUS='0'", nativeQuery = true)
+            "CLAUSE as clause,SPECIAL as special,PROPOSAL_ID as proposalId FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  STATUS='0' ORDER BY ID DESC", nativeQuery = true)
     fun getISJustification(): MutableList<ISAdoptionProposalJustification>
 
     @Query(value = "SELECT  ID as id,MEETING_DATE AS meetingDate,TC as tcId,TC_SEC as tcSec,SL_NUMBER as slNumber," +
@@ -318,7 +331,7 @@ interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustificat
             "TC_ACCEPTANCE_DATE as tcAcceptanceDate,REFERENCE_MATERIAL AS referenceMaterial,DEPARTMENT as department,REMARKS as remarks," +
             "cast(SUBMISSION_DATE as varchar(200)) AS submissionDate,TC_COMMITTEE as tcCommittee,DEPARTMENT_NAME as departmentName,POSITIVE_VOTES as positiveVotes," +
             "NEGATIVE_VOTES as negativeVotes,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms," +
-            "CLAUSE as clause,SPECIAL as special,PROPOSAL_ID as proposalId FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  STATUS='1'", nativeQuery = true)
+            "CLAUSE as clause,SPECIAL as special,PROPOSAL_ID as proposalId FROM SD_ADOPTION_PROPOSAL_JUSTIFICATION  WHERE  STATUS='1' ORDER BY ID DESC", nativeQuery = true)
     fun getApprovedISJustification(): MutableList<ISAdoptionProposalJustification>
 }
 
@@ -328,7 +341,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
                 "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
                 "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,STANDARD_NUMBER as standardNumber FROM SD_ADOPTION_PROPOSAL " +
-                "WHERE  STATUS='0' ",
+                "WHERE  STATUS='0' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getProposalDetails(): MutableList<ProposalDetails>
@@ -346,7 +359,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
                 "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
                 "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,STANDARD_NUMBER as standardNumber FROM SD_ADOPTION_PROPOSAL " +
-                "WHERE  STATUS='1' ",
+                "WHERE  STATUS='1' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getApprovedProposals(): MutableList<ProposalDetails>
@@ -365,7 +378,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,cast(UPLOAD_DATE as varchar(200)) AS uploadDate," +
                 "JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId,DEADLINE_DATE as deadLine FROM SD_IS_STANDARD_TB " +
-                "WHERE  STATUS IN('0','1','3','4','5','6','7') ",
+                "WHERE  STATUS IN('0','1','3','4','5','6','7') ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getIsPublishingTasks(): MutableList<ISUploadedDraft>
@@ -373,7 +386,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
-                "WHERE  STATUS='0' ",
+                "WHERE  STATUS='0' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getUploadedDraft(): MutableList<ISUploadedDraft>
@@ -382,7 +395,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId," +
                 "DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy FROM SD_IS_STANDARD_TB " +
-                "WHERE  STATUS='1' ",
+                "WHERE  STATUS='1' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getApprovedDraft(): MutableList<ISUploadedDraft>
@@ -390,7 +403,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
-                "WHERE  STATUS='3' ",
+                "WHERE  STATUS='3' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getEditedDraft(): MutableList<ISUploadedDraft>
@@ -398,7 +411,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
-                "WHERE  STATUS='4' ",
+                "WHERE  STATUS='4' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getDraughtedDraft(): MutableList<ISUploadedDraft>
@@ -406,7 +419,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
-                "WHERE  STATUS='5' ",
+                "WHERE  STATUS='5' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getProofReadDraft(): MutableList<ISUploadedDraft>
@@ -414,7 +427,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
-                "WHERE  STATUS='6' ",
+                "WHERE  STATUS='6' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getApprovedProofReadDraft(): MutableList<ISUploadedDraft>
@@ -422,7 +435,7 @@ interface ISUploadStandardRepository : JpaRepository<ISUploadStandard, Long> {
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
                 "SPECIAL as special,DOCUMENT_TYPE as documentType,PREPARED_BY as preparedBy,INTERNATIONAL_STANDARD_NUMBER as iSNumber,cast(UPLOAD_DATE as varchar(200)) AS uploadDate,JUSTIFICATION_NUMBER as justificationNo,PROPOSAL_ID AS proposalId FROM SD_IS_STANDARD_TB " +
-                "WHERE  STATUS='7' ",
+                "WHERE  STATUS='7' ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getApprovedEditedDraft(): MutableList<ISUploadedDraft>
@@ -585,6 +598,10 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
             "JOIN CFG_USER_ROLES r ON c.ROLE_ID=r.ID WHERE r.ROLE_NAME IN ('SL_PL_OFFICER') ", nativeQuery = true)
     fun getPlList(): List<UserDetailHolder>
 
+    @Query(value = "SELECT (FIRST_NAME || ' '|| LAST_NAME) AS NAME,ID AS ID,EMAIL as EMAIL " +
+            "FROM DAT_KEBS_USERS ", nativeQuery = true)
+    fun getUsers(): MutableList<UserHolder>
+
     @Query(value = "SELECT u.FIRST_NAME AS FIRSTNAME,u.LAST_NAME AS LASTNAME,u.ID AS ID,u.EMAIL as EMAIL " +
             "FROM DAT_KEBS_USERS u ", nativeQuery = true)
     fun getUserList(): MutableList<UserDetailHolder>
@@ -648,11 +665,13 @@ interface UserListRepository : JpaRepository<UsersEntity, Long> {
     fun getHeadOfSic(): List<UserDetailHolder>
 
     @Query(
-        "SELECT  u.FIRST_NAME as firstName,u.LAST_NAME as lastName,u.ID as id,u.EMAIL as email from APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID and r.ROLE_ID = 2522",
+        "SELECT  (FIRST_NAME || ' '|| LAST_NAME) AS NAME,u.ID as id,u.EMAIL as email from APOLLO.CFG_USER_ROLES_ASSIGNMENTS r,APOLLO.DAT_KEBS_USERS u where  u.ID = r.USER_ID and r.ROLE_ID = 2522",
         nativeQuery = true
     )
     // Check for users who have sd access: Role Id:2522
     fun findStandardStakeholders(): List<UserDetailHolder>?
+
+
 
 
 

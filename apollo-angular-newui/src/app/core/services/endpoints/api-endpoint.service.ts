@@ -446,7 +446,7 @@ export class ApiEndpointService {
         // ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/${id}`,
         ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/`,
         ICT_GET_DEPARTMENTS: `${ApiEndpointService.SD_DR_CONTEXT}/getDepartments`,
-        ICT_GET_USERS: `${ApiEndpointService.SD_ICT_CONTEXT}/getUserList`,
+        ICT_GET_USERS: `${ApiEndpointService.SD_ICT_CONTEXT}/getUsers`,
         ICT_GET_DEPARTMENT: `${ApiEndpointService.SD_DR_CONTEXT}/getDepartments`,
         ICT_GET_TC_COMMITTEE: `${ApiEndpointService.SD_DR_CONTEXT}/getTechnicalCommittee`,
         // ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/${id}`,
@@ -496,6 +496,7 @@ export class ApiEndpointService {
         ICT_COM_STD_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/proofReadStandard`,
         ICT_COM_STD_DEC_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/approveProofReadStandard`,
         ICT_COM_STD_SUBMIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftForEditing`,
+        ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getDraftDocumentList`,
 
 
 

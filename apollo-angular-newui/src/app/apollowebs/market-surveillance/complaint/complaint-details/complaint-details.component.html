@@ -188,12 +188,12 @@
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Standard Title</div>
                                                 <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.standardTitle}}</div>
-<!--                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.ksApplicable?.standardTitle}}</div>-->
+                                                <!--                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.ksApplicable?.standardTitle}}</div>-->
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">KS Number</div>
                                                 <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.standardNumber}}</div>
-<!--                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.ksApplicable?.standardNumber}}</div>-->
+                                                <!--                                                <div class="list-text-accordion">{{complaintInspection?.complaintsDetails?.ksApplicable?.standardNumber}}</div>-->
                                             </li>
 
                                         </ul>
@@ -366,7 +366,7 @@
                                                 class="btn btn-sm btn-primary mr-2" data-target="#myModal1"
                                                 data-toggle="modal"
                                                 mat-raised-button=""><span
-                                                class="mat-button-wrapper">ACCEPT/DEFER COMPLAINT</span>
+                                                class="mat-button-wrapper">ACCEPT/DECLINE COMPLAINT</span>
                                             <div class="mat-ripple mat-button-ripple" matripple=""></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -397,6 +397,7 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                         <button (click)="openModalAddDetails('reassignRegion')"
+                                                *ngIf="complaintInspection?.complaintsDetails?.approvedStatus"
                                                 class="btn btn-sm btn-primary mr-2"
                                                 data-target="#myModal1"
                                                 data-toggle="modal"
@@ -458,8 +459,6 @@
                                             (click)="viewWorkPlanCreated()"
                                             class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
                                 </div>
-                                <i class="btn btn-sm btn-primary" (click)="viewComplaintPdfFile( complaintInspection?.complaintsDetails?.refNumber,'application/pdf')">
-                                    DOWNLOAD COMPLAINT</i>
                             </div>
                         </div>
                     </div>
@@ -522,7 +521,7 @@
                                                         name="approved"
                                                         placeholder="Please Select an option">
                                                 <mat-option [value]="1">ACCEPT</mat-option>
-                                                <mat-option [value]="0">DEFER</mat-option>
+                                                <mat-option [value]="0">DECLINE</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <div *ngIf="(selectComplaintStatus == 'Accept')">
@@ -559,9 +558,9 @@
                                                             formControlName="mandateForOga"
                                                             name="mandateForOga"
                                                             placeholder="Please Select an option">
-                                                    <mat-option [value]="0">DEFER ONLY</mat-option>
-                                                    <mat-option [value]="1">DEFER WITH MANDATE</mat-option>
-                                                    <mat-option [value]="2">DEFER FOR AMENDMENT</mat-option>
+                                                    <mat-option [value]="0">DECLINE ONLY</mat-option>
+                                                    <mat-option [value]="1">DECLINE WITH MANDATE</mat-option>
+                                                    <mat-option [value]="2">DECLINE FOR AMENDMENT</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                             <div *ngIf="(selectComplaintRejectionStatus == 'Accept')">
@@ -588,7 +587,7 @@
 
                                         </div>
                                         <label for="approvedRemarks"><b>Please write, in detail, your feedback For
-                                            Accepting / Defer:</b></label>
+                                            Accepting / Rejecting:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea formControlName="approvedRemarks" id="approvedRemarks" matInput
                                                       name="approvedRemarks"
@@ -641,24 +640,24 @@
                                                 <mat-option *ngFor="let app of apps| filterPipe: {status: true}  " [value]="app.id">{{app.region}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                            <label for="countyID"><b>Select County</b></label>
-                                            <mat-form-field *ngIf="county$ | async as apps">
-                                                <mat-select (selectionChange)="updateSelectedCounty()"
-                                                            [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"
-                                                            formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">
-                                                    <mat-option *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion} " [value]="app.id">{{app.county}}</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                            <label for="townID"><b>Select Town</b></label>
-                                            <mat-form-field *ngIf="town$ | async as appsTown">
-                                                <mat-select (selectionChange)="updateSelectedTown()"
-                                                            [class.is-invalid]="formReAssignRegionForm.townID.invalid && formReAssignRegionForm.townID.touched"
-                                                            formControlName="townID" id="townID" name="townID" placeholder="Please Select an option">
-                                                    <mat-option *ngFor="let appTown of appsTown| filterPipe: {status: true, countyId: selectedCounty}" [value]="appTown.id">{{appTown.town}}</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
+<!--                                        <label for="countyID"><b>Select County</b></label>-->
+<!--                                        <mat-form-field *ngIf="county$ | async as apps">-->
+<!--                                            <mat-select (selectionChange)="updateSelectedCounty()"-->
+<!--                                                        [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"-->
+<!--                                                        formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">-->
+<!--                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion} " [value]="app.id">{{app.county}}</mat-option>-->
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
+<!--                                        <label for="townID"><b>Select Town</b></label>-->
+<!--                                        <mat-form-field *ngIf="town$ | async as appsTown">-->
+<!--                                            <mat-select (selectionChange)="updateSelectedTown()"-->
+<!--                                                        [class.is-invalid]="formReAssignRegionForm.townID.invalid && formReAssignRegionForm.townID.touched"-->
+<!--                                                        formControlName="townID" id="townID" name="townID" placeholder="Please Select an option">-->
+<!--                                                <mat-option *ngFor="let appTown of appsTown| filterPipe: {status: true, countyId: selectedCounty}" [value]="appTown.id">{{appTown.town}}</mat-option>-->
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
                                         <label for="assignedRemarks"><b>Please write, in detail, your feedback for
-                                            re-assigning the Count, Town:</b></label>
+                                            re-assigning the Region:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea formControlName="reassignedRemarks" id="reassignedRemarks" matInput name="reassignedRemarks" type="text"
                                                       [class.is-invalid]="formReAssignRegionForm.reassignedRemarks.invalid && formReAssignRegionForm.reassignedRemarks.touched">
@@ -712,22 +711,22 @@
                                                 <mat-option [value]="'ENGINEERING'" >ENGINEERING</mat-option>
 
                                             </mat-select>
-<!--                                            <input formControlName="productClassificationString" id="productClassificationString" matInput name="productClassificationString"-->
-<!--                                                   [class.is-invalid]="formClassificationForm.productClassificationString.invalid && formClassificationForm.productClassificationString.touched"-->
-<!--                                                   type="text">-->
+                                            <!--                                            <input formControlName="productClassificationString" id="productClassificationString" matInput name="productClassificationString"-->
+                                            <!--                                                   [class.is-invalid]="formClassificationForm.productClassificationString.invalid && formClassificationForm.productClassificationString.touched"-->
+                                            <!--                                                   type="text">-->
                                         </mat-form-field>
-<!--                                        <label for="productClassification"><b>Select Product Classification</b></label>-->
-<!--                                        <mat-form-field>-->
-<!--                                            <mat-select (selectionChange)="onChangeSelectedProductClassification()"-->
-<!--                                                        [class.is-invalid]="formClassificationForm.productClassification.invalid && formClassificationForm.productClassification.touched"-->
-<!--                                                        formControlName="productClassification"-->
-<!--                                                        id="productClassification"-->
-<!--                                                        name="productClassification" placeholder="Please Select an option">-->
-<!--                                                <mat-option *ngFor="let app of standardProductCategory"-->
-<!--                                                            [value]="app.id">{{app.standardCategory}}</mat-option>-->
+                                        <!--                                        <label for="productClassification"><b>Select Product Classification</b></label>-->
+                                        <!--                                        <mat-form-field>-->
+                                        <!--                                            <mat-select (selectionChange)="onChangeSelectedProductClassification()"-->
+                                        <!--                                                        [class.is-invalid]="formClassificationForm.productClassification.invalid && formClassificationForm.productClassification.touched"-->
+                                        <!--                                                        formControlName="productClassification"-->
+                                        <!--                                                        id="productClassification"-->
+                                        <!--                                                        name="productClassification" placeholder="Please Select an option">-->
+                                        <!--                                                <mat-option *ngFor="let app of standardProductCategory"-->
+                                        <!--                                                            [value]="app.id">{{app.standardCategory}}</mat-option>-->
 
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
+                                        <!--                                            </mat-select>-->
+                                        <!--                                        </mat-form-field>-->
                                         <label for="broadProductCategoryString"><b>Broad Product Category:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <mat-select formControlName="broadProductCategoryString" id="broadProductCategoryString"  name="broadProductCategoryString"
@@ -743,14 +742,14 @@
                                                 <mat-option [value]="'ELECTRICAL'" >ELECTRICAL</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-<!--                                        <label for="broadProductCategory"><b>Select Broad Product Category</b></label>-->
-<!--                                        <mat-form-field>-->
+                                        <!--                                        <label for="broadProductCategory"><b>Select Broad Product Category</b></label>-->
+                                        <!--                                        <mat-form-field>-->
 
-<!--                                                <mat-option-->
-<!--                                                        *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}"-->
-<!--                                                        [value]="app.id">{{app.category}}</mat-option>-->
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
+                                        <!--                                                <mat-option-->
+                                        <!--                                                        *ngFor="let app of broadProductCategory | filterPipe: {status: true, divisionId: standardProductCategorySelected}"-->
+                                        <!--                                                        [value]="app.id">{{app.category}}</mat-option>-->
+                                        <!--                                            </mat-select>-->
+                                        <!--                                        </mat-form-field>-->
                                         <label for="productCategoryString"><b>Product Category:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input formControlName="productCategoryString" id="productCategoryString" matInput name="productCategoryString"
@@ -758,18 +757,18 @@
                                                    [class.is-invalid]="formClassificationForm.productCategoryString.invalid && formClassificationForm.productCategoryString.touched"
                                                    type="text">
                                         </mat-form-field>
-<!--                                        <label for="productCategory"><b>Select Product Category</b></label>-->
-<!--                                        <mat-form-field>-->
-<!--                                            <mat-select (selectionChange)="onChangeSelectedProductCategory()"-->
-<!--                                                        [class.is-invalid]="formClassificationForm.productCategory.invalid && formClassificationForm.productCategory.touched"-->
-<!--                                                        formControlName="productCategory"-->
-<!--                                                        id="productCategory" name="productCategory"-->
-<!--                                                        placeholder="Please Select an option">-->
-<!--                                                <mat-option-->
-<!--                                                        *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}"-->
-<!--                                                        [value]="app.id">{{app.name}}</mat-option>-->
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
+                                        <!--                                        <label for="productCategory"><b>Select Product Category</b></label>-->
+                                        <!--                                        <mat-form-field>-->
+                                        <!--                                            <mat-select (selectionChange)="onChangeSelectedProductCategory()"-->
+                                        <!--                                                        [class.is-invalid]="formClassificationForm.productCategory.invalid && formClassificationForm.productCategory.touched"-->
+                                        <!--                                                        formControlName="productCategory"-->
+                                        <!--                                                        id="productCategory" name="productCategory"-->
+                                        <!--                                                        placeholder="Please Select an option">-->
+                                        <!--                                                <mat-option-->
+                                        <!--                                                        *ngFor="let app of productCategories | filterPipe: {status: true, broadProductCategoryId: broadProductCategorySelected}"-->
+                                        <!--                                                        [value]="app.id">{{app.name}}</mat-option>-->
+                                        <!--                                            </mat-select>-->
+                                        <!--                                        </mat-form-field>-->
                                         <label for="myProductString"><b>Product:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input formControlName="myProductString" id="myProductString" matInput name="myProductString"
@@ -777,23 +776,23 @@
                                                    [class.is-invalid]="formClassificationForm.myProductString.invalid && formClassificationForm.myProductString.touched"
                                                    type="text">
                                         </mat-form-field>
-<!--                                        <label for="myProduct"><b>Select Product</b></label>-->
-<!--                                        <mat-form-field>-->
-<!--                                            <mat-select (selectionChange)="onChangeSelectedMyProduct()"-->
-<!--                                                        [class.is-invalid]="formClassificationForm.myProduct.invalid && formClassificationForm.myProduct.touched"-->
-<!--                                                        formControlName="myProduct"-->
-<!--                                                        id="myProduct" name="myProduct" placeholder="Please Select an option">-->
-<!--                                                <mat-option-->
-<!--                                                        *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}"-->
-<!--                                                        [value]="app.id">{{app.name}}</mat-option>-->
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
-<!--                                        <label for="productSubcategoryString"><b>Product Sub-Category:</b></label>-->
-<!--                                        <mat-form-field class="example-full-width">-->
-<!--                                            <input formControlName="productSubcategoryString" id="productSubcategoryString" matInput name="productSubcategoryString"-->
-<!--                                                   [class.is-invalid]="formClassificationForm.productSubcategoryString.invalid && formClassificationForm.productSubcategoryString.touched"-->
-<!--                                                   type="text">-->
-<!--                                        </mat-form-field>-->
+                                        <!--                                        <label for="myProduct"><b>Select Product</b></label>-->
+                                        <!--                                        <mat-form-field>-->
+                                        <!--                                            <mat-select (selectionChange)="onChangeSelectedMyProduct()"-->
+                                        <!--                                                        [class.is-invalid]="formClassificationForm.myProduct.invalid && formClassificationForm.myProduct.touched"-->
+                                        <!--                                                        formControlName="myProduct"-->
+                                        <!--                                                        id="myProduct" name="myProduct" placeholder="Please Select an option">-->
+                                        <!--                                                <mat-option-->
+                                        <!--                                                        *ngFor="let app of products | filterPipe: {status: true, productCategoryId: productCategoriesSelected}"-->
+                                        <!--                                                        [value]="app.id">{{app.name}}</mat-option>-->
+                                        <!--                                            </mat-select>-->
+                                        <!--                                        </mat-form-field>-->
+                                        <!--                                        <label for="productSubcategoryString"><b>Product Sub-Category:</b></label>-->
+                                        <!--                                        <mat-form-field class="example-full-width">-->
+                                        <!--                                            <input formControlName="productSubcategoryString" id="productSubcategoryString" matInput name="productSubcategoryString"-->
+                                        <!--                                                   [class.is-invalid]="formClassificationForm.productSubcategoryString.invalid && formClassificationForm.productSubcategoryString.touched"-->
+                                        <!--                                                   type="text">-->
+                                        <!--                                        </mat-form-field>-->
                                         <label for="standardTitle"><b>Standard Title:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input formControlName="standardTitle" id="standardTitle" matInput name="standardTitle" placeholder="Please enter Standard Title"
@@ -806,18 +805,18 @@
                                                    [class.is-invalid]="formClassificationForm.standardNumber.invalid && formClassificationForm.standardNumber.touched"
                                                    type="text">
                                         </mat-form-field>
-<!--                                        <label for="productSubcategory"><b>Select Product Sub-Category</b></label>-->
-<!--                                        <mat-form-field>-->
-<!--                                            <mat-select (selectionChange)="onChangeSelectedProductSubcategory()"-->
-<!--                                                        [class.is-invalid]="formClassificationForm.productSubcategory.invalid && formClassificationForm.productSubcategory.touched"-->
-<!--                                                        formControlName="productSubcategory"-->
-<!--                                                        id="productSubcategory" name="productSubcategory"-->
-<!--                                                        placeholder="Please Select an option">-->
-<!--                                                <mat-option-->
-<!--                                                        *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}"-->
-<!--                                                        [value]="app.id">{{app.name}}</mat-option>-->
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
+                                        <!--                                        <label for="productSubcategory"><b>Select Product Sub-Category</b></label>-->
+                                        <!--                                        <mat-form-field>-->
+                                        <!--                                            <mat-select (selectionChange)="onChangeSelectedProductSubcategory()"-->
+                                        <!--                                                        [class.is-invalid]="formClassificationForm.productSubcategory.invalid && formClassificationForm.productSubcategory.touched"-->
+                                        <!--                                                        formControlName="productSubcategory"-->
+                                        <!--                                                        id="productSubcategory" name="productSubcategory"-->
+                                        <!--                                                        placeholder="Please Select an option">-->
+                                        <!--                                                <mat-option-->
+                                        <!--                                                        *ngFor="let app of productSubcategory | filterPipe: {status: true, productId: productsSelected}"-->
+                                        <!--                                                        [value]="app.id">{{app.name}}</mat-option>-->
+                                        <!--                                            </mat-select>-->
+                                        <!--                                        </mat-form-field>-->
                                         <label for="classificationRemarks"><b>Please write, in detail, your feedback for
                                             Classification Details Above:</b></label>
                                         <mat-form-field class="example-full-width">
@@ -912,7 +911,7 @@
                                         <select [class.is-invalid]="formNewScheduleForm.nameActivity.invalid && formNewScheduleForm.nameActivity.errors"
                                                 class="form-control two-column-input"
                                                 formControlName="nameActivity" name="nameActivity" required type="text">
-                                             <option [value]="" selected>Please select</option>
+                                            <option [value]="" selected>Please select</option>
                                             <option [value]="'Complaints Handling'">Complaints Handling</option>
                                         </select>
                                         <div *ngIf="submitted && formNewScheduleForm.nameActivity.errors && formNewScheduleForm.nameActivity.invalid"
