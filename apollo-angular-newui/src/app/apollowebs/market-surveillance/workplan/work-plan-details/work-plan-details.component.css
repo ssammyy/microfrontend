@@ -137,3 +137,9 @@ ul, ol {
     flex-direction: column;
     width: 100%;
 }
+.form-control:not(:focus){
+    border-bottom: 1px dotted #EBECF0;
+}
+.form-control:focus{
+    border-bottom: transparent;
+}
