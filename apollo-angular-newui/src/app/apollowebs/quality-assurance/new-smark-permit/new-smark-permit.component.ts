@@ -169,60 +169,63 @@ export class NewSmarkPermitComponent implements OnInit {
             companyRepresentative: ['', Validators.required],
             applicationDate: ['', Validators.required]
         });
-        this.store$.select(selectCompanyInfoDtoStateData).subscribe(
-            (d) => {
-                if (d) {
-                   //(`${d.penaltyStatus}`);
-                    // return this.status = d.status;
-                    if(d.status == 0)
-                    {
-                       //("lklklklkl")
-                        swal.fire({
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            title: 'Cancelled',
-                            text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
-                            icon: 'error',
-                            customClass: {confirmButton: "btn btn-info",},
-                            buttonsStyling: false
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location.href = "/dashboard";
-                            }
-                        } )
-                    }
-                    else if(d.status==2)
-                    {
-                        swal.fire({
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            title: 'Cancelled',
-                            text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
-                            icon: 'error',
-                            customClass: {confirmButton: "btn btn-info",},
-                            buttonsStyling: false
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location.href = "/dashboard";
-                            }
-                        } )
-                    }
-                    else {
-                    if(d.penaltyStatus == 1){
-                        swal.fire({
-                            allowOutsideClick: false,
-                            allowEscapeKey: false,
-                            title: 'Pending Levy Remittance',
-                            text: 'Your Company has defaulted on Levy Payment.You are Reminded to Remit your Monthly Payment.',
-                            icon: 'error',
-                            customClass: {confirmButton: "btn btn-info",},
-                            buttonsStyling: false
-                        }).then((result) => {
-                            // if (result.value) {
-                            //     window.location.href = "/dashboard";
-                            // }
-                        } )
-                    }else{
+        // this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+        //     (d) => {
+        //         if (d) {
+        //             console.log(d)
+        //            //(`${d.penaltyStatus}`);
+        //             // return this.status = d.status;
+        //             if(d.status == 0)
+        //             {
+        //                //("lklklklkl")
+        //                 swal.fire({
+        //                     allowOutsideClick: false,
+        //                     allowEscapeKey: false,
+        //                     title: 'Cancelled',
+        //                     text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
+        //                     icon: 'error',
+        //                     customClass: {confirmButton: "btn btn-info",},
+        //                     buttonsStyling: false
+        //                 }).then((result) => {
+        //                     if (result.value) {
+        //                         window.location.href = "/dashboard";
+        //                     }
+        //                 } )
+        //             }
+        //             else if(d.status==2)
+        //             {
+        //                 swal.fire({
+        //                     allowOutsideClick: false,
+        //                     allowEscapeKey: false,
+        //                     title: 'Cancelled',
+        //                     text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
+        //                     icon: 'error',
+        //                     customClass: {confirmButton: "btn btn-info",},
+        //                     buttonsStyling: false
+        //                 }).then((result) => {
+        //                     if (result.value) {
+        //                         window.location.href = "/dashboard";
+        //                     }
+        //                 } )
+        //             }
+        //             else {
+        //             if(d.penaltyStatus == 1){
+        //                 swal.fire({
+        //                     allowOutsideClick: false,
+        //                     allowEscapeKey: false,
+        //                     title: 'Pending Levy Remittance',
+        //                     text: 'Your Company has defaulted on Levy Payment.You are Reminded to Remit your Monthly Payment.',
+        //                     icon: 'error',
+        //                     customClass: {confirmButton: "btn btn-info",},
+        //                     buttonsStyling: false
+        //                 }).then((result) => {
+        //                     // if (result.value) {
+        //                     //     window.location.href = "/dashboard";
+        //                     // }
+        //                 } )
+        //             }
+        //
+        //             else{
 
 
                         this.qaService.loadSectionList().subscribe(
@@ -244,18 +247,18 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
                             return this.fullname = u.fullName;
                         });
-                    }
+                  //  }
 
 
 
-                    }
+                  //  }
                 }
-            }
-        );
+         //   }
+     //   );
 
 
 
-    }
+  //  }
 
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {

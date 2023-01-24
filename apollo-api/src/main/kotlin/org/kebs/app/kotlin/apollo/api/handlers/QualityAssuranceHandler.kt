@@ -4414,8 +4414,6 @@ class QualityAssuranceHandler(
             var allCompaniesNotListedFmark: List<companyDto>? = null //smarks
 
             allCompanies = qaDaoServices.listFirmsWebsite(company, map)
-            println(allCompanies)
-
             allCompaniesNotListed = qaDaoServices.listFirmsWebsiteNotMigratedSmark(
                 qaDaoServices.findCompaniesNotMigratedSmark(), map
             )

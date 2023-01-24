@@ -7195,7 +7195,7 @@ class QADaoServices(
     fun findSmarkPermitsNotMigrated(
     ): List<PermitMigrationApplicationsEntity> {
 
-        permitMigratedRepo.findAllByMigratedStatusIsNotNull(PageRequest.of(0, 10000))
+        permitMigratedRepo.findAllByMigratedStatusIsNull(PageRequest.of(0, 10000))
             ?.let { permitList ->
                 return permitList
             }
@@ -7275,7 +7275,7 @@ class QADaoServices(
     fun findFmarkPermitsNotMigrated(
     ): List<PermitMigrationApplicationsEntityFmark> {
 
-        permitMigratedRepoFmark.findAllByMigratedStatusIsNotNull(PageRequest.of(0, 10000))
+        permitMigratedRepoFmark.findAllByMigratedStatusIsNull(PageRequest.of(0, 10000))
             ?.let { permitList ->
                 return permitList
             }
@@ -7288,7 +7288,7 @@ class QADaoServices(
     fun findDmarkPermitsNotMigrated(
     ): List<PermitMigrationApplicationsEntityDmark> {
 
-        permitMigratedRepoDmark.findAllByMigratedStatusIsNotNull(PageRequest.of(0, 10000))
+        permitMigratedRepoDmark.findAllByMigratedStatusIsNull(PageRequest.of(0, 10000))
             ?.let { permitList ->
                 return permitList
             }

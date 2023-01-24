@@ -25,7 +25,7 @@ interface TechnicalCommitteeRepository : JpaRepository<TechnicalCommittee, Long>
 
     fun findAllByOrderByIdDesc(): MutableList<TechnicalCommittee>
 
-    fun findByTechnicalCommitteeNo(technicalCommitteeNo: String?): MutableList<TechnicalCommittee>
+    fun findByTechnicalCommitteeNo(technicalCommitteeNo: String?): TechnicalCommittee?
 
 
 }
