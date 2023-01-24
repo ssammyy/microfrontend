@@ -366,7 +366,7 @@
                                                 class="btn btn-sm btn-primary mr-2" data-target="#myModal1"
                                                 data-toggle="modal"
                                                 mat-raised-button=""><span
-                                                class="mat-button-wrapper">ACCEPT/DEFER COMPLAINT</span>
+                                                class="mat-button-wrapper">ACCEPT/DECLINE COMPLAINT</span>
                                             <div class="mat-ripple mat-button-ripple" matripple=""></div>
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
@@ -397,6 +397,7 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                         <button (click)="openModalAddDetails('reassignRegion')"
+                                                *ngIf="complaintInspection?.complaintsDetails?.approvedStatus"
                                                 class="btn btn-sm btn-primary mr-2"
                                                 data-target="#myModal1"
                                                 data-toggle="modal"
@@ -520,7 +521,7 @@
                                                         name="approved"
                                                         placeholder="Please Select an option">
                                                 <mat-option [value]="1">ACCEPT</mat-option>
-                                                <mat-option [value]="0">DEFER</mat-option>
+                                                <mat-option [value]="0">DECLINE</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <div *ngIf="(selectComplaintStatus == 'Accept')">
@@ -557,9 +558,9 @@
                                                             formControlName="mandateForOga"
                                                             name="mandateForOga"
                                                             placeholder="Please Select an option">
-                                                    <mat-option [value]="0">DEFER ONLY</mat-option>
-                                                    <mat-option [value]="1">DEFER WITH MANDATE</mat-option>
-                                                    <mat-option [value]="2">DEFER FOR AMENDMENT</mat-option>
+                                                    <mat-option [value]="0">DECLINE ONLY</mat-option>
+                                                    <mat-option [value]="1">DECLINE WITH MANDATE</mat-option>
+                                                    <mat-option [value]="2">DECLINE FOR AMENDMENT</mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                             <div *ngIf="(selectComplaintRejectionStatus == 'Accept')">
@@ -639,24 +640,24 @@
                                                 <mat-option *ngFor="let app of apps| filterPipe: {status: true}  " [value]="app.id">{{app.region}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <label for="countyID"><b>Select County</b></label>
-                                        <mat-form-field *ngIf="county$ | async as apps">
-                                            <mat-select (selectionChange)="updateSelectedCounty()"
-                                                        [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"
-                                                        formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">
-                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion} " [value]="app.id">{{app.county}}</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                        <label for="townID"><b>Select Town</b></label>
-                                        <mat-form-field *ngIf="town$ | async as appsTown">
-                                            <mat-select (selectionChange)="updateSelectedTown()"
-                                                        [class.is-invalid]="formReAssignRegionForm.townID.invalid && formReAssignRegionForm.townID.touched"
-                                                        formControlName="townID" id="townID" name="townID" placeholder="Please Select an option">
-                                                <mat-option *ngFor="let appTown of appsTown| filterPipe: {status: true, countyId: selectedCounty}" [value]="appTown.id">{{appTown.town}}</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
+<!--                                        <label for="countyID"><b>Select County</b></label>-->
+<!--                                        <mat-form-field *ngIf="county$ | async as apps">-->
+<!--                                            <mat-select (selectionChange)="updateSelectedCounty()"-->
+<!--                                                        [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"-->
+<!--                                                        formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">-->
+<!--                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion} " [value]="app.id">{{app.county}}</mat-option>-->
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
+<!--                                        <label for="townID"><b>Select Town</b></label>-->
+<!--                                        <mat-form-field *ngIf="town$ | async as appsTown">-->
+<!--                                            <mat-select (selectionChange)="updateSelectedTown()"-->
+<!--                                                        [class.is-invalid]="formReAssignRegionForm.townID.invalid && formReAssignRegionForm.townID.touched"-->
+<!--                                                        formControlName="townID" id="townID" name="townID" placeholder="Please Select an option">-->
+<!--                                                <mat-option *ngFor="let appTown of appsTown| filterPipe: {status: true, countyId: selectedCounty}" [value]="appTown.id">{{appTown.town}}</mat-option>-->
+<!--                                            </mat-select>-->
+<!--                                        </mat-form-field>-->
                                         <label for="assignedRemarks"><b>Please write, in detail, your feedback for
-                                            re-assigning the Count, Town:</b></label>
+                                            re-assigning the Region:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea formControlName="reassignedRemarks" id="reassignedRemarks" matInput name="reassignedRemarks" type="text"
                                                       [class.is-invalid]="formReAssignRegionForm.reassignedRemarks.invalid && formReAssignRegionForm.reassignedRemarks.touched">

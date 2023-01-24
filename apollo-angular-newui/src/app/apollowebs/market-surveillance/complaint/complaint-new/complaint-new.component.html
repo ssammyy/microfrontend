@@ -1519,8 +1519,7 @@
                                                 target="_blank"
                                                 class="btn btn-info"
                                                 style="color: white"
-                                                [href]="getFileUrl(userUpload)"
-                                                download
+                                                (click)="viewFile(userUpload)"
                                         >VIEW</a>
 <!--                                        <button-->
 <!--                                        type="button"-->

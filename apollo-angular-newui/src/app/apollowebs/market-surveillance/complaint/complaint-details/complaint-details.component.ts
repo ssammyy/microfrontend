@@ -286,8 +286,8 @@ export class ComplaintDetailsComponent implements OnInit {
     this.reAssignRegionForm = this.formBuilder.group({
       reassignedRemarks: ['', Validators.required],
       regionID: ['', Validators.required],
-      countyID: ['', Validators.required],
-      townID: ['', Validators.required],
+      countyID: null,
+      townID: null,
     });
 
     this.acceptRejectComplaintForm = this.formBuilder.group({

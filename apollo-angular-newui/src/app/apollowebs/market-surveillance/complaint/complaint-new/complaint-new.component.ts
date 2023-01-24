@@ -9,19 +9,19 @@ import {
   BusinessNaturesService,
   Company,
   County,
-  CountyService, Go,
-  loadBrsValidations,
+  CountyService,
+  Go,
   loadCountyId,
   loadRegistrations,
-  loadResponsesFailure, loadSendTokenToPhone,
+  loadResponsesFailure,
+  loadSendTokenToPhone,
   loadValidateTokenAndPhone,
   Region,
   RegionService,
   RegistrationPayloadService,
-  selectBrsValidationCompany,
-  selectBrsValidationStep,
   selectCountyIdData,
-  selectRegistrationStateSucceeded, selectTokenSentStateOtpSent,
+  selectRegistrationStateSucceeded,
+  selectTokenSentStateOtpSent,
   selectValidateTokenAndPhoneValidated,
   Town,
   TownService,
@@ -35,7 +35,7 @@ import {
   ComplaintDto,
   ComplaintLocationDto,
   MSComplaintSubmittedSuccessful,
-  NewComplaintDto, SampleSubmissionDto,
+  NewComplaintDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {MsService} from '../../../../core/store/data/ms/ms.service';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -52,7 +52,7 @@ export class ComplaintNewComponent implements OnInit {
   time = 59;
   timer!: Observable<number>;
   timerObserver!: PartialObserver<number>;
-  step = 4;
+  step = 1;
   regionName: string;
   countyName: string;
   townName: string;
@@ -156,7 +156,7 @@ export class ComplaintNewComponent implements OnInit {
     );
 
     this.regionService.getAll().subscribe((regionData: Region[]) => {
-      this.regionList = regionData.sort((a, b) => a.region > b.region ? 1: -1);
+      this.regionList = regionData.sort((a, b) => a.region > b.region ? 1 : -1);
     });
 
     this.stepZeroForm = this.formBuilder.group({
@@ -187,7 +187,7 @@ export class ComplaintNewComponent implements OnInit {
       // complaintCategory: new FormControl('', [Validators.required]),
       // myProduct: new FormControl('', [Validators.required]),
       productBrand: new FormControl('', [Validators.required]),
-      productName: new FormControl('',[Validators.required]),
+      productName: new FormControl('', [Validators.required]),
     });
 
     this.stepThreeForm = new FormGroup({
@@ -256,10 +256,10 @@ export class ComplaintNewComponent implements OnInit {
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
-    this.regionService.getAll().subscribe((regionData : Region[]) =>{
+    this.regionService.getAll().subscribe((regionData: Region[]) => {
       this.regionName = regionData?.find(x => x.id === this.selectedRegion).region;
     });
-    console.log("Region selected is: " + this.selectedRegion);
+    console.log('Region selected is: ' + this.selectedRegion);
   }
 
   updateSelectedCounty() {
@@ -339,8 +339,8 @@ export class ComplaintNewComponent implements OnInit {
   }
 
   reviewComplaint() {
-    if (this.uploadedFiles){
-      for( let i =0; i<this.uploadedFiles.length; i++){
+    if (this.uploadedFiles) {
+      for ( let i = 0; i < this.uploadedFiles.length; i++) {
         this.arrayOfUploadedFiles.push(this.uploadedFiles[i]);
       }
     }
@@ -567,9 +567,20 @@ export class ComplaintNewComponent implements OnInit {
 
 
 
-  getFileUrl(fileUploaded: File){
-    let createdUrl = URL.createObjectURL(fileUploaded);
-    return createdUrl;
+  getFileUrl(fileUploaded: File) {
+    return URL.createObjectURL(fileUploaded);
+  }
+
+  viewFile(fileUploaded: File) {
+    this.SpinnerService.hide();
+    const blob = new Blob([fileUploaded.slice()], {type: fileUploaded.type});
+
+    // tslint:disable-next-line:prefer-const
+    let downloadURL = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadURL;
+    link.download = fileUploaded.name;
+    link.click();
   }
 }
 
