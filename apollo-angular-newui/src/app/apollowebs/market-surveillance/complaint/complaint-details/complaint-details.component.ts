@@ -948,4 +948,27 @@ export class ComplaintDetailsComponent implements OnInit {
     this.router.navigate([`/complaintPlan/details/`, this.complaintInspection.workPlanRefNumber, this.complaintInspection.workPlanBatchRefNumber]);
   }
 
+  viewComplaintPdfFile(refNumber: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadComplaintDetailsPDF(refNumber).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Complaint-${refNumber}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
 }

@@ -2000,6 +2000,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val dataValue = CustomerComplaintSubmittedDTO()
         with(dataValue) {
             refNumber = dataDetails.referenceNumber
+            productName = dataDetails.productString
             baseUrl = applicationMapProperties.baseUrlValue
             fullName = dataDetails.createdBy
             dateSubmitted = dataDetails.transactionDate
@@ -2025,13 +2026,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val complaintRemarks = findRemarksForComplaints(comp.id?: throw ExpectedDataNotFound("MISSING COMPLAINT ID"))
         val officerList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID,
-            complaintLocationDetails.county ?: throw ExpectedDataNotFound("MISSING COMPLAINT COUNTY ID"),
             complaintLocationDetails.region ?: throw ExpectedDataNotFound("MISSING COMPLAINT REGION ID")
         )
 
         val hofList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedHOFROLEID,
-            complaintLocationDetails.county ?: throw ExpectedDataNotFound("MISSING COMPLAINT COUNTY ID"),
             complaintLocationDetails.region ?: throw ExpectedDataNotFound("MISSING COMPLAINT REGION ID")
         )
 
