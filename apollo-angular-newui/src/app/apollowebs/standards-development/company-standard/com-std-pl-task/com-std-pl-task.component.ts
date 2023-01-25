@@ -1,6 +1,12 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Subject} from "rxjs";
-import {ComHodTasks, ComStandardJC, ComStdAction, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {
+  ComHodTasks,
+  ComStandardJC,
+  ComStdAction,
+  UserEntity,
+  UsersEntity
+} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
@@ -22,7 +28,7 @@ export class ComStdPlTaskComponent implements OnInit {
   user_id: number ;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-  public users !: UsersEntity[] ;
+  public users !: UserEntity[] ;
   selectedUser: number;
   tasks: ComHodTasks[] = [];
   public actionRequest: ComHodTasks | undefined;
@@ -112,7 +118,7 @@ export class ComStdPlTaskComponent implements OnInit {
   public getUserList(): void {
     this.SpinnerService.show();
     this.stdComStandardService.getUserList().subscribe(
-        (response: UsersEntity[]) => {
+        (response: UserEntity[]) => {
           this.SpinnerService.hide();
           this.users = response;
         },

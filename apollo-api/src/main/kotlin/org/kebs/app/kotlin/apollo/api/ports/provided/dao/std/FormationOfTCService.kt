@@ -5,19 +5,19 @@ import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
-import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
-import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.DecisionFeedbackRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.JustificationForTCRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.StandardsDocumentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.TechnicalCommitteeRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.util.*
 
@@ -31,6 +31,8 @@ class FormationOfTCService(
     private val decisionFeedbackRepository: DecisionFeedbackRepository,
     private val commonDaoServices: CommonDaoServices,
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
+    private val sdDocumentsRepository: StandardsDocumentsRepository,
+    private val draftDocumentService: DraftDocumentService,
 
     ) {
 
@@ -45,14 +47,11 @@ class FormationOfTCService(
 
     fun submitJustificationForFormationOfTC(justificationForTC: JustificationForTC): ProcessInstanceResponseValue {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
         justificationForTC.createdOn = Timestamp(System.currentTimeMillis())
         justificationForTC.createdBy = loggedInUser.id
         justificationForTC.version = "1"
         justificationForTC.status = 1  //uploaded awaiting decision
-
         justificationForTCRepository.save(justificationForTC)
-
         return ProcessInstanceResponseValue(
             justificationForTC.id,
             "Complete",
@@ -62,8 +61,12 @@ class FormationOfTCService(
 
     }
 
-    fun getAllHofJustifications(): List<JustificationForTC> {
+    fun getAllJustifications(): List<JustificationForTC> {
         return justificationForTCRepository.findAll()
+    }
+
+    fun getAllHofJustifications(): List<JustificationForTC> {
+        return justificationForTCRepository.findAllByStatus(1)
     }
 
 
@@ -132,6 +135,10 @@ class FormationOfTCService(
 
 
     fun sacGetAllApprovedJustificationsBySpc(): List<JustificationForTC> {
+        return justificationForTCRepository.findAllByStatus(4)
+    }
+
+    fun sacGetAllRejectedJustificationsBySpc(): List<JustificationForTC> {
         return justificationForTCRepository.findAllByStatus(5)
     }
 
@@ -159,110 +166,45 @@ class FormationOfTCService(
         )
     }
 
+    fun rejectJustificationSAC(justificationForTC: JustificationForTC): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
+        u.status = 7   //rejected by SAC
+        u.spcId = loggedInUser.id
+        u.spcReviewDate = Timestamp(System.currentTimeMillis())
+
+        justificationForTCRepository.save(u)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Rejected", "Justification Rejected."
+        )
+    }
+
+    fun sacGetAllForWebsite(): List<JustificationForTC> {
+        return justificationForTCRepository.findAllByStatus(6)
+    }
+
+    fun sacGetAllRejected(): List<JustificationForTC> {
+        return justificationForTCRepository.findAllByStatus(7)
+    }
+
 
     fun advertiseTcToWebsite(justificationForTC: JustificationForTC): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
-        u.status = 7   //advertised To Website
+        u.status = 8   //advertised To Website
         justificationForTCRepository.save(u)
 
-        //find technical committee
-
-//        val tc:TechnicalCommittee = technicalCommitteeRepository.findAllByOrderByIdDesc()
-//        tc.departmentId = u.departmentId!!
-//        tc.title = u.nameOfTC
-//        tc.createdOn = Timestamp(System.currentTimeMillis())
-//        tc.status = 1.toString()
-//        tc.createdBy = loggedInUser.id.toString()
-//        tc.technicalCommitteeNo = u.tcNumber
-//
-//        technicalCommitteeRepository.save(tc)
+//       find technical committee
+        val tc: TechnicalCommittee = technicalCommitteeRepository.findByTechnicalCommitteeNo(u.tcNumber)!!
+        //update technical committee for advertising
+        tc.advertisingStatus = "1"
+        technicalCommitteeRepository.save(tc)
         return ServerResponse(
             HttpStatus.OK,
-            "Success", "Technical Committee Saved."
+            "Success", "Technical Committee Advertised To Website."
         )
     }
-
-
-    fun getSPCTasks(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_SPC).list()
-        return getTaskDetails(tasks)
-    }
-
-    private fun getTaskDetails(tasks: List<Task>): List<TaskDetails> {
-        val taskDetails: MutableList<TaskDetails> = ArrayList()
-        for (task in tasks) {
-            val processVariables = taskService.getVariables(task.id)
-            taskDetails.add(TaskDetails(task.id, task.name, processVariables))
-        }
-        return taskDetails
-    }
-
-
-    fun decisionOnJustificationForTC(decisionFeedback: DecisionFeedback) {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-
-        decisionFeedback.user_id?.let { variables.put("user_id", it) }
-        decisionFeedback.item_id?.let { variables.put("item_id", it) }
-        decisionFeedback.comment?.let { variables.put("comment", it) }
-        decisionFeedback.taskId?.let { variables.put("taskId", it) }
-
-        variables["approved"] = decisionFeedback.status!!
-        taskService.complete(decisionFeedback.taskId, variables)
-    }
-
-    fun uploadFeedbackOnJustification(decisionFeedback: DecisionFeedback) {
-        val variable: MutableMap<String, Any> = HashMap()
-
-        decisionFeedback.user_id.let { variable.put("user_id", it) }
-        decisionFeedback.item_id?.let { variable.put("item_id", it) }
-        decisionFeedback.status?.let { variable.put("status", it) }
-        decisionFeedback.comment?.let { variable.put("comment", it) }
-        decisionFeedback.taskId?.let { variable.put("taskId", it) }
-
-
-        print(decisionFeedback.toString())
-
-        decisionFeedbackRepository.save(decisionFeedback)
-
-        taskService.complete(decisionFeedback.taskId)
-    }
-
-    fun getSACTasks(): List<TaskDetails> {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_SAC).list()
-        return getTaskDetails(tasks)
-    }
-
-    fun decisionOnSPCFeedback(decisionFeedback: DecisionFeedback) {
-        val variables: MutableMap<String, Any> = java.util.HashMap()
-        decisionFeedback.user_id.let { variables.put("user_id", it) }
-        decisionFeedback.item_id?.let { variables.put("item_id", it) }
-        decisionFeedback.comment?.let { variables.put("comment", it) }
-        decisionFeedback.taskId?.let { variables.put("taskId", it) }
-
-        variables["approved"] = decisionFeedback.status!!
-        taskService.complete(decisionFeedback.taskId, variables)
-    }
-
-    fun checkProcessHistory(id: ID): List<HistoricActivityInstance> {
-        val historyService = processEngine.historyService
-        val activities = historyService
-            .createHistoricActivityInstanceQuery()
-            .processInstanceId(id.ID)
-            .finished()
-            .orderByHistoricActivityInstanceEndTime()
-            .asc()
-            .list()
-        for (activity in activities) {
-            println(
-                activity.activityId + " took " + activity.durationInMillis + " milliseconds"
-            )
-        }
-
-        return activities
-
-    }
-
 
     fun generateTCNumber(departmentAbbrv: String?): String {
         val allRequests = technicalCommitteeRepository.findAllByOrderByIdDesc()
@@ -278,6 +220,40 @@ class FormationOfTCService(
         }
         val year = Calendar.getInstance()[Calendar.YEAR]
         return "$departmentAbbrv/TC/$finalValue:$year"
+    }
+
+
+    fun uploadAdditionalDocumentsForProposal(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        nwi: Long,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            sdDocumentId = nwi
+            createdBy = commonDaoServices.concatenateName(commonDaoServices.loggedInUserDetails())
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+
+        return sdDocumentsRepository.save(uploads)
+    }
+
+    fun getDocuments(proposalId: Long): Collection<DatKebsSdStandardsEntity?>? {
+
+        return draftDocumentService.findUploadedDIFileBYIdAndType(proposalId, "Formation Of Tc Additional Documents")
+
     }
 
 }

@@ -31,7 +31,7 @@
                                             <th class="task">Brand Name</th>
                                             <th class="task">Total Amount</th>
                                             <th class="task">Reference Number</th>
-                                            <th class="task">WithHolding</th>
+<!--                                            <th class="task">WithHolding</th>-->
 
                                             <th class="task">Action</th>
                                             <!--                                            <th class="task">Select</th>-->
@@ -44,21 +44,21 @@
                                             <td>{{task.brandName}}</td>
                                             <td>{{task.totalAmount}}</td>
                                             <td>{{task.invoiceNumber}}</td>
-                                            <td>
+<!--                                            <td>-->
 
-                                                                                                <mat-checkbox class="example-margin mb-0"
-                                                                                                              (change)="setWithHoldingToTrue($event)">
-                                                                                                    I am WithHolding
+<!--                                                                                                <mat-checkbox class="example-margin mb-0"-->
+<!--                                                                                                              (change)="setWithHoldingToTrue($event)">-->
+<!--                                                                                                    I am WithHolding-->
 
-                                                                                                </mat-checkbox>
-<!--                                                <input class="example-margin mb-0" type="checkbox"-->
-<!--                                                       value="true"-->
-<!--                                                       id="defaultCheck1"-->
-<!--                                                       (change)="setWithHoldingToTrue($event.target.checked)"-->
-<!--                                                > <label for="defaultCheck1"> I Am Withholding</label><br>-->
+<!--                                                                                                </mat-checkbox>-->
+<!--&lt;!&ndash;                                                <input class="example-margin mb-0" type="checkbox"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                       value="true"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                       id="defaultCheck1"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                       (change)="setWithHoldingToTrue($event.target.checked)"&ndash;&gt;-->
+<!--&lt;!&ndash;                                                > <label for="defaultCheck1"> I Am Withholding</label><br>&ndash;&gt;-->
 
 
-                                            </td>
+<!--                                            </td>-->
 
 
                                             <td *ngIf="task.totalAmount != 0">

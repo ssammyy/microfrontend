@@ -296,6 +296,7 @@ export class RegisterTivetComponent implements OnInit {
         // this.stepFourForm?.get('otp')?.reset();
         this.phoneValidated = d;
         if (this.phoneValidated) {
+          this.userSoFar = {...this.userSoFar, ...this.stepFourForm?.value};
           this.userSoFar = {...this.userSoFar, ...this.stepFiveForm.value};
           this.company = {...this.company, ...this.companySoFar};
           this.user = {...this.user, ...this.userSoFar};

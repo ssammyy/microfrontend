@@ -11,6 +11,7 @@ class CustomerComplaintSubmittedDTO {
     var fullName: String? = null
 
     var refNumber: String? = null
+    var productName: String? = null
 
     var dateSubmitted: Date? = null
 }

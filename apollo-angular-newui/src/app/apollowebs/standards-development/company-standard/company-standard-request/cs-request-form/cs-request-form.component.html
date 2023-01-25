@@ -1,129 +1,224 @@
+<style>
+    .login-button {
+        background-color: #0594FF;
+        color: #ffffff;
+        padding: 10px 35px;
+        border: none;
+        border-radius: 100px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .error-msg {
+        color: red;
+        display: inline-block;
+        position: absolute;
+        top: 34px;
+        /* font-size: 10px; */
+        font-size: 75%;
+        margin-top: 2.604167em;
+        top: calc(100% - 1.72916667em);
+    }
+
+    .fix-error-icon {
+        top: 27px;
+    }
+
+</style>
 <div class="container-fluid" style="margin-top: 5%" id="main-container">
-<div  class="loading-spinner ">
-<ngx-spinner
-bdColor="rgba(51,51,51,0.8)"
-size="medium"
-color="#fff"
-type="ball-scale-multiple"
->
-<p style="font-size: 20px; color: white">Loading...</p>
-</ngx-spinner>
-</div>
-<div class="main-content" >
-<div class="container-fluid">
-<div class="row">
-<div class="col-md-12">
-<div class="card">
-<div class="card-header card-header-primary card-header-icon">
-<div class="card-icon">
-<i class="material-icons">assignment</i>
-</div>
-<h4 class="card-title">Fill in the form below to request for a Company standard</h4>
-</div>
-<div class="card-body">
-<div class="toolbar">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                <form (ngSubmit)="saveStandard()" [formGroup]="stdRequestFormGroup" class="form">
+                    <h1 style="color: #0A95FC">Proposing Subjects for Standardization</h1>
+                    <h3>Guidelines for collecting and filling in the information required for this template</h3>
+                    <hr>
+                    <p>
+                        1. Fill this template in and submit it to KEBS through the online portal. Please rank your proposals
+                        regarding the potential to contribute to economic efficiency safeguard health and safety preserve the
+                        environment, the local exchange of products and industrial integration and facilitate access to export
+                        markets.
+                    </p>
+                    <p>
+                        2.In this context "economic sector" means sectors such as : food processing, textiles and apparel, plastics,
+                        automotive parts, electrical and electronic engineering, petrochemicals, banking, education, tourism,
+                        phosphate mining etc. Sectors could be in the agriculture and mining, manufacturing or services areas.
+                    </p>
+                    <p>3.
+                        Subjects are subjects for an individual standard such as cottage cheese, plugs and sockets, polyethylene
+                        sheets, centrifugal pumps for petrochemical industry, Personal Identification Number (PIN) management and
+                        security
+                    </p>
+                    <p>4.Some sectors may have multiple proposals, others may have only one. Feel free to add or delete rows to
+                        tailor this template to your needs.
+                    </p>
+                    <hr>
 
-</div>
-<div class="material-datatables">
-<form (ngSubmit)="saveStandard()" [formGroup]="stdRequestFormGroup" class="form">
-<hr>
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label>Department/Sector</label>
+                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                    class="form-control" required
+                                    formControlName="departmentId"
+                                    name="departmentId"
+                                    [class.is-invalid]="formStdRequest.departmentId.invalid && formStdRequest.departmentId.touched">
+                                <option disabled>--Select Department--</option>
+                                <option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><b>Enter Company name</b></label>
+                            <input [class.is-invalid]="formStdRequest.companyName.invalid && formStdRequest.companyName.touched"
+                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                   class="form-control one-column-input" formControlName="companyName" name="companyName"
+                                   placeholder="name" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label><b>Enter Phone Number</b></label>
+                            <input [class.is-invalid]="formStdRequest.companyPhone.invalid && formStdRequest.companyPhone.touched"
+                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                   class="form-control one-column-input" formControlName="companyPhone" name="companyPhone"
+                                   placeholder="+25470000000" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label><b>Enter Email address</b></label>
+                            <input
+                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                    class="form-control one-column-input" formControlName="companyEmail"  name="companyEmail"
+                                    placeholder="joedoe@gmail.com" type="email">
+                        </div>
 
-<div class="form-body">
-<div class="form-group">
-<label>Department/Sector</label>
-<select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-class="form-control" required
-formControlName="departmentId"
-name="departmentId" (change)="onSelectDepartment($event.target.value)"
-[class.is-invalid]="formStdRequest.departmentId.invalid && formStdRequest.departmentId.touched">
-<option disabled>--Select Department--</option>
-<option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
-</select>
-</div>
-<div class="form-group">
-<label>Technical Committee</label>
-<select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-class="form-control" required
-formControlName="tcId"
-name="tcId" (change)="onSelectTechnicalCommittee($event.target.value)"
-[class.is-invalid]="formStdRequest.tcId.invalid && formStdRequest.tcId.touched">
-<option disabled>--Select committee--</option>
-<option *ngFor="let committee of technicalCommittees"
-[value]="committee.id">{{committee.title}}
-</option>
-</select>
-</div>
-<div class="form-group">
-<label>Product Category</label>
-<select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-class="form-control"
-formControlName="productId"
-name="productId" (change)="onSelectProductCategory($event.target.value)" [class.is-invalid]="formStdRequest.productId.invalid && formStdRequest.productId.touched">
-<option disabled>--Select Category--</option>
-<option *ngFor="let product of products" [value]="product.id">{{product.name}}</option>
-</select>
-</div>
-<div class="form-group">
-<label>Product Sub Category</label>
-<select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-class="form-control" required
-formControlName="productSubCategoryId"
-name="productSubCategoryId" [class.is-invalid]="formStdRequest.productSubCategoryId.invalid && formStdRequest.productSubCategoryId.touched">
-<option disabled>--Select Sub Category--</option>
-<option *ngFor="let productSub of productsSubCategory" [value]="productSub.id">{{productSub.name}}</option>
-</select>
-</div>
 
-<div class="form-group">
-<label><b>Enter Company name</b></label>
-<input [class.is-invalid]="formStdRequest.companyName.invalid && formStdRequest.companyName.touched"
-aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-class="form-control one-column-input" formControlName="companyName" name="companyName"
-placeholder="name" type="text">
-</div>
-<div class="form-group">
-<label><b>Enter Phone Number</b></label>
-<input [class.is-invalid]="formStdRequest.companyPhone.invalid && formStdRequest.companyPhone.touched"
-aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-class="form-control one-column-input" formControlName="companyPhone" name="companyPhone"
-placeholder="+25470000000" type="text">
-</div>
-<div class="form-group">
-<label><b>Enter Email address</b></label>
-<input
-aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-class="form-control one-column-input" formControlName="companyEmail"  name="companyEmail"
-placeholder="joedoe@gmail.com" type="email">
-</div>
-    <div class="row col-12">
-        <div class="form-group col-12">
-            <label><b>Attach Commitment Letter</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-            <form #demoForm="ngForm">
-                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf" ></file-upload>
-                <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
-            </form>
+                        <div class="form-group">
+                            <label><b>Subject ( Name of product or service to be standardized ) :</b></label>
+                            <input  [class.is-invalid]="formStdRequest.subject.invalid && formStdRequest.subject.touched"
+                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                    class="form-control one-column-input" formControlName="subject"  name="subject"
+                                    placeholder="" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label><b>Brief description of product or service ( Briefly describe specific issues to be addressed
+                                )</b></label>
+                            <input  [class.is-invalid]="formStdRequest.description.invalid && formStdRequest.description.touched"
+                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                    class="form-control one-column-input" formControlName="description"  name="description"
+                                    placeholder="Enter Specific Issues To Be Addressed *" type="text">
+
+                        </div>
+                        <div class="form-group">
+                            <label><b>Add Contact Person's </b></label>
+                            <div class="form-group">
+                                <label><b>Full Names (Contact Person One)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input  [class.is-invalid]="formStdRequest.contactOneFullName.invalid && formStdRequest.contactOneFullName.touched"
+                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                        class="form-control one-column-input" formControlName="contactOneFullName"  name="contactOneFullName"
+                                        placeholder="" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label><b>Telephone (Contact Person One)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input  [class.is-invalid]="formStdRequest.contactOneTelephone.invalid && formStdRequest.contactOneTelephone.touched"
+                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                        class="form-control one-column-input" formControlName="contactOneTelephone"  name="contactOneTelephone"
+                                        placeholder="" type="text">
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Email Address (Contact Person One)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input  [class.is-invalid]="formStdRequest.contactOneEmail.invalid && formStdRequest.contactOneEmail.touched"
+                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                        class="form-control one-column-input" formControlName="contactOneEmail"  name="contactOneEmail"
+                                        placeholder="" type="text">
+                            </div>
+
+                            <hr>
+<!--                            <div class="form-group">-->
+<!--                                <label><b>Full Names (Contact Person Two)</b></label>-->
+<!--                                <input-->
+<!--                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                        class="form-control one-column-input" formControlName="contactTwoFullName"  name="contactTwoFullName"-->
+<!--                                        placeholder="" type="text">-->
+<!--                            </div>-->
+<!--                            <div class="form-group">-->
+<!--                                <label><b>Telephone (Contact Person Two)</b></label>-->
+<!--                                <input-->
+<!--                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                        class="form-control one-column-input" formControlName="contactTwoTelephone"  name="contactTwoTelephone"-->
+<!--                                        placeholder="" type="text">-->
+<!--                            </div>-->
+
+<!--                            <div class="form-group">-->
+<!--                                <label><b>Email Address (Contact Person Two)</b></label>-->
+<!--                                <input-->
+<!--                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                        class="form-control one-column-input" formControlName="contactTwoEmail"  name="contactTwoEmail"-->
+<!--                                        placeholder="" type="text">-->
+<!--                            </div>-->
+
+<!--                            <hr>-->
+
+<!--                            <div class="form-group">-->
+<!--                                <label><b>Full Names (Contact Person Three)</b></label>-->
+<!--                                <input-->
+<!--                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                        class="form-control one-column-input" formControlName="contactThreeFullName"  name="contactThreeFullName"-->
+<!--                                        placeholder="" type="text">-->
+<!--                            </div>-->
+<!--                            <div class="form-group">-->
+<!--                                <label><b>Telephone (Contact Person Three)</b></label>-->
+<!--                                <input-->
+<!--                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                        class="form-control one-column-input" formControlName="contactThreeTelephone"  name="contactThreeTelephone"-->
+<!--                                        placeholder="" type="text">-->
+<!--                            </div>-->
+
+<!--                            <div class="form-group">-->
+<!--                                <label><b>Email Address (Contact Person Three)</b></label>-->
+<!--                                <input-->
+<!--                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+<!--                                        class="form-control one-column-input" formControlName="contactThreeEmail"  name="contactThreeEmail"-->
+<!--                                        placeholder="" type="text">-->
+<!--                            </div>-->
+
+                        </div>
+
+                        <div class="row col-12">
+                            <div class="form-group col-12">
+                                <label><b>Attach Commitment Letter</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <form #demoForm="ngForm">
+                                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf" ></file-upload>
+                                    <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                            <button *ngIf="stdRequestFormGroup.valid" [disabled]="!stdRequestFormGroup.valid" class="btn btn-sm btn-info float-right" type="submit">Submit</button>
+
+                        </div>
+
+                    </div>
+
+
+                </form>
+                <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+                    <button *ngIf="!stdRequestFormGroup.valid" class="btn btn-sm btn-info float-right"
+                            (click)="showNotification('top','right')">Submit
+                    </button>
+                </div>
+
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
-        <button *ngIf="stdRequestFormGroup.valid" [disabled]="!stdRequestFormGroup.valid" class="btn btn-sm btn-info float-right" type="submit">Submit</button>
-
-    </div>
-
-</div>
-
-
-</form>
-    <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
-        <button *ngIf="!stdRequestFormGroup.valid" class="btn btn-sm btn-info float-right"
-                (click)="showNotification('top','right')">Submit
-        </button>
-    </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 

@@ -77,7 +77,7 @@
                                                             <div class="form-group col-12">
                                                                 <label>Assign To</label>
                                                                 <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="idOfJc" >
-                                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.name}} </ng-option>
                                                                 </ng-select>
 
                                                             </div>

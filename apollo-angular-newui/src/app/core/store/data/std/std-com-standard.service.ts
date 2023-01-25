@@ -23,12 +23,12 @@ import {
   NWAWDDecision,
   NWAWorkShopDraft,
   Product,
-  StakeholderProposalComments,
+  StakeholderProposalComments, UserEntity,
   UsersEntity
 } from './std.model';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
-import {SiteVisitRemarks} from "../levy/levy.model";
+import {DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -57,10 +57,10 @@ export class StdComStandardService {
     const params = new HttpParams();
     return this.http.get<Department[]>(url, {params}).pipe();
   }
-  public getUserList(): Observable<UsersEntity[]> {
+  public getUserList(): Observable<UserEntity[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_GET_USERS);
     const params = new HttpParams();
-    return this.http.get<UsersEntity[]>(url, {params}).pipe();
+    return this.http.get<UserEntity[]>(url, {params}).pipe();
   }
 
   public getDepartment(): any {
@@ -254,6 +254,7 @@ export class StdComStandardService {
     );
   }
 
+
   public prepareCompanyPreliminaryDraft(comPreliminaryDraft: COMPreliminaryDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_PREPARE_PRELIMINARY_DRAFT);
     const params = new HttpParams();
@@ -266,6 +267,8 @@ export class StdComStandardService {
         })
     );
   }
+
+
   //upload Draft Document
   public uploadPDFileDetails(comStdDraftID: string, data: FormData): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_PD);
@@ -305,6 +308,12 @@ export class StdComStandardService {
           return throwError(fault);
         })
     );
+  }
+
+  public getDraftDocumentList(comStdDraftID: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT_DOCUMENT_LIST);
+    const params = new HttpParams().set('comStdDraftID', comStdDraftID);
+    return this.http.get<DocumentDTO[]>(url, {params}).pipe();
   }
 
 

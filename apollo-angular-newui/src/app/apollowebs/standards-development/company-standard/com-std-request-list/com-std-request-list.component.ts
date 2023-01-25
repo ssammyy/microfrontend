@@ -11,7 +11,13 @@ import {
 import {NgxSpinnerService} from "ngx-spinner";
 import {ReplaySubject, Subject} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ComHodTasks, ComStdAction, ComStdRequest, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {
+    ComHodTasks,
+    ComStdAction,
+    ComStdRequest,
+    UserEntity,
+    UsersEntity
+} from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {DataTableDirective} from "angular-datatables";
@@ -33,21 +39,19 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     dtElements: QueryList<DataTableDirective>;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
-    public websiteCtrl: FormControl = new FormControl();
-    public websiteFilterCtrl: FormControl = new FormControl();
-    public filteredWebsites: ReplaySubject<UsersEntity[]> = new ReplaySubject<UsersEntity[]>(1);
-    @ViewChild('singleSelect') singleSelect: MatSelect;
+
     /** Subject that emits when the component has been destroyed. */
     protected _onDestroy = new Subject();
-  public users !: UsersEntity[] ;
+  public users !: UserEntity[] ;
     selectedUser: number;
   tasks: ComStdRequest[] = [];
   public actionRequest: ComStdRequest | undefined;
     public committeeFormGroup!: FormGroup;
     public uploadDraftFormGroup!: FormGroup;
-  blob: Blob;
-   // public dropdownSettings: IDropdownSettings = {};
-    //dropdownList: any[] = [];
+    blob: Blob;
+    public uploadedFiles:  FileList;
+   public dropdownSettings: IDropdownSettings = {};
+    dropdownList: any[] = [];
 
   constructor(
       private stdComStandardService:StdComStandardService,
@@ -60,6 +64,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
 
 
   ngOnInit(): void {
+
     this.getCompanyStandardRequest();
     this.getUserList();
       this.committeeFormGroup = this.formBuilder.group({
@@ -80,75 +85,89 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
           docName:[],
           standardNumber:[],
           requestNumber: [],
-          requestId:[]
+          requestId:[],
+          departmentId:[],
+          subject:[],
+          description:[],
+          contactOneFullName:[],
+          contactOneTelephone:[],
+          contactOneEmail:[],
+          contactTwoFullName:[],
+          contactTwoTelephone:[],
+          contactTwoEmail:[],
+          contactThreeFullName:[],
+          contactThreeTelephone:[],
+          contactThreeEmail:[],
+          companyName:[],
+          companyPhone:[]
 
       });
 
-      // this.dropdownSettings = {
-      //     singleSelection: false,
-      //     idField: 'email',
-      //     textField: 'firstName',
-      //     selectAllText: 'Select All',
-      //     unSelectAllText: 'UnSelect All',
-      //     itemsShowLimit: 3,
-      //     allowSearchFilter: true
-      // };
+      this.dropdownSettings = {
+          singleSelection: false,
+          idField: 'email',
+          textField: 'name',
+          selectAllText: 'Select All',
+          unSelectAllText: 'UnSelect All',
+          itemsShowLimit: 5,
+          allowSearchFilter: true
+      };
 
-      this.websiteCtrl.setValue(this.users[1]);
-      this.filteredWebsites.next(this.users.slice());
-
-      this.websiteFilterCtrl.valueChanges
-          .pipe(takeUntil(this._onDestroy))
-          .subscribe(() => {
-              this.filterBanks();
-          });
+      // this.websiteCtrl.setValue(this.users[1]);
+      // this.filteredWebsites.next(this.users.slice());
+      //
+      // this.websiteFilterCtrl.valueChanges
+      //     .pipe(takeUntil(this._onDestroy))
+      //     .subscribe(() => {
+      //         this.filterBanks();
+      //     });
 
 
   }
 
-    // onItemSelect(item: ListItem) {
-    //     console.log(item);
-    // }
-    //
-    // onSelectAll(items: any) {
-    //     console.log(items);
-    // }
-
-    ngAfterViewInit() {
-        this.setInitialValue();
+    onItemSelect(item: ListItem) {
+        console.log(item);
     }
+
+    onSelectAll(items: any) {
+        console.log(items);
+    }
+
+    // ngAfterViewInit() {
+    //     this.setInitialValue();
+    // }
 
     ngOnDestroy(): void {
         this.dtTrigger.unsubscribe();
-        this._onDestroy.next();
-        this._onDestroy.complete();
+        //this._onDestroy.next();
+        //this._onDestroy.complete();
     }
 
-    protected setInitialValue() {
-        this.filteredWebsites
-            .pipe(take(1), takeUntil(this._onDestroy))
-            .subscribe(() => {
-                this.singleSelect.compareWith = (a: UsersEntity, b: UsersEntity) => a && b && a.id === b.id;
-            });
-    }
+    // protected setInitialValue() {
+    //     this.filteredWebsites
+    //         .pipe(take(1), takeUntil(this._onDestroy))
+    //         .subscribe(() => {
+    //             this.singleSelect.compareWith = (a: UserEntity, b: UserEntity) => a && b && a.id === b.id;
+    //         });
+    // }
 
-    protected filterBanks() {
-        if (!this.users) {
-            return;
-        }
-
-        let search = this.websiteFilterCtrl.value;
-        if (!search) {
-            this.filteredWebsites.next(this.users.slice());
-            return;
-        } else {
-            search = search.toLowerCase();
-        }
-
-        this.filteredWebsites.next(
-            this.users.filter(bank => bank.firstName.toLowerCase().indexOf(search) > -1)
-        );
-    }
+    // protected filterBanks() {
+    //     if (!this.users) {
+    //         return;
+    //     }
+    //
+    //     let search = this.websiteFilterCtrl.value;
+    //     if (!search) {
+    //         this.filteredWebsites.next(this.users.slice());
+    //         return;
+    //     } else {
+    //         search = search.toLowerCase();
+    //     }
+    //
+    //     this.filteredWebsites.next(
+    //         this.users.filter(bank => bank.name.toLowerCase().indexOf(search) > -1)
+    //     );
+    // }
 
     showToasterSuccess(title:string,message:string){
         this.notifyService.showSuccess(message, title)
@@ -177,6 +196,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         }
     );
   }
+
   public onOpenModal(task: ComStdRequest,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
@@ -197,7 +217,21 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
           this.uploadDraftFormGroup.patchValue(
               {
                   requestNumber: this.actionRequest.requestNumber,
-                  requestId: this.actionRequest.id
+                  requestId: this.actionRequest.id,
+                  departmentId:this.actionRequest.departmentId,
+                  subject:this.actionRequest.subject,
+                  description:this.actionRequest.description,
+                  contactOneFullName:this.actionRequest.contactOneFullName,
+                  contactOneTelephone:this.actionRequest.contactOneTelephone,
+                  contactOneEmail:this.actionRequest.contactOneEmail,
+                  contactTwoFullName:this.actionRequest.contactTwoFullName,
+                  contactTwoTelephone:this.actionRequest.contactTwoTelephone,
+                  contactTwoEmail:this.actionRequest.contactTwoEmail,
+                  contactThreeFullName:this.actionRequest.contactThreeFullName,
+                  contactThreeTelephone:this.actionRequest.contactThreeTelephone,
+                  contactThreeEmail:this.actionRequest.contactThreeEmail,
+                  companyName:this.actionRequest.companyName,
+                  companyPhone:this.actionRequest.companyPhone
               }
           );
       }
@@ -256,11 +290,11 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
   public getUserList(): void {
     this.SpinnerService.show();
     this.stdComStandardService.getUserList().subscribe(
-        (response: UsersEntity[]) => {
+        (response: UserEntity[]) => {
           this.SpinnerService.hide();
           this.users = response;
           //console.log(this.users)
-          //this.dropdownList = response;
+          this.dropdownList = response;
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -281,6 +315,10 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
           link.download = fileName;
           link.click();
         },
+        (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            alert(error.message);
+        }
     );
   }
     rerender(): void {
@@ -301,9 +339,11 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
             (response ) => {
                 //console.log(response);
                 this.getCompanyStandardRequest();
-                this.SpinnerService.hide();
-                this.showToasterSuccess('Success', `Draft Uploaded`);
                 this.uploadDraftFormGroup.reset();
+                this.onClickSaveUploads(response.body.id)
+                this.showToasterSuccess('Success', `Draft Uploaded`);
+                this.SpinnerService.hide();
+
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -312,6 +352,57 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
             }
         );
         this.hideModalUploadDraft();
+    }
+    onClickSaveUploads(comStdDraftID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            this.stdComStandardService.uploadPDFileDetails(comStdDraftID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Thank you....',
+                        html:'Company Standard Draft Uploaded',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    }).then(r => this.uploadDraftFormGroup.reset());
+                },
+            );
+        }
+
+    }
+
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+            }
+        );
     }
 
     @ViewChild('closeModalAssign') private closeModalAssign: ElementRef | undefined;

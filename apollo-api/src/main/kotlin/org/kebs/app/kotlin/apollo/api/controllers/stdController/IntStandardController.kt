@@ -6,7 +6,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.StagingStandardsLevyManufacturerPenalty
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
@@ -69,7 +68,7 @@ class IntStandardController(
             title=iSAdoptionProposalDto.title
             scope=iSAdoptionProposalDto.scope
             iStandardNumber=iSAdoptionProposalDto.iStandardNumber
-            stakeholdersList= iSAdoptionProposalDto.stakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
+            //stakeholdersList= iSAdoptionProposalDto.stakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
             addStakeholdersList= iSAdoptionProposalDto.addStakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
 //            adoptionAcceptableAsPresented=iSAdoptionProposalDto.adoptionAcceptableAsPresented
 //            reasonsForNotAcceptance=iSAdoptionProposalDto.reasonsForNotAcceptance
@@ -80,9 +79,10 @@ class IntStandardController(
 //            dateOfApplication=iSAdoptionProposalDto.dateOfApplication
             uploadedBy=iSAdoptionProposalDto.uploadedBy
         }
+        val stakeholders = iSAdoptionProposalDto.stakeholdersList
         val gson = Gson()
         KotlinLogging.logger { }.info { "Request Proposal:" + gson.toJson(iSAdoptionProposalDto) }
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal,stakeholders))
     }
 
     @PostMapping("/file-upload")

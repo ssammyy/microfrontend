@@ -16,6 +16,25 @@ export class QRCodeScannedQADto {
     dateOfExpiry: Date;
 }
 
+export class CompanyTurnOverUpdateDto {
+    companyProfileID: bigint;
+    selectedFirmTypeID: bigint;
+}
+
+export class FirmTypeEntityDto {
+    id: bigint;
+    min: bigint;
+    max: bigint;
+    firmFee: bigint;
+    productFee: bigint;
+    extraProductFee: bigint;
+    countBeforeFee: bigint;
+    countBeforeFree: bigint;
+    validity: bigint;
+    invoiceDesc: string;
+    firmType: string;
+}
+
 export class PermitEntityDto {
     id: bigint;
     firmName: string;

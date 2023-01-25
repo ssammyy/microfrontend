@@ -6,7 +6,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
@@ -39,12 +38,23 @@ class ComStandardController (val comStandardService: ComStandardService,
     fun requestForStandard(@RequestBody isCompanyStdRequestDto: ISCompanyStdRequestDto): ServerResponse{
         val companyStandardRequest= CompanyStandardRequest().apply {
             companyName=isCompanyStdRequestDto.companyName
-            departmentId=isCompanyStdRequestDto.departmentId
             tcId=isCompanyStdRequestDto.tcId
             productId=isCompanyStdRequestDto.productId
             productSubCategoryId=isCompanyStdRequestDto.productSubCategoryId
             companyPhone=isCompanyStdRequestDto.companyPhone
             companyEmail=isCompanyStdRequestDto.companyEmail
+            departmentId=isCompanyStdRequestDto.departmentId
+            subject=isCompanyStdRequestDto.subject
+            description=isCompanyStdRequestDto.description
+            contactOneFullName=isCompanyStdRequestDto.contactOneFullName
+            contactOneTelephone=isCompanyStdRequestDto.contactOneTelephone
+            contactOneEmail=isCompanyStdRequestDto.contactOneEmail
+            contactTwoFullName=isCompanyStdRequestDto.contactTwoFullName
+            contactTwoTelephone=isCompanyStdRequestDto.contactTwoTelephone
+            contactTwoEmail=isCompanyStdRequestDto.contactTwoEmail
+            contactThreeFullName=isCompanyStdRequestDto.contactThreeFullName
+            contactThreeTelephone=isCompanyStdRequestDto.contactThreeTelephone
+            contactThreeEmail=isCompanyStdRequestDto.contactThreeEmail
         }
         return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.requestForStandard(companyStandardRequest))
     }
@@ -146,10 +156,13 @@ class ComStandardController (val comStandardService: ComStandardService,
     fun formJointCommittee(@RequestBody jointCommitteeDto: JointCommitteeDto): ServerResponse{
         val comStandardJointCommittee=ComStandardJointCommittee().apply {
             name= jointCommitteeDto.name?.let { commonDaoServices.convertClassToJson(it) }
-            names= jointCommitteeDto.names?.let { commonDaoServices.convertClassToJson(it) }
             requestId=jointCommitteeDto.requestId
         }
-        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.formJointCommittee(comStandardJointCommittee))
+        val detailBody = jointCommitteeDto.names
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(detailBody) }
+
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.formJointCommittee(comStandardJointCommittee,detailBody))
     }
 
     //********************************************************** process Assign Standard Request **********************************************************
@@ -308,18 +321,33 @@ class ComStandardController (val comStandardService: ComStandardService,
 
         val comStdDraft= ComStdDraft().apply {
             title=comStdDraftDto.title
-            scope=comStdDraftDto.scope
-            normativeReference=comStdDraftDto.normativeReference
-            symbolsAbbreviatedTerms=comStdDraftDto.symbolsAbbreviatedTerms
-            clause=comStdDraftDto.clause
-            special=comStdDraftDto.special
+//            scope=comStdDraftDto.scope
+//            normativeReference=comStdDraftDto.normativeReference
+//            symbolsAbbreviatedTerms=comStdDraftDto.symbolsAbbreviatedTerms
+//            clause=comStdDraftDto.clause
+//            special=comStdDraftDto.special
             requestNumber=comStdDraftDto.requestNumber
             requestId=comStdDraftDto.requestId
+
+            departmentId=comStdDraftDto.departmentId
+            subject=comStdDraftDto.subject
+            description=comStdDraftDto.description
+            contactOneFullName=comStdDraftDto.contactOneFullName
+            contactOneTelephone=comStdDraftDto.contactOneTelephone
+            contactOneEmail=comStdDraftDto.contactOneEmail
+            contactTwoFullName=comStdDraftDto.contactTwoFullName
+            contactTwoTelephone=comStdDraftDto.contactTwoTelephone
+            contactTwoEmail=comStdDraftDto.contactTwoEmail
+            contactThreeFullName=comStdDraftDto.contactThreeFullName
+            contactThreeTelephone=comStdDraftDto.contactThreeTelephone
+            contactThreeEmail=comStdDraftDto.contactThreeEmail
+            companyName=comStdDraftDto.companyName
+            companyPhone=comStdDraftDto.companyPhone
         }
 
 
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraftDto) }
+        //val gson = Gson()
+        //KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraftDto) }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",comStandardService.uploadDraft(comStdDraft))
     }
 
@@ -388,6 +416,28 @@ class ComStandardController (val comStandardService: ComStandardService,
         val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
         commonDaoServices.downloadFile(response, mappedFileClass)
     }
+
+    @GetMapping("/company_standard/viewCompanyDraft")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun viewCompanyDraft(
+        response: HttpServletResponse,
+        @RequestParam("comStdDraftID") comStdDraftID: Long
+    ) {
+        val fileUploaded = comStandardService.viewCompanyDraft(comStdDraftID)
+        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+        commonDaoServices.downloadFile(response, mappedFileClass)
+    }
+
+    @GetMapping("/company_standard/getDraftDocumentList")
+    fun getDraftDocumentList(
+        response: HttpServletResponse,
+        @RequestParam("comStdDraftID") comStdDraftID: Long
+    ): List<SiteVisitListHolder> {
+        return comStandardService.getDraftDocumentList(comStdDraftID)
+    }
+
+
+
     @GetMapping("/company_standard/view/comDraft")
     fun viewCompanyDraftFile(
         response: HttpServletResponse,
@@ -395,7 +445,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     ) {
         val fileUploaded = comStandardService.findUploadedCDRFileBYId(comStdDraftID)
         val fileDoc = commonDaoServices.mapClass(fileUploaded)
-        response.contentType = "application/pdf"
+        response.contentType = "application/octet-stream"
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
         response.outputStream
@@ -522,6 +572,20 @@ class ComStandardController (val comStandardService: ComStandardService,
             documentType=isDraftDto.docName
             special=isDraftDto.special
             requestId=isDraftDto.requestId
+            departmentId=isDraftDto.departmentId
+            subject=isDraftDto.subject
+            description=isDraftDto.description
+            contactOneFullName=isDraftDto.contactOneFullName
+            contactOneTelephone=isDraftDto.contactOneTelephone
+            contactOneEmail=isDraftDto.contactOneEmail
+            contactTwoFullName=isDraftDto.contactTwoFullName
+            contactTwoTelephone=isDraftDto.contactTwoTelephone
+            contactTwoEmail=isDraftDto.contactTwoEmail
+            contactThreeFullName=isDraftDto.contactThreeFullName
+            contactThreeTelephone=isDraftDto.contactThreeTelephone
+            contactThreeEmail=isDraftDto.contactThreeEmail
+            companyName=isDraftDto.companyName
+            companyPhone=isDraftDto.companyPhone
         }
         val comStdDraft= ComStdDraft().apply {
             id=isDraftDto.id
@@ -558,6 +622,7 @@ class ComStandardController (val comStandardService: ComStandardService,
         val companyStandard= CompanyStandard().apply {
             accentTo=iSDraftDecisions.accentTo
             draftId=iSDraftDecisions.draftId
+            id=iSDraftDecisions.id
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=iSDraftDecisions.requestId
@@ -860,10 +925,10 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getRQNumber()
     }
 
-    @GetMapping("/company_standard/getUserList")
+    @GetMapping("/company_standard/getUsers")
     @ResponseBody
-    fun getUserList(): MutableList<UserDetailHolder> {
-        return comStandardService.getUserList()
+    fun getUsers(): MutableList<UserHolder> {
+        return comStandardService.getUsers()
     }
 
 }

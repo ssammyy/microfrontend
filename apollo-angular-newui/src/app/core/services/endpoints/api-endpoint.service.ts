@@ -63,6 +63,7 @@ export class ApiEndpointService {
 
     public static USER_CONTEXT = 'user';
     public static MASTERS_CONTEXT = '/api/v1/migration';
+    public static COMPANY_CONTEX = `${ApiEndpointService.MASTERS_CONTEXT}/company`;
     public static SYSTEMS_ADMIN_SECURITY = `${ApiEndpointService.MASTERS_CONTEXT}/security`;
     public static SYSTEMS_ADMIN_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/system/admin/masters`;
     public static QA_CONTEXT = '/api/v1/migration/qa';
@@ -446,7 +447,7 @@ export class ApiEndpointService {
         // ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/${id}`,
         ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/`,
         ICT_GET_DEPARTMENTS: `${ApiEndpointService.SD_DR_CONTEXT}/getDepartments`,
-        ICT_GET_USERS: `${ApiEndpointService.SD_ICT_CONTEXT}/getUserList`,
+        ICT_GET_USERS: `${ApiEndpointService.SD_ICT_CONTEXT}/getUsers`,
         ICT_GET_DEPARTMENT: `${ApiEndpointService.SD_DR_CONTEXT}/getDepartments`,
         ICT_GET_TC_COMMITTEE: `${ApiEndpointService.SD_DR_CONTEXT}/getTechnicalCommittee`,
         // ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/${id}`,
@@ -496,6 +497,7 @@ export class ApiEndpointService {
         ICT_COM_STD_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/proofReadStandard`,
         ICT_COM_STD_DEC_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/approveProofReadStandard`,
         ICT_COM_STD_SUBMIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftForEditing`,
+        ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getDraftDocumentList`,
 
 
 
@@ -659,6 +661,12 @@ export class ApiEndpointService {
         STD_LEVY_REGION_LIST: `${ApiEndpointService.STL_CONTEXT}/getRegionList`,
 
 
+    };
+
+    public static COMPANY_PROFILE_ENDPOINT = {
+        LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
+        LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
+        UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
     };
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {

@@ -461,6 +461,8 @@ export class ComplaintDto {
     // complaintCategory: number;
     complaintTitle: string;
     productBrand: string;
+
+    productName: string;
     complaintDescription: string;
     complaintSampleDetails: string;
     remedySought: string;
@@ -1148,10 +1150,16 @@ export class DataReportDto {
     regionName: string;
     town: string;
     marketCenter: string;
+    outletName: string;
+    physicalLocation: string;
+    emailAddress: string;
+    phoneNumber: string;
     outletDetails: string;
     mostRecurringNonCompliant: string;
     personMet: string;
     summaryFindingsActionsTaken: string;
+    samplesDrawnAndSubmitted: string;
+    sourceOfProductAndEvidence: string;
     finalActionSeizedGoods: string;
     totalComplianceScore: number;
     remarks: string;

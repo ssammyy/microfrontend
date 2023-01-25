@@ -12,6 +12,8 @@ import {selectUserInfo} from "../../../../../core/store";
 import {ReplaySubject, Subject} from "rxjs";
 import {MatSelect} from "@angular/material/select";
 import {take, takeUntil} from "rxjs/operators";
+import {IDropdownSettings} from "ng-multiselect-dropdown";
+import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
 
 declare const $: any;
 
@@ -27,11 +29,9 @@ export class IsProposalFormComponent implements OnInit {
   title = 'toaster-not';
     proposal_doc_name: string;
     public stakeholdersLists : UsersEntity[]=[] ;
-    public websiteCtrl: FormControl = new FormControl();
-    public websiteFilterCtrl: FormControl = new FormControl();
-    public filteredWebsites: ReplaySubject<any> = new ReplaySubject(1);
-    @ViewChild('singleSelect') singleSelect: MatSelect;
-    protected _onDestroy = new Subject();
+    public dropdownSettings: IDropdownSettings = {};
+    dropdownList: any[] = [];
+
   constructor(
       private store$: Store<any>,
       private formBuilder: FormBuilder,
@@ -68,25 +68,30 @@ export class IsProposalFormComponent implements OnInit {
           return this.fullname = u.fullName;
       });
 
-      this.websiteCtrl.setValue(this.stakeholdersLists[1]);
-      this.filteredWebsites.next(this.stakeholdersLists.slice());
+      this.dropdownSettings = {
+          singleSelection: false,
+          idField: 'email',
+          textField: 'name',
+          selectAllText: 'Select All',
+          unSelectAllText: 'UnSelect All',
+          itemsShowLimit: 1,
+          allowSearchFilter: true
+      };
 
-      this.websiteFilterCtrl.valueChanges
-          .pipe(takeUntil(this._onDestroy))
-          .subscribe(() => {
-              this.filterBanks();
-          });
+
 
   }
 
-    ngAfterViewInit() {
-        this.setInitialValue();
+    onItemSelect(item: ListItem) {
+        console.log(item);
     }
 
-    ngOnDestroy() {
-        this._onDestroy.next();
-        this._onDestroy.complete();
+    onSelectAll(items: any) {
+        console.log(items);
     }
+
+
+
 
     showToasterSuccess(title:string,message:string){
         this.notifyService.showSuccess(message, title)
@@ -101,13 +106,7 @@ export class IsProposalFormComponent implements OnInit {
 
     }
 
-    protected setInitialValue() {
-        this.filteredWebsites
-            .pipe(take(1), takeUntil(this._onDestroy))
-            .subscribe(() => {
-                this.singleSelect.compareWith = (a: UsersEntity, b: UsersEntity) => a && b && a.id === b.id;
-            });
-    }
+
 
   get formISProposal(): any{
     return this.isProposalFormGroup.controls;
@@ -212,7 +211,7 @@ export class IsProposalFormComponent implements OnInit {
         this.stdIntStandardService.findStandardStakeholders().subscribe(
             (response: UsersEntity[]) => {
                 this.SpinnerService.hide();
-                this.stakeholdersLists = response;
+                this.dropdownList = response;
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -220,21 +219,5 @@ export class IsProposalFormComponent implements OnInit {
             }
         );
     }
-    protected filterBanks() {
-        if (!this.stakeholdersLists) {
-            return;
-        }
 
-        let search = this.websiteFilterCtrl.value;
-        if (!search) {
-            this.filteredWebsites.next(this.stakeholdersLists.slice());
-            return;
-        } else {
-            search = search.toLowerCase();
-        }
-
-        this.filteredWebsites.next(
-            this.stakeholdersLists.filter(bank => bank.email.toLowerCase().indexOf(search) > -1)
-        );
-    }
 }

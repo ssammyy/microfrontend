@@ -31,10 +31,14 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th class="knw">Title</th>
-                                        <th class="knw">Standard Number</th>
-                                        <th class="knw">Normative Reference</th>
-                                        <th class="knw">Clause</th>
+                                        <th class="knw">Request Number</th>
+                                        <th class="sl">Company Name</th>
+                                        <th class="sl">Phone Number</th>
+                                        <th class="sl">Draft Number</th>
+                                        <th class="requestNumber">Title </th>
+                                        <th class="knw">Company Contact Name</th>
+                                        <th class="sl">Company Contact Telephone</th>
+                                        <th class="sl">Company Contact Email</th>
                                         <th>Date</th>
                                         <th class="action">Action</th>
                                     </tr>
@@ -42,10 +46,14 @@
                                     <tbody>
                                     <tr  *ngFor="let isCheckRequirement of isCheckRequirements let i=index">
                                         <td>{{i+1}}</td>
+                                        <td>{{isCheckRequirement.requestNumber}}</td>
+                                        <td>{{isCheckRequirement.companyName}}</td>
+                                        <td>{{isCheckRequirement.companyPhone}}</td>
+                                        <td>{{isCheckRequirement.draftNumber}}</td>
                                         <td>{{isCheckRequirement.title}}</td>
-                                        <td>{{isCheckRequirement.isNumber}}</td>
-                                        <td>{{isCheckRequirement.normativeReference}}</td>
-                                        <td>{{isCheckRequirement.clause}}</td>
+                                        <td>{{isCheckRequirement.contactOneFullName}}</td>
+                                        <td>{{isCheckRequirement.contactOneTelephone}}</td>
+                                        <td>{{isCheckRequirement.contactOneEmail}}</td>
                                         <td>{{isCheckRequirement.uploadDate}}</td>
                                         <td *ngIf="isCheckRequirement.status==0"><a  (click)="onOpenModal(isCheckRequirement,'checkRequirementsMet')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Check Requirements</a></td>
                                         <td *ngIf="isCheckRequirement.status==1"><a  (click)="onOpenModal(isCheckRequirement,'draftStandardEditing')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Edit Draft</a></td>
@@ -167,90 +175,90 @@
 
                                                                                     <p class="text-sm mb-0">{{actionRequest?.title}}.</p>
                                                                                 </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>
-                                                                                            </div>
-                                                                                        </div>
+<!--                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                                        <div>-->
+<!--                                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>-->
+<!--                                                                                            </div>-->
+<!--                                                                                        </div>-->
 
-                                                                                    </div>
+<!--                                                                                    </div>-->
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.scope}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Normative Reference</b></h5>
-                                                                                            </div>
-                                                                                        </div>
+<!--                                                                                    <p class="text-sm mb-0">{{actionRequest?.scope}}.</p>-->
+<!--                                                                                </a>-->
+<!--                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                                        <div>-->
+<!--                                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Normative Reference</b></h5>-->
+<!--                                                                                            </div>-->
+<!--                                                                                        </div>-->
 
-                                                                                    </div>
+<!--                                                                                    </div>-->
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.normativeReference}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Symbols Abbreviated Terms</b></h5>
-                                                                                            </div>
-                                                                                        </div>
+<!--                                                                                    <p class="text-sm mb-0">{{actionRequest?.normativeReference}}.</p>-->
+<!--                                                                                </a>-->
+<!--                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                                        <div>-->
+<!--                                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Symbols Abbreviated Terms</b></h5>-->
+<!--                                                                                            </div>-->
+<!--                                                                                        </div>-->
 
-                                                                                    </div>
+<!--                                                                                    </div>-->
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.symbolsAbbreviatedTerms}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Clause</b></h5>
-                                                                                            </div>
-                                                                                        </div>
+<!--                                                                                    <p class="text-sm mb-0">{{actionRequest?.symbolsAbbreviatedTerms}}.</p>-->
+<!--                                                                                </a>-->
+<!--                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                                        <div>-->
+<!--                                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Clause</b></h5>-->
+<!--                                                                                            </div>-->
+<!--                                                                                        </div>-->
 
-                                                                                    </div>
+<!--                                                                                    </div>-->
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.clause}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Special</b></h5>
-                                                                                            </div>
-                                                                                        </div>
+<!--                                                                                    <p class="text-sm mb-0">{{actionRequest?.clause}}.</p>-->
+<!--                                                                                </a>-->
+<!--                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                                        <div>-->
+<!--                                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Special</b></h5>-->
+<!--                                                                                            </div>-->
+<!--                                                                                        </div>-->
 
-                                                                                    </div>
+<!--                                                                                    </div>-->
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.special}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Date Uploaded</b></h5>
-                                                                                            </div>
-                                                                                        </div>
+<!--                                                                                    <p class="text-sm mb-0">{{actionRequest?.special}}.</p>-->
+<!--                                                                                </a>-->
+<!--                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                                        <div>-->
+<!--                                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Date Uploaded</b></h5>-->
+<!--                                                                                            </div>-->
+<!--                                                                                        </div>-->
 
-                                                                                    </div>
+<!--                                                                                    </div>-->
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.uploadDate}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Standard Number</b></h5>
-                                                                                            </div>
-                                                                                        </div>
+<!--                                                                                    <p class="text-sm mb-0">{{actionRequest?.uploadDate}}.</p>-->
+<!--                                                                                </a>-->
+<!--                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">-->
+<!--                                                                                    <div class="d-flex w-100 justify-content-between">-->
+<!--                                                                                        <div>-->
+<!--                                                                                            <div class="d-flex w-100 align-items-center">-->
+<!--                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Standard Number</b></h5>-->
+<!--                                                                                            </div>-->
+<!--                                                                                        </div>-->
 
-                                                                                    </div>
+<!--                                                                                    </div>-->
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.isNumber}}.</p>
-                                                                                </a>
+<!--                                                                                    <p class="text-sm mb-0">{{actionRequest?.comStdNumber}}.</p>-->
+<!--                                                                                </a>-->
 
                                                                             </div>
                                                                         </div>
@@ -269,10 +277,10 @@
                                                                                         <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                     </div>
                                                                                 </div>
-                                                                                <input type="hidden" formControlName="draftId" value="{{actionRequest?.id}}" name="draftId" >
+                                                                                <input type="hidden" formControlName="id" value="{{actionRequest?.id}}" name="id" >
                                                                                 <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
                                                                                 <input type="hidden" formControlName="requestId" value="{{actionRequest?.requestId}}" name="requestId" >
-                                                                                <input type="hidden" formControlName="justificationId" name="justificationId" value="{{actionRequest?.justificationNo}}" >
+                                                                                <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequest?.draftId}}" >
                                                                             </div>
                                                                         </div>
                                                                         <div class="modal-footer">
@@ -291,9 +299,9 @@
                                                                                         <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                     </div>
                                                                                 </div>
-                                                                                <input type="hidden" formControlName="draftId" value="{{actionRequest?.id}}" name="draftId" >
+                                                                                <input type="hidden" formControlName="id" value="{{actionRequest?.id}}" name="id" >
                                                                                 <input type="hidden" formControlName="requestId" value="{{actionRequest?.requestId}}" name="requestId" >
-                                                                                <input type="hidden" formControlName="justificationId" name="justificationId" value="{{actionRequest?.justificationNo}}" >
+                                                                                <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequest?.draftId}}" >
                                                                                 <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >
                                                                             </div>
                                                                         </div>
@@ -590,7 +598,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.isNumber}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.comStdNumber}}.</p>
                                                                                 </a>
 
                                                                             </div>
@@ -616,7 +624,7 @@
                                                                                         <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" value="{{actionRequest?.isNumber}}" formControlName="standardNumber" name="standardNumber"
+                                                                                                class="form-control one-column-input" value="{{actionRequest?.comStdNumber}}" formControlName="standardNumber" name="standardNumber"
                                                                                                 placeholder="" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-12">
@@ -969,7 +977,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.isNumber}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.comStdNumber}}.</p>
                                                                                 </a>
 
                                                                             </div>
@@ -995,7 +1003,7 @@
                                                                                         <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" value="{{actionRequest?.isNumber}}" formControlName="standardNumber" name="standardNumber"
+                                                                                                class="form-control one-column-input" value="{{actionRequest?.comStdNumber}}" formControlName="standardNumber" name="standardNumber"
                                                                                                 placeholder="" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-12">
@@ -1342,7 +1350,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.isNumber}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.comStdNumber}}.</p>
                                                                                 </a>
 
                                                                             </div>
@@ -1368,7 +1376,7 @@
                                                                                         <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" value="{{actionRequest?.isNumber}}" formControlName="standardNumber" name="standardNumber"
+                                                                                                class="form-control one-column-input" value="{{actionRequest?.comStdNumber}}" formControlName="standardNumber" name="standardNumber"
                                                                                                 placeholder="" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-12">
@@ -1716,7 +1724,7 @@
 
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.isNumber}}.</p>
+                                                                                    <p class="text-sm mb-0">{{actionRequest?.comStdNumber}}.</p>
                                                                                 </a>
 
                                                                             </div>

@@ -67,6 +67,20 @@ export const ROUTES: RouteInfo[] = [
     },
 
     {
+        path: '/company',
+        title: 'Companies',
+        type: 'sub',
+        icontype: 'business',
+        privilege: ['QA_MANAGER_MODIFY', 'QA_OFFICER_MODIFY', 'QA_ASSESSORS_MODIFY'],
+        collapse: 'company',
+        children: [
+            {path: 'list', title: 'View Companies', ab: 'VC'},
+            // {path: 'branches', title: 'View Branches ', ab: 'VB'},
+            // {path: 'users', title: 'View Users ', ab: 'VU'},
+        ],
+    },
+
+    {
         path: '/dmark',
         title: 'Diamond Mark',
         type: 'sub',
@@ -152,6 +166,39 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
+
+    
+    // Quality Assurance Admin
+    {
+        path: '/smark-admin',
+        title: 'Standardization Mark',
+        type: 'link',
+        icontype: 'class',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+
+       
+    },
+    , 
+    {
+        path: '/fmark-admin',
+        title: 'Fortification Mark',
+        type: 'link',
+        icontype: 'recommended',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+
+       
+    },
+    , 
+    {
+        path: '/dmark-admin',
+        title: 'Diamond Mark',
+        type: 'link',
+        icontype: 'verified',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+
+    },
+
+    
 
 
     //DI
@@ -643,8 +690,9 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'formation',
         children: [
             {path: 'requestForFormationOfTC', title: 'Request For Formation', ab: 'RFF'},
+            {path: 'hofReviewJustificationOfTC', title: 'HOF Review', ab: 'HOF'},
             {path: 'reviewJustificationOfTC', title: 'TC Justification', ab: 'RDS'},
-            {path: 'reviewFeedbackSPC', title: 'Feedback Review', ab: 'EDS'},
+            {path: 'reviewFeedbackSAC', title: 'Feedback Review', ab: 'EDS'},
 
 
         ],

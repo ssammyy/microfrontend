@@ -895,7 +895,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryDirector')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -911,7 +911,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryDirector')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
@@ -920,7 +920,7 @@
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER SCHEDULE</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE SCHEDULE</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
@@ -928,7 +928,7 @@
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER SCHEDULE</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE SCHEDULE</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.hofAssignedDetails != null" (click)="openModalAddDetails('reAssignHOF')" mat-raised-button="" data-toggle="modal"
@@ -956,7 +956,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -967,7 +967,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -996,7 +996,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1010,7 +1010,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1035,57 +1035,57 @@
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus ==  false">-->
-<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#workPlanModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
-<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                            <!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus ==  false">-->
+                                            <!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                        data-target="#workPlanModal"-->
+                                            <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+                                            <!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                                            <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
 
-<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus-->
-<!--                                            && workPlanInspection?.updatedStatus ==false-->
-<!--                                            && workPlanInspection?.resubmitStatus ==false-->
-<!--                                            && workPlanInspection?.rejectedStatus">-->
-<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#workPlanModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
-<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                            <!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus-->
+                                            <!--                                            && workPlanInspection?.updatedStatus ==false-->
+                                            <!--                                            && workPlanInspection?.resubmitStatus ==false-->
+                                            <!--                                            && workPlanInspection?.rejectedStatus">-->
+                                            <!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                        data-target="#workPlanModal"-->
+                                            <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+                                            <!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                                            <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
 
-<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.onsiteStartStatus ==false-->
-<!--                                            && workPlanInspection?.updatedStatus ==false-->
-<!--                                            && workPlanInspection?.resubmitStatus ==false-->
-<!--                                            && workPlanInspection?.approvedStatus">-->
-<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#workPlanModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
-<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                            <!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.onsiteStartStatus ==false-->
+                                            <!--                                            && workPlanInspection?.updatedStatus ==false-->
+                                            <!--                                            && workPlanInspection?.resubmitStatus ==false-->
+                                            <!--                                            && workPlanInspection?.approvedStatus">-->
+                                            <!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                        data-target="#workPlanModal"-->
+                                            <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+                                            <!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                                            <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
 
-<!--                                            <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus ==false-->
-<!--                                                && workPlanInspection?.rejectedStatus && workPlanInspection?.submittedForApprovalStatus-->
-<!--                                                 && workPlanInspection?.onsiteStartStatus ==false"-->
-<!--                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">RE-SUBMIT FOR APPROVAL</span>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
+                                            <!--                                            <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus ==false-->
+                                            <!--                                                && workPlanInspection?.rejectedStatus && workPlanInspection?.submittedForApprovalStatus-->
+                                            <!--                                                 && workPlanInspection?.onsiteStartStatus ==false"-->
+                                            <!--                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                    class="mat-button-wrapper">RE-SUBMIT FOR APPROVAL</span>-->
+                                            <!--                                                <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                            </button>-->
 
-<!--                                            <button  *ngIf="workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"-->
-<!--                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">SUBMIT FOR APPROVAL</span>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
+                                            <!--                                            <button  *ngIf="workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"-->
+                                            <!--                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                    class="mat-button-wrapper">SUBMIT FOR APPROVAL</span>-->
+                                            <!--                                                <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                            </button>-->
 
                                             <button  *ngIf="workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
                                                      (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
@@ -1314,7 +1314,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1324,7 +1324,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1337,7 +1337,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1362,7 +1362,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1375,7 +1375,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus  == false && workPlanInspection?.resubmitStatus  == false && workPlanInspection?.finalReportGenerated
@@ -1386,7 +1386,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
@@ -1599,11 +1599,11 @@
                                                         [class.is-invalid]="formApproveScheduleForm.approvalStatus.invalid && formApproveScheduleForm.approvalStatus.touched"
                                                         formControlName="approvalStatus" id="approvalStatus1" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label><b>Please write, in detail, your feedback for Approving/Rejecting the Work-plan Activity Scheduled:</b></label>
+                                        <label><b>Please write, in detail, your feedback for Approving/Declining the Work-plan Activity Scheduled:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks1" matInput type="text"
                                                       formControlName="remarks"
@@ -1626,11 +1626,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Progress Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Progress Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1707,11 +1707,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea  matInput type="text"
                                                        formControlName="remarks"
@@ -1734,11 +1734,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1761,11 +1761,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1814,11 +1814,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus" id="approvalStatus3" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Progress Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Progress Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks3" matInput type="text"
                                                       formControlName="remarks"

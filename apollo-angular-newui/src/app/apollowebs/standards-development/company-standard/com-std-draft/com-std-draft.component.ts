@@ -1,4 +1,4 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Subject} from "rxjs";
 import {
     ApproveDraft,
@@ -12,6 +12,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {HttpErrorResponse} from "@angular/common/http";
 import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 
 @Component({
   selector: 'app-com-std-draft',
@@ -27,6 +28,7 @@ export class ComStdDraftComponent implements OnInit {
     public actionRequest: COMPreliminaryDraft | undefined;
     public committeeFormGroup!: FormGroup;
     public uploadDraftFormGroup!: FormGroup;
+    documentDTOs: DocumentDTO[] = [];
   blob: Blob;
   constructor(
       private stdComStandardService:StdComStandardService,
@@ -61,6 +63,7 @@ export class ComStdDraftComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.rerender();
                 this.tasks = response;
+                //console.log(this.tasks)
             },
             (error: HttpErrorResponse)=>{
                 this.SpinnerService.hide();
@@ -69,12 +72,25 @@ export class ComStdDraftComponent implements OnInit {
         );
     }
 
-  public onOpenModal(task: COMPreliminaryDraft,mode:string): void{
+  public onOpenModal(task: COMPreliminaryDraft,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+
+      this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.documentDTOs = response;
+              this.SpinnerService.hide();
+              //console.log(this.documentDTOs)
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+              //console.log(error.message);
+          }
+      );
+
     if (mode==='approveJustification'){
       this.actionRequest=task;
       button.setAttribute('data-target','#approveJustification');
@@ -114,6 +130,7 @@ export class ComStdDraftComponent implements OnInit {
           //alert(error.message);
         }
     );
+    this.hideModalUploadDraft();
   }
   public onDecisionReject(approveDraft: ApproveDraft): void{
     this.SpinnerService.show();
@@ -132,7 +149,25 @@ export class ComStdDraftComponent implements OnInit {
           //alert(error.message);
         }
     );
+      this.hideModalUploadDraft();
   }
+    // toggleDisplayDocuments(comStdDraftID: number) {
+    //     this.SpinnerService.show();
+    //     this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+    //         (response: DocumentDTO[]) => {
+    //             this.documentDTOs = response;
+    //             this.SpinnerService.hide();
+    //             console.log(this.documentDTOs)
+    //         },
+    //         (error: HttpErrorResponse) => {
+    //             this.SpinnerService.hide();
+    //             console.log(error.message);
+    //         }
+    //     );
+    //
+    //
+    // }
+
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
         this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
@@ -167,6 +202,12 @@ export class ComStdDraftComponent implements OnInit {
         setTimeout(() => {
             this.dtTrigger.next();
         });
+    }
+
+    @ViewChild('closeModalUploadDraft') private closeModalUploadDraft: ElementRef | undefined;
+
+    public hideModalUploadDraft() {
+        this.closeModalUploadDraft?.nativeElement.click();
     }
 
 }

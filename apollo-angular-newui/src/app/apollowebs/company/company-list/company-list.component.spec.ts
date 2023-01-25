@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReviewFeedbackSPCComponent } from './review-feedback-spc.component';
+import { CompanyListComponent } from './company-list.component';
 
-describe('ReviewFeedbackSPCComponent', () => {
-  let component: ReviewFeedbackSPCComponent;
-  let fixture: ComponentFixture<ReviewFeedbackSPCComponent>;
+describe('CompanyListComponent', () => {
+  let component: CompanyListComponent;
+  let fixture: ComponentFixture<CompanyListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReviewFeedbackSPCComponent ]
+      declarations: [ CompanyListComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReviewFeedbackSPCComponent);
+    fixture = TestBed.createComponent(CompanyListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

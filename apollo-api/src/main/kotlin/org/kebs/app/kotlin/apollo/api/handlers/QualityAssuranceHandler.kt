@@ -34,6 +34,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvider
+import org.kebs.app.kotlin.apollo.common.dto.CompanyTurnOverUpdateDto
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaMessageDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
@@ -1999,6 +2000,35 @@ class QualityAssuranceHandler(
         }
 
     }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun handleUpdateCompanyTurnOverDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<CompanyTurnOverUpdateDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, CompanyTurnOverUpdateDto::class.java.name)
+            validator.validate(body, errors)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
+                        ?.let { ServerResponse.ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+    }
+
 
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
@@ -4414,8 +4444,6 @@ class QualityAssuranceHandler(
             var allCompaniesNotListedFmark: List<companyDto>? = null //smarks
 
             allCompanies = qaDaoServices.listFirmsWebsite(company, map)
-            println(allCompanies)
-
             allCompaniesNotListed = qaDaoServices.listFirmsWebsiteNotMigratedSmark(
                 qaDaoServices.findCompaniesNotMigratedSmark(), map
             )
