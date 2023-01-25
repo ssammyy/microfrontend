@@ -11,7 +11,11 @@ import javax.persistence.*
 class IDFItemDetailsEntity : Serializable {
 
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_IDF_ITEM_DETAILS_SEQ_GEN", sequenceName = "DAT_KEBS_IDF_ITEM_DETAILS_SEQ", allocationSize = 1)
+    @SequenceGenerator(
+        name = "DAT_KEBS_IDF_ITEM_DETAILS_SEQ_GEN",
+        sequenceName = "DAT_KEBS_IDF_ITEM_DETAILS_SEQ",
+        allocationSize = 1
+    )
     @GeneratedValue(generator = "DAT_KEBS_IDF_ITEM_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
@@ -76,6 +80,10 @@ class IDFItemDetailsEntity : Serializable {
     @Basic
     var unitCode: String? = null
 
+    @Column(name = "APPLICABLE_STANDARD", nullable = true, length = 200)
+    @Basic
+    var applicableStandard: String? = null
+
     @Column(name = "REQUESTED_PRO", nullable = true, length = 200)
     @Basic
     var requestedPro: String? = null
@@ -91,6 +99,10 @@ class IDFItemDetailsEntity : Serializable {
     @Column(name = "DESCRIPTION", nullable = true, length = 200)
     @Basic
     var description: String? = null
+
+    @Column(name = "USED_STATUS")
+    @Basic
+    var usedStatus: Boolean? = null
 
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic

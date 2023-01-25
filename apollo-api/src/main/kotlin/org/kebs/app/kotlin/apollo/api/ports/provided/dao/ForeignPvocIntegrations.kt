@@ -7,9 +7,13 @@ import org.kebs.app.kotlin.apollo.api.service.PvocMonitoringService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.IDFDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.IDFItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.di.IIDFDetailsEntityRepository
+import org.kebs.app.kotlin.apollo.store.repo.di.IIDFItemDetailsEntityRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -39,8 +43,8 @@ class ForeignPvocIntegrations(
     private val timelinesRepository: IPvocTimelinesDataEntityRepository,
     private val sealIssuesRepository: IPvocSealIssuesEntityRepository,
     private val timelinePenaltiesRepository: IPvocTimelinePenaltiesRepository,
-    private val idfsRepository: IdfsEntityRepository,
-    private val idfsItemRepository: IdfItemsEntityRepository,
+    private val idfsRepository: IIDFDetailsEntityRepository,
+    private val idfsItemRepository: IIDFItemDetailsEntityRepository,
     private val commonDaoServices: CommonDaoServices,
     private val billingService: BillingService,
     private val properties: ApplicationMapProperties,
@@ -886,12 +890,12 @@ class ForeignPvocIntegrations(
 
     fun getIdfData(idfNumber: String, ucrNumber: String): IdfEntityForm {
         val idfsEntity = when {
-            StringUtils.hasLength(ucrNumber) -> this.idfsRepository.findFirstByUcr(ucrNumber)
-            StringUtils.hasLength(idfNumber) -> this.idfsRepository.findFirstByIdfNumber(idfNumber)
+            StringUtils.hasLength(ucrNumber) -> this.idfsRepository.findFirstByUcrNo(ucrNumber)
+            StringUtils.hasLength(idfNumber) -> this.idfsRepository.findByBaseDocRefNo(idfNumber)
             else -> null
         }
         return idfsEntity?.let {
-            val items = idfsItemRepository.findByIdfId(it.id)
+            val items = idfsItemRepository.findAllByIdfDetails(it)
             IdfEntityForm.fromEntity(idfsEntity, items)
         } ?: throw ExpectedDataNotFound("IDF with UCR or IDF number not found")
     }
@@ -931,16 +935,16 @@ class ForeignPvocIntegrations(
     }
 
     @Transactional
-    fun foreignIdfData(idf: IdfEntityForm, s: ServiceMapsEntity, user: PvocPartnersEntity): IdfsEntity? {
-        val idfEntity = IdfsEntity()
+    fun foreignIdfData(idf: IdfEntityForm, s: ServiceMapsEntity, user: PvocPartnersEntity): IDFDetailsEntity? {
+        val idfEntity = IDFDetailsEntity()
         val auth = this.commonDaoServices.loggedInUserAuthentication()
-        this.idfsRepository.findFirstByUcr(idf.ucrNumber!!)?.let {
+        this.idfsRepository.findFirstByUcrNo(idf.ucrNumber!!)?.let {
             return null
         } ?: run {
-            idfEntity.idfNumber = idf.idfNumber
-            idfEntity.ucr = idf.ucrNumber
-            idfEntity.importerName = idf.importerName
-            idfEntity.importerAddress = idf.importerAddress
+            idfEntity.baseDocRefNo = idf.idfNumber
+            idfEntity.ucrNo = idf.ucrNumber
+            idfEntity.consigneeBusinessName = idf.importerName
+            idfEntity.consigneeBusinessAddress = idf.importerAddress
             idfEntity.importerFax = idf.importerFaxNumber
             idfEntity.importerTelephoneNumber = idf.importerTelephoneNumber
             idfEntity.importerEmail = idf.importerEmail
@@ -978,18 +982,15 @@ class ForeignPvocIntegrations(
             val saved = this.idfsRepository.save(idfEntity)
             idf.items?.let { items ->
                 for (item in items) {
-                    val idfItem = IdfItemsEntity()
-                    idfItem.idfId = saved.id
-                    idfItem.itemDescription = item.itemDescription
-                    idfItem.quantity = item.quantity ?: 0
-                    idfItem.hsCode = item.hsCode
-                    idfItem.unitOfMeasure = item.unitOfMeasure
-                    idfItem.newUsed = when (item.used) {
-                        true -> "USED"
-                        else -> "NEW"
-                    }
+                    val idfItem = IDFItemDetailsEntity()
+                    idfItem.idfDetails = saved
+                    idfItem.description = item.itemDescription
+                    idfItem.unitNum = (item.quantity ?: 0.0).toDouble()
+                    idfItem.commodityCode = item.hsCode
+                    idfItem.unitCode = item.unitOfMeasure
+                    idfItem.usedStatus = item.used
                     idfItem.applicableStandard = item.applicableStandard
-                    idfItem.itemCost = item.itemCost ?: 0
+                    idfItem.customsValue = item.itemCost?.toBigDecimal()
                     idfItem.createdBy = auth.name
                     idfItem.createdOn = Timestamp.from(Instant.now())
                     idfItem.modifiedBy = auth.name

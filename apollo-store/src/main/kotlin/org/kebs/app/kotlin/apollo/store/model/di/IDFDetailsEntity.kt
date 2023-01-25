@@ -11,20 +11,68 @@ import javax.persistence.*
 class IDFDetailsEntity : Serializable {
 
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_IDF_DETAILS_SEQ_GEN", sequenceName = "DAT_KEBS_IDF_DETAILS_SEQ", allocationSize = 1)
+    @SequenceGenerator(
+        name = "DAT_KEBS_IDF_DETAILS_SEQ_GEN",
+        sequenceName = "DAT_KEBS_IDF_DETAILS_SEQ",
+        allocationSize = 1
+    )
     @GeneratedValue(generator = "DAT_KEBS_IDF_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = null
+
+    @Column(name = "PARTNER_ID")
+    @Basic
+    var partner: Long? = null
 
     @Column(name = "USER_ID", nullable = true, length = 200)
     @Basic
     var userId: String? = null
 
+    @Column(name = "IMPORTER_EMAIL", length = 150)
+    @Basic
+    var importerEmail: String? = null
+
+    @Column(name = "IMPORTER_TELEPHONE_NUMBER", length = 100)
+    @Basic
+    var importerTelephoneNumber: String? = null
+
+    @Column(name = "IMPORTER_CONTACT_NAME", length = 100)
+    @Basic
+    var importerContactName: String? = null
+
+    @Column(name = "IMPORTER_FAX", length = 100)
+    @Basic
+    var importerFax: String? = null
+
+    @Column(name = "SELLER_NAME", length = 1000)
+    @Basic
+    var sellerName: String? = null
+
+    @Column(name = "SELLER_ADDRESS", length = 1000)
+    @Basic
+    var sellerAddress: String? = null
+
+    @Column(name = "SELLER_EMAIL", length = 150)
+    @Basic
+    var sellerEmail: String? = null
+
+    @Column(name = "SELLER_TELEPHONE_NUMBER", length = 100)
+    @Basic
+    var sellerTelephoneNumber: String? = null
+
+    @Column(name = "SELLER_CONTACT_NAME", length = 100)
+    @Basic
+    var sellerContactName: String? = null
+
+    @Column(name = "SELLER_FAX", length = 100)
+    @Basic
+    var sellerFax: String? = null
+
     @Column(name = "MESSAGE_DATE", nullable = true)
     @Basic
     var messageDate: Timestamp? = null
 
-    @Column(name = "MODULE", nullable = true, length = 200)
+    @Column(name = "MODULE", length = 200)
     @Basic
     var module: String? = null
 
@@ -52,15 +100,15 @@ class IDFDetailsEntity : Serializable {
     @Basic
     var baseDocRefNo: String? = null
 
-    @Column(name = "PLACE_OF_LOADING", nullable = true, length = 200)
+    @Column(name = "PLACE_OF_LOADING", length = 200)
     @Basic
     var placeOfLoading: String? = null
 
-    @Column(name = "DECLARANT_PIN", nullable = true, length = 200)
+    @Column(name = "DECLARANT_PIN", length = 200)
     @Basic
     var declarantPin: String? = null
 
-    @Column(name = "DECLARANT_AEO_FLAG", nullable = true, length = 200)
+    @Column(name = "DECLARANT_AEO_FLAG", length = 200)
     @Basic
     var declarantAeoFlag: String? = null
 
@@ -180,9 +228,73 @@ class IDFDetailsEntity : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "COMESA", length = 10)
+    @Basic
+    var comesa: String? = "0"
+
+    @Column(name = "COUNTRY_OF_SUPPLY", length = 4000)
+    @Basic
+    var countryOfSupply: String? = null
+
+    @Column(name = "OBSERVATION", length = 4000)
+    @Basic
+    var observations: String? = null
+
+    @Column(name = "PORT_OF_DISCHARGE", length = 3000)
+    @Basic
+    var portOfDischarge: String? = null
+
+    @Column(name = "PORT_OF_CUSTOMS_CLEARANCE", length = 3000)
+    @Basic
+    var portOfCustomsClearance: String? = null
+
+    @Column(name = "MODE_OF_TRANSPORT", nullable = true, length = 150)
+    @Basic
+    var modeOfTransport: String? = null
+
+    @Column(name = "INVOICE_NUMBER", length = 30)
+    @Basic
+    var invoiceNumber: String? = null
+
+    @Column(name = "INVOICE_DATE")
+    @Basic
+    var invoiceDate: Timestamp? = null
+
+    @Column(name = "CURRENCY", length = 10)
+    @Basic
+    var currency: String? = null
+
+    @Column(name = "EXCHANGE_RATE", precision = 2)
+    @Basic
+    var exchangeRate: Double? = 0.0
+
+    @Column(name = "INSURANCE", precision = 2)
+    @Basic
+    var insurance: Double? = 0.0
+
+    @Column(name = "FREIGHT", precision = 2)
+    @Basic
+    var freight: Double? = 0.0
+
+    @Column(name = "OTHER_CHARGES", precision = 2)
+    @Basic
+    var otherCharges: Double? = 0.0
+
+    @Column(name = "TOTAL", precision = 2)
+    @Basic
+    var total: Double? = 0.0
+
+    @Column(name = "FOB_VALUE", precision = 2)
+    @Basic
+    var fobValue: Double? = 0.0
+
+    @Column(name = "USED_STATUS", nullable = true, precision = 0)
+    @Basic
+    var usedStatus: Long? = null
+
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
-    var status: Long? = null
+    var status: Int? = null
 
     @Column(name = "VAR_FIELD_1", nullable = true, length = 350)
     @Basic

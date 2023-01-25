@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.payload.response.RiskProfileDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ForeignPvocIntegrations
+import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.IDFReceivedEvent
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueriesEntity
@@ -17,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.model.pvc.PvocQueryResponseEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPvocQuerriesRepository
 import org.kebs.app.kotlin.apollo.store.repo.IPvocQueryResponseRepository
 import org.kebs.app.kotlin.apollo.store.repo.IPvocTimelinesDataEntityRepository
+import org.springframework.context.event.EventListener
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -57,6 +59,38 @@ class PvocAgentService(
         return response
     }
 
+    @EventListener
+    fun idfDocumentReceivedEvent(idf: IDFReceivedEvent) {
+        try {
+            val partners = partnerService.getPartnerInCountry(idf.country)
+            val data = mutableMapOf<String, Any>()
+            data["country"] = idf.country
+            data["region"] = idf.region
+            data["idf_number"] = idf.idfNo
+            data["ucr_number"] = idf.ucrNumber
+            // For each partner, we publish an IDF with each partner in the target country
+            partners.forEach { partner ->
+                partner.apiClientId?.let { clientId ->
+                    try {
+                        this.apiClientService.getApiClient(clientId)?.let { apiClient ->
+                            this.apiClientService.publishCallbackEvent(
+                                data,
+                                apiClient,
+                                "CONSIGNMENT_IDF"
+                            )
+                        }
+                    } catch (ex: Exception) {
+                        KotlinLogging.logger { }
+                            .warn("Failed to deliver IDF event to partner,${partner.partnerRefNo}", ex)
+                    }
+                }
+            }
+        } catch (ex: ExpectedDataNotFound) {
+            KotlinLogging.logger { }.warn("Invalid state: ", ex)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.warn("Request failed state: ", ex)
+        }
+    }
 
     fun timelineIssues(yearMonth: Optional<String>): ApiResponseModel {
         val partner = commonDaoServices.loggedInPartnerDetails()

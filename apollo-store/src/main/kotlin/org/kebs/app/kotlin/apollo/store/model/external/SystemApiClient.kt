@@ -24,10 +24,10 @@ class SystemApiClient : Serializable {
     var clientName: String? = null
 
     // PVOC_READ, PVOC_WRITE, PVOC_AGENT, PVOC_ADMIN
-    @Column(name = "CLIENT_ROLE",)
+    @Column(name = "CLIENT_ROLE")
     var clientRole: String? = null
 
-    @Column(name = "CLIENT_SECRET", nullable = false, length =4000)
+    @Column(name = "CLIENT_SECRET", nullable = false, length = 4000)
     var clientSecret: String? = null
 
     @Column(name = "CALLBACK_URL", nullable = true)
@@ -35,6 +35,12 @@ class SystemApiClient : Serializable {
 
     @Column(name = "EVENTS_URL", nullable = true)
     var eventsURL: String? = null // System events
+
+    @Column(name = "CALLBACK_USERNAME", nullable = true)
+    var callbackUsername: String? = null
+
+    @Column(name = "CALLBACK_PASSWORD", nullable = true)
+    var callbackPassword: String? = null
 
     @Column(name = "CLIENT_DESCRIPTIONS", nullable = true)
     var descriptions: String? = null

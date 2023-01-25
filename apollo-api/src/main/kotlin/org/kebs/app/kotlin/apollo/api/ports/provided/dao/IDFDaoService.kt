@@ -26,7 +26,7 @@ class IDFDaoService {
 
     private val createdByValue = "SYSTEM"
 
-    fun mapBaseDocumentToIDF(baseDocumentResponse: BaseDocumentResponse): Boolean {
+    fun mapBaseDocumentToIDF(baseDocumentResponse: BaseDocumentResponse): IDFDetailsEntity? {
 
         val idfRefNumber = baseDocumentResponse.data?.dataIn?.sad?.sadId
 
@@ -42,10 +42,10 @@ class IDFDaoService {
                         this.baseDocumentIsToIDFItemDetailsEntity(item, idfDetailsEntity)
                     }
                 }
-                return true
+                return idfDetailsEntity
             }
         }
-        return false
+        return null
     }
 
     fun baseDocumentToIDFDetailsEntity(baseDocumentResponse: BaseDocumentResponse): IDFDetailsEntity? {
@@ -62,9 +62,20 @@ class IDFDaoService {
             idfDetailsEntity = iIDFDetailsEntityRepository.findByBaseDocRefNo(idfRefNumber) ?: IDFDetailsEntity()
         }
 
+        val dataMap = mutableMapOf<String, String?>()
+        // CS list
+        baseDocumentResponse.data?.dataIn?.sad?.csList?.forEach { itm ->
+            dataMap[itm.elementName.orEmpty()] = itm.elementValue
+        }
+        // DS list
+        baseDocumentResponse.data?.dataIn?.sad?.dsList?.forEach { itm ->
+            dataMap[itm.certificateType.orEmpty()] = itm.certificateReference
+        }
+        // Document details
         with(idfDetailsEntity) {
             userId = baseDocumentResponse.header?.userId
-            messageDate = baseDocumentResponse.header?.messageDate?.let { commonDaoServices.convertISO8601DateToTimestamp(it) }
+            messageDate =
+                baseDocumentResponse.header?.messageDate?.let { commonDaoServices.convertISO8601DateToTimestamp(it) }
             module = baseDocumentResponse.header?.module
             action = baseDocumentResponse.header?.action
             information = baseDocumentResponse.header?.information
@@ -77,18 +88,30 @@ class IDFDaoService {
             declarantAeoFlag = baseDocumentResponse.data?.dataIn?.sad?.cd?.b14DeclarantAeoFlag
             declarantRegime = baseDocumentResponse.data?.dataIn?.sad?.cd?.b1DeclaSub1
             delivTermsSub2 = baseDocumentResponse.data?.dataIn?.sad?.cd?.b20DelivTermsSub2
-            totalCustomsValue = baseDocumentResponse.data?.dataIn?.sad?.cd?.totalCustomsValue?.let { commonDaoServices.convertStringAmountToBigDecimal(it) }
-            totalOtherCharges = baseDocumentResponse.data?.dataIn?.sad?.cd?.totalOtherCharges?.let { commonDaoServices.convertStringAmountToBigDecimal(it) }
-            entryDate = baseDocumentResponse.data?.dataIn?.sad?.cd?.fsT18EntryDate?.let { commonDaoServices.convertISO8601DateToTimestamp(it) }
+            totalCustomsValue = baseDocumentResponse.data?.dataIn?.sad?.cd?.totalCustomsValue?.let {
+                commonDaoServices.convertStringAmountToBigDecimal(it)
+            }
+            totalOtherCharges = baseDocumentResponse.data?.dataIn?.sad?.cd?.totalOtherCharges?.let {
+                commonDaoServices.convertStringAmountToBigDecimal(it)
+            }
+            entryDate = baseDocumentResponse.data?.dataIn?.sad?.cd?.fsT18EntryDate?.let {
+                commonDaoServices.convertISO8601DateToTimestamp(it)
+            }
             delivTermsSub1 = baseDocumentResponse.data?.dataIn?.sad?.cd?.b20DelivTermsSub1
             companyPin = baseDocumentResponse.data?.dataIn?.sad?.cd?.companyTr
-            totalAmount = baseDocumentResponse.data?.dataIn?.sad?.cd?.b22TotalAmount?.let { commonDaoServices.convertStringAmountToBigDecimal(it) }
+            totalAmount = baseDocumentResponse.data?.dataIn?.sad?.cd?.b22TotalAmount?.let {
+                commonDaoServices.convertStringAmountToBigDecimal(it)
+            }
             officeSubDivisionCode = baseDocumentResponse.data?.dataIn?.sad?.cd?.boxaOfficeSubCode
             refNo = baseDocumentResponse.data?.dataIn?.sad?.cd?.b7RefNum
             currencyCode = baseDocumentResponse.data?.dataIn?.sad?.cd?.b22CurrencyCode
             officeCode = baseDocumentResponse.data?.dataIn?.sad?.cd?.boxaOfficeCode
-            cdRegistrationDate = baseDocumentResponse.data?.dataIn?.sad?.cd?.cdRegistrationDateTime?.let { commonDaoServices.convertISO8601DateToTimestamp(it) }
-            totalInsurance = baseDocumentResponse.data?.dataIn?.sad?.cd?.b9TotalInsurance?.let { commonDaoServices.convertStringAmountToBigDecimal(it) }
+            cdRegistrationDate = baseDocumentResponse.data?.dataIn?.sad?.cd?.cdRegistrationDateTime?.let {
+                commonDaoServices.convertISO8601DateToTimestamp(it)
+            }
+            totalInsurance = baseDocumentResponse.data?.dataIn?.sad?.cd?.b9TotalInsurance?.let {
+                commonDaoServices.convertStringAmountToBigDecimal(it)
+            }
             transportType = baseDocumentResponse.data?.dataIn?.sad?.cd?.transType
             consigneePinNo = baseDocumentResponse.data?.dataIn?.sad?.cd?.consignee?.trNumber
             consigneeCountryCode = baseDocumentResponse.data?.dataIn?.sad?.cd?.consignee?.countryCode
@@ -102,10 +125,22 @@ class IDFDaoService {
             consignorAeoFlag = baseDocumentResponse.data?.dataIn?.sad?.cd?.consigner?.aeoFlag
             consignorBusinessAddress = baseDocumentResponse.data?.dataIn?.sad?.cd?.consigner?.businessAddr
             consignorBusinessNation = baseDocumentResponse.data?.dataIn?.sad?.cd?.consigner?.businessNation
+            importerEmail = dataMap.getOrDefault("IDFImpEmail", null)
+            importerContactName = dataMap.getOrDefault("IDFImpContact", null)
+            importerTelephoneNumber = dataMap.getOrDefault("IDFImpPhone", null)
+            sellerTelephoneNumber = dataMap.getOrDefault("IDFSellPhone", null)
+            sellerEmail = dataMap.getOrDefault("IDFSellEmail", null)
+            sellerContactName = dataMap.getOrDefault("IDFSellContact", null)
+            comesa = dataMap.getOrDefault("IDFComesa", "0")
+            invoiceNumber = dataMap.getOrDefault("IDFInvoiceNum", null)
+            countryOfSupply = dataMap.getOrDefault("IDFCountryofSupply", null)
+            invoiceDate = dataMap.getOrDefault("IDFInvoiceDate", null)
+                ?.let { commonDaoServices.convertISO8601DateToTimestamp(it) }
             createdBy = createdByValue
             createdOn = commonDaoServices.getTimestamp()
         }
-        //
+
+
         if (StringUtils.hasLength(idfDetailsEntity.ucrNo)) {
             idfDetailsEntity.varField1 = "COMPLETE DOCUMENT"
             idfDetailsEntity.status = 1

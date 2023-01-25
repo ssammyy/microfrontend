@@ -68,6 +68,16 @@ class KeswFileEvents(data: FileDetails) : ApplicationEvent(data) {
 
 }
 
+data class IDFReceivedEvent(
+    val idfNo: String,
+    val ucrNumber: String,
+    val country: String,
+    val region: String,
+    val sourceObj: Any
+) : ApplicationEvent(sourceObj) {
+
+}
+
 @Service
 class SFTPService(
     private val iDFDaoService: IDFDaoService,
@@ -204,10 +214,7 @@ class SFTPService(
         val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
         val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
         if (baseDocRefNo == null || ucrNumber == null) {
-            KotlinLogging.logger { }.error {
-                "BaseDocRef Number or Uc" +
-                        "rNumber missing"
-            }
+            KotlinLogging.logger { }.warn("BaseDocRef Number or UcrNumber missing")
             throw Exception("BaseDocRef Number or UcrNumber missing")
         }
         KotlinLogging.logger { }
@@ -265,6 +272,17 @@ class SFTPService(
             .info("IDF Base Document Type: ${exchange.message.headers} | Content: ${exchange.message.body}|")
         val baseDocumentResponse = exchange.message.body as BaseDocumentResponse
         val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
+        docSaved?.let {
+            eventPublisher.publishEvent(
+                IDFReceivedEvent(
+                    it.baseDocRefNo ?: "",
+                    it.ucrNo ?: "",
+                    it.consignorCountryCode ?: "",
+                    it.delivTermsSub1 ?: "",
+                    this
+                )
+            )
+        }
         KotlinLogging.logger { }.info("IDF Base Document Type: ${exchange.message.headers} | Save status: ${docSaved}|")
     }
 
@@ -539,7 +557,7 @@ class CamelSftpDownload(
             .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsDeclarationVerificationDoctype))
             .unmarshal(createXmlMapper(DeclarationVerificationMessage::class.java))
             .bean(SFTPService::class.java, "processDeclarationVerificationDocumentType")
-            .log("Declaration document \${in.headers.CamelFileName} processed.")
+            .log("Declaration document \${in.headers.CamelFileName} processed. (DCL)")
             .`when`(header("CamelFileName").startsWith(applicationMapProperties.mapKeswsAirManifestDoctype))
             .unmarshal(createXmlMapper(ManifestDocumentMessage::class.java))
             .bean(SFTPService::class.java, "processAirManifestDocument")
