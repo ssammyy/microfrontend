@@ -458,6 +458,10 @@ import { ComStdPublishingComponent } from './apollowebs/standards-development/co
 import { ComStdEditorComponent } from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
 import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corporate-bills.component';
 import { HofReviewProposalComponent } from './apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component';
+import { PermitDetailsComponent } from './apollowebs/qualityAssuranceAdmin/permit-details/permit-details.component';
+import { SmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
+import { FmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
+import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -948,6 +952,10 @@ import { HofReviewProposalComponent } from './apollowebs/standards-development/f
         ComStdEditorComponent,
         CorporateBillsComponent,
         HofReviewProposalComponent,
+        PermitDetailsComponent,
+        SmarkAdminComponent,
+        FmarkAdminComponent,
+        DmarkAdminComponent,
 
     ],
     entryComponents: [LoaderComponent],

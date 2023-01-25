@@ -654,6 +654,10 @@ import {
 import {
     HofReviewProposalComponent
 } from "./apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component";
+import { SmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
+import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
+import { FmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
+import { PermitDetailsComponent } from './apollowebs/qualityAssuranceAdmin/permit-details/permit-details.component';
 
 export const routes: Routes = [
     {
@@ -981,6 +985,53 @@ export const routes: Routes = [
             },
         ],
     },
+    
+
+   // quality Assurance Admin
+
+{
+    path: 'smark-admin', component: AdminLayoutComponent,
+    // canActivate: [RouteGuard]
+  
+    children: [
+        {path: '', component: SmarkAdminComponent},
+    ],
+  
+  },
+  
+  {
+    path: 'dmark-admin', component: AdminLayoutComponent,
+    // canActivate: [RouteGuard]
+  
+    children: [
+        {path: '', component: DmarkAdminComponent},
+    ],
+  
+  },
+  {
+    path: 'fmark-admin', component: AdminLayoutComponent,
+    // canActivate: [RouteGuard]
+  
+    children: [
+        {path: '', component: FmarkAdminComponent},
+    ],
+  
+  },
+  {
+    path: 'Permit-details', component: AdminLayoutComponent,
+    // canActivate: [RouteGuard]
+  
+    children: [
+        {path: '/', component: PermitDetailsComponent},
+    ],
+  
+  },
+
+  
+
+
+
+
     {
         path: 'pvoc',
         component: AdminLayoutComponent,
