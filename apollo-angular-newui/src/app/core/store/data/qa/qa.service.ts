@@ -6,7 +6,7 @@ import {catchError, map} from 'rxjs/operators';
 import {
     AllBatchInvoiceDetailsDto,
     AllPermitDetailsDto,
-    AllSTA10DetailsDto, FilterDto,
+    AllSTA10DetailsDto, CompanyTurnOverUpdateDto, FilterDto, FirmTypeEntityDto,
     FmarkEntityDto,
     GenerateInvoiceDto,
     MPesaPushDto,
@@ -28,29 +28,157 @@ import {
     STA10RawMaterialsDto,
     STA3,
     StgInvoiceBalanceDto,
-    TaskDto
+    TaskDto,
 } from './qa.model';
+import {Company} from '../companies';
+import Swal from 'sweetalert2';
+import swal from 'sweetalert2';
+import {SSFSendingComplianceStatus, WorkPlanInspectionDto} from '../ms/ms.model';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class QaService {
 
     constructor(private http: HttpClient) {
     }
 
-    public loadFirmPermitList(companyID: string): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.FIRM_PERMIT_LIST);
-        const params = new HttpParams()
-            .set('companyID', companyID);
-        return this.http.get<any>(url, {params}).pipe(
+
+    showSuccessWith2Message(title: string, text: string, cancelMessage: string, successMessage: string, fn?: Function) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger',
+            },
+            buttonsStyling: false,
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (fn) {
+                    const results = fn();
+                    if (results === true) {
+                        swalWithBootstrapButtons.fire(
+                            'Submitted!',
+                            successMessage,
+                            'success',
+                        );
+                    } else if (results === false) {
+                        swalWithBootstrapButtons.fire(
+                            'Submitted!',
+                            'AN ERROR OCCURRED',
+                            'error',
+                        );
+                    }
+                }
+
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    cancelMessage,
+                    'error',
+                );
+            }
+        });
+    }
+
+    showSuccess(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success',
+        }).then(() => {
+            if (fn) {
+                fn();
+            }
+        });
+    }
+
+    showError(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'error',
+        }).then(() => {
+            if (fn) {
+                fn();
+            }
+        });
+    }
+
+    showWarning(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'warning',
+        }).then(() => {
+            if (fn) {
+                fn();
+            }
+        });
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public qaUpdateFirmType(data: CompanyTurnOverUpdateDto): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.UPDATE_COMPANY_TURN_OVER);
+        const params = new HttpParams();
+        return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
+        );
+    }
+
+
+    public loadAllCompanyList(): Observable<Company[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_COMPANY_LIST);
+        return this.http.get<Company[]>(url).pipe(
+            map(function (response: Company[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadFirmPermitList(): Observable<FirmTypeEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_FIRM_TYPE_LIST);
+        return this.http.get<FirmTypeEntityDto[]>(url).pipe(
+            map(function (response: FirmTypeEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
         );
     }
 
@@ -63,7 +191,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -76,7 +204,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -89,7 +217,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -105,7 +233,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -120,7 +248,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -135,7 +263,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -150,7 +278,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -166,7 +294,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -181,7 +309,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -196,7 +324,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -211,7 +339,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -226,7 +354,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -239,7 +367,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -252,7 +380,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -268,7 +396,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
     public applyFilter(data: FilterDto[]): Observable<any> {
@@ -281,7 +409,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
     public applyFilterAwarded(data: FilterDto[]): Observable<any> {
@@ -294,7 +422,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
     public applyFilterRenewed(data: FilterDto[]): Observable<any> {
@@ -307,7 +435,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
     public applyFilterDejected(data: FilterDto[]): Observable<any> {
@@ -320,7 +448,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -335,7 +463,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -350,7 +478,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -365,7 +493,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -379,7 +507,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -394,7 +522,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -410,7 +538,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -423,7 +551,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -436,7 +564,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -449,7 +577,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -462,7 +590,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -477,7 +605,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -490,7 +618,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -503,7 +631,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -518,7 +646,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -533,7 +661,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -548,7 +676,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -563,7 +691,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -576,7 +704,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -589,7 +717,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -602,7 +730,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -617,7 +745,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -632,7 +760,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -647,7 +775,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -663,7 +791,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -679,7 +807,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -695,7 +823,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -711,7 +839,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -726,7 +854,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -739,7 +867,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -752,7 +880,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -767,7 +895,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -777,8 +905,8 @@ export class QaService {
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
             headers: {
-                'enctype': 'multipart/form-data'
-            }, params: {'permitID': permitID}
+                'enctype': 'multipart/form-data',
+            }, params: {'permitID': permitID},
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -786,7 +914,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -796,8 +924,8 @@ export class QaService {
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
             headers: {
-                'enctype': 'multipart/form-data'
-            }, params: {'permitID': permitID, 'docDesc': docDesc}
+                'enctype': 'multipart/form-data',
+            }, params: {'permitID': permitID, 'docDesc': docDesc},
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -805,7 +933,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -815,8 +943,8 @@ export class QaService {
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
             headers: {
-                'enctype': 'multipart/form-data'
-            }, params: {'permitID': permitID}
+                'enctype': 'multipart/form-data',
+            }, params: {'permitID': permitID},
         }).pipe(
             map(function (response: any) {
                 return response;
@@ -824,7 +952,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -835,7 +963,7 @@ export class QaService {
 
         const params = new HttpParams()
             .set('permitID', permitId)
-            .set('permitIdBeingMigrated', permitIdBeingMigrated)
+            .set('permitIdBeingMigrated', permitIdBeingMigrated);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.post<PermitDto>(url, permitDto, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
@@ -844,7 +972,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -860,7 +988,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -873,7 +1001,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -888,7 +1016,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -903,7 +1031,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -918,7 +1046,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -933,10 +1061,11 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public saveProductsManufacturedDetailsSta10(qaSta10ID: string, data: STA10ProductsManufactureDto[]): Observable<STA10ProductsManufactureDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED);
         const params = new HttpParams()
@@ -948,10 +1077,11 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public updateProductsManufacturedDetailsSta10(qaSta10ID: string, data: STA10ProductsManufactureDto[]): Observable<STA10ProductsManufactureDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_UPDATE_STA10_PRODUCTS_BEING_MANUFACTURED);
         const params = new HttpParams()
@@ -963,7 +1093,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -978,7 +1108,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -993,7 +1123,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1009,7 +1139,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1024,7 +1154,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1039,7 +1169,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1054,7 +1184,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1070,7 +1200,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1085,7 +1215,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1100,7 +1230,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1115,7 +1245,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1130,7 +1260,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1145,7 +1275,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1160,7 +1290,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 
@@ -1173,7 +1303,7 @@ export class QaService {
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
-            })
+            }),
         );
     }
 

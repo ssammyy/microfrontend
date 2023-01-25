@@ -122,6 +122,18 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     PUT("/", handler::departmentsUpdate)
                     POST("/", handler::departmentsUpdate)
                 }
+                "/firm-types".nest {
+                    GET("/load", handler::firmTypeListing)
+                    GET("/loads/{status}", handler::firmTypeListing)
+                    PUT("/", handler::notSupported)
+                    POST("/", handler::notSupported)
+                }
+                "/company-list".nest {
+                    GET("/load", handler::companyListing)
+                    GET("/loads/{status}", handler::companyListing)
+                    PUT("/", handler::notSupported)
+                    POST("/", handler::notSupported)
+                }
                 "/divisions".nest {
                     GET("/load", handler::divisionsListing)
                     GET("/loads/{status}", handler::divisionsListing)
@@ -287,6 +299,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "/company".nest {
                 GET("", handler::handleFetchCompaniesByUserId)
                 POST("", handler::handleUpdateCompanyDetails)
+                POST("/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
                 "/{companyId}".nest {
                     PUT("", handler::handleUpdateCompanyDetails)
                     GET("", handler::handleFetchCompanyById)
@@ -475,6 +488,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/branch-list", handler::branchListMigration)
             GET("/standards-list", handler::standardsListMigration)
             GET("/payments", handler::permitInvoiceListPaid)
+            POST("/company/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
             "/permit".nest {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)

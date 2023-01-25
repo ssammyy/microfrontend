@@ -8,6 +8,8 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
+import org.kebs.app.kotlin.apollo.common.dto.CompanyTurnOverUpdateDto
+import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -140,6 +142,55 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit Type found with the following [ID=$id]")
 
 
+    }
+
+    fun updateCompanyTurnOverDetails(
+        dto: CompanyTurnOverUpdateDto,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+    ): UserCompanyEntityDto? {
+
+        companyProfileRepo.findByIdOrNull(dto.companyProfileID)
+            ?.let { entity ->
+                entity.apply {
+                    val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
+                    firmCategory = firmTypeDetails.id
+                    yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
+                    modifiedBy = user.userName
+                    modifiedOn = Timestamp.from(Instant.now())
+                }
+
+                val companyProfileEntity = companyProfileRepo.save(entity)
+
+                return UserCompanyEntityDto(
+                    companyProfileEntity.name,
+                    companyProfileEntity.kraPin,
+                    companyProfileEntity.userId,
+                    null,
+                    companyProfileEntity.registrationNumber,
+                    companyProfileEntity.postalAddress,
+                    companyProfileEntity.physicalAddress,
+                    companyProfileEntity.plotNumber,
+                    companyProfileEntity.companyEmail,
+                    companyProfileEntity.companyTelephone,
+                    companyProfileEntity.yearlyTurnover,
+                    companyProfileEntity.businessLines,
+                    companyProfileEntity.businessNatures,
+                    companyProfileEntity.buildingName,
+                    null,
+                    companyProfileEntity.streetName,
+                    companyProfileEntity.directorIdNumber,
+                    companyProfileEntity.region,
+                    companyProfileEntity.county,
+                    companyProfileEntity.town
+                ).apply {
+                    id = companyProfileEntity.id
+
+                    status = companyProfileEntity.status
+                }
+
+            }
+            ?: throw NullValueNotAllowedException("Record not found")
     }
 
 
@@ -5845,7 +5896,7 @@ class QADaoServices(
     fun findFirmTypeById(firmTypeID: Long): PermitRatingEntity {
         iPermitRatingRepo.findByIdOrNull(firmTypeID)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No Firm type [Id = ${firmTypeID}]")
+        } ?: throw ExpectedDataNotFound("No Firm type with Id = ${firmTypeID} found ")
     }
 
     fun manufactureType(manufactureTurnOver: BigDecimal): PermitRatingEntity {

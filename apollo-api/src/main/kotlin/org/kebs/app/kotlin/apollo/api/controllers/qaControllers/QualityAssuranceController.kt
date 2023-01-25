@@ -144,6 +144,7 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @PostMapping("/apply/update-scheme-of-supervision")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

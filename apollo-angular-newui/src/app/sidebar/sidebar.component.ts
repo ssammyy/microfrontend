@@ -67,6 +67,20 @@ export const ROUTES: RouteInfo[] = [
     },
 
     {
+        path: '/company',
+        title: 'Companies',
+        type: 'sub',
+        icontype: 'business',
+        privilege: ['QA_MANAGER_MODIFY', 'QA_OFFICER_MODIFY', 'QA_ASSESSORS_MODIFY'],
+        collapse: 'company',
+        children: [
+            {path: 'list', title: 'View Companies', ab: 'VC'},
+            // {path: 'branches', title: 'View Branches ', ab: 'VB'},
+            // {path: 'users', title: 'View Users ', ab: 'VU'},
+        ],
+    },
+
+    {
         path: '/dmark',
         title: 'Diamond Mark',
         type: 'sub',

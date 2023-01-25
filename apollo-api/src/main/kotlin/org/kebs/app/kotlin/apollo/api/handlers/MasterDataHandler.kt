@@ -386,6 +386,74 @@ class MasterDataHandler(
 
     }
 
+//    @PreAuthorize("hasAuthority('DEPARTMENTS_LIST')")
+    fun firmTypeListing(req: ServerRequest): ServerResponse {
+        try {
+            val status = try {
+                req.pathVariable("status").toInt()
+            } catch (e: Exception) {
+                2
+            }
+            when {
+                status > 1 -> {
+                    daoService.getAllFirmType()
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+                else -> {
+                    daoService.getAllFirmTypeByStatus(status)
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
+    fun companyListing(req: ServerRequest): ServerResponse {
+        try {
+            val status = try {
+                req.pathVariable("status").toInt()
+            } catch (e: Exception) {
+                2
+            }
+            when {
+                status > 1 -> {
+                    daoService.getAllCompanies()
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+                }
+                else -> {
+                    daoService.getAllFirmTypeByStatus(status)
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
     @PreAuthorize("hasAuthority('DIVISIONS_LIST')")
     fun divisionsListing(req: ServerRequest): ServerResponse {
         try {
@@ -921,7 +989,7 @@ class MasterDataHandler(
 
     }
 
-    @PreAuthorize("isAnonymous()")
+//    @PreAuthorize("isAnonymous()")
     fun notSupported(req: ServerRequest): ServerResponse = badRequest().body("Invalid Request: Not supported")
 
     @PreAuthorize("isAnonymous()")
