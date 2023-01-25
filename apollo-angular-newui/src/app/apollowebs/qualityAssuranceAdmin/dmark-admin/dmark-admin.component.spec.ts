@@ -11,7 +11,9 @@ describe('DmarkAdminComponent', () => {
       declarations: [ DmarkAdminComponent ]
     })
     .compileComponents();
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(DmarkAdminComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
