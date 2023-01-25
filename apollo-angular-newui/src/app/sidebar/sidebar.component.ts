@@ -643,8 +643,9 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'formation',
         children: [
             {path: 'requestForFormationOfTC', title: 'Request For Formation', ab: 'RFF'},
+            {path: 'hofReviewJustificationOfTC', title: 'HOF Review', ab: 'HOF'},
             {path: 'reviewJustificationOfTC', title: 'TC Justification', ab: 'RDS'},
-            {path: 'reviewFeedbackSPC', title: 'Feedback Review', ab: 'EDS'},
+            {path: 'reviewFeedbackSAC', title: 'Feedback Review', ab: 'EDS'},
 
 
         ],

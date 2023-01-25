@@ -60,51 +60,10 @@ class TechnicalCommittee {
     @Basic
     var createdOn: Timestamp? = null
 
+    @Column(name = "ADVERTISING_STATUS")
+    @Basic
+    var advertisingStatus: String? = null
 
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as TechnicalCommittee
-
-        if (id != other.id) return false
-        if (technicalCommitteeNo != other.technicalCommitteeNo) return false
-        if (type != other.type) return false
-        if (tc != other.tc) return false
-        if (sc != other.sc) return false
-        if (wg != other.wg) return false
-        if (parentCommitte != other.parentCommitte) return false
-        if (title != other.title) return false
-        if (status != other.status) return false
-        if (comment != other.comment) return false
-        if (createdBy != other.createdBy) return false
-        if (createdOn != other.createdOn) return false
-
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (technicalCommitteeNo?.hashCode() ?: 0)
-        result = 31 * result + (type?.hashCode() ?: 0)
-        result = 31 * result + (tc ?: 0)
-        result = 31 * result + (sc ?: 0)
-        result = 31 * result + (wg ?: 0)
-        result = 31 * result + (parentCommitte?.hashCode() ?: 0)
-        result = 31 * result + (title?.hashCode() ?: 0)
-        result = 31 * result + (status?.hashCode() ?: 0)
-        result = 31 * result + (comment?.hashCode() ?: 0)
-        result = 31 * result + (createdBy?.hashCode() ?: 0)
-        result = 31 * result + (createdOn?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String {
-        return "TechnicalCommittee(id=$id, technical_committee_no=$technicalCommitteeNo, type=$type, tc=$tc, sc=$sc, wg=$wg, parentCommitte=$parentCommitte, title=$title, status=$status," +
-                " comment=$comment,createdBy=$createdBy,createdOn=$createdOn)"
-    }
 
 
 }

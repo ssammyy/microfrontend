@@ -7,6 +7,7 @@ import {StdComStandardService} from "../../../../core/store/data/std/std-com-sta
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 
 @Component({
   selector: 'app-com-std-app-draft',
@@ -23,6 +24,7 @@ export class ComStdAppDraftComponent implements OnInit {
   public committeeFormGroup!: FormGroup;
   public uploadDraftFormGroup!: FormGroup;
   blob: Blob;
+    documentDTOs: DocumentDTO[] = [];
   constructor(
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
@@ -66,12 +68,25 @@ export class ComStdAppDraftComponent implements OnInit {
     );
   }
 
-  public onOpenModal(task: COMPreliminaryDraft,mode:string): void{
+  public onOpenModal(task: COMPreliminaryDraft,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+
+      this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.documentDTOs = response;
+              this.SpinnerService.hide();
+              //console.log(this.documentDTOs)
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+              //console.log(error.message);
+          }
+      );
+
     if (mode==='approveJustification'){
       this.actionRequest=task;
       button.setAttribute('data-target','#approveJustification');

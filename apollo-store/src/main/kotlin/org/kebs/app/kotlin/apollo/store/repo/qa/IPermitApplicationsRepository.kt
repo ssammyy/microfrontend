@@ -1076,7 +1076,7 @@ interface PermitRepository : JpaRepository<PermitApplicationsEntity, Int>,
 interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<PermitMigrationApplicationsEntity, Long> {
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 
-    fun findAllByMigratedStatusIsNotNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
+    fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
 
     fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntity>?
 
@@ -1093,7 +1093,7 @@ interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<Per
 interface IPermitMigrationApplicationsFmarkEntityRepository :
     HazelcastRepository<PermitMigrationApplicationsEntityFmark, Long> {
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
-    fun findAllByMigratedStatusIsNotNull(pageable: Pageable): List<PermitMigrationApplicationsEntityFmark>?
+    fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntityFmark>?
 
     fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntityFmark>?
 
@@ -1122,7 +1122,7 @@ interface IPermitMigrationApplicationsDmarkEntityRepository :
 
 
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
-    fun findAllByMigratedStatusIsNotNull(pageable: Pageable): List<PermitMigrationApplicationsEntityDmark>?
+    fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntityDmark>?
 
     fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntityDmark>?
 

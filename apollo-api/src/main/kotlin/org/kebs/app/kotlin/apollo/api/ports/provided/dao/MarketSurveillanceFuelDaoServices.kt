@@ -156,7 +156,6 @@ class MarketSurveillanceFuelDaoServices(
             }
 
             val managerPetroleumList = commonDaoServices.findOfficersListBasedOnRole(applicationMapProperties.mapMSMappedManagerPetroliumROLEID,
-                fileSaved.second.countyId ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
                 fileSaved.second.regionId ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
             )
 

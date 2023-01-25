@@ -137,62 +137,62 @@ export class NewDmarkPermitComponent implements OnInit {
         });
 
         this.sta3FormG = this.formBuilder.group({});
+        this.qaService.loadSectionList().subscribe(
+            (data: any) => {
+                this.sections = data;
+            }
+        );
 
+        this.qaService.loadPlantList().subscribe(
+            (data: any) => {
+                this.plants = data;
+            }
+        );
 
-        this.store$.select(selectCompanyInfoDtoStateData).subscribe(
-            (d) => {
-                if (d) {
-                    // //(`${d.status}`);
-                    // return this.status = d.status;
-                    if (d.status == 0) {
-                        swal.fire({
-                            title: 'Cancelled',
-                            text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
-                            icon: 'error',
-                            customClass: {confirmButton: "btn btn-info",},
-                            buttonsStyling: false
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location.href = "/dashboard";
-                            }
-                        })
-                    } else if (d.status == 2) {
-                        swal.fire({
-                            title: 'Cancelled',
-                            text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
-                            icon: 'error',
-                            customClass: {confirmButton: "btn btn-info",},
-                            buttonsStyling: false
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location.href = "/dashboard";
-                            }
-                        })
-                    } else {
+        this.getSelectedPermit();
 
+        this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
 
-                        this.qaService.loadSectionList().subscribe(
-                            (data: any) => {
-                                this.sections = data;
-                            }
-                        );
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            return this.fullname = u.fullName;
+        });
 
-                        this.qaService.loadPlantList().subscribe(
-                            (data: any) => {
-                                this.plants = data;
-                            }
-                        );
-
-                        this.getSelectedPermit();
-
-                        this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
-
-                        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-                            return this.fullname = u.fullName;
-                        });
-                    }
-                }
-            })
+        // this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+        //     (d) => {
+        //         if (d) {
+        //             // //(`${d.status}`);
+        //             // return this.status = d.status;
+        //             // if (d.status == 0) {
+        //             //     swal.fire({
+        //             //         title: 'Cancelled',
+        //             //         text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
+        //             //         icon: 'error',
+        //             //         customClass: {confirmButton: "btn btn-info",},
+        //             //         buttonsStyling: false
+        //             //     }).then((result) => {
+        //             //         if (result.value) {
+        //             //             window.location.href = "/dashboard";
+        //             //         }
+        //             //     })
+        //             // } else if (d.status == 2) {
+        //             //     swal.fire({
+        //             //         title: 'Cancelled',
+        //             //         text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
+        //             //         icon: 'error',
+        //             //         customClass: {confirmButton: "btn btn-info",},
+        //             //         buttonsStyling: false
+        //             //     }).then((result) => {
+        //             //         if (result.value) {
+        //             //             window.location.href = "/dashboard";
+        //             //         }
+        //             //     })
+        //             // } else {
+        //
+        //
+        //
+        //             }
+        //       //  }
+        //     })
     }
 
     public getSelectedPermit(): void {

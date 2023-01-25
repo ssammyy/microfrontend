@@ -20,7 +20,7 @@ class CustomExemptionTranslator {
 
             }
             else -> {
-                errors.put("body", ex.cause?.localizedMessage ?: "Unknown")
+                errors.put("body", ex.cause?.message ?: "Unknown")
             }
         }
         return errors

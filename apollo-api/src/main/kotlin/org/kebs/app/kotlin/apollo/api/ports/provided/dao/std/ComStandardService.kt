@@ -8,8 +8,10 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -56,10 +58,9 @@ class ComStandardService(
 
         val variables: MutableMap<String, Any> = HashMap()
         companyStandardRequest.companyName = companyStandardRequest.companyName
-        companyStandardRequest.departmentId = companyStandardRequest.departmentId
-        companyStandardRequest.tcId = companyStandardRequest.tcId
-        companyStandardRequest.productId = companyStandardRequest.productId
-        companyStandardRequest.productSubCategoryId = companyStandardRequest.productSubCategoryId
+//        companyStandardRequest.tcId = companyStandardRequest.tcId
+//        companyStandardRequest.productId = companyStandardRequest.productId
+//        companyStandardRequest.productSubCategoryId = companyStandardRequest.productSubCategoryId
         //companyStandardRequest.submissionDate?.let{ variables.put("submissionDate", it)}
         companyStandardRequest.companyPhone = companyStandardRequest.companyPhone
         companyStandardRequest.companyEmail = companyStandardRequest.companyEmail
@@ -67,14 +68,25 @@ class ComStandardService(
         companyStandardRequest.requestNumber = getRQNumber()
         companyStandardRequest.status = 0
 
-        companyStandardRequest.tcName = technicalCommitteeRepository.findNameById(companyStandardRequest.tcId?.toLong())
-        companyStandardRequest.departmentName =
-            departmentRepository.findNameById(companyStandardRequest.departmentId?.toLong())
+        companyStandardRequest.departmentId = companyStandardRequest.departmentId
+        companyStandardRequest.subject=companyStandardRequest.subject
+        companyStandardRequest.description=companyStandardRequest.description
+        companyStandardRequest.contactOneFullName=companyStandardRequest.contactOneFullName
+        companyStandardRequest.contactOneTelephone=companyStandardRequest.contactOneTelephone
+        companyStandardRequest.contactOneEmail=companyStandardRequest.contactOneEmail
+        companyStandardRequest.contactTwoFullName=companyStandardRequest.contactTwoFullName
+        companyStandardRequest.contactTwoTelephone=companyStandardRequest.contactTwoTelephone
+        companyStandardRequest.contactTwoEmail=companyStandardRequest.contactTwoEmail
+        companyStandardRequest.contactThreeFullName=companyStandardRequest.contactThreeFullName
+        companyStandardRequest.contactThreeTelephone=companyStandardRequest.contactThreeTelephone
+        companyStandardRequest.contactThreeEmail=companyStandardRequest.contactThreeEmail
 
-        companyStandardRequest.productName = productRepository.findNameById(companyStandardRequest.productId?.toLong())
+        //companyStandardRequest.tcName = technicalCommitteeRepository.findNameById(companyStandardRequest.tcId?.toLong())
+        companyStandardRequest.departmentName = departmentRepository.findNameById(companyStandardRequest.departmentId?.toLong())
 
-        companyStandardRequest.productSubCategoryName =
-            productSubCategoryRepository.findNameById(companyStandardRequest.productSubCategoryId?.toLong())
+        //companyStandardRequest.productName = productRepository.findNameById(companyStandardRequest.productId?.toLong())
+
+        //companyStandardRequest.productSubCategoryName = productSubCategoryRepository.findNameById(companyStandardRequest.productSubCategoryId?.toLong())
 
         return comStandardRequestRepository.save(companyStandardRequest)
     }
@@ -106,7 +118,6 @@ class ComStandardService(
 
     fun findUploadedReportFileBYId(comStdRequestID: Long): ComStandardRequestUploads {
         return comStandardRequestUploadsRepository.findAllByComStdRequestId(comStdRequestID)
-            ?: throw ExpectedDataNotFound("No File found with the following [ id=$comStdRequestID]")
     }
 
 
@@ -140,19 +151,18 @@ class ComStandardService(
         return gson.fromJson(officersName, userListType)
     }
 
-    fun formJointCommittee(comStandardJointCommittee: ComStandardJointCommittee) : String
+    fun formJointCommittee(comStandardJointCommittee: ComStandardJointCommittee, detailBody: MutableList<NamesList>?) : String
     {
         var result= CompanyStandardRequest()
-        comStandardJointCommittee.name=comStandardJointCommittee.name
-        comStandardJointCommittee.names=comStandardJointCommittee.names
-        comStandardJointCommittee.requestId=comStandardJointCommittee.requestId
-        comStdJointCommitteeRepository.save(comStandardJointCommittee)
 
         val jointLists= comStandardJointCommittee.name?.let { mapKEBSOfficersNameListDto(it) }
-        val jointList= comStandardJointCommittee.names?.let { mapKEBSOfficersNameListDto(it) }
-
         if (jointLists != null) {
             for (recipient in jointLists) {
+                comStandardJointCommittee.name="JC"
+                comStandardJointCommittee.email=recipient
+                comStandardJointCommittee.requestId=comStandardJointCommittee.requestId
+                comStdJointCommitteeRepository.save(comStandardJointCommittee)
+
                 val subject = "New Standard Request"
                 val messageBody= "Hope You are Well,A new standard request has been received.You have been selected to be in the Joint Committee. "
                 notifications.sendEmail(recipient, subject, messageBody)
@@ -161,15 +171,24 @@ class ComStandardService(
 
         }
 
-        if (jointList != null) {
-            for (recipient in jointList) {
-                val subject = "New Standard Request"
-                val messageBody= "Hope You are Well,A new standard request has been received.You have been selected to be in the Joint Committee. "
+        detailBody?.forEach { d ->
+            val subject = "New Standard Request"
+            val recipient = d.email
+            val user = d.name
+
+            comStandardJointCommittee.name=user
+            comStandardJointCommittee.email=recipient
+            comStandardJointCommittee.requestId=comStandardJointCommittee.requestId
+            comStdJointCommitteeRepository.save(comStandardJointCommittee)
+
+                val messageBody= "Dear $user ,A new standard request has been received.You have been selected to be in the Joint Committee. "
+            if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
-
             }
-
         }
+
+        //val gson = Gson()
+       // KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(detailBody) }
 
         comStandardRequestRepository.findByIdOrNull(comStandardJointCommittee.requestId)?.let { companyStandardRequest ->
             with(companyStandardRequest) {
@@ -369,8 +388,8 @@ class ComStandardService(
         return productSubCategoryRepository.findAll()
     }
 
-    fun getUserList(): MutableList<UserDetailHolder> {
-        return userListRepository.getUserList()
+    fun getUsers(): MutableList<UserHolder> {
+        return userListRepository.getUsers()
     }
 
 
@@ -406,11 +425,11 @@ class ComStandardService(
         val variables: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         comStdDraft.title = comStdDraft.title
-        comStdDraft.scope = comStdDraft.scope
-        comStdDraft.normativeReference = comStdDraft.normativeReference
-        comStdDraft.symbolsAbbreviatedTerms = comStdDraft.symbolsAbbreviatedTerms
-        comStdDraft.clause = comStdDraft.clause
-        comStdDraft.special = comStdDraft.special
+//        comStdDraft.scope = comStdDraft.scope
+//        comStdDraft.normativeReference = comStdDraft.normativeReference
+//        comStdDraft.symbolsAbbreviatedTerms = comStdDraft.symbolsAbbreviatedTerms
+//        comStdDraft.clause = comStdDraft.clause
+//        comStdDraft.special = comStdDraft.special
         comStdDraft.uploadedBy = loggedInUser.id
         comStdDraft.requestNumber = comStdDraft.requestNumber
         comStdDraft.requestId = comStdDraft.requestId
@@ -420,19 +439,38 @@ class ComStandardService(
         comStdDraft.draftNumber = getDRNumber()
         val deadline: Timestamp = Timestamp.valueOf(comStdDraft.uploadDate!!.toLocalDateTime().plusDays(7))
         comStdDraft.deadlineDate=deadline
-        val committeeList=comStdJointCommitteeRepository.getCommitteeList(comStdDraft.requestId)
+        val committeeLists=comStdJointCommitteeRepository.getCommitteeList(comStdDraft.requestId)
 
-        val jointLists= mapKEBSOfficersNameListDto(committeeList)
+        comStdDraft.departmentId = comStdDraft.departmentId
+        comStdDraft.subject=comStdDraft.subject
+        comStdDraft.description=comStdDraft.description
+        comStdDraft.contactOneFullName=comStdDraft.contactOneFullName
+        comStdDraft.contactOneTelephone=comStdDraft.contactOneTelephone
+        comStdDraft.contactOneEmail=comStdDraft.contactOneEmail
+        comStdDraft.contactTwoFullName=comStdDraft.contactTwoFullName
+        comStdDraft.contactTwoTelephone=comStdDraft.contactTwoTelephone
+        comStdDraft.contactTwoEmail=comStdDraft.contactTwoEmail
+        comStdDraft.contactThreeFullName=comStdDraft.contactThreeFullName
+        comStdDraft.contactThreeTelephone=comStdDraft.contactThreeTelephone
+        comStdDraft.contactThreeEmail=comStdDraft.contactThreeEmail
 
-        if (jointLists != null) {
-            for (recipient in jointLists) {
-                val subject = "Company Standard Draft"
-                val messageBody= "Hope You are Well,A Draft for a company standard has been uploaded. "
-                notifications.sendEmail(recipient, subject, messageBody)
-
+        //val jointLists= mapKEBSOfficersNameListDto(committeeList)
+        committeeLists.forEach { c ->
+            val subject = "Company Standard Draft"
+            val messageBody= "Hope You are Well,A Draft for a company standard has been uploaded. "
+            if (c.getEmail() != null) {
+                notifications.sendEmail(c.getEmail()!!, subject, messageBody)
             }
-
         }
+//        if (jointLists != null) {
+//            for (recipient in jointLists) {
+//                val subject = "Company Standard Draft"
+//                val messageBody= "Hope You are Well,A Draft for a company standard has been uploaded. "
+//                notifications.sendEmail(recipient, subject, messageBody)
+//
+//            }
+//
+//        }
 
         comStandardRequestRepository.findByIdOrNull(comStdDraft.requestId)?.let { companyStandardRequest ->
             with(companyStandardRequest) {
@@ -475,6 +513,15 @@ class ComStandardService(
 
     fun getUploadedStdDraft(): MutableList<ComStdDraft> {
         return comStdDraftRepository.getUploadedStdDraft()
+    }
+
+    //View Company Draft
+    fun findUploadedCDRFileBYId(comStdDraftID: Long): ComStandardDraftUploads {
+        return comStandardDraftUploadsRepository.findAllById(comStdDraftID)
+    }
+
+    fun getDraftDocumentList(comStdDraftID: Long): List<SiteVisitListHolder> {
+        return comStandardDraftUploadsRepository.findAllDocumentId(comStdDraftID)
     }
 
     fun getUploadedStdDraftForComment(): MutableList<ComStdDraft> {
@@ -657,17 +704,21 @@ class ComStandardService(
     }
 
 
-    //View Company Draft
-    fun findUploadedCDRFileBYId(comStdDraftID: Long): ComStandardDraftUploads {
-        return comStandardDraftUploadsRepository.findByComDraftDocumentId(comStdDraftID)
-            ?: throw ExpectedDataNotFound("No File found with the following [ id=$comStdDraftID]")
-    }
+
 
     fun findUploadedFileBYId(comDraftDocumentId: Long): ComStandardDraftUploads {
         comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$comDraftDocumentId]")
+        }
     }
+
+    fun viewCompanyDraft(comStdDraftID: Long): ComStandardDraftUploads {
+        comStandardDraftUploadsRepository.findByComDraftDocumentId(comStdDraftID)?.let {
+            return it
+        }
+    }
+
+
 
 
 
@@ -684,11 +735,18 @@ class ComStandardService(
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         companyStandard.title=companyStandard.title
-        companyStandard.scope=companyStandard.scope
-        companyStandard.normativeReference=companyStandard.normativeReference
-        companyStandard.symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
-        companyStandard.clause=companyStandard.clause
-        companyStandard.special=companyStandard.special
+        companyStandard.departmentId = companyStandard.departmentId
+        companyStandard.subject=companyStandard.subject
+        companyStandard.description=companyStandard.description
+        companyStandard.contactOneFullName=companyStandard.contactOneFullName
+        companyStandard.contactOneTelephone=companyStandard.contactOneTelephone
+        companyStandard.contactOneEmail=companyStandard.contactOneEmail
+        companyStandard.contactTwoFullName=companyStandard.contactTwoFullName
+        companyStandard.contactTwoTelephone=companyStandard.contactTwoTelephone
+        companyStandard.contactTwoEmail=companyStandard.contactTwoEmail
+        companyStandard.contactThreeFullName=companyStandard.contactThreeFullName
+        companyStandard.contactThreeTelephone=companyStandard.contactThreeTelephone
+        companyStandard.contactThreeEmail=companyStandard.contactThreeEmail
         companyStandard.requestNumber=companyStandard.requestNumber
         companyStandard.status=0
         companyStandard.uploadDate = Timestamp(System.currentTimeMillis())

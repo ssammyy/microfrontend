@@ -117,7 +117,7 @@
                                                             <div class="form-group col-12">
                                                                 <label>Select Joint Committee Names</label>
                                                                 <ng-select  formControlName="idOfJc"  class="form-control"  name="idOfJc" >
-                                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.firstName}} {{user.lastName}}</ng-option>
+                                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.name}} </ng-option>
                                                                 </ng-select>
 
 

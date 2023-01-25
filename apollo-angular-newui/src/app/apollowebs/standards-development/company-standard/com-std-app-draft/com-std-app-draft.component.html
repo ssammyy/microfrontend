@@ -31,14 +31,14 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th class="knw">Draft Number</th>
-                                        <th class="sl">Request Number</th>
-                                        <th class="knw">Title</th>
-                                        <th class="sl">Scope</th>
-                                        <th class="requestNumber">Clause </th>
-                                        <th class="knw">Normative Reference</th>
-                                        <th class="sl">Symbols Abbreviated Terms</th>
-                                        <th class="knw">Special</th>
+                                        <th class="knw">Request Number</th>
+                                        <th class="sl">Company Name</th>
+                                        <th class="sl">Phone Number</th>
+                                        <th class="sl">Draft Number</th>
+                                        <th class="requestNumber">Title </th>
+                                        <th class="knw">Company Contact Name</th>
+                                        <th class="sl">Company Contact Telephone</th>
+                                        <th class="sl">Company Contact Email</th>
                                         <th class="knw">Deadline</th>
                                         <th class="action">Action</th>
                                         <th></th>
@@ -47,17 +47,17 @@
                                     <tbody>
                                     <tr  *ngFor="let task of tasks let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{task.draftNumber}}</td>
                                         <td>{{task.requestNumber}}</td>
+                                        <td>{{task.companyName}}</td>
+                                        <td>{{task.companyPhone}}</td>
+                                        <td>{{task.draftNumber}}</td>
                                         <td>{{task.title}}</td>
-                                        <td>{{task.scope}}</td>
-                                        <td>{{task.clause}}</td>
-                                        <td>{{task.normativeReference}}</td>
-                                        <td>{{task.symbolsAbbreviatedTerms}}</td>
-                                        <td>{{task.special}}</td>
+                                        <td>{{task.contactOneFullName}}</td>
+                                        <td>{{task.contactOneTelephone}}</td>
+                                        <td>{{task.contactOneEmail}}</td>
                                         <td>{{task.deadlineDate | date: 'yyyy-MM-dd'}}</td>
-                                        <td *ngIf="task.status==1" ><a  (click)="onOpenModal(task,'approveDraft')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Approve Draft</a></td>
-                                        <td *ngIf="task.status==1"><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
+                                        <td *ngIf="task.status==1" ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Approve Draft</a></td>
+                                        <td *ngIf="task.status==1"><button (click)="onOpenModal(task,'reject',task.id)" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
 
                                     </tr>
                                     </tbody>
@@ -102,64 +102,21 @@
                                                                 <p class="text-sm mb-0">{{actionRequest?.title}}.</p>
                                                             </a>
                                                             <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
+                                                                <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                     <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>
+                                                                        <div class="d-flex w-100 align-items-center" >
+                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts - {{d+1}} </b></h5>
                                                                         </div>
                                                                     </div>
+                                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                                            (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id, 'application/octet-stream')" target="_blank" class="btn btn-info btn-sm ">
+                                                                        <i class="material-icons">visibility</i>
+
+                                                                    </button>
 
                                                                 </div>
 
-                                                                <p class="text-sm mb-0">{{actionRequest?.scope}}.</p>
-                                                            </a>
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Clause</b></h5>
-                                                                        </div>
-                                                                    </div>
 
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequest?.clause}}.</p>
-                                                            </a>
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Normative Reference</b></h5>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequest?.normativeReference}}.</p>
-                                                            </a>
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Symbol Abbreviated Terms </b></h5>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequest?.symbolsAbbreviatedTerms}}.</p>
-                                                            </a>
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Special </b></h5>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequest?.special}}.</p>
                                                             </a>
 
 
@@ -226,64 +183,21 @@
                                                                 <p class="text-sm mb-0">{{actionRequest?.title}}.</p>
                                                             </a>
                                                             <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
+                                                                <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                     <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>
+                                                                        <div class="d-flex w-100 align-items-center" >
+                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts - {{d+1}} </b></h5>
                                                                         </div>
                                                                     </div>
+                                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                                            (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id, 'application/octet-stream')" target="_blank" class="btn btn-info btn-sm ">
+                                                                        <i class="material-icons">visibility</i>
+
+                                                                    </button>
 
                                                                 </div>
 
-                                                                <p class="text-sm mb-0">{{actionRequest?.scope}}.</p>
-                                                            </a>
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Clause</b></h5>
-                                                                        </div>
-                                                                    </div>
 
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequest?.clause}}.</p>
-                                                            </a>
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Normative Reference</b></h5>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequest?.normativeReference}}.</p>
-                                                            </a>
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Symbol Abbreviated Terms </b></h5>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequest?.symbolsAbbreviatedTerms}}.</p>
-                                                            </a>
-                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                <div class="d-flex w-100 justify-content-between">
-                                                                    <div>
-                                                                        <div class="d-flex w-100 align-items-center">
-                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Special </b></h5>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                                <p class="text-sm mb-0">{{actionRequest?.special}}.</p>
                                                             </a>
 
                                                         </div>

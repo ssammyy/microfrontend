@@ -31,9 +31,18 @@ export interface Department {
 
 }
 
+export interface UserEntity {
+    id: number;
+    name: string;
+    email: string;
+
+
+}
+
 export interface UsersEntity {
     id: number;
     lastName: string;
+    name: string;
     firstName: string;
     userTypes: number;
     email: string;
@@ -661,6 +670,21 @@ export interface IStandardUpload {
     comStdNumber: string;
     preparedBy: string;
     docName: string;
+    departmentId: string;
+    tcName: string;
+    subject: string;
+    description: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
+    companyName: string;
+    companyPhone: string;
 }
 
 export interface IStandardDraftEdit {
@@ -897,6 +921,17 @@ export interface CompanyStandardRequest {
     companyPhone: string;
     companyEmail: string;
     tcId: string;
+    subject: string;
+    description: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
 
 
 }
@@ -1146,6 +1181,21 @@ export interface COMPreliminaryDraft {
     draftNumber: string;
     status: number;
     deadlineDate: Timestamp<any>;
+    departmentId: string;
+    tcName: string;
+    subject: string;
+    description: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
+    companyName: string;
+    companyPhone: string;
 }
 export interface ComApproveDraft{
     accentTo: boolean;
@@ -1580,6 +1630,25 @@ export interface ISCheckRequirements {
     requestId: number;
     documentType: string;
     preparedBy: string;
+    comStdNumber: string;
+    requestNumber: string;
+    draftId: number;
+    departmentId: string;
+    tcName: string;
+    subject: string;
+    description: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
+    companyName: string;
+    companyPhone: string;
+    draftNumber: string;
 }
 
 export interface ComStdRequest{
@@ -1587,14 +1656,25 @@ export interface ComStdRequest{
     requestNumber: string;
     submissionDate: string;
     companyName: string;
-    departmentId: string;
     companyPhone: string;
     companyEmail: string;
     departmentName: string;
     productName: string;
     productSubCategoryName: string;
+    departmentId: string;
     tcName: string;
     status: number;
+    subject: string;
+    description: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
 }
 
 export interface SchemeMembership {
