@@ -167,6 +167,39 @@ export const ROUTES: RouteInfo[] = [
         ],
     },
 
+    
+    // Quality Assurance Admin
+    {
+        path: '/smark-admin',
+        title: 'Standardization Mark',
+        type: 'link',
+        icontype: 'class',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+
+       
+    },
+    , 
+    {
+        path: '/fmark-admin',
+        title: 'Fortification Mark',
+        type: 'link',
+        icontype: 'recommended',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+
+       
+    },
+    , 
+    {
+        path: '/dmark-admin',
+        title: 'Diamond Mark',
+        type: 'link',
+        icontype: 'verified',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+
+    },
+
+    
+
 
     //DI
 
