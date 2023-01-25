@@ -1,29 +1,31 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {
-  DecisionFeedback,
-  Document,
-  ReviewFormationOFTCRequest, StandardRequestB
+  DecisionFeedback, Document,
+  ReviewFeedbackFromSPC,
+  ReviewFormationOFTCRequest
 } from "../../../../core/store/data/std/request_std.model";
 import {FormationOfTcService} from "../../../../core/store/data/std/formation-of-tc.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
+import {NgxSpinnerService} from "ngx-spinner";
 import {JustificationForTc} from "../../../../core/store/data/std/formation_of_tc.model";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
-import {NgxSpinnerService} from "ngx-spinner";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import Swal from "sweetalert2";
 import swal from "sweetalert2";
 
+declare const $: any;
+
 @Component({
-  selector: 'app-review-justification-of-tc',
-  templateUrl: './review-justification-of-tc.component.html',
-  styleUrls: ['./review-justification-of-tc.component.css']
+  selector: 'app-review-feedback-spc',
+  templateUrl: './review-feedback-sac.component.html',
+  styleUrls: ['./review-feedback-sac.component.css']
 })
-export class ReviewJustificationOfTCComponent implements OnInit {
+export class ReviewFeedbackSacComponent implements OnInit {
 
   tasks: JustificationForTc[] = [];
   displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
@@ -33,7 +35,10 @@ export class ReviewJustificationOfTCComponent implements OnInit {
   dataSourceB!: MatTableDataSource<JustificationForTc>;
   dataSourceC!: MatTableDataSource<JustificationForTc>;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+    dataSourceD!: MatTableDataSource<JustificationForTc>;
+
+
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   loading = false;
@@ -52,9 +57,6 @@ export class ReviewJustificationOfTCComponent implements OnInit {
   docs !: Document[];
   blob: Blob;
 
-  stdApproveOrRejectWithReason: FormGroup;
-
-  selectedProposal: number;
 
 
   constructor(private formationOfTcService: FormationOfTcService,
@@ -68,15 +70,9 @@ export class ReviewJustificationOfTCComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getAllSacJustifications(true);
-    this.getAllSacJustificationsApproved()
-    this.getAllSacJustificationsRejected()
-
-    this.stdApproveOrRejectWithReason = this.formBuilder.group({
-      commentsSpc: ['', Validators.required],
-      id: ['', Validators.required],
-
-    });
-  }
+      this.getAllSacJustificationsForWebsite();
+      this.getAllSacJustificationsApproved()
+    this.getAllSacJustificationsRejected()  }
 
   public getAllSacJustifications(pageRefresh: boolean): void {
 
@@ -84,7 +80,7 @@ export class ReviewJustificationOfTCComponent implements OnInit {
 
     this.loading = pageRefresh;
     this.SpinnerService.show()
-    this.formationOfTcService.getAllSpcJustifications().subscribe(
+    this.formationOfTcService.sacGetAllApprovedJustificationsBySpc().subscribe(
         (response: JustificationForTc[]) => {
           this.tasks = response;
           this.SpinnerService.hide()
@@ -100,10 +96,28 @@ export class ReviewJustificationOfTCComponent implements OnInit {
         }
     );
   }
+    public getAllSacJustificationsForWebsite(): void {
+        this.SpinnerService.show()
+        this.formationOfTcService.sacGetAllForWebsite().subscribe(
+            (response: JustificationForTc[]) => {
+                this.tasks = response;
+                this.SpinnerService.hide()
+                this.dataSourceD = new MatTableDataSource(this.tasks);
+
+                this.dataSourceD.paginator = this.paginator;
+                this.dataSourceD.sort = this.sort;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+                this.SpinnerService.hide()
+
+            }
+        );
+    }
 
   public getAllSacJustificationsApproved(): void {
     this.SpinnerService.show()
-    this.formationOfTcService.sacGetAllApprovedJustificationsBySpc().subscribe(
+    this.formationOfTcService.getAllSpcJustifications().subscribe(
         (response: JustificationForTc[]) => {
           this.tasks = response;
           this.SpinnerService.hide()
@@ -121,9 +135,11 @@ export class ReviewJustificationOfTCComponent implements OnInit {
   }
 
 
+
+
   public getAllSacJustificationsRejected(): void {
     this.SpinnerService.show()
-    this.formationOfTcService.sacGetAllRejectedJustificationsBySpc().subscribe(
+    this.formationOfTcService.sacGetAllRejected().subscribe(
         (response: JustificationForTc[]) => {
           this.tasks = response;
           this.SpinnerService.hide()
@@ -182,17 +198,10 @@ export class ReviewJustificationOfTCComponent implements OnInit {
   }
 
   @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
+
   public hideModelC() {
     this.closeModalC?.nativeElement.click();
   }
-  get formApproveOrRejectWithReason(): any {
-    return this.stdApproveOrRejectWithReason.controls;
-  }
-  showToasterError(title: string, message: string) {
-    this.notifyService.showError(message, title)
-
-  }
-
 
   public openModalToView(proposal: JustificationForTc): void {
     const container = document.getElementById('main-container');
@@ -210,30 +219,6 @@ export class ReviewJustificationOfTCComponent implements OnInit {
     // @ts-ignore
     container.appendChild(button);
     button.click();
-  }
-
-  public onOpenModal(task: JustificationForTc, mode: string): void {
-    const container = document.getElementById('main-container');
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.style.display = 'none';
-    button.setAttribute('data-toggle', 'modal');
-
-    if(mode ==="approve") {
-      this.proposalRetrieved = task;
-      button.setAttribute('data-target', '#recommendation');
-      this.selectedProposal = this.proposalRetrieved.id
-    }
-
-    if(mode ==="reject") {
-      this.proposalRetrieved = task;
-      button.setAttribute('data-target', '#rejectRecommendation');
-      this.selectedProposal = this.proposalRetrieved.id
-    }
-    // @ts-ignore
-    container.appendChild(button);
-    button.click();
-
   }
 
   rerender(): void {
@@ -281,116 +266,103 @@ export class ReviewJustificationOfTCComponent implements OnInit {
         },
     );
   }
-  public reasonApprove(): void {
-    if (this.stdApproveOrRejectWithReason.valid) {
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: 'btn btn-success',
-          cancelButton: 'btn btn-success'
-        },
-        buttonsStyling: false
-      });
 
-      swalWithBootstrapButtons.fire({
-        title: 'Are you sure your want to approve this proposal?',
-        text: 'You won\'t be able to reverse this!',
-        icon: 'success',
-        showCancelButton: true,
-        confirmButtonText: 'Yes!',
-        cancelButtonText: 'No!',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.SpinnerService.show();
-          this.formationOfTcService.approveJustificationSPCForTC(this.stdApproveOrRejectWithReason.value).subscribe(
-              (response) => {
-                this.SpinnerService.hide();
-                swalWithBootstrapButtons.fire(
-                    'Approved!',
-                    'Proposal Successfully Approved!',
-                    'success'
-                );
-                this.SpinnerService.hide();
-                this.hideModelB()
-                this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Approved');
-                this.getAllSacJustifications(false);
+  approveProposal(justificationForTc): void {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-success'
+      },
+      buttonsStyling: false
+    });
+
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure your want to approve this proposal?',
+      text: 'You won\'t be able to reverse this!',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.SpinnerService.show();
+        this.formationOfTcService.approveJustificationSAC(justificationForTc).subscribe(
+            (response) => {
+              this.SpinnerService.hide();
+              swalWithBootstrapButtons.fire(
+                  'Approved!',
+                  'Proposal Successfully Approved!',
+                  'success'
+              );
+              this.SpinnerService.hide();
+              this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Approved');
+              this.getAllSacJustifications(false);
+                this.getAllSacJustificationsForWebsite()
                 this.getAllSacJustificationsApproved()
-                this.getAllSacJustificationsRejected()
-              },
-          );
-        } else if (
-            /* Read more about handling dismissals below */
-            result.dismiss === swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-              'Cancelled',
-              'You have cancelled this operation',
-              'error'
-          );
-        }
-      });
+              this.getAllSacJustificationsRejected()
+            },
+        );
+      } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+            'Cancelled',
+            'You have cancelled this operation',
+            'error'
+        );
+      }
+    });
+  }
+  rejectProposal(justificationForTc): void {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-success'
+      },
+      buttonsStyling: false
+    });
 
-    } else {
-      this.showToasterError("Error", `Please Enter A Reason.`);
-
-    }
-
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure your want to reject this proposal?',
+      text: 'You won\'t be able to reverse this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.SpinnerService.show();
+        this.formationOfTcService.rejectJustificationSAC(justificationForTc).subscribe(
+            (response) => {
+              this.SpinnerService.hide();
+              swalWithBootstrapButtons.fire(
+                  'Rejected!',
+                  'Proposal Successfully Rejected!',
+                  'success'
+              );
+              this.SpinnerService.hide();
+              this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
+              this.getAllSacJustifications(false);
+                this.getAllSacJustificationsForWebsite()
+                this.getAllSacJustificationsApproved()
+              this.getAllSacJustificationsRejected()
+            },
+        );
+      } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+            'Cancelled',
+            'You have cancelled this operation',
+            'error'
+        );
+      }
+    });
   }
 
-  public reasonReject(): void {
-    if (this.stdApproveOrRejectWithReason.valid) {
-      const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: 'btn btn-success',
-          cancelButton: 'btn btn-success'
-        },
-        buttonsStyling: false
-      });
-
-      swalWithBootstrapButtons.fire({
-        title: 'Are you sure your want to reject this proposal?',
-        text: 'You won\'t be able to reverse this!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes!',
-        cancelButtonText: 'No!',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.SpinnerService.show();
-          this.formationOfTcService.rejectJustificationSPC(this.stdApproveOrRejectWithReason.value).subscribe(
-              (response) => {
-                this.SpinnerService.hide();
-                swalWithBootstrapButtons.fire(
-                    'Rejected!',
-                    'Proposal Successfully Rejected!',
-                    'success'
-                );
-                this.SpinnerService.hide();
-                this.hideModelC()
-                this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
-                this.getAllSacJustifications(false);
-                this.getAllSacJustificationsApproved()
-                this.getAllSacJustificationsRejected()
-              },
-          );
-        } else if (
-            /* Read more about handling dismissals below */
-            result.dismiss === swal.DismissReason.cancel
-        ) {
-          swalWithBootstrapButtons.fire(
-              'Cancelled',
-              'You have cancelled this operation',
-              'error'
-          );
-        }
-      });
-
-    } else {
-      this.showToasterError("Error", `Please Enter A Reason.`);
-
-    }
-
-  }
 
 }
