@@ -245,9 +245,9 @@
                                     </mat-tab>
                                     <mat-tab *ngIf="complaintInspection?.acceptanceDone" label="6">
                                         <ng-template mat-tab-label>
-                                            Complaint Acceptance/Rejection Details
+                                            Complaint Acceptance/Declination Details
                                         </ng-template>
-                                        <b class="text-primary">Complaint Acceptance/Rejection Details</b>
+                                        <b class="text-primary">Complaint Acceptance/Declination Details</b>
                                         <ul class="w-list-unstyled">
                                             <li *ngIf="complaintInspection?.acceptanceResults?.acceptanceStatus"
                                                 class="list-item-accordion ">
@@ -257,13 +257,13 @@
                                             </li>
                                             <li *ngIf="complaintInspection?.acceptanceResults?.rejectedStatus"
                                                 class="list-item-accordion ">
-                                                <div class="list-title-accordion">Complaint Rejection Only Status</div>
+                                                <div class="list-title-accordion">Complaint Decline Only Status</div>
                                                 <div class="list-text-accordion">{{complaintInspection?.acceptanceResults?.rejectedStatus}}
                                                 </div>
                                             </li>
                                             <div *ngIf="complaintInspection?.acceptanceResults?.mandateOGAStatus">
                                                 <li class="list-item-accordion ">
-                                                    <div class="list-title-accordion">Complaint Rejection With Mandate
+                                                    <div class="list-title-accordion">Complaint Decline With Mandate
                                                         To OGA Status
                                                     </div>
                                                     <div class="list-text-accordion">{{complaintInspection?.acceptanceResults?.mandateOGAStatus}}
@@ -587,7 +587,7 @@
 
                                         </div>
                                         <label for="approvedRemarks"><b>Please write, in detail, your feedback For
-                                            Accepting / Rejecting:</b></label>
+                                            Accepting / Declining:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea formControlName="approvedRemarks" id="approvedRemarks" matInput
                                                       name="approvedRemarks"
@@ -640,22 +640,22 @@
                                                 <mat-option *ngFor="let app of apps| filterPipe: {status: true}  " [value]="app.id">{{app.region}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
-<!--                                        <label for="countyID"><b>Select County</b></label>-->
-<!--                                        <mat-form-field *ngIf="county$ | async as apps">-->
-<!--                                            <mat-select (selectionChange)="updateSelectedCounty()"-->
-<!--                                                        [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"-->
-<!--                                                        formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">-->
-<!--                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion} " [value]="app.id">{{app.county}}</mat-option>-->
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
-<!--                                        <label for="townID"><b>Select Town</b></label>-->
-<!--                                        <mat-form-field *ngIf="town$ | async as appsTown">-->
-<!--                                            <mat-select (selectionChange)="updateSelectedTown()"-->
-<!--                                                        [class.is-invalid]="formReAssignRegionForm.townID.invalid && formReAssignRegionForm.townID.touched"-->
-<!--                                                        formControlName="townID" id="townID" name="townID" placeholder="Please Select an option">-->
-<!--                                                <mat-option *ngFor="let appTown of appsTown| filterPipe: {status: true, countyId: selectedCounty}" [value]="appTown.id">{{appTown.town}}</mat-option>-->
-<!--                                            </mat-select>-->
-<!--                                        </mat-form-field>-->
+                                        <!--                                        <label for="countyID"><b>Select County</b></label>-->
+                                        <!--                                        <mat-form-field *ngIf="county$ | async as apps">-->
+                                        <!--                                            <mat-select (selectionChange)="updateSelectedCounty()"-->
+                                        <!--                                                        [class.is-invalid]="formReAssignRegionForm.countyID.invalid && formReAssignRegionForm.countyID.touched"-->
+                                        <!--                                                        formControlName="countyID" id="countyID" name="countyID" placeholder="Please Select an option">-->
+                                        <!--                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion} " [value]="app.id">{{app.county}}</mat-option>-->
+                                        <!--                                            </mat-select>-->
+                                        <!--                                        </mat-form-field>-->
+                                        <!--                                        <label for="townID"><b>Select Town</b></label>-->
+                                        <!--                                        <mat-form-field *ngIf="town$ | async as appsTown">-->
+                                        <!--                                            <mat-select (selectionChange)="updateSelectedTown()"-->
+                                        <!--                                                        [class.is-invalid]="formReAssignRegionForm.townID.invalid && formReAssignRegionForm.townID.touched"-->
+                                        <!--                                                        formControlName="townID" id="townID" name="townID" placeholder="Please Select an option">-->
+                                        <!--                                                <mat-option *ngFor="let appTown of appsTown| filterPipe: {status: true, countyId: selectedCounty}" [value]="appTown.id">{{appTown.town}}</mat-option>-->
+                                        <!--                                            </mat-select>-->
+                                        <!--                                        </mat-form-field>-->
                                         <label for="assignedRemarks"><b>Please write, in detail, your feedback for
                                             re-assigning the Region:</b></label>
                                         <mat-form-field class="example-full-width">

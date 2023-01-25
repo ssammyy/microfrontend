@@ -496,10 +496,9 @@ class CommonDaoServices(
 
     fun findOfficersListBasedOnRole(
         roleId: Long,
-        countyId: Long,
         regionId: Long
     ): List<UsersEntity>? {
-        return usersRepo.findOfficerUsersByRegionAndCountyAndRoleFromUserDetails(roleId, countyId, regionId, 1)
+        return usersRepo.findOfficerUsersByRegionAndRoleFromUserDetails(roleId, regionId, 1)
     }
 
     fun findOfficersListBasedOnRole(

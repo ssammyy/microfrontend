@@ -638,13 +638,11 @@ class MarketSurveillanceWorkPlanDaoServices(
 
                 val hodList = commonDaoServices.findOfficersListBasedOnRole(
                     applicationMapProperties.mapMSComplaintWorkPlanMappedHODROLEID,
-                    loggedInUserProfile.countyID?.id ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
                 val rmList = commonDaoServices.findOfficersListBasedOnRole(
                     applicationMapProperties.mapMSComplaintWorkPlanMappedRMROLEID,
-                    loggedInUserProfile.countyID?.id ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
@@ -764,13 +762,11 @@ class MarketSurveillanceWorkPlanDaoServices(
 
                 val hodList = commonDaoServices.findOfficersListBasedOnRole(
                     applicationMapProperties.mapMSComplaintWorkPlanMappedHODROLEID,
-                    loggedInUserProfile.countyID?.id ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
                 val rmList = commonDaoServices.findOfficersListBasedOnRole(
                     applicationMapProperties.mapMSComplaintWorkPlanMappedRMROLEID,
-                    loggedInUserProfile.countyID?.id ?: throw ExpectedDataNotFound("MISSING BATCH COUNTY ID"),
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
@@ -3183,7 +3179,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                         map.successStatus -> {
                             val hofList = commonDaoServices.findOfficersListBasedOnRole(
                                 applicationMapProperties.mapMSComplaintWorkPlanMappedHOFROLEID,
-                                workPlanScheduled.county ?: throw ExpectedDataNotFound("MISSING WORK-PLAN COUNTY ID"),
                                 workPlanScheduled.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
                             )
 
@@ -5525,7 +5520,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 msTypeId = msType.id
                 submittedForApprovalStatus = map.activeStatus
                 progressStep = "WorkPlan Generated"
-                region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
+                region = complaintLocationDetails.region
                 referenceNumber = "${msType.markRef}${
                     generateRandomText(
                         5,
@@ -6089,13 +6084,11 @@ class MarketSurveillanceWorkPlanDaoServices(
         val workPlanCountiesTowns = findCountiesTownsByWorkPlanID(workPlanScheduledDetails.id)
         val officerList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID,
-            workPlanScheduledDetails.county ?: throw ExpectedDataNotFound("MISSING WORK-PLAN COUNTY ID"),
             workPlanScheduledDetails.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
         )
 
         val hofList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedHOFROLEID,
-            workPlanScheduledDetails.county ?: throw ExpectedDataNotFound("MISSING WORK-PLAN COUNTY ID"),
             workPlanScheduledDetails.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
         )
 

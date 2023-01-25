@@ -425,6 +425,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
+
       nameSeizingOfficer: {
         title: 'Name Seizing Officer',
         type: 'string',
@@ -1117,6 +1118,11 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
+      outletName: {
+        title: 'OUTLET NAME',
+        type: 'string',
+        filter: false,
+      },
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
@@ -1166,6 +1172,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
+        type: 'string',
+        filter: false,
+      },
+      outletName: {
+        title: 'OUTLET NAME',
         type: 'string',
         filter: false,
       },
@@ -1722,9 +1733,15 @@ export class WorkPlanDetailsComponent implements OnInit {
       regionName: ['', Validators.required],
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
+      outletName: ['', Validators.required],
+      physicalLocation: ['', Validators.required],
+      emailAddress: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
       outletDetails: ['', Validators.required],
       mostRecurringNonCompliant: ['', Validators.required],
       personMet: ['', Validators.required],
+      samplesDrawnAndSubmitted: ['', Validators.required],
+      sourceOfProductAndEvidence: ['', Validators.required],
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
@@ -1780,6 +1797,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       docID: null,
       mainSeizureID: null,
       descriptionProductsSeized: ['', Validators.required],
+      product: ['', Validators.required],
       brand: ['', Validators.required],
       sector: ['', Validators.required],
       reasonSeizure: ['', Validators.required],
@@ -1796,6 +1814,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       docID: null,
       marketTownCenter: ['', Validators.required],
       nameOfOutlet: ['', Validators.required],
+      formSerialNumber: ['', Validators.required],
       nameSeizingOfficer: ['', Validators.required],
       additionalOutletDetails: ['', Validators.required],
     });
@@ -2467,7 +2486,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
       'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD',
-    'approveFinalPreliminaryDirector'];
+      'approveFinalPreliminaryDirector'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2589,17 +2608,17 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updateDataReport(data: DataReportDto) {
-      this.dataReportForm.patchValue(data);
-      this.selectedDataReportDetails = data;
+    this.dataReportForm.patchValue(data);
+    this.selectedDataReportDetails = data;
     this.totalCompliantValue = data?.totalComplianceScore;
-      const paramDetails = data.productsList;
-      this.dataSaveDataReportParamList = [];
-      for (let i = 0; i < paramDetails.length; i++) {
-        this.dataSaveDataReportParamList.push(paramDetails[i]);
-      }
-      // this.dataReportForm.disable();
-      this.addProductsStatus = true;
-      window.$('#dataReportModal').modal('show');
+    const paramDetails = data.productsList;
+    this.dataSaveDataReportParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveDataReportParamList.push(paramDetails[i]);
+    }
+    // this.dataReportForm.disable();
+    this.addProductsStatus = true;
+    window.$('#dataReportModal').modal('show');
     // }
   }
 
@@ -2648,8 +2667,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (data?.hodRecommendationStatus) {
       this.dataSaveFinalRecommendationList = data.recommendation;
     }
-      this.workPlanProductRefNo = data.referenceNo;
-      window.$('#finalRecommendationModal').modal('show');
+    this.workPlanProductRefNo = data.referenceNo;
+    window.$('#finalRecommendationModal').modal('show');
     // }
 
   }
@@ -2658,10 +2677,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     // if (!data.directorRecommendationStatus) {
     //   this.msService.showWarning('Remark(s) Have/Has already been added');
     // } else {
-      this.workPlanProductRefNo = data.referenceNo;
-      this.currDiv = 'addFinalRemarksDirector';
-      this.currDivLabel = 'ADD REMARKS FOR THE RECOMMENDATION ADDED';
-      window.$('#myModal1').modal('show');
+    this.workPlanProductRefNo = data.referenceNo;
+    this.currDiv = 'addFinalRemarksDirector';
+    this.currDivLabel = 'ADD REMARKS FOR THE RECOMMENDATION ADDED';
+    window.$('#myModal1').modal('show');
     // }
 
   }
@@ -2984,18 +3003,18 @@ export class WorkPlanDetailsComponent implements OnInit {
         (data: any) => {
           this.workPlanInspection = data;
 
-            let countRecommendationHOD = 0;
-            let countRecommendationDirector = 0;
-            for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
-              if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
-                countRecommendationHOD++;
-              }
-              if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
-                countRecommendationDirector++;
-              }
+          let countRecommendationHOD = 0;
+          let countRecommendationDirector = 0;
+          for (let i = 0; i < this.workPlanInspection?.productList.length; i++) {
+            if (this.workPlanInspection?.productList[i].hodRecommendationStatus) {
+              countRecommendationHOD++;
             }
-            this.productsCountRecommendationHOD = countRecommendationHOD;
-            this.productsCountRecommendationDirector = countRecommendationDirector;
+            if (this.workPlanInspection?.productList[i].directorRecommendationStatus) {
+              countRecommendationDirector++;
+            }
+          }
+          this.productsCountRecommendationHOD = countRecommendationHOD;
+          this.productsCountRecommendationDirector = countRecommendationDirector;
 
 
           console.log(data);
@@ -3013,11 +3032,11 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveClientAppealed(valid: boolean) {
     if (valid) {
-    this.msService.showSuccessWith2Message('Are you sure your want to add the detals?', 'You won\'t be able to Update the Details after submission!',
-        // tslint:disable-next-line:max-line-length
-        'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
-          this.saveClientAppealed(valid);
-        });
+      this.msService.showSuccessWith2Message('Are you sure your want to add the detals?', 'You won\'t be able to Update the Details after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+            this.saveClientAppealed(valid);
+          });
     }
   }
 
@@ -3754,11 +3773,11 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveFilesDestructionNotification(valid: boolean, docTypeName: string) {
     if (this.uploadedFilesDestination.length > 0) {
-    this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
-        // tslint:disable-next-line:max-line-length
-        'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
-          this.saveFilesDestructionNotification(valid, docTypeName);
-        });
+      this.msService.showSuccessWith2Message('Are you sure your want to Save the Files Selected?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
+            this.saveFilesDestructionNotification(valid, docTypeName);
+          });
     } else {
       this.msService.showError('NO FILE IS UPLOADED FOR SAVING');
     }
@@ -4424,11 +4443,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-
-  onClickAddDataReportParam() {
+  checkProductCompliance(permit: string){
+    console.log(permit);
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
     const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
-
     switch (valueSelected) {
       case 'Local':
         this.msService.loadPermitDetailsSearch(this.dataSaveDataReportParam.permitNumber).subscribe(
@@ -4465,6 +4483,11 @@ export class WorkPlanDetailsComponent implements OnInit {
         );
         break;
     }
+  }
+
+  onClickAddDataReportParam() {
+    this.dataSaveDataReportParam = this.dataReportParamForm.value;
+
 
 
 
@@ -4492,7 +4515,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.isImport = 0;
     console.log('compliant count' + compliantCount);
     console.log('total count' + totalCount);
-    console.log('complinace Value count' + this.totalCompliantValue);
+    console.log('compliance Value count' + this.totalCompliantValue);
   }
 
 

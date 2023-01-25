@@ -1150,10 +1150,16 @@ export class DataReportDto {
     regionName: string;
     town: string;
     marketCenter: string;
+    outletName: string;
+    physicalLocation: string;
+    emailAddress: string;
+    phoneNumber: string;
     outletDetails: string;
     mostRecurringNonCompliant: string;
     personMet: string;
     summaryFindingsActionsTaken: string;
+    samplesDrawnAndSubmitted: string;
+    sourceOfProductAndEvidence: string;
     finalActionSeizedGoods: string;
     totalComplianceScore: number;
     remarks: string;
