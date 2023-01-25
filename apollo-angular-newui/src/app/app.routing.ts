@@ -277,6 +277,7 @@ import {SampleSubmittedTimelineComponent} from './apollowebs/market-surveillance
 import {CorporateBillsComponent} from "./apollowebs/invoice/corporate-bills/corporate-bills.component";
 import {ViewRfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
 import {ViewRfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
+import {CompanyListComponent} from './apollowebs/company/company-list/company-list.component';
 
 export const routes: Routes = [
     {
@@ -360,6 +361,11 @@ export const routes: Routes = [
         path: 'company', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: CompanyComponent}],
+    },
+    {
+        path: 'company/list', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: CompanyListComponent}],
     },
     {
         path: 'company/view', component: AdminLayoutComponent,

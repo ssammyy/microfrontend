@@ -457,6 +457,7 @@ import { IntStdPublishingComponent } from './apollowebs/standards-development/in
 import { ComStdPublishingComponent } from './apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component';
 import { ComStdEditorComponent } from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
 import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corporate-bills.component';
+import { CompanyListComponent } from './apollowebs/company/company-list/company-list.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -946,6 +947,7 @@ import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corp
         ComStdPublishingComponent,
         ComStdEditorComponent,
         CorporateBillsComponent,
+        CompanyListComponent,
 
     ],
     entryComponents: [LoaderComponent],

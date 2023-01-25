@@ -78,7 +78,8 @@ export const initialBrsValidationState: BrsValidationState = {
         yearlyTurnover: 0,
         status: 0,
         otherCategory: '',
-        otherBusinessNatureType: ''
+        otherBusinessNatureType: '',
+        firmType: '',
     },
     step: 0
 

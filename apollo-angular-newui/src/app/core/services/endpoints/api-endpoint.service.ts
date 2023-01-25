@@ -63,6 +63,7 @@ export class ApiEndpointService {
 
     public static USER_CONTEXT = 'user';
     public static MASTERS_CONTEXT = '/api/v1/migration';
+    public static COMPANY_CONTEX = `${ApiEndpointService.MASTERS_CONTEXT}/company`;
     public static SYSTEMS_ADMIN_SECURITY = `${ApiEndpointService.MASTERS_CONTEXT}/security`;
     public static SYSTEMS_ADMIN_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/system/admin/masters`;
     public static QA_CONTEXT = '/api/v1/migration/qa';
@@ -660,6 +661,12 @@ export class ApiEndpointService {
         STD_LEVY_REGION_LIST: `${ApiEndpointService.STL_CONTEXT}/getRegionList`,
 
 
+    };
+
+    public static COMPANY_PROFILE_ENDPOINT = {
+        LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
+        LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
+        UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
     };
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {

@@ -21,4 +21,5 @@ export interface Company {
     town: number;
     otherCategory: string;
     otherBusinessNatureType: string;
+    firmType: string;
 }
