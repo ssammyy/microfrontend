@@ -1,7 +1,13 @@
 import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {DecisionFeedback, ProposalForTC, ReviewFeedbackFromSPC, ReviewFormationOFTCRequest} from "./request_std.model";
+import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {
+    DecisionFeedback,
+    Document,
+    ProposalForTC,
+    ReviewFeedbackFromSPC,
+    ReviewFormationOFTCRequest
+} from "./request_std.model";
 import {Observable, throwError} from "rxjs";
 import {JustificationForTc} from "./formation_of_tc.model";
 import {catchError, map} from "rxjs/operators";
@@ -12,13 +18,9 @@ import {catchError, map} from "rxjs/operators";
 export class FormationOfTcService {
     protocol = `https://`;
     baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV
-    private apiServerUrl2 = `${this.protocol}${this.baseUrl}/api/v1/migration/anonymous/standard/dropdown/`;
-    private apiMembershipToTCUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/membershipToTC/`;
     private formationOfTcUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/formationOfTC/`;
-
     constructor(private http: HttpClient) {
     }
-
     public uploadProposalForTC(proposalForTC: ProposalForTC): Observable<any> {
 
         console.log(proposalForTC);
@@ -49,15 +51,19 @@ export class FormationOfTcService {
         return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'submitJustification', justificationForTc)
     }
 
+    public getAllJustifications(): Observable<JustificationForTc[]> {
+        return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'getAllJustifications')
+    }
+
     public getAllHofJustifications(): Observable<JustificationForTc[]> {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'getAllHofJustifications')
     }
 
-    public approveJustificationForTC(justificationForTc: JustificationForTc): Observable<JustificationForTc> {
+    public approveJustificationForTC(justificationForTc: JustificationForTc): Observable<any> {
         return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'approveJustification', justificationForTc)
     }
 
-    public rejectJustificationForTC(justificationForTc: JustificationForTc): Observable<JustificationForTc> {
+    public rejectJustificationForTC(justificationForTc: JustificationForTc): Observable<any> {
         return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'rejectJustification', justificationForTc)
     }
 
@@ -69,12 +75,12 @@ export class FormationOfTcService {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'getAllJustificationsRejectedBySpc')
     }
 
-    public approveJustificationSPCForTC(justificationForTc: JustificationForTc): Observable<JustificationForTc> {
-        return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'approveJustificationSPCForTC', justificationForTc)
+    public approveJustificationSPCForTC(justificationForTc: JustificationForTc): Observable<any> {
+        return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'approveJustificationSPC', justificationForTc)
 
     }
 
-    public rejectJustificationSPC(justificationForTc: JustificationForTc): Observable<JustificationForTc> {
+    public rejectJustificationSPC(justificationForTc: JustificationForTc): Observable<any> {
         return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'rejectJustificationSPC', justificationForTc)
 
     }
@@ -83,9 +89,25 @@ export class FormationOfTcService {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'sacGetAllApprovedJustificationsBySpc')
     }
 
-    public approveJustificationSAC(justificationForTc: JustificationForTc): Observable<JustificationForTc> {
+    public sacGetAllRejectedJustificationsBySpc(): Observable<JustificationForTc[]> {
+        return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'sacGetAllRejectedJustificationsBySpc')
+    }
+
+
+    public approveJustificationSAC(justificationForTc: JustificationForTc): Observable<any> {
         return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'approveJustificationSAC', justificationForTc)
 
+    }
+
+    public rejectJustificationSAC(justificationForTc: JustificationForTc): Observable<any> {
+        return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'rejectJustificationSAC', justificationForTc)
+
+    }
+    public sacGetAllForWebsite(): Observable<JustificationForTc[]> {
+        return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'sacGetAllForWebsite')
+    }
+    public sacGetAllRejected(): Observable<JustificationForTc[]> {
+        return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'sacGetAllRejected')
     }
 
     public advertiseTcToWebsite(justificationForTc: JustificationForTc): Observable<JustificationForTc> {
@@ -100,6 +122,34 @@ export class FormationOfTcService {
                 'enctype': 'multipart/form-data'
             }, params: {'proposalId': proposalId, 'type': doctype, 'docDescription': docDescription}
         }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getAdditionalDocuments(proposalId: string): Observable<any> {
+
+        const url = `${this.formationOfTcUrl}getAdditionalDocuments`;
+        const params = new HttpParams().set('proposalId', proposalId)
+        return this.http.get<Document>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewDocsById(docId: any): Observable<any> {
+        const url = `${this.formationOfTcUrl}` + 'viewById';
+        const params = new HttpParams()
+            .set('docId', docId)
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
                 return response;
             }),

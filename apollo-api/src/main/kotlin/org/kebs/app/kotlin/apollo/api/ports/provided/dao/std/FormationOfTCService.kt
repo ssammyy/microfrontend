@@ -5,9 +5,7 @@ import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
-import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
-import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -34,6 +32,7 @@ class FormationOfTCService(
     private val commonDaoServices: CommonDaoServices,
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
+    private val draftDocumentService: DraftDocumentService,
 
     ) {
 
@@ -62,8 +61,12 @@ class FormationOfTCService(
 
     }
 
-    fun getAllHofJustifications(): List<JustificationForTC> {
+    fun getAllJustifications(): List<JustificationForTC> {
         return justificationForTCRepository.findAll()
+    }
+
+    fun getAllHofJustifications(): List<JustificationForTC> {
+        return justificationForTCRepository.findAllByStatus(1)
     }
 
 
@@ -132,6 +135,10 @@ class FormationOfTCService(
 
 
     fun sacGetAllApprovedJustificationsBySpc(): List<JustificationForTC> {
+        return justificationForTCRepository.findAllByStatus(4)
+    }
+
+    fun sacGetAllRejectedJustificationsBySpc(): List<JustificationForTC> {
         return justificationForTCRepository.findAllByStatus(5)
     }
 
@@ -159,15 +166,37 @@ class FormationOfTCService(
         )
     }
 
+    fun rejectJustificationSAC(justificationForTC: JustificationForTC): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
+        u.status = 7   //rejected by SAC
+        u.spcId = loggedInUser.id
+        u.spcReviewDate = Timestamp(System.currentTimeMillis())
+
+        justificationForTCRepository.save(u)
+        return ServerResponse(
+            HttpStatus.OK,
+            "Rejected", "Justification Rejected."
+        )
+    }
+
+    fun sacGetAllForWebsite(): List<JustificationForTC> {
+        return justificationForTCRepository.findAllByStatus(6)
+    }
+
+    fun sacGetAllRejected(): List<JustificationForTC> {
+        return justificationForTCRepository.findAllByStatus(7)
+    }
+
 
     fun advertiseTcToWebsite(justificationForTC: JustificationForTC): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
-        u.status = 7   //advertised To Website
+        u.status = 8   //advertised To Website
         justificationForTCRepository.save(u)
 
 //       find technical committee
-        val tc:TechnicalCommittee = technicalCommitteeRepository.findByTechnicalCommitteeNo(u.tcNumber)!!
+        val tc: TechnicalCommittee = technicalCommitteeRepository.findByTechnicalCommitteeNo(u.tcNumber)!!
         //update technical committee for advertising
         tc.advertisingStatus = "1"
         technicalCommitteeRepository.save(tc)
@@ -219,6 +248,12 @@ class FormationOfTCService(
 
 
         return sdDocumentsRepository.save(uploads)
+    }
+
+    fun getDocuments(proposalId: Long): Collection<DatKebsSdStandardsEntity?>? {
+
+        return draftDocumentService.findUploadedDIFileBYIdAndType(proposalId, "Formation Of Tc Additional Documents")
+
     }
 
 }

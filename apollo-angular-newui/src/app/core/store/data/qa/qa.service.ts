@@ -144,7 +144,7 @@ export class QaService {
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.UPDATE_COMPANY_TURN_OVER);
         const params = new HttpParams();
-        return this.http.put<any>(url, data, {params}).pipe(
+        return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

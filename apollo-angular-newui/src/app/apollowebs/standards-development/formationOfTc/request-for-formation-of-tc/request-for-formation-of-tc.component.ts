@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {FormationOfTcService} from "../../../../core/store/data/std/formation-of-tc.service";
@@ -10,6 +10,11 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {ErrorStateMatcher} from "@angular/material/core";
 import swal from "sweetalert2";
+import {DataTableDirective} from "angular-datatables";
+import {Subject} from "rxjs";
+import {Document} from "../../../../core/store/data/std/request_std.model";
+import {Department} from "../../../../core/store/data/std/std.model";
+import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -59,15 +64,36 @@ export class RequestForFormationOfTCComponent implements OnInit {
     matcher = new MyErrorStateMatcher();
     register: FormGroup;
     formationRequestFormGroup: FormGroup;
+    editFormationRequestFormGroup: FormGroup;
 
 
     isFormSubmitted = false;
+    loading = false;
+    loadingText: string;
+    proposalRetrieved: JustificationForTc;
+
+
+    dtOptions: DataTables.Settings = {};
+    dtOptionsB: DataTables.Settings = {};
+
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger: Subject<any> = new Subject<any>();
+    dtTrigger4: Subject<any> = new Subject<any>();
+
+    docs !: Document[];
+    blob: Blob;
+
+    public departments !: Department[];
+
 
 
     constructor(private formationOfTcService: FormationOfTcService,
                 private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
                 private formBuilder: FormBuilder,
+                private standardDevelopmentService: StandardDevelopmentService,
+
     ) {
     }
 
@@ -102,9 +128,10 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.getAllHofJustifications();
+        this.getAllHofJustifications(true);
         this.getAllHofJustificationsApproved()
         this.getAllHofJustificationsRejected()
+        this.getDepartments();
 
         this.formationRequestFormGroup = this.formBuilder.group({
             dateOfPresentation: ['', Validators.required],
@@ -119,6 +146,25 @@ export class RequestForFormationOfTCComponent implements OnInit {
             programmeOfWork: ['', Validators.required],
             liaisonOrganization: ['', Validators.required],
             organization: ['', Validators.required],
+            departmentId: ['', Validators.required],
+
+        });
+
+        this.editFormationRequestFormGroup = this.formBuilder.group({
+            dateOfPresentation: ['', Validators.required],
+            nameOfTC: ['', Validators.required],
+            proposer: ['', Validators.required],
+            referenceNumber: ['', Validators.required],
+            subject: ['', Validators.required],
+            scope: ['', Validators.required],
+            purpose: ['', Validators.required],
+            proposedRepresentation: ['', Validators.required],
+            targetDate: ['', Validators.required],
+            programmeOfWork: ['', Validators.required],
+            liaisonOrganization: ['', Validators.required],
+            organization: ['', Validators.required],
+            departmentId: ['', Validators.required],
+
         });
     }
 
@@ -152,7 +198,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
                             },
                             icon: 'success'
                         });
-                        this.getAllHofJustifications();
+                        this.getAllHofJustifications(false);
                         this.getAllHofJustificationsApproved()
                         this.getAllHofJustificationsRejected()
                         this.hideModel()
@@ -165,7 +211,11 @@ export class RequestForFormationOfTCComponent implements OnInit {
         }
     }
 
-    public getAllHofJustifications(): void {
+    public getAllHofJustifications(pageRefresh: boolean): void {
+
+        this.loadingText = "Retrieving Please Wait ...."
+
+        this.loading = pageRefresh;
         this.SpinnerService.show()
         this.formationOfTcService.getAllHofJustifications().subscribe(
             (response: JustificationForTc[]) => {
@@ -223,7 +273,13 @@ export class RequestForFormationOfTCComponent implements OnInit {
         );
     }
 
+    get formFormationRequest(): any {
+        return this.formationRequestFormGroup.controls;
+    }
 
+    get formEditFormationRequest(): any {
+        return this.editFormationRequestFormGroup.controls;
+    }
     applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -253,8 +309,21 @@ export class RequestForFormationOfTCComponent implements OnInit {
     }
 
     @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+
     public hideModel() {
         this.closeModal?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalB') private closeModalB: ElementRef | undefined;
+
+    public hideModelB() {
+        this.closeModalB?.nativeElement.click();
+    }
+
+    @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
+
+    public hideModelC() {
+        this.closeModalC?.nativeElement.click();
     }
 
     textValidationType(e) {
@@ -270,12 +339,14 @@ export class RequestForFormationOfTCComponent implements OnInit {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
+            this.loadingText = "Saving Please Wait ...."
+
             this.SpinnerService.show();
             this.formationOfTcService.uploadAdditionalDocuments(proposalId, formData, "AdditionalInformation", nameOfTc).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFiles = [];
-                    this.getAllHofJustifications();
+                    this.getAllHofJustifications(false);
                     this.getAllHofJustificationsApproved()
                     this.getAllHofJustificationsRejected()
                     this.hideModel()
@@ -292,6 +363,83 @@ export class RequestForFormationOfTCComponent implements OnInit {
             );
         }
 
+    }
+
+
+    public openModalToView(proposal: JustificationForTc): void {
+        console.log(proposal)
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        this.proposalRetrieved = proposal;
+
+        button.setAttribute('data-toggle', 'modal');
+        button.setAttribute('data-target', '#editModal');
+
+        this.getAllDocs(String(this.proposalRetrieved.id))
+
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.clear();
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+            this.dtTrigger4.next();
+        });
+
+    }
+
+    public getAllDocs(proposalId: string): void {
+        this.formationOfTcService.getAdditionalDocuments(proposalId).subscribe(
+            (response: Document[]) => {
+                this.docs = response;
+                this.rerender()
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+
+    viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.formationOfTcService.viewDocsById(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                window.open(downloadURL, '_blank');
+
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
+
+    public getDepartments(): void {
+        this.standardDevelopmentService.getDepartmentsb().subscribe(
+            (response: Department[]) => {
+                this.departments = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
     }
 
 

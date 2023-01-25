@@ -1,7 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.JustificationForTCRepository
@@ -16,12 +18,15 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.stream.Collectors
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("api/v1/migration/formationOfTC")
 class FormationOfTCController(
     val formationOfTCService: FormationOfTCService,
-    val tCRelevantDocumentService: TCRelevantDocumentService,
+    val draftDocumentService: DraftDocumentService,
+    val commonDaoServices: CommonDaoServices,
+
     private val justificationForTCRepository: JustificationForTCRepository,
 
     ) {
@@ -43,6 +48,10 @@ class FormationOfTCController(
             "Successfully submitted justification for formation of TC",
             formationOfTCService.submitJustificationForFormationOfTC(justificationForTC)
         )
+    }
+    @GetMapping("/getAllJustifications")
+    fun getAllJustifications(): List<JustificationForTC> {
+        return formationOfTCService.getAllJustifications()
     }
 
     @GetMapping("/getAllHofJustifications")
@@ -105,6 +114,11 @@ class FormationOfTCController(
         return formationOfTCService.sacGetAllApprovedJustificationsBySpc()
     }
 
+    @GetMapping("/sacGetAllRejectedJustificationsBySpc")
+    fun sacGetAllRejectedJustificationsBySpc(): List<JustificationForTC> {
+        return formationOfTCService.sacGetAllRejectedJustificationsBySpc()
+    }
+
 
     @PostMapping("/approveJustificationSAC")
     @ResponseBody
@@ -116,6 +130,26 @@ class FormationOfTCController(
         )
     }
 
+    @PostMapping("/rejectJustificationSAC")
+    @ResponseBody
+    fun rejectJustificationSAC(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Recommendation Rejected",
+            formationOfTCService.rejectJustificationSAC(justificationForTC)
+        )
+    }
+
+    @GetMapping("/sacGetAllForWebsite")
+    fun sacGetAllForWebsite(): List<JustificationForTC> {
+        return formationOfTCService.sacGetAllForWebsite()
+    }
+
+    @GetMapping("/sacGetAllRejected")
+    fun sacGetAllRejected(): List<JustificationForTC> {
+        return formationOfTCService.sacGetAllRejected()
+    }
+
     @PostMapping("/advertiseTcToWebsite")
     @ResponseBody
     fun advertiseTcToWebsite(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
@@ -125,74 +159,6 @@ class FormationOfTCController(
             formationOfTCService.advertiseTcToWebsite(justificationForTC)
         )
     }
-
-
-    @PostMapping("/uploadFiles")
-    fun uploadFiles(
-        @RequestParam("file") file: MultipartFile,
-        @RequestParam("itemId") itemId: String,
-        @RequestParam("type") type: String
-    ): ResponseEntity<ResponseMessage> {
-        var message: String? = null
-
-
-
-        return try {
-            when (type) {
-                "TCRelevantDocument" -> {
-                    tCRelevantDocumentService.store(file, itemId)
-                }
-            }
-
-
-            message = "Uploaded the file successfully: ${file.originalFilename}"
-            ResponseEntity.status(HttpStatus.OK).body(ResponseMessage(message))
-        } catch (e: Exception) {
-            message = "Could not upload the file: ${file.originalFilename}!"
-            ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(ResponseMessage(message))
-        }
-    }
-
-
-    @GetMapping("list/files/{type}/{itemId}")
-    fun getListFiles(
-        @PathVariable type: String?,
-        @PathVariable("itemId") itemId: String
-    ): ResponseEntity<List<ResponseFile>> {
-
-        var files: List<ResponseFile>? = null
-        when (type) {
-            "DraftDocument" -> {
-
-                files = tCRelevantDocumentService.getAllFiles(itemId).map { dbFile ->
-                    val fileDownloadUri = ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/technicalCommittee/files/")
-                        .path(dbFile.id)
-                        .toUriString()
-
-                    ResponseFile(
-                        dbFile.name,
-                        fileDownloadUri,
-                        dbFile.type,
-                        dbFile.data.size
-                    )
-
-                }.collect(Collectors.toList())
-            }
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(files)
-    }
-
-    @GetMapping("/files/{id}")
-    fun getFile(@PathVariable id: String?): ResponseEntity<ByteArray?>? {
-        val fileDB = tCRelevantDocumentService.getFile(id!!)
-        return ResponseEntity.ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB!!.name + "\"")
-            .body(fileDB.data)
-    }
-
     @PostMapping("/uploadAdditionalDocs")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDocs(
@@ -229,6 +195,33 @@ class FormationOfTCController(
         sm.message = "Documents Uploaded successfully"
 
         return sm
+    }
+
+    @GetMapping("/getAdditionalDocuments")
+    fun getAdditionalDocuments(
+        @RequestParam("proposalId") proposalId: Long,
+    ): Collection<DatKebsSdStandardsEntity?>? {
+        return formationOfTCService.getDocuments(proposalId)
+    }
+
+    @GetMapping("/viewById")
+    fun viewFileById(
+        response: HttpServletResponse,
+        @RequestParam("docId") docId: Long,
+    ) {
+        val fileUploaded = draftDocumentService.findFile(docId)
+        val fileDoc = fileUploaded.let { commonDaoServices.mapClass(it) }
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
     }
 
 

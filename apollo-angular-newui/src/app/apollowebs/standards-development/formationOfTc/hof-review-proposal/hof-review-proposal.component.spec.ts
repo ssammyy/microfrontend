@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReviewFeedbackSPCComponent } from './review-feedback-spc.component';
+import { HofReviewProposalComponent } from './hof-review-proposal.component';
 
-describe('ReviewFeedbackSPCComponent', () => {
-  let component: ReviewFeedbackSPCComponent;
-  let fixture: ComponentFixture<ReviewFeedbackSPCComponent>;
+describe('HofReviewProposalComponent', () => {
+  let component: HofReviewProposalComponent;
+  let fixture: ComponentFixture<HofReviewProposalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReviewFeedbackSPCComponent ]
+      declarations: [ HofReviewProposalComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReviewFeedbackSPCComponent);
+    fixture = TestBed.createComponent(HofReviewProposalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
