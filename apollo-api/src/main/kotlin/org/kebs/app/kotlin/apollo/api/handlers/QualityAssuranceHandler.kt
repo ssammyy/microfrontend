@@ -248,8 +248,7 @@ class QualityAssuranceHandler(
 
 
             //Get logged in user Task required there attention
-            permitListMyTasksAddedTogether =
-                findLoggedInUserTask(auth, loggedInUser, permitTypeID, map, permitListMyTasksAddedTogether)
+            permitListMyTasksAddedTogether = findLoggedInUserTask(auth, loggedInUser, permitTypeID, map, permitListMyTasksAddedTogether)
 
             permitListPsc = findPscUserTask(loggedInUser, permitTypeID, map, permitListPsc)
 
@@ -270,7 +269,7 @@ class QualityAssuranceHandler(
             req.attributes()["permitListAllApplications"] = permitListAllApplicationsAddedTogether.distinct()
             req.attributes()["permitListAllComplete"] = permitListAllCompleteAddedTogether.distinct()
             req.attributes()["permitListMyTasks"] = permitListMyTasksAddedTogether.distinct()
-            req.attributes()["permitListPsc"] = permitListPsc
+            req.attributes()["permitListPsc"] = permitListPsc.distinct()
 
             return ok().render(qaPermitListPage, req.attributes())
 

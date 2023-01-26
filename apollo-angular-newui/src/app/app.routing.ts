@@ -473,189 +473,187 @@ import {
 import {RfcCocDocumentsComponent} from './apollowebs/pvoc/documents/rfc-coc-documents/rfc-coc-documents.component';
 import {RfcCorDocumentsComponent} from './apollowebs/pvoc/documents/rfc-cor-documents/rfc-cor-documents.component';
 import {
-    StdLevyManufacturerPenaltyComponent
+    StdLevyManufacturerPenaltyComponent,
 } from './apollowebs/standards-levy/std-levy-manufacturer-penalty/std-levy-manufacturer-penalty.component';
 import {
-    StandardLevyRegisteredFirmsComponent
+    StandardLevyRegisteredFirmsComponent,
 } from './apollowebs/standards-levy/standard-levy-registered-firms/standard-levy-registered-firms.component';
 // tslint:disable-next-line:max-line-length
 import {
-    StandardLevyAllPaymentsComponent
+    StandardLevyAllPaymentsComponent,
 } from './apollowebs/standards-levy/standard-levy-all-payments/standard-levy-all-payments.component';
 import {
-    StandardLevyPenaltyReportComponent
+    StandardLevyPenaltyReportComponent,
 } from './apollowebs/standards-levy/standard-levy-penalty-report/standard-levy-penalty-report.component';
 // tslint:disable-next-line:max-line-length
 import {
-    StandardLevyActiveFirmsComponent
+    StandardLevyActiveFirmsComponent,
 } from './apollowebs/standards-levy/standard-levy-active-firms/standard-levy-active-firms.component';
 import {
-    StandardLevyDormantFirmsComponent
+    StandardLevyDormantFirmsComponent,
 } from './apollowebs/standards-levy/standard-levy-dormant-firms/standard-levy-dormant-firms.component';
 // tslint:disable-next-line:max-line-length
 import {
-    StandardLevyClosedFirmsComponent
+    StandardLevyClosedFirmsComponent,
 } from './apollowebs/standards-levy/standard-levy-closed-firms/standard-levy-closed-firms.component';
 import {FuelListTeamsComponent} from './apollowebs/market-surveillance/fuel/fuel-list-teams/fuel-list-teams.component';
-import {CorCertificatesComponent} from "./apollowebs/certificates/cor-certificates/cor-certificates.component";
-import {CocCertificatesComponent} from "./apollowebs/certificates/coc-certificates/coc-certificates.component";
-import {CoiCertificatesComponent} from "./apollowebs/certificates/coi-certificates/coi-certificates.component";
-import {NcrCertificatesComponent} from "./apollowebs/certificates/ncr-certificates/ncr-certificates.component";
+import {CorCertificatesComponent} from './apollowebs/certificates/cor-certificates/cor-certificates.component';
+import {CocCertificatesComponent} from './apollowebs/certificates/coc-certificates/coc-certificates.component';
+import {CoiCertificatesComponent} from './apollowebs/certificates/coi-certificates/coi-certificates.component';
+import {NcrCertificatesComponent} from './apollowebs/certificates/ncr-certificates/ncr-certificates.component';
 import {
-    ManifestDocumentsComponent
-} from "./apollowebs/di/other-documents/manifest-documents/manifest-documents.component";
+    ManifestDocumentsComponent,
+} from './apollowebs/di/other-documents/manifest-documents/manifest-documents.component';
 import {
-    FuelListTeamsCountyComponent
+    FuelListTeamsCountyComponent,
 } from './apollowebs/market-surveillance/fuel/fuel-list-teams-county/fuel-list-teams-county.component';
 import {
-    ApplicationsReceivedComponent
-} from "./apollowebs/quality-assurance/reports/applications-received/applications-received.component";
+    ApplicationsReceivedComponent,
+} from './apollowebs/quality-assurance/reports/applications-received/applications-received.component';
 import {
-    PermitsGrantedComponent
-} from "./apollowebs/quality-assurance/reports/permits-granted/permits-granted.component";
+    PermitsGrantedComponent,
+} from './apollowebs/quality-assurance/reports/permits-granted/permits-granted.component';
 import {
-    ComplaintPlanBatchListComponent
+    ComplaintPlanBatchListComponent,
 } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-batch-list/complaint-plan-batch-list.component';
 import {
-    ComplaintPlanListComponent
+    ComplaintPlanListComponent,
 } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-list/complaint-plan-list.component';
 import {
-    ComplaintPlanDetailsComponent
+    ComplaintPlanDetailsComponent,
 } from './apollowebs/market-surveillance/complainWorkPlan/complaint-plan-details/complaint-plan-details.component';
 import {
-    PermitsDeferredComponent
-} from "./apollowebs/quality-assurance/reports/permits-deferred/permits-deferred.component";
+    PermitsDeferredComponent,
+} from './apollowebs/quality-assurance/reports/permits-deferred/permits-deferred.component';
 import {
-    PermitsRenewedComponent
-} from "./apollowebs/quality-assurance/reports/permits-renewed/permits-renewed.component";
+    PermitsRenewedComponent,
+} from './apollowebs/quality-assurance/reports/permits-renewed/permits-renewed.component';
 import {
-    SamplesSubmittedComponent
-} from "./apollowebs/quality-assurance/reports/samples-submitted/samples-submitted.component";
+    SamplesSubmittedComponent,
+} from './apollowebs/quality-assurance/reports/samples-submitted/samples-submitted.component';
 import {
-    StandardLevyRejectedChangesComponent
-} from "./apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component";
+    StandardLevyRejectedChangesComponent,
+} from './apollowebs/standards-levy/standard-levy-rejected-changes/standard-levy-rejected-changes.component';
 import {
-    StandardsForReviewComponent
-} from "./apollowebs/standards-development/systemic-review/standards-for-review/standards-for-review.component";
+    StandardsForReviewComponent,
+} from './apollowebs/standards-development/systemic-review/standards-for-review/standards-for-review.component';
 import {
-    SystemicReviewTcSecComponent
-} from "./apollowebs/standards-development/systemic-review/systemic-review-tc-sec/systemic-review-tc-sec.component";
+    SystemicReviewTcSecComponent,
+} from './apollowebs/standards-development/systemic-review/systemic-review-tc-sec/systemic-review-tc-sec.component';
 import {
-    SystemicReviewSpcSecComponent
-} from "./apollowebs/standards-development/systemic-review/systemic-review-spc-sec/systemic-review-spc-sec.component";
+    SystemicReviewSpcSecComponent,
+} from './apollowebs/standards-development/systemic-review/systemic-review-spc-sec/systemic-review-spc-sec.component';
 import {
-    SystemicReviewSacSecComponent
-} from "./apollowebs/standards-development/systemic-review/systemic-review-sac-sec/systemic-review-sac-sec.component";
+    SystemicReviewSacSecComponent,
+} from './apollowebs/standards-development/systemic-review/systemic-review-sac-sec/systemic-review-sac-sec.component';
 import {
-    SystemicReviewProofReaderComponent
-} from "./apollowebs/standards-development/systemic-review/systemic-review-proof-reader/systemic-review-proof-reader.component";
+    SystemicReviewProofReaderComponent,
+} from './apollowebs/standards-development/systemic-review/systemic-review-proof-reader/systemic-review-proof-reader.component';
 import {
-    SystemicReviewHopComponent
-} from "./apollowebs/standards-development/systemic-review/systemic-review-hop/systemic-review-hop.component";
+    SystemicReviewHopComponent,
+} from './apollowebs/standards-development/systemic-review/systemic-review-hop/systemic-review-hop.component';
 import {
-    SystemicReviewEditorComponent
-} from "./apollowebs/standards-development/systemic-review/systemic-review-editor/systemic-review-editor.component";
+    SystemicReviewEditorComponent,
+} from './apollowebs/standards-development/systemic-review/systemic-review-editor/systemic-review-editor.component';
 import {
-    SystemicReviewDraughtsManComponent
-} from "./apollowebs/standards-development/systemic-review/systemic-review-draughts-man/systemic-review-draughts-man.component";
+    SystemicReviewDraughtsManComponent,
+} from './apollowebs/standards-development/systemic-review/systemic-review-draughts-man/systemic-review-draughts-man.component';
 import {
-    SystemReviewGazetteStandardComponent
-} from "./apollowebs/standards-development/systemic-review/system-review-gazette-standard/system-review-gazette-standard.component";
+    SystemReviewGazetteStandardComponent,
+} from './apollowebs/standards-development/systemic-review/system-review-gazette-standard/system-review-gazette-standard.component';
 import {
-    SystemReviewUpdateGazetteComponent
-} from "./apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component";
+    SystemReviewUpdateGazetteComponent,
+} from './apollowebs/standards-development/systemic-review/system-review-update-gazette/system-review-update-gazette.component';
 import {NotificationsComponent} from './apollowebs/system/notifications/notifications.component';
 import {
-    IntStdProposalsComponent
-} from "./apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component";
+    IntStdProposalsComponent,
+} from './apollowebs/standards-development/international-standard/int-std-proposals/int-std-proposals.component';
 import {
-    IntStdApprovedProposalsComponent
-} from "./apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component";
+    IntStdApprovedProposalsComponent,
+} from './apollowebs/standards-development/international-standard/int-std-approved-proposals/int-std-approved-proposals.component';
 import {
-    IntStdEditorComponent
-} from "./apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component";
+    IntStdEditorComponent,
+} from './apollowebs/standards-development/international-standard/int-std-editor/int-std-editor.component';
 import {
-    IntStdCheckRequirementsComponent
-} from "./apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component";
+    IntStdCheckRequirementsComponent,
+} from './apollowebs/standards-development/international-standard/int-std-check-requirements/int-std-check-requirements.component';
 import {
-    IntStdEditDraftComponent
-} from "./apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component";
+    IntStdEditDraftComponent,
+} from './apollowebs/standards-development/international-standard/int-std-edit-draft/int-std-edit-draft.component';
 import {
-    IntStdDraughtComponent
-} from "./apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component";
+    IntStdDraughtComponent,
+} from './apollowebs/standards-development/international-standard/int-std-draught/int-std-draught.component';
 import {
-    IntStdProofReadComponent
-} from "./apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component";
+    IntStdProofReadComponent,
+} from './apollowebs/standards-development/international-standard/int-std-proof-read/int-std-proof-read.component';
 import {
-    IntStdApproveDraftComponent
-} from "./apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component";
+    IntStdApproveDraftComponent,
+} from './apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component';
 import {
-    IntStdEditedDraftComponent
-} from "./apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component";
+    IntStdEditedDraftComponent,
+} from './apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component';
 import {
-    IntStdSacApprovalComponent
-} from "./apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component";
+    IntStdSacApprovalComponent,
+} from './apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component';
 import {
-    AcknowledgementComponent
+    AcknowledgementComponent,
 } from './apollowebs/market-surveillance/reports/acknowledgement/acknowledgement.component';
 import {
-    DeclarationDocumentsComponent
-} from "./apollowebs/di/other-documents/declaration-documents/declaration-documents.component";
+    DeclarationDocumentsComponent,
+} from './apollowebs/di/other-documents/declaration-documents/declaration-documents.component';
 // import {
 //     PrepareDraftComponent
 // } from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
 import {
-    IntStdGazetteComponent
-} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
+    IntStdGazetteComponent,
+} from './apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component';
 import {
-    ComStdDraftCommentComponent
-} from "./apollowebs/standards-development/company-standard/com-std-draft-comment/com-std-draft-comment.component";
+    ComStdDraftCommentComponent,
+} from './apollowebs/standards-development/company-standard/com-std-draft-comment/com-std-draft-comment.component';
 import {
-    SchemeMembershipFormComponent
-} from "./apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component";
+    SchemeMembershipFormComponent,
+} from './apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component';
 import {
-    SchemeMembershipReviewComponent
-} from "./apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component";
+    SchemeMembershipReviewComponent,
+} from './apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component';
 import {
-    SchemeMembershipSicComponent
-} from "./apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component";
-import {RegisterTivetComponent} from "./views/registration/register-tivet/register-tivet.component";
+    SchemeMembershipSicComponent,
+} from './apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component';
+import {RegisterTivetComponent} from './views/registration/register-tivet/register-tivet.component';
 import {
-    ComplaintMonitoringComponent
-} from "./apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component";
+    ComplaintMonitoringComponent,
+} from './apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component';
 import {
-    FieldInspectionSummaryComponent
-} from "./apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component";
+    FieldInspectionSummaryComponent,
+} from './apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component';
 import {
-    WorkplanMonitoringToolComponent
-} from "./apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component";
+    WorkplanMonitoringToolComponent,
+} from './apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component';
 import {
-    ComStdAppDraftComponent
-} from "./apollowebs/standards-development/company-standard/com-std-app-draft/com-std-app-draft.component";
+    ComStdAppDraftComponent,
+} from './apollowebs/standards-development/company-standard/com-std-app-draft/com-std-app-draft.component';
 import {
-    IntStdPublishingComponent
-} from "./apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component";
+    IntStdPublishingComponent,
+} from './apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component';
 import {
-    ComStdPublishingComponent
-} from "./apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component";
+    ComStdPublishingComponent,
+} from './apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component';
 import {
-    ComStdEditorComponent
-} from "./apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component";
+    ComStdEditorComponent,
+} from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
 import {
-    SampleSubmittedTimelineComponent
+    SampleSubmittedTimelineComponent,
 } from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
-import {CorporateBillsComponent} from "./apollowebs/invoice/corporate-bills/corporate-bills.component";
+import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corporate-bills.component';
 import {
-    ViewRfcCocDocumentsComponent
-} from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
+    ViewRfcCocDocumentsComponent,
+} from './apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component';
 import {
-    ViewRfcCorDocumentsComponent
-} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
+    ViewRfcCorDocumentsComponent,
+} from './apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component';
 import {
-    HofReviewProposalComponent
-} from "./apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component";
-import {ViewRfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
-import {ViewRfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
+    HofReviewProposalComponent,
+} from './apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component';
 import {CompanyListComponent} from './apollowebs/company/company-list/company-list.component';
 import { SmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
 import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
@@ -1427,7 +1425,7 @@ export const routes: Routes = [
                 canActivate: [RouteGuard],
                 component: NcrCertificatesComponent,
             },
-        ]
+        ],
     },
 
     // SD Kenya National Workshop Agreement
