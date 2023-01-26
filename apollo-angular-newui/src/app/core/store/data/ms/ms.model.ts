@@ -91,6 +91,12 @@ export class PredefinedResourcesRequired {
     status: boolean;
 }
 
+export class OGAEntity {
+    id: number;
+    ogaName: string;
+    status: boolean;
+}
+
 export class WorkPlanTownsDto {
         countyID: number;
         countyName: string;

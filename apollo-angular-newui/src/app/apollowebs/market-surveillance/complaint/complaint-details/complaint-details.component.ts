@@ -31,7 +31,7 @@ import {
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
-  SSFSaveComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto,
+  SSFSaveComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto, OGAEntity,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
@@ -120,6 +120,7 @@ export class ComplaintDetailsComponent implements OnInit {
   msDivisions: MsDivisionDetails[];
   standardProductCategory!: StandardProductCategory[];
   predefinedResourcesRequired!: PredefinedResourcesRequired[];
+  ogaListRequired!: OGAEntity[];
   productCategories!: ProductCategories[];
   broadProductCategory!: BroadProductCategory[];
   products!: Products[];
@@ -452,6 +453,18 @@ export class ComplaintDetailsComponent implements OnInit {
               },
           );
 
+          this.msService.msOGAListDetails().subscribe(
+              (data1: OGAEntity[]) => {
+                this.ogaListRequired = data1;
+                console.log(data1);
+              },
+              error => {
+                console.log(error);
+                this.msService.showError('AN ERROR OCCURRED');
+              },
+          );
+
+
 
           // tslint:disable-next-line:max-line-length
           if (this.complaintInspection.complaintsDetails.assignedIOStatus === true && this.complaintInspection.complaintsDetails.classificationDetailsStatus === false) {
@@ -673,7 +686,7 @@ export class ComplaintDetailsComponent implements OnInit {
   onClickSaveAcceptRejectFormResults(valid: boolean) {
     this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
         // tslint:disable-next-line:max-line-length
-        'You can click the \'ACCEPT/REJECT COMPLAINT\' button to update details', 'COMPLAINT ACCEPT/REJECT SUCCESSFUL', () => {
+        'You can click the \'ACCEPT/DECLINE COMPLAINT\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
           this.SaveAcceptRejectFormResults(valid);
         });
   }
@@ -740,7 +753,7 @@ export class ComplaintDetailsComponent implements OnInit {
                     this.acceptRejectComplaintForm.reset();
                     console.log(data);
                     this.SpinnerService.hide();
-                    this.msService.showSuccess('COMPLAINT REJECTION, SAVED SUCCESSFULLY');
+                    this.msService.showSuccess('COMPLAINT DECLINED, SAVED SUCCESSFULLY');
                   },
                   error => {
                     this.SpinnerService.hide();
@@ -790,7 +803,7 @@ export class ComplaintDetailsComponent implements OnInit {
               console.log(data);
               this.acceptRejectComplaintForm.reset();
               this.SpinnerService.hide();
-              this.msService.showSuccess('COMPLAINANT ADVICED WHERE TO TAKE THE COMPLAINT, SAVED SUCCESSFULLY');
+              this.msService.showSuccess('COMPLAINANT ADVISED WHERE TO TAKE THE COMPLAINT, SAVED SUCCESSFULLY');
             },
             error => {
               this.SpinnerService.hide();

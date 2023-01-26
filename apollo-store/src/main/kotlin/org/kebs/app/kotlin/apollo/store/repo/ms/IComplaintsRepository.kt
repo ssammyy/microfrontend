@@ -101,6 +101,11 @@ interface IComplaintDocumentsRepository : HazelcastRepository<ComplaintDocuments
 }
 
 @Repository
+interface ICfgKebsMsOgaRepository : HazelcastRepository<CfgKebsMsOgaEntity, Long>{
+
+}
+
+@Repository
 interface IComplaintCustomersRepository : HazelcastRepository<ComplaintCustomersEntity, Long>{
     fun findByComplaintId(complaintId: Long): ComplaintCustomersEntity?
 }

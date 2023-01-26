@@ -631,6 +631,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/standards", handler::standardsList)
                 GET("/standardProductCategory", handler::msStandardsCategory)
                 GET("/predefinedResourcesRequired", handler::msPredefinedResources)
+                GET("/ogaList", handler::msOGAList)
                 GET("/productCategories", handler::msProductCategories)
                 GET("/countries", handler::msCountries)
                 GET("/broadProductCategory", handler::msBroadProductCategory)

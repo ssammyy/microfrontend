@@ -84,7 +84,11 @@ import {
     SampleProductViewSearchValues,
     SeizedGoodsViewSearchValues,
     PermitUcrSearch,
-    SSFSendingComplianceStatus, ConsumerComplaintViewSearchValues, SeizeViewSearchValues, SubmittedSamplesSummaryViewSearchValues,
+    SSFSendingComplianceStatus,
+    ConsumerComplaintViewSearchValues,
+    SeizeViewSearchValues,
+    SubmittedSamplesSummaryViewSearchValues,
+    OGAEntity,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -2408,6 +2412,20 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PREDEFINED_RESOURCES_REQUIRED);
         return this.http.get<PredefinedResourcesRequired[]>(url).pipe(
             map(function (response: PredefinedResourcesRequired[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msOGAListDetails(): Observable<OGAEntity[]> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_OGA_REQUIRED);
+        return this.http.get<OGAEntity[]>(url).pipe(
+            map(function (response: OGAEntity[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

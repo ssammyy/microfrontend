@@ -541,8 +541,7 @@
                                             <label for="division"><b>Select Division</b></label>
                                             <mat-form-field>
                                                 <mat-select [class.is-invalid]="formAcceptRejectForm.division.invalid && formAcceptRejectForm.division.touched" formControlName="division"
-                                                            id="division"
-                                                            msDivisions name="division" placeholder="Please Select an option">
+                                                            id="division" name="division" placeholder="Please Select an option">
                                                     <mat-option
                                                             *ngFor="let app of msDivisions | filterPipe: {status: true, departmentId: departmentSelected}"
                                                             [value]="app.id">{{app.division}} </mat-option>
@@ -564,16 +563,16 @@
                                                 </mat-select>
                                             </mat-form-field>
                                             <div *ngIf="(selectComplaintRejectionStatus == 'Accept')">
-                                                <label for="advisedWhereToRemarks"><b>Please write, in detail, Where The
-                                                    Complaint belongs:</b></label>
-                                                <mat-form-field class="example-full-width">
-                                                    <textarea [class.is-invalid]="formAcceptRejectForm.advisedWhereToRemarks.invalid && formAcceptRejectForm.advisedWhereToRemarks.touched" formControlName="advisedWhereToRemarks" id="advisedWhereToRemarks"
-                                                              matInput
-                                                              name="advisedWhereToRemarks"
-                                                              type="text">
-                                                    </textarea>
-                                                </mat-form-field>
+                                                <label for="advisedWhereToRemarks"><b>Select OGA where complaint belongs:</b></label>
+                                                <mat-form-field>
+                                                    <mat-select [class.is-invalid]="formAcceptRejectForm.advisedWhereToRemarks.invalid && formAcceptRejectForm.advisedWhereToRemarks.touched" formControlName="advisedWhereToRemarks"
+                                                                id="advisedWhereToRemarks" name="advisedWhereToRemarks" placeholder="Please Select an option">
+                                                        <mat-option
+                                                                *ngFor="let app of ogaListRequired | filterPipe: {status: true }"
+                                                                [value]="app.ogaName">{{app.ogaName}} </mat-option>
 
+                                                    </mat-select>
+                                                </mat-form-field>
                                             </div>
                                             <div *ngIf="(selectComplaintRejectionStatus == 'RejectAmendment')">
                                                 <label for="amendmentRemarks"><b>Please write, in detail, What should be Amended:</b></label>

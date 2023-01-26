@@ -667,6 +667,12 @@ data class PredefinedResourcesRequiredEntityDto(
     var status: Boolean? = null
 )
 
+data class OGAEntity(
+    var id: Long? = null,
+    var ogaName: String? = null,
+    var status: Boolean? = null
+)
+
 
 data class UserRequestTypesEntityDto(
     var id: Long? = null,

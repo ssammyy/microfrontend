@@ -728,6 +728,7 @@ export class ApiEndpointService {
         MS_PRODUCT_CATEGORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/productCategories`,
         MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
         MS_PREDEFINED_RESOURCES_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/predefinedResourcesRequired`,
+        MS_OGA_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/ogaList`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
         MS_NOTIFICATIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/notification-list`,
