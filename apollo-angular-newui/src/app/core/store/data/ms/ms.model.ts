@@ -1127,6 +1127,7 @@ export class SeizureDto {
     nameOfOutlet: string;
     descriptionProductsSeized: string;
     brand: string;
+    product: string;
     sector: string;
     reasonSeizure: string;
     nameSeizingOfficer: string;

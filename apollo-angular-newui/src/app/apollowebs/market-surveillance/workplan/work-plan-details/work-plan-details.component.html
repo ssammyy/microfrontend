@@ -3211,16 +3211,20 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" *ngIf="dataReportViewMode == false">
                         <div class="col">
                             <div  class="form-group">
                                 <label for="files"><b>Upload Documents Here</b></label>
                                 <form #demoForm="ngForm">
-                                    <file-upload [(ngModel)]="uploadedFilesSeizedGoods" name="files" id="files89"
+                                    <file-upload [(ngModel)]="uploadedFilesDataReport" name="files" id="uploadedFilesDataReportWP"
                                                  [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
                                 </form>
                             </div>
                         </div>
+
+                    </div>
+                    <div class="row" *ngIf="dataReportViewMode == true">
+                        <h4>Show the uploaded documents of this datasheet</h4>
 
                     </div>
 
@@ -3602,8 +3606,10 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th>Description Products Seized</th>
+                                            <th>Product</th>
                                             <th>Brand</th>
+                                            <th>Description Products Seized</th>
+
                                             <th>Sector</th>
                                             <th>Reason Seizure</th>
                                             <th>Seizure Serial</th>
@@ -3617,8 +3623,9 @@
                                         </thead>
                                         <tbody>
                                         <tr *ngFor="let r of dataSaveSeizureDeclarationList; let i=index">
-                                            <td>{{r.descriptionProductsSeized}}</td>
+                                            <td>{{r.product}}</td>
                                             <td>{{r.brand}}</td>
+                                            <td>{{r.descriptionProductsSeized}}</td>
                                             <td>{{r.sector}}</td>
                                             <td>{{r.reasonSeizure}}</td>
                                             <td>{{r.seizureSerial}}</td>
@@ -3852,7 +3859,7 @@
                                         <textarea [class.is-invalid]="formInvestInspectReportForm.backgroundInformation.invalid && formInvestInspectReportForm.backgroundInformation.errors"
                                                   class="form-control two-column-input"
                                                   formControlName="backgroundInformation"
-                                                  name="backgroundInformation" required type="text"></textarea>
+                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></textarea>
                                         <div *ngIf="submitted && formInvestInspectReportForm.backgroundInformation.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.backgroundInformation.errors.required">This field is
                                                 required
@@ -5701,12 +5708,12 @@
 
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Source of Product and Evidence</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="sourceProductEvidence" name="sourceProductEvidence" required
-                                               [class.is-invalid]="formSampleSubmitForm.sourceProductEvidence.invalid && formSampleSubmitForm.sourceProductEvidence.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sourceProductEvidence.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sourceProductEvidence.errors.required">This field is
+                                        <label><b>Sample Collection Date</b></label>
+                                        <input type="date" class="form-control two-column-input"
+                                               formControlName="sampleCollectionDate" name="sampleCollectionDate" required
+                                               [class.is-invalid]="formSampleSubmitForm.sampleCollectionDate.invalid && formSampleSubmitForm.sampleCollectionDate.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionDate.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sampleCollectionDate.errors.required">This field is
                                                 required
                                             </div>
                                         </div>
