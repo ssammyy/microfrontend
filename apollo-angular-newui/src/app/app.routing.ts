@@ -1027,7 +1027,7 @@ export const routes: Routes = [
     // canActivate: [RouteGuard]
 
     children: [
-        {path: '/', component: PermitDetailsComponent},
+        {path: '', component: PermitDetailsComponent},
     ],
 
   },
