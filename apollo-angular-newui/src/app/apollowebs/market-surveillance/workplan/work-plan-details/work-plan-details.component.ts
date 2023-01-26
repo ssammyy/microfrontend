@@ -90,6 +90,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
+  dataReportViewMode = true;
   dataSaveWorkPlanCounties: WorkPlanCountyTownDto;
   dataSaveWorkPlanCountiesList: WorkPlanCountyTownDto[] = [];
   latestProgressReport: InspectionInvestigationReportDto;
@@ -210,7 +211,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   productsSelected: 0;
   productSubcategorySelected: 0;
   departmentSelected: 0;
-
+  uploadedFilesDataReport: FileList;
   labList: LaboratoryDto[];
   roles: string[];
   userLoggedInID: number;
@@ -1868,6 +1869,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       productDescription: null,
       receiversDate: null,
       lbIdAnyAomarking: null,
+      sampleCollectionDate: null,
       lbIdBatchNo: null,
       lbIdContDecl: null,
       lbIdDateOfManf: null,
@@ -2480,6 +2482,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
+    this.dataReportViewMode = false;
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
