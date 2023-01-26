@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.service
 
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
@@ -241,7 +242,9 @@ class AuctionService(
                 map["status_desc"] = message
                 map["lot_no"] = lotNo
                 map["action_code"] = actionCode
-                this.apiClientService.publishCallback(map, it)
+                runBlocking {
+                    apiClientService.publishCallback(map, it)
+                }
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("Failed to send callback", ex)

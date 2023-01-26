@@ -464,6 +464,7 @@ import { SmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/smark-ad
 import { FmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
 import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
 
+
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
 @NgModule({
@@ -958,6 +959,7 @@ import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-ad
         SmarkAdminComponent,
         FmarkAdminComponent,
         DmarkAdminComponent,
+     
 
     ],
     entryComponents: [LoaderComponent],

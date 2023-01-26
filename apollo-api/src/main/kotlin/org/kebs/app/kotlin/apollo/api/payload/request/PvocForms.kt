@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.kebs.app.kotlin.apollo.api.service.AmountInWordsService
 import org.kebs.app.kotlin.apollo.api.service.BillStatus
-import org.kebs.app.kotlin.apollo.store.model.IdfItemsEntity
-import org.kebs.app.kotlin.apollo.store.model.IdfsEntity
 import org.kebs.app.kotlin.apollo.store.model.PaymentMethodsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.IDFDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.IDFItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.pvc.*
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.sql.Date
 import java.sql.Timestamp
 import javax.validation.Valid
@@ -1918,23 +1919,23 @@ class IdfItem {
 
     @NotNull(message = "Required field")
     @Min(value = 0, message = "Item Cost should be greater than or equal to zero")
-    var itemCost: Long? = null
+    var itemCost: Double? = null
 
     companion object {
-        fun fromEntity(idfItemsEntity: IdfItemsEntity): IdfItem {
+        fun fromEntity(idfItemsEntity: IDFItemDetailsEntity): IdfItem {
             return IdfItem()
                 .apply {
-                    itemDescription = idfItemsEntity.itemDescription
-                    hsCode = idfItemsEntity.hsCode
-                    quantity = idfItemsEntity.quantity
-                    used = !"NEW".equals(idfItemsEntity.newUsed, true)
-                    unitOfMeasure = idfItemsEntity.unitOfMeasure
-                    applicableStandard = idfItemsEntity.applicableStandard
-                    itemCost = idfItemsEntity.itemCost
+                    itemDescription = idfItemsEntity.tariffGoodsDesc ?: idfItemsEntity.description ?: "NA"
+                    hsCode = idfItemsEntity.commodityCode
+                    quantity = idfItemsEntity.unitNum?.toLong()
+                    used = idfItemsEntity.usedStatus
+                    unitOfMeasure = idfItemsEntity.unitCode
+                    applicableStandard = idfItemsEntity.categoryTypePro
+                    itemCost = idfItemsEntity.itemPrice?.setScale(0, RoundingMode.CEILING)?.toDouble()
                 }
         }
 
-        fun fromList(items: List<IdfItemsEntity>): List<IdfItem> {
+        fun fromList(items: List<IDFItemDetailsEntity>): List<IdfItem> {
             val idfIems = mutableListOf<IdfItem>()
             items.forEach { idfIems.add(fromEntity(it)) }
             return idfIems
@@ -2072,14 +2073,13 @@ open class IdfEntityForm {
     var items: List<IdfItem>? = null
 
     companion object {
-        fun fromEntity(idf: IdfsEntity, itemList: List<IdfItemsEntity>): IdfEntityForm {
+        fun fromEntity(idf: IDFDetailsEntity, itemList: List<IDFItemDetailsEntity>): IdfEntityForm {
             return IdfEntityForm().apply {
-                idfNumber = idf.idfNumber
-                ucrNumber = idf.ucr
-                idfNumber = idf.idfNumber
-                importerName = idf.importerName
-                importerAddress = idf.importerAddress
-                importerFaxNumber = idf.importerFax
+                idfNumber = idf.baseDocRefNo
+                ucrNumber = idf.ucrNo
+                importerName = idf.consigneeBusinessName
+                importerAddress = idf.consigneeBusinessAddress
+                importerFaxNumber = idf.sellerFax
                 importerTelephoneNumber = idf.importerTelephoneNumber
                 importerEmail = idf.importerEmail
                 importerContactName = idf.importerContactName
@@ -2093,18 +2093,18 @@ open class IdfEntityForm {
                 portOfDischarge = idf.portOfDischarge
                 portOfCustomsClearance = idf.portOfCustomsClearance
                 modeOfTransport = idf.modeOfTransport
-                countryOfSupply = idf.countryOfSupply
+                countryOfSupply = idf.consignorCountryCode
                 comesa = idf.comesa
                 invoiceNumber = idf.invoiceNumber
                 invoiceDate = idf.invoiceDate
-                currency = idf.currency
+                currency = idf.currencyCode
                 exchangeRate = idf.exchangeRate ?: 0.0
                 fobValue = idf.fobValue ?: 0.0
-                freight = idf.freight ?: 0.0
-                insurance = idf.insurance ?: 0.0
+                freight = 0.0
+                insurance = (idf.totalInsurance ?: BigDecimal.ZERO).toDouble()
                 observations = idf.observations ?: "NA"
-                otherCharges = idf.otherCharges ?: 0.0
-                total = idf.total
+                otherCharges = (idf.totalOtherCharges ?: BigDecimal.ZERO).toDouble()
+                total = (idf.totalAmount ?: BigDecimal.ZERO).toDouble()
                 items = IdfItem.fromList(itemList)
             }
         }

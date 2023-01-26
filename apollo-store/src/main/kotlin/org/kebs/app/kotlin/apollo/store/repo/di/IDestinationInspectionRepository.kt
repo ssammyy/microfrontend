@@ -799,7 +799,7 @@ interface IIDFDetailsEntityRepository : HazelcastRepository<IDFDetailsEntity, Lo
 interface IIDFItemDetailsEntityRepository : HazelcastRepository<IDFItemDetailsEntity, Long> {
     //fun findByIDFDetailsId(IDFDetailsId: IDFDetailsEntity): List<IDFItemDetailsEntity>?
 
-    fun findAllByIdfDetails(idfDetailsEntity: IDFDetailsEntity): List<IDFItemDetailsEntity>?
+    fun findAllByIdfDetails(idfDetailsEntity: IDFDetailsEntity): List<IDFItemDetailsEntity>
 
 }
 
