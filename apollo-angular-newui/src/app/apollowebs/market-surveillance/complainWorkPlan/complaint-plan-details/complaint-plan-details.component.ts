@@ -66,6 +66,7 @@ import {ConsignmentStatusComponent} from '../../../../core/shared/customs/consig
 export class ComplaintPlanDetailsComponent implements OnInit {
   @ViewChild('demoForm') myForm;
   @ViewChild('closebutton') closebutton;
+  @ViewChild('standardsInput') standardsInput: ElementRef;
 
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
@@ -85,11 +86,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
+  standardsArray = [];
   latestProgressReport: InspectionInvestigationReportDto;
   selectedSFFDetails: SampleSubmissionDto;
   selectedSeizedDetails: SeizureListDto;
   selectedPreliminaryReportDetails: InspectionInvestigationReportDto;
   selectedDataReportDetails: DataReportDto;
+  dataReportViewMode = true;
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -214,6 +217,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
   uploadedFilesSeizedGoods: FileList;
+  uploadedFilesDataReport: FileList;
   fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
@@ -1107,6 +1111,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
+      outletName: {
+        title: 'OUTLET NAME',
+        type: 'string',
+        filter: false,
+      },
       inspectionDate: {
         title: 'DATE OF INSPECTION',
         type: 'date',
@@ -1156,6 +1165,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       },
       inspectorName : {
         title: 'NAME OF INSPECTOR',
+        type: 'string',
+        filter: false,
+      },
+      outletName: {
+        title: 'OUTLET NAME',
         type: 'string',
         filter: false,
       },
@@ -1708,8 +1722,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
       outletDetails: ['', Validators.required],
+      outletName: ['', Validators.required],
+      physicalLocation: ['', Validators.required],
+      emailAddress: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
       mostRecurringNonCompliant: ['', Validators.required],
       personMet: ['', Validators.required],
+      samplesDrawnAndSubmitted: ['', Validators.required],
+      sourceOfProductAndEvidence: ['', Validators.required],
       summaryFindingsActionsTaken: ['', Validators.required],
       finalActionSeizedGoods: ['', Validators.required],
       totalComplianceScore: ['', Validators.required],
@@ -1765,6 +1785,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       docID: null,
       mainSeizureID: null,
       descriptionProductsSeized: ['', Validators.required],
+      product: ['', Validators.required],
       brand: ['', Validators.required],
       sector: ['', Validators.required],
       reasonSeizure: ['', Validators.required],
@@ -1781,6 +1802,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       docID: null,
       marketTownCenter: ['', Validators.required],
       nameOfOutlet: ['', Validators.required],
+      formSerialNumber: ['', Validators.required],
       nameSeizingOfficer: ['', Validators.required],
       additionalOutletDetails: ['', Validators.required],
     });
@@ -1839,6 +1861,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       lbIdDateOfManf: null,
       lbIdExpiryDate: null,
       lbIdTradeMark: null,
+      sampleCollectionDate: null,
       noteTransResults: null,
       scfNo: null,
       cocNumber: null,
@@ -2410,6 +2433,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
+    this.dataReportViewMode = false;
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
@@ -2419,13 +2443,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       'approveFinalPreliminaryDirector'];
 
     // tslint:disable-next-line:max-line-length
-    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
-      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/REJECT FINAL REPORT', 'APPROVE/REJECT FINAL REPORT',
+    const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
+      'ADD BS NUMBER', 'APPROVE/DECLINE PRELIMINARY REPORT', 'APPROVE/DECLINE PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/DECLINE FINAL REPORT', 'APPROVE/DECLINE FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/REJECT FINAL REPORT'];
+      'APPROVE/DECLINE FINAL REPORT'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -4371,11 +4395,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
-
-  onClickAddDataReportParam() {
+  checkProductCompliance(permit: string){
+    console.log(permit);
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
     const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
-
     switch (valueSelected) {
       case 'Local':
         this.msService.loadPermitDetailsSearch(this.dataSaveDataReportParam.permitNumber).subscribe(
@@ -4412,6 +4435,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         );
         break;
     }
+  }
+
+
+  onClickAddDataReportParam() {
+    this.dataSaveDataReportParam = this.dataReportParamForm.value;
+
 
 
 
@@ -4439,7 +4468,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.isImport = 0;
     console.log('compliant count' + compliantCount);
     console.log('total count' + totalCount);
-    console.log('complinace Value count' + this.totalCompliantValue);
+    console.log('compliance Value count' + this.totalCompliantValue);
   }
 
 
@@ -4591,6 +4620,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveDataReport() {
+
     this.submitted = true;
     if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -4646,6 +4676,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.saveSeizureDeclaration();
           });
 
+    }
+    else{
+      console.log("Fill in all fields! Especially the uploads");
     }
   }
 
@@ -5110,5 +5143,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
+  }
+
+  addStandard() {
+    let standard = this.standardsInput.nativeElement.value;
+    this.standardsArray.push(standard);
+    this.standardsInput.nativeElement.value = '';
   }
 }

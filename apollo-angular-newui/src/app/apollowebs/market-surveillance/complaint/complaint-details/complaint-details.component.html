@@ -459,6 +459,8 @@
                                             (click)="viewWorkPlanCreated()"
                                             class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
                                 </div>
+                                <i class="btn btn-sm btn-primary" (click)="viewComplaintPdfFile( complaintInspection?.complaintsDetails?.refNumber,'application/pdf')">
+                                    DOWNLOAD COMPLAINT</i>
                             </div>
                         </div>
                     </div>
@@ -551,7 +553,7 @@
                                             </mat-form-field>
                                         </div>
                                         <div *ngIf="(selectComplaintStatus == 'Reject')">
-                                            <label for="mandateForOga"><b>Select Rejection type</b></label>
+                                            <label for="mandateForOga"><b>Select Declination type</b></label>
                                             <mat-form-field id="mandateForOga">
                                                 <mat-select (selectionChange)="updateSelectedRejectionStatus()"
                                                             [class.is-invalid]="formAcceptRejectForm.mandateForOga.invalid && formAcceptRejectForm.mandateForOga.touched"

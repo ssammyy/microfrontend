@@ -1022,14 +1022,17 @@ export const routes: Routes = [
     ],
 
   },
+//   {
+//     path: 'Permit-details', component: AdminLayoutComponent,
+//     // canActivate: [RouteGuard]
+
+//     children: [
+//         {path: '', component: PermitDetailsComponent},
+//     ],
+
+//   },
   {
-    path: 'Permit-details', component: AdminLayoutComponent,
-    // canActivate: [RouteGuard]
-
-    children: [
-        {path: '', component: PermitDetailsComponent},
-    ],
-
+    path: 'permit-details', component: PermitDetailsComponent
   },
 
 
