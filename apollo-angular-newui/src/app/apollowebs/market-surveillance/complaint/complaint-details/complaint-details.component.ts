@@ -620,7 +620,15 @@ export class ComplaintDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveReAssignHof(valid: boolean) {
+  onClickSaveReAssignRegion(valid: boolean) {
+    this.msService.showSuccessWith2Message('Are you sure your want to Update The Region Details?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can click the \'RE-ASSIGN REGION\' button to update details', 'COMPLAINT ACCEPT/REJECT SUCCESSFUL', () => {
+          this.saveReAssignRegion(valid);
+        });
+  }
+
+  saveReAssignRegion(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveReAssignRegion = {...this.dataSaveReAssignRegion, ...this.reAssignRegionForm.value};
