@@ -648,13 +648,10 @@ import {CorporateBillsComponent} from "./apollowebs/invoice/corporate-bills/corp
 import {
     ViewRfcCocDocumentsComponent
 } from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
-import {
-    ViewRfcCorDocumentsComponent
-} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
+
 import {
     HofReviewProposalComponent
 } from "./apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component";
-import {ViewRfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
 import {ViewRfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
 import {CompanyListComponent} from './apollowebs/company/company-list/company-list.component';
 import { SmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
