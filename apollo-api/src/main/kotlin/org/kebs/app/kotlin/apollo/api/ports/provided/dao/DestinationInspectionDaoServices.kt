@@ -30,6 +30,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -76,6 +77,16 @@ enum class CdTypeCodes(val code: String) {
     OTHER("OTHER")
 }
 
+data class CdInspectionStatusEvent(
+    val ucrNumber: String,
+    val certNumber: String?,
+    val idfNumber: String?,
+    val status: String,
+    val documentType: String,
+    val clientId: Long?,
+    val remarks: String,
+    val version: String?
+)
 
 @Service
 class DestinationInspectionDaoServices(
@@ -86,6 +97,7 @@ class DestinationInspectionDaoServices(
     private val invoiceDaoService: InvoiceDaoService,
     private val feeRangesRepository: InspectionFeeRangesRepository,
     private val notifications: Notifications,
+    private val eventPublisher: ApplicationEventPublisher,
     private val iCocItemRepository: ICocItemRepository,
     private val iUserProfilesRepo: IUserProfilesRepository,
     private val idfsRepo: IIDFDetailsEntityRepository,
@@ -3477,6 +3489,58 @@ class DestinationInspectionDaoServices(
         )
     }
 
+    fun documentStatusChanged(
+        pgaRemarks: String,
+        status: String,
+        version: String,
+        cdDetails: ConsignmentDocumentDetailsEntity
+    ) {
+        try {
+            if (cdDetails.cdType?.documentType == "F") {
+                when (cdDetails.cdType?.category) {
+                    "VEHICLE" -> findCORByCdId(cdDetails)?.let { cor ->
+                        cor.partner?.let {
+                            CdInspectionStatusEvent(
+                                cdDetails.ucrNumber ?: "",
+                                cdDetails.corNumber,
+                                cdDetails.idfNumber,
+                                status,
+                                "COR",
+                                cor.partner,
+                                pgaRemarks,
+                                version
+                            )
+                        }
+                    }
+                    else -> {
+                        findCOCByCdId(cdDetails.id ?: 0).forEach { coc ->
+                            coc.partner?.let {
+                                var certNumber = coc.cocNumber
+                                when (coc.documentsType) {
+                                    "COI" -> {
+                                        certNumber = coc.coiNumber
+                                    }
+                                }
+                                CdInspectionStatusEvent(
+                                    cdDetails.ucrNumber ?: "",
+                                    certNumber,
+                                    cdDetails.idfNumber,
+                                    status,
+                                    coc.documentsType ?: "COC",
+                                    coc.partner,
+                                    pgaRemarks,
+                                    version
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.warn("Failed to send CD status event")
+        }
+    }
+
     //Send CD status to KeSWS
     fun submitCDStatusToKesWS(
         pgaRemarks: String,
@@ -3486,7 +3550,7 @@ class DestinationInspectionDaoServices(
     ) {
         val current = LocalDateTime.now()
         val expiryDate = current.plusYears(1)
-
+        this.documentStatusChanged(pgaRemarks, status, version, cdDetails)
         val formatter = DateTimeFormatter.ofPattern("yyyyMMddhhmmss")
         val formatted = current.format(formatter)
         val formattedExipry = expiryDate.format(formatter)

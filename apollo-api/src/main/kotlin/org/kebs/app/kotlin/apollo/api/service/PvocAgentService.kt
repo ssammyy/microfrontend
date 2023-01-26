@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.api.payload.request.*
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerQueryDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerTimelinesDataDto
 import org.kebs.app.kotlin.apollo.api.payload.response.RiskProfileDao
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CdInspectionStatusEvent
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ForeignPvocIntegrations
@@ -59,6 +60,33 @@ class PvocAgentService(
         return response
     }
 
+    fun consignmentDocumentStatusUpdateEvent(cd: CdInspectionStatusEvent) {
+        try {
+            val data = mutableMapOf<String, Any?>()
+            data["ucrNumber"] = cd.ucrNumber
+            data["certNumber"] = cd.certNumber
+            data["idfNumber"] = cd.idfNumber
+            data["certificateType"] = cd.documentType
+            data["remarks"] = cd.remarks
+            data["status"] = cd.status
+            data["version"] = cd.version
+            // Send event
+            cd.clientId?.let { clientId ->
+                partnerService.getPartner(clientId)?.let { partner ->
+                    this.apiClientService.getApiClient(partner.apiClientId ?: 0)?.let { apiClient ->
+                        this.apiClientService.publishCallbackEvent(
+                            data,
+                            apiClient,
+                            "CONSIGNMENT_STATUS"
+                        )
+                    }
+                }
+            }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Consignment document event", ex)
+        }
+    }
+
     @EventListener
     fun idfDocumentReceivedEvent(idf: IDFReceivedEvent) {
         try {
@@ -66,8 +94,8 @@ class PvocAgentService(
             val data = mutableMapOf<String, Any>()
             data["country"] = idf.country
             data["region"] = idf.region
-            data["idf_number"] = idf.idfNo
-            data["ucr_number"] = idf.ucrNumber
+            data["idfNumber"] = idf.idfNo
+            data["ucrNumber"] = idf.ucrNumber
             // For each partner, we publish an IDF with each partner in the target country
             partners.forEach { partner ->
                 partner.apiClientId?.let { clientId ->
@@ -448,7 +476,12 @@ class PvocAgentService(
         try {
             val auth = commonDaoServices.loggedInUserAuthentication()
             val partner = this.commonDaoServices.loggedInPartnerDetails()
-            if (certificateExists(form.documentType.orEmpty().toUpperCase(), form.certNumber.orEmpty(), partner.id)) {
+            if (certificateExists(
+                    form.documentType.orEmpty().toUpperCase(),
+                    form.certNumber.orEmpty(),
+                    partner.id
+                )
+            ) {
                 val query = PvocQueriesEntity()
                 query.serialNumber = queryReference("PVOC")
                 query.partnerId = partner.id
@@ -800,7 +833,8 @@ class PvocAgentService(
     fun getRfcData(rfcNumber: String?, ucrNumber: String?, documentType: String?): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val idfData = pvocIntegrations.getRfcData(rfcNumber.orEmpty(), ucrNumber.orEmpty(), documentType.orEmpty())
+            val idfData =
+                pvocIntegrations.getRfcData(rfcNumber.orEmpty(), ucrNumber.orEmpty(), documentType.orEmpty())
             response.data = idfData
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Success"

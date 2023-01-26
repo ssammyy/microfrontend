@@ -224,6 +224,14 @@ class ApiClientService(
         return null
     }
 
+    fun findByeClientId(clientId: String): SystemApiClient? {
+        val client = this.apiClientRepo.findByClientId(clientId)
+        if (client.isPresent) {
+            return client.get()
+        }
+        return null
+    }
+
     fun getClientDetails(clientId: Long): ApiClientDao? {
         val client = this.apiClientRepo.findById(clientId)
         if (client.isPresent) {
