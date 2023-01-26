@@ -454,11 +454,12 @@
 
                                 <br/>
                                 <b>Document Details:</b>
-                                <div *ngIf="complaintInspection?.complaintProcessStatus == true">
-                                    <i
-                                            (click)="viewWorkPlanCreated()"
-                                            class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
-                                </div>
+                                <i *ngIf="complaintInspection?.complaintProcessStatus == true"
+                                        (click)="viewWorkPlanCreated()"
+                                        class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
+
+                                <i class="btn btn-sm btn-primary" (click)="viewComplaintPdfFile( complaintInspection?.complaintsDetails?.refNumber,'application/pdf')">
+                                    DOWNLOAD COMPLAINT</i>
                             </div>
                         </div>
                     </div>
@@ -551,7 +552,7 @@
                                             </mat-form-field>
                                         </div>
                                         <div *ngIf="(selectComplaintStatus == 'Reject')">
-                                            <label for="mandateForOga"><b>Select Rejection type</b></label>
+                                            <label for="mandateForOga"><b>Select Decline type</b></label>
                                             <mat-form-field id="mandateForOga">
                                                 <mat-select (selectionChange)="updateSelectedRejectionStatus()"
                                                             [class.is-invalid]="formAcceptRejectForm.mandateForOga.invalid && formAcceptRejectForm.mandateForOga.touched"
@@ -617,7 +618,7 @@
                                         <label for="assignedRemarks"><b>Please write, in detail, your feedback for
                                             assigning the officer:</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <textarea formControlName="assignedRemarks" id="assignedRemarks" matInput
+                                            <textarea formControlName="assignedRemarks"  matInput
                                                       name="assignedRemarks"
                                                       type="text">
                                             </textarea>
@@ -633,11 +634,11 @@
                                 <div class="form-group" >
                                     <div>
                                         <label for="regionID"><b>Select Region</b></label>
-                                        <mat-form-field *ngIf="region$ | async as apps">
+                                        <mat-form-field >
                                             <mat-select (selectionChange)="updateSelectedRegion()"
                                                         [class.is-invalid]="formReAssignRegionForm.regionID.invalid && formReAssignRegionForm.regionID.touched"
                                                         formControlName="regionID" id="regionID" name="regionID" placeholder="Please Select an option">
-                                                <mat-option *ngFor="let app of apps| filterPipe: {status: true}  " [value]="app.id">{{app.region}}</mat-option>
+                                                <mat-option *ngFor="let app of msRegions| filterPipe: {status: true}  " [value]="app.id">{{app.region}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <!--                                        <label for="countyID"><b>Select County</b></label>-->

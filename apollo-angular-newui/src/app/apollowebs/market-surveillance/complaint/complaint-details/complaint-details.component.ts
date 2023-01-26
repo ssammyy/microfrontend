@@ -52,7 +52,7 @@ import {
   BroadProductCategory,
   ProductCategories,
   Products,
-  ProductSubcategory,
+  ProductSubcategory, RegionsEntityDto,
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
 import {Observable, throwError} from 'rxjs';
@@ -148,6 +148,8 @@ export class ComplaintDetailsComponent implements OnInit {
   supervisorTasks: any[];
   supervisorCharge = false;
   inspectionOfficer = false;
+
+  msRegions: RegionsEntityDto[] = null;
 
   public settingsComplaintsFiles = {
     selectMode: 'single',  // single|multi
@@ -380,11 +382,6 @@ export class ComplaintDetailsComponent implements OnInit {
 
   private loadData(referenceNumber: string): any {
     this.SpinnerService.show();
-    // let params = {'personal': this.personalTasks}
-    // this.fuelInspection = this.msService.fuelInspectionDetailsExamples()
-    // this.totalCount = this.loadedData.fuelInspectionDto.length;
-    // this.dataSet.load(this.loadedData.fuelInspectionDto);
-    // this.SpinnerService.hide();
     this.msService.msComplaintDetails(referenceNumber).subscribe(
         (data) => {
           this.complaintInspection = data;
@@ -424,6 +421,15 @@ export class ComplaintDetailsComponent implements OnInit {
                   this.msService.showError('AN ERROR OCCURRED');
                 },
             );
+          this.msService.msRegionListDetails().subscribe(
+              (dataRegions: RegionsEntityDto[]) => {
+                this.msRegions = dataRegions;
+              },
+              error => {
+                console.log(error);
+                this.msService.showError('AN ERROR OCCURRED');
+              },
+          );
             this.msService.msDivisionListDetails().subscribe(
                 (dataDiv: MsDivisionDetails[]) => {
                   this.msDivisions = dataDiv;
@@ -514,6 +520,7 @@ export class ComplaintDetailsComponent implements OnInit {
     );
 
   }
+
   updateSelectedRegion() {
     this.selectedRegion = this.reAssignRegionForm?.get('regionID')?.value;
     console.log(`region set to ${this.selectedRegion}`);
