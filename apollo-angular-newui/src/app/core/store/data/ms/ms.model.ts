@@ -619,7 +619,8 @@ export class InspectionInvestigationReportDto {
     reportFunction: string;
     backgroundInformation: string;
     objectiveInvestigation: string;
-    dateInvestigationInspection: Date;
+    endDateInvestigationInspection: Date;
+    startDateInvestigationInspection: Date;
     kebsInspectors: KebsOfficersName[];
     methodologyEmployed: string;
     findings: string;

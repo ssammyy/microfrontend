@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   ApprovalDto, BSNumberDto,
@@ -71,6 +71,7 @@ interface Post {
 export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('demoForm') myForm;
   @ViewChild('closebutton') closebutton;
+  @ViewChild('standardsInput') standardsInput: ElementRef;
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
@@ -87,6 +88,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   addLabParamStatus = true;
   addProductsStatus = true;
   addSeizureProductsStatus = true;
+  standardsArray = [];
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
@@ -1766,10 +1768,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       reportFunction: ['', Validators.required],
       backgroundInformation: ['', Validators.required],
       objectiveInvestigation: ['', Validators.required],
-      dateInvestigationInspection: ['', Validators.required],
+      startDateInvestigationInspection: ['', Validators.required],
+      endDateInvestigationInspection: ['', Validators.required],
       kebsInspectors: null,
       methodologyEmployed: ['', Validators.required],
-      findings: ['', Validators.required],
+      // findings: ['', Validators.required],
       conclusion: ['', Validators.required],
       recommendations: ['', Validators.required],
       statusActivity: ['', Validators.required],
@@ -1879,6 +1882,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       lbIdExpiryDate: null,
       lbIdTradeMark: null,
       noteTransResults: null,
+      standardsArray: [[], Validators.required],
       scfNo: null,
       cocNumber: null,
       testChargesKsh: null,
@@ -3331,11 +3335,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     // if (valid) {
     this.SpinnerService.show();
     this.dataSaveStartOnsiteActivities = {...this.dataSaveStartOnsiteActivities, ...this.startOnsiteActivitiesForm.value};
-    this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
-        this.workPlanInspection.batchDetails.referenceNumber,
-        this.workPlanInspection.referenceNumber,
-        this.dataSaveStartOnsiteActivities
-    ).subscribe(
+    this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveStartOnsiteActivities).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
           console.log(data);
@@ -5215,6 +5215,18 @@ export class WorkPlanDetailsComponent implements OnInit {
         );
       }
     }
+  }
+
+  addStandard() {
+    let standard = this.standardsInput.nativeElement.value;
+    if(standard != ""){
+      this.standardsArray.push(standard);
+    }
+    this.standardsInput.nativeElement.value = '';
+  }
+
+  deleteItem(index: number) {
+    this.standardsArray.splice(index, 1);
   }
 
 }
