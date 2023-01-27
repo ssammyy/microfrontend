@@ -627,7 +627,9 @@ import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-ad
 import { FmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
 import { PermitDetailsComponent } from './apollowebs/qualityAssuranceAdmin/permit-details/permit-details.component';
 import {ComStdRequestProcessComponent} from "./apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component";
-
+import {
+    HofReviewProposalComponent
+} from "./apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component";
 export const routes: Routes = [
     {
         path: '',
