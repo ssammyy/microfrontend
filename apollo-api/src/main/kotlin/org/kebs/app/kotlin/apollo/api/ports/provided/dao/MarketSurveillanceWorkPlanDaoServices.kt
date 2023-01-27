@@ -39,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.lang.reflect.Type
 import java.sql.Date
 import java.sql.Timestamp
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.util.*
@@ -3705,7 +3706,8 @@ class MarketSurveillanceWorkPlanDaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun startWorkPlanScheduleInspectionOnsiteDetailsBasedOnRefNo(
         referenceNo: String,
-        batchReferenceNo: String
+        batchReferenceNo: String,
+        body: WorkPlanScheduleOnsiteDto
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -3716,6 +3718,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             onsiteStartStatus = map.activeStatus
             onsiteEndStatus = map.inactiveStatus
             onsiteStartDate = commonDaoServices.getCurrentDate()
+            onsiteStartDateAdded = body.startDate
+            onsiteEndDateAdded = body.endDate
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionStartOnSiteActivities.let { timeLine ->
                 findProcessNameByID(timeLine, 1).timelinesDay
@@ -3745,6 +3749,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             sendSffStatus = map.activeStatus
             onsiteEndStatus = map.activeStatus
             onsiteEndDate = commonDaoServices.getCurrentDate()
+            onsiteTat = Duration.between(onsiteEndDate!!.toLocalDate(), onsiteEndDateAdded!!.toLocalDate() ).toDays()
             sendSffDate = commonDaoServices.getCurrentDate()
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionEndOnSiteActivities.let { timeLine ->
@@ -4523,6 +4528,10 @@ class MarketSurveillanceWorkPlanDaoServices(
                 ?.let { updateDataReport ->
                     with(updateDataReport) {
                         referenceNumber = body.referenceNumber
+                        physicalLocation = body.physicalLocation
+                        outletName = body.outletName
+                        phoneNumber = body.phoneNumber
+                        emailAddress = body.emailAddress
                         inspectionDate = body.inspectionDate
                         inspectorName = body.inspectorName
                         function = body.function
@@ -4546,6 +4555,10 @@ class MarketSurveillanceWorkPlanDaoServices(
                 } ?: kotlin.run {
                 with(saveDataReport) {
                     referenceNumber = body.referenceNumber
+                    physicalLocation = body.physicalLocation
+                    outletName = body.outletName
+                    phoneNumber = body.phoneNumber
+                    emailAddress = body.emailAddress
                     inspectionDate = body.inspectionDate
                     inspectorName = body.inspectorName
                     function = body.function
@@ -4818,6 +4831,8 @@ class MarketSurveillanceWorkPlanDaoServices(
     ): MsSeizureDeclarationEntity {
         with(saveData) {
             marketTownCenter = body.marketTownCenter
+            serialNumber = body.serialNumber
+            productField = body.productField
             nameOfOutlet = body.nameOfOutlet
             docId = body.docID
             additionalOutletDetails = body.additionalOutletDetails
@@ -5804,6 +5819,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             data.id,
             data.docId,
             data.marketTownCenter,
+            data.productField,
+            data.serialNumber,
             data.nameOfOutlet,
             data.nameSeizingOfficer,
             data.additionalOutletDetails,
@@ -5854,6 +5871,10 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReport.town,
             dataReport.marketCenter,
             dataReport.outletDetails,
+            dataReport.physicalLocation,
+            dataReport.outletName,
+            dataReport.phoneNumber,
+            dataReport.emailAddress,
             dataReport.mostRecurringNonCompliant,
             dataReport.personMet,
             dataReport.summaryFindingsActionsTaken,
@@ -6379,6 +6400,9 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.onsiteStartStatus == 1,
             wKP.onsiteStartDate,
             wKP.onsiteEndDate,
+            wKP.onsiteStartDateAdded,
+            wKP.onsiteEndDateAdded,
+            wKP.onsiteTat,
             wKP.sendSffDate,
             wKP.sendSffStatus == 1,
             wKP.onsiteEndStatus == 1,

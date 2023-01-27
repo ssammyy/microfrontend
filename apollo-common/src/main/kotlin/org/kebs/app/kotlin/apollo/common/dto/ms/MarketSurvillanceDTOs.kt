@@ -217,6 +217,9 @@ data class WorkPlanInspectionDto(
         var onsiteStartStatus: Boolean? = null,
         var onsiteStartDate: Date? = null,
         var onsiteEndDate: Date? = null,
+        var onsiteStartDateAdded: Date? = null,
+        var onsiteEndDateAdded: Date? = null,
+        var onsiteTat: Long? = null,
         var sendSffDate: Date? = null,
         var sendSffStatus: Boolean? = null,
         var onsiteEndStatus: Boolean? = null,
@@ -388,6 +391,14 @@ data class WorkPlanScheduleApprovalDto(
         var remarks: String? = null,
 )
 
+data class WorkPlanScheduleOnsiteDto(
+        @NotNull(message = "Required field")
+        var startDate: Date,
+        @NotNull(message = "Required field")
+        var endDate: Date,
+        var remarks: String? = null,
+)
+
 data class ApprovalDto(
         @NotNull(message = "Required field")
         var approvalStatus: Boolean,
@@ -542,6 +553,10 @@ data class DataReportDto(
         var town: String? = null,
         var marketCenter: String? = null,
         var outletDetails: String? = null,
+        var physicalLocation: String? = null,
+        var outletName: String? = null,
+        var phoneNumber: String? = null,
+        var emailAddress: String? = null,
         var mostRecurringNonCompliant: String? = null,
         var personMet: String? = null,
         var summaryFindingsActionsTaken: String? = null,
@@ -618,6 +633,8 @@ data class SeizureListDto(
         var id: Long?= 0,
         var docID: Long?= 0,
         var marketTownCenter: String?=null,
+        var productField: String?=null,
+        var serialNumber: String?=null,
         var nameOfOutlet: String?=null,
         var nameSeizingOfficer: String?=null,
         var additionalOutletDetails: String?=null,

@@ -32,6 +32,14 @@ class MsSeizureDeclarationEntity : Serializable{
     var marketTownCenter: String? = null
 
     @Basic
+    @Column(name = "SERIAL_NUMBER")
+    var serialNumber: String? = null
+
+    @Basic
+    @Column(name = "PRODUCT_FIELD")
+    var productField: String? = null
+
+    @Basic
     @Column(name = "ADDITIONAL_OUTLET_DETAILS")
     var additionalOutletDetails: String? = null
 

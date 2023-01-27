@@ -957,6 +957,9 @@ export class WorkPlanInspectionDto {
     onsiteStartStatus: boolean;
     onsiteStartDate: Date;
     onsiteEndDate: Date;
+    onsiteStartDateAdded: Date;
+    onsiteEndDateAdded: Date;
+    onsiteTat: number;
     sendSffDate: Date;
     sendSffStatus: boolean;
     onsiteEndStatus: boolean;
@@ -1115,10 +1118,18 @@ export class LaboratoryEntityDto {
         status: boolean;
 }
 
+export class WorkPlanScheduleOnsiteDto {
+        startDate: Date;
+        endDate: Date;
+        remarks: string;
+}
+
 export class SeizureListDto {
     id: number;
     docID: number;
     marketTownCenter: string;
+    productField: string;
+    serialNumber: string;
     nameOfOutlet: string;
     nameSeizingOfficer: string;
     additionalOutletDetails: string;

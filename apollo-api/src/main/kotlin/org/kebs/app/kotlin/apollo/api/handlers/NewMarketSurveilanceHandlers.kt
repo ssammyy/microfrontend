@@ -2127,10 +2127,21 @@ class NewMarketSurveillanceHandler(
         return try {
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required  batchReferenceNo, check parameters")
-            marketSurveillanceWorkPlanDaoServices.startWorkPlanScheduleInspectionOnsiteDetailsBasedOnRefNo(referenceNo, batchReferenceNo)
-                .let {
-                    ServerResponse.ok().body(it)
+            val body = req.body<WorkPlanScheduleOnsiteDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, WorkPlanScheduleOnsiteDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    marketSurveillanceWorkPlanDaoServices.startWorkPlanScheduleInspectionOnsiteDetailsBasedOnRefNo(referenceNo, batchReferenceNo,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
                 }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)

@@ -32,7 +32,7 @@ import {
   WorkPlanFeedBackDto,
   WorkPlanFinalRecommendationDto,
   WorkPlanInspectionDto, WorkPlanProductDto,
-  WorkPlanScheduleApprovalDto,
+  WorkPlanScheduleApprovalDto, WorkPlanScheduleOnsiteDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {
   County,
@@ -126,6 +126,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   preliminaryReportParamForm!: FormGroup;
   investInspectReportInspectorsForm!: FormGroup;
   actionOnSiezedGoodsForm!: FormGroup;
+  startOnsiteActivitiesForm!: FormGroup;
   addCountyTownForm!: FormGroup;
   clientEmailNotificationForm!: FormGroup;
   ssfClientEmailNotificationForm!: FormGroup;
@@ -152,6 +153,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveFinalReport: PreliminaryReportFinal;
   dataSaveChargeSheet: ChargeSheetDto;
   dataSaveDataReport: DataReportDto;
+  dataSaveStartOnsiteActivities: WorkPlanScheduleOnsiteDto;
   dataSaveFieldReportAdditional: FieldReportAdditionalInfo;
   dataSaveActionOnSiezedGoods: FieldReportBackDto;
   dataSaveActionOnSiezedGoodsList: FieldReportBackDto[] = [];
@@ -1813,9 +1815,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
+      productField: ['', Validators.required],
+      serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
       nameOfOutlet: ['', Validators.required],
-      formSerialNumber: ['', Validators.required],
       nameSeizingOfficer: ['', Validators.required],
       additionalOutletDetails: ['', Validators.required],
     });
@@ -2016,6 +2019,12 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.actionOnSiezedGoodsForm = this.formBuilder.group({
       actionOnSeizedGoodsDetails: ['', Validators.required],
+    });
+
+    this.startOnsiteActivitiesForm = this.formBuilder.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      remarks: null,
     });
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -2330,6 +2339,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.ssfSaveComplianceStatusForm.controls;
   }
 
+  get formStartOnsiteActivitiesForm(): any {
+    return this.startOnsiteActivitiesForm.controls;
+  }
+
   get formSampleCollectForm(): any {
     return this.sampleCollectForm.controls;
   }
@@ -2489,7 +2502,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
       'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD',
-      'approveFinalPreliminaryDirector'];
+      'approveFinalPreliminaryDirector', 'startOnsiteActivities'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2498,7 +2511,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/REJECT FINAL REPORT'];
+      'APPROVE/REJECT FINAL REPORT', 'KINDLY ADD START AND END DATE YOU WISH TO END ON-SITE ACTIVITIES'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -3306,21 +3319,22 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickStartOnsiteActivities() {
+  onClickStartOnsiteActivities(valid: boolean) {
     this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be staring the Timeliness for Onsite Activities!',
         // tslint:disable-next-line:max-line-length
         'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
-          this.startOnsiteActivities();
+          this.startOnsiteActivities(valid);
         });
   }
 
-  startOnsiteActivities() {
+  startOnsiteActivities(valid: boolean) {
     // if (valid) {
     this.SpinnerService.show();
-    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+    this.dataSaveStartOnsiteActivities = {...this.dataSaveStartOnsiteActivities, ...this.startOnsiteActivitiesForm.value};
     this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
         this.workPlanInspection.batchDetails.referenceNumber,
         this.workPlanInspection.referenceNumber,
+        this.dataSaveStartOnsiteActivities
     ).subscribe(
         (data: any) => {
           this.workPlanInspection = data;

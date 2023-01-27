@@ -364,9 +364,21 @@ class MsWorkPlanGeneratedEntity : Serializable {
     @Basic
     var onsiteStartStatus: Int? = 0
 
+    @Column(name = "ONSITE_TAT")
+    @Basic
+    var onsiteTat: Long? = 0
+
     @Column(name = "ONSITE_START_DATE")
     @Basic
     var onsiteStartDate: Date? = null
+
+    @Column(name = "ONSITE_START_DATE_ADDED")
+    @Basic
+    var onsiteStartDateAdded: Date? = null
+
+    @Column(name = "ONSITE_END_DATE_ADDED")
+    @Basic
+    var onsiteEndDateAdded: Date? = null
 
     @Column(name = "ONSITE_END_DATE")
     @Basic

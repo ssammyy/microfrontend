@@ -722,7 +722,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     "/update".nest {
                         PUT("/submit-for-approval", handler::submitWorkPlanScheduleEntry)
                         PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
-                        GET("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
+                        POST("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
                         GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)
                         PUT("/end-all-recommendation-done", handler::endWorkPlanInspectionAllRecommendationDone)
                         PUT("/client-appealed-status", handler::updateWorkPlanClientAppealed)
