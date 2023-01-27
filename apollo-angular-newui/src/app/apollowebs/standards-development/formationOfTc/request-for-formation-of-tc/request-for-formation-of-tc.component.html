@@ -209,15 +209,34 @@
 
                                             <ng-container matColumnDef="status">
                                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-                                                <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+                                                <td mat-cell *matCellDef="let row">
+
+
+                                                    <ng-container [ngSwitch]="row.status">
+                                                        <ng-container *ngSwitchCase="'2'">
+<span style=" font-size: 10px;"
+      class="badge badge-success">Approved By HOF</span></ng-container>
+                                                        <ng-container *ngSwitchCase="'4'"><span
+                                                                style=" font-size: 10px;"
+                                                                class="badge badge-success">Approved By SPC</span>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="'6'"><span
+                                                                style=" font-size: 10px;"
+                                                                class="badge badge-success">Approved By SAC</span>
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchDefault></ng-container>
+                                                    </ng-container>
+
+
+                                                </td>
                                             </ng-container>
                                             <ng-container matColumnDef="actions">
                                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions</th>
                                                 <td mat-cell *matCellDef="let row">
-                                                    <a
-                                                            class="btn btn-info tooltips"
-                                                            data-placement="top"
-                                                            data-original-title="Review"> View More</a>
+                                                    <a (click)="openModalApproved(row)"
+                                                       class="btn btn-info tooltips"
+                                                       data-placement="top"
+                                                       data-original-title="Review"> View More</a>
                                                 </td>
                                             </ng-container>
 
@@ -648,7 +667,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <form #formDirectiveB="ngForm" (ngSubmit)="uploadProposalForTC(formDirectiveB)"
+                    <form #formDirectiveB="ngForm" (ngSubmit)="editProposalForTC(formDirectiveB)"
                           [formGroup]="editFormationRequestFormGroup">
                         <div class="form-body">
                             <div class="row">
@@ -890,7 +909,10 @@
                                     </mat-form-field>
                                 </div>
 
-                                <div class="form-group">
+
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-6">
                                     <label><b>Department</b></label>
                                     <mat-form-field>
 
@@ -898,7 +920,7 @@
                                                     class="form-control" required
                                                     formControlName="departmentId"
                                                     name="departmentId"
-                                                    placeholder="Select Department"
+                                                    placeholder="{{selectedDepartment}}"
                                                     [class.is-invalid]="formEditFormationRequest.departmentId.invalid && formEditFormationRequest.departmentId.touched">
                                             <mat-option *ngFor="let department of departments"
                                                         value="{{department.id}}">{{department.name}}</mat-option>
@@ -940,11 +962,168 @@
 
                             </div>
 
-                            <button class="btn btn-info" type="submit">
-                                Edit
-                            </button>
+                            <input hidden formControlName="id" [ngModel]="this.proposalRetrieved?.id" name="id">
+                            <ng-container [ngSwitch]="this.proposalRetrieved?.status">
+                                <ng-container *ngSwitchCase="'3'">
+                                    <div class="row">
+                                        <div class=" col-12">
+                                            <ul class="list-group">
+                                                <li style="background-color: red" class="list-group-item active">HOF REJECTION
+                                                </li>
 
-                            <button class="btn btn-danger" type="submit">
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">REJECTION
+                                                    BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">REJECTION REASON:
+                                                    {{this.proposalRetrieved?.comments}}
+                                                </li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">REJECTION
+                                                    DATE:{{formatFormDate(this.proposalRetrieved?.hofReviewDate)}}</li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'5'">
+                                    <div class="row">
+                                        <div class=" col-12">
+                                            <ul class="list-group">
+                                                <li class="list-group-item active">HOF APPROVAL
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL
+                                                    BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL REASON:
+                                                    {{this.proposalRetrieved?.comments}}
+                                                </li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL
+                                                    DATE:{{formatFormDate(this.proposalRetrieved?.hofReviewDate)}}</li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class=" col-12">
+                                            <ul class="list-group">
+                                                <li style="background-color: red" class="list-group-item active">SPC REJECTION
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">REJECTION BY:
+                                                    {{spcDetails?.firstName + ' ' + spcDetails?.lastName}}
+                                                </li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">REJECTION REASON:
+                                                    {{this.proposalRetrieved?.commentsSpc}}
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">REJECTION DATE:
+                                                    {{formatFormDate(this.proposalRetrieved?.spcReviewDate)}}
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'7'">
+                                    <div class="row">
+                                        <div class=" col-12">
+                                            <ul class="list-group">
+                                                <li class="list-group-item active">HOF APPROVAL
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL
+                                                    BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL REASON:
+                                                    {{this.proposalRetrieved?.comments}}
+                                                </li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL
+                                                    DATE:{{formatFormDate(this.proposalRetrieved?.hofReviewDate)}}</li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class=" col-12">
+                                            <ul class="list-group">
+                                                <li class="list-group-item active">SPC APPROVAL
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL BY:
+                                                    {{spcDetails?.firstName + ' ' + spcDetails?.lastName}}
+                                                </li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL REASON:
+                                                    {{this.proposalRetrieved?.commentsSpc}}
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">APPROVAL DATE:
+                                                    {{formatFormDate(this.proposalRetrieved?.spcReviewDate)}}
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class=" col-12">
+                                            <ul class="list-group">
+                                                <li style="background-color: red" class="list-group-item active">SAC
+                                                    REJECTION
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">REJECTION BY:
+                                                    {{sacDetails?.firstName + ' ' + sacDetails?.lastName}}
+                                                </li>
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">RECOMMENDATION:
+                                                    {{this.proposalRetrieved?.commentsSac}}
+                                                </li>
+
+                                                <li style="background: lightgray"
+                                                    class="list-group-item">REJECTION DATE:
+                                                    {{formatFormDate(this.proposalRetrieved?.sacReviewDate)}}
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </ng-container>
+
+
+                                <ng-container *ngSwitchDefault></ng-container>
+                            </ng-container>
+
+                            <ng-container [ngSwitch]="this.proposalRetrieved?.status">
+                                <ng-container *ngSwitchCase="'1'">
+                                    <button class="btn btn-info" type="submit">
+                                        Edit
+                                    </button>
+                                </ng-container>
+
+                                <ng-container *ngSwitchDefault>
+                                    <button class="btn btn-info" type="submit">
+                                        Resubmit
+                                    </button>
+                                </ng-container>
+                            </ng-container>
+
+
+                            <button data-dismiss="modal" style="float: right" class="btn btn-danger">
                                 Close
                             </button>
 
@@ -975,26 +1154,38 @@
 
                             <div class="form-group col-6">
                                 <label><b>Date of Presentation</b></label>
-                                <input readonly ngModel="{{this.proposalRetrieved?.dateOfPresentation}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.dateOfPresentation}}">
 
                             </div>
 
                             <div class="form-group col-6">
                                 <label><b>Name of TC</b></label>
-                                <input readonly ngModel="{{this.proposalRetrieved?.nameOfTC}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.nameOfTC}}">
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-6">
                                 <label><b>Proposer</b></label>
-                                <input readonly ngModel="{{this.proposalRetrieved?.proposer}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.proposer}}">
                             </div>
 
                             <div class="form-group col-6">
 
                                 <label><b>Reference number given by Secretariat</b></label>
 
-                                <input readonly ngModel="{{this.proposalRetrieved?.referenceNumber}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.referenceNumber}}">
 
                             </div>
                         </div>
@@ -1002,12 +1193,18 @@
 
                             <div class="form-group col-6">
                                 <label><b>Subject</b></label>
-                                <input readonly ngModel="{{this.proposalRetrieved?.subject}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.subject}}">
                             </div>
 
                             <div class="form-group col-6">
                                 <label><b>Scope</b></label>
-                                <input readonly ngModel="{{this.proposalRetrieved?.referenceNumber}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.referenceNumber}}">
                             </div>
                         </div>
 
@@ -1015,23 +1212,34 @@
                         <div class="row">
                             <div class="form-group col-6">
                                 <label><b>Purpose and Justification</b></label>
-                                <textarea readonly ngModel="{{this.proposalRetrieved?.purpose}}"></textarea>
+                                <textarea aria-describedby="inputGroup-sizing-sm"
+                                          aria-label="Small"
+                                          class="form-control one-column-input" readonly
+                                          ngModel="{{this.proposalRetrieved?.purpose}}"></textarea>
                             </div>
                             <div class="form-group col-6">
                                 <label><b>Proposed TC Representation</b></label>
-                                <input readonly ngModel="{{this.proposalRetrieved?.proposedRepresentation}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.proposedRepresentation}}">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="form-group col-6">
                                 <label><b>Target Date</b></label>
-                                <input readonly ngModel="{{this.proposalRetrieved?.targetDate}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.targetDate}}">
                             </div>
                             <div class="form-group col-6">
                                 <label><b>Program of work</b></label>
 
-                                <input readonly
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
                                        ngModel="{{this.proposalRetrieved?.programmeOfWork}}">
                             </div>
                         </div>
@@ -1039,15 +1247,31 @@
                         <div class="row">
                             <div class="form-group col-6">
                                 <label><b>Liaison Organization</b></label>
-                                <input readonly ngModel="{{this.proposalRetrieved?.liaisonOrganization}}">
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{this.proposalRetrieved?.liaisonOrganization}}">
                             </div>
 
                             <div class="form-group col-6">
                                 <label><b>Organization</b></label>
 
-                                <input readonly
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
                                        ngModel="{{this.proposalRetrieved?.organization}}">
                             </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label><b>Department</b></label>
+                                <input aria-describedby="inputGroup-sizing-sm"
+                                       aria-label="Small"
+                                       class="form-control one-column-input" readonly
+                                       ngModel="{{selectedDepartment}}">
+                            </div>
+
 
                         </div>
                         <div class="form-group">
@@ -1083,8 +1307,218 @@
 
                         </div>
 
+                        <ng-container [ngSwitch]="this.proposalRetrieved?.status">
+                            <ng-container *ngSwitchCase="'2'">
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">HOF APPROVAL
+                                            </li>
 
-                        <button class="btn btn-danger" type="submit">
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL
+                                                BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL
+                                                DATE:{{formatFormDate(this.proposalRetrieved?.hofReviewDate)}}</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'4'">
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">HOF APPROVAL
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL
+                                                BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL REASON:
+                                                {{this.proposalRetrieved?.comments}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL
+                                                DATE:{{formatFormDate(this.proposalRetrieved?.hofReviewDate)}}</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">SPC APPROVAL
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL BY:
+                                                {{spcDetails?.firstName + ' ' + spcDetails?.lastName}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL REASON:
+                                                {{this.proposalRetrieved?.commentsSpc}}
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL DATE:
+                                                {{formatFormDate(this.proposalRetrieved?.spcReviewDate)}}
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'6'">
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">HOF APPROVAL
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL
+                                                BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL REASON:
+                                                {{this.proposalRetrieved?.comments}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL
+                                                DATE:{{formatFormDate(this.proposalRetrieved?.hofReviewDate)}}</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">SPC APPROVAL
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL BY:
+                                                {{spcDetails?.firstName + ' ' + spcDetails?.lastName}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL REASON:
+                                                {{this.proposalRetrieved?.commentsSpc}}
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL DATE:
+                                                {{formatFormDate(this.proposalRetrieved?.spcReviewDate)}}
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">SAC APPROVAL
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL BY:
+                                                {{sacDetails?.firstName + ' ' + sacDetails?.lastName}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL REASON:
+                                                {{this.proposalRetrieved?.commentsSac}}
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL DATE:
+                                                {{formatFormDate(this.proposalRetrieved?.sacReviewDate)}}
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'7'">
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">HOF APPROVAL
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL
+                                                BY:{{userDetails?.firstName + ' ' + userDetails?.lastName}}</li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL REASON:
+                                                {{this.proposalRetrieved?.comments}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL
+                                                DATE:{{formatFormDate(this.proposalRetrieved?.hofReviewDate)}}</li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li class="list-group-item active">SPC APPROVAL
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL BY:
+                                                {{spcDetails?.firstName + ' ' + spcDetails?.lastName}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL REASON:
+                                                {{this.proposalRetrieved?.commentsSpc}}
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">APPROVAL DATE:
+                                                {{formatFormDate(this.proposalRetrieved?.spcReviewDate)}}
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-12">
+                                        <ul class="list-group">
+                                            <li style="background-color: red" class="list-group-item active">SAC
+                                                REJECTION
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">REJECTION BY:
+                                                {{sacDetails?.firstName + ' ' + sacDetails?.lastName}}
+                                            </li>
+                                            <li style="background: lightgray"
+                                                class="list-group-item">RECOMMENDATION:
+                                                {{this.proposalRetrieved?.commentsSac}}
+                                            </li>
+
+                                            <li style="background: lightgray"
+                                                class="list-group-item">REJECTION DATE:
+                                                {{formatFormDate(this.proposalRetrieved?.sacReviewDate)}}
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </ng-container>
+
+
+                            <ng-container *ngSwitchDefault></ng-container>
+                        </ng-container>
+
+
+                        <button style="float: right" #closeModalC data-dismiss="modal" class="btn btn-danger">
                             Close
                         </button>
 

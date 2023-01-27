@@ -281,7 +281,7 @@ export class ReviewJustificationOfTCComponent implements OnInit {
         },
     );
   }
-  public reasonApprove(): void {
+  public reasonApprove(formDirective): void {
     if (this.stdApproveOrRejectWithReason.valid) {
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -316,6 +316,7 @@ export class ReviewJustificationOfTCComponent implements OnInit {
                 this.getAllSacJustifications(false);
                 this.getAllSacJustificationsApproved()
                 this.getAllSacJustificationsRejected()
+                formDirective.resetForm()
               },
           );
         } else if (
@@ -337,7 +338,7 @@ export class ReviewJustificationOfTCComponent implements OnInit {
 
   }
 
-  public reasonReject(): void {
+  public reasonReject(formDirective): void {
     if (this.stdApproveOrRejectWithReason.valid) {
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -367,11 +368,13 @@ export class ReviewJustificationOfTCComponent implements OnInit {
                     'success'
                 );
                 this.SpinnerService.hide();
-                this.hideModelC()
+                this.hideModel()
                 this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
                 this.getAllSacJustifications(false);
                 this.getAllSacJustificationsApproved()
                 this.getAllSacJustificationsRejected()
+                formDirective.resetForm()
+
               },
           );
         } else if (

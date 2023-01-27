@@ -1681,6 +1681,75 @@ class QualityAssuranceHandler(
         }
 
     }
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitListAwardedMigrationDmark(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitNumber = req.paramOrNull("permitNumber")?.toString()
+                ?: throw ExpectedDataNotFound("Required PermitNumber, check config")
+
+            var permitListAllApplications: List<PermitApplicationsEntity>? = null
+            when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    permitListAllApplications = qaDaoServices.findAllLoadedPermitListDmark(
+                        loggedInUser,
+                        permitNumber,
+                        loggedInUser,
+                    )
+                }
+
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitListAwardedMigrationFmark(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitNumber = req.paramOrNull("permitNumber")?.toString()
+                ?: throw ExpectedDataNotFound("Required PermitNumber, check config")
+
+            var permitListAllApplications: List<PermitApplicationsEntity>? = null
+            when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    permitListAllApplications = qaDaoServices.findAllLoadedPermitListFmark(
+                        loggedInUser,
+                        permitNumber,
+                        loggedInUser,
+                    )
+                }
+
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

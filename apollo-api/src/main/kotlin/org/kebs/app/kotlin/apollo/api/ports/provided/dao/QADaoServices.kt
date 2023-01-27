@@ -543,6 +543,72 @@ class QADaoServices(
         }
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
+    fun findAllLoadedPermitListDmark(
+        user: UsersEntity,
+        permitNumber: String,
+        attachedPlant: UsersEntity
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        val attachedPlantId = attachedPlant.plantId ?: throw ExpectedDataNotFound("No PLANT ID Found")
+        KotlinLogging.logger { }.info { userId }
+        KotlinLogging.logger { }.info { attachedPlantId }
+        KotlinLogging.logger { }.info { permitNumber }
+        //  permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
+//        permitRepo.findByPermitRefNumber(permitNumber)?.let {
+//
+//            if (it.isNullOrEmpty()) {
+//                throw ExpectedDataNotFound("This Permit is not assigned to you")
+//
+//
+//            } else {
+        try {
+            val response = permitRepo.migratePermitsToNewUserDmark(userId, permitNumber, attachedPlantId)
+            KotlinLogging.logger { }.info("The response is $response")
+            permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
+                return permitList
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+        permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
+            return permitList
+        }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+    fun findAllLoadedPermitListFmark(
+        user: UsersEntity,
+        permitNumber: String,
+        attachedPlant: UsersEntity
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        val attachedPlantId = attachedPlant.plantId ?: throw ExpectedDataNotFound("No PLANT ID Found")
+        KotlinLogging.logger { }.info { userId }
+        KotlinLogging.logger { }.info { attachedPlantId }
+        KotlinLogging.logger { }.info { permitNumber }
+        //  permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
+//        permitRepo.findByPermitRefNumber(permitNumber)?.let {
+//
+//            if (it.isNullOrEmpty()) {
+//                throw ExpectedDataNotFound("This Permit is not assigned to you")
+//
+//
+//            } else {
+        try {
+            val response = permitRepo.migratePermitsToNewUserFmark(userId, permitNumber, attachedPlantId)
+            KotlinLogging.logger { }.info("The response is $response")
+            permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
+                return permitList
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+
+        }
+        permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
+            return permitList
+        }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
 
     // find all user permits
     fun findAllMyPermits(user: UsersEntity): List<PermitApplicationsEntity> {

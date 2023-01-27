@@ -83,6 +83,14 @@ class JustificationForTC {
     @Basic
     var createdBy: Long? = null
 
+    @Column(name = "MODIFIED_ON")
+    @Basic
+    var modifiedOn: Timestamp? = null
+
+    @Column(name = "MODIFIED_BY")
+    @Basic
+    var modifiedBy: Long? = null
+
     @Column(name = "VERSION")
     @Basic
     var version: String? = null
@@ -106,6 +114,10 @@ class JustificationForTC {
     @Column(name = "COMMENTSSPC")
     @Basic
     var commentsSpc: String? = null
+
+    @Column(name = "COMMENTSSAC")
+    @Basic
+    var commentsSac: String? = null
 
 
     @Column(name = "HOFREVIEWDATE")

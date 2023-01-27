@@ -175,6 +175,20 @@ export class StandardDevelopmentService {
         );
     }
 
+    public getDepartmentById(departmentId: string): any {
+        const url = `${this.apiServerUrl}getDepartmentById`;
+        const params = new HttpParams().set('departmentId', departmentId)
+        return this.http.get<Department>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+
+    }
+
     public getJustificationByNwiId(nwiId: string): Observable<any> {
         const url = `${this.apiServerUrl}getJustificationByNwiId`;
         const params = new HttpParams().set('nwiId', nwiId)
