@@ -751,7 +751,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 applicationMapProperties.mapMsComplaintAcknowledgementAcceptedNotification,
                                 complainantEmailComposed,
                                 map,
-                                complaintUpdated.first
+                                complaintUpdated.first,
+                                complainantEmailComposed.refNumber
                             )
                         }
 
@@ -874,7 +875,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionNotification,
                                 complainantEmailComposed,
                                 map,
-                                complaintUpdated.first
+                                complaintUpdated.first,
+                                complainantEmailComposed.refNumber
                             )
                         }
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
@@ -938,7 +940,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionRejectedForAmendmentNotification,
                                 complainantEmailComposed,
                                 map,
-                                complaintUpdated.first
+                                complaintUpdated.first,
+                                complainantEmailComposed.refNumber
                             )
                         }
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
@@ -1001,7 +1004,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionWIthOGANotification,
                                 complainantEmailComposed,
                                 map,
-                                complaintUpdated.first
+                                complaintUpdated.first,
+                                complainantEmailComposed.refNumber
                             )
                         }
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
@@ -1155,6 +1159,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         body: ComplaintAssignDto
     ): AllComplaintsDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
         val complaintFound = findComplaintByRefNumber(referenceNoFound)
 
@@ -1164,7 +1169,17 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 findMsProcessComplaintByID(1, timeLine )?.timelinesDay}?.let {daysCount->
                 commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let {daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
             }
-            msProcessId = applicationMapProperties.msComplaintProcessAssignOfficer
+
+            msProcessId = when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_MODIFY"
+                        || authority.authority == "MS_RM_MODIFY" } -> {
+                    applicationMapProperties.msComplaintProcessAssignOfficerHOD
+                }
+                else -> {
+                    applicationMapProperties.msComplaintProcessAssignOfficer
+                }
+            }
+
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             assignedRemarks = body.assignedRemarks
             assignedIoStatus = map.activeStatus
@@ -1383,6 +1398,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             refNumber = dataDetails.referenceNumber
             baseUrl = applicationMapProperties.baseUrlValue
             complaintTitle = dataDetails.complaintTitle
+            productName = dataDetails.productString
             fullName = dataDetails.createdBy
             commentRemarks = dataDetails.rejectedRemarks
             dateSubmitted = dataDetails.transactionDate
@@ -1398,7 +1414,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
             baseUrl = applicationMapProperties.baseUrlValue
             complaintTitle = dataDetails.complaintTitle
             fullName = dataDetails.createdBy
+            productName = dataDetails.productString
+            ogaName = dataDetails.advisedWhereto
             commentRemarks = dataDetails.rejectedRemarks
+            amendmentRemarks = dataDetails.amendmentRemarks
             adviceRemarks = dataDetails.advisedWhereto
             dateSubmitted = dataDetails.transactionDate
         }

@@ -1113,7 +1113,7 @@
                                             </button>
 
                                             <button  *ngIf="workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
-                                                     (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
+                                                     (click)="openModalAddDetails('startOnsiteActivities')" mat-raised-button="" data-toggle="modal" data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
                                                 <div class="mat-button-focus-overlay"></div>
@@ -2016,6 +2016,31 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'startOnsiteActivities')">
+                        <form [formGroup]="startOnsiteActivitiesForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="totalCompliance"><b>Start Date</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="startDate" matInput type="date" formControlName="startDate" name="startDate">
+                                        </mat-form-field>
+                                        <label for="totalCompliance"><b>End Date</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="endDate" matInput type="date" formControlName="endDate" name="endDate">
+                                        </mat-form-field>
+                                        <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for Picking Above Dates:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="remarks" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'addBsNumber')">
                         <form [formGroup]="sampleSubmitBSNumberForm" class="form">
                             <div class="form-body">
@@ -2274,6 +2299,12 @@
                     <button *ngIf="(currDiv == 'pdfSaveCompliance')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSavePDFSelected(pdfSaveComplianceStatusForm.valid);"
                             [disabled]="!pdfSaveComplianceStatusForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'startOnsiteActivities')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickStartOnsiteActivities(startOnsiteActivitiesForm.valid);"
+                            [disabled]="!startOnsiteActivitiesForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -3211,16 +3242,20 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" *ngIf="dataReportViewMode == false">
                         <div class="col">
                             <div  class="form-group">
                                 <label for="files"><b>Upload Documents Here</b></label>
                                 <form #demoForm="ngForm">
-                                    <file-upload [(ngModel)]="uploadedFilesSeizedGoods" name="files" id="files89"
+                                    <file-upload [(ngModel)]="uploadedFilesDataReport" name="files" id="uploadedFilesDataReportWP"
                                                  [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
                                 </form>
                             </div>
                         </div>
+
+                    </div>
+                    <div class="row" *ngIf="dataReportViewMode == true">
+                        <h4>Show the uploaded documents of this datasheet</h4>
 
                     </div>
 
@@ -3314,12 +3349,26 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label><b>Form Serial Number</b> </label>
-                                    <input [class.is-invalid]="formSeizureForm.formSerialNumber.invalid && formSeizureForm.formSerialNumber.errors"
+                                    <input [class.is-invalid]="formSeizureForm.serialNumber.invalid && formSeizureForm.serialNumber.errors"
                                            class="form-control two-column-input"
-                                           formControlName="formSerialNumber"
-                                           name="formSerialNumber" required type="text">
-                                    <div *ngIf="submitted && formSeizureForm.formSerialNumber.errors" class="invalid-feedback">
-                                        <div *ngIf="formSeizureForm.formSerialNumber.errors.required">This field is
+                                           formControlName="serialNumber"
+                                           name="serialNumber" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.serialNumber.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.serialNumber.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Product</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.productField.invalid && formSeizureForm.productField.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="productField"
+                                           name="productField" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.productField.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.productField.errors.required">This field is
                                             required
                                         </div>
                                     </div>
@@ -3602,8 +3651,10 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th>Description Products Seized</th>
+                                            <th>Product</th>
                                             <th>Brand</th>
+                                            <th>Description Products Seized</th>
+
                                             <th>Sector</th>
                                             <th>Reason Seizure</th>
                                             <th>Seizure Serial</th>
@@ -3617,8 +3668,9 @@
                                         </thead>
                                         <tbody>
                                         <tr *ngFor="let r of dataSaveSeizureDeclarationList; let i=index">
-                                            <td>{{r.descriptionProductsSeized}}</td>
+                                            <td>{{r.product}}</td>
                                             <td>{{r.brand}}</td>
+                                            <td>{{r.descriptionProductsSeized}}</td>
                                             <td>{{r.sector}}</td>
                                             <td>{{r.reasonSeizure}}</td>
                                             <td>{{r.seizureSerial}}</td>
@@ -3852,7 +3904,7 @@
                                         <textarea [class.is-invalid]="formInvestInspectReportForm.backgroundInformation.invalid && formInvestInspectReportForm.backgroundInformation.errors"
                                                   class="form-control two-column-input"
                                                   formControlName="backgroundInformation"
-                                                  name="backgroundInformation" required type="text"></textarea>
+                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></textarea>
                                         <div *ngIf="submitted && formInvestInspectReportForm.backgroundInformation.errors" class="invalid-feedback">
                                             <div *ngIf="formInvestInspectReportForm.backgroundInformation.errors.required">This field is
                                                 required
@@ -5701,12 +5753,12 @@
 
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Source of Product and Evidence</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="sourceProductEvidence" name="sourceProductEvidence" required
-                                               [class.is-invalid]="formSampleSubmitForm.sourceProductEvidence.invalid && formSampleSubmitForm.sourceProductEvidence.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sourceProductEvidence.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sourceProductEvidence.errors.required">This field is
+                                        <label><b>Sample Collection Date</b></label>
+                                        <input type="date" class="form-control two-column-input"
+                                               formControlName="sampleCollectionDate" name="sampleCollectionDate" required
+                                               [class.is-invalid]="formSampleSubmitForm.sampleCollectionDate.invalid && formSampleSubmitForm.sampleCollectionDate.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionDate.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sampleCollectionDate.errors.required">This field is
                                                 required
                                             </div>
                                         </div>
