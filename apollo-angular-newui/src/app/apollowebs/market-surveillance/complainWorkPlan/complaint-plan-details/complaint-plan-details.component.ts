@@ -32,7 +32,7 @@ import {
   WorkPlanFeedBackDto,
   WorkPlanFinalRecommendationDto,
   WorkPlanInspectionDto, WorkPlanProductDto,
-  WorkPlanScheduleApprovalDto,
+  WorkPlanScheduleApprovalDto, WorkPlanScheduleOnsiteDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {
   BroadProductCategory,
@@ -89,6 +89,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   standardsArray = [];
   latestProgressReport: InspectionInvestigationReportDto;
   selectedSFFDetails: SampleSubmissionDto;
+  dataSaveStartOnsiteActivities: WorkPlanScheduleOnsiteDto;
   selectedSeizedDetails: SeizureListDto;
   selectedPreliminaryReportDetails: InspectionInvestigationReportDto;
   selectedDataReportDetails: DataReportDto;
@@ -114,6 +115,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataReportForm!: FormGroup;
   dataReportParamForm!: FormGroup;
   seizureDeclarationForm!: FormGroup;
+  startOnsiteActivitiesForm!: FormGroup;
   seizureForm!: FormGroup;
   fieldReportAdditionalInfortForm!: FormGroup;
   preliminaryReportForm!: FormGroup;
@@ -1800,6 +1802,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
+      productField: ['', Validators.required],
+      serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
       nameOfOutlet: ['', Validators.required],
       formSerialNumber: ['', Validators.required],
@@ -2440,7 +2444,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
       'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD',
-      'approveFinalPreliminaryDirector'];
+      'approveFinalPreliminaryDirector',  'startOnsiteActivities'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2449,7 +2453,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/DECLINE FINAL REPORT'];
+      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD START AND END DATE YOU WISH TO END ON-SITE ACTIVITIES'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -3255,21 +3259,23 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickStartOnsiteActivities() {
+
+  onClickStartOnsiteActivities(valid: boolean) {
     this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be staring the Timeliness for Onsite Activities!',
         // tslint:disable-next-line:max-line-length
         'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
-          this.startOnsiteActivities();
+          this.startOnsiteActivities(valid);
         });
   }
 
-  startOnsiteActivities() {
+  startOnsiteActivities(valid: boolean) {
     // if (valid) {
     this.SpinnerService.show();
-    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
+    this.dataSaveStartOnsiteActivities = {...this.dataSaveStartOnsiteActivities, ...this.startOnsiteActivitiesForm.value};
     this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
         this.workPlanInspection.batchDetails.referenceNumber,
         this.workPlanInspection.referenceNumber,
+        this.dataSaveStartOnsiteActivities
     ).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
