@@ -1,15 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {LoginCredentials, selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
+import {LoginCredentials, selectUserInfo} from '../../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {
-    AllPermitDetailsDto, FilesListDto,
-    PermitEntityDetails,
+    AllPermitDetailsDto,
+    FilesListDto,
+    PermitEntityDto,
     PermitProcessStepDto,
     PlantDetailsDto,
-    SectionDto, STA1, STA3
+    SectionDto,
+    STA1,
+    STA3
 } from '../../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
@@ -58,12 +61,19 @@ export class NewDmarkPermitComponent implements OnInit {
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
     DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
+    dmarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID);
 
     public demoForm = new FormGroup({
         files: this.filesControl
     });
 
     allPermitDetails: AllPermitDetailsDto;
+
+    public allPermitData: PermitEntityDto[];
+
+    selectedPermit: string;
+
+    cloned: boolean;
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -148,6 +158,10 @@ export class NewDmarkPermitComponent implements OnInit {
                 this.plants = data;
             }
         );
+        this.qaService.loadPermitAwardedList(this.dmarkID).subscribe(
+            (data: any) => {
+                this.allPermitData = data;
+            });
 
         this.getSelectedPermit();
 
@@ -198,7 +212,7 @@ export class NewDmarkPermitComponent implements OnInit {
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
             this.permitID = params;
-           //(this.permitID);
+            //(this.permitID);
             if (this.permitID) {
                 this.qaService.viewSTA1Details(this.permitID).subscribe(
                     (data) => {
@@ -206,7 +220,7 @@ export class NewDmarkPermitComponent implements OnInit {
                         this.sta1Form.patchValue(this.sta1);
                         this.qaService.viewSTA3Details(this.permitID).subscribe(
                             (data1) => {
-                               //(data1);
+                                //(data1);
                                 this.sta3 = data1;
                                 this.sta3FormA.patchValue(this.sta3);
                                 this.sta3FormB.patchValue(this.sta3);
@@ -218,6 +232,34 @@ export class NewDmarkPermitComponent implements OnInit {
                     },
                 );
 
+            }
+        });
+    }
+
+    public clonePermit(): void {
+        this.route.fragment.subscribe(params => {
+            this.permitID = this.selectedPermit;
+            //(this.permitID);
+            if (this.permitID) {
+                this.qaService.viewSTA1Details(this.permitID).subscribe(
+                    (data) => {
+                        this.sta1 = data;
+                        this.sta1Form.patchValue(this.sta1);
+                        this.qaService.viewSTA3Details(this.permitID).subscribe(
+                            (data1) => {
+                                //(data1);
+                                this.sta3 = data1;
+                                this.sta3FormA.patchValue(this.sta3);
+                                this.sta3FormB.patchValue(this.sta3);
+                                this.sta3FormC.patchValue(this.sta3);
+                                this.sta3FormD.patchValue(this.sta3);
+                                this.sta3FilesList = this.sta3.sta3FilesList;
+                            },
+                        );
+                    },
+                );
+                this.sta1 = null;
+                this.sta3= null;
             }
         });
     }
@@ -286,7 +328,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
-                       //(data);
+                        //(data);
                         this.SpinnerService.hide();
                         this.step += 1;
                         this.currBtn = 'B';
@@ -310,7 +352,7 @@ export class NewDmarkPermitComponent implements OnInit {
                         this.step += 1;
                         this.isLoading = false;
                         this.SpinnerService.hide();
-                       //(data);
+                        //(data);
                         swal.fire({
                             title: 'STA1 Form updated!',
                             buttonsStyling: false,
@@ -329,12 +371,12 @@ export class NewDmarkPermitComponent implements OnInit {
         if (valid) {
             if (this.sta3 == null) {
                 this.SpinnerService.show();
-               //(this.sta1.id.toString());
+                //(this.sta1.id.toString());
                 this.sta3 = {...this.sta3, ...this.sta3FormA.value};
                 this.qaService.savePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                     (data: any) => {
                         this.onClickUpdateStep(this.step);
-                       //(data);
+                        //(data);
                         this.SpinnerService.hide();
                         this.sta3 = data;
                         this.step += 1;
@@ -354,7 +396,7 @@ export class NewDmarkPermitComponent implements OnInit {
                 this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                     (data: any) => {
                         this.onClickUpdateStep(this.step);
-                       //(data);
+                        //(data);
                         this.SpinnerService.hide();
                         this.sta3 = data;
                         this.step += 1;
@@ -379,7 +421,7 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
-                   //(data);
+                    //(data);
                     this.SpinnerService.hide();
                     this.sta3 = data;
                     this.step += 1;
@@ -403,7 +445,7 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
-                   //(data);
+                    //(data);
                     this.SpinnerService.hide();
                     this.sta3 = data;
                     this.step += 1;
@@ -427,7 +469,7 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
-                   //(data);
+                    //(data);
                     this.SpinnerService.hide();
                     this.sta3 = data;
                     this.step += 1;
@@ -462,7 +504,7 @@ export class NewDmarkPermitComponent implements OnInit {
             const file = this.uploadedFiles;
             const formData = new FormData();
             for (let i = 0; i < file.length; i++) {
-               //(file[i]);
+                //(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
             this.SpinnerService.show();
@@ -470,7 +512,7 @@ export class NewDmarkPermitComponent implements OnInit {
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
                     this.SpinnerService.hide();
-                   //(data);
+                    //(data);
                     this.step += 1;
                     swal.fire({
                         title: 'STA3 Form Completed! Proceed to submit application.',
@@ -548,7 +590,7 @@ export class NewDmarkPermitComponent implements OnInit {
         const file = this.uploadedFiles;
         const formData = new FormData();
         for (let i = 0; i < file.length; i++) {
-           //(file[i]);
+            //(file[i]);
             formData.append('docFile', file[i], file[i].name);
         }
 
@@ -557,7 +599,7 @@ export class NewDmarkPermitComponent implements OnInit {
             (data: any) => {
                 this.onClickUpdateStep(this.step);
                 this.SpinnerService.hide();
-               //(data);
+                //(data);
                 this.step += 1;
                 swal.fire({
                     title: 'STA3 Form Completed! Proceed to submit application.',

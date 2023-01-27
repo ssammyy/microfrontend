@@ -495,6 +495,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/list", handler::permitListMigration)
                 GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/my-permits-loaded", handler::permitListAwardedMigrationb)
+                GET("/my-permits-loaded-dmark", handler::permitListAwardedMigrationDmark)
+                GET("/my-permits-loaded-fmark", handler::permitListAwardedMigrationFmark)
+
                 GET("/all-my-permits-loaded", handler::loadAllMyPermits)
                 GET("/awarded-list-completely", handler::permitCompletelyListAwardedMigration)
                 POST("/delete", handler::deleteAPermit)

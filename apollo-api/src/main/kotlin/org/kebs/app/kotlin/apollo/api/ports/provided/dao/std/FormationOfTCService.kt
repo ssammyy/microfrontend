@@ -3,14 +3,11 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
-import org.flowable.engine.RuntimeService
-import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.DecisionFeedbackRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.JustificationForTCRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.StandardsDocumentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.TechnicalCommitteeRepository
@@ -23,12 +20,9 @@ import java.util.*
 
 @Service
 class FormationOfTCService(
-    private val runtimeService: RuntimeService,
-    private val taskService: TaskService,
     @Qualifier("processEngine") private val processEngine: ProcessEngine,
     private val repositoryService: RepositoryService,
     private val justificationForTCRepository: JustificationForTCRepository,
-    private val decisionFeedbackRepository: DecisionFeedbackRepository,
     private val commonDaoServices: CommonDaoServices,
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
@@ -37,8 +31,7 @@ class FormationOfTCService(
     ) {
 
     val PROCESS_DEFINITION_KEY = "sd_formation_of_technical_committee"
-    val TASK_SPC = "SPC"
-    val TASK_SAC = "SAC"
+
 
     fun deployProcessDefinition(): Deployment = repositoryService
         .createDeployment()
@@ -66,6 +59,8 @@ class FormationOfTCService(
     }
 
     fun getAllHofJustifications(): List<JustificationForTC> {
+
+
         return justificationForTCRepository.findAllByStatus(1)
     }
 
@@ -75,6 +70,7 @@ class FormationOfTCService(
         val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
         u.status = 2   //approved
         u.hofId = loggedInUser.id
+        u.comments= justificationForTC.comments
         u.hofReviewDate = Timestamp(System.currentTimeMillis())
         justificationForTCRepository.save(u)
         return ServerResponse(
@@ -88,6 +84,7 @@ class FormationOfTCService(
         val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
         u.status = 3   //rejected
         u.hofId = loggedInUser.id
+        u.comments= justificationForTC.comments
         u.hofReviewDate = Timestamp(System.currentTimeMillis())
         justificationForTCRepository.save(u)
         return ServerResponse(
@@ -111,6 +108,7 @@ class FormationOfTCService(
         u.status = 4   //approved by SPC
         u.spcId = loggedInUser.id
         u.spcReviewDate = Timestamp(System.currentTimeMillis())
+        u.commentsSpc= justificationForTC.commentsSpc
 
         justificationForTCRepository.save(u)
         return ServerResponse(
@@ -125,6 +123,7 @@ class FormationOfTCService(
         u.status = 5   //rejected by SPC
         u.spcId = loggedInUser.id
         u.spcReviewDate = Timestamp(System.currentTimeMillis())
+        u.commentsSpc= justificationForTC.commentsSpc
 
         justificationForTCRepository.save(u)
         return ServerResponse(
@@ -145,10 +144,11 @@ class FormationOfTCService(
     fun approveJustificationSAC(justificationForTC: JustificationForTC): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
-        u.status = 6   //approved by SAC
+        u.status = 6   //approved by SAC and advertised to Website
         u.sacId = loggedInUser.id
         u.sacReviewDate = Timestamp(System.currentTimeMillis())
         u.tcNumber = generateTCNumber("KEBS")
+        u.commentsSac= justificationForTC.commentsSac
         justificationForTCRepository.save(u)
 
         val tc = TechnicalCommittee()
@@ -158,6 +158,7 @@ class FormationOfTCService(
         tc.status = 1.toString()
         tc.createdBy = loggedInUser.id.toString()
         tc.technicalCommitteeNo = u.tcNumber
+        tc.advertisingStatus = "1"
 
         technicalCommitteeRepository.save(tc)
         return ServerResponse(
@@ -170,8 +171,9 @@ class FormationOfTCService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
         u.status = 7   //rejected by SAC
-        u.spcId = loggedInUser.id
-        u.spcReviewDate = Timestamp(System.currentTimeMillis())
+        u.sacId = loggedInUser.id
+        u.sacReviewDate = Timestamp(System.currentTimeMillis())
+        u.commentsSac= justificationForTC.commentsSac
 
         justificationForTCRepository.save(u)
         return ServerResponse(
@@ -189,21 +191,51 @@ class FormationOfTCService(
     }
 
 
-    fun advertiseTcToWebsite(justificationForTC: JustificationForTC): ServerResponse {
+//    fun advertiseTcToWebsite(justificationForTC: JustificationForTC): ServerResponse {
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
+//        u.status = 8   //advertised To Website
+//        justificationForTCRepository.save(u)
+//
+////       find technical committee
+//        val tc: TechnicalCommittee = technicalCommitteeRepository.findByTechnicalCommitteeNo(u.tcNumber)!!
+//        //update technical committee for advertising
+//        tc.advertisingStatus = "1"
+//        technicalCommitteeRepository.save(tc)
+//        return ServerResponse(
+//            HttpStatus.OK,
+//            "Success", "Technical Committee Advertised To Website."
+//        )
+//    }
+
+    fun editJustificationForFormationOfTC(justificationForTC: JustificationForTC): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val u: JustificationForTC = justificationForTCRepository.findById(justificationForTC.id).orElse(null)
-        u.status = 8   //advertised To Website
-        justificationForTCRepository.save(u)
+        u.status = 1   //begin process afresh
+        u.version = justificationForTC.version + 1
 
-//       find technical committee
-        val tc: TechnicalCommittee = technicalCommitteeRepository.findByTechnicalCommitteeNo(u.tcNumber)!!
-        //update technical committee for advertising
-        tc.advertisingStatus = "1"
-        technicalCommitteeRepository.save(tc)
+        u.subject = justificationForTC.subject
+        u.proposer = justificationForTC.proposer
+        u.purpose = justificationForTC.purpose
+        u.nameOfTC = justificationForTC.nameOfTC
+        u.scope = justificationForTC.scope
+        u.proposedRepresentation = justificationForTC.proposedRepresentation
+        u.programmeOfWork = justificationForTC.programmeOfWork
+        u.liaisonOrganization = justificationForTC.liaisonOrganization
+        u.organization = justificationForTC.organization
+        u.referenceNumber = justificationForTC.referenceNumber
+        u.targetDate = justificationForTC.targetDate
+        u.dateOfPresentation = justificationForTC.dateOfPresentation
+        u.departmentId = justificationForTC.departmentId
+        u.modifiedBy = loggedInUser.id
+        u.modifiedOn = Timestamp(System.currentTimeMillis())
+
+        justificationForTCRepository.save(u)
         return ServerResponse(
             HttpStatus.OK,
-            "Success", "Technical Committee Advertised To Website."
+            "Edited", "Justification Edited."
         )
+
     }
 
     fun generateTCNumber(departmentAbbrv: String?): String {
@@ -255,5 +287,31 @@ class FormationOfTCService(
         return draftDocumentService.findUploadedDIFileBYIdAndType(proposalId, "Formation Of Tc Additional Documents")
 
     }
+
+
+    //Hof Get All Approved Permits And Their Status
+
+    fun getAllApprovedJustifications(): List<JustificationForTC> {
+
+        val approvedProposalsByHof: List<JustificationForTC> = justificationForTCRepository.findAllByStatus(2)
+        val approvedProposalsBySpc: List<JustificationForTC> = justificationForTCRepository.findAllByStatus(4)
+        val approvedProposalsBySac: List<JustificationForTC> = justificationForTCRepository.findAllByStatus(6)
+
+
+
+        return approvedProposalsByHof + approvedProposalsBySpc + approvedProposalsBySac
+    }
+
+    fun getAllRejectedJustifications(): List<JustificationForTC> {
+
+        val rejectedProposalsByHof: List<JustificationForTC> = justificationForTCRepository.findAllByStatus(3)
+        val rejectedProposalsBySpc: List<JustificationForTC> = justificationForTCRepository.findAllByStatus(5)
+        val rejectedProposalsBySac: List<JustificationForTC> = justificationForTCRepository.findAllByStatus(7)
+
+
+
+        return rejectedProposalsByHof + rejectedProposalsBySpc + rejectedProposalsBySac
+    }
+
 
 }

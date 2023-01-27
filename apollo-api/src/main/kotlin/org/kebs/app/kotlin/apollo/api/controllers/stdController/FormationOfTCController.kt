@@ -69,6 +69,16 @@ class FormationOfTCController(
         )
     }
 
+    @PostMapping("/editJustification")
+    @ResponseBody
+    fun editJustification(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
+        return ServerResponse(
+            HttpStatus.OK,
+            "Recommendation Edited",
+            formationOfTCService.editJustificationForFormationOfTC(justificationForTC)
+        )
+    }
+
     @PostMapping("/rejectJustification")
     @ResponseBody
     fun rejectJustificationForTC(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
@@ -150,15 +160,15 @@ class FormationOfTCController(
         return formationOfTCService.sacGetAllRejected()
     }
 
-    @PostMapping("/advertiseTcToWebsite")
-    @ResponseBody
-    fun advertiseTcToWebsite(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
-        return ServerResponse(
-            HttpStatus.OK,
-            "Recommendation Posted To Website",
-            formationOfTCService.advertiseTcToWebsite(justificationForTC)
-        )
-    }
+//    @PostMapping("/advertiseTcToWebsite")
+//    @ResponseBody
+//    fun advertiseTcToWebsite(@RequestBody justificationForTC: JustificationForTC): ServerResponse {
+//        return ServerResponse(
+//            HttpStatus.OK,
+//            "Recommendation Posted To Website",
+//            formationOfTCService.advertiseTcToWebsite(justificationForTC)
+//        )
+//    }
     @PostMapping("/uploadAdditionalDocs")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDocs(
@@ -222,6 +232,17 @@ class FormationOfTCController(
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
+    }
+
+
+    @GetMapping("/getAllApprovedJustifications")
+    fun getAllApprovedJustifications(): List<JustificationForTC> {
+        return formationOfTCService.getAllApprovedJustifications()
+    }
+
+    @GetMapping("/getAllRejectedJustifications")
+    fun getAllRejectedJustifications(): List<JustificationForTC> {
+        return formationOfTCService.getAllRejectedJustifications()
     }
 
 

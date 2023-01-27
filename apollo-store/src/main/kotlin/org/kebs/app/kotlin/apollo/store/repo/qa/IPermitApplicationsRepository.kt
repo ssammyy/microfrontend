@@ -81,6 +81,27 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("VAR_ATTACHED_PLANT_ID") plantId: Long
     ): String
 
+    @Query(
+        value = "{ CALL PROC_MIGRATE_NEW_USER_PERMITS_DMARKS(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID ) }",
+        nativeQuery = true
+    )
+    fun migratePermitsToNewUserDmark(
+        @Param("VAR_USER_ID") userId: Long,
+        @Param("VAR_PERMIT_NUMBER") permitNumber: String,
+        @Param("VAR_ATTACHED_PLANT_ID") plantId: Long
+    ): String
+
+    @Query(
+        value = "{ CALL PROC_MIGRATE_NEW_USER_PERMITS_FMARK(:VAR_USER_ID,:VAR_PERMIT_NUMBER, :VAR_ATTACHED_PLANT_ID ) }",
+        nativeQuery = true
+    )
+    fun migratePermitsToNewUserFmark(
+        @Param("VAR_USER_ID") userId: Long,
+        @Param("VAR_PERMIT_NUMBER") permitNumber: String,
+        @Param("VAR_ATTACHED_PLANT_ID") plantId: Long
+    ): String
+
+
 
     @Query(
         value = "UPDATE APOLLO.DAT_KEBS_PERMIT_TRANSACTION  t1\n" +

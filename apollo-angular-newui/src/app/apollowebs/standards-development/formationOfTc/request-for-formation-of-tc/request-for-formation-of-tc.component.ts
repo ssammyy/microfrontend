@@ -15,6 +15,10 @@ import {Subject} from "rxjs";
 import {Document} from "../../../../core/store/data/std/request_std.model";
 import {Department} from "../../../../core/store/data/std/std.model";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
+import {UserRegister} from "../../../../shared/models/user";
+import {MasterService} from "../../../../core/store/data/master/master.service";
+import {ActivatedRoute} from "@angular/router";
+import {formatDate} from "@angular/common";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -59,6 +63,9 @@ export class RequestForFormationOfTCComponent implements OnInit {
     validTextType: boolean = false;
     validNumberType: boolean = false;
     pattern = "https?://.+";
+    public userDetails!: UserRegister;
+    public sacDetails!: UserRegister;
+    public spcDetails!: UserRegister;
 
 
     matcher = new MyErrorStateMatcher();
@@ -84,7 +91,13 @@ export class RequestForFormationOfTCComponent implements OnInit {
     docs !: Document[];
     blob: Blob;
 
+    selectedDepartment: string;
+
     public departments !: Department[];
+    public departmentSelected !: Department[];
+
+    dateFormat = "yyyy-MM-dd  hh:mm";
+    language = "en";
 
 
 
@@ -93,7 +106,8 @@ export class RequestForFormationOfTCComponent implements OnInit {
                 private SpinnerService: NgxSpinnerService,
                 private formBuilder: FormBuilder,
                 private standardDevelopmentService: StandardDevelopmentService,
-
+                private masterService: MasterService,
+                private route: ActivatedRoute,
     ) {
     }
 
@@ -164,6 +178,8 @@ export class RequestForFormationOfTCComponent implements OnInit {
             liaisonOrganization: ['', Validators.required],
             organization: ['', Validators.required],
             departmentId: ['', Validators.required],
+            id: ['', Validators.required],
+
 
         });
     }
@@ -172,6 +188,9 @@ export class RequestForFormationOfTCComponent implements OnInit {
         this.isFormSubmitted = true;
 
         if (this.formationRequestFormGroup.valid) {
+            this.loadingText = "Saving Please Wait ...."
+
+            this.loading = true;
             this.SpinnerService.show();
 
 
@@ -211,6 +230,54 @@ export class RequestForFormationOfTCComponent implements OnInit {
         }
     }
 
+
+    public editProposalForTC(formDirective): void {
+        this.isFormSubmitted = true;
+
+        if (this.editFormationRequestFormGroup.valid) {
+            this.loadingText = "Resubmitting Please Wait ...."
+
+            this.loading = true;
+            this.SpinnerService.show();
+
+
+            this.formationOfTcService.editProposalForTC(this.editFormationRequestFormGroup.value).subscribe(
+                (response) => {
+                    this.showToasterSuccess("Success", "Successfully edited proposal for formation of TC")
+                    if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
+                        this.onClickSaveUploads(response.body.savedRowID, this.editFormationRequestFormGroup.get("nameOfTC").value.toString())
+                        formDirective.resetForm();
+                        this.editFormationRequestFormGroup.reset()
+                        this.isFormSubmitted = false;
+
+
+                    } else {
+                        this.SpinnerService.hide();
+                        formDirective.resetForm();
+                        this.isFormSubmitted = false;
+                        this.editFormationRequestFormGroup.reset()
+                        swal.fire({
+                            title: 'Your Proposal Has Been Resubmitted.',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                        this.getAllHofJustifications(false);
+                        this.getAllHofJustificationsApproved()
+                        this.getAllHofJustificationsRejected()
+                        this.hideModelB()
+                    }
+                },
+                (error: HttpErrorResponse) => {
+                    alert(error.message);
+                }
+            )
+        }
+    }
+
+
     public getAllHofJustifications(pageRefresh: boolean): void {
 
         this.loadingText = "Retrieving Please Wait ...."
@@ -236,7 +303,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
     public getAllHofJustificationsApproved(): void {
         this.SpinnerService.show()
-        this.formationOfTcService.getAllSpcJustifications().subscribe(
+        this.formationOfTcService.getAllApprovedJustifications().subscribe(
             (response: JustificationForTc[]) => {
                 this.tasks = response;
                 this.SpinnerService.hide()
@@ -256,7 +323,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
     public getAllHofJustificationsRejected(): void {
         this.SpinnerService.show()
-        this.formationOfTcService.getAllJustificationsRejectedBySpc().subscribe(
+        this.formationOfTcService.getAllRejectedJustifications().subscribe(
             (response: JustificationForTc[]) => {
                 this.tasks = response;
                 this.SpinnerService.hide()
@@ -280,6 +347,7 @@ export class RequestForFormationOfTCComponent implements OnInit {
     get formEditFormationRequest(): any {
         return this.editFormationRequestFormGroup.controls;
     }
+
     applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -336,7 +404,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
             const file = this.uploadedFiles;
             const formData = new FormData();
             for (let i = 0; i < file.length; i++) {
-                console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
             this.loadingText = "Saving Please Wait ...."
@@ -367,7 +434,6 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
 
     public openModalToView(proposal: JustificationForTc): void {
-        console.log(proposal)
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
         button.type = 'button';
@@ -377,6 +443,42 @@ export class RequestForFormationOfTCComponent implements OnInit {
         button.setAttribute('data-toggle', 'modal');
         button.setAttribute('data-target', '#editModal');
 
+        this.getDepartmentName(String(this.proposalRetrieved.departmentId))
+        this.getAllDocs(String(this.proposalRetrieved.id))
+        this.editFormationRequestFormGroup.controls['departmentId'].setValue(this.proposalRetrieved.departmentId);
+        this.getSelectedUser(proposal.hofId)
+        this.getSelectedSpc(proposal.spcId)
+        if (proposal.status == "7"||proposal.status == "6") {
+            this.getSelectedSac(proposal.sacId)
+
+        }
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+    }
+
+    public openModalApproved(proposal: JustificationForTc): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        this.proposalRetrieved = proposal;
+
+        this.getSelectedUser(proposal.hofId)
+
+        if (proposal.status == "4") {
+            this.getSelectedSpc(proposal.spcId)
+        }
+        if (proposal.status == "6") {
+            this.getSelectedSac(proposal.sacId)
+
+        }
+
+        button.setAttribute('data-toggle', 'modal');
+        button.setAttribute('data-target', '#viewModal');
+
+        this.getDepartmentName(String(this.proposalRetrieved.departmentId))
         this.getAllDocs(String(this.proposalRetrieved.id))
 
 
@@ -414,6 +516,22 @@ export class RequestForFormationOfTCComponent implements OnInit {
         );
     }
 
+    public getDepartmentName(proposalId: string): void {
+        this.standardDevelopmentService.getDepartmentById(proposalId).subscribe(
+            (response: Department[]) => {
+                this.departmentSelected = response;
+                for (let h = 0; h < response.length; h++) {
+                    this.selectedDepartment = response[h].name;
+                }
+
+
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
 
     viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
         this.SpinnerService.show();
@@ -440,6 +558,44 @@ export class RequestForFormationOfTCComponent implements OnInit {
                 alert(error.message);
             }
         );
+    }
+
+
+    private getSelectedUser(userId) {
+        this.route.fragment.subscribe(params => {
+            this.masterService.loadUserDetails(userId).subscribe(
+                (data: UserRegister) => {
+                    this.userDetails = data;
+                }
+            );
+
+        });
+    }
+
+    private getSelectedSpc(userId) {
+        this.route.fragment.subscribe(params => {
+            this.masterService.loadUserDetails(userId).subscribe(
+                (data: UserRegister) => {
+                    this.spcDetails = data;
+                }
+            );
+
+        });
+    }
+
+    private getSelectedSac(userId) {
+        this.route.fragment.subscribe(params => {
+            this.masterService.loadUserDetails(userId).subscribe(
+                (data: UserRegister) => {
+                    this.sacDetails = data;
+                }
+            );
+
+        });
+    }
+
+    formatFormDate(date: Date) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 
 

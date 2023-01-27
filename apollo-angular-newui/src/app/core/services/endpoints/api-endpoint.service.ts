@@ -256,6 +256,9 @@ export class ApiEndpointService {
         PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
         PERMIT_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
+        PERMIT_LIST_MIGRATION_DMARK: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded-dmark`,
+        PERMIT_LIST_MIGRATION_FMARK: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded-fmark`,
+
         PERMIT_LIST_ALL: `${ApiEndpointService.QA_CONTEXT}/permit/all-my-permits-loaded`,
         PERMIT_COMPLETELY_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-completely`,
         DELETE_PERMIT: `${ApiEndpointService.QA_CONTEXT}/permit/delete`,

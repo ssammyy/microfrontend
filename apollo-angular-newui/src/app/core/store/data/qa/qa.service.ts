@@ -496,6 +496,34 @@ export class QaService {
             }),
         );
     }
+    public loadPermitMigratededListFmark(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_MIGRATION_FMARK);
+        const params = new HttpParams()
+            .set('permitNumber', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+    public loadPermitMigratededListDmark(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_MIGRATION_DMARK);
+        const params = new HttpParams()
+            .set('permitNumber', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
 
     public loadAllMyPermits(): Observable<PermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_ALL);

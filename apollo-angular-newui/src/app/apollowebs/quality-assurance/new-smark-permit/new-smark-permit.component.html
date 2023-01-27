@@ -33,12 +33,37 @@
                                                     <div *ngSwitchCase="1">
                                                         <h2 style="text-align: center"><b>Step</b> <b> 1</b><b> of</b>
                                                             <b> 9</b></h2>
+                                                        <div class="row">
+
+                                                        <div class="form-group col-12">
+
+                                                            <h3>Would You Like To Clone This STA10 With A Similar Permit STA10?</h3>
+
+                                                            <label for="attachedPlant">Select Permit</label>
+                                                            <select [(ngModel)]="selectedPermit" id="attachedPlanto" class="form-control">
+                                                                <option selected>Select Permit</option>
+                                                                <option *ngFor="let permit of allPermitData"
+                                                                        [ngValue]="permit.id"
+                                                                        class="dropdown-item">{{permit.awardedPermitNumber}}</option>
+
+                                                            </select>
+                                                            <button class="btn btn-info float-right"
+                                                                    (click)="clonePermit()">
+                                                                Clone
+                                                            </button>
+
+                                                        </div>
+                                                            <div class="form-group col-6">
+
+                                                            </div>
+
+                                                        </div>
 
                                                         <fieldset class="wizard-fieldset show">
                                                             <form (ngSubmit)="onClickSaveSTA1(sta1Form.valid)"
                                                                   [formGroup]="sta1Form" class="form"
                                                                   enctype="multipart/form-data">
-                                                                <h5>STA 1 Form</h5>
+                                                                <h2>STA 1 Form</h2>
                                                                 <p>I/We the undersigned hereby apply for the
                                                                     grant/renewal of a permit/ the permit No………… to use
                                                                     the
