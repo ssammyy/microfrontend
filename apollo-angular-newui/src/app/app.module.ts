@@ -443,7 +443,7 @@ import {IntStdSacApprovalComponent} from './apollowebs/standards-development/int
 // import {DocumentEditorContainerAllModule} from "@syncfusion/ej2-angular-documenteditor";
 import { IntStdGazetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component';
 import { MsDashboardComponent } from './apollowebs/market-surveillance/ms-dashboard/ms-dashboard.component';
-import { ComStdDraftCommentComponent } from './apollowebs/standards-development/company-standard/com-std-draft-comment/com-std-draft-comment.component';
+import { ComStdDraftCommentComponent } from './apollowebs/standards-development/company-standard/company-standard-request/com-std-draft-comment/com-std-draft-comment.component';
 import { SchemeMembershipFormComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component';
 import { SchemeMembershipReviewComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component';
 import { SchemeMembershipSicComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component';
@@ -451,11 +451,12 @@ import { RegisterTivetComponent } from './views/registration/register-tivet/regi
 import { ComplaintMonitoringComponent } from './apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component';
 import { FieldInspectionSummaryComponent } from './apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component';
 import { WorkplanMonitoringToolComponent } from './apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component';
-import { ComStdAppDraftComponent } from './apollowebs/standards-development/company-standard/com-std-app-draft/com-std-app-draft.component';
+import { ComStdAppDraftComponent } from './apollowebs/standards-development/company-standard/company-standard-request/com-std-app-draft/com-std-app-draft.component';
 import { IntStdPublishingComponent } from './apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component';
 import { ComStdPublishingComponent } from './apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component';
 import { ComStdEditorComponent } from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
 import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corporate-bills.component';
+import { ComStdRequestProcessComponent } from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -945,6 +946,7 @@ import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corp
         ComStdPublishingComponent,
         ComStdEditorComponent,
         CorporateBillsComponent,
+        ComStdRequestProcessComponent,
 
     ],
     entryComponents: [LoaderComponent],

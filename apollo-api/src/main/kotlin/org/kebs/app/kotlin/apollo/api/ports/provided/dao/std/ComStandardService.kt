@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -9,9 +10,10 @@ import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
+import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMsg
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.NotificationForm
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -50,7 +52,8 @@ class ComStandardService(
     private val internationalStandardRemarksRepository: InternationalStandardRemarksRepository,
     private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
     private val standardRepository: StandardRepository,
-    private val comStdJointCommitteeRepository: ComStdJointCommitteeRepository
+    private val comStdJointCommitteeRepository: ComStdJointCommitteeRepository,
+    private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository
 ) {
 
     //request for company standard
@@ -125,6 +128,10 @@ class ComStandardService(
         return comStandardRequestRepository.getCompanyStandardRequest()
     }
 
+    fun getCompanyStandardRequestProcess(): MutableList<ComStdRequest> {
+        return comStandardRequestRepository.getCompanyStandardRequestProcess()
+    }
+
     fun assignRequest(companyStandardRequest: CompanyStandardRequest): CompanyStandardRequest {
         var request= CompanyStandardRequest()
         comStandardRequestRepository.findByIdOrNull(companyStandardRequest.id)?.let { companyStandardRequest ->
@@ -156,15 +163,25 @@ class ComStandardService(
         var result= CompanyStandardRequest()
 
         val jointLists= comStandardJointCommittee.name?.let { mapKEBSOfficersNameListDto(it) }
+
         if (jointLists != null) {
             for (recipient in jointLists) {
-                comStandardJointCommittee.name="JC"
-                comStandardJointCommittee.email=recipient
-                comStandardJointCommittee.requestId=comStandardJointCommittee.requestId
-                comStdJointCommitteeRepository.save(comStandardJointCommittee)
+
+                val user = "JC List"
+                val cj = ComStandardJointCommittee()
+                cj.name = user
+                cj.email = recipient
+                cj.requestId = comStandardJointCommittee.requestId
+                cj.dateOfCreation=Timestamp(System.currentTimeMillis())
+                cj.telephone="NA"
+                val gson = Gson()
+                KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(recipient) }
+
+                comStdJointCommitteeRepository.save(cj)
 
                 val subject = "New Standard Request"
-                val messageBody= "Hope You are Well,A new standard request has been received.You have been selected to be in the Joint Committee. "
+                val messageBody =
+                    "Hope You are Well,A new standard request has been received.You have been selected to be in the Joint Committee. "
                 notifications.sendEmail(recipient, subject, messageBody)
 
             }
@@ -175,11 +192,13 @@ class ComStandardService(
             val subject = "New Standard Request"
             val recipient = d.email
             val user = d.name
-
-            comStandardJointCommittee.name=user
-            comStandardJointCommittee.email=recipient
-            comStandardJointCommittee.requestId=comStandardJointCommittee.requestId
-            comStdJointCommitteeRepository.save(comStandardJointCommittee)
+            val jc = ComStandardJointCommittee()
+            jc.name=user
+            jc.email=recipient
+            jc.requestId=comStandardJointCommittee.requestId
+            jc.dateOfCreation=Timestamp(System.currentTimeMillis())
+            jc.telephone="NA"
+            comStdJointCommitteeRepository.save(jc)
 
                 val messageBody= "Dear $user ,A new standard request has been received.You have been selected to be in the Joint Committee. "
             if (recipient != null) {
@@ -187,15 +206,15 @@ class ComStandardService(
             }
         }
 
-        //val gson = Gson()
-       // KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(detailBody) }
+
+        KotlinLogging.logger { }.info { "JOINT COMMITTEE EMAIL" + gson.toJson(detailBody) }
 
         comStandardRequestRepository.findByIdOrNull(comStandardJointCommittee.requestId)?.let { companyStandardRequest ->
             with(companyStandardRequest) {
                 status = 2
 
             }
-            result=   comStandardRequestRepository.save(companyStandardRequest)
+             comStandardRequestRepository.save(companyStandardRequest)
         }?: throw Exception("REQUEST NOT FOUND")
         return "Saved"
     }
@@ -419,59 +438,53 @@ class ComStandardService(
     }
 
 
-
     //Upload Company Draft
     fun uploadDraft(comStdDraft: ComStdDraft): ComStdDraft {
         val variables: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        comStdDraft.title = comStdDraft.title
+        val cs = ComStdDraft()
+        val uploadedDate= Timestamp(System.currentTimeMillis())
+
+        cs.title = comStdDraft.title
 //        comStdDraft.scope = comStdDraft.scope
 //        comStdDraft.normativeReference = comStdDraft.normativeReference
 //        comStdDraft.symbolsAbbreviatedTerms = comStdDraft.symbolsAbbreviatedTerms
 //        comStdDraft.clause = comStdDraft.clause
 //        comStdDraft.special = comStdDraft.special
-        comStdDraft.uploadedBy = loggedInUser.id
-        comStdDraft.requestNumber = comStdDraft.requestNumber
-        comStdDraft.requestId = comStdDraft.requestId
-        comStdDraft.uploadDate = Timestamp(System.currentTimeMillis())
-        comStdDraft.status=0
-        comStdDraft.createdBy = userListRepository.findNameById(loggedInUser.id)
-        comStdDraft.draftNumber = getDRNumber()
-        val deadline: Timestamp = Timestamp.valueOf(comStdDraft.uploadDate!!.toLocalDateTime().plusDays(7))
-        comStdDraft.deadlineDate=deadline
-        val committeeLists=comStdJointCommitteeRepository.getCommitteeList(comStdDraft.requestId)
+        cs.companyName=comStdDraft.companyName
+        cs.companyPhone=comStdDraft.companyPhone
+        cs.uploadedBy = loggedInUser.id
+        cs.requestNumber = comStdDraft.requestNumber
+        cs.requestId = comStdDraft.requestId
+        cs.uploadDate = uploadedDate
+        cs.status = 0
+        cs.createdBy = userListRepository.findNameById(loggedInUser.id)
+        cs.draftNumber = getDRNumber()
+        val deadline: Timestamp = Timestamp.valueOf(uploadedDate.toLocalDateTime().plusDays(7))
+        cs.deadlineDate = deadline
+        cs.departmentId = comStdDraft.departmentId
+        cs.subject = comStdDraft.subject
+        cs.description = comStdDraft.description
+        cs.contactOneFullName = comStdDraft.contactOneFullName
+        cs.contactOneTelephone = comStdDraft.contactOneTelephone
+        cs.contactOneEmail = comStdDraft.contactOneEmail
+        cs.contactTwoFullName = comStdDraft.contactTwoFullName
+        cs.contactTwoTelephone = comStdDraft.contactTwoTelephone
+        cs.contactTwoEmail = comStdDraft.contactTwoEmail
+        cs.contactThreeFullName = comStdDraft.contactThreeFullName
+        cs.contactThreeTelephone = comStdDraft.contactThreeTelephone
+        cs.contactThreeEmail = comStdDraft.contactThreeEmail
 
-        comStdDraft.departmentId = comStdDraft.departmentId
-        comStdDraft.subject=comStdDraft.subject
-        comStdDraft.description=comStdDraft.description
-        comStdDraft.contactOneFullName=comStdDraft.contactOneFullName
-        comStdDraft.contactOneTelephone=comStdDraft.contactOneTelephone
-        comStdDraft.contactOneEmail=comStdDraft.contactOneEmail
-        comStdDraft.contactTwoFullName=comStdDraft.contactTwoFullName
-        comStdDraft.contactTwoTelephone=comStdDraft.contactTwoTelephone
-        comStdDraft.contactTwoEmail=comStdDraft.contactTwoEmail
-        comStdDraft.contactThreeFullName=comStdDraft.contactThreeFullName
-        comStdDraft.contactThreeTelephone=comStdDraft.contactThreeTelephone
-        comStdDraft.contactThreeEmail=comStdDraft.contactThreeEmail
+        val draftId=comStdDraftRepository.save(cs)
 
-        //val jointLists= mapKEBSOfficersNameListDto(committeeList)
-        committeeLists.forEach { c ->
-            val subject = "Company Standard Draft"
-            val messageBody= "Hope You are Well,A Draft for a company standard has been uploaded. "
-            if (c.getEmail() != null) {
-                notifications.sendEmail(c.getEmail()!!, subject, messageBody)
-            }
-        }
-//        if (jointLists != null) {
-//            for (recipient in jointLists) {
-//                val subject = "Company Standard Draft"
-//                val messageBody= "Hope You are Well,A Draft for a company standard has been uploaded. "
-//                notifications.sendEmail(recipient, subject, messageBody)
-//
-//            }
-//
-//        }
+        val committeeLists = comStdJointCommitteeRepository.getCommitteeList(comStdDraft.requestId)
 
+
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "List of Draft" + gson.toJson(comStdDraft) }
+//        KotlinLogging.logger { }.info { "Joint Committee" + gson.toJson(committeeLists) }
+
+      //  val jointLists= mapKEBSOfficersNameListDto(committeeList)
         comStandardRequestRepository.findByIdOrNull(comStdDraft.requestId)?.let { companyStandardRequest ->
             with(companyStandardRequest) {
                 status = 3
@@ -480,8 +493,17 @@ class ComStandardService(
             comStandardRequestRepository.save(companyStandardRequest)
         }?: throw Exception("REQUEST NOT FOUND")
 
-        return comStdDraftRepository.save(comStdDraft)
 
+        val targetUrl = "https://kimsint.kebs.org/comStdDraftComment/$draftId";
+        committeeLists.forEach { c ->
+            val subject = "Company Standard Draft"
+            val messageBody= "Hope You are Well,A Draft for a company standard has been uploaded. Click on the Link below to comment. $targetUrl  "
+            if (c.getEmail() != null) {
+                notifications.sendEmail(c.getEmail()!!, subject, messageBody)
+            }
+        }
+
+        return draftId
 
     }
 
@@ -524,14 +546,60 @@ class ComStandardService(
         return comStandardDraftUploadsRepository.findAllDocumentId(comStdDraftID)
     }
 
-    fun getUploadedStdDraftForComment(): MutableList<ComStdDraft> {
-        return comStdDraftRepository.getUploadedStdDraftForComment()
+
+    fun getUploadedStdDraftForComment(comDraftID: Long): MutableList<ComStdDraft> {
+        return comStdDraftRepository.getUploadedStdDraftForComment(comDraftID)
     }
 
     fun getAllComments(requestId: Long): MutableIterable<CompanyStandardRemarks>? {
         return companyStandardRemarksRepository.findByRequestId(requestId)
     }
 
+    //Submit Adoption Proposal comments
+    fun submitDraftComments(comDraftComments: ComDraftComments){
+        val variables: MutableMap<String, Any> = HashMap()
+        comDraftComments.draftComment=comDraftComments.draftComment
+        comDraftComments.commentTitle=comDraftComments.commentTitle
+        comDraftComments.commentDocumentType=comDraftComments.commentDocumentType
+        comDraftComments.comClause=comDraftComments.comClause
+        comDraftComments.comParagraph=comDraftComments.comParagraph
+        comDraftComments.typeOfComment=comDraftComments.typeOfComment
+        comDraftComments.proposedChange=comDraftComments.proposedChange
+        comDraftComments.requestID=comDraftComments.requestID
+        comDraftComments.draftID=comDraftComments.draftID
+        comDraftComments.recommendations=comDraftComments.recommendations
+        comDraftComments.nameOfRespondent=comDraftComments.nameOfRespondent
+        comDraftComments.positionOfRespondent=comDraftComments.positionOfRespondent
+        comDraftComments.nameOfOrganization=comDraftComments.nameOfOrganization
+        comDraftComments.adoptStandard=comDraftComments.adoptStandard
+        comDraftComments.adoptDraft=comDraftComments.adoptDraft
+        comDraftComments.reason=comDraftComments.reason
+        comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
+        comStandardDraftCommentsRepository.save(comDraftComments)
+
+        val commentNumber=comStdDraftRepository.getDraftCommentCount(comDraftComments.draftID)
+
+
+
+        comStdDraftRepository.findByIdOrNull(comDraftComments.draftID)?.let { comStdDraft ->
+            with(comStdDraft) {
+                commentCount= commentNumber+1
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("REQUEST NOT FOUND")
+
+
+        println("Comment Submitted")
+    }
+
+    fun getDraftComments(draftID: Long): MutableIterable<ComDraftComments>? {
+        return comStandardDraftCommentsRepository.findByDraftID(draftID)
+    }
+
+    fun getDraftCommentList(draftID: Long): List<SiteVisitListHolder> {
+        return comStandardDraftCommentsRepository.findAllCommentsId(draftID)
+    }
 
     fun commentOnDraft(companyStandardRemarks: CompanyStandardRemarks):CompanyStandardRemarks{
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -540,7 +608,7 @@ class ComStandardService(
         val usersName = "$fName  $sName"
         companyStandardRemarks.requestId= companyStandardRemarks.requestId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
-        companyStandardRemarks.status = 1.toString()
+        //companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Joint Committee"
@@ -554,11 +622,13 @@ class ComStandardService(
     fun decisionOnStdDraft(
         comStdDraft: ComStdDraft,
         companyStandardRemarks: CompanyStandardRemarks
-    ) : String {
+    ) : ResponseMsg {
+        var response=""
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         comStdDraft.accentTo=comStdDraft.accentTo
         val decision=comStdDraft.accentTo
-
+        val commentNumber=comStdDraftRepository.getDraftCommentCount(comStdDraft.id)
+       // val countNo=commentNumber.toString()
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
@@ -570,54 +640,74 @@ class ComStandardService(
         companyStandardRemarks.role = "Joint Committee"
         val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(5))
 
+        if (commentNumber>0){
+            if (decision == "Yes") {
+                comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+                    with(comStdDraft) {
+                        status = 1
+                        title=comStdDraft.title
+                        scope=comStdDraft.scope
+                        normativeReference=comStdDraft.normativeReference
+                        symbolsAbbreviatedTerms=comStdDraft.symbolsAbbreviatedTerms
+                        clause=comStdDraft.clause
+                        special=comStdDraft.special
+                        requestNumber=comStdDraft.requestNumber
+                        deadlineDate=deadline
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
+                    response="Draft Approved"
+                }?: throw Exception("DRAFT NOT FOUND")
 
-        if (decision == "Yes") {
-            comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
-                with(comStdDraft) {
-                    status = 1
-                    title=comStdDraft.title
-                    scope=comStdDraft.scope
-                    normativeReference=comStdDraft.normativeReference
-                    symbolsAbbreviatedTerms=comStdDraft.symbolsAbbreviatedTerms
-                    clause=comStdDraft.clause
-                    special=comStdDraft.special
-                    requestNumber=comStdDraft.requestNumber
-                    deadlineDate=deadline
+                val recipient=comStdDraft.contactOneEmail
+                val contactName=comStdDraft.contactOneFullName
+                val companyName=comStdDraft.companyName
+                val companyPhone= comStdDraft.companyPhone
+                val contactTel=comStdDraft.contactOneTelephone
+                val draftId=comStdDraft.id
+                val targetUrl = "https://kimsint.kebs.org/comStdDraftComment/$draftId";
+                val subject = "Company Standard Draft"
+                val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to comment. $targetUrl  "
+
+                if (recipient != null) {
+                    notifications.sendEmail(recipient, subject, messageBody)
                 }
-                comStdDraftRepository.save(comStdDraft)
-                companyStandardRemarksRepository.save(companyStandardRemarks)
-            }?: throw Exception("DRAFT NOT FOUND")
-
-        } else if (decision == "No") {
-            comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
-
-                with(comStdDraft) {
-                    status = 2
-                }
-                comStdDraftRepository.save(comStdDraft)
-                companyStandardRemarksRepository.save(companyStandardRemarks)
 
 
-            } ?: throw Exception("DRAFT NOT FOUND")
+            } else if (decision == "No") {
+                comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
 
-            comStandardRequestRepository.findByIdOrNull(comStdDraft.requestId)?.let { companyStandardRequest ->
-                with(companyStandardRequest) {
-                    status = 2
+                    with(comStdDraft) {
+                        status = 2
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
 
-                }
-                comStandardRequestRepository.save(companyStandardRequest)
-            }?: throw Exception("REQUEST NOT FOUND")
+                    response="Draft Not Approved"
+                } ?: throw Exception("DRAFT NOT FOUND")
+
+                comStandardRequestRepository.findByIdOrNull(comStdDraft.requestId)?.let { companyStandardRequest ->
+                    with(companyStandardRequest) {
+                        status = 2
+
+                    }
+                    comStandardRequestRepository.save(companyStandardRequest)
+                }?: throw Exception("REQUEST NOT FOUND")
 
 
+            }
+
+        }else{
+            response="A Decision cannot be made on the Draft since none of the Joint Committee Members has commented on it."
         }
 
-        return "Actioned"
+        return ResponseMsg(response)
     }
 
 
 
-    fun getApprovedStdDraft(): MutableList<ComStdDraft> {
-        return comStdDraftRepository.getApprovedStdDraft()
+    fun getApprovedStdDraft(comDraftID: Long): MutableList<ComStdDraft> {
+        return comStdDraftRepository.getApprovedStdDraft(comDraftID)
     }
 
     fun decisionOnComStdDraft(
@@ -677,31 +767,7 @@ class ComStandardService(
     }
 
 
-    fun getDRNumber(): String {
-        var allRequests = comStdDraftRepository.getMaxDraftId()
 
-        var lastId: String? = "0"
-//        var finalValue = 1
-        var startId = "DRAFT"
-
-        //allRequests = allRequests+1
-
-        val c = allRequests
-        val d = c.toInt()
-        val x = 1
-        val z = x  + d
-
-        val finalValue = z.toString()
-
-//        println("Sum of x+y = $finalValue")
-
-        val year = Calendar.getInstance()[Calendar.YEAR]
-        val month = Calendar.getInstance()[Calendar.MONTH]
-
-        return "$startId/$finalValue/$month:$year"
-
-
-    }
 
 
 
@@ -1238,6 +1304,32 @@ class ComStandardService(
                 activity.activityId + " took " + activity.durationInMillis + " milliseconds"
             )
         }
+
+    }
+
+    fun getDRNumber(): String {
+        var allRequests = comStdDraftRepository.getMaxDraftId()
+
+        var lastId: String? = "0"
+//        var finalValue = 1
+        var startId = "DRAFT"
+
+        //allRequests = allRequests+1
+
+        val c = allRequests
+        val d = c.toInt()
+        val x = 1
+        val z = x  + d
+
+        val finalValue = z.toString()
+
+//        println("Sum of x+y = $finalValue")
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        val month = Calendar.getInstance().get(Calendar.MONTH)+1
+
+        return "$startId/$finalValue/$month:$year"
+
 
     }
 

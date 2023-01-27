@@ -267,6 +267,15 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, L
             "ON r.PRODUCT=p.ID LEFT JOIN SD_PRODUCT_SUBCATEGORY s ON r.PRODUCT_SUB_CATEGORY=s.ID WHERE r.STATUS='1'  ", nativeQuery = true)
     fun getAssignedCompanyStandardRequest(): MutableList<ComStdRequest>
 
+    @Query(value = "SELECT r.ID as id,r.REQUEST_NUMBER as requestNumber,r.SUBMISSION_DATE as submissionDate,r.COMPANY_NAME as companyName," +
+            "r.COMPANY_PHONE as companyPhone,r.COMPANY_EMAIL as companyEmail,t.NAME as tcName,d.NAME as departmentName,d.ID as departmentId,p.NAME as productName," +
+            "s.NAME as productSubCategoryName,r.STATUS as status,r.SUBJECT as subject,r.DESCRIPTION as description,r.CONTACT_ONE_FULL_NAME as contactOneFullName," +
+            "r.CONTACT_ONE_TELEPHONE as contactOneTelephone,r.CONTACT_ONE_EMAIL as contactOneEmail,r.CONTACT_TWO_FULL_NAME as contactTwoFullName," +
+            "r.CONTACT_TWO_TELEPHONE as contactTwoTelephone,r.CONTACT_TWO_EMAIL as contactTwoEmail,r.CONTACT_THREE_FULL_NAME as contactThreeFullName," +
+            "r.CONTACT_THREE_TELEPHONE as contactThreeTelephone,r.CONTACT_THREE_EMAIL as contactThreeEmail FROM SD_COM_STANDARD_REQUEST r LEFT JOIN SD_TECHNICAL_COMMITTEE t ON r.TC_ID=t.ID LEFT JOIN SD_DEPARTMENT d ON r.DEPARTMENT=d.ID LEFT JOIN SD_PRODUCTS p " +
+            "ON r.PRODUCT=p.ID LEFT JOIN SD_PRODUCT_SUBCATEGORY s ON r.PRODUCT_SUB_CATEGORY=s.ID WHERE r.STATUS IN ('0','1','2','3') ORDER BY r.ID DESC", nativeQuery = true)
+    fun getCompanyStandardRequestProcess(): MutableList<ComStdRequest>
+
 
 
 }
@@ -281,22 +290,38 @@ interface ComStdActionRepository : JpaRepository<ComStdAction, Long> {
 interface ComStdDraftRepository : JpaRepository<ComStdDraft, Long> {
     fun findAllByOrderByIdDesc(): MutableList<ComStdDraft>
 
-    @Query("SELECT MAX(ID) FROM SD_COM_STANDARD_DRAFT", nativeQuery = true)
-    fun getMaxDraftId(): String
+    @Query("SELECT NVL (max(ID),0) as MaxId FROM SD_COM_STD_DRAFT", nativeQuery = true)
+    fun getMaxDraftId(): Long
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='0' ORDER BY ID DESC", nativeQuery = true)
-    fun getUploadedStdDraftForComment(): MutableList<ComStdDraft>
+    @Query("SELECT NVL (COMMENT_COUNT,0) as COMMENT_COUNT FROM SD_COM_STD_DRAFT WHERE ID=:draftID", nativeQuery = true)
+    fun getDraftCommentCount(@Param("draftID") draftID: Long?): Long
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS IN ('0')  ORDER BY ID DESC", nativeQuery = true)
+
+
+    @Query(value = "SELECT * FROM SD_COM_STD_DRAFT WHERE ID=:comDraftID AND STATUS='0' ORDER BY ID DESC", nativeQuery = true)
+    fun getUploadedStdDraftForComment(@Param("comDraftID") comDraftID: Long? ): MutableList<ComStdDraft>
+
+    @Query(value = "SELECT * FROM SD_COM_STD_DRAFT WHERE STATUS IN ('0')  ORDER BY ID DESC", nativeQuery = true)
     fun getUploadedStdDraft(): MutableList<ComStdDraft>
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='1' ORDER BY ID DESC ", nativeQuery = true)
-    fun getApprovedStdDraft(): MutableList<ComStdDraft>
+    @Query(value = "SELECT * FROM SD_COM_STD_DRAFT WHERE ID=:comDraftID AND STATUS='1' ORDER BY ID DESC ", nativeQuery = true)
+    fun getApprovedStdDraft(@Param("comDraftID") comDraftID: Long?): MutableList<ComStdDraft>
 
-    @Query(value = "SELECT * FROM SD_COM_STANDARD_DRAFT WHERE STATUS='3'  ORDER BY ID DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_COM_STD_DRAFT WHERE STATUS='3'  ORDER BY ID DESC", nativeQuery = true)
     fun getStdDraftForEditing(): MutableList<ComStdDraft>
 
 }
+interface ComStandardDraftCommentsRepository : JpaRepository<ComDraftComments, Long> {
+    fun findByDraftID(id: Long): MutableIterable<ComDraftComments>?
+
+    @Query(
+        value = "SELECT ID as id  FROM SD_COM_DRAFT_COMMENTS  WHERE DRAFT_ID= :id ",
+        nativeQuery = true
+    )
+    fun findAllCommentsId(@Param("id") id: Long?): List<SiteVisitListHolder>
+}
+
+
 
 interface ComStandardDraftUploadsRepository : JpaRepository<ComStandardDraftUploads, Long> {
     fun findByComDraftDocumentId(id: Long): ComStandardDraftUploads
@@ -350,7 +375,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
                 "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
                 "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,STANDARD_NUMBER as standardNumber FROM SD_ADOPTION_PROPOSAL " +
-                "WHERE  ID=:id ",
+                "WHERE  ID=:id  ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getProposals(id: Long): MutableList<ProposalDetails>

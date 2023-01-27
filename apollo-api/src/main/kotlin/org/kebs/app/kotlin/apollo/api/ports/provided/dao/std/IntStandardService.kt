@@ -105,6 +105,8 @@ class IntStandardService(
         iSAdoptionProposal.preparedDate = commonDaoServices.getTimestamp()
         iSAdoptionProposal.status = 0
         iSAdoptionProposal.proposalNumber = getPRNumber()
+        val deadline: Timestamp = Timestamp.valueOf(iSAdoptionProposal.preparedDate!!.toLocalDateTime().plusDays(30))
+        iSAdoptionProposal.deadlineDate=deadline
 
         val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
 

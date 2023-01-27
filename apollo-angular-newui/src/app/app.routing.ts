@@ -261,7 +261,7 @@ import {DeclarationDocumentsComponent} from "./apollowebs/di/other-documents/dec
 //     PrepareDraftComponent
 // } from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
 import {IntStdGazetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
-import {ComStdDraftCommentComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-comment/com-std-draft-comment.component";
+import {ComStdDraftCommentComponent} from "./apollowebs/standards-development/company-standard/company-standard-request/com-std-draft-comment/com-std-draft-comment.component";
 import {SchemeMembershipFormComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component";
 import {SchemeMembershipReviewComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component";
 import {SchemeMembershipSicComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component";
@@ -269,7 +269,7 @@ import {RegisterTivetComponent} from "./views/registration/register-tivet/regist
 import {ComplaintMonitoringComponent} from "./apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component";
 import {FieldInspectionSummaryComponent} from "./apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component";
 import {WorkplanMonitoringToolComponent} from "./apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component";
-import {ComStdAppDraftComponent} from "./apollowebs/standards-development/company-standard/com-std-app-draft/com-std-app-draft.component";
+import {ComStdAppDraftComponent} from "./apollowebs/standards-development/company-standard/company-standard-request/com-std-app-draft/com-std-app-draft.component";
 import {IntStdPublishingComponent} from "./apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component";
 import {ComStdPublishingComponent} from "./apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component";
 import {ComStdEditorComponent} from "./apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component";
@@ -277,6 +277,7 @@ import {SampleSubmittedTimelineComponent} from './apollowebs/market-surveillance
 import {CorporateBillsComponent} from "./apollowebs/invoice/corporate-bills/corporate-bills.component";
 import {ViewRfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
 import {ViewRfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
+import {ComStdRequestProcessComponent} from "./apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component";
 
 export const routes: Routes = [
     {
@@ -1189,11 +1190,18 @@ export const routes: Routes = [
         component: StandardRequestComponent,
         children: [{path: '', component: CsRequestFormComponent}],
     },
+
     {
         path: 'comStdList', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdRequestListComponent}],
     },
+    {
+        path: 'comStdRequestProcess', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdRequestProcessComponent}],
+    },
+
 
     {
         path: 'comStdJustification', component: AdminLayoutComponent,
@@ -1225,13 +1233,13 @@ export const routes: Routes = [
         component: ComStdListComponent,
     },
     {
-        path: 'comStdDraftComment',
+        path: 'comStdDraftComment/:comDraftID',
         component: ComStdDraftCommentComponent,
     },
 
     {
-        path: 'comStdApproved', component: AdminLayoutComponent,
-        children: [{path: '', component: ComStdAppDraftComponent}],
+        path: 'comStdApproved/:comDraftID',
+        component: ComStdAppDraftComponent,
     },
     {
         path: 'comStdTasks', component: AdminLayoutComponent,

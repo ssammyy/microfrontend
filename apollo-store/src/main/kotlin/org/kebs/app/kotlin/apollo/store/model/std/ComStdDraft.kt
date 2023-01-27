@@ -5,12 +5,17 @@ import javax.persistence.*
 import kotlin.jvm.Transient
 
 @Entity
-@Table(name="SD_COM_STANDARD_DRAFT")
+@Table(name="SD_COM_STD_DRAFT")
 class ComStdDraft {
+    @Column(name = "ID")
+    @SequenceGenerator(
+        name = "SD_COM_STD_DRAFT_SEQ_GEN",
+        allocationSize = 1,
+        sequenceName = "SD_COM_STD_DRAFT_SEQ"
+    )
+    @GeneratedValue(generator = "SD_COM_STD_DRAFT_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    @Column(name="ID")
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    var id:Long=0
+    var id: Long? = 0
     @Column(name = "TITLE")
     @Basic
     var title: String? = null
@@ -63,7 +68,7 @@ class ComStdDraft {
     @Column(name = "ACCENT_TO")
     @Basic
     var accentTo: String? = null
-    @Column(name = "TASKID")
+    @Column(name = "TASK_ID")
     @Basic
     var taskId: String? = null
 
@@ -147,4 +152,8 @@ class ComStdDraft {
     @Column(name="COMPANY_PHONE")
     @Basic
     var companyPhone: String?=null
+
+    @Column(name="COMMENT_COUNT")
+    @Basic
+    var commentCount : Long?=null
 }
