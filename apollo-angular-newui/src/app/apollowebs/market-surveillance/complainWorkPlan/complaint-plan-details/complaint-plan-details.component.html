@@ -895,7 +895,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryDirector')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -911,7 +911,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryDirector')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
@@ -920,7 +920,7 @@
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER SCHEDULE</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE SCHEDULE</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus
@@ -928,7 +928,7 @@
                                                      (click)="openModalAddDetails('approveSchedule')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER SCHEDULE</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE SCHEDULE</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button *ngIf="workPlanInspection?.hofAssignedDetails != null" (click)="openModalAddDetails('reAssignHOF')" mat-raised-button="" data-toggle="modal"
@@ -956,7 +956,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -967,7 +967,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -996,7 +996,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1010,7 +1010,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOD')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1035,60 +1035,60 @@
                                         </div>
                                         <div *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.officerDetails?.id == userLoggedInID">
                                             <!--                                        && workPlanInspection?.batchDetails.endedStatus-->
-<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus ==  false">-->
-<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#workPlanModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
-<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                            <!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus ==  false">-->
+                                            <!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                        data-target="#workPlanModal"-->
+                                            <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+                                            <!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                                            <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
 
-<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus-->
-<!--                                            && workPlanInspection?.updatedStatus ==false-->
-<!--                                            && workPlanInspection?.resubmitStatus ==false-->
-<!--                                            && workPlanInspection?.rejectedStatus">-->
-<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#workPlanModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
-<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                            <!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus-->
+                                            <!--                                            && workPlanInspection?.updatedStatus ==false-->
+                                            <!--                                            && workPlanInspection?.resubmitStatus ==false-->
+                                            <!--                                            && workPlanInspection?.rejectedStatus">-->
+                                            <!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                        data-target="#workPlanModal"-->
+                                            <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+                                            <!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                                            <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
 
-<!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.onsiteStartStatus ==false-->
-<!--                                            && workPlanInspection?.updatedStatus ==false-->
-<!--                                            && workPlanInspection?.resubmitStatus ==false-->
-<!--                                            && workPlanInspection?.approvedStatus">-->
-<!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
-<!--                                                        data-target="#workPlanModal"-->
-<!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
-<!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                                                    <div class="mat-button-focus-overlay"></div>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
+                                            <!--                                            <div *ngIf="workPlanInspection?.submittedForApprovalStatus && workPlanInspection?.onsiteStartStatus ==false-->
+                                            <!--                                            && workPlanInspection?.updatedStatus ==false-->
+                                            <!--                                            && workPlanInspection?.resubmitStatus ==false-->
+                                            <!--                                            && workPlanInspection?.approvedStatus">-->
+                                            <!--                                                <button (click)="openModalAddDetails('addNewScheduleDetails')" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                        data-target="#workPlanModal"-->
+                                            <!--                                                        class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                        class="mat-button-wrapper">UPDATE COMPLAINT</span>-->
+                                            <!--                                                    <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                                            <!--                                                    <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
 
-<!--                                            <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus ==false-->
-<!--                                                && workPlanInspection?.rejectedStatus && workPlanInspection?.submittedForApprovalStatus-->
-<!--                                                 && workPlanInspection?.onsiteStartStatus ==false"-->
-<!--                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">RE-SUBMIT FOR APPROVAL</span>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
+                                            <!--                                            <button  *ngIf="workPlanInspection?.updatedStatus && workPlanInspection?.resubmitStatus ==false-->
+                                            <!--                                                && workPlanInspection?.rejectedStatus && workPlanInspection?.submittedForApprovalStatus-->
+                                            <!--                                                 && workPlanInspection?.onsiteStartStatus ==false"-->
+                                            <!--                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                    class="mat-button-wrapper">RE-SUBMIT FOR APPROVAL</span>-->
+                                            <!--                                                <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                            </button>-->
 
-<!--                                            <button  *ngIf="workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"-->
-<!--                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"-->
-<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
-<!--                                                    class="mat-button-wrapper">SUBMIT FOR APPROVAL</span>-->
-<!--                                                <div class="mat-button-focus-overlay"></div>-->
-<!--                                            </button>-->
+                                            <!--                                            <button  *ngIf="workPlanInspection?.approvedStatus ==false && workPlanInspection?.submittedForApprovalStatus ==false && workPlanInspection?.onsiteStartStatus ==false"-->
+                                            <!--                                                     (click)="onClickSubmitForApproval()" mat-raised-button="" data-toggle="modal"-->
+                                            <!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+                                            <!--                                                    class="mat-button-wrapper">SUBMIT FOR APPROVAL</span>-->
+                                            <!--                                                <div class="mat-button-focus-overlay"></div>-->
+                                            <!--                                            </button>-->
 
                                             <button  *ngIf="workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
-                                                     (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
+                                                     (click)="openModalAddDetails('startOnsiteActivities')" mat-raised-button="" data-toggle="modal" data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
                                                 <div class="mat-button-focus-overlay"></div>
@@ -1314,7 +1314,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1324,7 +1324,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1337,7 +1337,7 @@
                                                      (click)="openModalAddDetails('approvePreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER PROGRESS REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE PROGRESS REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1362,7 +1362,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">APPROVE/DECLINE FINAL REPORT</span>
 
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
@@ -1375,7 +1375,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                             <button  *ngIf="workPlanInspection?.msPreliminaryReportStatus && workPlanInspection?.updatedStatus  == false && workPlanInspection?.resubmitStatus  == false && workPlanInspection?.finalReportGenerated
@@ -1386,7 +1386,7 @@
                                                      (click)="openModalAddDetails('approveFinalPreliminaryHOF')" mat-raised-button="" data-toggle="modal"
                                                      data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">RE-APPROVE/DEFER FINAL REPORT</span>
+                                                    class="mat-button-wrapper">RE-APPROVE/DECLINE FINAL REPORT</span>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
                                         </div>
@@ -1562,6 +1562,31 @@
                             </div>
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'startOnsiteActivities')">
+                        <form [formGroup]="startOnsiteActivitiesForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="totalCompliance"><b>Start Date</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="startDate" matInput type="date" formControlName="startDate" name="startDate">
+                                        </mat-form-field>
+                                        <label for="totalCompliance"><b>End Date</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="endDate" matInput type="date" formControlName="endDate" name="endDate">
+                                        </mat-form-field>
+                                        <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for Picking Above Dates:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="remarks" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div *ngIf="(currDiv == 'reAssignOfficer')">
                         <form [formGroup]="assignOfficerForm" class="form">
                             <div class="form-body">
@@ -1599,11 +1624,11 @@
                                                         [class.is-invalid]="formApproveScheduleForm.approvalStatus.invalid && formApproveScheduleForm.approvalStatus.touched"
                                                         formControlName="approvalStatus" id="approvalStatus1" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label><b>Please write, in detail, your feedback for Approving/Rejecting the Work-plan Activity Scheduled:</b></label>
+                                        <label><b>Please write, in detail, your feedback for Approving/Declining the Work-plan Activity Scheduled:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks1" matInput type="text"
                                                       formControlName="remarks"
@@ -1626,11 +1651,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Progress Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Progress Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1707,11 +1732,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea  matInput type="text"
                                                        formControlName="remarks"
@@ -1734,11 +1759,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1761,11 +1786,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus"  name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Final Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Final Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
                                                       formControlName="remarks"
@@ -1814,11 +1839,11 @@
                                                         [class.is-invalid]="formApprovePreliminaryForm.approvalStatus.invalid && formApprovePreliminaryForm.approvalStatus.touched"
                                                         formControlName="approvalStatus" id="approvalStatus3" name="approvalStatus" >
                                                 <mat-option [value]="true">APPROVE</mat-option>
-                                                <mat-option [value]="false">DEFER</mat-option>
+                                                <mat-option [value]="false">DECLINE</mat-option>
 
                                             </mat-select>
                                         </mat-form-field>
-                                        <label ><b>Please write, in detail, your feedback for Approving/Rejecting the Progress Report:</b></label>
+                                        <label ><b>Please write, in detail, your feedback for Approving/Declining the Progress Report:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="remarks3" matInput type="text"
                                                       formControlName="remarks"
@@ -2150,6 +2175,12 @@
                     <button *ngIf="(currDiv == 'clientAppealedSuccessfully')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveClientAppealedSuccessfully(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'startOnsiteActivities')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickStartOnsiteActivities(startOnsiteActivitiesForm.valid);"
+                            [disabled]="!startOnsiteActivitiesForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -2680,7 +2711,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Fill in bellow Data Report Details</h4>
+                    <h4 class="modal-title">Fill in below Data Report Details</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
@@ -2781,11 +2812,124 @@
                             </div>
 
                             <h4 class="mb-3" style="color: #0066B1">Outlet Details</h4>
-                            <h5 class="mb-3" style="color: black">Fill in bellow Outlet details</h5>
+                            <h5 class="mb-3" style="color: black">Fill in below Outlet details</h5>
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Outlet Details</b> </label>-->
+<!--                                        <textarea [class.is-invalid]="formDataReportForm.outletDetails.invalid && formDataReportForm.outletDetails.errors"-->
+<!--                                                  class="form-control two-column-input"-->
+<!--                                                  formControlName="outletDetails"-->
+<!--                                                  name="outletDetails" required type="text"></textarea>-->
+<!--                                        <div *ngIf="submitted && formDataReportForm.outletDetails.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formDataReportForm.outletDetails.errors.required">Outlet Details is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Person met</b> </label>-->
+<!--                                        <input [class.is-invalid]="formDataReportForm.personMet.invalid && formDataReportForm.personMet.errors"-->
+<!--                                               class="form-control two-column-input"-->
+<!--                                               formControlName="personMet"-->
+<!--                                               name="personMet" required type="text">-->
+<!--                                        <div *ngIf="submitted && formDataReportForm.personMet.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formDataReportForm.personMet.errors.required">Person met is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Most Recurring Non-Compliant</b> </label>-->
+<!--                                        <input [class.is-invalid]="formDataReportForm.mostRecurringNonCompliant.invalid && formDataReportForm.mostRecurringNonCompliant.errors"-->
+<!--                                               class="form-control two-column-input"-->
+<!--                                               formControlName="mostRecurringNonCompliant"-->
+<!--                                               name="mostRecurringNonCompliant" required type="text">-->
+<!--                                        <div *ngIf="submitted && formDataReportForm.mostRecurringNonCompliant.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formDataReportForm.mostRecurringNonCompliant.errors.required">Person met is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+
+
+<!--                            </div>-->
+
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Outlet Details</b> </label>
+                                        <label><b>Outlet Name</b> </label>
+                                        <input [class.is-invalid]="formDataReportForm.outletName.invalid && formDataReportForm.outletName.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="outletName"
+                                               name="outletName" required type="text">
+                                        <div *ngIf="submitted && formDataReportForm.outletName.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.outletName.errors.required">Outlet Name is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Physical Location</b> </label>
+                                        <input [class.is-invalid]="formDataReportForm.physicalLocation.invalid && formDataReportForm.physicalLocation.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="physicalLocation"
+                                               name="physicalLocation" required type="text">
+                                        <div *ngIf="submitted && formDataReportForm.physicalLocation.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.physicalLocation.errors.required">Physical Location is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Email Address</b> </label>
+                                        <input [class.is-invalid]="formDataReportForm.emailAddress.invalid && formDataReportForm.emailAddress.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="emailAddress"
+                                               name="emailAddress" required type="text">
+                                        <div *ngIf="submitted && formDataReportForm.emailAddress.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.emailAddress.errors.required">Email Address is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Phone Number</b> </label>
+                                        <input [class.is-invalid]="formDataReportForm.phoneNumber.invalid && formDataReportForm.phoneNumber.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="phoneNumber"
+                                               name="phoneNumber" required type="text">
+                                        <div *ngIf="submitted && formDataReportForm.phoneNumber.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.phoneNumber.errors.required">Phone Number is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Additional Outlet Details</b> </label>
                                         <textarea [class.is-invalid]="formDataReportForm.outletDetails.invalid && formDataReportForm.outletDetails.errors"
                                                   class="form-control two-column-input"
                                                   formControlName="outletDetails"
@@ -2799,6 +2943,7 @@
                                 </div>
 
                             </div>
+
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -2823,6 +2968,38 @@
                                                name="mostRecurringNonCompliant" required type="text">
                                         <div *ngIf="submitted && formDataReportForm.mostRecurringNonCompliant.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.mostRecurringNonCompliant.errors.required">Person met is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>No of Samples Drawn and Submitted</b> </label>
+                                        <input [class.is-invalid]="formDataReportForm.samplesDrawnAndSubmitted.invalid && formDataReportForm.samplesDrawnAndSubmitted.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="samplesDrawnAndSubmitted"
+                                               name="samplesDrawnAndSubmitted" required type="text">
+                                        <div *ngIf="submitted && formDataReportForm.samplesDrawnAndSubmitted.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.samplesDrawnAndSubmitted.errors.required">Samples Submitted is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Source of Product and Evidence</b> </label>
+                                        <input [class.is-invalid]="formDataReportForm.sourceOfProductAndEvidence.invalid && formDataReportForm.sourceOfProductAndEvidence.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="sourceOfProductAndEvidence"
+                                               name="sourceOfProductAndEvidence" required type="text">
+                                        <div *ngIf="submitted && formDataReportForm.sourceOfProductAndEvidence.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.sourceOfProductAndEvidence.errors.required">Source of Product and Evidence is
                                                 required
                                             </div>
                                         </div>
@@ -2945,10 +3122,16 @@
                                         <div class="form-group">
                                             <div *ngIf="isImport == 1">
                                                 <label><b>Permit Number</b></label>
-                                                <input [class.is-invalid]="formDataReportParamForm.permitNumber.invalid && formDataReportParamForm.permitNumber.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="permitNumber"
-                                                       name="permitNumber" type="text">
+                                                <div class="d-flex flex-row">
+                                                    <input [class.is-invalid]="formDataReportParamForm.permitNumber.invalid && formDataReportParamForm.permitNumber.errors"
+                                                           class="form-control two-column-input"
+                                                           formControlName="permitNumber"
+                                                           name="permitNumber" type="text">
+                                                    <button mat-raised-button type="button" class="btn btn-sm btn-success" (click)="checkProductCompliance('Permit')">
+                                                        CHECK PERMIT COMPLIANCE
+                                                    </button>
+                                                </div>
+
                                                 <div *ngIf="submitted && formDataReportParamForm.permitNumber.errors" class="invalid-feedback">
                                                     <div *ngIf="formDataReportParamForm.permitNumber.errors.required">Type Permit Number is
                                                         required
@@ -2957,10 +3140,16 @@
                                             </div>
                                             <div *ngIf="isImport == 2">
                                                 <label><b>UCR Number</b></label>
-                                                <input [class.is-invalid]="formDataReportParamForm.ucrNumber.invalid && formDataReportParamForm.ucrNumber.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="ucrNumber"
-                                                       name="ucrNumber" type="text">
+                                                <div class="d-flex flex-row">
+                                                    <input [class.is-invalid]="formDataReportParamForm.ucrNumber.invalid && formDataReportParamForm.ucrNumber.errors"
+                                                           class="form-control two-column-input"
+                                                           formControlName="ucrNumber"
+                                                           name="ucrNumber" type="text">
+                                                    <button mat-raised-button type="button" class="btn btn-sm btn-success" (click)="checkProductCompliance('UCR')">
+                                                        CHECK UCR COMPLIANCE
+                                                    </button>
+                                                </div>
+
                                                 <div *ngIf="submitted && formDataReportParamForm.ucrNumber.errors" class="invalid-feedback">
                                                     <div *ngIf="formDataReportParamForm.ucrNumber.errors.required">Type UCR Number is
                                                         required
@@ -3079,6 +3268,23 @@
                         </div>
                     </div>
 
+                    <div class="row" *ngIf="dataReportViewMode == false">
+                        <div class="col">
+                            <div  class="form-group">
+                                <label for="files"><b>Upload Documents Here</b></label>
+                                <form #demoForm="ngForm">
+                                    <file-upload [(ngModel)]="uploadedFilesDataReport" name="files" id="uploadedFilesDataReportComp"
+                                                 [fileslimit]="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" *ngIf="dataReportViewMode == true">
+                        <h4>Show the uploaded documents of this datasheet</h4>
+
+                    </div>
+
                     <div class="modal-footer">
                         <button  mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
@@ -3164,6 +3370,38 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="seizureForm">
+                        <h5 class="mb-3" style="color: #0066B1">Seizure Form Details</h5>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Form Serial Number</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.serialNumber.invalid && formSeizureForm.serialNumber.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="serialNumber"
+                                           name="serialNumber" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.serialNumber.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.serialNumber.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Product</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.productField.invalid && formSeizureForm.productField.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="productField"
+                                           name="productField" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.productField.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.productField.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                         <h5 class="mb-3" style="color: #0066B1">Seizure Product Details</h5>
                         <div class="row">
                             <div class="col">
@@ -3235,13 +3473,13 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <label><b>Description Of Products Seized</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.descriptionProductsSeized.invalid && formSeizureDeclarationForm.descriptionProductsSeized.errors"
+                                                <label><b>Product</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.product.invalid && formSeizureDeclarationForm.product.errors"
                                                        class="form-control two-column-input"
-                                                       formControlName="descriptionProductsSeized"
-                                                       name="descriptionProductsSeized" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.descriptionProductsSeized.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.descriptionProductsSeized.errors.required">This field is
+                                                       formControlName="product"
+                                                       name="product" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.product.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.product.errors.required">This field is
                                                         required
                                                     </div>
                                                 </div>
@@ -3262,6 +3500,24 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Description Of Products Seized</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.descriptionProductsSeized.invalid && formSeizureDeclarationForm.descriptionProductsSeized.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="descriptionProductsSeized"
+                                                       name="descriptionProductsSeized" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.descriptionProductsSeized.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.descriptionProductsSeized.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
 
                                     </div>
                                     <div class="row">
@@ -3421,8 +3677,9 @@
                                     >
                                         <thead>
                                         <tr>
-                                            <th>Description Products Seized</th>
+                                            <th>Product</th>
                                             <th>Brand</th>
+                                            <th>Description Products Seized</th>
                                             <th>Sector</th>
                                             <th>Reason Seizure</th>
                                             <th>Seizure Serial</th>
@@ -3436,8 +3693,10 @@
                                         </thead>
                                         <tbody>
                                         <tr *ngFor="let r of dataSaveSeizureDeclarationList; let i=index">
-                                            <td>{{r.descriptionProductsSeized}}</td>
+                                            <td>{{r.product}}</td>
                                             <td>{{r.brand}}</td>
+                                            <td>{{r.descriptionProductsSeized}}</td>
+
                                             <td>{{r.sector}}</td>
                                             <td>{{r.reasonSeizure}}</td>
                                             <td>{{r.seizureSerial}}</td>
@@ -5519,12 +5778,12 @@
 
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Source of Product and Evidence</b></label>
-                                        <input type="text" class="form-control two-column-input"
-                                               formControlName="sourceProductEvidence" name="sourceProductEvidence" required
-                                               [class.is-invalid]="formSampleSubmitForm.sourceProductEvidence.invalid && formSampleSubmitForm.sourceProductEvidence.errors">
-                                        <div *ngIf="submitted && formSampleSubmitForm.sourceProductEvidence.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.sourceProductEvidence.errors.required">This field is
+                                        <label><b>Sample Collection Date</b></label>
+                                        <input type="date" class="form-control two-column-input"
+                                               formControlName="sampleCollectionDate" name="sampleCollectionDate" required
+                                               [class.is-invalid]="formSampleSubmitForm.sampleCollectionDate.invalid && formSampleSubmitForm.sampleCollectionDate.errors">
+                                        <div *ngIf="submitted && formSampleSubmitForm.sampleCollectionDate.errors" class="invalid-feedback">
+                                            <div *ngIf="formSampleSubmitForm.sampleCollectionDate.errors.required">This field is
                                                 required
                                             </div>
                                         </div>
@@ -5639,10 +5898,17 @@
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
                                         <div class="refStandardsDesign">
-                                            <input type="text" list="refStandards" formControlName="referencesStandards" name="referencesStandards" class="form-control two-column-input">
+                                            <input type="text" list="refStandards" formControlName="referencesStandards"
+                                                   name="referencesStandards" class="form-control two-column-input" #standardsInput>
                                             <datalist id="refStandards">
                                                 <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
                                             </datalist>
+                                        </div>
+                                        <button class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
+                                        <div>
+                                            <ul>
+                                                <li *ngFor="let selectedStandard of standardsArray">{{selectedStandard}}</li>
+                                            </ul>
                                         </div>
 
                                         <!--                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->

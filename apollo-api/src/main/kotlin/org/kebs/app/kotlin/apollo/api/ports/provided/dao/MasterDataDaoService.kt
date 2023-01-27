@@ -8,7 +8,9 @@ import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntit
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
+import org.kebs.app.kotlin.apollo.store.repo.ms.ICfgKebsMsOgaRepository
 import org.kebs.app.kotlin.apollo.store.repo.ms.IPredefinedResourcesRequiredRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitRatingRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
@@ -35,6 +37,7 @@ class MasterDataDaoService(
     private val sampleStandardsRepo: ISampleStandardsRepository,
     private val laboratoryRepo: ILaboratoryRepository,
     private val predefinedResourcesRequiredRepo: IPredefinedResourcesRequiredRepository,
+    private val cfgKebsMsOgaRepo: ICfgKebsMsOgaRepository,
     private val productCategoriesRepo: IKebsProductCategoriesRepository,
     private val countriesRepo: ICountriesRepository,
     private val broadProductCategoryRepo: IBroadProductCategoryRepository,
@@ -43,9 +46,55 @@ class MasterDataDaoService(
     private val businessLinesRepo: IBusinessLinesRepository,
     private val businessNatureRepo: IBusinessNatureRepository,
     private val entityManager: EntityManager,
+    private val iPermitRatingRepo: IPermitRatingRepository,
+    private val companyProfileRepo: ICompanyProfileRepository,
     private val iUserTypesEntityRepository: IUserTypesEntityRepository,
 
     ) {
+
+    fun getAllCompanies(): List<UserCompanyEntityDto>? = companyProfileRepo.findAll()
+        .sortedBy { it.id }
+        .map {
+            UserCompanyEntityDto(
+                it.name,
+                it.kraPin,
+                it.userId,
+                null,
+                it.registrationNumber,
+                it.postalAddress,
+                it.physicalAddress,
+                it.plotNumber,
+                it.companyEmail,
+                it.companyTelephone,
+                it.yearlyTurnover,
+                it.businessLines,
+                it.businessNatures,
+                it.buildingName,
+                null,
+                it.streetName,
+                it.directorIdNumber,
+                it.region,
+                it.county,
+                it.town,
+                null,
+                null,
+                null,
+                null,
+                iPermitRatingRepo.findByIdOrNull(it.firmCategory)?.firmType
+            ).apply {
+                id = it.id
+                status = it.status
+            }
+        }
+
+    fun getAllFirmType(): List<FirmTypeEntityDto>? = iPermitRatingRepo.findAll()
+        .sortedBy { it.id }
+        .map { FirmTypeEntityDto(it.id, it.min, it.max, it.firmFee, it.productFee, it.extraProductFee, it.countBeforeFee, it.countBeforeFree, it.validity, it.invoiceDesc, it.firmType,) }
+
+    fun getAllFirmTypeByStatus(status: Int): List<FirmTypeEntityDto>? = iPermitRatingRepo.findAllByStatus(status)
+    ?.sortedBy { it.id }
+    ?.map { FirmTypeEntityDto(it.id, it.min, it.max, it.firmFee, it.productFee, it.extraProductFee, it.countBeforeFee, it.countBeforeFree, it.validity, it.invoiceDesc, it.firmType,) }
+
     fun getAllDepartments(): List<DepartmentsEntityDto>? = departmentsRepo.findAll()
         .sortedBy { it.id }
         .map { DepartmentsEntityDto(it.id, it.department, it.descriptions, it.directorateId?.id, it.status == 1) }
@@ -78,6 +127,8 @@ class MasterDataDaoService(
     fun getAllLaboratories(): List<LaboratoryEntityDto>? = laboratoryRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { LaboratoryEntityDto(it.id, it.labName, it.description, it.status == 1) }
 
     fun getAllPredefinedResourcesRequired(): List<PredefinedResourcesRequiredEntityDto>? = predefinedResourcesRequiredRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { PredefinedResourcesRequiredEntityDto(it.id, it.resourceName, it.status == 1) }
+
+    fun getAllOGAList(): List<OGAEntity>? = cfgKebsMsOgaRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { OGAEntity(it.id, it.ogaName, it.status == 1) }
 
     fun getStandardProductCategoryByStatus(status: Int): List<StandardProductCategoryEntityDto>? = standardCategoryRepo.findByStatusOrderByStandardCategory(status)?.sortedBy { it.id }?.sortedBy { it.id }?.map { StandardProductCategoryEntityDto(it.id, it.standardCategory, it.standardNickname, it.standardId, it.status == 1) }
 

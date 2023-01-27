@@ -1442,6 +1442,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.officer}")
     val msComplaintProcessAssignOfficer: Long? = null
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.officer.hod}")
+    val msComplaintProcessAssignOfficerHOD: Long? = null
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.hof}")
     val msComplaintProcessAssignHOF: Long? = null
 

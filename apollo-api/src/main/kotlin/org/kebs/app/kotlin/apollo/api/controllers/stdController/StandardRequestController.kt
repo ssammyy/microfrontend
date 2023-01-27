@@ -622,6 +622,12 @@ class StandardRequestController(
         return standardRequestService.getANwiById(nwiId)
     }
 
+    @GetMapping("standard/getDepartmentById")
+    @ResponseBody
+    fun getDepartment(  @RequestParam("departmentId") departmentId: String,): MutableList<Department> {
+        return standardRequestService.getDepartment(departmentId.toLong())
+    }
+
     @GetMapping("standard/getJustificationDecisionById")
     fun getJustificationDecisionById(
         @RequestParam("justificationId") justificationId: Long,

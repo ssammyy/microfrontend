@@ -77,8 +77,8 @@ export class AllpermitsComponent implements OnInit {
     clickFunction() {
 
         swal.fire({
-            title: 'Enter Permit Number',
-            html: '<div class="form-group">' + '<input id="input-field" placeholder="Permit Number" type="text" class="form-control" />' + '</div>',
+            title: 'Enter Smark Number',
+            html: '<div class="form-group">' + '<input id="input-field" placeholder="Smark Number" type="text" class="form-control" />' + '</div>',
             showCancelButton: true,
             customClass: {confirmButton: 'btn btn-success', cancelButton: 'btn btn-danger',},
             buttonsStyling: false
@@ -93,7 +93,7 @@ export class AllpermitsComponent implements OnInit {
                     (error: HttpErrorResponse) => {
                         swal.fire({
                             title: 'Cancelled',
-                            text: 'This Permit Is Not Assigned To You.',
+                            text: 'This Smark Is Not Assigned To You.',
                             icon: 'error',
                             customClass: {confirmButton: "btn btn-info",},
                             buttonsStyling: false
@@ -117,7 +117,7 @@ export class AllpermitsComponent implements OnInit {
             } else {
                 swal.fire({
                     title: 'Cancelled',
-                    text: 'You Did Not Enter A Permit Number :)',
+                    text: 'You Did Not Enter A Smark Number :)',
                     icon: 'error',
                     customClass: {confirmButton: "btn btn-info",},
                     buttonsStyling: false
@@ -130,5 +130,115 @@ export class AllpermitsComponent implements OnInit {
         });
     }
 
+    clickFunctionDmark() {
+
+        swal.fire({
+            title: 'Enter Dmark Number',
+            html: '<div class="form-group">' + '<input id="input-field" placeholder="Dmark Number" type="text" class="form-control" />' + '</div>',
+            showCancelButton: true,
+            customClass: {confirmButton: 'btn btn-success', cancelButton: 'btn btn-danger',},
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.value) {
+                this.qaService.loadPermitMigratededListDmark(<string>$(`#input-field`).val()).subscribe(
+                    (response: PermitEntityDto[]) => {
+                        console.log(response);
+                        this.tcTasks = response;
+                        this.getAllPermits();
+                    },
+                    (error: HttpErrorResponse) => {
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'This Dmark Is Not Assigned To You.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                // window.location.href = "/dashboard";
+                            }
+                        });
+                    }
+                );
+
+
+                swal.fire({
+                    icon: 'success',
+                    html: 'Permit id: <strong>' + $('#input-field').val() + ' is being migrated</strong>',
+                    customClass: {confirmButton: 'btn btn-success',},
+                    buttonsStyling: false
+                }).then((result) => {
+
+                });
+            } else {
+                swal.fire({
+                    title: 'Cancelled',
+                    text: 'You Did Not Enter A Dmark Number :)',
+                    icon: 'error',
+                    customClass: {confirmButton: "btn btn-info",},
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        // window.location.href = "/dashboard";
+                    }
+                });
+            }
+        });
+    }
+    clickFunctionFmark() {
+
+        swal.fire({
+            title: 'Enter Fmark Number',
+            html: '<div class="form-group">' + '<input id="input-field" placeholder="Fmark Number" type="text" class="form-control" />' + '</div>',
+            showCancelButton: true,
+            customClass: {confirmButton: 'btn btn-success', cancelButton: 'btn btn-danger',},
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.value) {
+                this.qaService.loadPermitMigratededListFmark(<string>$(`#input-field`).val()).subscribe(
+                    (response: PermitEntityDto[]) => {
+                        console.log(response);
+                        this.tcTasks = response;
+                        this.getAllPermits();
+                    },
+                    (error: HttpErrorResponse) => {
+                        swal.fire({
+                            title: 'Cancelled',
+                            text: 'This Fmark Is Not Assigned To You.',
+                            icon: 'error',
+                            customClass: {confirmButton: "btn btn-info",},
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.value) {
+                                // window.location.href = "/dashboard";
+                            }
+                        });
+                    }
+                );
+
+
+                swal.fire({
+                    icon: 'success',
+                    html: 'Permit id: <strong>' + $('#input-field').val() + ' is being migrated</strong>',
+                    customClass: {confirmButton: 'btn btn-success',},
+                    buttonsStyling: false
+                }).then((result) => {
+
+                });
+            } else {
+                swal.fire({
+                    title: 'Cancelled',
+                    text: 'You Did Not Enter A Fmark Number :)',
+                    icon: 'error',
+                    customClass: {confirmButton: "btn btn-info",},
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.value) {
+                        // window.location.href = "/dashboard";
+                    }
+                });
+            }
+        });
+    }
 
 }

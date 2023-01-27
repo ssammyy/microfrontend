@@ -84,7 +84,11 @@ import {
     SampleProductViewSearchValues,
     SeizedGoodsViewSearchValues,
     PermitUcrSearch,
-    SSFSendingComplianceStatus, ConsumerComplaintViewSearchValues, SeizeViewSearchValues, SubmittedSamplesSummaryViewSearchValues,
+    SSFSendingComplianceStatus,
+    ConsumerComplaintViewSearchValues,
+    SeizeViewSearchValues,
+    SubmittedSamplesSummaryViewSearchValues,
+    OGAEntity, WorkPlanScheduleOnsiteDto,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -114,8 +118,8 @@ export class MsService {
         let month = '' + (d.getMonth() + 1);
         let day = '' + d.getDate();
         const year = d.getFullYear();
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
+        if (month.length < 2) { month = '0' + month; }
+        if (day.length < 2) { day = '0' + day; }
         return [year, month, day].join('-');
     }
 
@@ -1797,7 +1801,7 @@ export class MsService {
     }
 
      // tslint:disable-next-line:max-line-length
-    public msWorkPlanScheduleDetailsStartOnsiteActivities(batchReferenceNo: string, referenceNo: string): Observable<WorkPlanInspectionDto> {
+    public msWorkPlanScheduleDetailsStartOnsiteActivities(batchReferenceNo: string, referenceNo: string, data: WorkPlanScheduleOnsiteDto): Observable<WorkPlanInspectionDto> {
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(
             ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_START_ONSITE_ACTIVITIES,
@@ -1805,7 +1809,7 @@ export class MsService {
         const params = new HttpParams()
             .set('batchReferenceNo', batchReferenceNo)
             .set('referenceNo', referenceNo);
-        return this.http.get<WorkPlanInspectionDto>(url, {params}).pipe(
+        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
             map(function (response: WorkPlanInspectionDto) {
                 return response;
             }),
@@ -2408,6 +2412,20 @@ export class MsService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_PREDEFINED_RESOURCES_REQUIRED);
         return this.http.get<PredefinedResourcesRequired[]>(url).pipe(
             map(function (response: PredefinedResourcesRequired[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public msOGAListDetails(): Observable<OGAEntity[]> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_OGA_REQUIRED);
+        return this.http.get<OGAEntity[]>(url).pipe(
+            map(function (response: OGAEntity[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

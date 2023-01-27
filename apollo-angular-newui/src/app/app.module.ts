@@ -5,6 +5,7 @@ import {CommonModule, DatePipe} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
+
 import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 // @ts-ignore
 import {MatButtonModule} from '@angular/material/button';
@@ -239,7 +240,7 @@ import {StandardLevySiteVisitFeedbackComponent,} from './apollowebs/standards-le
 import {StandardLevyUploadSiteVisitFeedbackComponent,} from './apollowebs/standards-levy/standard-levy-upload-site-visit-feedback/standard-levy-upload-site-visit-feedback.component';
 import {StandardLevyManufactureDetailsComponent,} from './apollowebs/standards-levy/standard-levy-manufacture-details/standard-levy-manufacture-details.component';
 import {ReviewJustificationOfTCComponent,} from './apollowebs/standards-development/formationOfTc/review-justification-of-tc/review-justification-of-tc.component';
-import {ReviewFeedbackSPCComponent,} from './apollowebs/standards-development/formationOfTc/review-feedback-spc/review-feedback-spc.component';
+import {ReviewFeedbackSacComponent,} from './apollowebs/standards-development/formationOfTc/review-feedback-sac/review-feedback-sac.component';
 import {RequestForFormationOfTCComponent,} from './apollowebs/standards-development/formationOfTc/request-for-formation-of-tc/request-for-formation-of-tc.component';
 import {StdPublishingComponent,} from './apollowebs/standards-development/publishing/std-publishing/std-publishing.component';
 import {StdHopTasksComponent,} from './apollowebs/standards-development/publishing/std-hop-tasks/std-hop-tasks.component';
@@ -456,6 +457,13 @@ import { IntStdPublishingComponent } from './apollowebs/standards-development/in
 import { ComStdPublishingComponent } from './apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component';
 import { ComStdEditorComponent } from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
 import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corporate-bills.component';
+import { CompanyListComponent } from './apollowebs/company/company-list/company-list.component';
+import { HofReviewProposalComponent } from './apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component';
+import { PermitDetailsComponent } from './apollowebs/qualityAssuranceAdmin/permit-details/permit-details.component';
+import { SmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
+import { FmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
+import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
+
 import { ComStdRequestProcessComponent } from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
@@ -763,7 +771,7 @@ import { ComStdRequestProcessComponent } from './apollowebs/standards-developmen
         StandardLevyManufactureDetailsComponent,
         RequestForFormationOfTCComponent,
         ReviewJustificationOfTCComponent,
-        ReviewFeedbackSPCComponent,
+        ReviewFeedbackSacComponent,
         StdPublishingComponent,
         StdHopTasksComponent,
         EditorTasksComponent,
@@ -946,6 +954,13 @@ import { ComStdRequestProcessComponent } from './apollowebs/standards-developmen
         ComStdPublishingComponent,
         ComStdEditorComponent,
         CorporateBillsComponent,
+        CompanyListComponent,
+        HofReviewProposalComponent,
+        PermitDetailsComponent,
+        SmarkAdminComponent,
+        FmarkAdminComponent,
+        DmarkAdminComponent,
+
         ComStdRequestProcessComponent,
 
     ],

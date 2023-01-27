@@ -691,7 +691,7 @@ Content-Type: application/json
 
 
 ###
-GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedDmarkPermits
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedFmarkPermits
 
 ###
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedSmarkPermits
@@ -701,7 +701,7 @@ GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedSmar
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllCompanies
 
 ###
-GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=SM#60008
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=9154
 
 
 ###

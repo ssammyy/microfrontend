@@ -190,6 +190,20 @@ data class FreightStationsDto(
     var status: Boolean?
 )
 
+data class FirmTypeEntityDto(
+    var id: Long?= null,
+    var min: BigDecimal? = null,
+    var max: BigDecimal? = null,
+    var firmFee: BigDecimal? = null,
+    var productFee: BigDecimal? = null,
+    var extraProductFee: BigDecimal? = null,
+    var countBeforeFee: BigDecimal? = null,
+    var countBeforeFree: Long? = null,
+    var validity: Long? = null,
+    var invoiceDesc: String? = null,
+    var firmType: String? = null,
+)
+
 data class DepartmentsEntityDto(
     var id: Long?,
     var department: String?,
@@ -473,7 +487,8 @@ data class UserCompanyEntityDto(
     var factoryVisitStatus: Int? = null,
     var manufactureStatus: Int? = null,
     @JsonProperty("otherCategory")
-    var otherCategory: String? = null
+    var otherCategory: String? = null,
+    var firmType: String? = null
 
 
 ) {
@@ -481,6 +496,14 @@ data class UserCompanyEntityDto(
     var status: Int? = null
 }
 
+
+data class CompanyTurnOverUpdateDto(
+    @NotEmpty(message = "is mandatory")
+    var companyProfileID: Long,
+    @NotEmpty(message = "is mandatory")
+    var selectedFirmTypeID: Long,
+
+)
 
 data class UserEntityDto(
 
@@ -641,6 +664,12 @@ data class KebsStandardsDto(
 data class PredefinedResourcesRequiredEntityDto(
     var id: Long? = null,
     var resourceName: String? = null,
+    var status: Boolean? = null
+)
+
+data class OGAEntity(
+    var id: Long? = null,
+    var ogaName: String? = null,
     var status: Boolean? = null
 )
 

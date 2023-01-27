@@ -122,6 +122,18 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     PUT("/", handler::departmentsUpdate)
                     POST("/", handler::departmentsUpdate)
                 }
+                "/firm-types".nest {
+                    GET("/load", handler::firmTypeListing)
+                    GET("/loads/{status}", handler::firmTypeListing)
+                    PUT("/", handler::notSupported)
+                    POST("/", handler::notSupported)
+                }
+                "/company-list".nest {
+                    GET("/load", handler::companyListing)
+                    GET("/loads/{status}", handler::companyListing)
+                    PUT("/", handler::notSupported)
+                    POST("/", handler::notSupported)
+                }
                 "/divisions".nest {
                     GET("/load", handler::divisionsListing)
                     GET("/loads/{status}", handler::divisionsListing)
@@ -287,6 +299,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "/company".nest {
                 GET("", handler::handleFetchCompaniesByUserId)
                 POST("", handler::handleUpdateCompanyDetails)
+                POST("/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
                 "/{companyId}".nest {
                     PUT("", handler::handleUpdateCompanyDetails)
                     GET("", handler::handleFetchCompanyById)
@@ -475,12 +488,16 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/branch-list", handler::branchListMigration)
             GET("/standards-list", handler::standardsListMigration)
             GET("/payments", handler::permitInvoiceListPaid)
+            POST("/company/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
             "/permit".nest {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
                 GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/my-permits-loaded", handler::permitListAwardedMigrationb)
+                GET("/my-permits-loaded-dmark", handler::permitListAwardedMigrationDmark)
+                GET("/my-permits-loaded-fmark", handler::permitListAwardedMigrationFmark)
+
                 GET("/all-my-permits-loaded", handler::loadAllMyPermits)
                 GET("/awarded-list-completely", handler::permitCompletelyListAwardedMigration)
                 POST("/delete", handler::deleteAPermit)
@@ -617,6 +634,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/standards", handler::standardsList)
                 GET("/standardProductCategory", handler::msStandardsCategory)
                 GET("/predefinedResourcesRequired", handler::msPredefinedResources)
+                GET("/ogaList", handler::msOGAList)
                 GET("/productCategories", handler::msProductCategories)
                 GET("/countries", handler::msCountries)
                 GET("/broadProductCategory", handler::msBroadProductCategory)
@@ -707,7 +725,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     "/update".nest {
                         PUT("/submit-for-approval", handler::submitWorkPlanScheduleEntry)
                         PUT("/approval-schedule", handler::updateWorkPlanScheduleApproval)
-                        GET("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
+                        POST("/start-onsite-activities", handler::startWorkPlanInspectionOnsiteDetails)
                         GET("/end-onsite-activities", handler::endWorkPlanInspectionOnsiteDetails)
                         PUT("/end-all-recommendation-done", handler::endWorkPlanInspectionAllRecommendationDone)
                         PUT("/client-appealed-status", handler::updateWorkPlanClientAppealed)

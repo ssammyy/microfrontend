@@ -56,11 +56,12 @@ class QaInvoiceCalculationDaoServices(
         commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
 
         val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
-        val selectedRate = ratesMap.filter {
-            manufactureTurnOver > it.min ?: BigDecimal.ZERO && manufactureTurnOver <= it.max ?: throw NullValueNotAllowedException(
-                "Max needs to be defined"
-            )
-        }.firstOrNull() ?: throw NullValueNotAllowedException("Rate not found")
+        val selectedRate = ratesMap.firstOrNull {
+            manufactureTurnOver > (it.min ?: BigDecimal.ZERO) && manufactureTurnOver <= (it.max
+                ?: throw NullValueNotAllowedException(
+                    "Max needs to be defined"
+                ))
+        } ?: throw NullValueNotAllowedException("Rate not found")
 
         KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 

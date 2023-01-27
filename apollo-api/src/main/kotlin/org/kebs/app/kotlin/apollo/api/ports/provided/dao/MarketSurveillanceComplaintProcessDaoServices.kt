@@ -638,7 +638,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                         || authority.authority == "MS_HOF_READ"
                         || authority.authority == "MS_DIRECTOR_READ"
                         || authority.authority == "MS_RM_READ" } -> {
-                val complaintList = complaintsRepo.findNewComplaint(applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm, applicationMapProperties.msComplaintProcessOnlineSubmitted?: throw ExpectedDataNotFound("Missing Process ID, Complaint Submitted"),userProfile.regionId?.id ?: throw ExpectedDataNotFound("Missing Logged In Region ID"),userProfile.countyID?.id ?: throw ExpectedDataNotFound("Missing Logged In County ID"))
+                val complaintList = complaintsRepo.findNewComplaint(applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm, applicationMapProperties.msComplaintProcessOnlineSubmitted?: throw ExpectedDataNotFound("Missing Process ID, Complaint Submitted"),userProfile.regionId?.id ?: throw ExpectedDataNotFound("Missing Logged In Region ID"))
                 val usersPage: Page<ComplaintEntity> = PageImpl(complaintList, page, complaintList.size.toLong())
                 response = listMsComplaints(usersPage,map)
             }
@@ -751,7 +751,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 applicationMapProperties.mapMsComplaintAcknowledgementAcceptedNotification,
                                 complainantEmailComposed,
                                 map,
-                                complaintUpdated.first
+                                complaintUpdated.first,
+                                complainantEmailComposed.refNumber
                             )
                         }
 
@@ -874,7 +875,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionNotification,
                                 complainantEmailComposed,
                                 map,
-                                complaintUpdated.first
+                                complaintUpdated.first,
+                                complainantEmailComposed.refNumber
                             )
                         }
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
@@ -938,7 +940,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionRejectedForAmendmentNotification,
                                 complainantEmailComposed,
                                 map,
-                                complaintUpdated.first
+                                complaintUpdated.first,
+                                complainantEmailComposed.refNumber
                             )
                         }
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
@@ -1001,7 +1004,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionWIthOGANotification,
                                 complainantEmailComposed,
                                 map,
-                                complaintUpdated.first
+                                complaintUpdated.first,
+                                complainantEmailComposed.refNumber
                             )
                         }
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
@@ -1034,7 +1038,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             county = body.countyID
             town = body.townID
 //            region = body.regionID
-            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
+            region = body.regionID?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).id }
         }
         complaintLocationDetails = complaintLocationRepo.save(complaintLocationDetails)
 
@@ -1155,6 +1159,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         body: ComplaintAssignDto
     ): AllComplaintsDetailsDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
         val map = commonDaoServices.serviceMapDetails(appId)
         val complaintFound = findComplaintByRefNumber(referenceNoFound)
 
@@ -1164,7 +1169,17 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 findMsProcessComplaintByID(1, timeLine )?.timelinesDay}?.let {daysCount->
                 commonDaoServices.addDaysSkippingWeekends(LocalDate.now(), daysCount)?.let {daysConvert-> commonDaoServices.localDateToTimestamp(daysConvert) }
             }
-            msProcessId = applicationMapProperties.msComplaintProcessAssignOfficer
+
+            msProcessId = when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_MODIFY"
+                        || authority.authority == "MS_RM_MODIFY" } -> {
+                    applicationMapProperties.msComplaintProcessAssignOfficerHOD
+                }
+                else -> {
+                    applicationMapProperties.msComplaintProcessAssignOfficer
+                }
+            }
+
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
             assignedRemarks = body.assignedRemarks
             assignedIoStatus = map.activeStatus
@@ -1383,6 +1398,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             refNumber = dataDetails.referenceNumber
             baseUrl = applicationMapProperties.baseUrlValue
             complaintTitle = dataDetails.complaintTitle
+            productName = dataDetails.productString
             fullName = dataDetails.createdBy
             commentRemarks = dataDetails.rejectedRemarks
             dateSubmitted = dataDetails.transactionDate
@@ -1398,7 +1414,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
             baseUrl = applicationMapProperties.baseUrlValue
             complaintTitle = dataDetails.complaintTitle
             fullName = dataDetails.createdBy
+            productName = dataDetails.productString
+            ogaName = dataDetails.advisedWhereto
             commentRemarks = dataDetails.rejectedRemarks
+            amendmentRemarks = dataDetails.amendmentRemarks
             adviceRemarks = dataDetails.advisedWhereto
             dateSubmitted = dataDetails.transactionDate
         }
@@ -2000,6 +2019,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val dataValue = CustomerComplaintSubmittedDTO()
         with(dataValue) {
             refNumber = dataDetails.referenceNumber
+            productName = dataDetails.productString
             baseUrl = applicationMapProperties.baseUrlValue
             fullName = dataDetails.createdBy
             dateSubmitted = dataDetails.transactionDate
@@ -2025,13 +2045,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val complaintRemarks = findRemarksForComplaints(comp.id?: throw ExpectedDataNotFound("MISSING COMPLAINT ID"))
         val officerList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedOfficerROLEID,
-            complaintLocationDetails.county ?: throw ExpectedDataNotFound("MISSING COMPLAINT COUNTY ID"),
             complaintLocationDetails.region ?: throw ExpectedDataNotFound("MISSING COMPLAINT REGION ID")
         )
 
         val hofList = commonDaoServices.findOfficersListBasedOnRole(
             applicationMapProperties.mapMSComplaintWorkPlanMappedHOFROLEID,
-            complaintLocationDetails.county ?: throw ExpectedDataNotFound("MISSING COMPLAINT COUNTY ID"),
             complaintLocationDetails.region ?: throw ExpectedDataNotFound("MISSING COMPLAINT REGION ID")
         )
 

@@ -30,6 +30,12 @@ class PvocPartnerService(
     private val partnerCategoryRepo: IPvocPartnerTypeRepository,
     private val apiClientService: ApiClientService
 ) {
+    fun getPartnerInCountry(country: String): List<PvocPartnersEntity> {
+        return partnerCountryRepo.findByAbbreviationIgnoreCase(country)?.let { countryDetails ->
+            partnersRepository.findAllByPartnerCountryAndStatus(countryDetails, 1)
+        } ?: throw ExpectedDataNotFound("Partner country not found $country")
+    }
+
     fun listPartnerCategories(): ApiResponseModel {
         val response = ApiResponseModel()
         response.data = PvocPartnerTypeDto.fromList(partnerCategoryRepo.findAllByStatus(1))

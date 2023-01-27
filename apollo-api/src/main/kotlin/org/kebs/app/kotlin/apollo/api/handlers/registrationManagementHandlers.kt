@@ -300,6 +300,41 @@ class RegistrationManagementHandler(
     }
 
     /**
+     * update a company turnOver value
+     *
+     * @param req ServerRequest
+     * @return ServerResponse
+     */
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
+    fun handleUpdateCompanyTurnOverDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<CompanyTurnOverUpdateDto>()
+
+            val errors: Errors = BeanPropertyBindingResult(body, CompanyTurnOverUpdateDto::class.java.name)
+            validator.validate(body, errors)
+            val user = service.loggedInUserDetails()
+            when {
+                errors.allErrors.isEmpty() -> {
+                    service.updateCompanyTurnOverDetails(body, user, map)
+                        ?.let { ServerResponse.ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+    }
+
+    /**
      * Add or edit a company branches
      *
      * @param req ServerRequest

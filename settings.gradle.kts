@@ -22,6 +22,7 @@ rootProject.name = "apollo"
 
 include("apollo-common")
 include("apollo-config")
+include("apollo-pvoc-mock")
 include("apollo-store")
 include("apollo-kafka-producer")
 include("apollo-api")

@@ -11,6 +11,7 @@ class CustomerComplaintSubmittedDTO {
     var fullName: String? = null
 
     var refNumber: String? = null
+    var productName: String? = null
 
     var dateSubmitted: Date? = null
 }
@@ -26,6 +27,8 @@ class CustomerComplaintRejectedDTO {
     var complaintTitle: String? = null
 
     var commentRemarks: String? = null
+    var productName: String? = null
+    var ogaName: String? = null
 
     var refNumber: String? = null
 
@@ -43,6 +46,9 @@ class CustomerComplaintRejectedWIthOGADTO {
     var complaintTitle: String? = null
 
     var commentRemarks: String? = null
+    var amendmentRemarks: String? = null
+    var productName: String? = null
+    var ogaName: String? = null
 
     var adviceRemarks: String? = null
 

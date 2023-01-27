@@ -6,15 +6,13 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.api.utils.RestResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.io.FileInputStream
-
 import org.xhtmlrenderer.util.GeneralUtil.inputStreamToString
+import java.io.FileInputStream
 
 
 
@@ -45,21 +43,24 @@ class SftpController(
         for (doctype in keswsDocTypes) {
             when(doctype) {
                 applicationMapProperties.mapKeswsBaseDocumentDoctype -> {
-                    val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsBaseDocumentDoctype)
+                    val allFiles =
+                        sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsBaseDocumentDoctype)
                     KotlinLogging.logger { }.info("No of Base Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
                         val xml = inputStreamToString(FileInputStream(file))
                         KotlinLogging.logger { }.info("Deserializing IDF Doc: ${file.name}")
                         var baseDocumentResponse: BaseDocumentResponse? = null
                         try {
-                                baseDocumentResponse = commonDaoServices.deserializeFromXML(xml)
+                            baseDocumentResponse = commonDaoServices.deserializeFromXML(xml)
                         } catch (e: Exception) {
                             KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
                             sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
                         }
                         if (baseDocumentResponse != null) {
                             val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
-                            if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                            if (docSaved != null) {
+                                sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder)
+                            }
                         }
                     }
                 }

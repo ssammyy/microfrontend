@@ -19,6 +19,22 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var referenceNumber: String? = null
 
+    @Column(name = "PHYSICAL_LOCATION")
+    @Basic
+    var physicalLocation: String? = null
+
+    @Column(name = "OUTLET_NAME")
+    @Basic
+    var outletName: String? = null
+
+    @Column(name = "PHONE_NUMBER")
+    @Basic
+    var phoneNumber: String? = null
+
+    @Column(name = "EMAIL_ADDRESS")
+    @Basic
+    var emailAddress: String? = null
+
     @Column(name = "FINAL_ACTION_ON_SIZED")
     @Basic
     var finalActionOnSized: Int? = 0

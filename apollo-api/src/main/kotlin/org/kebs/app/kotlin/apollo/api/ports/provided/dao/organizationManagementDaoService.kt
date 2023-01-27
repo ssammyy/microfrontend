@@ -1048,6 +1048,55 @@ class RegistrationManagementDaoService(
         }
     }
 
+    fun updateCompanyTurnOverDetails(
+        dto: CompanyTurnOverUpdateDto,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+    ): UserCompanyEntityDto? {
+
+            companyRepo.findByIdOrNull(dto.companyProfileID)
+                ?.let { entity ->
+                    entity.apply {
+                        val firmTypeDetails = qaDaoServices.findFirmTypeById(dto.selectedFirmTypeID)
+                        firmCategory = firmTypeDetails.id
+                        yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
+                        modifiedBy = user.userName
+                        modifiedOn = Timestamp.from(Instant.now())
+                    }
+
+                    val companyProfileEntity = companyRepo.save(entity)
+
+                    return UserCompanyEntityDto(
+                        companyProfileEntity.name,
+                        companyProfileEntity.kraPin,
+                        companyProfileEntity.userId,
+                        null,
+                        companyProfileEntity.registrationNumber,
+                        companyProfileEntity.postalAddress,
+                        companyProfileEntity.physicalAddress,
+                        companyProfileEntity.plotNumber,
+                        companyProfileEntity.companyEmail,
+                        companyProfileEntity.companyTelephone,
+                        companyProfileEntity.yearlyTurnover,
+                        companyProfileEntity.businessLines,
+                        companyProfileEntity.businessNatures,
+                        companyProfileEntity.buildingName,
+                        null,
+                        companyProfileEntity.streetName,
+                        companyProfileEntity.directorIdNumber,
+                        companyProfileEntity.region,
+                        companyProfileEntity.county,
+                        companyProfileEntity.town
+                    ).apply {
+                        id = companyProfileEntity.id
+
+                        status = companyProfileEntity.status
+                    }
+
+                }
+                ?: throw NullValueNotAllowedException("Record not found")
+    }
+
     /**
      * Save details provided to the Database, we expect that the organization, initial user and branch should be saved,
      * I have adopted Head Office as the description of the main branch, the names of directors previously fetched from

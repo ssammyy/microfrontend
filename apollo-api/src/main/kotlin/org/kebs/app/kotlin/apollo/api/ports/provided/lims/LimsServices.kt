@@ -135,7 +135,7 @@ class LimsServices(
                 response = ""
             }
         } catch (e: Exception) {
-            KotlinLogging.logger { }.error("Failed to connect", e)
+            KotlinLogging.logger { }.error(":::::::::::::FAILED TO CONNECT::::::::::", e)
         }
         return response
     }
@@ -222,10 +222,8 @@ class LimsServices(
                     ?.forEach { testParam ->
                         limsTestParamsDetails(testParam)
                     }
-
-            return myStatus
         }
-
+        return myStatus
     }
 
     fun labPdfListResponseResults(response: String): List<String>? {

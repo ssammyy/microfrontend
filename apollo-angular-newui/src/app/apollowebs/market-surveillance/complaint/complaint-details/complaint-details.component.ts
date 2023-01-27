@@ -31,7 +31,7 @@ import {
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
-  SSFSaveComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto,
+  SSFSaveComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto, OGAEntity,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
@@ -52,7 +52,7 @@ import {
   BroadProductCategory,
   ProductCategories,
   Products,
-  ProductSubcategory,
+  ProductSubcategory, RegionsEntityDto,
   StandardProductCategory,
 } from '../../../../core/store/data/master/master.model';
 import {Observable, throwError} from 'rxjs';
@@ -120,6 +120,7 @@ export class ComplaintDetailsComponent implements OnInit {
   msDivisions: MsDivisionDetails[];
   standardProductCategory!: StandardProductCategory[];
   predefinedResourcesRequired!: PredefinedResourcesRequired[];
+  ogaListRequired!: OGAEntity[];
   productCategories!: ProductCategories[];
   broadProductCategory!: BroadProductCategory[];
   products!: Products[];
@@ -148,6 +149,8 @@ export class ComplaintDetailsComponent implements OnInit {
   supervisorTasks: any[];
   supervisorCharge = false;
   inspectionOfficer = false;
+
+  msRegions: RegionsEntityDto[] = null;
 
   public settingsComplaintsFiles = {
     selectMode: 'single',  // single|multi
@@ -286,8 +289,8 @@ export class ComplaintDetailsComponent implements OnInit {
     this.reAssignRegionForm = this.formBuilder.group({
       reassignedRemarks: ['', Validators.required],
       regionID: ['', Validators.required],
-      countyID: ['', Validators.required],
-      townID: ['', Validators.required],
+      countyID: null,
+      townID: null,
     });
 
     this.acceptRejectComplaintForm = this.formBuilder.group({
@@ -380,11 +383,6 @@ export class ComplaintDetailsComponent implements OnInit {
 
   private loadData(referenceNumber: string): any {
     this.SpinnerService.show();
-    // let params = {'personal': this.personalTasks}
-    // this.fuelInspection = this.msService.fuelInspectionDetailsExamples()
-    // this.totalCount = this.loadedData.fuelInspectionDto.length;
-    // this.dataSet.load(this.loadedData.fuelInspectionDto);
-    // this.SpinnerService.hide();
     this.msService.msComplaintDetails(referenceNumber).subscribe(
         (data) => {
           this.complaintInspection = data;
@@ -424,6 +422,15 @@ export class ComplaintDetailsComponent implements OnInit {
                   this.msService.showError('AN ERROR OCCURRED');
                 },
             );
+          this.msService.msRegionListDetails().subscribe(
+              (dataRegions: RegionsEntityDto[]) => {
+                this.msRegions = dataRegions;
+              },
+              error => {
+                console.log(error);
+                this.msService.showError('AN ERROR OCCURRED');
+              },
+          );
             this.msService.msDivisionListDetails().subscribe(
                 (dataDiv: MsDivisionDetails[]) => {
                   this.msDivisions = dataDiv;
@@ -445,6 +452,18 @@ export class ComplaintDetailsComponent implements OnInit {
                 this.msService.showError('AN ERROR OCCURRED');
               },
           );
+
+          this.msService.msOGAListDetails().subscribe(
+              (data1: OGAEntity[]) => {
+                this.ogaListRequired = data1;
+                console.log(data1);
+              },
+              error => {
+                console.log(error);
+                this.msService.showError('AN ERROR OCCURRED');
+              },
+          );
+
 
 
           // tslint:disable-next-line:max-line-length
@@ -514,6 +533,7 @@ export class ComplaintDetailsComponent implements OnInit {
     );
 
   }
+
   updateSelectedRegion() {
     this.selectedRegion = this.reAssignRegionForm?.get('regionID')?.value;
     console.log(`region set to ${this.selectedRegion}`);
@@ -559,7 +579,7 @@ export class ComplaintDetailsComponent implements OnInit {
 
   openModalAddDetails(divVal: string): void {
     const arrHead = ['acceptRejectComplaint', 'notKebsMandate', 'assignHOF', 'assignOfficer', 'addClassificationDetails', 'startMSProcess', 'reassignRegion'];
-    const arrHeadSave = ['ACCEPT/DEFER COMPLAINT', 'NOT WITHIN KEBS MANDATE', 'ASSIGN HOF', 'ASSIGN IO', 'ADD COMPLAINT PRODUCT CLASSIFICATION DETAILS', 'FILL IN MS-PROCESS DETAILS BELOW', 'RE-ASSIGN REGION'];
+    const arrHeadSave = ['ACCEPT/DECLINE COMPLAINT', 'NOT WITHIN KEBS MANDATE', 'ASSIGN HOF', 'ASSIGN IO', 'ADD COMPLAINT PRODUCT CLASSIFICATION DETAILS', 'FILL IN MS-PROCESS DETAILS BELOW', 'RE-ASSIGN REGION'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -613,7 +633,15 @@ export class ComplaintDetailsComponent implements OnInit {
     }
   }
 
-  onClickSaveReAssignHof(valid: boolean) {
+  onClickSaveReAssignRegion(valid: boolean) {
+    this.msService.showSuccessWith2Message('Are you sure your want to Update The Region Details?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        'You can click the \'RE-ASSIGN REGION\' button to update details', 'COMPLAINT ACCEPT/REJECT SUCCESSFUL', () => {
+          this.saveReAssignRegion(valid);
+        });
+  }
+
+  saveReAssignRegion(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveReAssignRegion = {...this.dataSaveReAssignRegion, ...this.reAssignRegionForm.value};
@@ -658,7 +686,7 @@ export class ComplaintDetailsComponent implements OnInit {
   onClickSaveAcceptRejectFormResults(valid: boolean) {
     this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
         // tslint:disable-next-line:max-line-length
-        'You can click the \'ACCEPT/REJECT COMPLAINT\' button to update details', 'COMPLAINT ACCEPT/REJECT SUCCESSFUL', () => {
+        'You can click the \'ACCEPT/DECLINE COMPLAINT\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
           this.SaveAcceptRejectFormResults(valid);
         });
   }
@@ -725,7 +753,7 @@ export class ComplaintDetailsComponent implements OnInit {
                     this.acceptRejectComplaintForm.reset();
                     console.log(data);
                     this.SpinnerService.hide();
-                    this.msService.showSuccess('COMPLAINT REJECTION, SAVED SUCCESSFULLY');
+                    this.msService.showSuccess('COMPLAINT DECLINED, SAVED SUCCESSFULLY');
                   },
                   error => {
                     this.SpinnerService.hide();
@@ -775,7 +803,7 @@ export class ComplaintDetailsComponent implements OnInit {
               console.log(data);
               this.acceptRejectComplaintForm.reset();
               this.SpinnerService.hide();
-              this.msService.showSuccess('COMPLAINANT ADVICED WHERE TO TAKE THE COMPLAINT, SAVED SUCCESSFULLY');
+              this.msService.showSuccess('COMPLAINANT ADVISED WHERE TO TAKE THE COMPLAINT, SAVED SUCCESSFULLY');
             },
             error => {
               this.SpinnerService.hide();
@@ -948,26 +976,27 @@ export class ComplaintDetailsComponent implements OnInit {
     this.router.navigate([`/complaintPlan/details/`, this.complaintInspection.workPlanRefNumber, this.complaintInspection.workPlanBatchRefNumber]);
   }
 
-    viewComplaintPdfFile(refNumber: string, applicationType: string): void {
-      this.SpinnerService.show();
-      this.msService.loadComplaintDetailsPDF(refNumber).subscribe(
-          (dataPdf: any) => {
-            this.SpinnerService.hide();
-            this.blob = new Blob([dataPdf], {type: applicationType});
+  viewComplaintPdfFile(refNumber: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.msService.loadComplaintDetailsPDF(refNumber).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
 
-            // tslint:disable-next-line:prefer-const
-            let downloadURL = window.URL.createObjectURL(this.blob);
-            const link = document.createElement('a');
-            link.href = downloadURL;
-            link.download = `Complaint-${refNumber}`;
-            link.click();
-            // this.pdfUploadsView = dataPdf;
-          },
-          error => {
-            this.SpinnerService.hide();
-            console.log(error);
-            // this.msService.showError('AN ERROR OCCURRED');
-          },
-      );
-    }
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `Complaint-${refNumber}`;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          // this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
 }

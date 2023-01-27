@@ -44,38 +44,38 @@ export class FmarkApplicationComponent implements OnInit {
 
     ngOnInit() {
 
-        this.store$.select(selectCompanyInfoDtoStateData).subscribe(
-            (d) => {
-                if (d) {
-                    // //(`${d.status}`);
-                    // return this.status = d.status;
-                    if (d.status == 0) {
-                        swal.fire({
-                            title: 'Cancelled',
-                            text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
-                            icon: 'error',
-                            customClass: {confirmButton: "btn btn-info",},
-                            buttonsStyling: false
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location.href = "/dashboard";
-                            }
-                        })
-                    } else if (d.status == 2) {
-                        swal.fire({
-                            title: 'Cancelled',
-                            text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
-                            icon: 'error',
-                            customClass: {confirmButton: "btn btn-info",},
-                            buttonsStyling: false
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location.href = "/dashboard";
-                            }
-                        })
-                    }
-                }
-            })
+        // this.store$.select(selectCompanyInfoDtoStateData).subscribe(
+        //     (d) => {
+        //         if (d) {
+        //             // //(`${d.status}`);
+        //             // return this.status = d.status;
+        //             // if (d.status == 0) {
+        //             //     swal.fire({
+        //             //         title: 'Cancelled',
+        //             //         text: 'Your Company Has Been Closed.You Cannot Apply For A Permit.',
+        //             //         icon: 'error',
+        //             //         customClass: {confirmButton: "btn btn-info",},
+        //             //         buttonsStyling: false
+        //             //     }).then((result) => {
+        //             //         if (result.value) {
+        //             //             window.location.href = "/dashboard";
+        //             //         }
+        //             //     })
+        //             // } else if (d.status == 2) {
+        //             //     swal.fire({
+        //             //         title: 'Cancelled',
+        //             //         text: 'Your Company Has Been Suspended.You Cannot Apply For A Permit.',
+        //             //         icon: 'error',
+        //             //         customClass: {confirmButton: "btn btn-info",},
+        //             //         buttonsStyling: false
+        //             //     }).then((result) => {
+        //             //         if (result.value) {
+        //             //             window.location.href = "/dashboard";
+        //             //         }
+        //             //     })
+        //             // }
+        //         }
+        //     })
 
         this.fmarkForm = this.formBuilder.group({
             smarkPermitID: ['', Validators.required]

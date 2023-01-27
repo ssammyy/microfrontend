@@ -3,11 +3,8 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.scheduler
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
-import org.kebs.app.kotlin.apollo.api.utils.RestResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.xhtmlrenderer.util.GeneralUtil
 import java.io.FileInputStream
@@ -35,7 +32,8 @@ class SftpSchedulerImpl(
         for (doctype in keswsDocTypes) {
             when(doctype) {
                 applicationMapProperties.mapKeswsBaseDocumentDoctype -> {
-                    val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsBaseDocumentDoctype)
+                    val allFiles =
+                        sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsBaseDocumentDoctype)
                     KotlinLogging.logger { }.info("No of Base Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
                         val xml = GeneralUtil.inputStreamToString(FileInputStream(file))
@@ -48,7 +46,9 @@ class SftpSchedulerImpl(
                         }
                         if (baseDocumentResponse != null) {
                             val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
-                            if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                            if (docSaved != null) {
+                                sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder)
+                            }
                         }
                     }
                 }
