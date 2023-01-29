@@ -1,6 +1,19 @@
-<div class="loading-spinner ">
+<!--<div class="loading-spinner ">-->
+<!--    <div class="loading-spinner ">-->
+<!--        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">-->
+<!--            <p style="font-size: 20px; color: white">{{loadingText}}</p>-->
+<!--        </ngx-spinner>-->
+<!--    </div>-->
+<!--</div>-->
+<div *ngIf="loading">
+
     <div class="loading-spinner ">
-        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
             <p style="font-size: 20px; color: white">{{loadingText}}</p>
         </ngx-spinner>
     </div>
@@ -166,8 +179,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Edit User</h4>
-                    <button mat-button type="button" #closeViewModal class="close" data-dismiss="modal" aria-hidden="true">
-                        <i class="material-icons">clear</i>
+                    <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
