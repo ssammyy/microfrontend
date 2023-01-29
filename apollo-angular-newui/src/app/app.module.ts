@@ -465,6 +465,7 @@ import { FmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/fmark-ad
 import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
 
 import { ComStdRequestProcessComponent } from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
+import { ManageTivetComponent } from './apollowebs/usermanagement/manage-tivet/manage-tivet.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -962,6 +963,8 @@ import { ComStdRequestProcessComponent } from './apollowebs/standards-developmen
         DmarkAdminComponent,
 
         ComStdRequestProcessComponent,
+
+        ManageTivetComponent,
 
     ],
     entryComponents: [LoaderComponent],
