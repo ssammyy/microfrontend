@@ -678,6 +678,7 @@ export class ApiEndpointService {
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
         TIVETS_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/tivetListing`,
         TIVETS_UPDATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/updateTivet`,
+        TIVETS_REJECT: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/rejectTivet`,
 
     };
 

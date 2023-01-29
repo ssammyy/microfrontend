@@ -1430,59 +1430,6 @@ class SystemsAdminDaoService(
 
                                             companyProfileEntity = companyProfileRepo.save(companyProfileEntity)
 
-//                                            brsLookupManufacturerDataRepo.findFirstByRegistrationNumberAndStatusOrderById(
-//                                                companyProfileEntity.registrationNumber
-//                                                    ?: throw NullValueNotAllowedException("Invalid BRS Number"), 30
-//                                            )
-//                                                ?.let { record ->
-//                                                    brsLookupManufacturerPartnerRepo.findBrsLookupManufacturerPartnersEntitiesByManufacturerIdAndStatus(
-//                                                        record.id,
-//                                                        30
-//                                                    )
-//                                                        ?.forEach { partner ->
-//                                                            companyProfileEntity.id?.let {
-//
-//                                                                val companyDirectors =
-//                                                                    CompanyProfileDirectorsEntity().apply {
-//                                                                        companyProfileId = companyProfileEntity.id
-//                                                                        directorName = partner.names
-//                                                                        directorId = partner.idNumber
-//                                                                        userType = partner.idType
-//                                                                        status = 1
-//                                                                        createdOn = commonDaoServices.getTimestamp()
-//                                                                        createdBy =
-//                                                                            commonDaoServices.concatenateName(user)
-//                                                                    }
-//
-//                                                                companyProfileDirectorsRepo.save(companyDirectors)
-//
-//
-//                                                            }
-//                                                        }
-//
-//                                                }
-//                                                ?: throw InvalidValueException("No record of look up found on the Datastore")
-
-//                                            companyProfileEntity.id?.let {
-//
-//                                                val companyDirectors =
-//                                                    CompanyProfileDirectorsEntity().apply {
-//                                                        companyProfileId = companyProfileEntity.id
-//                                                        directorName = partner.names
-//                                                        directorId = partner.idNumber
-//                                                        userType = partner.idType
-//                                                        status = 1
-//                                                        createdOn = commonDaoServices.getTimestamp()
-//                                                        createdBy =
-//                                                            commonDaoServices.concatenateName(user)
-//                                                    }
-//
-//                                                companyProfileDirectorsRepo.save(companyDirectors)
-
-
-                                         //   }
-
-
                                             var branch = ManufacturePlantDetailsEntity().apply {
                                                 companyProfileId = companyProfileEntity.id
                                                 town = dto.company.town
