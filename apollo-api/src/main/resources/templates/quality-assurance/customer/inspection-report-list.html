@@ -79,7 +79,7 @@
                                 <a sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"
                                    th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == 1}"
                                    style="color: white"
-                                   th:href="@{/api/qa/inspection/new-inspection-report(permitID=${encryptedPermitId})}"
+                                   th:href="@{/api/qa/inspection/new-inspection-reports(permitID=${encryptedPermitId})}"
                                    class="filter-link">GENERATE NEW INSPECTION REPORT</a>
 
                                 <a style="color: white"
