@@ -108,6 +108,7 @@ export class CompaniesList implements OnInit {
                 this.msRegions = dataRegions;
             },
             error => {
+                this.SpinnerService.hide();
                 console.log(error);
                 this.msService.showError('AN ERROR OCCURRED');
             },

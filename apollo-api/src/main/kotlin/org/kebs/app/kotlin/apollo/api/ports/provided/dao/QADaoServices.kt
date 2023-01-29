@@ -236,10 +236,11 @@ class QADaoServices(
 
     fun findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(
         permitType: Long,
+        branchID: Long,
         userID: Long,
         status: Int
     ): List<QaInvoiceMasterDetailsEntity> {
-        invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullPermitType(permitType,userID, status)
+        invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullPermitType(permitType,branchID,userID, status)
             ?.let { it ->
                 return it
             }
@@ -4971,11 +4972,13 @@ class QADaoServices(
 
     fun consolidateInvoiceAndSendMail(
         permitID: Long,
+        branchID: Long,
         map: ServiceMapsEntity,
         loggedInUser: UsersEntity
     ): Pair<QaBatchInvoiceEntity, PermitApplicationsEntity> {
         //Consolidate invoice now first
         var permit = findPermitBYID(permitID)
+        val attachedPermitPlantDetails =findPlantDetails(branchID)
         val permitType = findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
 
 
@@ -4990,8 +4993,7 @@ class QADaoServices(
             batchID = batchInvoice.id!!
         }
 
-        batchInvoice =
-            permitMultipleInvoiceSubmitInvoice(permit, permitType, map, loggedInUser, newBatchInvoiceDto).second
+        batchInvoice = permitMultipleInvoiceSubmitInvoice(attachedPermitPlantDetails, permitType, map, loggedInUser, newBatchInvoiceDto).second
 
         //Update Permit Details
         with(permit) {
@@ -5463,7 +5465,7 @@ class QADaoServices(
 //    }
 
     fun permitMultipleInvoiceSubmitInvoice(
-        permit: PermitApplicationsEntity,
+        attachedPermitPlantDetails: ManufacturePlantDetailsEntity,
         permitType: PermitTypesEntity,
         s: ServiceMapsEntity,
         user: UsersEntity,
@@ -5492,8 +5494,6 @@ class QADaoServices(
             )
 
             //Todo: Payment selection
-            val attachedPermitPlantDetails =
-                findPlantDetails(permit.attachedPlantId ?: throw Exception("MISSING ATTACHED PLANT ID"))
             val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(
                 attachedPermitPlantDetails.region ?: throw Exception("MISSING REGION ID"),
                 permitType.id ?: throw Exception("MISSING REGION ID")

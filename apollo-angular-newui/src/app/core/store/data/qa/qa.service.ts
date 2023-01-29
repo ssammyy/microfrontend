@@ -195,10 +195,11 @@ export class QaService {
         );
     }
 
-    public loadInvoiceListWithNoBatchIDPermitType(permitTypeID: string): Observable<any> {
+    public loadInvoiceListWithNoBatchIDPermitType(permitTypeID: number, branchID: number): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_NO_DETAILS_PERMIT_TYPE);
         const params = new HttpParams()
-            .set('permitTypeID', permitTypeID);
+            .set('permitTypeID', String(permitTypeID))
+            .set('branchID', String(branchID));
         return this.http.get<any>(url, {params}).pipe(
             map(function (response: any) {
                 return response;
@@ -751,9 +752,12 @@ export class QaService {
         );
     }
 
-    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto, permitTypeID: number, branchID: number): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_SUBMIT);
-        return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
+        const params = new HttpParams()
+            .set('permitTypeID', String(permitTypeID))
+            .set('branchID', String(branchID));
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, data, {params}).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {
                 return response;
             }),

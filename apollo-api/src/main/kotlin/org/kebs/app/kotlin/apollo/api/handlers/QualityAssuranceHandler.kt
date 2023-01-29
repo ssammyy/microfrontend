@@ -3683,9 +3683,9 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
-            val invoiceList = qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(permitTypeID,
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val branchID = req.paramOrNull("branchID")?.toLong()?: throw ExpectedDataNotFound("Required Branch ID, check config")
+            val invoiceList = qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(permitTypeID,branchID,
                 loggedInUser.id ?: throw Exception("INVALID USER ID"), map.inactiveStatus
             )
 
@@ -3728,30 +3728,32 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
             val dto = req.body<NewBatchInvoiceDto>()
+            val branchID = req.paramOrNull("branchID")?.toLong()?: throw ExpectedDataNotFound("Required Branch ID, check config")
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()?: throw ExpectedDataNotFound("Required PermitType ID, check config")
             //Create invoice consolidation list
+            val attachedPermitPlantDetails =qaDaoServices.findPlantDetails(branchID)
             var batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
 
 //            find Permit Id
-            val permit = dto.permitRefNumber?.let { qaDaoServices.findPermitWithPermitRefNumberLatest(it) }
+//            val permit = dto.permitRefNumber?.let { qaDaoServices.findPermitWithPermitRefNumberLatest(it) }
 
             //Pass invoice Dto to Sage
             val permitType =
-                qaDaoServices.findPermitType(permit?.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
+                qaDaoServices.findPermitType(permitTypeID ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
 
 
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             newBatchInvoiceDto.isWithHolding = dto.isWithHolding
             with(newBatchInvoiceDto) {
-                batchID =
-                    batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             KotlinLogging.logger { }.info("Withholding Status = ${newBatchInvoiceDto.isWithHolding}")
 
             //submit to staging invoices
             batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(
-                permit,
+                attachedPermitPlantDetails,
                 permitType,
                 map,
                 loggedInUser,

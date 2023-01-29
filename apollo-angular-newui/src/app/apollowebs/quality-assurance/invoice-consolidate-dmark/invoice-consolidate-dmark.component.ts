@@ -13,6 +13,9 @@ import {NgxSpinnerService} from "ngx-spinner";
 import Swal from "sweetalert2";
 import swal from "sweetalert2";
 import {HttpErrorResponse} from "@angular/common/http";
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
+import {Store} from '@ngrx/store';
+import {selectCompanyInfoDtoStateData} from '../../../core/store';
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
@@ -32,6 +35,8 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
   public allInvoiceData: PermitInvoiceDto[];
   tasks: PermitInvoiceDto[] = [];
 
+  DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
+
   // consolidatedInvoice: GenerateInvoiceDto;
   name: string;
   checkboxGroup: FormGroup;
@@ -48,15 +53,23 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
   isDtInitialized: boolean = false
   loadingText: string;
 
+  branchID: number;
+
   constructor(
       private qaService: QaService,
       private router: Router,
+      private store$: Store<any>,
       private fb: FormBuilder,
       private SpinnerService: NgxSpinnerService,
   ) {
   }
 
   ngOnInit() {
+
+    this.store$.select(selectCompanyInfoDtoStateData).pipe().subscribe((u) => {
+      this.branchID = u.branchId;
+    });
+
     this.checkboxGroup = this.fb.group({
     });
     const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
@@ -127,7 +140,7 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
         consolidatedInvoice.isWithHolding = this.isWithHolding
 
         console.log( consolidatedInvoice.isWithHolding)
-        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice, this.DMarkTypeID, this.branchID).subscribe(
             (data) => {
               console.log(data);
               this.SpinnerService.hide();
@@ -197,7 +210,7 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
             consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
             console.log('TEST CONSOLIDATE' + consolidatedInvoice);
             console.log(consolidatedInvoice.permitInvoicesID);
-            this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+            this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice, this.DMarkTypeID, this.branchID).subscribe(
                 (data) => {
                   this.SpinnerService.hide();
                   swal.fire({
@@ -232,7 +245,7 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
     this.loadingText = "Retrieving Invoices Please Wait ...."
 
     this.SpinnerService.show();
-    this.qaService.loadInvoiceListWithNoBatchID().subscribe(
+    this.qaService.loadInvoiceListWithNoBatchIDPermitType(this.DMarkTypeID, this.branchID).subscribe(
         (response: PermitInvoiceDto[]) => {
           this.SpinnerService.hide();
           this.tasks = response;
