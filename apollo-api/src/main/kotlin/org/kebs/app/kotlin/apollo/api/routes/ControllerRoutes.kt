@@ -389,6 +389,7 @@ class ControllerRoutes {
                 GET("/new-inspection-report", handler::newInspectionReport)
                 GET("/inspection-report-list", handler::getInspectionListDetails)
                 GET("/inspection-report-details", handler::inspectionReportDetails)
+                GET("/inspection-report-details-clone", handler::inspectionReportDetailsClone)
                 GET("/check-results", handler::checkLabResults)
                 GET("/ssf-list", handler::getSSfListDetails)
                 GET("/ssf-details", handler::getSSfDetails)

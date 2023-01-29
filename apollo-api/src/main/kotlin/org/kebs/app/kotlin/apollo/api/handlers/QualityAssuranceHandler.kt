@@ -1232,8 +1232,7 @@ class QualityAssuranceHandler(
         )
 
         req.attributes()["OPCDetailsList"] = qaDaoServices.findAllQaInspectionOPCWithInspectReportID(inspectReportID)
-        req.attributes()["QaInspectionTechnicalEntity"] =
-            qaDaoServices.findQaInspectionTechnicalBYInspectReportID(inspectReportID)
+        req.attributes()["QaInspectionTechnicalEntity"] = qaDaoServices.findQaInspectionTechnicalBYInspectReportID(inspectReportID)
         req.attributes()["QaInspectionReportRecommendationEntity"] = inspectionReportRecommendation
 
         when (inspectionReportRecommendation.filledOpcStatus) {
@@ -1265,6 +1264,78 @@ class QualityAssuranceHandler(
                 inspectReportID,
                 map.activeStatus
             )
+        req.attributes()["QaInspectionOpcEntity"] = QaInspectionOpcEntity()
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
+        return ok().render(qaInspectionReportPage, req.attributes())
+    }
+
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') " +
+                "or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+    )
+    fun inspectionReportDetailsClone(req: ServerRequest): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//
+
+        val encryptedInspectReportID = req.paramOrNull("inspectionReportID") ?: throw ExpectedDataNotFound("Required Inspection ID, check config")
+
+        val inspectReportID = jasyptStringEncryptor.decrypt(encryptedInspectReportID).toLong()
+
+        val inspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYID(inspectReportID)
+
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+//        req.attributes()["OPCDetailsList"] = qaDaoServices.findAllQaInspectionOPCWithInspectReportID(inspectReportID)
+        val qaInspectionTechnicalEntity = qaDaoServices.findQaInspectionTechnicalBYInspectReportID(inspectReportID)
+        with(qaInspectionTechnicalEntity){
+            id = null
+            inspectionRecommendationId = null
+        }
+        req.attributes()["QaInspectionTechnicalEntity"] = qaInspectionTechnicalEntity
+        with(inspectionReportRecommendation){
+            id = null
+        }
+        req.attributes()["QaInspectionReportRecommendationEntity"] = inspectionReportRecommendation
+
+        req.attributes()["OPCDetailsList"] = qaDaoServices.findAllQaInspectionOPCWithPermitRefNumber(
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+        )
+//        when (inspectionReportRecommendation.filledOpcStatus) {
+//            map.activeStatus -> {
+//                val qaInspectionOpcEntity = mutableListOf<QaInspectionOpcEntity>()
+//                qaDaoServices.findQaInspectionOpcBYInspectReportID(inspectReportID).forEach { listDetails ->
+//                    with(listDetails){
+//                        id = null
+//                    }
+//                    qaInspectionOpcEntity.add(listDetails)
+//                }
+//
+//                req.attributes()["OPCDetailsList"] = qaInspectionOpcEntity
+//            }
+//        }
+
+        when (inspectionReportRecommendation.filledHaccpImplementationStatus) {
+            map.activeStatus -> {
+                val qaInspectionHaccpImplementationEntity =qaDaoServices.findQaInspectionHaccpImplementationBYInspectReportID(inspectReportID)
+                with(qaInspectionHaccpImplementationEntity){
+                    id = null
+                }
+                req.attributes()["QaInspectionHaccpImplementationEntity"] =qaDaoServices.findQaInspectionHaccpImplementationBYInspectReportID(inspectReportID)
+            }
+            else -> {
+                req.attributes()["QaInspectionHaccpImplementationEntity"] = QaInspectionHaccpImplementationEntity()
+            }
+        }
+
+        when (inspectionReportRecommendation.submittedInspectionReportStatus) {
+            map.activeStatus -> {
+                req.attributes()["message"] = applicationMapProperties.mapQualityAssuranceManufactureClonePage
+            }
+        }
+
+        req.attributes().putAll(loadCommonUIComponents(map))
         req.attributes()["QaInspectionOpcEntity"] = QaInspectionOpcEntity()
         req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
         return ok().render(qaInspectionReportPage, req.attributes())
