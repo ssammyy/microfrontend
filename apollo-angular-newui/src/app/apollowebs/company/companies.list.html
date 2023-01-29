@@ -36,15 +36,6 @@
                                         <th class="disabled-sorting text-right">Actions</th>
                                     </tr>
                                     </thead>
-                                    <tfoot>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Company Name</th>
-<!--                                        <th class="knw">Firm Type</th>-->
-                                        <th>Active</th>
-                                        <th class="disabled-sorting text-right">Actions</th>
-                                    </tr>
-                                    </tfoot>
                                     <tbody>
                                     <tr *ngFor="let row of companies$ | async">
                                         <td>{{row.id}}</td>
