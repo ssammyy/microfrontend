@@ -454,12 +454,14 @@
 
                                 <br/>
                                 <b>Document Details:</b>
+                                <div >
                                 <i *ngIf="complaintInspection?.complaintProcessStatus == true"
                                         (click)="viewWorkPlanCreated()"
                                         class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
 
                                 <i class="btn btn-sm btn-primary" (click)="viewComplaintPdfFile( complaintInspection?.complaintsDetails?.refNumber,'application/pdf')">
                                     DOWNLOAD COMPLAINT</i>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -156,6 +156,7 @@ class QaInvoiceCalculationDaoServices(
                 "KIMSREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             generatedDate = Timestamp.from(Instant.now())
             itemCount = 1
+            paymentStatus = 0
             status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)

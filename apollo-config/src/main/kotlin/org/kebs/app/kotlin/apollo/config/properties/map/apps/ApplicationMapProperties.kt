@@ -1448,6 +1448,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.hof}")
     val msComplaintProcessAssignHOF: Long? = null
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.regionReAssigned}")
+    val msComplaintRegionReAssigned: Long? = null
+
     @Value("\${org.kebs.app.kotlin.apollo.application.page.start}")
     val pageStart: Int = 1
 
