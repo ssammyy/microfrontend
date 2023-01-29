@@ -162,8 +162,6 @@ class QADaoServices(
 
                 val companyProfileEntity = companyProfileRepo.save(entity)
 
-//                val allInvoicesNotPaid = findAllMyPaymentsByStatusAndUserID()
-
                 return UserCompanyEntityDto(
                     companyProfileEntity.name,
                     companyProfileEntity.kraPin,
@@ -184,7 +182,12 @@ class QADaoServices(
                     companyProfileEntity.directorIdNumber,
                     companyProfileEntity.region,
                     companyProfileEntity.county,
-                    companyProfileEntity.town
+                    companyProfileEntity.town,
+                    null,
+                    null,
+                    null,
+                    null,
+                    iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
                 ).apply {
                     id = companyProfileEntity.id
 

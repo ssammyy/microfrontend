@@ -242,7 +242,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   updateTurnoverRecord(record: Company) {
-    this.currDivLabel = `UPDATE Firm Type DETAILS`;
+    this.currDivLabel = `UPDATE FIRM TYPE DETAILS`;
     this.currDiv = 'updateTurnOver';
     this.updateTurnOverDetailsForm.reset();
     this.updateTurnOverDetailsForm?.get('companyProfileID')?.setValue(record.id);

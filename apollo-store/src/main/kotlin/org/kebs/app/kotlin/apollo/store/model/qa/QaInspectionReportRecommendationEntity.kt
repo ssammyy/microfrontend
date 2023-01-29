@@ -27,6 +27,10 @@ class QaInspectionReportRecommendationEntity : Serializable {
     @Basic
     var recommendations: String? = null
 
+    @Column(name = "FOLLOW_PREVIOUS_RECOMMENDATIONS_NON_CONFORMITIES")
+    @Basic
+    var followPreviousRecommendationsNonConformities: String? = null
+
     @Column(name = "REF_NO")
     @Basic
     var refNo: String? = null
