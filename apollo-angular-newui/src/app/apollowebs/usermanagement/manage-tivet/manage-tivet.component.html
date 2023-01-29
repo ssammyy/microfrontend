@@ -111,14 +111,9 @@
                     <div class="tab-pane active" id="link8">
                         <div class="card">
                             <div class="card-header card-header-primary card-header-icon">
-                                <div style="float: right" class="card-icon">
-                                    <i title="Add A New Menu" class="material-icons" data-toggle="modal"
-                                       data-target="#userModal">
-                                        add
-                                    </i>
-                                </div>
 
-                                <h4 class="card-title">Add and Manage Users</h4>
+
+                                <h4 class="card-title">Tivet Management</h4>
                                 <p class="card-category">
                                     User Management </p>
                             </div>
@@ -178,7 +173,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit User</h4>
+                    <h4 class="modal-title">Tivet Management</h4>
                     <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -212,12 +207,17 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button mat-raised-button type="button" (click)="hideModel()" class="btn btn-danger btn-link"
+                            <button mat-raised-button type="button" (click)="hideModel()"
+                                    class="btn btn-danger btn-link"
                                     data-dismiss="modal">
                                 Close
                             </button>
                             <button mat-raised-button type="button" [disabled]="!updateTivetFormGroup.valid"
                                     (click)="onClickSave()" class="btn btn-success btn-link">ACTIVATE
+                            </button>
+
+                            <button mat-raised-button type="button" [disabled]="!updateTivetFormGroup.valid"
+                                    (click)="onClickSave()" class="btn btn-warning btn-link">REJECT
                             </button>
 
 
