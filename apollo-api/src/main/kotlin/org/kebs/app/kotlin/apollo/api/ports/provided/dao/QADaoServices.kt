@@ -162,6 +162,8 @@ class QADaoServices(
 
                 val companyProfileEntity = companyProfileRepo.save(entity)
 
+//                val allInvoicesNotPaid = findAllMyPaymentsByStatusAndUserID()
+
                 return UserCompanyEntityDto(
                     companyProfileEntity.name,
                     companyProfileEntity.kraPin,
@@ -629,6 +631,11 @@ class QADaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userId}] does not Exist")
+    }
+
+    // find all Company UnPaied payments
+    fun findAllMyPaymentsByStatusAndUserID(userId: Long,status: Int): List<QaInvoiceMasterDetailsEntity>? {
+        return invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndReceiptNoIsNull(userId,status)
     }
 
 
@@ -5538,11 +5545,7 @@ class QADaoServices(
         var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
         try {
 
-            val userDetails =
-                commonDaoServices.findUserByID(
-                    permit.userId
-                        ?: throw Exception("MISSING USER ID ON PERMIT DETAILS")
-                )
+            val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
             val companyDetails = commonDaoServices.findCompanyProfileWithID(
                 userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
