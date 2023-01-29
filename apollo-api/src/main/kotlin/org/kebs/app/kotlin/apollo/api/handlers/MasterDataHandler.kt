@@ -297,6 +297,24 @@ class MasterDataHandler(
 
     }
 
+    fun tivetReject(req: ServerRequest): ServerResponse {
+        try {
+            val entity = req.body<CompanyProfileEntity>()
+            daoService.rejectTivet(entity)
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("Update failed")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
     @PreAuthorize("hasAuthority('STANDARD_PRODUCT_CATEGORY_WRITE')")
     fun standardProductCategoryUpdate(req: ServerRequest): ServerResponse {
         try {

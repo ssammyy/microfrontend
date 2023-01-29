@@ -133,6 +133,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/loads/{status}", handler::companyListing)
                     PUT("/", handler::notSupported)
                     POST("/updateTivet", handler::tivetUpdate)
+                    POST("/rejectTivet", handler::tivetReject)
+
                     GET("/tivetListing", handler::tivetListing)
                 }
                 "/divisions".nest {

@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -52,6 +53,7 @@ class MasterDataDaoService(
     private val iUserTypesEntityRepository: IUserTypesEntityRepository,
     private val iUserRepository: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val notifications: Notifications,
 
 
     ) {
@@ -802,10 +804,45 @@ class MasterDataDaoService(
                 companyProfileRepo.save(r)
                 val user: UsersEntity? = iUserRepository.findByIdOrNull(r.userId)
                 if (user != null) {
+                    val subject = "Account Activated"
+                    val messageBody = "Your Account Has Been Successfully Activated. " +
+                            "You can now login onto the portal."
+                    user.email?.let { notifications.sendEmail(it, subject, messageBody) }
+
+
                     user.enabled = applicationMapProperties.transactionActiveStatus
                     user.modifiedBy = commonDaoServices.loggedInUserDetails().userName
                     user.modifiedOn = Timestamp.from(Instant.now())
                     iUserRepository.save(user)
+                }
+                return tivet
+            }
+            ?: throw NullValueNotAllowedException("Record not found, check and try again")
+
+
+    }
+
+    fun rejectTivet(tivet: CompanyProfileEntity): CompanyProfileEntity? {
+        companyProfileRepo.findByIdOrNull(tivet.id)
+            ?.let { r ->
+                r.varField2 = "1"
+                r.modifiedBy = commonDaoServices.loggedInUserDetails().userName
+                r.modifiedOn = Timestamp.from(Instant.now())
+                val user: UsersEntity? = iUserRepository.findByIdOrNull(r.userId)
+
+                if (user != null) {
+                    val subject = "Account Rejected"
+                    val messageBody = "Your Account Has Been  Rejected. " +
+                            "Please Register Again."
+                    user.email?.let { notifications.sendEmail(it, subject, messageBody) }
+
+
+                    user.enabled = applicationMapProperties.transactionActiveStatus
+                    user.modifiedBy = commonDaoServices.loggedInUserDetails().userName
+                    user.modifiedOn = Timestamp.from(Instant.now())
+                    user.id?.let { iUserRepository.deleteById(it) }
+                    r.id?.let { companyProfileRepo.deleteById(it) }
+
                 }
                 return tivet
             }

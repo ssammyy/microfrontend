@@ -487,4 +487,16 @@ export class MasterService {
             })
         );
     }
+    public rejectTivet(data: TivetEntity): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.TIVETS_REJECT);
+        return this.http.post<TivetEntity>(url, data).pipe(
+            map(function (response: TivetEntity) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 }

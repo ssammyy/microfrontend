@@ -466,6 +466,8 @@ import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-ad
 
 import { ComStdRequestProcessComponent } from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
 import { ManageTivetComponent } from './apollowebs/usermanagement/manage-tivet/manage-tivet.component';
+import { InvoiceConsolidateFmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-fmark/invoice-consolidate-fmark.component';
+import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -965,6 +967,10 @@ import { ManageTivetComponent } from './apollowebs/usermanagement/manage-tivet/m
         ComStdRequestProcessComponent,
 
         ManageTivetComponent,
+
+        InvoiceConsolidateFmarkComponent,
+
+        InvoiceConsolidateDmarkComponent,
 
     ],
     entryComponents: [LoaderComponent],

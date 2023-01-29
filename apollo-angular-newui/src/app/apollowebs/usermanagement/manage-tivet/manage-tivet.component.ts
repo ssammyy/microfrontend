@@ -87,6 +87,28 @@ export class ManageTivetComponent implements OnInit {
             });
     }
 
+    onClickReject() {
+
+        this.masterService.rejectTivet(this.updateTivetFormGroup.value).subscribe(
+            (data: any) => {
+                this.user = data;
+                swal.fire({
+                    title: 'Rejection Successful',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                this.updateTivetFormGroup.reset()
+                this.hideModel()
+                this.getAllTivets()
+                // this.router.navigate(['/tivet_management']);
+
+            });
+    }
+
+
 
     public onOpenModal(task: TivetEntity): void {
         const container = document.getElementById('main-container');
