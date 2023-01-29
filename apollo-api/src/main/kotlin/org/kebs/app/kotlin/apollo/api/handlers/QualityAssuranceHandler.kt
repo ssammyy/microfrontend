@@ -3659,7 +3659,33 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
             val invoiceList = qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(
+                loggedInUser.id ?: throw Exception("INVALID USER ID"), map.inactiveStatus
+            )
+
+            qaDaoServices.listPermitsInvoices(invoiceList, null, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun invoiceListNoBatchIDByPermitTypeMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val invoiceList = qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(permitTypeID,
                 loggedInUser.id ?: throw Exception("INVALID USER ID"), map.inactiveStatus
             )
 
@@ -3788,8 +3814,7 @@ class QualityAssuranceHandler(
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             with(newBatchInvoiceDto) {
-                batchID =
-                    batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
 

@@ -669,6 +669,18 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?
 
+    @Query(
+        "SELECT a.* FROM  DAT_KEBS_QA_INVOICE_MASTER_DETAILS a\n" +
+                " JOIN DAT_KEBS_PERMIT_TRANSACTION b ON b.ID = a.PERMIT_ID\n" +
+                "   WHERE b.PERMIT_TYPE =:permitType AND a.USER_ID = :userId AND a.PAYMENT_STATUS =:paymentStatus",
+        nativeQuery = true
+    )
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullPermitType(
+        @Param("permitType") permitType: Long,
+        @Param("userId") userId: Long,
+        @Param("paymentStatus") paymentStatus: Int,
+    ): List<QaInvoiceMasterDetailsEntity>?
+
 
     fun findAllByUserIdAndReceiptNoIsNotNull(userId: Long): List<QaInvoiceMasterDetailsEntity>?
     fun findAllByUserIdAndPaymentStatusAndReceiptNoIsNull(userId: Long,paymentStatus: Int): List<QaInvoiceMasterDetailsEntity>?

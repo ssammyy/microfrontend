@@ -318,6 +318,7 @@ export class ApiEndpointService {
         INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
         INVOICE_DETAILS_BALANCE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-balance-details`,
         INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
+        INVOICE_LIST_NO_DETAILS_PERMIT_TYPE: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-permit-type`,
         INVOICE_LIST_ALL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list`,
         INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
         INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,

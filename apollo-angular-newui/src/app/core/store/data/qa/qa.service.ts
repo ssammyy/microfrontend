@@ -195,6 +195,21 @@ export class QaService {
         );
     }
 
+    public loadInvoiceListWithNoBatchIDPermitType(permitTypeID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_NO_DETAILS_PERMIT_TYPE);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<any>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public loadAllInvoiceListCreatedByUser(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_ALL_DETAILS);
         return this.http.get<any>(url).pipe(

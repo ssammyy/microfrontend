@@ -31,7 +31,7 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Company Name</th>
-<!--                                        <th class="knw">Firm Type</th>-->
+                                        <th class="knw">Firm Type</th>
                                         <th>Status</th>
                                         <th class="disabled-sorting text-right">Actions</th>
                                     </tr>
@@ -40,7 +40,7 @@
                                     <tr *ngFor="let row of companies$ | async">
                                         <td>{{row.id}}</td>
                                         <td>{{row.name}}</td>
-<!--                                        <td>{{row.firmType}}</td>-->
+                                        <td>{{row.firmType}}</td>
                                         <td >
                                             <div *ngIf="row.status==1">
                                                 <span class="badge badge-info" style="width: 94px;">Active</span>
@@ -60,6 +60,7 @@
                                                data-toggle="modal"
                                                class="btn btn-link btn-info"
                                             ><i class="material-icons">remove_red_eye</i>View Details</a>
+                                            <br>
                                             <a (click)="updateTurnoverRecord(row)"
                                                class="btn btn-link btn-info"><i
                                                     class="material-icons">remove_red_eye</i>Update Firm Type</a>

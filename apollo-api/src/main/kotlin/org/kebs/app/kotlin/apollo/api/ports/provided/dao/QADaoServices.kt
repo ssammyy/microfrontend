@@ -234,6 +234,18 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userID}] and [status = ${status}], does not Exist")
     }
 
+    fun findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(
+        permitType: Long,
+        userID: Long,
+        status: Int
+    ): List<QaInvoiceMasterDetailsEntity> {
+        invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullPermitType(permitType,userID, status)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userID}] and [status = ${status}], does not Exist")
+    }
+
     fun findALlInvoicesCreatedByUser(userID: Long): List<QaInvoiceMasterDetailsEntity> {
         invoiceMasterDetailsRepo.findAllByUserIdAndVarField1IsNull(userID)
             ?.let { it ->

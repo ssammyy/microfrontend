@@ -561,8 +561,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
-                        POST("/batch-invoice-add", handler::notSupported)
-                        PUT("/batch-invoice-remove", handler::notSupported)
+                        POST("/batch-invoice-add", handler::invoiceBatchAddMigration)
+                        PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
                     }
                 }
                 "/view".nest {
@@ -593,6 +593,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 "/invoice".nest {
                     GET("/list", handler::invoiceListMigration)
                     GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
+                    GET("/list-no-batch-Id-permit-type", handler::invoiceListNoBatchIDByPermitTypeMigration)
                     GET("/batch-invoice-list", handler::invoiceBatchListMigration)
 
                 }

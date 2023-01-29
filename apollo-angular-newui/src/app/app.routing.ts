@@ -1009,7 +1009,7 @@ export const routes: Routes = [
 
 //   },
   {
-    path: 'permit-details', component: PermitDetailsComponent
+    path: 'permit-details', component: PermitDetailsComponent,
   },
 
 

@@ -157,24 +157,24 @@ export class CompaniesList implements OnInit {
         this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/directors'}));
     }
 
-    viewRecord(record: Company) {
-        this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
-        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/view'}));
-    }
-
     // viewRecord(record: Company) {
-    //     this.currDivLabel = `COMPANY DETAILS`;
-    //     this.currDiv = 'viewCompanyDetails';
-    //     this.selectedRegion = record.region;
-    //     this.companyDetailsForm.patchValue(record);
-    //     this.companyDetailsForm.disable();
-    //     console.log('record to view' + record);
-    //     window.$('#companyDetailsModal').modal('show');
+    //     this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
+    //     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/view'}));
     // }
+
+    viewRecord(record: Company) {
+        this.currDivLabel = `COMPANY DETAILS`;
+        this.currDiv = 'viewCompanyDetails';
+        this.selectedRegion = record.region;
+        this.companyDetailsForm.patchValue(record);
+        this.companyDetailsForm.disable();
+        console.log('record to view' + record);
+        window.$('#companyDetailsModal').modal('show');
+    }
 
 
     updateTurnoverRecord(record: Company) {
-        this.currDivLabel = `UPDATE Firm Type DETAILS`;
+        this.currDivLabel = `UPDATE FIRM TYPE DETAILS`;
         this.currDiv = 'updateTurnOver';
         this.updateTurnOverDetailsForm.reset();
         this.updateTurnOverDetailsForm?.get('companyProfileID')?.setValue(record.id);
