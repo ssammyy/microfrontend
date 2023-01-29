@@ -94,7 +94,6 @@ export class ManageTivetComponent implements OnInit {
         button.type = 'button';
         button.style.display = 'none';
         button.setAttribute('data-toggle', 'modal');
-        console.log(task.id);
         button.setAttribute('data-target', '#editUserModal');
         this.actionRequest = task;
         this.updateTivetFormGroup.controls['id'].setValue(task.id);
