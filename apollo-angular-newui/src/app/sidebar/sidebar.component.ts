@@ -772,11 +772,11 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ'],
         collapse: 'cs',
         children: [
-            {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
+           // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
             {path: 'comStdList', title: 'Request Tasks', ab: 'RT'},
             {path: 'comStdDraft', title: 'Drafting Tasks', ab: 'DT'},
             {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
-            {path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
+            //{path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
             {path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
 
         ],

@@ -269,7 +269,7 @@ class CompanyStandardService(
         //send email to JC
 
         val comDetails = comStdDraftRepository.save(comStdDraft)
-        variables["ID"] = comDetails.id
+        variables["ID"] = comDetails.id!!
 
 
         runtimeService.createProcessInstanceQuery()

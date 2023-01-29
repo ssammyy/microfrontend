@@ -504,7 +504,7 @@ class MSJSONControllers(
         @RequestParam(value = "ssfID") ssfID: Long
     ) {
         val map = hashMapOf<String, Any>()
-        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
 
         val ssfFile = iSampleSubmissionViewRepo.findAllById(ssfID.toString())
 
@@ -549,7 +549,8 @@ class MSJSONControllers(
         @RequestParam(value = "refNumber") refNumber: String
     ) {
         val map = hashMapOf<String, Any>()
-        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsLogoPath)
+        map["imagePath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSLogoPath)
+        map["imageFooterPath"] = commonDaoServices.resolveAbsoluteFilePath(applicationMapProperties.mapKebsMSFooterPath)
 
         val complaintFile = iComplaintPdfViewRepo.findAllByReferenceNumber(refNumber)
 

@@ -1051,7 +1051,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
         with(remarksDto){
             remarksDescription= body.reassignedRemarks
             remarksStatus= "N/A"
-//            processID = complaintFound.msProcessId
+            processID = applicationMapProperties.msComplaintRegionReAssigned
             userId= loggedInUser.id
         }
 

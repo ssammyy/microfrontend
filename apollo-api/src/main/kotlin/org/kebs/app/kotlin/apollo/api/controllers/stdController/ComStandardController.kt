@@ -121,6 +121,16 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getCompanyStandardRequest()
     }
 
+
+    @GetMapping("/company_standard/getCompanyStandardRequestProcess")
+    @ResponseBody
+    fun getCompanyStandardRequestProcess(): MutableList<ComStdRequest>
+    {
+        return comStandardService.getCompanyStandardRequestProcess()
+    }
+
+
+
 @GetMapping("/anonymous/company_standard/getDepartments")
 @ResponseBody
     fun getDepartments(): MutableList<Department>
@@ -159,8 +169,7 @@ class ComStandardController (val comStandardService: ComStandardService,
             requestId=jointCommitteeDto.requestId
         }
         val detailBody = jointCommitteeDto.names
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(detailBody) }
+
 
         return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.formJointCommittee(comStandardJointCommittee,detailBody))
     }
@@ -383,12 +392,13 @@ class ComStandardController (val comStandardService: ComStandardService,
         return sm
     }
 
-    @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getUploadedStdDraftForComment")
+    //@PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/anonymous/company_standard/getUploadedStdDraftForComment")
     @ResponseBody
-    fun getUploadedStdDraftForComment(): MutableList<ComStdDraft>
+    fun getUploadedStdDraftForComment(@RequestParam("comDraftID") comDraftID: Long): MutableList<ComStdDraft>
     {
-        return comStandardService.getUploadedStdDraftForComment()
+
+        return comStandardService.getUploadedStdDraftForComment(comDraftID)
     }
 
     @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -428,7 +438,7 @@ class ComStandardController (val comStandardService: ComStandardService,
         commonDaoServices.downloadFile(response, mappedFileClass)
     }
 
-    @GetMapping("/company_standard/getDraftDocumentList")
+    @GetMapping("/anonymous/company_standard/getDraftDocumentList")
     fun getDraftDocumentList(
         response: HttpServletResponse,
         @RequestParam("comStdDraftID") comStdDraftID: Long
@@ -438,7 +448,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
 
 
-    @GetMapping("/company_standard/view/comDraft")
+    @GetMapping("/anonymous/company_standard/view/comDraft")
     fun viewCompanyDraftFile(
         response: HttpServletResponse,
         @RequestParam("comStdDraftID") comStdDraftID: Long
@@ -474,12 +484,55 @@ class ComStandardController (val comStandardService: ComStandardService,
 
     }
 
+
     @GetMapping("/company_standard/getAllComments")
     fun getAllComments(@RequestParam("requestId") requestId: Long):MutableIterable<CompanyStandardRemarks>?
     {
         return comStandardService.getAllComments(requestId)
     }
 
+
+    @PostMapping("/anonymous/company_standard/submitDraftComments")
+    fun submitDraftComments(@RequestBody comDraftCommentDto: ComDraftCommentDto
+    ) : ServerResponse
+    {
+
+        val comDraftComments= ComDraftComments().apply {
+            draftComment=comDraftCommentDto.draftComment
+            commentTitle=comDraftCommentDto.commentTitle
+            commentDocumentType=comDraftCommentDto.commentDocumentType
+            comClause=comDraftCommentDto.comClause
+            comParagraph=comDraftCommentDto.comParagraph
+            typeOfComment=comDraftCommentDto.typeOfComment
+            proposedChange=comDraftCommentDto.proposedChange
+            requestID=comDraftCommentDto.requestID
+            draftID=comDraftCommentDto.draftID
+            recommendations=comDraftCommentDto.recommendations
+            nameOfRespondent=comDraftCommentDto.nameOfRespondent
+            positionOfRespondent=comDraftCommentDto.positionOfRespondent
+            nameOfOrganization=comDraftCommentDto.nameOfOrganization
+            adoptStandard=comDraftCommentDto.adoptStandard
+            adoptDraft=comDraftCommentDto.adoptDraft
+            reason=comDraftCommentDto.reason
+        }
+
+        return ServerResponse(HttpStatus.OK,"Comment Updated",comStandardService.submitDraftComments(comDraftComments))
+
+    }
+
+    @GetMapping("/company_standard/getDraftCommentList")
+    fun getDraftCommentList(
+        response: HttpServletResponse,
+        @RequestParam("draftID") draftID: Long
+    ): List<SiteVisitListHolder> {
+        return comStandardService.getDraftCommentList(draftID)
+    }
+
+    @GetMapping("/company_standard/getDraftComments")
+    fun getDraftComments(@RequestParam("draftID") draftID: Long):MutableIterable<ComDraftComments>?
+    {
+        return comStandardService.getDraftComments(draftID)
+    }
 
     //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -498,6 +551,11 @@ class ComStandardController (val comStandardService: ComStandardService,
             clause=comStdDraftDecisionDto.clause
             special=comStdDraftDecisionDto.special
             requestNumber=comStdDraftDecisionDto.requestNumber
+            companyName=comStdDraftDecisionDto.companyName
+            companyPhone=comStdDraftDecisionDto.companyPhone
+            contactOneFullName=comStdDraftDecisionDto.contactOneFullName
+            contactOneTelephone=comStdDraftDecisionDto.contactOneTelephone
+            contactOneEmail=comStdDraftDecisionDto.contactOneEmail
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=comStdDraftDecisionDto.requestId
@@ -513,12 +571,13 @@ class ComStandardController (val comStandardService: ComStandardService,
     //*************************************************** process Edit Company Standard **********************************************************
 
 
-    @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/company_standard/getApprovedStdDraft")
+
+    @GetMapping("/anonymous/company_standard/getApprovedStdDraft")
     @ResponseBody
-    fun getApprovedStdDraft(): MutableList<ComStdDraft>
+    fun getApprovedStdDraft(@RequestParam("comDraftID") comDraftID: Long): MutableList<ComStdDraft>
     {
-        return comStandardService.getApprovedStdDraft()
+
+        return comStandardService.getApprovedStdDraft(comDraftID)
     }
 
     //decision on Adoption Proposal

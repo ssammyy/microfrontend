@@ -3,8 +3,8 @@ import {Subject} from "rxjs";
 import {
     ApproveDraft,
     ApproveSACJC,
-    ComJcJustificationDec, COMPreliminaryDraft,
-    ComStdRequest
+    ComJcJustificationDec, COMPreliminaryDraft, ComStdCommitteeRemarks,
+    ComStdRequest, StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -13,6 +13,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-com-std-draft',
@@ -24,12 +25,16 @@ export class ComStdDraftComponent implements OnInit {
     dtElements: QueryList<DataTableDirective>;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
+    dtTrigger1: Subject<any> = new Subject<any>();
     tasks: COMPreliminaryDraft[] = [];
+    comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
     public actionRequest: COMPreliminaryDraft | undefined;
     public committeeFormGroup!: FormGroup;
     public uploadDraftFormGroup!: FormGroup;
     documentDTOs: DocumentDTO[] = [];
   blob: Blob;
+    loadingText: string;
+    isShowCommentsTab= true;
   constructor(
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
@@ -72,12 +77,43 @@ export class ComStdDraftComponent implements OnInit {
         );
     }
 
+    displayDraftComments(draftID: number){
+        //this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.stdComStandardService.getDraftComments(draftID).subscribe(
+            (response: ComStdCommitteeRemarks[]) => {
+                this.comStdCommitteeRemarks = response;
+                this.SpinnerService.hide();
+                console.log(this.comStdCommitteeRemarks)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+         this.isShowCommentsTab = !this.isShowCommentsTab;
+        //this.isShowCommentsTab= true;
+
+    }
+
   public onOpenModal(task: COMPreliminaryDraft,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+
+      this.stdComStandardService.getDraftCommentList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+              this.documentDTOs = response;
+              this.SpinnerService.hide();
+              //console.log(this.documentDTOs)
+          },
+          (error: HttpErrorResponse) => {
+              this.SpinnerService.hide();
+              //console.log(error.message);
+          }
+      );
 
       this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
           (response: DocumentDTO[]) => {
@@ -116,10 +152,17 @@ export class ComStdDraftComponent implements OnInit {
   public decisionOnAccept(approveDraft: ApproveDraft): void{
     this.SpinnerService.show();
     this.stdComStandardService.decisionOnDraft(approveDraft).subscribe(
-        (response: ComJcJustificationDec) => {
+        (response) => {
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Draft Approved`);
-          console.log(response);
+            this.showToasterSuccess(response.httpStatus, response.body.responseMessage);
+            swal.fire({
+                text: response.body.responseMessage,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+            });
           this.getUploadedStdDraft();
         },
         (error: HttpErrorResponse) => {
@@ -135,10 +178,17 @@ export class ComStdDraftComponent implements OnInit {
   public onDecisionReject(approveDraft: ApproveDraft): void{
     this.SpinnerService.show();
     this.stdComStandardService.decisionOnDraft(approveDraft).subscribe(
-        (response: ComJcJustificationDec) => {
+        (response) => {
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Draft Rejected`);
-          console.log(response);
+          this.showToasterError(response.httpStatus, response.body.responseMessage);
+            swal.fire({
+                text: response.body.responseMessage,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+            });
           this.getUploadedStdDraft();
         },
         (error: HttpErrorResponse) => {
@@ -201,6 +251,7 @@ export class ComStdDraftComponent implements OnInit {
         });
         setTimeout(() => {
             this.dtTrigger.next();
+            this.dtTrigger1.next();
         });
     }
 

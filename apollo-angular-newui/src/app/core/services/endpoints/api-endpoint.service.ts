@@ -475,7 +475,7 @@ export class ApiEndpointService {
         ICT_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadDraft`,
         ICT_UPLOAD_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/draft-file-upload`,
         ICT_JC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getJcSecTasks`,
-        ICT_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/view/comDraft`,
+        ICT_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/view/comDraft`,
         ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnStdDraft`,
         ICT_COM_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnComStdDraft`,
         ICT_COM_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComSecTasks`,
@@ -487,21 +487,24 @@ export class ApiEndpointService {
 
 
         ICT_COM_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequest`,
+        ICT_COM_STD_REQUEST_PROCESS: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequestProcess`,
         ICT_COM_STD_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraft`,
-        ICT_COM_STD_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraftForComment`,
+        ICT_COM_STD_DRAFT_COMMENT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getUploadedStdDraftForComment`,
         ICT_COM_STD_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/commentOnDraft`,
-        ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getApprovedStdDraft`,
+        ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getApprovedStdDraft`,
         ICT_COM_STD_EDITS_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdDraftForEditing`,
         ICT_COM_STD_PB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComStdPublishing`,
         ICT_COM_STD_COMMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAllComments`,
+        ICT_COM_DRAFT_COMMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getDraftComments`,
+        ICT_COM_DRAFT_COMMENTS_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getDraftCommentList`,
         ICT_COM_STD_REQUIREMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/checkRequirements`,
         ICT_COM_STD_EDIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/editStandardDraft`,
         ICT_COM_STD_DRAFTING: `${ApiEndpointService.SD_ICT_CONTEXT}/draughtStandard`,
         ICT_COM_STD_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/proofReadStandard`,
         ICT_COM_STD_DEC_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/approveProofReadStandard`,
         ICT_COM_STD_SUBMIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftForEditing`,
-        ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getDraftDocumentList`,
-
+        ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftDocumentList`,
+        ICT_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/submitDraftComments`,
 
 
         // SD SYSTEMIC REVIEW

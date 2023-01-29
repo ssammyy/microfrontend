@@ -109,4 +109,8 @@ class ISAdoptionProposal {
     @Basic
     var iStandardNumber: String? = null
 
+    @Column(name="DEADLINE_DATE")
+    @Basic
+    var deadlineDate: Timestamp?=null
+
 }

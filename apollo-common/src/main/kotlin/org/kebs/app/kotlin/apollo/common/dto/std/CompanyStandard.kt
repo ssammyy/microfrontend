@@ -49,6 +49,9 @@ class ComStdDraftDto(
 
 }
 
+class ResponseMsg (val responseMessage: String) {
+}
+
 class ComStdDraftDecisionDto(
     var title: String?=null,
     var scope: String?=null,
@@ -62,7 +65,34 @@ class ComStdDraftDecisionDto(
     var response: String?=null,
     var id: Long?=null,
     var requestId: Long?=null,
-    var comments: String?=null
+    var comments: String?=null,
+    var companyName: String?=null,
+    var companyPhone: String?=null,
+    var contactOneFullName: String?=null,
+    var contactOneEmail: String?=null,
+    var contactOneTelephone: String?=null
+){
+
+}
+
+class ComDraftCommentDto(
+    var draftComment: String?=null,
+    var commentTitle: String?=null,
+    var commentDocumentType: String?=null,
+    var comNameOfOrganization: String?=null,
+    var comClause: String?=null,
+    var comParagraph: String?=null,
+    var typeOfComment: String?=null,
+    var proposedChange: String?=null,
+    var requestID: Long?=null,
+    var draftID: Long?=null,
+    var recommendations: String?=null,
+    var nameOfRespondent: String?=null,
+    var positionOfRespondent: String?=null,
+    var nameOfOrganization: String?=null,
+    var adoptStandard: String?=null,
+    var adoptDraft: String?=null,
+    var reason: String?=null,
 ){
 
 }
