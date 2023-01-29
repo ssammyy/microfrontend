@@ -54,6 +54,19 @@ export class RegistrationService {
     );
   }
 
+  public registerTivet(data: RegistrationPayload): Observable<ApiResponse> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGISTER_TIVET);
+    return this.http.post<ApiResponse>(url, data).pipe(
+        map(function (response: ApiResponse) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          // console.warn(`getAllFault( ${fault.message} )`);
+          return throwError(fault);
+        })
+    );
+  }
+
   public validateTokenAndPhone(data: ValidateTokenAndPhone): Observable<ApiResponse> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN);
     return this.http.post<ApiResponse>(url, data).pipe(

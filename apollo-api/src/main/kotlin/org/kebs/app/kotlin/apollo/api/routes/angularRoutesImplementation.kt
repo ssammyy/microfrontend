@@ -132,7 +132,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/load", handler::companyListing)
                     GET("/loads/{status}", handler::companyListing)
                     PUT("/", handler::notSupported)
-                    POST("/", handler::notSupported)
+                    POST("/updateTivet", handler::tivetUpdate)
+                    GET("/tivetListing", handler::tivetListing)
                 }
                 "/divisions".nest {
                     GET("/load", handler::divisionsListing)
@@ -379,6 +380,15 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 }
                 "/registerCompany".nest {
                     POST("", handler::handleRegisterCompany)
+                    GET("", otherHandler::notSupported)
+                    "/{id}".nest {
+                        GET("", otherHandler::notSupported)
+                        PUT("", otherHandler::notSupported)
+                    }
+
+                }
+                "/registerTivet".nest {
+                    POST("", handler::handleRegisterTivet)
                     GET("", otherHandler::notSupported)
                     "/{id}".nest {
                         GET("", otherHandler::notSupported)

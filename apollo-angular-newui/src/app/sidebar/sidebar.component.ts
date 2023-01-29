@@ -47,6 +47,7 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['SYSADMIN_VIEW'],
         children: [
             {path: 'user_management', title: 'User Management', ab: 'UM'},
+            {path: 'tivet_management', title: 'Tivet Management', ab: 'TM'},
             {path: 'business_management', title: 'Business Management', ab: 'BM'},
 
         ],
@@ -167,7 +168,7 @@ export const ROUTES: RouteInfo[] = [
         ],
     },
 
-    
+
     // Quality Assurance Admin
     {
         path: '/smark-admin',
@@ -176,9 +177,9 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'class',
         privilege: [],
 
-       
+
     },
-    , 
+
     {
         path: '/fmark-admin',
         title: 'Fortification Mark',
@@ -186,9 +187,9 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'recommended',
         privilege: [],
 
-       
+
     },
-    , 
+    ,
     {
         path: '/dmark-admin',
         title: 'Diamond Mark',
@@ -197,8 +198,6 @@ export const ROUTES: RouteInfo[] = [
         privilege: [],
 
     },
-
-    
 
 
     //DI
@@ -772,7 +771,7 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ'],
         collapse: 'cs',
         children: [
-           // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
+            // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
             {path: 'comStdList', title: 'Request Tasks', ab: 'RT'},
             {path: 'comStdDraft', title: 'Drafting Tasks', ab: 'DT'},
             {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},

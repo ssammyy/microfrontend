@@ -630,6 +630,7 @@ import {ComStdRequestProcessComponent} from "./apollowebs/standards-development/
 import {
     HofReviewProposalComponent
 } from "./apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component";
+import {ManageTivetComponent} from "./apollowebs/usermanagement/manage-tivet/manage-tivet.component";
 export const routes: Routes = [
     {
         path: '',
@@ -805,6 +806,11 @@ export const routes: Routes = [
             {
                 path: 'business_management',
                 component: AdminBusinessManagementComponent,
+            },
+
+            {
+                path: 'tivet_management',
+                component: ManageTivetComponent,
             },
 
         ],

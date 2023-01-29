@@ -115,7 +115,10 @@ export class ApiEndpointService {
         RESET_PASSWORD_VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/resetPasswordValidateToken`,
         VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
+        REGISTER_TIVET: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerTivet`,
+
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
+
         USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/`,
         USER_NOTIFICATION: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/notifications/`,
         USER_DETAILS_SIGNATURE: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/signature`,
@@ -673,6 +676,9 @@ export class ApiEndpointService {
         LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
         LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
+        TIVETS_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/tivetListing`,
+        TIVETS_UPDATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/updateTivet`,
+
     };
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {

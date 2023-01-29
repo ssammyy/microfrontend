@@ -7,6 +7,10 @@ export const loadRegistrations = createAction(
     '[Registration] doRegisterCompany',
     props<{ payload: RegistrationPayload }>()
 );
+export const loadRegistrationsTivet = createAction(
+    '[Registration] doRegisterTivet',
+    props<{ payload: RegistrationPayload }>()
+);
 export const loadBrsValidations = createAction(
     '[BrsValidation] Load Brs Validations',
     props<{ payload: BrsLookUpRequest }>()

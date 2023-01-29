@@ -199,33 +199,42 @@ class ApiAuthenticationHandler(
 
             usersRepo.findByEmail(auth.name)
                 ?.let { user ->
-                    /**
-                     *SEND OTP TO USER LOGIN throw phone number
-                     */
-                    val request = ServletServerHttpRequest(req.servletRequest())
-                    val token =
-                        tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
-                    val otp = commonDaoServices.randomNumber(6)
-                    val tokenValidation = commonDaoServices.generateVerificationToken(
-                        otp,
-                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
-                        user.email ?: throw NullValueNotAllowedException("Valid Email is required"),
-                        user.id,
+                    //check if user is activated
+                    if (user.enabled != 1) {
+                        val response = "Account Not Activated. Contact Admin"
 
-                        )
-                    val userEmail = user.email
-                    commonDaoServices.sendOtpViaSMS(tokenValidation)
-                    runBlocking {
-                        commonDaoServices.sendOtpViaEmail(tokenValidation, userEmail)
+                        ServerResponse.status(500).body(response)
+                    } else {
+
+
+                        /**
+                         *SEND OTP TO USER LOGIN throw phone number
+                         */
+                        val request = ServletServerHttpRequest(req.servletRequest())
+                        val token =
+                            tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+                        val otp = commonDaoServices.randomNumber(6)
+                        val tokenValidation = commonDaoServices.generateVerificationToken(
+                            otp,
+                            user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required"),
+                            user.email ?: throw NullValueNotAllowedException("Valid Email is required"),
+                            user.id,
+
+                            )
+                        val userEmail = user.email
+                        commonDaoServices.sendOtpViaSMS(tokenValidation)
+                        runBlocking {
+                            commonDaoServices.sendOtpViaEmail(tokenValidation, userEmail)
+                        }
+
+
+                        val response = CustomResponse().apply {
+                            response = "00"
+                            payload = "$token"
+                            status = 200
+                        }
+                        ServerResponse.ok().header("Authorization", "Bearer $token").body(response)
                     }
-
-
-                    val response = CustomResponse().apply {
-                        response = "00"
-                        payload = "$token"
-                        status = 200
-                    }
-                    ServerResponse.ok().header("Authorization", "Bearer $token").body(response)
                 }
                 ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
 
@@ -236,7 +245,7 @@ class ApiAuthenticationHandler(
 //                payload = "Invalid Username And Password"
 //                status = 500
 //            }
-            val response ="Invalid Username Or Password"
+            val response = "Invalid Username Or Password"
             KotlinLogging.logger { }.trace(e.message, e)
 
             ServerResponse.status(500).body(response)

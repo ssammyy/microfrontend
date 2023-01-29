@@ -231,7 +231,7 @@ class CommonDaoServices(
     fun serializeToXml(fileName: String, obj: Any): File {
         try {
             val xmlString = xmlMapper.writeValueAsString(obj)
-            KotlinLogging.logger { }.info(":::::: The XML String: $xmlString :::::::")
+           // KotlinLogging.logger { }.info(":::::: The XML String: $xmlString :::::::")
 
 //            val targetFile = File(fileName)
             val targetFile = File(Files.createTempDir(), fileName)
@@ -327,7 +327,7 @@ class CommonDaoServices(
 
         val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
         val formatted = current.format(formatter)
-        KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
+       // KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
 
         //TODO: Add static fields to config file
         var finalFileName = filePrefix
@@ -340,7 +340,7 @@ class CommonDaoServices(
             .plus(".xml")
         finalFileName = finalFileName.replace("\\s".toRegex(), "")
 
-        KotlinLogging.logger { }.info(":::::: Final filename: $finalFileName :::::::")
+      //  KotlinLogging.logger { }.info(":::::: Final filename: $finalFileName :::::::")
 
         return finalFileName
     }
