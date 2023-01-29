@@ -1,6 +1,7 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {
-    BusinessLinesService, BusinessNaturesService,
+    BusinessLines,
+    BusinessLinesService, BusinessNatures, BusinessNaturesService,
     Company, CompanyService, County, CountyService,
     Go, loadCompanyId, RegionService, Town, TownService
 } from '../../core/store';
@@ -21,6 +22,8 @@ import {NgxSpinnerService} from 'ngx-spinner';
 export class CompaniesList implements OnInit {
     @ViewChild('editModal') editModal !: TemplateRef<any>;
     companies$: Observable<Company[]>;
+    businessLines$: Observable<BusinessLines[]>;
+    businessNatures$: Observable<BusinessNatures[]>;
     filterName: string;
     p = 1;
 
@@ -36,6 +39,7 @@ export class CompaniesList implements OnInit {
     updateTurnOverDetailsForm!: FormGroup;
     saveTurnOverDetails: CompanyTurnOverUpdateDto;
 
+    selectedCounty = 0;
     selectedRegion = 0;
     selectedTown = 0;
     selectedBusinessLine = 0;
@@ -56,6 +60,8 @@ export class CompaniesList implements OnInit {
         private store$: Store<any>,
     ) {
         this.filterName = '';
+        this.businessNatures$ = naturesService.entities$;
+        this.businessLines$ = linesService.entities$;
         // location.reload();
     }
 
@@ -100,6 +106,30 @@ export class CompaniesList implements OnInit {
 
     get formUpdateTurnOverDetailsForm(): any {
         return this.updateTurnOverDetailsForm.controls;
+    }
+
+    updateSelectedRegion() {
+        this.selectedRegion = this.companyDetailsForm?.get('region')?.value;
+        this.companyDetailsForm.controls.county.enable();
+    }
+
+    updateSelectedCounty() {
+        this.selectedCounty = this.companyDetailsForm?.get('county')?.value;
+        this.companyDetailsForm.controls.townsId.enable();
+        this.msTowns = this.msTowns.filter(x => String(this.selectedCounty) === String(x.countyId));
+        console.log(`towns list set to ${this.msTowns}`);
+    }
+
+    updateSelectedTown() {
+        this.selectedTown = this.companyDetailsForm?.get('town')?.value;
+    }
+
+    updateSelectedBusinessLine() {
+        this.selectedBusinessLine = this.companyDetailsForm?.get('businessLines')?.value;
+    }
+
+    updateSelectedBusinessNatures() {
+        this.selectedBusinessNature = this.companyDetailsForm?.get('businessNatures')?.value;
     }
 
     loadDataToUse() {
