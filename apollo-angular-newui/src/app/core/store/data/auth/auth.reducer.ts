@@ -23,7 +23,7 @@ export const companyInfoDtoStateFeatureKey = 'companyInfoDtoState';
 
 export interface AuthState {
     profile: LoggedInUser;
-    loggedIN: boolean;
+    loggedIn: boolean;
 
 }
 
@@ -55,7 +55,7 @@ export const initialState: AuthState = {
         // branchID: 0,
         // turnover: 0
     },
-    loggedIN: false
+    loggedIn: false
 
 };
 export const initialCompanyInfoDtoState: CompanyInfoDtoState = {

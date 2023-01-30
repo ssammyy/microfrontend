@@ -20,7 +20,7 @@ export const getCompanyInfoDtoFeatureState = createFeatureSelector<CompanyInfoDt
 export const selectIsAuthenticated = createSelector(
     getAuthFeatureState,
     // (state: AuthState) => state.loggedIn &&  RouteGuard.tokenExpired(state.profile.accessToken)
-    (state: AuthState) => state.loggedIN
+    (state: AuthState) => state.loggedIn
 );
 export const selectUserInfo = createSelector(
   getAuthFeatureState,
