@@ -1,12 +1,16 @@
 <div class="main-content">
-    <div class="loading-spinner ">
-        <ngx-spinner
-                bdColor="rgba(51,51,51,0.8)"
-                color="#fff"
-                size="medium"
-                type="ball-scale-multiple">
-            <p style="font-size: 20px; color: white">Loading Data Please Wait...</p>
-        </ngx-spinner>
+    <div *ngIf="loading">
+
+        <div class="loading-spinner ">
+            <ngx-spinner
+                    bdColor="rgba(51,51,51,0.8)"
+                    size="medium"
+                    color="#fff"
+                    type="ball-scale-multiple"
+            >
+                <p style="font-size: 20px; color: white">{{loadingText}}</p>
+            </ngx-spinner>
+        </div>
     </div>
     <div class="container-fluid">
         <div class="row">

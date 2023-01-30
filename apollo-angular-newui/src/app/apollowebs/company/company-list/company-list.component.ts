@@ -52,6 +52,8 @@ export class CompanyListComponent implements OnInit {
   msCountiesList: County[] = null;
   msTowns: Town[] = null;
   msTownsOriginal: Town[] = [];
+  loading = false;
+  loadingText: string;
 
   dtOptions: DataTables.Settings = {};
   dtTrigger1: Subject<any> = new Subject<any>();
@@ -70,6 +72,7 @@ export class CompanyListComponent implements OnInit {
       private formBuilder: FormBuilder,
       private SpinnerService: NgxSpinnerService,
       private store$: Store<any>,
+
   ) {
     this.filterName = '';
     this.businessNatures$ = naturesService.entities$;
@@ -215,6 +218,8 @@ export class CompanyListComponent implements OnInit {
   }
 
   loadCompanies() {
+    this.loading= true;
+    this.loadingText = "Retrieving Please Wait ...."
     this.SpinnerService.show();
     this.service.loadAllCompanyList().subscribe(
         (data) => {

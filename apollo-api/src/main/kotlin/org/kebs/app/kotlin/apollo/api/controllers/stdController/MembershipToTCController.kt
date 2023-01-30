@@ -9,10 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
-import org.kebs.app.kotlin.apollo.store.model.std.CallForTCApplication
-import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
-import org.kebs.app.kotlin.apollo.store.model.std.MembershipTCApplication
-import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommitteeMember
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.MembershipTCRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -52,7 +49,7 @@ class MembershipToTCController(
     }
 
     @GetMapping("anonymous/membershipToTC/getCallForApplications")
-    fun getCallForApplications(): List<CallForTCApplication> {
+    fun getCallForApplications(): List<TechnicalCommittee> {
         return membershipToTCService.getCallForApplications()
     }
 

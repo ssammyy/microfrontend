@@ -44,6 +44,9 @@ export class CompaniesList implements OnInit {
     selectedTown = 0;
     selectedBusinessLine = 0;
     selectedBusinessNature = 0;
+
+    loading = false;
+    loadingText: string;
     
 
     constructor(

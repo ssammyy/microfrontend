@@ -232,7 +232,7 @@ class ReportsController(
         map["FirmName"] = foundPermitDetails.firmName.toString()
         map["PermitNo"] = foundPermitDetails.permitNumber.toString()
         map["PostalAddress"] = foundPermitDetails.postalAddress.toString()
-        map["PhysicalAddress"] = foundPermitDetails.physicalAddress.toString()
+        map["PhysicalAddress"] = foundPermitDetails.buildingName.toString()
 
         map["DateOfIssue"] =
             foundPermitDetails.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!

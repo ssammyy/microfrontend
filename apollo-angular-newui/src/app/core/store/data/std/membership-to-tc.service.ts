@@ -10,6 +10,7 @@ import {
 } from "./request_std.model";
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
+import {TechnicalCommittee} from "./std.model";
 
 @Injectable({
     providedIn: 'root'
@@ -29,8 +30,8 @@ export class MembershipToTcService {
         return this.http.post<CallForApplication>(`${this.apiMembershipToTCUrl}` + 'submitCallForApplication', callForApplication)
     }
 
-    public getApplicantTasks(): Observable<CallForApplication[]> {
-        return this.http.get<CallForApplication[]>(`${this.apiMembershipToTCUrlAnonymous}` + 'getCallForApplications')
+    public getApplicantTasks(): Observable<TechnicalCommittee[]> {
+        return this.http.get<TechnicalCommittee[]>(`${this.apiMembershipToTCUrlAnonymous}` + 'getCallForApplications')
     }
 
     public onSubmitApplication(submitApplication: SubmitApplication): Observable<any> {

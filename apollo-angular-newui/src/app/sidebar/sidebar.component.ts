@@ -714,7 +714,6 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
         collapse: 'membership',
         children: [
-            {path: 'callsForApplication', title: 'Create Application', ab: 'CA'},
             {path: 'reviewApplication', title: 'Review Applications', ab: 'RA'},
             {path: 'reviewRecommendation', title: 'Review Recommendations', ab: 'RAR'},
             {path: 'reviewRecommendationOfSpc', title: 'SPC Review', ab: 'SR'},

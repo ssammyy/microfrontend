@@ -27,7 +27,7 @@ export class OtpComponent implements OnInit {
   username = '';
   redirectUrl: string;
   loadingText: string;
-
+  loading = false;
   constructor(
       private store$: Store<any>,
       private route: ActivatedRoute,
@@ -60,6 +60,7 @@ export class OtpComponent implements OnInit {
   }
 
   onClickValidateOtp() {
+    this.loading= true
     this.loadingText = 'Validating OTP....';
     // this.SpinnerService.show();
     // console.log(`user name ${this.username}`);

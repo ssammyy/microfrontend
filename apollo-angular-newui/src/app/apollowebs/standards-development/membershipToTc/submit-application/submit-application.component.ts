@@ -10,6 +10,7 @@ import {CallForApplication} from "../../../../core/store/data/std/request_std.mo
 import {HttpErrorResponse} from "@angular/common/http";
 import {DatePipe} from "@angular/common";
 import swal from "sweetalert2";
+import {TechnicalCommittee} from "../../../../core/store/data/std/std.model";
 
 @Component({
   selector: 'app-submit-application',
@@ -17,8 +18,8 @@ import swal from "sweetalert2";
   styleUrls: ['./submit-application.component.css']
 })
 export class SubmitApplicationComponent implements OnInit {
-  public submitApplicationsTask: CallForApplication[] = [];
-  public actionRequest: CallForApplication | undefined;
+  public submitApplicationsTask: TechnicalCommittee[] = [];
+  public actionRequest: TechnicalCommittee | undefined;
   public prepareDraftStandardFormGroup!: FormGroup;
   public uploadedFiles: FileList;
   loadingText: string;
@@ -62,7 +63,7 @@ export class SubmitApplicationComponent implements OnInit {
 
   public getApplicantTasks(): void {
     this.membershipToTcService.getApplicantTasks().subscribe(
-        (response: CallForApplication[]) => {
+        (response: TechnicalCommittee[]) => {
           console.log(response);
           this.submitApplicationsTask = response;
         },
@@ -95,7 +96,7 @@ export class SubmitApplicationComponent implements OnInit {
   }
 
 
-  public onOpenModal(task: CallForApplication, mode: string): void {
+  public onOpenModal(task: TechnicalCommittee, mode: string): void {
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
