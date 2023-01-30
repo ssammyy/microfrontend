@@ -679,6 +679,19 @@ export class QaService {
         );
     }
 
+    public qaInternalUserTaskListFind(): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_MY_TASK_LIST);
+        return this.http.get<PermitEntityDto[]>(url).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public viewSTA1Details(permitID: string): Observable<STA1> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA1);
         const params = new HttpParams()

@@ -70,6 +70,7 @@ export class ApiEndpointService {
     public static STL_CONTEXT = '/api/v1/migration/stdLevy';
     public static SL_CONTEXT = '/api/auth';
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
+    public static QA_INTERNAL_USER_CONTEXT = `${ApiEndpointService.QA_CONTEXT}/internal-users`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
     public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/sd/wa`;
@@ -671,6 +672,10 @@ export class ApiEndpointService {
         STD_LEVY_REGION_LIST: `${ApiEndpointService.STL_CONTEXT}/getRegionList`,
 
 
+    };
+
+    public static QA_INTERNAL_USER_ENDPOINT = {
+        LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/permits-list`,
     };
 
     public static COMPANY_PROFILE_ENDPOINT = {

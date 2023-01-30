@@ -132,6 +132,32 @@ class QualityAssuranceHandler(
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
 
+    /*:::::::::::::::::::::::::::::::::::::::::::::START INTERNAL USER FUNCTIONALITY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    fun getAllMyTaskList(req: ServerRequest): ServerResponse {
+        return try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            var permitListMyTasksAddedTogether = mutableListOf<PermitEntityDto>()
+            permitListMyTasksAddedTogether = qaDaoServices.findLoggedInUserTask(auth, loggedInUser, map,permitListMyTasksAddedTogether)
+            ok().body(permitListMyTasksAddedTogether.distinct())
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+
+
+
+
+
+
+    /*:::::::::::::::::::::::::::::::::::::::::::::END INTERNAL USER FUNCTIONALITY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+
+
+
     fun notSupported(req: ServerRequest): ServerResponse = badRequest().body("Invalid Request: Not supported")
 
     @PreAuthorize(
@@ -206,9 +232,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
 
             val map = commonDaoServices.serviceMapDetails(appId)
-//            var viewPage = qaPermitListPage
-            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
             val permitType = qaDaoServices.findPermitType(permitTypeID)
             req.attributes().putAll(loadCommonUIComponents(map))
             req.attributes()["permitType"] = permitType
@@ -431,12 +455,6 @@ class QualityAssuranceHandler(
         permitListMyTasksAddedTogether: MutableList<PermitEntityDto>
     ): MutableList<PermitEntityDto> {
         auth.authorities.forEach { a ->
-            //                if (a.authority == "PERMIT_APPLICATION"){
-            //                    permitListMyTasks =  qaDaoServices.findAllUserTasksManufactureByTaskIDAndPermitType(loggedInUser, auth,permitTypeID, applicationMapProperties.mapUserTaskNameMANUFACTURE)?.let { qaDaoServices.listPermits(it, map) }
-            //                    permitListMyTasksAddedTogether.addAll(permitListMyTasks)
-            //                    permitListAllApplications = qaDaoServices.findAllFirmPermitsAwardedWithPermitType(loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID"),  map.activeStatus, permitTypeID).let { qaDaoServices.listPermits(it, map) }
-            //                }
-
             if (a.authority == "QA_OFFICER_READ") {
                 qaDaoServices.listPermits(
                     qaDaoServices.findAllQAOPermitListWithPermitTypeTaskID(
@@ -2152,7 +2170,7 @@ class QualityAssuranceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
-                        ?.let { ServerResponse.ok().body(it) }
+                        ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 
                 }

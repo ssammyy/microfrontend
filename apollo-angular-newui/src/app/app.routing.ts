@@ -956,6 +956,12 @@ export const routes: Routes = [
         children: [{path: '', component: QaTaskDetailsComponent}],
     },
     {
+        path: 'qa_task_list', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: QaTaskDetailsComponent}],
+    },
+    {
         path: 'fmark/application', component: AdminLayoutComponent,
         children: [{path: '', component: FmarkApplicationComponent}],
     },
