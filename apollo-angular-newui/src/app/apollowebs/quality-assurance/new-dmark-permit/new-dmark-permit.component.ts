@@ -158,7 +158,7 @@ export class NewDmarkPermitComponent implements OnInit {
                 this.plants = data;
             }
         );
-        this.qaService.loadAllMyPermits().subscribe(
+        this.qaService.loadPermitList(this.DMarkTypeID.toString()).subscribe(
             (data: any) => {
                 this.allPermitData = data;
             });

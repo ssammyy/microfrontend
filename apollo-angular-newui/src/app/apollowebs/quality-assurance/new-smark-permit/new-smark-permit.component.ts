@@ -163,7 +163,7 @@ export class NewSmarkPermitComponent implements OnInit {
         });
         this.sta10FormG = this.formBuilder.group({});
 
-        this.qaService.loadAllMyPermits().subscribe(
+        this.qaService.loadPermitList(this.smarkID.toString()).subscribe(
             (data: any) => {
                 this.allPermitData = data;
             });
