@@ -130,6 +130,201 @@ class QADaoServices(
     val sta10Details = "redirect:/api/qa/view-sta10?permitID"
     val batchInvoiceList = "redirect:/api/qa/invoice/list-batch-invoices"
 
+    /*:::::::::::::::::::::::::::::::::::::::::::::START INTERNAL USER FUNCTIONALITY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+
+        fun findLoggedInUserTask(
+        auth: Authentication,
+        loggedInUser: UsersEntity,
+        map: ServiceMapsEntity,
+        permitListMyTasksAddedTogether: MutableList<PermitEntityDto>
+    ): MutableList<PermitEntityDto> {
+        auth.authorities.forEach { a ->
+            when (a.authority) {
+                "QA_OFFICER_READ" -> {
+                    listPermits(
+                        findAllQAOPermitListWithTaskID(
+                            loggedInUser,
+                            applicationMapProperties.mapUserTaskNameQAO
+                        ), map
+                    ).let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_ASSESSORS_READ" -> {
+                    listPermits(
+                        findAllAssessorPermitListWithTaskID(
+                            loggedInUser,
+                            applicationMapProperties.mapUserTaskNameASSESSORS
+                        ), map
+                    ).let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_HOD_READ" -> {
+                    findAllUserTasksQAMHODRMHOFByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_HOD_READ",
+                        map,
+                        applicationMapProperties.mapUserTaskNameHOD
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_HOF_READ" -> {
+                    findAllUserTasksQAMHODRMHOFByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_HOF_READ",
+                        map,
+                        applicationMapProperties.mapUserTaskNameHOF
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_RM_READ" -> {
+                    findAllUserTasksQAMHODRMHOFByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_RM_READ",
+                        map,
+                        applicationMapProperties.mapUserTaskNameRM
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_MANAGER_READ" -> {
+                    findAllUserTasksQAMHODRMHOFByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_MANAGER_READ",
+                        map,
+                        applicationMapProperties.mapUserTaskNameQAM
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_PAC_SECRETARY_READ" -> {
+                    findAllUserTasksPACPSCPCMByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_PAC_SECRETARY_READ",
+                        applicationMapProperties.mapUserTaskNamePACSECRETARY
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_PSC_MEMBERS_READ" -> {
+                    findAllUserTasksPACPSCPCMByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_PSC_MEMBERS_READ",
+                        applicationMapProperties.mapUserTaskNamePSC
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_PCM_READ" -> {
+                    findAllUserTasksPACPSCPCMByTaskID(
+                        loggedInUser,
+                        auth,
+                        "QA_PCM_READ",
+                        applicationMapProperties.mapUserTaskNamePCM
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+        }
+
+        return permitListMyTasksAddedTogether
+    }
+
+
+    fun findAllQAOPermitListWithTaskID(
+        user: UsersEntity,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQaoIdAndOldPermitStatusIsNullAndUserTaskId(userId, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllAssessorPermitListWithTaskID(
+        user: UsersEntity,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByAssessorIdAndOldPermitStatusIsNullAndUserTaskId(userId, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+       fun findAllUserTasksQAMHODRMHOFByTaskID(
+        user: UsersEntity,
+        auth: Authentication,
+        authToCompareWith: String,
+        map: ServiceMapsEntity,
+        taskID: Long
+    ): List<PermitApplicationsEntity>? {
+
+        val userProfile = commonDaoServices.findUserProfileByUserID(user, 1)
+
+        val permitListAllApplications = mutableListOf<PermitApplicationsEntity>()
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
+                systemsAdminDaoService.listRbacSectionByUsersIdAndByStatus(
+                    user.id ?: throw Exception("MISSING USER ID"), 1
+                )
+                    ?.forEach { section ->
+                        permitRepo.findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndSectionId(
+                            map.initStatus,
+                            userProfile.regionId?.id ?: throw Exception("MISSING REGION ID"),
+                            taskID,
+                            section.id
+                        )
+                            ?.let { ls ->
+                                permitListAllApplications.addAll(ls)
+                            }
+
+                    }
+
+            }
+        }
+
+        return permitListAllApplications
+    }
+        fun findAllUserTasksPACPSCPCMByTaskID(
+        user: UsersEntity,
+        auth: Authentication,
+        authToCompareWith: String,
+        taskID: Long
+    ): List<PermitApplicationsEntity>? {
+
+        var permitListAllApplications: List<PermitApplicationsEntity>? = null
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
+                permitListAllApplications =
+                    permitRepo.findAllByOldPermitStatusIsNullAndUserTaskId(taskID)
+            }
+        }
+
+        return permitListAllApplications
+    }
+
+    /*:::::::::::::::::::::::::::::::::::::::::::::END INTERNAL USER FUNCTIONALITY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     fun findPermitTypesList(status: Int): List<PermitTypesEntity> {
         permitTypesRepo.findByStatus(status)?.let {
             return it
@@ -182,7 +377,12 @@ class QADaoServices(
                     companyProfileEntity.directorIdNumber,
                     companyProfileEntity.region,
                     companyProfileEntity.county,
-                    companyProfileEntity.town
+                    companyProfileEntity.town,
+                    null,
+                    null,
+                    null,
+                    null,
+                    iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
                 ).apply {
                     id = companyProfileEntity.id
 
@@ -223,6 +423,19 @@ class QADaoServices(
         status: Int
     ): List<QaInvoiceMasterDetailsEntity> {
         invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(userID, status)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userID}] and [status = ${status}], does not Exist")
+    }
+
+    fun findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(
+        permitType: Long,
+        branchID: Long,
+        userID: Long,
+        status: Int
+    ): List<QaInvoiceMasterDetailsEntity> {
+        invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullPermitType(permitType,branchID,userID, status)
             ?.let { it ->
                 return it
             }
@@ -629,6 +842,11 @@ class QADaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userId}] does not Exist")
+    }
+
+    // find all Company UnPaied payments
+    fun findAllMyPaymentsByStatusAndUserID(userId: Long,status: Int): List<QaInvoiceMasterDetailsEntity>? {
+        return invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndReceiptNoIsNull(userId,status)
     }
 
 
@@ -1112,6 +1330,8 @@ class QADaoServices(
 
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
+
+
 
     fun findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(
         user: UsersEntity,
@@ -4949,11 +5169,13 @@ class QADaoServices(
 
     fun consolidateInvoiceAndSendMail(
         permitID: Long,
+        branchID: Long,
         map: ServiceMapsEntity,
         loggedInUser: UsersEntity
     ): Pair<QaBatchInvoiceEntity, PermitApplicationsEntity> {
         //Consolidate invoice now first
         var permit = findPermitBYID(permitID)
+        val attachedPermitPlantDetails =findPlantDetails(branchID)
         val permitType = findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Missing Permit Type ID"))
 
 
@@ -4968,8 +5190,7 @@ class QADaoServices(
             batchID = batchInvoice.id!!
         }
 
-        batchInvoice =
-            permitMultipleInvoiceSubmitInvoice(permit, permitType, map, loggedInUser, newBatchInvoiceDto).second
+        batchInvoice = permitMultipleInvoiceSubmitInvoice(attachedPermitPlantDetails, permitType, map, loggedInUser, newBatchInvoiceDto).second
 
         //Update Permit Details
         with(permit) {
@@ -5441,7 +5662,7 @@ class QADaoServices(
 //    }
 
     fun permitMultipleInvoiceSubmitInvoice(
-        permit: PermitApplicationsEntity,
+        attachedPermitPlantDetails: ManufacturePlantDetailsEntity,
         permitType: PermitTypesEntity,
         s: ServiceMapsEntity,
         user: UsersEntity,
@@ -5470,8 +5691,6 @@ class QADaoServices(
             )
 
             //Todo: Payment selection
-            val attachedPermitPlantDetails =
-                findPlantDetails(permit.attachedPlantId ?: throw Exception("MISSING ATTACHED PLANT ID"))
             val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(
                 attachedPermitPlantDetails.region ?: throw Exception("MISSING REGION ID"),
                 permitType.id ?: throw Exception("MISSING REGION ID")
@@ -5538,11 +5757,7 @@ class QADaoServices(
         var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
         try {
 
-            val userDetails =
-                commonDaoServices.findUserByID(
-                    permit.userId
-                        ?: throw Exception("MISSING USER ID ON PERMIT DETAILS")
-                )
+            val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
             val companyDetails = commonDaoServices.findCompanyProfileWithID(
                 userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")

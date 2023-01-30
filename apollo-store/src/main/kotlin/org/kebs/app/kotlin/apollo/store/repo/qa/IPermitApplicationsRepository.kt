@@ -216,6 +216,19 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         @Param("sectionID") sectionID: Long
     ): List<PermitApplicationsEntity>?
 
+    @Query(
+        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE " +
+                "pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.SECTION_ID = :sectionID " +
+                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID",
+        nativeQuery = true
+    )
+    fun findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndSectionId(
+        @Param("paidStatus") paidStatus: Int,
+        @Param("region") region: Long,
+        @Param("userTaskId") userTaskId: Long,
+        @Param("sectionID") sectionID: Long
+    ): List<PermitApplicationsEntity>?
+
 
     //    @Procedure(procedureName = "proc_load_new_user_permits")
     @Query(
@@ -391,6 +404,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         userTaskId: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByQaoIdAndOldPermitStatusIsNullAndUserTaskId(
+        qaoId: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         userId: Long,
         permitType: Long
@@ -409,6 +427,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
         assessorId: Long,
         permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByAssessorIdAndOldPermitStatusIsNullAndUserTaskId(
+        assessorId: Long,
         userTaskId: Long
     ): List<PermitApplicationsEntity>?
 
@@ -669,8 +692,24 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?
 
+    @Query(
+        "SELECT a.* FROM  DAT_KEBS_QA_INVOICE_MASTER_DETAILS a\n" +
+                " JOIN DAT_KEBS_PERMIT_TRANSACTION b ON b.ID = a.PERMIT_ID\n" +
+                "   WHERE b.PERMIT_TYPE =:permitType AND a.BATCH_INVOICE_NO IS NULL\n" +
+                "    AND b.ATTACHED_PLANT_ID =:branchID\n" +
+                "     AND a.USER_ID = :userId AND a.PAYMENT_STATUS =:paymentStatus",
+        nativeQuery = true
+    )
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullPermitType(
+        @Param("permitType") permitType: Long,
+        @Param("branchID") branchID: Long,
+        @Param("userId") userId: Long,
+        @Param("paymentStatus") paymentStatus: Int,
+    ): List<QaInvoiceMasterDetailsEntity>?
+
 
     fun findAllByUserIdAndReceiptNoIsNotNull(userId: Long): List<QaInvoiceMasterDetailsEntity>?
+    fun findAllByUserIdAndPaymentStatusAndReceiptNoIsNull(userId: Long,paymentStatus: Int): List<QaInvoiceMasterDetailsEntity>?
 
     fun findAllByUserIdAndVarField1IsNull(userId: Long): List<QaInvoiceMasterDetailsEntity>?
     fun findByPermitRefNumberAndUserIdAndPermitId(

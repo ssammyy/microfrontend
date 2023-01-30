@@ -33,7 +33,7 @@ export class ReviewFeedbackSacComponent implements OnInit {
     displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
     displayedColumn: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions', 'approve', 'reject'];
 
-    displayedColumnsC: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'view', 'actions'];
+    displayedColumnsC: string[] = ['subject', 'proposer', 'purpose', 'tcNumber','nameOfTC', 'status',  'actions'];
 
     dataSource!: MatTableDataSource<JustificationForTc>;
     dataSourceB!: MatTableDataSource<JustificationForTc>;

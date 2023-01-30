@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   ApprovalDto, BSNumberDto,
@@ -71,6 +71,7 @@ interface Post {
 export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('demoForm') myForm;
   @ViewChild('closebutton') closebutton;
+  @ViewChild('standardsInput') standardsInput: ElementRef;
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
@@ -87,10 +88,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   addLabParamStatus = true;
   addProductsStatus = true;
   addSeizureProductsStatus = true;
+  standardsArray = [];
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
-  dataReportViewMode = true;
+
+
   dataSaveWorkPlanCounties: WorkPlanCountyTownDto;
   dataSaveWorkPlanCountiesList: WorkPlanCountyTownDto[] = [];
   latestProgressReport: InspectionInvestigationReportDto;
@@ -1154,6 +1157,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       custom: [
         {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
         {name: 'updateRecord', title: '<i  class="btn btn-sm btn-primary">UPDATE DATA REPORT DETAILS</i>'},
+        {name: 'viewDataReportUploads', title: '<i  class="btn btn-sm btn-primary">VIEW UPLOADS</i>'},
       ],
       position: 'right', // left|right
     },
@@ -1766,10 +1770,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       reportFunction: ['', Validators.required],
       backgroundInformation: ['', Validators.required],
       objectiveInvestigation: ['', Validators.required],
-      dateInvestigationInspection: ['', Validators.required],
+      startDateInvestigationInspection: ['', Validators.required],
+      endDateInvestigationInspection: ['', Validators.required],
       kebsInspectors: null,
       methodologyEmployed: ['', Validators.required],
-      findings: ['', Validators.required],
+      // findings: ['', Validators.required],
       conclusion: ['', Validators.required],
       recommendations: ['', Validators.required],
       statusActivity: ['', Validators.required],
@@ -1859,7 +1864,6 @@ export class WorkPlanDetailsComponent implements OnInit {
       packaging: ['', Validators.required],
       labellingIdentification: null,
       fileRefNumber: null,
-      referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
       condition: ['', Validators.required],
@@ -1879,6 +1883,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       lbIdExpiryDate: null,
       lbIdTradeMark: null,
       noteTransResults: null,
+      standardsArray: [[], Validators.required],
       scfNo: null,
       cocNumber: null,
       testChargesKsh: null,
@@ -2495,7 +2500,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    this.dataReportViewMode = false;
+
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
@@ -2709,6 +2714,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       case 'updateRecord':
         this.updateDataReport(event.data);
         break;
+      case 'viewDataReportUploads':
+        console.log("view datasheet uploads");
+        console.log(event.data);
+        break;
     }
   }
 
@@ -2789,6 +2798,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   viewDataReportRecord(data: DataReportDto) {
+
     this.dataReportForm.patchValue(data);
     this.selectedDataReportDetails = data;
     this.totalCompliantValue = data?.totalComplianceScore;
@@ -3331,11 +3341,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     // if (valid) {
     this.SpinnerService.show();
     this.dataSaveStartOnsiteActivities = {...this.dataSaveStartOnsiteActivities, ...this.startOnsiteActivitiesForm.value};
-    this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
-        this.workPlanInspection.batchDetails.referenceNumber,
-        this.workPlanInspection.referenceNumber,
-        this.dataSaveStartOnsiteActivities
-    ).subscribe(
+    this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveStartOnsiteActivities).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
           console.log(data);
@@ -4732,13 +4738,16 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
+
     if (this.seizureForm.valid && this.uploadedFilesSeizedGoods.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.saveSeizureDeclaration();
           });
-
+    }
+    else{
+      this.msService.showError("Fill in all the fields! (Make sure you've uploaded a file)");
     }
   }
 
@@ -5215,6 +5224,18 @@ export class WorkPlanDetailsComponent implements OnInit {
         );
       }
     }
+  }
+
+  addStandard() {
+    let standard = this.standardsInput.nativeElement.value;
+    if(standard != "" && !this.standardsArray.includes(standard)){
+      this.standardsArray.push(standard);
+    }
+    this.standardsInput.nativeElement.value = '';
+  }
+
+  deleteItem(index: number) {
+    this.standardsArray.splice(index, 1);
   }
 
 }

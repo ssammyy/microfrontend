@@ -13,7 +13,7 @@ import {
   Go,
   loadBrsValidations,
   loadCountyId,
-  loadRegistrations,
+  loadRegistrations, loadRegistrationsTivet,
   loadResponsesFailure,
   loadSendTokenToPhone,
   loadValidateTokenAndPhone,
@@ -117,7 +117,7 @@ export class RegisterTivetComponent implements OnInit {
     };
 
     this.stepZeroForm = this.formBuilder.group({
-      registrationNumber: ['', Validators.required],
+      institutionName: ['', Validators.required],
       institutionType: ['', Validators.required]
     });
 
@@ -301,7 +301,7 @@ export class RegisterTivetComponent implements OnInit {
           this.company = {...this.company, ...this.companySoFar};
           this.user = {...this.user, ...this.userSoFar};
 
-          this.store$.dispatch(loadRegistrations({
+          this.store$.dispatch(loadRegistrationsTivet({
             payload: {company: this.company, user: this.user}
           }));
 

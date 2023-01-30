@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository
 interface TechnicalCommitteeRepository : JpaRepository<TechnicalCommittee, Long> {
     fun findByDepartmentId(departmentId: Long?): MutableList<TechnicalCommittee>
 
+    fun findAllByAdvertisingStatus(advertisingStatus:String): MutableList<TechnicalCommittee>
+
     @Query("SELECT t.title FROM TechnicalCommittee t WHERE t.id=:id")
     fun findNameById(@Param("id") id: Long?): String
 

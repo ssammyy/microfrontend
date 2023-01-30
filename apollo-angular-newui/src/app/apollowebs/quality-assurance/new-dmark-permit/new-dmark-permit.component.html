@@ -39,14 +39,14 @@
 
                                                             <div class="form-group col-12">
 
-                                                                <h3>Would You Like To Clone This STA10 With A Similar Permit STA10?</h3>
+                                                                <h3>Would You Like To Clone This STA3 With A Similar Permit STA3?</h3>
 
                                                                 <label for="attachedPlant">Select Permit</label>
                                                                 <select [(ngModel)]="selectedPermit" id="attachedPlanto" class="form-control">
                                                                     <option selected>Select Permit</option>
                                                                     <option *ngFor="let permit of allPermitData"
                                                                             [ngValue]="permit.id"
-                                                                            class="dropdown-item">{{permit.awardedPermitNumber}}</option>
+                                                                            class="dropdown-item">{{permit.productName}}</option>
 
                                                                 </select>
                                                                 <button class="btn btn-info float-right"

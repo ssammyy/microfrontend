@@ -1314,6 +1314,177 @@ class SystemsAdminDaoService(
      * @return response indicating whether we were able to successful save the information
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun registerTivet(dto: RegistrationTivetPayloadDto): CustomResponse? {
+        val result = CustomResponse()
+        try {
+            commonDaoServices.findCompanyProfileWithKraPin(
+                dto.company.kraPin ?: throw NullValueNotAllowedException("KRA  Pin Number is required")
+            )
+                ?.let { throw ExpectedDataNotFound("A Company with this [KRA Pin Number : ${dto.company.kraPin}] already exists") }
+                ?: run {
+                    commonDaoServices.findCompanyProfileWithRegistrationNumber(
+                        dto.company.institutionName
+                            ?: throw NullValueNotAllowedException("Registration Number is required")
+                    )
+                        ?.let { throw ExpectedDataNotFound("The Institution with this [ Name : ${dto.company.institutionName}] already exists") }
+                        ?: run {
+                            usersRepo.findByUserName(
+                                dto.user.email ?: throw NullValueNotAllowedException("Username is required")
+                            )
+                                ?.let {
+                                    throw InvalidValueException("Selected username is already in use")
+                                }
+                                ?: run {
+                                    usersRepo.findByEmail(
+                                        dto.user.email ?: throw NullValueNotAllowedException("Email is required")
+                                    )
+                                        ?.let { throw InvalidValueException("Selected email is already in use") }
+                                        ?: run {
+
+                                            val u = dto.user
+                                            var user = UsersEntity().apply {
+                                                firstName = u.firstName
+                                                lastName = u.lastName
+                                                email = u.email
+                                                /**
+                                                 * TODO: Revisit number validation
+                                                 */
+                                                personalContactNumber =
+                                                    commonDaoServices.makeKenyanMSISDNFormat(dto.company.companyTelephone)
+                                                registrationDate = Date(java.util.Date().time)
+                                                typeOfUser = applicationMapProperties.transactionActiveStatus
+                                                title = u.title
+                                                email = u.email
+                                                userName = u.email
+                                                cellphone = commonDaoServices.makeKenyanMSISDNFormat(u.cellphone)
+                                                userRegNo = "KEBS${
+                                                    commonDaoServices.generateTransactionReference(5).toUpperCase()
+                                                }"
+                                                credentials = BCryptPasswordEncoder().encode(u.credentials)
+                                                confirmCredentials = BCryptPasswordEncoder().encode(u.credentials)
+                                                enabled = applicationMapProperties.transactionInactiveStatus
+                                                status = applicationMapProperties.transactionActiveStatus
+                                                accountLocked = applicationMapProperties.transactionInactiveStatus
+                                                approvedDate = Timestamp.from(Instant.now())
+                                            }
+
+                                            user = usersRepo.save(user)
+
+
+                                            /**
+                                             * DONE: Create Manufacturer Id role
+                                             */
+                                            userRolesRepo.save(
+                                                registrationDaoServices.userRoleAssignment(
+                                                    user,
+                                                    1,
+                                                    applicationMapProperties.manufacturerAdminRoleId
+                                                        ?: throw NullValueNotAllowedException("Manufacturer Admin role not defined")
+                                                )
+                                            )
+                                            userRolesRepo.save(
+                                                registrationDaoServices.userRoleAssignment(
+                                                    user,
+                                                    1,
+                                                    applicationMapProperties.mapUserRegistrationUserRoleID
+                                                )
+                                            )
+                                            userRolesRepo.save(
+                                                registrationDaoServices.userRoleAssignment(
+                                                    user,
+                                                    1,
+                                                    applicationMapProperties.mapUserManufactureRoleID
+                                                )
+                                            )
+
+
+                                            var companyProfileEntity = CompanyProfileEntity().apply {
+                                                name = dto.company.institutionName
+                                                kraPin = dto.company.kraPin
+                                                userId = user.id
+                                                branchName = dto.company.branchName
+                                                registrationNumber = dto.company.registrationNumber
+                                                postalAddress = dto.company.postalAddress
+                                                physicalAddress = dto.company.physicalAddress
+                                                plotNumber = dto.company.plotNumber
+                                                companyEmail = dto.company.companyEmail
+                                                companyTelephone = dto.company.companyTelephone
+                                                yearlyTurnover = dto.company.yearlyTurnover
+                                                businessLines = dto.company.businessLines
+                                                businessNatures = dto.company.businessNatures
+                                                buildingName = dto.company.buildingName
+                                                directorIdNumber = dto.company.directorIdNumber
+                                                streetName = dto.company.streetName
+                                                county = dto.company.county
+                                                town = dto.company.town
+                                                region = dto.company.region
+                                                manufactureStatus = applicationMapProperties.transactionActiveStatus
+                                                status = applicationMapProperties.transactionActiveStatus
+                                                createdBy = user.userName
+                                                createdOn = Timestamp.from(Instant.now())
+                                                otherBusinessNatureType=dto.company.otherCategory
+                                                varField1=dto.company.institutionType
+                                                varField2 ="0"//Not Yet Activated
+
+                                            }
+
+                                            companyProfileEntity = companyProfileRepo.save(companyProfileEntity)
+
+                                            var branch = ManufacturePlantDetailsEntity().apply {
+                                                companyProfileId = companyProfileEntity.id
+                                                town = dto.company.town
+                                                county = dto.company.county
+                                                physicalAddress = dto.company.physicalAddress
+                                                street = dto.company.streetName
+                                                buildingName = dto.company.buildingName
+                                                branchName = dto.company.branchName
+                                                nearestLandMark = dto.company.buildingName
+                                                postalAddress = dto.company.postalAddress
+                                                telephone = dto.company.companyTelephone
+                                                emailAddress = dto.company.companyEmail
+                                                plotNo = dto.company.plotNumber
+                                                contactPerson = commonDaoServices.concatenateName(user)
+                                                descriptions = "Head Office"
+                                                region = dto.company.region
+
+                                                createdBy = companyProfileEntity.name
+                                                createdOn = Timestamp.from(Instant.now())
+                                                status = applicationMapProperties.transactionActiveStatus
+                                            }
+                                            branch = manufacturePlantRepository.save(branch)
+
+                                            user.companyId = companyProfileEntity.id
+                                            user.plantId = branch.id
+                                            usersRepo.save(user)
+
+                                            result.apply {
+                                                payload = "Successfully Created"
+                                                status = 200
+                                                response = "00"
+                                            }
+
+                                        }
+                                }
+
+
+                        }
+                }
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message, e)
+            result.apply {
+                payload = e.message
+                status = 500
+                response = "99"
+            }
+        }
+        return result
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun registerCompany(dto: RegistrationPayloadDto): CustomResponse? {
         val result = CustomResponse()
         try {

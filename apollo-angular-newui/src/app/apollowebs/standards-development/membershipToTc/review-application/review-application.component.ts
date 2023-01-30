@@ -27,6 +27,7 @@ export class ReviewApplicationComponent implements OnInit {
     isDtInitialized: boolean = false
     blob: Blob;
     display = 'none'; //default Variable
+    loading = false;
 
 
     constructor(private membershipToTcService: MembershipToTcService, private notifyService: NotificationService,
@@ -40,6 +41,7 @@ export class ReviewApplicationComponent implements OnInit {
 
 
     public getApplicationsForReview(): void {
+        this.loading = true
         this.loadingText = "Retrieving Applications Please Wait ...."
         this.SpinnerService.show();
         this.membershipToTcService.getApplicationsForReview().subscribe(

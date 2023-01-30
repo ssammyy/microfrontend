@@ -93,7 +93,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   selectedSeizedDetails: SeizureListDto;
   selectedPreliminaryReportDetails: InspectionInvestigationReportDto;
   selectedDataReportDetails: DataReportDto;
-  dataReportViewMode = true;
+
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -1626,6 +1626,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.county$ = countyService.entities$;
     this.town$ = townService.entities$;
     countyService.getAll().subscribe();
+
   }
 
   ngOnInit(): void {
@@ -1646,6 +1647,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.finalRemarkHODForm = this.formBuilder.group({
       hodFeedBackRemarks: ['', Validators.required],
+    });
+
+    this.startOnsiteActivitiesForm = this.formBuilder.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      remarks: null,
     });
 
     this.clientEmailNotificationForm = this.formBuilder.group({
@@ -1753,10 +1760,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       reportFunction: ['', Validators.required],
       backgroundInformation: ['', Validators.required],
       objectiveInvestigation: ['', Validators.required],
-      dateInvestigationInspection: ['', Validators.required],
+      startDateInvestigationInspection: ['', Validators.required],
+      endDateInvestigationInspection: ['', Validators.required],
       kebsInspectors: null,
       methodologyEmployed: ['', Validators.required],
-      findings: ['', Validators.required],
+      // findings: ['', Validators.required],
       conclusion: ['', Validators.required],
       recommendations: ['', Validators.required],
       statusActivity: ['', Validators.required],
@@ -1806,7 +1814,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
       nameOfOutlet: ['', Validators.required],
-      formSerialNumber: ['', Validators.required],
       nameSeizingOfficer: ['', Validators.required],
       additionalOutletDetails: ['', Validators.required],
     });
@@ -1847,7 +1854,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       packaging: ['', Validators.required],
       labellingIdentification: null,
       fileRefNumber: null,
-      referencesStandards: ['', Validators.required],
+      standardsArray: [[], Validators.required],
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
       condition: ['', Validators.required],
@@ -2437,7 +2444,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    this.dataReportViewMode = false;
+
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
@@ -4684,7 +4691,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     }
     else{
-      console.log("Fill in all fields! Especially the uploads");
+      console.log("Seizure Form Fields arent filled");
     }
   }
 
@@ -5153,7 +5160,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   addStandard() {
     let standard = this.standardsInput.nativeElement.value;
-    this.standardsArray.push(standard);
+    if(standard != ""  && !this.standardsArray.includes(standard)){
+      this.standardsArray.push(standard);
+    }
     this.standardsInput.nativeElement.value = '';
+  }
+
+  deleteItem(index: number) {
+    this.standardsArray.splice(index, 1);
   }
 }

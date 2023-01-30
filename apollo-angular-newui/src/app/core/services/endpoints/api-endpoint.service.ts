@@ -70,6 +70,7 @@ export class ApiEndpointService {
     public static STL_CONTEXT = '/api/v1/migration/stdLevy';
     public static SL_CONTEXT = '/api/auth';
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
+    public static QA_INTERNAL_USER_CONTEXT = `${ApiEndpointService.QA_CONTEXT}/internal-users`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
     public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/sd/wa`;
@@ -115,7 +116,10 @@ export class ApiEndpointService {
         RESET_PASSWORD_VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/resetPasswordValidateToken`,
         VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
+        REGISTER_TIVET: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerTivet`,
+
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
+
         USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/`,
         USER_NOTIFICATION: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/notifications/`,
         USER_DETAILS_SIGNATURE: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/signature`,
@@ -315,6 +319,7 @@ export class ApiEndpointService {
         INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
         INVOICE_DETAILS_BALANCE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-balance-details`,
         INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
+        INVOICE_LIST_NO_DETAILS_PERMIT_TYPE: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-permit-type`,
         INVOICE_LIST_ALL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list`,
         INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
         INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
@@ -673,10 +678,18 @@ export class ApiEndpointService {
 
     };
 
+    public static QA_INTERNAL_USER_ENDPOINT = {
+        LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/permits-list`,
+    };
+
     public static COMPANY_PROFILE_ENDPOINT = {
         LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
         LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
+        TIVETS_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/tivetListing`,
+        TIVETS_UPDATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/updateTivet`,
+        TIVETS_REJECT: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/rejectTivet`,
+
     };
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {

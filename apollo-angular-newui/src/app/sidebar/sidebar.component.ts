@@ -47,6 +47,7 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['SYSADMIN_VIEW'],
         children: [
             {path: 'user_management', title: 'User Management', ab: 'UM'},
+            {path: 'tivet_management', title: 'Tivet Management', ab: 'TM'},
             {path: 'business_management', title: 'Business Management', ab: 'BM'},
 
         ],
@@ -78,6 +79,13 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'branches', title: 'View Branches ', ab: 'VB'},
             // {path: 'users', title: 'View Users ', ab: 'VU'},
         ],
+    },
+    {
+        path: '/qa_task_list',
+        title: 'My Tasks',
+        type: 'link',
+        icontype: 'task',
+        privilege: ['QA_MANAGER_MODIFY', 'QA_OFFICER_MODIFY', 'QA_ASSESSORS_MODIFY'],
     },
 
     {
@@ -124,7 +132,10 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['PERMIT_APPLICATION'],
         collapse: 'invoice',
         children: [
-            {path: 'consolidate_invoice', title: 'Consolidate Invoices', ab: 'CI'},
+            {path: 'consolidate_invoice', title: 'Consolidate Smark Invoices', ab: 'CSI',},
+            {path: 'consolidate_invoice_fmark', title: 'Consolidate Fmark Invoices', ab: 'CFI',},
+            {path: 'consolidate_invoice_dmark', title: 'Consolidate Dmark Invoices', ab: 'CDI',},
+
             {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
         ],
     },
@@ -167,7 +178,7 @@ export const ROUTES: RouteInfo[] = [
         ],
     },
 
-    
+
     // Quality Assurance Admin
     {
         path: '/smark-admin',
@@ -176,9 +187,9 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'class',
         privilege: [],
 
-       
+
     },
-    , 
+
     {
         path: '/fmark-admin',
         title: 'Fortification Mark',
@@ -186,9 +197,9 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'recommended',
         privilege: [],
 
-       
+
     },
-    , 
+    ,
     {
         path: '/dmark-admin',
         title: 'Diamond Mark',
@@ -197,8 +208,6 @@ export const ROUTES: RouteInfo[] = [
         privilege: [],
 
     },
-
-    
 
 
     //DI
@@ -705,7 +714,6 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
         collapse: 'membership',
         children: [
-            {path: 'callsForApplication', title: 'Create Application', ab: 'CA'},
             {path: 'reviewApplication', title: 'Review Applications', ab: 'RA'},
             {path: 'reviewRecommendation', title: 'Review Recommendations', ab: 'RAR'},
             {path: 'reviewRecommendationOfSpc', title: 'SPC Review', ab: 'SR'},

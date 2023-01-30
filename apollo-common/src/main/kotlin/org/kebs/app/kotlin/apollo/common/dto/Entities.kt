@@ -496,6 +496,81 @@ data class UserCompanyEntityDto(
     var status: Int? = null
 }
 
+data class UserTivetEntityDto(
+    @JsonProperty("institutionName")
+    @NotEmpty(message = "is mandatory")
+    var institutionName: String? = null,
+    @JsonProperty("kraPin")
+    @NotEmpty(message = "is mandatory")
+    var kraPin: String? = null,
+
+
+    var userId: Long? = null,
+    var profileType: Long? = null,
+    @JsonProperty("registrationNumber")
+    @NotEmpty(message = "is mandatory")
+    var registrationNumber: String? = null,
+    @JsonProperty("institutionType")
+    @NotEmpty(message = "is mandatory")
+    var institutionType: String? = null,
+    @JsonProperty("postalAddress")
+    var postalAddress: String? = null,
+    @JsonProperty("physicalAddress")
+    @NotEmpty(message = "is mandatory")
+    var physicalAddress: String? = null,
+    var plotNumber: String? = null,
+    @JsonProperty("companyEmail")
+    @NotEmpty(message = "is mandatory")
+    @Email(message = "Email format is not valid")
+    var companyEmail: String? = null,
+    @JsonProperty("companyTelephone")
+    @NotEmpty(message = "is mandatory")
+    @Size(min = 9, message = "Phone Number must start with 254")
+    var companyTelephone: String? = null,
+    @JsonProperty("yearlyTurnover")
+    @NotBlank(message = "is mandatory")
+//    @Pattern(regexp = "/(\\d{0,3},)?(\\d{3},)?\\d{0,3}/", message = "must be numeric")
+    var yearlyTurnover: BigDecimal? = null,
+    @JsonProperty("businessLines")
+    @NotBlank(message = "is mandatory")
+    var businessLines: Long? = null,
+    @JsonProperty("businessNatures")
+    @NotBlank(message = "is mandatory")
+    var businessNatures: Long? = null,
+    @JsonProperty("buildingName")
+    @NotEmpty(message = "is mandatory")
+    var buildingName: String? = null,
+    @JsonProperty("branchName")
+    @NotEmpty(message = "is mandatory")
+    var branchName: String? = null,
+    @JsonProperty("streetName")
+    @NotEmpty(message = "is mandatory")
+    var streetName: String? = null,
+    @JsonProperty("directorIdNumber")
+    @NotEmpty(message = "is mandatory")
+    var directorIdNumber: String? = null,
+    @JsonProperty("region")
+    @NotBlank(message = "is mandatory")
+    var region: Long? = null,
+    @JsonProperty("county")
+    @NotBlank(message = "is mandatory")
+    var county: Long? = null,
+    @JsonProperty("town")
+    @NotBlank(message = "is mandatory")
+    var town: Long? = null,
+    var factoryVisitDate: Date? = null,
+    var factoryVisitStatus: Int? = null,
+    var manufactureStatus: Int? = null,
+    @JsonProperty("otherCategory")
+    var otherCategory: String? = null,
+    var firmType: String? = null
+
+
+) {
+    var id: Long? = null
+    var status: Int? = null
+}
+
 
 data class CompanyTurnOverUpdateDto(
     @NotEmpty(message = "is mandatory")
@@ -855,6 +930,13 @@ data class OrganizationUserEntityDto(
 data class RegistrationPayloadDto(
     @Valid
     val company: UserCompanyEntityDto,
+    @Valid
+    val user: OrganizationUserEntityDto
+)
+
+data class RegistrationTivetPayloadDto(
+    @Valid
+    val company: UserTivetEntityDto,
     @Valid
     val user: OrganizationUserEntityDto
 )

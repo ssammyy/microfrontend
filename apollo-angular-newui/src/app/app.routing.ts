@@ -630,6 +630,13 @@ import {ComStdRequestProcessComponent} from "./apollowebs/standards-development/
 import {
     HofReviewProposalComponent
 } from "./apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component";
+import {ManageTivetComponent} from "./apollowebs/usermanagement/manage-tivet/manage-tivet.component";
+import {
+    InvoiceConsolidateFmarkComponent
+} from "./apollowebs/quality-assurance/invoice-consolidate-fmark/invoice-consolidate-fmark.component";
+import {
+    InvoiceConsolidateDmarkComponent
+} from "./apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component";
 export const routes: Routes = [
     {
         path: '',
@@ -807,6 +814,11 @@ export const routes: Routes = [
                 component: AdminBusinessManagementComponent,
             },
 
+            {
+                path: 'tivet_management',
+                component: ManageTivetComponent,
+            },
+
         ],
     },
     {
@@ -922,6 +934,16 @@ export const routes: Routes = [
         children: [{path: '', component: InvoiceConsolidateComponent}],
     },
     {
+        path: 'invoice/consolidate_invoice_fmark', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: InvoiceConsolidateFmarkComponent}],
+    },
+    {
+        path: 'invoice/consolidate_invoice_dmark', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: InvoiceConsolidateDmarkComponent}],
+    },
+    {
         path: 'all_tasks_list', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -929,6 +951,12 @@ export const routes: Routes = [
     },
     {
         path: 'all_qa_tasks_list', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: QaTaskDetailsComponent}],
+    },
+    {
+        path: 'qa_task_list', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
         children: [{path: '', component: QaTaskDetailsComponent}],
@@ -1003,7 +1031,7 @@ export const routes: Routes = [
 
 //   },
   {
-    path: 'permit-details', component: PermitDetailsComponent
+    path: 'permit-details', component: PermitDetailsComponent,
   },
 
 

@@ -78,6 +78,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.viewPage}")
     val mapQualityAssuranceManufactureViewPage: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.clonePage}")
+    val mapQualityAssuranceManufactureClonePage: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration}")
     val mapUserRegistration: Int = 0
 
@@ -1447,6 +1450,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.assign.hof}")
     val msComplaintProcessAssignHOF: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.complaint.process.regionReAssigned}")
+    val msComplaintRegionReAssigned: Long? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.page.start}")
     val pageStart: Int = 1

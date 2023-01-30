@@ -384,6 +384,9 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findCompanyByUserId(userId: Long): MutableList<CompanyProfileEntity>
     fun findAllByFirmCategoryAndStatus(firmCategory: Long, status: Int): List<CompanyProfileEntity>?
 
+
+    fun findAllByVarField1IsNotNullOrderByIdDesc():List<CompanyProfileEntity>?
+
     @Query(
         value = "SELECT c.ID as id,c.NAME as name,c.PHYSICAL_ADDRESS as physicalAddress,c.KRA_PIN as kraPin,c.MANUFACTURE_STATUS as manufactureStatus,c.REGISTRATION_NUMBER as registrationNumber,c.POSTAL_ADDRESS as postalAddress,c.PLOT_NUMBER as plotNumber,c.COMPANY_EMAIL as companyEmail," +
                 "c.COMPANY_TELEPHONE as companyTelephone,c.YEARLY_TURNOVER as yearlyTurnover,l.NAME as businessLineName,n.NAME as businessNatureName,c.BUILDING_NAME as buildingName,c.STREET_NAME as streetName,r.REGION as regionName,s.COUNTY as countyName,c.FIRM_CATEGORY as firmCategory,t.TOWN as townName," +

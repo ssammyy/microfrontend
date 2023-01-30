@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirecto
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitRatingRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
@@ -44,6 +45,7 @@ class RegistrationManagementDaoService(
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
     private val usersSignatureRepository: UserSignatureRepository,
+    private val iPermitRatingRepo: IPermitRatingRepository,
 
     private val userProfileRepo: IUserProfilesRepository,
     private val tokenService: JwtTokenService,
@@ -899,6 +901,11 @@ class RegistrationManagementDaoService(
                         it.region,
                         it.county,
                         it.town,
+                        null,
+                        null,
+                        null,
+                        null,
+                        iPermitRatingRepo.findByIdOrNull(it.firmCategory)?.firmType
                     ).apply {
                         id = it.id
                         status = it.status
@@ -928,7 +935,12 @@ class RegistrationManagementDaoService(
                         it.directorIdNumber,
                         it.region,
                         it.county,
-                        it.town
+                        it.town,
+                        null,
+                        null,
+                        null,
+                        null,
+                        iPermitRatingRepo.findByIdOrNull(it.firmCategory)?.firmType
                     ).apply {
                         id = it.id
                         status = it.status
@@ -965,7 +977,11 @@ class RegistrationManagementDaoService(
                     it.region,
                     it.county,
                     it.town,
-
+                    null,
+                    null,
+                    null,
+                    null,
+                    iPermitRatingRepo.findByIdOrNull(it.firmCategory)?.firmType
                 ).apply {
                     id = it.id
                     status = it.status
@@ -1035,7 +1051,12 @@ class RegistrationManagementDaoService(
                         companyProfileEntity.directorIdNumber,
                         companyProfileEntity.region,
                         companyProfileEntity.county,
-                        companyProfileEntity.town
+                        companyProfileEntity.town,
+                        null,
+                        null,
+                        null,
+                        null,
+                        iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
                     ).apply {
                         id = companyProfileEntity.id
 
@@ -1086,7 +1107,12 @@ class RegistrationManagementDaoService(
                         companyProfileEntity.directorIdNumber,
                         companyProfileEntity.region,
                         companyProfileEntity.county,
-                        companyProfileEntity.town
+                        companyProfileEntity.town,
+                        null,
+                        null,
+                        null,
+                        null,
+                        iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
                     ).apply {
                         id = companyProfileEntity.id
 
@@ -1226,7 +1252,12 @@ class RegistrationManagementDaoService(
                         companyProfileEntity.directorIdNumber,
                         companyProfileEntity.region,
                         companyProfileEntity.county,
-                        companyProfileEntity.town
+                        companyProfileEntity.town,
+                        null,
+                        null,
+                        null,
+                        null,
+                        iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
                     ).apply { id = companyProfileEntity.id }
 
 

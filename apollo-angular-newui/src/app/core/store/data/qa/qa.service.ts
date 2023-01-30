@@ -195,6 +195,22 @@ export class QaService {
         );
     }
 
+    public loadInvoiceListWithNoBatchIDPermitType(permitTypeID: number, branchID: number): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_NO_DETAILS_PERMIT_TYPE);
+        const params = new HttpParams()
+            .set('permitTypeID', String(permitTypeID))
+            .set('branchID', String(branchID));
+        return this.http.get<any>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public loadAllInvoiceListCreatedByUser(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_ALL_DETAILS);
         return this.http.get<any>(url).pipe(
@@ -663,6 +679,19 @@ export class QaService {
         );
     }
 
+    public qaInternalUserTaskListFind(): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_MY_TASK_LIST);
+        return this.http.get<PermitEntityDto[]>(url).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public viewSTA1Details(permitID: string): Observable<STA1> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA1);
         const params = new HttpParams()
@@ -736,9 +765,12 @@ export class QaService {
         );
     }
 
-    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto, permitTypeID: number, branchID: number): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_SUBMIT);
-        return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
+        const params = new HttpParams()
+            .set('permitTypeID', String(permitTypeID))
+            .set('branchID', String(branchID));
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, data, {params}).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {
                 return response;
             }),

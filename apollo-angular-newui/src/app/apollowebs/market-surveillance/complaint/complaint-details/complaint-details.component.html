@@ -397,6 +397,7 @@
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>
                                         <button (click)="openModalAddDetails('reassignRegion')"
+                                                *ngIf="complaintInspection?.complaintsDetails?.approvedStatus"
                                                 class="btn btn-sm btn-primary mr-2"
                                                 data-target="#myModal1"
                                                 data-toggle="modal"
@@ -453,12 +454,14 @@
 
                                 <br/>
                                 <b>Document Details:</b>
+                                <div >
                                 <i *ngIf="complaintInspection?.complaintProcessStatus == true"
                                         (click)="viewWorkPlanCreated()"
                                         class="btn btn-sm btn-primary">VIEW MS PROCESS</i>
 
                                 <i class="btn btn-sm btn-primary" (click)="viewComplaintPdfFile( complaintInspection?.complaintsDetails?.refNumber,'application/pdf')">
                                     DOWNLOAD COMPLAINT</i>
+                                </div>
                             </div>
                         </div>
                     </div>

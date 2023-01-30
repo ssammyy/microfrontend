@@ -496,6 +496,7 @@ export interface ProposalComment {
     nameOfOrganization: string;
     dateOfApplication: string;
 }
+
 export interface ComDraftComment {
     commentTitle: string;
     comNameOfOrganization: string;
@@ -512,6 +513,7 @@ export interface ComDraftComment {
     requestID: number;
     draftID: number;
 }
+
 export interface ISAdoptionProposal {
     taskId: string;
     id: number;
@@ -1273,7 +1275,8 @@ export interface COMPreliminaryDraft {
     companyPhone: string;
     commentCount: number;
 }
-export interface ComApproveDraft{
+
+export interface ComApproveDraft {
     accentTo: boolean;
     requestId: bigint;
     comments: string;
@@ -1728,7 +1731,7 @@ export interface ISCheckRequirements {
     draughting: string;
 }
 
-export interface ComStdRequest{
+export interface ComStdRequest {
     id: number;
     requestNumber: string;
     submissionDate: string;
@@ -1779,7 +1782,7 @@ export interface SchemeMembership {
 
 }
 
-export interface ComStdRemarks{
+export interface ComStdRemarks {
     id: number;
     requestId: number;
     remarks: string;
@@ -1790,8 +1793,8 @@ export interface ComStdRemarks{
     dateOfRemark: Timestamp<any>;
 }
 
-export interface ComStdCommitteeRemarks{
-    id : number;
+export interface ComStdCommitteeRemarks {
+    id: number;
     name: string;
     draftComment: string;
     commentTime: Timestamp<any>;
@@ -1822,3 +1825,23 @@ export interface CommentsOnCompanyStandard{
     description
     dateOfRemark
 }
+
+export interface TechnicalCommittee {
+    id: number;
+    technicalCommitteeNo: string;
+    type: string;
+    departmentId: number;
+    tc: string;
+    sc: string;
+    wg: string;
+    parentCommitte: string;
+    title: string;
+    status: number;
+    comment: string;
+    createdBy: number;
+    createdOn: string;
+    advertisingStatus: number;
+}
+
+
+

@@ -402,7 +402,7 @@ class RegisterController(
         val map = commonDaoServices.serviceMapDetails(appId)
         userName
             ?.let {
-                val user = commonDaoServices.findUserByUserName(it.toLowerCase())
+                val user = commonDaoServices.findUserByUserName(it)
                 systemsAdminDaoService.userRegistrationMailSending(
                     user,
                     null,
