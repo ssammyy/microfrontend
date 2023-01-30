@@ -93,7 +93,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   selectedSeizedDetails: SeizureListDto;
   selectedPreliminaryReportDetails: InspectionInvestigationReportDto;
   selectedDataReportDetails: DataReportDto;
-  dataReportViewMode = true;
+
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
@@ -1814,7 +1814,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
       nameOfOutlet: ['', Validators.required],
-      formSerialNumber: ['', Validators.required],
       nameSeizingOfficer: ['', Validators.required],
       additionalOutletDetails: ['', Validators.required],
     });
@@ -2445,7 +2444,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    this.dataReportViewMode = false;
+
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
@@ -4692,7 +4691,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     }
     else{
-      console.log("Fill in all fields! Especially the uploads");
+      console.log("Seizure Form Fields arent filled");
     }
   }
 
@@ -5161,7 +5160,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   addStandard() {
     let standard = this.standardsInput.nativeElement.value;
-    if(standard != ""){
+    if(standard != ""  && !this.standardsArray.includes(standard)){
       this.standardsArray.push(standard);
     }
     this.standardsInput.nativeElement.value = '';

@@ -92,7 +92,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
-  dataReportViewMode = true;
+
+
   dataSaveWorkPlanCounties: WorkPlanCountyTownDto;
   dataSaveWorkPlanCountiesList: WorkPlanCountyTownDto[] = [];
   latestProgressReport: InspectionInvestigationReportDto;
@@ -1156,6 +1157,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       custom: [
         {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
         {name: 'updateRecord', title: '<i  class="btn btn-sm btn-primary">UPDATE DATA REPORT DETAILS</i>'},
+        {name: 'viewDataReportUploads', title: '<i  class="btn btn-sm btn-primary">VIEW UPLOADS</i>'},
       ],
       position: 'right', // left|right
     },
@@ -1862,7 +1864,6 @@ export class WorkPlanDetailsComponent implements OnInit {
       packaging: ['', Validators.required],
       labellingIdentification: null,
       fileRefNumber: null,
-      referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
       condition: ['', Validators.required],
@@ -2499,7 +2500,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    this.dataReportViewMode = false;
+
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
@@ -2713,6 +2714,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       case 'updateRecord':
         this.updateDataReport(event.data);
         break;
+      case 'viewDataReportUploads':
+        console.log("view datasheet uploads");
+        console.log(event.data);
+        break;
     }
   }
 
@@ -2793,6 +2798,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   viewDataReportRecord(data: DataReportDto) {
+
     this.dataReportForm.patchValue(data);
     this.selectedDataReportDetails = data;
     this.totalCompliantValue = data?.totalComplianceScore;
@@ -4732,13 +4738,16 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
+
     if (this.seizureForm.valid && this.uploadedFilesSeizedGoods.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.saveSeizureDeclaration();
           });
-
+    }
+    else{
+      this.msService.showError("Fill in all the fields! (Make sure you've uploaded a file)");
     }
   }
 
@@ -5219,7 +5228,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   addStandard() {
     let standard = this.standardsInput.nativeElement.value;
-    if(standard != ""){
+    if(standard != "" && !this.standardsArray.includes(standard)){
       this.standardsArray.push(standard);
     }
     this.standardsInput.nativeElement.value = '';
