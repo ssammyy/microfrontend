@@ -209,7 +209,8 @@ class ISDraftDecisionsStd(
     @JsonProperty("scope") val scope: String?,
     @JsonProperty("special") val special: String?,
     @JsonProperty("standardNumber") val standardNumber: String?,
-    @JsonProperty("requestId") val requestId: Long?
+    @JsonProperty("requestId") val requestId: Long?,
+    @JsonProperty("id") val id: Long
 
 ){
 
@@ -402,6 +403,17 @@ data class ISDraftDto(
 ){
 
 }
+data class ComDraftDto(
+    var id:Long,
+    var title:String?=null,
+    var docName:String?=null,
+    var draughting:String?=null,
+    var requestId:Long?=null,
+    var draftId:Long?=null,
+
+){
+
+}
 
 data class CSDraftDto(
     var proposalId:Long?=null,
@@ -421,6 +433,7 @@ data class CSDraftDto(
     var comStdNumber:String?=null,
     var documentType:String?=null,
     var requestId:Long?=null,
+    var draftId:Long?=null,
     var departmentId: Long?=null,
     var subject: String?=null,
     var description: String?=null,

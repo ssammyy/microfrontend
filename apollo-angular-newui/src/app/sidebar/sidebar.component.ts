@@ -773,11 +773,11 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'cs',
         children: [
            // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
-            {path: 'comStdList', title: 'Request Tasks', ab: 'RT'},
-            {path: 'comStdDraft', title: 'Drafting Tasks', ab: 'DT'},
-            {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
+            {path: 'comStdList', title: 'Company Standard Requests', ab: 'CSR'},
+            {path: 'comStdDraft', title: 'Uploaded Drafts', ab: 'UT'},
+           // {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
             //{path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
-            {path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
+            //{path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
 
         ],
     },
