@@ -65,11 +65,11 @@ class QaInspectionTechnicalEntity : Serializable {
 
     @Column(name = "INDICATE_RELEVANT_PRODUCT_STANDARD_CODES")
     @Basic
-    var IndicateRelevantProductStandardCodes: String? = null
+    var indicateRelevantProductStandardCodes: String? = null
 
     @Column(name = "INDICATE_RELEVANT_PRODUCT_STANDARD_CODES_REMARKS")
     @Basic
-    var IndicateRelevantProductStandardCodesRemarks: String? = null
+    var indicateRelevantProductStandardCodesRemarks: String? = null
 
     @Column(name = "compliance_applicable_statutory")
     @Basic

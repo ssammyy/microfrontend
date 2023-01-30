@@ -212,4 +212,37 @@ export class CompaniesList implements OnInit {
         console.log('record to view' + record);
         window.$('#updateModal').modal('show');
     }
+
+    onClickSaveFirmType(valid: boolean) {
+        this.submitted = true;
+        if (valid) {
+            this.msService.showSuccessWith2Message('Are you sure your want to Save the details?', 'You won\'t be able to revert back after submission!',
+                // tslint:disable-next-line:max-line-length
+                `You can click \'Update Firm Type\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+                    this.saveFirmType(valid);
+                });
+        } else {
+            this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+        }
+    }
+
+    saveFirmType(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.saveTurnOverDetails = {...this.saveTurnOverDetails, ...this.updateTurnOverDetailsForm.value};
+
+            this.qaService.qaUpdateFirmType(this.saveTurnOverDetails).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.qaService.showSuccess('COMPANY FIRM TYPE UPDATED SUCCESSFULLY', () => {
+                    });
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    console.log(error);
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
 }
