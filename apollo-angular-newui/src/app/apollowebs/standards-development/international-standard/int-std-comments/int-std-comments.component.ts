@@ -43,7 +43,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getProposal(this.proposalID);
+    this.getProposals(this.proposalID);
       this.activatedRoute.paramMap.subscribe(
           rs => {
               this.proposalID = rs.get('proposalID');
@@ -90,10 +90,10 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
 
   }
 
-    public getProposal(proposalID: string): void{
+    public getProposals(proposalID: string): void{
         this.loadingText = "Retrieving Proposals ...."
         this.SpinnerService.show();
-        this.stdIntStandardService.getProposal(proposalID).subscribe(
+        this.stdIntStandardService.getProposals(proposalID).subscribe(
             (response: ISAdoptionProposal[]) => {
                 this.isAdoptionProposals = response;
                 console.log(this.isAdoptionProposals);
@@ -186,7 +186,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
                 console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
-                this.getProposal(this.proposalID);
+                this.getProposals(this.proposalID);
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

@@ -369,7 +369,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
                 "WHERE  STATUS='0' AND ID=:proposalID ORDER BY ID DESC",
         nativeQuery = true
     )
-    fun getProposalDetails(@Param("proposalID") proposalID: Long?): MutableList<ProposalDetails>
+    fun getProposalDetails(): MutableList<ProposalDetails>
 
     @Query(
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +

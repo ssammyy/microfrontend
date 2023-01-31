@@ -168,8 +168,8 @@ class IntStandardService(
         return sdIsDocumentUploadsRepository.save(uploads)
     }
 
-    fun getProposal(proposalID: Long): MutableList<ProposalDetails>{
-        return isAdoptionProposalRepository.getProposalDetails(proposalID);
+    fun getProposal(): MutableList<ProposalDetails>{
+        return isAdoptionProposalRepository.getProposalDetails();
     }
 
     fun getProposals(proposalId: Long): MutableList<ProposalDetails> {

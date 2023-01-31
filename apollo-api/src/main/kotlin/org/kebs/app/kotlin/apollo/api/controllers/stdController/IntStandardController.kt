@@ -118,14 +118,14 @@ class IntStandardController(
     }
 
     //@PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @GetMapping("/anonymous/international_standard/getProposal")
+    @GetMapping("/international_standard/getProposal")
     @ResponseBody
-    fun getProposal(@RequestParam("proposalID") proposalID: Long): MutableList<ProposalDetails>
+    fun getProposal(): MutableList<ProposalDetails>
     {
-        return internationalStandardService.getProposal(proposalID)
+        return internationalStandardService.getProposal()
     }
 
-    @GetMapping("/international_standard/getProposals")
+    @GetMapping("/anonymous/international_standard/getProposals")
     @ResponseBody
     fun getProposals(@RequestParam("proposalId") proposalId: Long): MutableList<ProposalDetails>
     {
