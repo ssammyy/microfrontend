@@ -75,7 +75,7 @@
                     </tr>
                 </table>
                 <ng-template #basicDetails>
-                    <table class="table-responsive">
+                    <table class="table-responsive" *ngIf="cocDetails && cocDetails.certificate_details">
                         <th>
                             {{documentType}} No
                         </th>
@@ -111,7 +111,7 @@
                     {{documentType}} Details
                 </ng-template>
                 <b class="text-primary">Certificate Of Compliance Details</b>
-                <ul class="w-list-unstyled">
+                <ul class="w-list-unstyled" *ngIf="cocDetails && cocDetails.certificate_details">
                     <li class="list-item-accordion">
                         <div class="list-title-accordion">Certificate Type</div>
                         <div class="list-text-accordion">{{cocDetails.certificate_details.cocType}}</div>
@@ -171,7 +171,7 @@
                     Importer Details
                 </ng-template>
                 <b class="text-primary">Importer Details</b>
-                <ul class="w-list-unstyled">
+                <ul class="w-list-unstyled" *ngIf="cocDetails&&cocDetails.certificate_details">
                     <li class="list-item-accordion">
                         <div class="list-title-accordion">Name</div>
                         <div class="list-text-accordion">{{cocDetails.certificate_details.importerName}}</div>
@@ -219,7 +219,7 @@
                     Exporter Details
                 </ng-template>
                 <b class="text-primary">Exporter Details</b>
-                <ul class="w-list-unstyled">
+                <ul class="w-list-unstyled" *ngIf="cocDetails&&cocDetails.certificate_details">
                     <li class="list-item-accordion">
                         <div class="list-title-accordion">Name</div>
                         <div class="list-text-accordion">{{cocDetails.certificate_details.exporterName}}</div>
@@ -265,7 +265,7 @@
             <mat-tab tabindex="4">
                 <ng-template mat-tab-label>Invoice Details</ng-template>
                 <b class="text-primary">Invoice Details</b>
-                <div class="panel" style="max-height: 388px;">
+                <div class="panel" style="max-height: 388px;" *ngIf="cocDetails&&cocDetails.certificate_details">
                     <ul class="w-list-unstyled">
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">FOB Value</div>
@@ -286,7 +286,7 @@
             <mat-tab tabindex="5">
                 <ng-template mat-tab-label>Shipment Details</ng-template>
                 <b class="text-primary">Shipment Details</b>
-                <div class="panel" style="max-height: 487px;">
+                <div class="panel" style="max-height: 487px;" *ngIf="cocDetails&&cocDetails.certificate_details">
                     <ul class="w-list-unstyled">
                         <li class="list-item-accordion">
                             <div class="list-title-accordion">Mode</div>
@@ -318,7 +318,7 @@
             <mat-tab tabindex="6">
                 <ng-template mat-tab-label>Inspection Details</ng-template>
                 <b class="text-primary">Inspection Details</b>
-                <ul class="w-list-unstyled">
+                <ul class="w-list-unstyled" *ngIf="cocDetails&&cocDetails.certificate_details">
                     <li class="list-item-accordion">
                         <div class="list-title-accordion">Place Of Inspection</div>
                         <div class="list-text-accordion">{{cocDetails.certificate_details.placeOfInspection}}</div>
@@ -346,7 +346,7 @@
                 </ul>
             </mat-tab>
 
-            <mat-tab tabindex="7">
+            <mat-tab tabindex="7" *ngIf="cocDetails && cocDetails.items">
                 <ng-template mat-tab-label>Item Details</ng-template>
                 <b class="text-primary">Item Details</b>
                 <app-di-coc-item-details
@@ -410,7 +410,7 @@
             </mat-tab>
         </mat-tab-group>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2" *ngIf="cocDetails &&cocDetails.certificate_details">
         <h5>Action:</h5>
         <button *ngIf="cocDetails.certificate_details.documentsType==='F' && isPvocOfficer"
                 class="btn btn-sm btn-primary" (click)="createQuery()">Query PVOC

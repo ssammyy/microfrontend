@@ -335,7 +335,7 @@ class CocsEntity : Serializable {
     @Basic
     var version: Long? = null
 
-    @Column(name = "PVOC_PARTNER", nullable = true, length = 50)
+    @Column(name = "PVOC_PARTNER", nullable = true)
     @Basic
     var partner: Long? = null
 
@@ -396,7 +396,7 @@ class CocsEntity : Serializable {
                 shipmentSealNumbers == that.shipmentSealNumbers &&
                 shipmentContainerNumber == that.shipmentContainerNumber &&
                 shipmentGrossWeight == that.shipmentGrossWeight &&
-//                shipmentGrossWeightUnit == that.shipmentGrossWeightUnit &&
+                partner == that.partner &&
                 route == that.route &&
                 productCategory == that.productCategory &&
                 cocType == that.cocType &&

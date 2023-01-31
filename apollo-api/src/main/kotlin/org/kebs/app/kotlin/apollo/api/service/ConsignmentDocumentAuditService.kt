@@ -27,13 +27,13 @@ class ConsignmentDocumentAuditService(
             } ?: commonDaoServices.getLoggedInUser()
             user?.let {
                 history.name = "${it.firstName} ${it.lastName}"
-                history.createdBy = it.toString()
-                history.modifiedBy = it.toString()
+                history.createdBy = it.userName
+                history.modifiedBy = it.userName
                 history.createdOn = Timestamp.valueOf(LocalDateTime.now())
                 history.modifiedOn = Timestamp.valueOf(LocalDateTime.now())
                 history.actionCode = action
                 history.cdId = cdId
-                history.ucrNumber=ucrNumber
+                history.ucrNumber = ucrNumber
                 history.status = 1
                 history.comment = comment
                 history.description = narration

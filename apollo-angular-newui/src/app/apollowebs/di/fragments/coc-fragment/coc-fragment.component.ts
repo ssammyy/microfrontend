@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DestinationInspectionService} from "../../../../core/store/data/di/destination-inspection.service";
 import {MatDialog} from "@angular/material/dialog";
 import {PvocCocQueriesComponent} from "../../../pvoc/documents/foreign-cocs/pvoc-coc-queries/pvoc-coc-queries.component";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'app-coc-fragment',
@@ -10,7 +11,7 @@ import {PvocCocQueriesComponent} from "../../../pvoc/documents/foreign-cocs/pvoc
 })
 export class CocFragmentComponent implements OnInit {
     @Input()
-    cocDetails: any
+    cocDetailDs: Observable<any>
     @Input()
     isPvocOfficer: boolean
     @Input()
@@ -19,10 +20,17 @@ export class CocFragmentComponent implements OnInit {
     changedReload: EventEmitter<any> = new EventEmitter<any>()
     active: any = '1'
 
+    cocDetails: any
+
     constructor(private  diService: DestinationInspectionService, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
+        this.cocDetailDs.subscribe(
+            res => {
+                this.cocDetails = res
+            }
+        )
     }
 
     createQuery() {

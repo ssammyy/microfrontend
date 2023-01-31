@@ -26,6 +26,7 @@ import org.kebs.app.kotlin.apollo.api.payload.ApiClientForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiClientUpdateForm
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.request.CallbackUrlForm
 import org.kebs.app.kotlin.apollo.api.payload.response.ApiClientDao
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
@@ -40,10 +41,12 @@ import org.springframework.stereotype.Service
 import java.security.SecureRandom
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import javax.net.ssl.SSLContext
+import javax.transaction.Transactional
 
 
 data class CallbackResult(
@@ -61,7 +64,7 @@ class ApiClientService(
 ) {
 
     fun generateRandom(size: Int, userFriendly: Boolean = false): String {
-        val byteArray: ByteArray = ByteArray(size * 3)
+        val byteArray = ByteArray(size * 3)
         SecureRandom().nextBytes(byteArray)
         if (userFriendly) {
             val result = Base32().encodeAsString(byteArray)
@@ -232,6 +235,17 @@ class ApiClientService(
         return null
     }
 
+    fun updateClientCallbackDetails(clientId: String, form: CallbackUrlForm): Boolean {
+        return this.findByeClientId(clientId)?.let { client ->
+            client.eventsURL = form.url
+            client.callbackPassword = jasyptStringEncryptor.encrypt(form.password)
+            client.callbackUsername = jasyptStringEncryptor.encrypt(form.username)
+            client.authenticationMethod = form.authentication
+            this.apiClientRepo.save(client)
+            true
+        } ?: false
+    }
+
     fun getClientDetails(clientId: Long): ApiClientDao? {
         val client = this.apiClientRepo.findById(clientId)
         if (client.isPresent) {
@@ -246,9 +260,14 @@ class ApiClientService(
         authMode: String = "basic",
         headerParams: Map<String, String>? = null
     ): Boolean {
-        KotlinLogging.logger { }.info("Send to client URL[$url]: ${objectMapper.writeValueAsString(data)}")
-        val result = this.getHttpResponseFromPostCall(true, url, authMode, data, authParams = headerParams)
-        return result?.status == HttpStatusCode.OK
+        try {
+            KotlinLogging.logger { }.info("Send to client URL[$url]: ${objectMapper.writeValueAsString(data)}")
+            val result = this.getHttpResponseFromPostCall(true, url, authMode, data, authParams = headerParams)
+            return result?.status == HttpStatusCode.OK
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.warn("Failed to send URL to API client: ${ex.localizedMessage}")
+        }
+        return false
     }
 
     private fun buildClient(
@@ -330,7 +349,7 @@ class ApiClientService(
         authParams: Map<String, String>? = null,
         headerParams: Map<String, String>? = null,
     ): HttpResponse? {
-        return buildClient(auth, authMode ?: "Bearer", authParams)?.request<HttpResponse>(finalUrl) {
+        return buildClient(auth, authMode ?: "basic", authParams)?.request<HttpResponse>(finalUrl) {
             method = HttpMethod.Post
             headerParams?.forEach { (p, v) -> header(p, v) }
             payload?.let {
@@ -350,8 +369,12 @@ class ApiClientService(
                 val authHeader = when {
                     !clientDetails.callbackUsername.isNullOrEmpty() && !clientDetails.callbackPassword.isNullOrEmpty() -> {
                         val dd = mutableMapOf<String, String>()
-                        dd["username"] = clientDetails.callbackUsername.orEmpty()
-                        dd["password"] = clientDetails.callbackPassword.orEmpty()
+                        clientDetails.callbackUsername?.let {
+                            dd["username"] = jasyptStringEncryptor.decrypt(clientDetails.callbackUsername.orEmpty())
+                        }
+                        clientDetails.callbackPassword?.let {
+                            dd["password"] = jasyptStringEncryptor.decrypt(clientDetails.callbackPassword.orEmpty())
+                        }
                         dd
                     }
                     else -> null
@@ -359,7 +382,7 @@ class ApiClientService(
                 val requestData = CallbackResult(data, "CALLBACK", checksum)
                 success = this.postToUrl(requestData, it, "basic", authHeader)
                 if (!success) {
-                    addCallbackResult(requestData, clientId, eventName ?: "ANY", clientDetails.id ?: 0, checksum)
+                    addCallbackResult(requestData, clientId, eventName ?: "ANY", clientDetails, checksum)
                 }
             }
         }
@@ -381,20 +404,25 @@ class ApiClientService(
                 val authHeader = when {
                     !clientDetails.callbackUsername.isNullOrEmpty() && !clientDetails.callbackPassword.isNullOrEmpty() -> {
                         val dd = mutableMapOf<String, String>()
-                        dd["username"] = clientDetails.callbackUsername.orEmpty()
-                        dd["password"] = clientDetails.callbackPassword.orEmpty()
+                        clientDetails.callbackUsername?.let {
+                            dd["username"] = jasyptStringEncryptor.decrypt(clientDetails.callbackUsername.orEmpty())
+                        }
+                        clientDetails.callbackPassword?.let {
+                            dd["password"] = jasyptStringEncryptor.decrypt(clientDetails.callbackPassword.orEmpty())
+                        }
                         dd
                     }
                     else -> null
                 }
                 val requestData = CallbackResult(data, eventName, checksum)
-                success = postToUrl(requestData, it, "basic", authHeader)
+                success =
+                    postToUrl(requestData, it, clientDetails.authenticationMethod?.toLowerCase() ?: "basic", authHeader)
                 if (!success) {
                     addCallbackResult(
                         requestData,
                         clientDetails.clientId ?: "",
                         eventName,
-                        clientDetails.id ?: 0,
+                        clientDetails,
                         checksum
                     )
                 }
@@ -416,16 +444,59 @@ class ApiClientService(
         return success
     }
 
-    fun addCallbackResult(requestData: Any, envId: String, eventName: String, clientId: Long, checksum: String) {
-        val events = ApiClientEvents()
-        events.agentId = clientId
-        events.eventContents = objectMapper.writeValueAsString(requestData)
-        events.eventName = eventName
-        events.status = 0
-        events.createdOn = commonDaoServices.getTimestamp()
-        events.createdBy = envId
-        events.modifiedOn = commonDaoServices.getTimestamp()
-        events.modifiedBy = envId
-        apiClientEventRepo.save(events)
+    fun addCallbackResult(
+        requestData: Any,
+        envId: String,
+        eventName: String,
+        clientId: SystemApiClient,
+        checksum: String
+    ) {
+        try {
+            val events = ApiClientEvents()
+            events.agentId = clientId.id ?: 0
+            events.clientId = clientId.clientId
+            events.eventContents = objectMapper.writeValueAsString(requestData)
+            events.eventName = eventName
+            events.eventType = "CALLBACK"
+            events.checksum = checksum
+            events.status = 0
+            events.createdOn = commonDaoServices.getTimestamp()
+            events.createdBy = "SYSTEM"
+            events.modifiedOn = commonDaoServices.getTimestamp()
+            events.modifiedBy = envId
+            apiClientEventRepo.save(events)
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error("Failed to add callback event", ex)
+        }
+    }
+
+    /**
+     * Read events published and delete event once delivered to the client
+     */
+    @Transactional
+    fun listPublishedEvents(clientId: String?, pg: PageRequest): ApiResponseModel {
+        val response = ApiResponseModel()
+        val events = this.apiClientEventRepo.findByClientId(clientId, pg)
+        val eventsList = mutableListOf<Any>()
+        events.toList().forEach { evt ->
+            val dataMap = mutableMapOf<String, Any>()
+            dataMap["payload"] = objectMapper.readValue(evt.eventContents ?: "{}", Any::class.java)
+            dataMap["eventName"] = evt.eventName ?: ""
+            dataMap["eventType"] = evt.eventType ?: ""
+            dataMap["checksum"] = evt.checksum ?: "NNNN"
+            dataMap["eventDate"] = commonDaoServices.convertDateToString(
+                evt.createdOn?.toLocalDateTime() ?: LocalDateTime.now(),
+                "dd/MM/yyyy HH:mm"
+            )
+            eventsList.add(dataMap)
+            this.apiClientEventRepo.delete(evt)
+        }
+        response.message = "Success"
+        response.responseCode = ResponseCodes.SUCCESS_CODE
+        response.data = eventsList
+        response.pageNo = events.number
+        response.totalCount = events.totalElements
+        response.totalPages = events.totalPages
+        return response
     }
 }
