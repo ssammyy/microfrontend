@@ -2526,7 +2526,7 @@ class CallbackUrlForm {
     @Pattern(
         regexp = "BASIC|DIGEST",
         message = "Authentication should be either BASIC or DIGEST",
-        flags = [java.util.regex.Pattern.CASE_INSENSITIVE]
+        flags = [Pattern.Flag.CASE_INSENSITIVE]
     )
     var authentication: String? = null
 
