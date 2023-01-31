@@ -366,10 +366,10 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
                 "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
                 "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,STANDARD_NUMBER as standardNumber FROM SD_ADOPTION_PROPOSAL " +
-                "WHERE  STATUS='0' ORDER BY ID DESC",
+                "WHERE  STATUS='0' AND ID=:proposalID ORDER BY ID DESC",
         nativeQuery = true
     )
-    fun getProposalDetails(): MutableList<ProposalDetails>
+    fun getProposalDetails(@Param("proposalID") proposalID: Long?): MutableList<ProposalDetails>
 
     @Query(
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +

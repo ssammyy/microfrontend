@@ -400,7 +400,7 @@ export class ApiEndpointService {
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
         IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
         IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getISProposals`,
-        IST_VIEW_IS_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getProposal`,
+        IST_VIEW_IS_PROPOSAL: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getProposal`,
         IST_VIEW_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getProposals`,
         IST_VIEW_IS_PROPOSALS_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/proposal`,
         IST_SUBMIT_AP_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/SubmitAPComments`,

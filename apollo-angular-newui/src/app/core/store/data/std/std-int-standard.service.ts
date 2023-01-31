@@ -70,9 +70,9 @@ export class StdIntStandardService {
         );
     }
 
-    public getProposal(): any {
+    public getProposal(proposalID: any): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSAL);
-        const params = new HttpParams();
+        const params = new HttpParams().set('proposalID', proposalID);
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
