@@ -75,5 +75,10 @@ class Standard {
     @Basic
     var dateFormed: Timestamp? =null
 
+    @Column(name="CS_ID")
+    @Basic
+    var comStdId:Long? =null
+
+
 
 }

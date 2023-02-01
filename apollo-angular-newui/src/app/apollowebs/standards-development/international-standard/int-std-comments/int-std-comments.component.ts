@@ -10,6 +10,7 @@ import {selectUserInfo} from "../../../../core/store";
 import {DefaulterDetails} from "../../../../core/store/data/levy/levy.model";
 import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute} from "@angular/router";
 
 declare const $: any;
 
@@ -31,16 +32,24 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
     dtElement: DataTableDirective;
     isDtInitialized: boolean = false
   public actionRequest: ISAdoptionProposal | undefined;
+    proposalID: string;
   constructor(
       private store$: Store<any>,
       private formBuilder: FormBuilder,
       private stdIntStandardService : StdIntStandardService,
       private SpinnerService: NgxSpinnerService,
-      private notifyService : NotificationService
+      private notifyService : NotificationService,
+      private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    this.getProposal();
+    this.getProposals(this.proposalID);
+      this.activatedRoute.paramMap.subscribe(
+          rs => {
+              this.proposalID = rs.get('proposalID');
+
+          },
+      );
 
       this.uploadCommentsFormGroup = this.formBuilder.group({
           adoption_proposal_comment: [],
@@ -81,10 +90,10 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
 
   }
 
-    public getProposal(): void{
+    public getProposals(proposalID: string): void{
         this.loadingText = "Retrieving Proposals ...."
         this.SpinnerService.show();
-        this.stdIntStandardService.getProposal().subscribe(
+        this.stdIntStandardService.getProposals(proposalID).subscribe(
             (response: ISAdoptionProposal[]) => {
                 this.isAdoptionProposals = response;
                 console.log(this.isAdoptionProposals);
@@ -177,7 +186,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
                 console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
-                this.getProposal();
+                this.getProposals(this.proposalID);
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

@@ -70,7 +70,16 @@ class ComStdDraftDecisionDto(
     var companyPhone: String?=null,
     var contactOneFullName: String?=null,
     var contactOneEmail: String?=null,
-    var contactOneTelephone: String?=null
+    var contactOneTelephone: String?=null,
+    var departmentId: Long?=null,
+    var subject: String?=null,
+    var description: String?=null,
+    var contactTwoFullName: String?=null,
+    var contactTwoTelephone: String?=null,
+    var contactTwoEmail: String?=null,
+    var contactThreeFullName: String?=null,
+    var contactThreeTelephone: String?=null,
+    var contactThreeEmail: String?=null,
 ){
 
 }

@@ -703,6 +703,36 @@ export interface IStandardUpload {
     companyName: string;
     companyPhone: string;
 }
+export interface ComStdDraftEdit{
+    id: number;
+    requestId: number;
+    title: string;
+    docName: string;
+    standardNumber: string;
+    draughting: string;
+    draftId: number;
+    requestNumber: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    comStdNumber: string;
+    departmentId: number;
+    subject: string;
+    description: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
+    companyName: string;
+    companyPhone: string;
+}
 
 export interface IStandardDraftEdit {
     title: string;
@@ -796,6 +826,7 @@ export interface ISDraftDecision {
     comments: string;
     accentTo: string;
     justificationId: number;
+    id: number;
     proposalId: number;
     requestId: number;
     draftId: number;
@@ -1199,6 +1230,15 @@ export interface ApproveDraft {
     contactOneFullName: string;
     contactOneTelephone: string;
     contactOneEmail: string;
+    departmentId: number;
+    subject: string;
+    description: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
 }
 
 export interface COMPreliminaryDraft {
@@ -1688,6 +1728,7 @@ export interface ISCheckRequirements {
     companyName: string;
     companyPhone: string;
     draftNumber: string;
+    draughting: string;
 }
 
 export interface ComStdRequest {
@@ -1772,6 +1813,17 @@ export interface ComStdCommitteeRemarks {
     recommendations: string;
     nameOfRespondent: string;
     positionOfRespondent: string;
+}
+
+export interface CommentsOnCompanyStandard{
+    id
+    requestId
+    remarks
+    remarkBy
+    status
+    role
+    description
+    dateOfRemark
 }
 
 export interface TechnicalCommittee {

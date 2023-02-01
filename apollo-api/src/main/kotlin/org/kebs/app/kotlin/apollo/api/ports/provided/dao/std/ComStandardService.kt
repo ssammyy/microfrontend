@@ -11,7 +11,6 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
 import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMsg
-import org.kebs.app.kotlin.apollo.common.dto.stdLevy.NotificationForm
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -53,7 +52,8 @@ class ComStandardService(
     private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
     private val standardRepository: StandardRepository,
     private val comStdJointCommitteeRepository: ComStdJointCommitteeRepository,
-    private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository
+    private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository,
+    private val sdDocumentsRepository: StandardsDocumentsRepository,
 ) {
 
     //request for company standard
@@ -552,7 +552,7 @@ class ComStandardService(
     }
 
     fun getAllComments(requestId: Long): MutableIterable<CompanyStandardRemarks>? {
-        return companyStandardRemarksRepository.findByRequestId(requestId)
+        return companyStandardRemarksRepository.findByRequestIdOrderByIdDesc(requestId)
     }
 
     //Submit Adoption Proposal comments
@@ -594,7 +594,7 @@ class ComStandardService(
     }
 
     fun getDraftComments(draftID: Long): MutableIterable<ComDraftComments>? {
-        return comStandardDraftCommentsRepository.findByDraftID(draftID)
+        return comStandardDraftCommentsRepository.findByDraftIDOrderByIdDesc(draftID)
     }
 
     fun getDraftCommentList(draftID: Long): List<SiteVisitListHolder> {
@@ -714,12 +714,12 @@ class ComStandardService(
         comStdDraft: ComStdDraft,
         companyStandardRemarks: CompanyStandardRemarks
     ) : String {
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        //val loggedInUser = commonDaoServices.loggedInUserDetails()
         comStdDraft.accentTo=comStdDraft.accentTo
         val decision=comStdDraft.accentTo
 
-        val fName = loggedInUser.firstName
-        val sName = loggedInUser.lastName
+        val fName = "Company"
+        val sName = ""
         val usersName = "$fName  $sName"
         companyStandardRemarks.requestId= companyStandardRemarks.requestId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
@@ -728,24 +728,56 @@ class ComStandardService(
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Company"
         val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(2))
-
+        val comStandard= getCSNumber()
 
         if (decision == "Yes") {
             comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
                 with(comStdDraft) {
-                    status = 3
-                    title=comStdDraft.title
-                    scope=comStdDraft.scope
-                    normativeReference=comStdDraft.normativeReference
-                    symbolsAbbreviatedTerms=comStdDraft.symbolsAbbreviatedTerms
-                    clause=comStdDraft.clause
-                    special=comStdDraft.special
-                    requestNumber=comStdDraft.requestNumber
-                    comStdNumber=getCSNumber()
+                    status = 4
+                    comStdNumber=comStandard
                     deadlineDate=deadline
                 }
+               val cs=CompanyStandard()
+                cs.companyName=comStdDraft.companyName
+                cs.companyPhone=comStdDraft.companyPhone
+                cs.contactOneFullName=comStdDraft.contactOneFullName
+                cs.contactOneEmail=comStdDraft.contactOneEmail
+                cs.contactOneTelephone=comStdDraft.contactOneTelephone
+                cs.departmentId=comStdDraft.departmentId
+                cs.subject=comStdDraft.subject
+                cs.description=comStdDraft.description
+                cs.contactTwoFullName=comStdDraft.contactTwoFullName
+                cs.contactTwoTelephone=comStdDraft.contactTwoTelephone
+                cs.contactTwoEmail=comStdDraft.contactTwoEmail
+                cs.contactThreeFullName=comStdDraft.contactThreeFullName
+                cs.contactThreeTelephone=comStdDraft.contactThreeTelephone
+                cs.contactThreeEmail=comStdDraft.contactThreeEmail
+                cs.requestNumber=comStdDraft.requestNumber
+                cs.status=0
+                cs.uploadDate = Timestamp(System.currentTimeMillis())
+                cs.comStdNumber = comStandard
+                cs.draftId=comStdDraft.id
+                cs.requestId=comStdDraft.requestId
+
+                val draftStandard= companyStandardRepository.save(cs)
+
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
+
+                var userList= companyStandardRepository.getHopEmailList()
+
+                //email to Head of publishing
+                val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                userList.forEach { item->
+                    //val recipient="stephenmuganda@gmail.com"
+                    val recipient= item.getUserEmail()
+                    val subject = "Standard"
+                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded.Login to KIEMS $targetUrl to initiate piblishing"
+                    if (recipient != null) {
+                        notifications.sendEmail(recipient, subject, messageBody)
+                    }
+                }
+
             }?: throw Exception("DRAFT NOT FOUND")
 
         } else if (decision == "No") {
@@ -766,12 +798,6 @@ class ComStandardService(
         return "Actioned"
     }
 
-
-
-
-
-
-
     fun findUploadedFileBYId(comDraftDocumentId: Long): ComStandardDraftUploads {
         comStandardDraftUploadsRepository.findByComDraftDocumentId(comDraftDocumentId)?.let {
             return it
@@ -784,54 +810,42 @@ class ComStandardService(
         }
     }
 
-
-
-
-
     fun getStdDraftForEditing(): MutableList<ComStdDraft> {
         return comStdDraftRepository.getStdDraftForEditing()
     }
 
-
-
-
-
-    fun submitDraftForEditing(companyStandard: CompanyStandard,comStdDraft:ComStdDraft) : CompanyStandard
+    fun submitDraftForEditing(companyStandard: CompanyStandard) : CompanyStandard
     {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        companyStandard.title=companyStandard.title
-        companyStandard.departmentId = companyStandard.departmentId
-        companyStandard.subject=companyStandard.subject
-        companyStandard.description=companyStandard.description
-        companyStandard.contactOneFullName=companyStandard.contactOneFullName
-        companyStandard.contactOneTelephone=companyStandard.contactOneTelephone
-        companyStandard.contactOneEmail=companyStandard.contactOneEmail
-        companyStandard.contactTwoFullName=companyStandard.contactTwoFullName
-        companyStandard.contactTwoTelephone=companyStandard.contactTwoTelephone
-        companyStandard.contactTwoEmail=companyStandard.contactTwoEmail
-        companyStandard.contactThreeFullName=companyStandard.contactThreeFullName
-        companyStandard.contactThreeTelephone=companyStandard.contactThreeTelephone
-        companyStandard.contactThreeEmail=companyStandard.contactThreeEmail
-        companyStandard.requestNumber=companyStandard.requestNumber
-        companyStandard.status=0
-        companyStandard.uploadDate = Timestamp(System.currentTimeMillis())
-        companyStandard.comStdNumber = companyStandard.comStdNumber
-        companyStandard.preparedBy=companyStandard.preparedBy
-        companyStandard.documentType=companyStandard.documentType
-        companyStandard.draftId=comStdDraft.id
-        companyStandard.requestId=comStdDraft.requestId
 
 
-        comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+        companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
+            with(companyStandard) {
+                title=companyStandard.title
+                departmentId = companyStandard.departmentId
+                subject=companyStandard.subject
+                description=companyStandard.description
+                contactOneFullName=companyStandard.contactOneFullName
+                contactOneTelephone=companyStandard.contactOneTelephone
+                contactOneEmail=companyStandard.contactOneEmail
+                contactTwoFullName=companyStandard.contactTwoFullName
+                contactTwoTelephone=companyStandard.contactTwoTelephone
+                contactTwoEmail=companyStandard.contactTwoEmail
+                contactThreeFullName=companyStandard.contactThreeFullName
+                contactThreeTelephone=companyStandard.contactThreeTelephone
+                contactThreeEmail=companyStandard.contactThreeEmail
+                requestNumber=companyStandard.requestNumber
+                status=companyStandard.status
+                comStdNumber = companyStandard.comStdNumber
+                documentType=companyStandard.documentType
+                draftId=companyStandard.draftId
+                requestId=companyStandard.requestId
 
-            with(comStdDraft) {
-                status = 4
             }
-            comStdDraftRepository.save(comStdDraft)
 
+        }?: throw Exception("DRAFT NOT FOUND")
 
-        } ?: throw Exception("DRAFT NOT FOUND")
         val draftStandard= companyStandardRepository.save(companyStandard)
 
         var userList= companyStandardRepository.getHopEmailList()
@@ -856,7 +870,7 @@ class ComStandardService(
         return companyStandardRepository.getUploadedDraft()
     }
 
-    fun getComStdPublishing(): MutableList<COMUploadedDraft> {
+    fun getComStdPublishing(): MutableList<ComStandard> {
         return companyStandardRepository.getComStdPublishing()
     }
 
@@ -882,7 +896,7 @@ class ComStandardService(
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
                 with(companyStandard) {
-                    status = 1
+                    status = 3
 
                 }
                 companyStandardRepository.save(companyStandard)
@@ -890,22 +904,14 @@ class ComStandardService(
             }?: throw Exception("DRAFT NOT FOUND")
 
         } else if (decision == "No") {
-            comStdDraftRepository.findByIdOrNull(companyStandard.draftId)?.let { comStdDraft ->
 
-                with(comStdDraft) {
-                    status = 1
+            companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
+
+                with(companyStandard) {
+                    status = 0
                 }
-                comStdDraftRepository.save(comStdDraft)
-
-                companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
-
-                    with(companyStandard) {
-                        status = 2
-                    }
-                    companyStandardRepository.save(companyStandard)
-                    companyStandardRemarksRepository.save(companyStandardRemarks)
-
-                } ?: throw Exception("DRAFT NOT FOUND")
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(companyStandardRemarks)
 
             } ?: throw Exception("DRAFT NOT FOUND")
 
@@ -918,47 +924,43 @@ class ComStandardService(
         return companyStandardRepository.getApprovedEditedDraft()
     }
 
-    fun editStandardDraft(companyStandard: CompanyStandard) : CompanyStandard {
+    fun editStandardDraft(companyStandard: CompanyStandard): CompanyStandard {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val draft= CompanyStandard()
-        companyStandard.title=companyStandard.title
-        companyStandard.scope=companyStandard.scope
-        companyStandard.normativeReference=companyStandard.normativeReference
-        companyStandard.symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
-        companyStandard.clause=companyStandard.clause
-        companyStandard.special=companyStandard.special
-        companyStandard.requestNumber=companyStandard.requestNumber
-        companyStandard.uploadDate = Timestamp(System.currentTimeMillis())
-        companyStandard.comStdNumber = companyStandard.comStdNumber
-        companyStandard.preparedBy=companyStandard.preparedBy
-        companyStandard.documentType=companyStandard.documentType
-        companyStandard.draughting=companyStandard.draughting
-        val draughting=companyStandard.draughting
+        //val draft= CompanyStandard()
 
+        val draught = companyStandard.status
+        val gson = Gson()
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = if (draughting =="Yes"){
-                    3
-                }else{
-                    4
-                }
+                draughting = companyStandard.draughting
                 title = companyStandard.title
-                scope = companyStandard.scope
-                normativeReference = companyStandard.normativeReference
-                symbolsAbbreviatedTerms = companyStandard.symbolsAbbreviatedTerms
-                clause = companyStandard.clause
-                special = companyStandard.special
+                departmentId = companyStandard.departmentId
+                subject = companyStandard.subject
+                description = companyStandard.description
+                contactOneFullName = companyStandard.contactOneFullName
+                contactOneTelephone = companyStandard.contactOneTelephone
+                contactOneEmail = companyStandard.contactOneEmail
+                contactTwoFullName = companyStandard.contactTwoFullName
+                contactTwoTelephone = companyStandard.contactTwoTelephone
+                contactTwoEmail = companyStandard.contactTwoEmail
+                contactThreeFullName = companyStandard.contactThreeFullName
+                contactThreeTelephone = companyStandard.contactThreeTelephone
+                contactThreeEmail = companyStandard.contactThreeEmail
+                requestNumber = companyStandard.requestNumber
+                status = companyStandard.status
                 comStdNumber = companyStandard.comStdNumber
                 documentType = companyStandard.documentType
+                draftId = companyStandard.draftId
+                requestId = companyStandard.requestId
             }
-            companyStandardRepository.save(companyStandard)
 
+            //KotlinLogging.logger { }.info { "Status Check" + gson.toJson(companyStandard) }
         } ?: throw Exception("DRAFT NOT FOUND")
 
-        return draft
+        return companyStandardRepository.save(companyStandard)
     }
 
     fun getComEditedDraft(): MutableList<COMUploadedDraft> {
@@ -968,34 +970,37 @@ class ComStandardService(
     fun draughtStandard(companyStandard: CompanyStandard) : CompanyStandard {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val draft= CompanyStandard()
-        companyStandard.title = companyStandard.title
-        companyStandard.scope = companyStandard.scope
-        companyStandard.normativeReference = companyStandard.normativeReference
-        companyStandard.symbolsAbbreviatedTerms = companyStandard.symbolsAbbreviatedTerms
-        companyStandard.clause = companyStandard.clause
-        companyStandard.special = companyStandard.special
-        companyStandard.comStdNumber = companyStandard.comStdNumber
-        companyStandard.requestNumber = companyStandard.requestNumber
-        companyStandard.documentType=companyStandard.documentType
+
+
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = 4
+                draughting = companyStandard.draughting
                 title = companyStandard.title
-                scope = companyStandard.scope
-                normativeReference = companyStandard.normativeReference
-                symbolsAbbreviatedTerms = companyStandard.symbolsAbbreviatedTerms
-                clause = companyStandard.clause
-                special = companyStandard.special
+                departmentId = companyStandard.departmentId
+                subject = companyStandard.subject
+                description = companyStandard.description
+                contactOneFullName = companyStandard.contactOneFullName
+                contactOneTelephone = companyStandard.contactOneTelephone
+                contactOneEmail = companyStandard.contactOneEmail
+                contactTwoFullName = companyStandard.contactTwoFullName
+                contactTwoTelephone = companyStandard.contactTwoTelephone
+                contactTwoEmail = companyStandard.contactTwoEmail
+                contactThreeFullName = companyStandard.contactThreeFullName
+                contactThreeTelephone = companyStandard.contactThreeTelephone
+                contactThreeEmail = companyStandard.contactThreeEmail
+                requestNumber = companyStandard.requestNumber
+                status = companyStandard.status
                 comStdNumber = companyStandard.comStdNumber
                 documentType = companyStandard.documentType
+                draftId = companyStandard.draftId
+                requestId = companyStandard.requestId
             }
-            companyStandardRepository.save(companyStandard)
+
 
         } ?: throw Exception("DRAFT NOT FOUND")
 
-        return draft
+        return companyStandardRepository.save(companyStandard)
     }
 
     fun getDraughtedDraft(): MutableList<COMUploadedDraft> {
@@ -1008,33 +1013,36 @@ class ComStandardService(
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val draft= CompanyStandard()
-        companyStandard.title = companyStandard.title
-        companyStandard.scope = companyStandard.scope
-        companyStandard.normativeReference = companyStandard.normativeReference
-        companyStandard.symbolsAbbreviatedTerms = companyStandard.symbolsAbbreviatedTerms
-        companyStandard.clause = companyStandard.clause
-        companyStandard.special = companyStandard.special
-        companyStandard.comStdNumber = companyStandard.comStdNumber
-        companyStandard.documentType=companyStandard.documentType
-        companyStandard.requestNumber=companyStandard.requestNumber
+
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
 
             with(companyStandard) {
-                status = 5
+                draughting = companyStandard.draughting
                 title = companyStandard.title
-                scope = companyStandard.scope
-                normativeReference = companyStandard.normativeReference
-                symbolsAbbreviatedTerms = companyStandard.symbolsAbbreviatedTerms
-                clause = companyStandard.clause
-                special = companyStandard.special
+                departmentId = companyStandard.departmentId
+                subject = companyStandard.subject
+                description = companyStandard.description
+                contactOneFullName = companyStandard.contactOneFullName
+                contactOneTelephone = companyStandard.contactOneTelephone
+                contactOneEmail = companyStandard.contactOneEmail
+                contactTwoFullName = companyStandard.contactTwoFullName
+                contactTwoTelephone = companyStandard.contactTwoTelephone
+                contactTwoEmail = companyStandard.contactTwoEmail
+                contactThreeFullName = companyStandard.contactThreeFullName
+                contactThreeTelephone = companyStandard.contactThreeTelephone
+                contactThreeEmail = companyStandard.contactThreeEmail
+                requestNumber = companyStandard.requestNumber
+                status = companyStandard.status
                 comStdNumber = companyStandard.comStdNumber
                 documentType = companyStandard.documentType
+                draftId = companyStandard.draftId
+                requestId = companyStandard.requestId
             }
-            companyStandardRepository.save(companyStandard)
+
 
         } ?: throw Exception("DRAFT NOT FOUND")
 
-        return draft
+        return companyStandardRepository.save(companyStandard)
     }
 
     fun getProofReadDraft(): MutableList<COMUploadedDraft> {
@@ -1062,7 +1070,7 @@ class ComStandardService(
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
             with(companyStandard) {
-                status = 6
+                status = 7
 
             }
             companyStandardRepository.save(companyStandard)
@@ -1099,7 +1107,7 @@ class ComStandardService(
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
                 with(companyStandard) {
-                    status = 7
+                    status = 8
 
                 }
                 companyStandardRepository.save(companyStandard)
@@ -1111,7 +1119,7 @@ class ComStandardService(
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
 
                 with(companyStandard) {
-                    status = 1
+                    status = 3
                 }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
@@ -1127,28 +1135,49 @@ class ComStandardService(
         return companyStandardRepository.getApprovedCompanyStdDraft()
     }
 
-    fun approveInternationalStandard(
+    fun rejectCompanyStandard(
+        companyStandard: CompanyStandard,
+        companyStandardRemarks: CompanyStandardRemarks,
+    ): String{
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        companyStandard.id=companyStandard.id
+
+        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.remarks= companyStandardRemarks.remarks
+        companyStandardRemarks.status = 1.toString()
+        companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        companyStandardRemarks.remarkBy = usersName
+        companyStandardRemarks.role = "Standard Editor"
+
+        companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
+
+            with(companyStandard) {
+                status = 3
+            }
+            companyStandardRepository.save(companyStandard)
+            companyStandardRemarksRepository.save(companyStandardRemarks)
+
+        } ?: throw Exception("DRAFT NOT FOUND")
+
+        return "Standard Rejected"
+    }
+
+    fun approveCompanyStandard(
         companyStandard: CompanyStandard,
         companyStandardRemarks: CompanyStandardRemarks,
         standard: Standard
-    ) : String {
+    ) : Standard {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        companyStandard.accentTo=companyStandard.accentTo
-        val decision=companyStandard.accentTo
 
         standard.title=standard.title
-        standard.normativeReference=standard.normativeReference
-        standard.symbolsAbbreviatedTerms=standard.symbolsAbbreviatedTerms
-        standard.clause=standard.clause
-        standard.scope=standard.scope
-        standard.special=standard.special
-        //val valueFound =getISDNumber()
         standard.standardNumber=standard.standardNumber
-        //standard.isdn=valueFound.second
         standard.standardType="Company Standard"
         standard.status=0
         standard.dateFormed=Timestamp(System.currentTimeMillis())
-
+        standard.comStdId=standard.comStdId
 
 
         val fName = loggedInUser.firstName
@@ -1159,12 +1188,12 @@ class ComStandardService(
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
-        companyStandardRemarks.role = "SAC"
+        companyStandardRemarks.role = "Standard Editor"
 
-        if (decision == "Yes") {
+
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
                 with(companyStandard) {
-                    status = 8
+                    status = 9
 
                 }
                 companyStandardRepository.save(companyStandard)
@@ -1184,50 +1213,39 @@ class ComStandardService(
 
             }?: throw Exception("DRAFT NOT FOUND")
 
-        } else if (decision == "No") {
+        return standardRepository.save(standard)
+    }
 
-            companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
+    // Upload Standard Document
+    fun uploadCompanyStandardUpload(
+        uploads: DatKebsSdStandardsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): DatKebsSdStandardsEntity {
 
-                with(companyStandard) {
-                    status = 1
-                }
-                companyStandardRepository.save(companyStandard)
-                companyStandardRemarksRepository.save(companyStandardRemarks)
-
-            } ?: throw Exception("DRAFT NOT FOUND")
-
-
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
         }
 
-        return "Actioned"
+        return sdDocumentsRepository.save(uploads)
     }
 
 
 
-    fun getCSNumber(): String {
-        var allRequests = companyStandardRepository.getMaxComStdId()
 
-        var lastId: String? = "0"
-//        var finalValue = 1
-        var startId = "CS"
 
-        //allRequests = allRequests+1
-
-        val c = allRequests
-        val d = c.toInt()
-        val x = 1
-        val z = x  + d
-
-        val finalValue = z.toString()
-
-//        println("Sum of x+y = $finalValue")
-
-        val year = Calendar.getInstance()[Calendar.YEAR]
-        val month = Calendar.getInstance()[Calendar.MONTH]
-
-        return "$startId/$finalValue/$month:$year"
-
-    }
 
     // Upload nwa Standard Document
     fun uploadSTDFile(
@@ -1330,6 +1348,31 @@ class ComStandardService(
 
         return "$startId/$finalValue/$month:$year"
 
+
+    }
+
+    fun getCSNumber(): String {
+        var allRequests = companyStandardRepository.getMaxComStdId()
+
+        var lastId: String? = "0"
+//        var finalValue = 1
+        var startId = "CS"
+
+        //allRequests = allRequests+1
+
+        val c = allRequests
+        val d = c.toInt()
+        val x = 1
+        val z = x  + d
+
+        val finalValue = z.toString()
+
+//        println("Sum of x+y = $finalValue")
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        val month = Calendar.getInstance().get(Calendar.MONTH)+1
+
+        return "$startId/$finalValue/$month:$year"
 
     }
 
