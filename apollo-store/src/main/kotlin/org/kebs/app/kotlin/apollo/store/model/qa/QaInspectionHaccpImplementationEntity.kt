@@ -41,6 +41,14 @@ class QaInspectionHaccpImplementationEntity : Serializable {
     @Basic
     var designFacilitiesConstructionLayoutRemarks: String? = null
 
+    @Column(name = "DETERMINATION_CRITICAL_PARAMETERS")
+    @Basic
+    var determinationCriticalParameters: String? = null
+
+    @Column(name = "DETERMINATION_CRITICAL_PARAMETERS_REMARKS")
+    @Basic
+    var determinationCriticalParametersRemarks: String? = null
+
     @Column(name = "CONTROL_OPERATIONS")
     @Basic
     var controlOperations: String? = null
@@ -232,72 +240,5 @@ class QaInspectionHaccpImplementationEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as QaInspectionHaccpImplementationEntity
-        return id == that.id && permitId == that.permitId &&
-                permitRefNumber == that.permitRefNumber &&
-                inspectionRecommendationId == that.inspectionRecommendationId &&
-                designFacilitiesConstructionLayout == that.designFacilitiesConstructionLayout && designFacilitiesConstructionLayoutRemarks == that.designFacilitiesConstructionLayoutRemarks && controlOperations == that.controlOperations && controlOperationsRemarks == that.controlOperationsRemarks && maintenanceSanitationCleaningPrograms == that.maintenanceSanitationCleaningPrograms && maintenanceSanitationCleaningProgramsRemarks == that.maintenanceSanitationCleaningProgramsRemarks && personnelHygiene == that.personnelHygiene && personnelHygieneRemarks == that.personnelHygieneRemarks && transportationConveyance == that.transportationConveyance && transportationConveyanceRemarks == that.transportationConveyanceRemarks && productInformationLabelling == that.productInformationLabelling && productInformationLabellingRemarks == that.productInformationLabellingRemarks && trainingManagement == that.trainingManagement && trainingManagementRemarks == that.trainingManagementRemarks && appropriateSectorHygienePractice == that.appropriateSectorHygienePractice && appropriateSectorHygienePracticeRemarks == that.appropriateSectorHygienePracticeRemarks && establishmentHaccpPlan == that.establishmentHaccpPlan && establishmentHaccpPlanRemarks == that.establishmentHaccpPlanRemarks && productFlowDiagram == that.productFlowDiagram && productFlowDiagramRemarks == that.productFlowDiagramRemarks && evidenceHazardAnalysis == that.evidenceHazardAnalysis && evidenceHazardAnalysisRemarks == that.evidenceHazardAnalysisRemarks && establishmentCriticalControlPoints == that.establishmentCriticalControlPoints && establishmentCriticalControlPointsRemarks == that.establishmentCriticalControlPointsRemarks && establishmentMonitoringControl == that.establishmentMonitoringControl && establishmentMonitoringControlRemarks == that.establishmentMonitoringControlRemarks && evidenceCorrectiveActions == that.evidenceCorrectiveActions && evidenceCorrectiveActionsRemarks == that.evidenceCorrectiveActionsRemarks && evidenceVerificationConfirmHaccp == that.evidenceVerificationConfirmHaccp && evidenceVerificationConfirmHaccpRemarks == that.evidenceVerificationConfirmHaccpRemarks && recordKeepingDocumentsAppropriate == that.recordKeepingDocumentsAppropriate && recordKeepingDocumentsAppropriateRemarks == that.recordKeepingDocumentsAppropriateRemarks && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
-    }
 
-    override fun hashCode(): Int {
-        return Objects.hash(
-            id,
-            permitId,
-            permitRefNumber,
-            inspectionRecommendationId,
-            designFacilitiesConstructionLayout,
-            designFacilitiesConstructionLayoutRemarks,
-            controlOperations,
-            controlOperationsRemarks,
-            maintenanceSanitationCleaningPrograms,
-            maintenanceSanitationCleaningProgramsRemarks,
-            personnelHygiene,
-            personnelHygieneRemarks,
-            transportationConveyance,
-            transportationConveyanceRemarks,
-            productInformationLabelling,
-            productInformationLabellingRemarks,
-            trainingManagement,
-            trainingManagementRemarks,
-            appropriateSectorHygienePractice,
-            appropriateSectorHygienePracticeRemarks,
-            establishmentHaccpPlan,
-            establishmentHaccpPlanRemarks,
-            productFlowDiagram,
-            productFlowDiagramRemarks,
-            evidenceHazardAnalysis,
-            evidenceHazardAnalysisRemarks,
-            establishmentCriticalControlPoints,
-            establishmentCriticalControlPointsRemarks,
-            establishmentMonitoringControl,
-            establishmentMonitoringControlRemarks,
-            evidenceCorrectiveActions,
-            evidenceCorrectiveActionsRemarks,
-            evidenceVerificationConfirmHaccp,
-            evidenceVerificationConfirmHaccpRemarks,
-            recordKeepingDocumentsAppropriate,
-            recordKeepingDocumentsAppropriateRemarks,
-            description,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
-        )
-    }
 }

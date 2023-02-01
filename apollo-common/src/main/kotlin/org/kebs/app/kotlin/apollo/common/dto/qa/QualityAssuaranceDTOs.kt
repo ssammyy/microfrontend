@@ -110,6 +110,14 @@ data class SSFComplianceStatusDetailsDto(
     var complianceStatus: Boolean? = null,
 )
 
+data class SageValuesDto(
+    var revenueAcc: String? = null,
+    var revenueAccDesc: String? = null,
+    var taxable: Long =1,
+    var totalAmount: BigDecimal? = null,
+    var taxAmount: BigDecimal? = null,
+)
+
 data class PermitSSFLabResultsDto(
     var ssfResultsList: List<SSFComplianceStatusDetailsDto>? = null,
     var labResultsList: List<SSFPDFListDetailsDto>? = null,
@@ -130,7 +138,6 @@ data class NewBatchInvoiceDto(
     var permitRefNumber: String? = null,
     var permitInvoicesID: Array<Long>? = null,
     var isWithHolding: Long? = null,
-
     ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

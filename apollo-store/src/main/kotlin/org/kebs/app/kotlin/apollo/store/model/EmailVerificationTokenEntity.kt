@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
 import java.sql.Date
-import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -11,7 +10,11 @@ import javax.persistence.*
 @Table(name = "DAT_KEBS_EMAIL_VERIFICATION_TOKEN")
 class EmailVerificationTokenEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_EMAIL_VERIFICATION_TOKEN_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_EMAIL_VERIFICATION_TOKEN_SEQ")
+    @SequenceGenerator(
+        name = "DAT_KEBS_EMAIL_VERIFICATION_TOKEN_SEQ_GEN",
+        allocationSize = 1,
+        sequenceName = "DAT_KEBS_EMAIL_VERIFICATION_TOKEN_SEQ"
+    )
     @GeneratedValue(generator = "DAT_KEBS_EMAIL_VERIFICATION_TOKEN_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0
@@ -149,6 +152,33 @@ class EmailVerificationTokenEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, email, token, tokenExpiryDate, transactionDate, status, remarks, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, lastModifiedBy, lastModifiedOn, updateBy, updatedOn, deleteBy, deletedOn, version)
+        return Objects.hash(
+            id,
+            email,
+            token,
+            tokenExpiryDate,
+            transactionDate,
+            status,
+            remarks,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            lastModifiedBy,
+            lastModifiedOn,
+            updateBy,
+            updatedOn,
+            deleteBy,
+            deletedOn,
+            version
+        )
     }
 }

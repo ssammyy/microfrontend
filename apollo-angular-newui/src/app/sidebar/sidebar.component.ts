@@ -47,6 +47,7 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['SYSADMIN_VIEW'],
         children: [
             {path: 'user_management', title: 'User Management', ab: 'UM'},
+            {path: 'tivet_management', title: 'Tivet Management', ab: 'TM'},
             {path: 'business_management', title: 'Business Management', ab: 'BM'},
 
         ],
@@ -78,6 +79,13 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'branches', title: 'View Branches ', ab: 'VB'},
             // {path: 'users', title: 'View Users ', ab: 'VU'},
         ],
+    },
+    {
+        path: '/qa_task_list',
+        title: 'My Tasks',
+        type: 'link',
+        icontype: 'task',
+        privilege: ['QA_MANAGER_MODIFY', 'QA_OFFICER_MODIFY', 'QA_ASSESSORS_MODIFY'],
     },
 
     {
@@ -124,7 +132,10 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['PERMIT_APPLICATION'],
         collapse: 'invoice',
         children: [
-            {path: 'consolidate_invoice', title: 'Consolidate Invoices', ab: 'CI'},
+            {path: 'consolidate_invoice', title: 'Consolidate All Invoices', ab: 'CAI'},
+            // {path: 'consolidate_invoice_fmark', title: 'Consolidate Fmark Invoices', ab: 'CFI',},
+            // {path: 'consolidate_invoice_dmark', title: 'Consolidate Dmark Invoices', ab: 'CDI',},
+
             {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
         ],
     },
@@ -167,7 +178,7 @@ export const ROUTES: RouteInfo[] = [
         ],
     },
 
-    
+
     // Quality Assurance Admin
     {
         path: '/smark-admin',
@@ -176,9 +187,9 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'class',
         privilege: [],
 
-       
+
     },
-    , 
+
     {
         path: '/fmark-admin',
         title: 'Fortification Mark',
@@ -186,9 +197,9 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'recommended',
         privilege: [],
 
-       
+
     },
-    , 
+    ,
     {
         path: '/dmark-admin',
         title: 'Diamond Mark',
@@ -197,8 +208,6 @@ export const ROUTES: RouteInfo[] = [
         privilege: [],
 
     },
-
-    
 
 
     //DI
@@ -691,8 +700,8 @@ export const ROUTES: RouteInfo[] = [
         children: [
             {path: 'requestForFormationOfTC', title: 'Request For Formation', ab: 'RFF'},
             {path: 'hofReviewJustificationOfTC', title: 'HOF Review', ab: 'HOF'},
-            {path: 'reviewJustificationOfTC', title: 'TC Justification', ab: 'RDS'},
-            {path: 'reviewFeedbackSAC', title: 'Feedback Review', ab: 'EDS'},
+            {path: 'reviewJustificationOfTC', title: 'SPC Review', ab: 'SPC'},
+            {path: 'reviewFeedbackSAC', title: 'SAC Review', ab: 'SAC'},
 
 
         ],
@@ -705,7 +714,6 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
         collapse: 'membership',
         children: [
-            {path: 'callsForApplication', title: 'Create Application', ab: 'CA'},
             {path: 'reviewApplication', title: 'Review Applications', ab: 'RA'},
             {path: 'reviewRecommendation', title: 'Review Recommendations', ab: 'RAR'},
             {path: 'reviewRecommendationOfSpc', title: 'SPC Review', ab: 'SR'},
@@ -772,12 +780,12 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ'],
         collapse: 'cs',
         children: [
-            {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
-            {path: 'comStdList', title: 'Request Tasks', ab: 'RT'},
-            {path: 'comStdDraft', title: 'Drafting Tasks', ab: 'DT'},
-            {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
-            {path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
-            {path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
+           // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
+            {path: 'comStdList', title: 'Company Standard Requests', ab: 'CSR'},
+            {path: 'comStdDraft', title: 'Uploaded Drafts', ab: 'UT'},
+           // {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
+            //{path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
+            //{path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
 
         ],
     },

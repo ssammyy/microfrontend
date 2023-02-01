@@ -13,6 +13,7 @@ import {
     UserSearchValues, UserTypeEntityDto
 } from './master.model';
 import {UserEntityDto} from "../users";
+import {TivetEntity} from "../companies";
 
 @Injectable({
     providedIn: 'root'
@@ -451,6 +452,45 @@ export class MasterService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_CREATE_EMPLOYEE);
         return this.http.post<UserEntityDto>(url, data).pipe(
             map(function (response: UserEntityDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+
+    loadTivets(): Observable<TivetEntity[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.TIVETS_LIST);
+        return this.http.get<TivetEntity[]>(url).pipe(
+            map(function (response: TivetEntity[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public updateTivet(data: TivetEntity): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.TIVETS_UPDATE);
+        return this.http.post<TivetEntity>(url, data).pipe(
+            map(function (response: TivetEntity) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public rejectTivet(data: TivetEntity): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.TIVETS_REJECT);
+        return this.http.post<TivetEntity>(url, data).pipe(
+            map(function (response: TivetEntity) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

@@ -38,6 +38,47 @@ class QaInspectionTechnicalEntity : Serializable {
     @Basic
     var qualityProcedureRemarks: String? = null
 
+    @Column(name = "HANDLING_COMPLAINTS")
+    @Basic
+    var handlingComplaints: String? = null
+
+    @Column(name = "HANDLING_COMPLAINTS_REMARKS")
+    @Basic
+    var handlingComplaintsRemarks: String? = null
+
+
+    @Column(name = "QUALITY_CONTROL_PERSONNEL")
+    @Basic
+    var qualityControlPersonnel: String? = null
+
+    @Column(name = "QUALITY_CONTROL_PERSONNEL_REMARKS")
+    @Basic
+    var qualityControlPersonnelRemarks: String? = null
+
+    @Column(name = "FIRM_IMPLEMENTED_ANY_MANAGEMENT_SYSTEM")
+    @Basic
+    var firmImplementedAnyManagementSystem: String? = null
+
+    @Column(name = "FIRM_IMPLEMENTED_ANY_MANAGEMENT_SYSTEM_REMARKS")
+    @Basic
+    var firmImplementedAnyManagementSystemRemarks: String? = null
+
+    @Column(name = "INDICATE_RELEVANT_PRODUCT_STANDARD_CODES")
+    @Basic
+    var indicateRelevantProductStandardCodes: String? = null
+
+    @Column(name = "INDICATE_RELEVANT_PRODUCT_STANDARD_CODES_REMARKS")
+    @Basic
+    var indicateRelevantProductStandardCodesRemarks: String? = null
+
+    @Column(name = "compliance_applicable_statutory")
+    @Basic
+    var complianceApplicableStatutory: String? = null
+
+    @Column(name = "compliance_applicable_statutory_remarks")
+    @Basic
+    var complianceApplicableStatutoryRemarks: String? = null
+
     @Column(name = "AVAILABILITY_PRODUCT_STANDARDS_CODES_PRACTICE")
     @Basic
     var availabilityProductStandardsCodesPractice: String? = null
@@ -45,6 +86,14 @@ class QaInspectionTechnicalEntity : Serializable {
     @Column(name = "AVAILABILITY_PRODUCT_STANDARDS_CODES_PRACTICE_REMARKS")
     @Basic
     var availabilityProductStandardsCodesPracticeRemarks: String? = null
+
+    @Column(name = "PLANT_HOUSE_KEEPING")
+    @Basic
+    var plantHouseKeeping: String? = null
+
+    @Column(name = "PLANT_HOUSE_KEEPING_REMARKS")
+    @Basic
+    var plantHouseKeepingRemarks: String? = null
 
     @Column(name = "QUALITY_MANAGEMENT_SYSTEMS")
     @Basic
@@ -213,68 +262,4 @@ class QaInspectionTechnicalEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as QaInspectionTechnicalEntity
-        return id == that.id &&
-                permitRefNumber == that.permitRefNumber &&
-                inspectionRecommendationId == that.inspectionRecommendationId &&
-                permitId == that.permitId && qualityProcedure == that.qualityProcedure && qualityProcedureRemarks == that.qualityProcedureRemarks && availabilityProductStandardsCodesPractice == that.availabilityProductStandardsCodesPractice && availabilityProductStandardsCodesPracticeRemarks == that.availabilityProductStandardsCodesPracticeRemarks && qualityManagementSystems == that.qualityManagementSystems && qualityManagementSystemsRemarks == that.qualityManagementSystemsRemarks && haccpSeeAnnexIi == that.haccpSeeAnnexIi && haccpSeeAnnexIiRemarks == that.haccpSeeAnnexIiRemarks && testingFacility == that.testingFacility && testingFacilityRemarks == that.testingFacilityRemarks && qualityControlPersonnelQualifications == that.qualityControlPersonnelQualifications && qualityControlPersonnelQualificationsRemarks == that.qualityControlPersonnelQualificationsRemarks && equipmentCalibration == that.equipmentCalibration && equipmentCalibrationRemarks == that.equipmentCalibrationRemarks && qualityRecords == that.qualityRecords && qualityRecordsRemarks == that.qualityRecordsRemarks && productLabelingIdentification == that.productLabelingIdentification && productLabelingIdentificationRemarks == that.productLabelingIdentificationRemarks && validitySmarkPermit == that.validitySmarkPermit && validitySmarkPermitRemarks == that.validitySmarkPermitRemarks && useTheSmark == that.useTheSmark && useTheSmarkRemarks == that.useTheSmarkRemarks && changesAffectingProductCertification == that.changesAffectingProductCertification && changesAffectingProductCertificationRemarks == that.changesAffectingProductCertificationRemarks && changesBeenCommunicatedKebs == that.changesBeenCommunicatedKebs && changesBeenCommunicatedKebsRemarks == that.changesBeenCommunicatedKebsRemarks && samplesDrawn == that.samplesDrawn && samplesDrawnRemarks == that.samplesDrawnRemarks && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(
-            id,
-            permitId,
-            inspectionRecommendationId,
-            permitRefNumber,
-            qualityProcedure,
-            qualityProcedureRemarks,
-            availabilityProductStandardsCodesPractice,
-            availabilityProductStandardsCodesPracticeRemarks,
-            qualityManagementSystems,
-            qualityManagementSystemsRemarks,
-            haccpSeeAnnexIi,
-            haccpSeeAnnexIiRemarks,
-            testingFacility,
-            testingFacilityRemarks,
-            qualityControlPersonnelQualifications,
-            qualityControlPersonnelQualificationsRemarks,
-            equipmentCalibration,
-            equipmentCalibrationRemarks,
-            qualityRecords,
-            qualityRecordsRemarks,
-            productLabelingIdentification,
-            productLabelingIdentificationRemarks,
-            validitySmarkPermit,
-            validitySmarkPermitRemarks,
-            useTheSmark,
-            useTheSmarkRemarks,
-            changesAffectingProductCertification,
-            changesAffectingProductCertificationRemarks,
-            changesBeenCommunicatedKebs,
-            changesBeenCommunicatedKebsRemarks,
-            samplesDrawn,
-            samplesDrawnRemarks,
-            description,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn
-        )
-    }
 }

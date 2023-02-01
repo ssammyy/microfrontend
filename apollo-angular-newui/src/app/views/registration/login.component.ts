@@ -17,7 +17,8 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   public credential: LoginCredentials;
   returnUrl: string;
-
+  loading = false;
+  loadingText: string;
   constructor(
     private store$: Store<any>,
     private route: ActivatedRoute,
@@ -40,13 +41,16 @@ export class LoginComponent implements OnInit {
   }
 
   public onClickLogin(valid: Boolean) {
-    this.SpinnerService.show();
+
     if (valid) {
+      this.loading= true;
+      this.loadingText = "Logging You In Please Wait ...."
+      this.SpinnerService.show();
       this.credential = this.loginForm.value;
       this.store$.dispatch(loadAuths({payload: this.credential, redirectUrl: this.returnUrl}));
-      this.SpinnerService.hide();
 
     }
+
 
   }
 

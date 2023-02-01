@@ -590,8 +590,12 @@
                                                     {{workPlanInspection?.inspectionInvestigationDto?.objectiveInvestigation}}</span></p>
                                                 <br/>
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Date of Investigation/Inspection</div>
-                                                    <div class="list-text-accordion">{{workPlanInspection?.inspectionInvestigationDto?.dateInvestigationInspection}}</div>
+                                                    <div class="list-title-accordion">Start Date of Investigation/Inspection</div>
+                                                    <div class="list-text-accordion">{{workPlanInspection?.inspectionInvestigationDto?.startDateInvestigationInspection}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">End Date of Investigation/Inspection</div>
+                                                    <div class="list-text-accordion">{{workPlanInspection?.inspectionInvestigationDto?.endDateInvestigationInspection}}</div>
                                                 </li>
                                                 <br/>
                                                 <div class="form-row">
@@ -607,10 +611,10 @@
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.inspectionInvestigationDto?.methodologyEmployed}}</span></p>
                                                 <br/>
-                                                <b class="text-secondary">Findings</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{workPlanInspection?.inspectionInvestigationDto?.findings}}</span></p>
-                                                <br/>
+<!--                                                <b class="text-secondary">Findings</b>-->
+<!--                                                <p class="list-paragraph-accordion"><span>-->
+<!--                                                    {{workPlanInspection?.inspectionInvestigationDto?.findings}}</span></p>-->
+<!--                                                <br/>-->
                                                 <b class="text-secondary">Conclusion</b>
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.inspectionInvestigationDto?.conclusion}}</span></p>
@@ -1088,7 +1092,7 @@
                                             <!--                                            </button>-->
 
                                             <button  *ngIf="workPlanInspection?.approvedStatus ==true && workPlanInspection?.onsiteStartStatus ==false"
-                                                     (click)="onClickStartOnsiteActivities()" mat-raised-button="" data-toggle="modal"
+                                                     (click)="openModalAddDetails('startOnsiteActivities')" mat-raised-button="" data-toggle="modal" data-target="#myModal1"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">START ONSITE ACTIVITIES</span>
                                                 <div class="mat-button-focus-overlay"></div>
@@ -1555,6 +1559,31 @@
                                             <textarea id="assignedRemarks" matInput type="text"
                                                       formControlName="assignedRemarks"
                                                       name="assignedRemarks">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'startOnsiteActivities')">
+                        <form [formGroup]="startOnsiteActivitiesForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="totalCompliance"><b>Start Date</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="startDate" matInput type="date" formControlName="startDate" name="startDate">
+                                        </mat-form-field>
+                                        <label for="totalCompliance"><b>End Date</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input id="endDate" matInput type="date" formControlName="endDate" name="endDate">
+                                        </mat-form-field>
+                                        <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for Picking Above Dates:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="remarks" matInput type="text"
+                                                      formControlName="remarks"
+                                                      name="remarks">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -2150,6 +2179,12 @@
                     <button *ngIf="(currDiv == 'clientAppealedSuccessfully')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickSaveClientAppealedSuccessfully(approvePreliminaryForm.valid);"
                             [disabled]="!approvePreliminaryForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'startOnsiteActivities')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickStartOnsiteActivities(startOnsiteActivitiesForm.valid);"
+                            [disabled]="!startOnsiteActivitiesForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
@@ -3237,7 +3272,7 @@
                         </div>
                     </div>
 
-                    <div class="row" *ngIf="dataReportViewMode == false">
+                    <div class="row" >
                         <div class="col">
                             <div  class="form-group">
                                 <label for="files"><b>Upload Documents Here</b></label>
@@ -3249,10 +3284,7 @@
                         </div>
 
                     </div>
-                    <div class="row" *ngIf="dataReportViewMode == true">
-                        <h4>Show the uploaded documents of this datasheet</h4>
 
-                    </div>
 
                     <div class="modal-footer">
                         <button  mat-raised-button type="button" class="btn btn-danger"
@@ -3344,12 +3376,26 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label><b>Form Serial Number</b> </label>
-                                    <input [class.is-invalid]="formSeizureForm.formSerialNumber.invalid && formSeizureForm.formSerialNumber.errors"
+                                    <input [class.is-invalid]="formSeizureForm.serialNumber.invalid && formSeizureForm.serialNumber.errors"
                                            class="form-control two-column-input"
-                                           formControlName="formSerialNumber"
-                                           name="formSerialNumber" required type="text">
-                                    <div *ngIf="submitted && formSeizureForm.formSerialNumber.errors" class="invalid-feedback">
-                                        <div *ngIf="formSeizureForm.formSerialNumber.errors.required">This field is
+                                           formControlName="serialNumber"
+                                           name="serialNumber" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.serialNumber.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.serialNumber.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Product</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.productField.invalid && formSeizureForm.productField.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="productField"
+                                           name="productField" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.productField.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.productField.errors.required">This field is
                                             required
                                         </div>
                                     </div>
@@ -3723,7 +3769,7 @@
                         <div >
 
                             <h4 class="mb-3" style="color: #0066B1">MS INITIAL REPORT DETAILS</h4>
-                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
+                            <h5 class="mb-3" style="color: black">Fill in below details</h5>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -3915,13 +3961,13 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Date of Investigation/Inspection</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.dateInvestigationInspection.invalid && formInvestInspectReportForm.dateInvestigationInspection.errors"
+                                        <label><b>Start Date of Investigation/Inspection</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.startDateInvestigationInspection.invalid && formInvestInspectReportForm.startDateInvestigationInspection.errors"
                                                class="form-control two-column-input"
-                                               formControlName="dateInvestigationInspection"
-                                               name="dateInvestigationInspection" required type="date">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.dateInvestigationInspection.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.dateInvestigationInspection.errors.required">This field is
+                                               formControlName="startDateInvestigationInspection"
+                                               name="startDateInvestigationInspection" required type="date">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.startDateInvestigationInspection.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.startDateInvestigationInspection.errors.required">This field is
                                                 required
                                             </div>
                                         </div>
@@ -3929,7 +3975,16 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <!--test-->
+                                        <label><b>End Date of Investigation/Inspection</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.endDateInvestigationInspection.invalid && formInvestInspectReportForm.endDateInvestigationInspection.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="endDateInvestigationInspection"
+                                               name="endDateInvestigationInspection" required type="date">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.endDateInvestigationInspection.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.endDateInvestigationInspection.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -4038,23 +4093,120 @@
                                 </div>
 
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Findings</b> </label>
-                                        <textarea [class.is-invalid]="formInvestInspectReportForm.findings.invalid && formInvestInspectReportForm.findings.errors"
-                                                  class="form-control two-column-input"
-                                                  formControlName="findings"
-                                                  name="findings" required type="text"></textarea>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.findings.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.findings.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
+                            <h4 class="mb-3" style="color: #0066B1">Outlets Visited and Summary of Findings</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Data Collection Form reference</th>
+                                    <th>Outlet details</th>
+                                    <th>Summary of findings</th>
+                                    <th>Remarks</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>DCF001</td>
+                                    <td>Outlet A</td>
+                                    <td>Positive feedback from customers</td>
+                                    <td>None</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+
+
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>S/NO.</th>
+                                        <th>Name of outlet</th>
+                                        <th>PRODUCT NAME</th>
+                                        <th>PRODUCT BRAND</th>
+                                        <th>Name & Address of Manufacturer</th>
+                                        <th>Country of Origin</th>
+                                        <th>Expiry Date</th>
+                                        <th>Batch Number</th>
+                                        <th>Permit No. / UCR Code</th>
+                                        <th>Sampling Officer</th>
+                                        <th>Date COLLECTED</th>
+                                        <th>Date Submitted</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Outlet A</td>
+                                        <td>Soda</td>
+                                        <td>Coca-Cola</td>
+                                        <td>Coca-Cola Company, Atlanta, GA</td>
+                                        <td>USA</td>
+                                        <td>01/01/2024</td>
+                                        <td>Batch1</td>
+                                        <td>Permit123</td>
+                                        <td>John Doe</td>
+                                        <td>01/01/2023</td>
+                                        <td>01/02/2023</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Siezed Goods</h4>
+
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Brand</th>
+                                    <th>Description Products Seized</th>
+                                    <th>Sector</th>
+                                    <th>Reason Seizure</th>
+                                    <th>Seizure Serial</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Estimated Cost</th>
+                                    <th>Current Location</th>
+                                    <th>Products Destruction</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Cigarettes</td>
+                                    <td>Marlboro</td>
+                                    <td>500 packs of Marlboro cigarettes</td>
+                                    <td>Tobacco</td>
+                                    <td>Illegal importation</td>
+                                    <td>SZR001</td>
+                                    <td>500</td>
+                                    <td>packs</td>
+                                    <td>$5000</td>
+                                    <td>Warehouse A</td>
+                                    <td>UNDETERMINED</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Findings</b> </label>-->
+<!--                                        <textarea [class.is-invalid]="formInvestInspectReportForm.findings.invalid && formInvestInspectReportForm.findings.errors"-->
+<!--                                                  class="form-control two-column-input"-->
+<!--                                                  formControlName="findings"-->
+<!--                                                  name="findings" required type="text"></textarea>-->
+<!--                                        <div *ngIf="submitted && formInvestInspectReportForm.findings.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formInvestInspectReportForm.findings.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -4649,13 +4801,13 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Date of Investigation/Inspection</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.dateInvestigationInspection.invalid && formInvestInspectReportForm.dateInvestigationInspection.errors"
+                                        <label><b>Start Date of Investigation/Inspection</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.startDateInvestigationInspection.invalid && formInvestInspectReportForm.startDateInvestigationInspection.errors"
                                                class="form-control two-column-input"
-                                               formControlName="dateInvestigationInspection"
-                                               name="dateInvestigationInspection" required type="date">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.dateInvestigationInspection.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.dateInvestigationInspection.errors.required">This field is
+                                               formControlName="startDateInvestigationInspection"
+                                               name="startDateInvestigationInspection" required type="date">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.startDateInvestigationInspection.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.startDateInvestigationInspection.errors.required">This field is
                                                 required
                                             </div>
                                         </div>
@@ -4663,7 +4815,16 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <!--test-->
+                                        <label><b>End Date of Investigation/Inspection</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.endDateInvestigationInspection.invalid && formInvestInspectReportForm.endDateInvestigationInspection.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="endDateInvestigationInspection"
+                                               name="endDateInvestigationInspection" required type="date">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.endDateInvestigationInspection.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.endDateInvestigationInspection.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -4772,23 +4933,116 @@
                                 </div>
 
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Findings</b> </label>
-                                        <textarea [class.is-invalid]="formInvestInspectReportForm.findings.invalid && formInvestInspectReportForm.findings.errors"
-                                                  class="form-control two-column-input"
-                                                  formControlName="findings"
-                                                  name="findings" required type="text"></textarea>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.findings.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.findings.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <h4 class="mb-3" style="color: #0066B1">Outlets Visited and Summary of Findings</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Data Collection Form reference</th>
+                                    <th>Outlet details</th>
+                                    <th>Summary of findings</th>
+                                    <th>Remarks</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>DCF001</td>
+                                    <td>Outlet A</td>
+                                    <td>Positive feedback from customers</td>
+                                    <td>None</td>
+                                </tr>
+                                </tbody>
+                            </table>
 
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>S/NO.</th>
+                                        <th>Name of outlet</th>
+                                        <th>PRODUCT NAME</th>
+                                        <th>PRODUCT BRAND</th>
+                                        <th>Name & Address of Manufacturer</th>
+                                        <th>Country of Origin</th>
+                                        <th>Expiry Date</th>
+                                        <th>Batch Number</th>
+                                        <th>Permit No. / UCR Code</th>
+                                        <th>Sampling Officer</th>
+                                        <th>Date COLLECTED</th>
+                                        <th>Date Submitted</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Outlet A</td>
+                                        <td>Soda</td>
+                                        <td>Coca-Cola</td>
+                                        <td>Coca-Cola Company, Atlanta, GA</td>
+                                        <td>USA</td>
+                                        <td>01/01/2024</td>
+                                        <td>Batch1</td>
+                                        <td>Permit123</td>
+                                        <td>John Doe</td>
+                                        <td>01/01/2023</td>
+                                        <td>01/02/2023</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
+
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Siezed Goods</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Brand</th>
+                                    <th>Description Products Seized</th>
+                                    <th>Sector</th>
+                                    <th>Reason Seizure</th>
+                                    <th>Seizure Serial</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Estimated Cost</th>
+                                    <th>Current Location</th>
+                                    <th>Products Destruction</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Cigarettes</td>
+                                    <td>Marlboro</td>
+                                    <td>500 packs of Marlboro cigarettes</td>
+                                    <td>Tobacco</td>
+                                    <td>Illegal importation</td>
+                                    <td>SZR001</td>
+                                    <td>500</td>
+                                    <td>packs</td>
+                                    <td>$5000</td>
+                                    <td>Warehouse A</td>
+                                    <td>UNDETERMINED</td>
+                                </tr>
+                                </tbody>
+                            </table>
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Findings</b> </label>-->
+<!--                                        <textarea [class.is-invalid]="formInvestInspectReportForm.findings.invalid && formInvestInspectReportForm.findings.errors"-->
+<!--                                                  class="form-control two-column-input"-->
+<!--                                                  formControlName="findings"-->
+<!--                                                  name="findings" required type="text"></textarea>-->
+<!--                                        <div *ngIf="submitted && formInvestInspectReportForm.findings.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formInvestInspectReportForm.findings.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -5853,18 +6107,14 @@
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
                                         <div class="refStandardsDesign">
-                                            <input type="text" list="refStandards" formControlName="referencesStandards"
+                                            <input type="text" list="refStandards" formControlName="standardsArray"
                                                    name="referencesStandards" class="form-control two-column-input" #standardsInput>
                                             <datalist id="refStandards">
                                                 <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
                                             </datalist>
                                         </div>
                                         <button class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
-                                        <div>
-                                            <ul>
-                                                <li *ngFor="let selectedStandard of standardsArray">{{selectedStandard}}</li>
-                                            </ul>
-                                        </div>
+
 
                                         <!--                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
                                         <!--                                                   class="form-control" formControlName="referencesStandards" name="referencesStandards">-->
@@ -5876,11 +6126,11 @@
                                         <!--                                            <option [value]="" selected>Please select</option>-->
                                         <!--                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [ngValue]="app.standardTitle">{{app.standardTitle}}</option>-->
                                         <!--                                        </select>-->
-                                        <div *ngIf="submitted && formSampleSubmitForm.referencesStandards.errors" class="invalid-feedback">
-                                            <div *ngIf="formSampleSubmitForm.referencesStandards.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+<!--                                        <div *ngIf="submitted && formSampleSubmitForm.referencesStandards.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formSampleSubmitForm.referencesStandards.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
 
@@ -5898,6 +6148,15 @@
                                     </div>
                                 </div>
 
+                            </div>
+                            <div class="row" *ngIf="standardsArray.length > 0">
+                                <div class="w-100" style="border: 1px ridge #ddd">
+                                    <ul class="w-100">
+                                        <li class="d-flex justify-content-between align-items-center" style="width:70%;" *ngFor="let selectedStandard of standardsArray; let i = index">{{selectedStandard}}
+                                            <button (click)="deleteItem(i)" class="btn btn-sm btn-outline-danger">Remove standard</button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col">
@@ -6806,8 +7065,13 @@
                                                     {{selectedPreliminaryReportDetails?.objectiveInvestigation}}</span></p>
                             <br/>
                             <li class="list-item-accordion">
-                                <div class="list-title-accordion">Date of Investigation/Inspection</div>
-                                <div class="list-text-accordion">{{selectedPreliminaryReportDetails?.dateInvestigationInspection}}</div>
+                                <div class="list-title-accordion">Start Date of Investigation/Inspection</div>
+                                <div class="list-text-accordion">{{selectedPreliminaryReportDetails?.startDateInvestigationInspection}}</div>
+                            </li>
+                            <br/>
+                            <li class="list-item-accordion">
+                                <div class="list-title-accordion">End Date of Investigation/Inspection</div>
+                                <div class="list-text-accordion">{{selectedPreliminaryReportDetails?.endDateInvestigationInspection}}</div>
                             </li>
                             <br/>
                             <div class="form-row">
@@ -6823,10 +7087,10 @@
                             <p class="list-paragraph-accordion"><span>
                                                     {{selectedPreliminaryReportDetails?.methodologyEmployed}}</span></p>
                             <br/>
-                            <b class="text-secondary">Findings</b>
-                            <p class="list-paragraph-accordion"><span>
-                                                    {{selectedPreliminaryReportDetails?.findings}}</span></p>
-                            <br/>
+<!--                            <b class="text-secondary">Findings</b>-->
+<!--                            <p class="list-paragraph-accordion"><span>-->
+<!--                                                    {{selectedPreliminaryReportDetails?.findings}}</span></p>-->
+<!--                            <br/>-->
                             <b class="text-secondary">Conclusion</b>
                             <p class="list-paragraph-accordion"><span>
                                                     {{selectedPreliminaryReportDetails?.conclusion}}</span></p>

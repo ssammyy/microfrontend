@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   ApprovalDto, BSNumberDto,
@@ -32,7 +32,7 @@ import {
   WorkPlanFeedBackDto,
   WorkPlanFinalRecommendationDto,
   WorkPlanInspectionDto, WorkPlanProductDto,
-  WorkPlanScheduleApprovalDto,
+  WorkPlanScheduleApprovalDto, WorkPlanScheduleOnsiteDto,
 } from '../../../../core/store/data/ms/ms.model';
 import {
   County,
@@ -71,6 +71,7 @@ interface Post {
 export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('demoForm') myForm;
   @ViewChild('closebutton') closebutton;
+  @ViewChild('standardsInput') standardsInput: ElementRef;
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
@@ -87,10 +88,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   addLabParamStatus = true;
   addProductsStatus = true;
   addSeizureProductsStatus = true;
+  standardsArray = [];
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
-  dataReportViewMode = true;
+
+
   dataSaveWorkPlanCounties: WorkPlanCountyTownDto;
   dataSaveWorkPlanCountiesList: WorkPlanCountyTownDto[] = [];
   latestProgressReport: InspectionInvestigationReportDto;
@@ -126,6 +129,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   preliminaryReportParamForm!: FormGroup;
   investInspectReportInspectorsForm!: FormGroup;
   actionOnSiezedGoodsForm!: FormGroup;
+  startOnsiteActivitiesForm!: FormGroup;
   addCountyTownForm!: FormGroup;
   clientEmailNotificationForm!: FormGroup;
   ssfClientEmailNotificationForm!: FormGroup;
@@ -152,6 +156,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveFinalReport: PreliminaryReportFinal;
   dataSaveChargeSheet: ChargeSheetDto;
   dataSaveDataReport: DataReportDto;
+  dataSaveStartOnsiteActivities: WorkPlanScheduleOnsiteDto;
   dataSaveFieldReportAdditional: FieldReportAdditionalInfo;
   dataSaveActionOnSiezedGoods: FieldReportBackDto;
   dataSaveActionOnSiezedGoodsList: FieldReportBackDto[] = [];
@@ -1152,6 +1157,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       custom: [
         {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
         {name: 'updateRecord', title: '<i  class="btn btn-sm btn-primary">UPDATE DATA REPORT DETAILS</i>'},
+        {name: 'viewDataReportUploads', title: '<i  class="btn btn-sm btn-primary">VIEW UPLOADS</i>'},
       ],
       position: 'right', // left|right
     },
@@ -1764,10 +1770,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       reportFunction: ['', Validators.required],
       backgroundInformation: ['', Validators.required],
       objectiveInvestigation: ['', Validators.required],
-      dateInvestigationInspection: ['', Validators.required],
+      startDateInvestigationInspection: ['', Validators.required],
+      endDateInvestigationInspection: ['', Validators.required],
       kebsInspectors: null,
       methodologyEmployed: ['', Validators.required],
-      findings: ['', Validators.required],
+      // findings: ['', Validators.required],
       conclusion: ['', Validators.required],
       recommendations: ['', Validators.required],
       statusActivity: ['', Validators.required],
@@ -1813,9 +1820,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
+      productField: ['', Validators.required],
+      serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
       nameOfOutlet: ['', Validators.required],
-      formSerialNumber: ['', Validators.required],
       nameSeizingOfficer: ['', Validators.required],
       additionalOutletDetails: ['', Validators.required],
     });
@@ -1856,7 +1864,6 @@ export class WorkPlanDetailsComponent implements OnInit {
       packaging: ['', Validators.required],
       labellingIdentification: null,
       fileRefNumber: null,
-      referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
       condition: ['', Validators.required],
@@ -1876,6 +1883,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       lbIdExpiryDate: null,
       lbIdTradeMark: null,
       noteTransResults: null,
+      standardsArray: [[], Validators.required],
       scfNo: null,
       cocNumber: null,
       testChargesKsh: null,
@@ -2016,6 +2024,12 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.actionOnSiezedGoodsForm = this.formBuilder.group({
       actionOnSeizedGoodsDetails: ['', Validators.required],
+    });
+
+    this.startOnsiteActivitiesForm = this.formBuilder.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      remarks: null,
     });
 
     this.addNewScheduleForm = this.formBuilder.group({
@@ -2330,6 +2344,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     return this.ssfSaveComplianceStatusForm.controls;
   }
 
+  get formStartOnsiteActivitiesForm(): any {
+    return this.startOnsiteActivitiesForm.controls;
+  }
+
   get formSampleCollectForm(): any {
     return this.sampleCollectForm.controls;
   }
@@ -2482,14 +2500,14 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    this.dataReportViewMode = false;
+
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
       'clientAppealed', 'clientAppealedSuccessfully', 'uploadDestructionReport', 'addFinalRemarksHOD',
       'uploadChargeSheetFiles', 'uploadSCFFiles', 'uploadSSFFiles', 'uploadSeizureFiles', 'uploadDeclarationFiles', 'uploadDataReportFiles',
       'addNewScheduleDetails', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'uploadFilesFinalReport', 'uploadFilesFinalReportHOFHOD',
-      'approveFinalPreliminaryDirector'];
+      'approveFinalPreliminaryDirector', 'startOnsiteActivities'];
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
@@ -2498,7 +2516,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/REJECT FINAL REPORT'];
+      'APPROVE/REJECT FINAL REPORT', 'KINDLY ADD START AND END DATE YOU WISH TO END ON-SITE ACTIVITIES'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -2696,6 +2714,10 @@ export class WorkPlanDetailsComponent implements OnInit {
       case 'updateRecord':
         this.updateDataReport(event.data);
         break;
+      case 'viewDataReportUploads':
+        console.log("view datasheet uploads");
+        console.log(event.data);
+        break;
     }
   }
 
@@ -2776,6 +2798,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   viewDataReportRecord(data: DataReportDto) {
+
     this.dataReportForm.patchValue(data);
     this.selectedDataReportDetails = data;
     this.totalCompliantValue = data?.totalComplianceScore;
@@ -3306,22 +3329,19 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  onClickStartOnsiteActivities() {
+  onClickStartOnsiteActivities(valid: boolean) {
     this.msService.showSuccessWith2Message('Are you sure your want to Start ON-SITE ACTIVITIES?', 'By clicking \'YES\' you will be staring the Timeliness for Onsite Activities!',
         // tslint:disable-next-line:max-line-length
         'You can go back and  update the work-Plan Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
-          this.startOnsiteActivities();
+          this.startOnsiteActivities(valid);
         });
   }
 
-  startOnsiteActivities() {
+  startOnsiteActivities(valid: boolean) {
     // if (valid) {
     this.SpinnerService.show();
-    this.dataSaveApproveSchedule = {...this.dataSaveApproveSchedule, ...this.approveScheduleForm.value};
-    this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
-        this.workPlanInspection.batchDetails.referenceNumber,
-        this.workPlanInspection.referenceNumber,
-    ).subscribe(
+    this.dataSaveStartOnsiteActivities = {...this.dataSaveStartOnsiteActivities, ...this.startOnsiteActivitiesForm.value};
+    this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(this.workPlanInspection.batchDetails.referenceNumber, this.workPlanInspection.referenceNumber, this.dataSaveStartOnsiteActivities).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
           console.log(data);
@@ -4718,13 +4738,16 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
+
     if (this.seizureForm.valid && this.uploadedFilesSeizedGoods.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.saveSeizureDeclaration();
           });
-
+    }
+    else{
+      this.msService.showError("Fill in all the fields! (Make sure you've uploaded a file)");
     }
   }
 
@@ -5201,6 +5224,18 @@ export class WorkPlanDetailsComponent implements OnInit {
         );
       }
     }
+  }
+
+  addStandard() {
+    let standard = this.standardsInput.nativeElement.value;
+    if(standard != "" && !this.standardsArray.includes(standard)){
+      this.standardsArray.push(standard);
+    }
+    this.standardsInput.nativeElement.value = '';
+  }
+
+  deleteItem(index: number) {
+    this.standardsArray.splice(index, 1);
   }
 
 }

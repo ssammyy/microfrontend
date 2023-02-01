@@ -831,8 +831,8 @@
                                 <p class="card-category">{{task.tc}}</p>
                             </div>
 
-                            <h4 class="card-title">Description</h4>
-                            <p class="card-category">{{task.description}}</p>
+                            <h4 class="card-title">Technical Committee Number</h4>
+                            <p class="card-category">{{task.technicalCommitteeNo}}</p>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -844,7 +844,7 @@
                             </div>
                             <div class="stats">
                                 <i class="material-icons">access_time</i> Expires
-                                On {{formatDate(task.expiryDate)}}
+                                On {{formatDate(task.createdOn)}}
                             </div>
                         </div>
                     </div>
@@ -873,7 +873,7 @@
                                            formControlName="technicalCommittee"
                                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                            class="form-control one-column-input"
-                                           ngModel="{{actionRequest?.tc}}" value="" name="technicalCommittee"
+                                           ngModel="{{actionRequest?.title}}" value="" name="technicalCommittee"
                                            type="text" readonly>
 
                                 </div>
@@ -996,7 +996,7 @@
                                 <input
                                         aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                         class="form-control one-column-input" hidden
-                                        formControlName="taskId" ngModel="{{actionRequest?.tcId}}" type="text"
+                                        formControlName="taskId" ngModel="{{actionRequest?.id}}" type="text"
                                         name="taskId">
                                 <input
                                         aria-describedby="inputGroup-sizing-sm" aria-label="Small"

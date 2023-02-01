@@ -641,6 +641,10 @@ class StandardRequestService(
         return technicalCommitteeRepository.findByDepartmentId(id)
     }
 
+    fun getDepartment(id: Long): MutableList<Department> {
+        return departmentRepository.findAllById(id)
+    }
+
 
     /*fun getProductCategories(id:ID): MutableList<ProductSubCategory>
     {

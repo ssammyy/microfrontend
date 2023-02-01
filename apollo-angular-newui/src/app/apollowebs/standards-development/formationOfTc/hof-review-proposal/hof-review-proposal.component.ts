@@ -9,7 +9,7 @@ import {Document} from "../../../../core/store/data/std/request_std.model";
 import {FormationOfTcService} from "../../../../core/store/data/std/formation-of-tc.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import Swal from "sweetalert2";
 import swal from "sweetalert2";
@@ -47,7 +47,9 @@ export class HofReviewProposalComponent implements OnInit {
 
   docs !: Document[];
   blob: Blob;
+    stdApproveOrRejectWithReason: FormGroup;
 
+    selectedProposal: number;
 
 
   constructor(private formationOfTcService: FormationOfTcService,
@@ -64,6 +66,11 @@ export class HofReviewProposalComponent implements OnInit {
     this.getAllHofJustifications(true);
     this.getAllHofJustificationsApproved()
     this.getAllHofJustificationsRejected()
+      this.stdApproveOrRejectWithReason = this.formBuilder.group({
+          comments: ['', Validators.required],
+          id: ['', Validators.required],
+
+      });
   }
 
   public getAllHofJustifications(pageRefresh: boolean): void {
@@ -156,6 +163,29 @@ export class HofReviewProposalComponent implements OnInit {
     container.appendChild(button);
     button.click();
   }
+    public onOpenModalDecision(task: JustificationForTc, mode: string): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+
+        if(mode ==="approve") {
+            this.proposalRetrieved = task;
+            button.setAttribute('data-target', '#recommendation');
+            this.selectedProposal = this.proposalRetrieved.id
+        }
+
+        if(mode ==="reject") {
+            this.proposalRetrieved = task;
+            button.setAttribute('data-target', '#rejectRecommendation');
+            this.selectedProposal = this.proposalRetrieved.id
+        }
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
 
   @ViewChild('closeModal') private closeModal: ElementRef | undefined;
 
@@ -174,6 +204,9 @@ export class HofReviewProposalComponent implements OnInit {
   public hideModelC() {
     this.closeModalC?.nativeElement.click();
   }
+    get formApproveOrRejectWithReason(): any {
+        return this.stdApproveOrRejectWithReason.controls;
+    }
 
   public openModalToView(proposal: JustificationForTc): void {
     const container = document.getElementById('main-container');
@@ -238,102 +271,126 @@ export class HofReviewProposalComponent implements OnInit {
         },
     );
   }
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
 
-  approveProposal(justificationForTc): void {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-success'
-      },
-      buttonsStyling: false
-    });
+    }
 
-    swalWithBootstrapButtons.fire({
-      title: 'Are you sure your want to approve this proposal?',
-      text: 'You won\'t be able to reverse this!',
-      icon: 'success',
-      showCancelButton: true,
-      confirmButtonText: 'Yes!',
-      cancelButtonText: 'No!',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.SpinnerService.show();
-        this.formationOfTcService.approveJustificationForTC(justificationForTc).subscribe(
-            (response) => {
-              this.SpinnerService.hide();
-              swalWithBootstrapButtons.fire(
-                  'Approved!',
-                  'Proposal Successfully Approved!',
-                  'success'
-              );
-              this.SpinnerService.hide();
-              this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Approved');
-              this.getAllHofJustifications(false);
-              this.getAllHofJustificationsApproved()
-              this.getAllHofJustificationsRejected()
-            },
-        );
-      } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons.fire(
-            'Cancelled',
-            'You have cancelled this operation',
-            'error'
-        );
-      }
-    });
-  }
-  rejectProposal(justificationForTc): void {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-success'
-      },
-      buttonsStyling: false
-    });
 
-    swalWithBootstrapButtons.fire({
-      title: 'Are you sure your want to reject this proposal?',
-      text: 'You won\'t be able to reverse this!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes!',
-      cancelButtonText: 'No!',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.SpinnerService.show();
-        this.formationOfTcService.rejectJustificationForTC(justificationForTc).subscribe(
-            (response) => {
-              this.SpinnerService.hide();
-              swalWithBootstrapButtons.fire(
-                  'Rejected!',
-                  'Proposal Successfully Rejected!',
-                  'success'
-              );
-              this.SpinnerService.hide();
-              this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
-              this.getAllHofJustifications(false);
-              this.getAllHofJustificationsApproved()
-              this.getAllHofJustificationsRejected()
-            },
-        );
-      } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons.fire(
-            'Cancelled',
-            'You have cancelled this operation',
-            'error'
-        );
-      }
-    });
-  }
+    public approveProposal(formDirective): void {
+        if (this.stdApproveOrRejectWithReason.valid) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-success'
+                },
+                buttonsStyling: false
+            });
 
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure your want to approve this proposal?',
+                text: 'You won\'t be able to reverse this!',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.SpinnerService.show();
+                    this.formationOfTcService.approveJustificationForTC(this.stdApproveOrRejectWithReason.value).subscribe(
+                        (response) => {
+                            this.SpinnerService.hide();
+                            swalWithBootstrapButtons.fire(
+                                'Approved!',
+                                'Proposal Successfully Approved!',
+                                'success'
+                            );
+                            this.SpinnerService.hide();
+                            this.hideModelB()
+                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Approved');
+                            this.getAllHofJustifications(false);
+                            this.getAllHofJustificationsApproved()
+                            this.getAllHofJustificationsRejected()
+                            formDirective.resetForm()
+                        },
+                    );
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'You have cancelled this operation',
+                        'error'
+                    );
+                }
+            });
+
+        } else {
+            this.showToasterError("Error", `Please Enter A Reason.`);
+
+        }
+
+    }
+
+    public rejectProposal(formDirective): void {
+        if (this.stdApproveOrRejectWithReason.valid) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-success'
+                },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure your want to reject this proposal?',
+                text: 'You won\'t be able to reverse this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.SpinnerService.show();
+                    this.formationOfTcService.rejectJustificationForTC(this.stdApproveOrRejectWithReason.value).subscribe(
+                        (response) => {
+                            this.SpinnerService.hide();
+                            swalWithBootstrapButtons.fire(
+                                'Rejected!',
+                                'Proposal Successfully Rejected!',
+                                'success'
+                            );
+                            this.SpinnerService.hide();
+                            this.hideModelC()
+                            this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
+                            this.getAllHofJustifications(false);
+                            this.getAllHofJustificationsApproved()
+                            this.getAllHofJustificationsRejected()
+                            formDirective.resetForm()
+
+                        },
+                    );
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'You have cancelled this operation',
+                        'error'
+                    );
+                }
+            });
+
+        } else {
+            this.showToasterError("Error", `Please Enter A Reason.`);
+
+        }
+
+    }
 
 
 

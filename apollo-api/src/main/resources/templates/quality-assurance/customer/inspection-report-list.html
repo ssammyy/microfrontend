@@ -33,6 +33,7 @@
                                         <th>REPORT FILLED</th>
                                         <th>STATUS</th>
                                         <th>View Details</th>
+                                        <th sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">Clone Details</th>
                                         <!--                                        <th>View PDF</th>-->
                                     </tr>
                                     </thead>
@@ -60,6 +61,9 @@
                                         <!--                                        <td sec:authorize="hasAuthority('CD_SUPERVISOR_READ')" th:if="${coc?.assignedStatus == 1}"  th:text="${coc?.assignIoId?.firstName}  + ' ' + ${coc?.assignIoId?.lastName}"></td>-->
                                         <td><a class="filter-link"
                                                th:href="@{/api/qa/inspection/inspection-report-details(inspectionReportID=${inspectDetails.encryptedInspectionId})}">VIEW</a>
+                                        </td>
+                                        <td sec:authorize="hasAuthority('QA_OFFICER_MODIFY')"><a class="filter-link"
+                                               th:href="@{/api/qa/inspection/inspection-report-details-clone(inspectionReportID=${inspectDetails.encryptedInspectionId},permitID=${encryptedPermitId})}">CLONE</a>
                                         </td>
                                         <!--                                        <td><a class="filter-link" th:href="@{/api/kebs/qa/report/proforma-invoice-with-Item(ID=${ssfDetails?.permitId})}">VIEW</a></td>-->
                                     </tr>

@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {
     AllSTA10DetailsDto, FilesListDto,
-    PermitEntityDetails, PermitProcessStepDto,
+    PermitEntityDetails, PermitEntityDto, PermitProcessStepDto,
     PlantDetailsDto,
     SectionDto, STA1,
     Sta10Dto,
@@ -20,6 +20,7 @@ import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {loadBranchId, loadCompanyId, selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
 
 declare const $: any;
 
@@ -74,6 +75,13 @@ export class NewSmarkPermitComponent implements OnInit {
     public demoForm = new FormGroup({
         files: this.filesControl
     });
+    smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
+    public allPermitData: PermitEntityDto[];
+
+    selectedPermit: string;
+
+    cloned:boolean;
+
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -85,6 +93,7 @@ export class NewSmarkPermitComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.cloned=false;
         this.sta1Form = this.formBuilder.group({
             commodityDescription: ['', Validators.required],
             applicantName: [],
@@ -153,6 +162,11 @@ export class NewSmarkPermitComponent implements OnInit {
             processMonitoringRecords: []
         });
         this.sta10FormG = this.formBuilder.group({});
+
+        this.qaService.loadPermitList(this.smarkID.toString()).subscribe(
+            (data: any) => {
+                this.allPermitData = data;
+            });
 
         this.sta10FormF = this.formBuilder.group({
             handledManufacturingProcessRawMaterials: ['', Validators.required],
@@ -299,6 +313,53 @@ export class NewSmarkPermitComponent implements OnInit {
             }
         });
     }
+
+
+    public clonePermit(): void {
+        this.route.fragment.subscribe(params => {
+            this.permitID = this.selectedPermit;
+            //(this.permitID);
+            if (this.permitID) {
+                this.SpinnerService.show();
+                this.qaService.viewSTA1Details(this.permitID).subscribe(
+                    (data) => {
+                        this.SpinnerService.hide();
+                        this.sta1 = data;
+                        this.sta1Form.patchValue(this.sta1);
+                        this.qaService.viewSTA10Details(String(this.sta1.id)).subscribe(
+                            (data1) => {
+                                this.allSta10Details = data1;
+
+                                //('TEST ALL STA10' + this.allSta10Details);
+                                this.sta10Details = this.allSta10Details.sta10FirmDetails;
+                                this.sta10Form.patchValue(this.sta10Details);
+                                this.sta10PersonnelDetails = this.allSta10Details.sta10PersonnelDetails;
+                                this.sta10ProductsManufactureDetails = this.allSta10Details.sta10ProductsManufactureDetails;
+                                this.sta10RawMaterialsDetails = this.allSta10Details.sta10RawMaterialsDetails;
+                                this.sta10MachineryAndPlantDetails = this.allSta10Details.sta10MachineryAndPlantDetails;
+                                this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
+                                this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
+                                this.sta10FilesList = this.allSta10Details.sta10FilesList;
+                                this.sta10FormF.patchValue(this.allSta10Details.sta10FirmDetails);
+
+                                this.cloned = true;
+                                this.sta1 =null
+                                this.sta10Details = null
+
+                                // if(this.sta10FilesList.map())
+                                // {
+                                //
+                                // }
+                            },
+                        );
+                    },
+                );
+
+
+            }
+        });
+    }
+
 
     onClickUpdateStep(stepNumber: number) {
         if (this.sta1) {

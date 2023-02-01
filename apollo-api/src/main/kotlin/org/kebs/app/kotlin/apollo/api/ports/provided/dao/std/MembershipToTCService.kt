@@ -15,10 +15,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.std.CallForTCApplication
-import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
-import org.kebs.app.kotlin.apollo.store.model.std.MembershipTCApplication
-import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommitteeMember
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
@@ -45,6 +42,7 @@ class MembershipToTCService(
     private val callForApplicationTCRepository: CallForApplicationTCRepository,
     private val technicalCommitteMemberRepository: TechnicalCommitteMemberRepository,
     private val decisionFeedbackRepository: DecisionFeedbackRepository,
+
     val commonDaoServices: CommonDaoServices,
     private val technicalCommitteeRepository: TechnicalCommitteeRepository,
     private val sdNwaUploadsEntityRepository: StandardsDocumentsRepository,
@@ -130,8 +128,9 @@ class MembershipToTCService(
 
     }
 
-    fun getCallForApplications(): List<CallForTCApplication> {
-        return callForApplicationTCRepository.findAll()
+    fun getCallForApplications(): List<TechnicalCommittee> {
+
+        return  technicalCommitteeRepository.findAllByAdvertisingStatus("1")
 
     }
 

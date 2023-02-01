@@ -3,14 +3,18 @@ import {Actions} from '@ngrx/effects';
 import {ToastrService} from 'ngx-toastr';
 import {HttpErrorResponse} from '@angular/common/http';
 import {throwError} from "rxjs";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Injectable({
     providedIn: 'root',
 })
 export class HandleErrorService {
+    loading = false;
 
     constructor(actions$: Actions,
                 private toastrService: ToastrService,
+                private SpinnerService: NgxSpinnerService,
+
     ) {
     }
 
@@ -35,6 +39,7 @@ export class HandleErrorService {
             // The backend returned an unsuccessful response code.
             // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;
             errorMessage = `Message: ${err.error}`;
+            this.SpinnerService.hide()
 
             console.log(`Message: ${err.error}`);
             this.toastrService.warning(errorMessage);

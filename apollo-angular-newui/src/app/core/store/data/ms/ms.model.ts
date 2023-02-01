@@ -91,6 +91,12 @@ export class PredefinedResourcesRequired {
     status: boolean;
 }
 
+export class OGAEntity {
+    id: number;
+    ogaName: string;
+    status: boolean;
+}
+
 export class WorkPlanTownsDto {
         countyID: number;
         countyName: string;
@@ -613,7 +619,8 @@ export class InspectionInvestigationReportDto {
     reportFunction: string;
     backgroundInformation: string;
     objectiveInvestigation: string;
-    dateInvestigationInspection: Date;
+    endDateInvestigationInspection: Date;
+    startDateInvestigationInspection: Date;
     kebsInspectors: KebsOfficersName[];
     methodologyEmployed: string;
     findings: string;
@@ -951,6 +958,9 @@ export class WorkPlanInspectionDto {
     onsiteStartStatus: boolean;
     onsiteStartDate: Date;
     onsiteEndDate: Date;
+    onsiteStartDateAdded: Date;
+    onsiteEndDateAdded: Date;
+    onsiteTat: number;
     sendSffDate: Date;
     sendSffStatus: boolean;
     onsiteEndStatus: boolean;
@@ -1109,10 +1119,18 @@ export class LaboratoryEntityDto {
         status: boolean;
 }
 
+export class WorkPlanScheduleOnsiteDto {
+        startDate: Date;
+        endDate: Date;
+        remarks: string;
+}
+
 export class SeizureListDto {
     id: number;
     docID: number;
     marketTownCenter: string;
+    productField: string;
+    serialNumber: string;
     nameOfOutlet: string;
     nameSeizingOfficer: string;
     additionalOutletDetails: string;

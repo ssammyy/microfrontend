@@ -505,7 +505,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <form #formDirective="ngForm" (ngSubmit)="reasonApprove()"
+                    <form #formDirective="ngForm" (ngSubmit)="reasonApprove(formDirective)"
                           [formGroup]="stdApproveOrRejectWithReason">
                         <div class="form-group">
                             <label><b>Reason</b></label>
@@ -545,14 +545,14 @@
                 <div class="modal-header">
                     <h5 class="modal-title"
                         id="updateRejectRecommendation">Reject Proposal</h5>
-                    <button type="button" class="close" data-dismiss="modal" #closeModalC
+                    <button type="button" class="close" data-dismiss="modal" #closeModal
                             aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
 
-                    <form #formDirective="ngForm" (ngSubmit)="reasonReject()"
+                    <form #formDirectiveB="ngForm" (ngSubmit)="reasonReject(formDirectiveB)"
                           [formGroup]="stdApproveOrRejectWithReason">
                         <div class="form-group">
                             <label><b>Reason</b></label>
@@ -575,7 +575,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                            (click)="hideModelC()"
+                            (click)="hideModel()"
                             data-dismiss="modal">Close
                     </button>
 

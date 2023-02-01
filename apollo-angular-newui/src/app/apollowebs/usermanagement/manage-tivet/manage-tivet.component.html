@@ -1,0 +1,225 @@
+<div *ngIf="loading">
+
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+</div>
+<div class="main-content">
+    <div class="container-fluid" id="main-container">
+
+        <div class="row">
+            <div class="col-md-12 ml-auto mr-auto">
+                <div class="page-categories">
+                    <h3 class="title text-center">Tivet Management</h3>
+                    <br/>
+                    <ul class="nav nav-pills nav-pills-stacked-example nav-pills-icons justify-content-center"
+                        role="tablist">
+
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#link8" role="tablist">
+                                <i class="material-icons">manage_accounts</i> Tivets/NGOS/Universities
+                            </a>
+                        </li>
+                        <!--                        <li class="nav-item">-->
+                        <!--                            <a class="nav-link" data-toggle="tab" href="#link7" role="tablist">-->
+                        <!--                                <i class="material-icons">person_outline</i> Roles-->
+                        <!--                            </a>-->
+                        <!--                        </li>-->
+                        <!--                        <li class="nav-item">-->
+                        <!--                            <a class="nav-link" data-toggle="tab" href="#link19" role="tablist">-->
+                        <!--                                <i class="material-icons">menu</i>Menus-->
+                        <!--                            </a>-->
+                        <!--                        </li>-->
+                        <!--                        <li class="nav-item">-->
+                        <!--                            <a class="nav-link" data-toggle="tab" href="#link9" role="tablist">-->
+                        <!--                                <i class="material-icons">person_add_alt</i> Assign Menus-->
+                        <!--                            </a>-->
+                        <!--                        </li>-->
+
+                    </ul>
+                    <!--                    <div class="tab-content tab-space tab-subcategories">-->
+                    <!--                        <div class="tab-pane" id="link7">-->
+                    <!--                            <div class="card">-->
+                    <!--                                <div class="card-header">-->
+                    <!--                                    <h4 class="card-title">Add and Manage Role</h4>-->
+                    <!--                                    <p class="card-category">-->
+                    <!--                                        Role Management-->
+                    <!--                                    </p>-->
+                    <!--                                </div>-->
+                    <!--                                <div class="card-body">-->
+                    <!--                                    <div class="card-body">-->
+                    <!--                                        <div class="material-datatables">-->
+                    <!--                                            <table id="datatablesd"-->
+                    <!--                                                   class="table table-striped table-no-bordered table-hover"-->
+                    <!--                                                   cellspacing="0" width="100%" style="width:100%">-->
+                    <!--                                                <thead>-->
+                    <!--                                                <tr>-->
+                    <!--                                                    <th>{{ dataTable2.headerRow[0] }}</th>-->
+                    <!--                                                    <th>{{ dataTable2.headerRow[1] }}</th>-->
+                    <!--                                                    <th>{{ dataTable2.headerRow[2] }}</th>-->
+                    <!--                                                    <th class="disabled-sorting text-right">{{ dataTable2.headerRow[3] }}</th>-->
+                    <!--                                                </tr>-->
+                    <!--                                                </thead>-->
+                    <!--                                                <tfoot>-->
+                    <!--                                                <tr>-->
+                    <!--                                                    <th>{{ dataTable2.footerRow[0] }}</th>-->
+                    <!--                                                    <th>{{ dataTable2.footerRow[1] }}</th>-->
+                    <!--                                                    <th>{{ dataTable2.footerRow[2] }}</th>-->
+                    <!--                                                    <th class="text-right">{{ dataTable2.footerRow[3] }}</th>-->
+                    <!--                                                </tr>-->
+                    <!--                                                </tfoot>-->
+                    <!--                                                <tbody>-->
+                    <!--                                                <tr *ngFor="let row of dataTable2.dataRows">-->
+                    <!--                                                    <td>{{row[0]}}</td>-->
+                    <!--                                                    <td>{{row[1]}}</td>-->
+                    <!--                                                    <td>{{row[2]}}</td>-->
+                    <!--                                                    <td class="text-right">-->
+                    <!--                                                        <a href="javascript:void(0)"-->
+                    <!--                                                           class="btn btn-link btn-info btn-just-icon like"><i-->
+                    <!--                                                                class="material-icons">add</i></a>-->
+                    <!--                                                        <a href="javascript:void(0)"-->
+                    <!--                                                           class="btn btn-link btn-warning btn-just-icon edit"><i-->
+                    <!--                                                                class="material-icons">dvr</i></a>-->
+                    <!--                                                        <a href="javascript:void(0)"-->
+                    <!--                                                           class="btn btn-link btn-danger btn-just-icon remove"><i-->
+                    <!--                                                                class="material-icons">close</i></a>-->
+                    <!--                                                    </td>-->
+                    <!--                                                </tr>-->
+                    <!--                                                </tbody>-->
+                    <!--                                            </table>-->
+                    <!--                                        </div>-->
+
+                    <!--                                    </div>-->
+
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <div class="tab-pane active" id="link8">
+                        <div class="card">
+                            <div class="card-header card-header-primary card-header-icon">
+
+
+                                <h4 class="card-title">Tivet Management</h4>
+                                <p class="card-category">
+                                    User Management </p>
+                            </div>
+                            <div class="card-body">
+                                <div class="material-datatables">
+                                    <table class="table table-striped table-bordered table-hover" datatable
+                                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                                        <thead>
+                                        <tr>
+                                            <th class="id">ID</th>
+                                            <th class="id">Institution Name</th>
+                                            <th class="id">Address</th>
+                                            <th class="id">Email</th>
+                                            <th class="id">Date Registered</th>
+                                            <th class="id">Status</th>
+                                            <th class="id">Actions</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr *ngFor="let task of tasks  let i= index;">
+                                            <td>{{i + 1}}</td>
+                                            <td>{{task.name}}</td>
+                                            <td>{{task.physicalAddress}}</td>
+                                            <td>{{task.companyEmail}}</td>
+                                            <td>{{task.createdOn}}</td>
+                                            <td *ngIf="task.varField2=='1'"><span class="badge badge-info"
+                                                                                  style="width: 94px;">Active</span>
+                                            </td>
+                                            <td *ngIf="task.varField2=='0'"><span class="badge badge-default"
+                                                                                  style="width: 94px;">Not Activated</span>
+                                            </td>
+                                            <td class="text-nowrap">
+                                                <a type="button" (click)="onOpenModal(task)"
+                                                   class="btn btn-link btn-warning btn-just-icon edit"><i
+                                                        class="material-icons">visibility</i></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tivet Modal -->
+
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tivet Management</h4>
+                    <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="updateTivetFormGroup">
+                        <div class="form-group bmd-form-group is-filled">
+                            <h5 class="mb-3" style="color: #0066B1">Basic Details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Name</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.name}}" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Email</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.companyEmail}}" readonly>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <input type="hidden" formControlName="id" ngModel="{{actionRequest?.id}}" readonly>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button mat-raised-button type="button" (click)="hideModel()"
+                                    class="btn btn-danger btn-link"
+                                    data-dismiss="modal">
+                                Close
+                            </button>
+                            <button mat-raised-button type="button" [disabled]="!updateTivetFormGroup.valid"
+                                    (click)="onClickSave()" class="btn btn-success btn-link">ACTIVATE
+                            </button>
+
+                            <button mat-raised-button type="button" [disabled]="!updateTivetFormGroup.valid"
+                                    (click)="onClickReject()" class="btn btn-warning btn-link">REJECT
+                            </button>
+
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End User Modal -->
+
+</div>

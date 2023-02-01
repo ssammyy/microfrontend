@@ -497,6 +497,23 @@ export interface ProposalComment {
     dateOfApplication: string;
 }
 
+export interface ComDraftComment {
+    commentTitle: string;
+    comNameOfOrganization: string;
+    comClause: string;
+    comParagraph: string;
+    proposedChange: string;
+    commentDocumentType: string;
+    adoptDraft: string;
+    reason: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    requestID: number;
+    draftID: number;
+}
+
 export interface ISAdoptionProposal {
     taskId: string;
     id: number;
@@ -686,6 +703,36 @@ export interface IStandardUpload {
     companyName: string;
     companyPhone: string;
 }
+export interface ComStdDraftEdit{
+    id: number;
+    requestId: number;
+    title: string;
+    docName: string;
+    standardNumber: string;
+    draughting: string;
+    draftId: number;
+    requestNumber: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    comStdNumber: string;
+    departmentId: number;
+    subject: string;
+    description: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
+    companyName: string;
+    companyPhone: string;
+}
 
 export interface IStandardDraftEdit {
     title: string;
@@ -779,6 +826,7 @@ export interface ISDraftDecision {
     comments: string;
     accentTo: string;
     justificationId: number;
+    id: number;
     proposalId: number;
     requestId: number;
     draftId: number;
@@ -1105,6 +1153,21 @@ export interface ComJcJustificationDec {
     taskData: ComJcJustificationDecData;
 }
 
+export interface DocView {
+
+    filepath: string;
+    name: string;
+    fileType: string;
+    documentType: string;
+    transactionDate: string;
+    comDraftDocumentId: number;
+    description: string;
+    status: string;
+    createdBy: string;
+    id: bigint;
+    document: Blob;
+}
+
 export interface ComJcJustificationDecData {
     reason: string;
     companyName: string;
@@ -1162,6 +1225,20 @@ export interface ApproveDraft {
     requestId: bigint;
     comments: string;
     response: string;
+    companyName: string;
+    companyPhone: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+    departmentId: number;
+    subject: string;
+    description: string;
+    contactTwoFullName: string;
+    contactTwoTelephone: string;
+    contactTwoEmail: string;
+    contactThreeFullName: string;
+    contactThreeTelephone: string;
+    contactThreeEmail: string;
 }
 
 export interface COMPreliminaryDraft {
@@ -1196,8 +1273,10 @@ export interface COMPreliminaryDraft {
     contactThreeEmail: string;
     companyName: string;
     companyPhone: string;
+    commentCount: number;
 }
-export interface ComApproveDraft{
+
+export interface ComApproveDraft {
     accentTo: boolean;
     requestId: bigint;
     comments: string;
@@ -1649,9 +1728,10 @@ export interface ISCheckRequirements {
     companyName: string;
     companyPhone: string;
     draftNumber: string;
+    draughting: string;
 }
 
-export interface ComStdRequest{
+export interface ComStdRequest {
     id: number;
     requestNumber: string;
     submissionDate: string;
@@ -1702,7 +1782,7 @@ export interface SchemeMembership {
 
 }
 
-export interface ComStdRemarks{
+export interface ComStdRemarks {
     id: number;
     requestId: number;
     remarks: string;
@@ -1712,3 +1792,56 @@ export interface ComStdRemarks{
     description: string;
     dateOfRemark: Timestamp<any>;
 }
+
+export interface ComStdCommitteeRemarks {
+    id: number;
+    name: string;
+    draftComment: string;
+    commentTime: Timestamp<any>;
+    requestID: number;
+    draftID: number;
+    commentTitle: string;
+    commentDocumentType: string;
+    nameOfOrganization: string;
+    comClause: string;
+    comParagraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+    adoptStandard: string;
+    adoptDraft: string;
+    reason: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+}
+
+export interface CommentsOnCompanyStandard{
+    id
+    requestId
+    remarks
+    remarkBy
+    status
+    role
+    description
+    dateOfRemark
+}
+
+export interface TechnicalCommittee {
+    id: number;
+    technicalCommitteeNo: string;
+    type: string;
+    departmentId: number;
+    tc: string;
+    sc: string;
+    wg: string;
+    parentCommitte: string;
+    title: string;
+    status: number;
+    comment: string;
+    createdBy: number;
+    createdOn: string;
+    advertisingStatus: number;
+}
+
+
+

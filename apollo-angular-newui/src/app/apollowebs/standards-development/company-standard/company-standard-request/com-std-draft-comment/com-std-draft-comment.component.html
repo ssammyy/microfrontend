@@ -1,0 +1,198 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-title float-left"><button type="button" class="btn btn-sm btn-info" style="color: white; font-weight: bold; width: auto;">
+                                Draft for Adoption of Company Standard
+                            </button></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="material-datatables table-responsive">
+                                <table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  cellspacing="0" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="knw">Request Number</th>
+                                        <th class="sl">Company Name</th>
+                                        <th class="sl">Phone Number</th>
+                                        <th class="sl">Draft Number</th>
+                                        <th class="requestNumber">Title </th>
+                                        <th class="knw">Company Contact Name</th>
+                                        <th class="sl">Company Contact Telephone</th>
+                                        <th class="sl">Company Contact Email</th>
+                                        <th class="sl">Deadline</th>
+                                        <th class="sl">Number Of Comments</th>
+                                        <th class="action">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr  *ngFor="let task of tasks let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{task.requestNumber}}</td>
+                                        <td>{{task.companyName}}</td>
+                                        <td>{{task.companyPhone}}</td>
+                                        <td>{{task.draftNumber}}</td>
+                                        <td>{{task.title}}</td>
+                                        <td>{{task.contactOneFullName}}</td>
+                                        <td>{{task.contactOneTelephone}}</td>
+                                        <td>{{task.contactOneEmail}}</td>
+                                        <td>{{task.deadlineDate | date: 'yyyy-MM-dd'}}</td>
+                                        <td>{{task.commentCount}}</td>
+                                        <td *ngIf="task.status==0" ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style=" " data-original-title="preparePD">Comment on Draft</a></td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+
+
+                            </div>
+                            <div class="modal fade" id="approveDraft" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title" id="approveExampleModalLabel">Comment on Company Draft</h3>
+                                            <button type="button" class="close" #closeModalComment data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form (ngSubmit)="onSubmit()" [formGroup]="uploadCommentsFormGroup" class="form">
+                                            <div class="modal-body">
+                                                <div class="form-body">
+
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center" >
+                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                </div>
+                                                            </div>
+                                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                                    (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
+                                                                <i class="fa fa-download"></i> Download Standard Draft</button>
+
+                                                        </div>
+
+
+                                                    </a>
+
+                                                    <div class="form-group col-12">
+                                                        <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" formControlName="commentTitle" name="commentTitle"
+                                                                  placeholder="Title" type="text">{{actionRequest?.title}}</textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Name of Organization</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" formControlName="nameOfOrganization" name="nameOfOrganization"
+                                                                  placeholder="Name of Organization" type="text"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" formControlName="comClause" name="comClause"
+                                                                  placeholder="Clause" type="text"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Paragraph</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" formControlName="comParagraph" name="comParagraph"
+                                                                  placeholder="Paragraph" type="text"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Proposed Change</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" formControlName="proposedChange" name="proposedChange"
+                                                                  placeholder="Proposed Change" type="text"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Document Type</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" formControlName="commentDocumentType" name="commentDocumentType"
+                                                                  placeholder="Document Type" type="text"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Draft Acceptable as Presented?</b><span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                                        <mat-radio-group aria-label="Select an option" formControlName="adoptDraft" name="adoptDraft" required>
+                                                            <mat-radio-button  value="Yes">Yes</mat-radio-button>
+                                                            <mat-radio-button value="No">No</mat-radio-button>
+                                                        </mat-radio-group>
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Reasons for Acceptance / Not Acceptance</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" formControlName="reason" name="reason"
+                                                                  placeholder="Reasons for Acceptance / Not Acceptance" type="text"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Recommendations</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" formControlName="recommendations" name="recommendations"
+                                                                  placeholder="Recommendations" type="text"></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Name of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input
+                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                class="form-control one-column-input" formControlName="nameOfRespondent" name="nameOfRespondent"
+                                                                placeholder="" type="text" >
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Position of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input
+                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                class="form-control one-column-input" formControlName="positionOfRespondent" name="positionOfRespondent"
+                                                                placeholder="" type="text" >
+                                                    </div>
+
+
+
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="requestID" formControlName="requestID" value="{{actionRequest?.requestId}}" >
+                                            <input type="hidden" name="draftID"  formControlName="draftID" value="{{actionRequest?.id}}" >
+
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-sm"  >Save Comment</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

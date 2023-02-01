@@ -28,6 +28,9 @@ export interface JustificationForTc {
     sacReviewDate: Date;
     departmentId: string;
 
+    commentsSac: string;
+
+
 }
 
 

@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MasterDataDaoService
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
@@ -278,6 +279,42 @@ class MasterDataHandler(
 
     }
 
+    fun tivetUpdate(req: ServerRequest): ServerResponse {
+        try {
+            val entity = req.body<CompanyProfileEntity>()
+            daoService.updateTivetToActive(entity)
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("Update failed")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
+    fun tivetReject(req: ServerRequest): ServerResponse {
+        try {
+            val entity = req.body<CompanyProfileEntity>()
+            daoService.rejectTivet(entity)
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("Update failed")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
     @PreAuthorize("hasAuthority('STANDARD_PRODUCT_CATEGORY_WRITE')")
     fun standardProductCategoryUpdate(req: ServerRequest): ServerResponse {
         try {
@@ -445,6 +482,22 @@ class MasterDataHandler(
 
                 }
             }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
+    fun tivetListing(req: ServerRequest): ServerResponse {
+        try {
+            daoService.getAllTivets()
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("No records found")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)

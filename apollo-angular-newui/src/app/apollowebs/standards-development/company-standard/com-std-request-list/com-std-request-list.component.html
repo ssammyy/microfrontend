@@ -11,6 +11,81 @@ type="ball-scale-multiple"
 </div>
 <div class="main-content" >
 <div class="container-fluid">
+    <div class="row" >
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-warning card-header-icon">
+                <div class="card-icon">
+                    Company Standard Requests
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <div class="stats col-12">
+                    <div class="row align-items-center mb-2 d-flex col-12">
+                        <div class="col-8">
+                            <h4 class="d-flex align-items-center mb-0">
+                                <span style="color: orangered">Go</span>
+                            </h4>
+                        </div>
+                        <div class="col-4 text-right">
+                            <span style="color: orangered"> <i class="fa fa-arrow-right"></i></span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-info card-header-icon">
+                <div class="card-icon">
+                    Uploaded Drafts
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <div class="stats col-12">
+                    <div class="row align-items-center mb-2 d-flex col-12">
+                        <div class="col-8">
+                            <h4 class="d-flex align-items-center mb-0">
+                                <a href="comStdDraft" style="color: dodgerblue">Go</a>
+                            </h4>
+                        </div>
+                        <div class="col-4 text-right">
+                            <a href="comStdDraft" style="color: dodgerblue"><span> <i class="fa fa-arrow-right"></i></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-success card-header-icon">
+                <div class="card-icon">
+                    Publishing Tasks
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <div class="stats col-12">
+                    <div class="row align-items-center mb-2 d-flex col-12">
+                        <div class="col-8">
+                            <h4 class="d-flex align-items-center mb-0">
+                                <a href="hopTasks" style="color: seagreen">Go</a>
+                            </h4>
+                        </div>
+                        <div class="col-4 text-right">
+                            <a href="hopTasks" style="color: seagreen"><span> <i class="fa fa-arrow-right"></i></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 <div class="row">
 <div class="col-md-12">
 <div class="card">
@@ -52,7 +127,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.departmentName}}</td>
 <td>{{task.submissionDate | date: 'dd/MM/yyyy'}}</td>
 <td>{{task.companyPhone}}</td>
-    <td>{{task.contactOneFullName}}</td>
+ <td>{{task.contactOneFullName}}</td>
     <td>{{task.contactOneTelephone}}</td>
     <td>{{task.contactOneEmail}}</td>
     <td><button mat-raised-button type="button" (click)="viewCommitmentLetter( task.id,'Letter'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
@@ -136,7 +211,7 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                             <label><b>Enter Emails of Committee members(Comma Separated)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                             <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                       class="form-control one-column-input" formControlName="name" name="name"
-                                      placeholder="Type Names of Committee Members" type="text"></textarea>
+                                      placeholder="Type Emails of Committee Members" type="text"></textarea>
 
                         </div>
                         <input type="hidden" formControlName="requestId"  ngModel="{{actionRequest?.id}}" name="requestId" >

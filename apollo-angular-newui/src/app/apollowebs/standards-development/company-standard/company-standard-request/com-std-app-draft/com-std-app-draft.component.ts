@@ -1,13 +1,19 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {ApproveDraft, ComJcJustificationDec, COMPreliminaryDraft} from "../../../../core/store/data/std/std.model";
+import {
+    ApproveDraft,
+    ComJcJustificationDec,
+    COMPreliminaryDraft,
+    ComStdCommitteeRemarks
+} from "../../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import {StdComStandardService} from "../../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {NotificationService} from "../../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {DocumentDTO} from "../../../../../core/store/data/levy/levy.model";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-com-std-app-draft',
@@ -19,21 +25,34 @@ export class ComStdAppDraftComponent implements OnInit {
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  dtTrigger1: Subject<any> = new Subject<any>();
   tasks: COMPreliminaryDraft[] = [];
   public actionRequest: COMPreliminaryDraft | undefined;
   public committeeFormGroup!: FormGroup;
   public uploadDraftFormGroup!: FormGroup;
   blob: Blob;
+    isShowCommentsTab= true;
+    comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
     documentDTOs: DocumentDTO[] = [];
+    comDraftID: string;
   constructor(
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
       private formBuilder: FormBuilder,
+      private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    this.getApprovedStdDraft();
+
+      this.activatedRoute.paramMap.subscribe(
+          rs => {
+              this.comDraftID = rs.get('comDraftID');
+
+          },
+      );
+
+      this.getApprovedStdDraft(this.comDraftID);
   }
 
   ngOnDestroy(): void {
@@ -53,9 +72,9 @@ export class ComStdAppDraftComponent implements OnInit {
 
   }
 
-  public getApprovedStdDraft(): void{
+  public getApprovedStdDraft(comDraftID: string): void{
     this.SpinnerService.show();
-    this.stdComStandardService.getApprovedStdDraft().subscribe(
+    this.stdComStandardService.getApprovedStdDraft(comDraftID).subscribe(
         (response: COMPreliminaryDraft[])=> {
           this.SpinnerService.hide();
           this.rerender();
@@ -67,6 +86,25 @@ export class ComStdAppDraftComponent implements OnInit {
         }
     );
   }
+
+    displayDraftComments(draftID: number){
+        //this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.stdComStandardService.getDraftComments(draftID).subscribe(
+            (response: ComStdCommitteeRemarks[]) => {
+                this.comStdCommitteeRemarks = response;
+                this.SpinnerService.hide();
+                console.log(this.comStdCommitteeRemarks)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowCommentsTab = !this.isShowCommentsTab;
+        //this.isShowCommentsTab= true;
+
+    }
 
   public onOpenModal(task: COMPreliminaryDraft,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
@@ -116,13 +154,13 @@ export class ComStdAppDraftComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Draft Approved`);
           console.log(response);
-          this.getApprovedStdDraft();
+          this.getApprovedStdDraft(this.comDraftID);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Action`);
           console.log(error.message);
-          this.getApprovedStdDraft();
+          this.getApprovedStdDraft(this.comDraftID);
           //alert(error.message);
         }
     );
@@ -134,13 +172,13 @@ export class ComStdAppDraftComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Draft Rejected`);
           console.log(response);
-          this.getApprovedStdDraft();
+          this.getApprovedStdDraft(this.comDraftID);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Action`);
           console.log(error.message);
-          this.getApprovedStdDraft();
+          this.getApprovedStdDraft(this.comDraftID);
           //alert(error.message);
         }
     );
@@ -164,7 +202,7 @@ export class ComStdAppDraftComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Request`);
           console.log(error.message);
-          this.getApprovedStdDraft();
+          this.getApprovedStdDraft(this.comDraftID);
           //alert(error.message);
         }
     );
@@ -178,6 +216,7 @@ export class ComStdAppDraftComponent implements OnInit {
     });
     setTimeout(() => {
       this.dtTrigger.next();
+      this.dtTrigger1.next();
     });
   }
 

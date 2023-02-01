@@ -4,6 +4,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.api.service.PaymentStatus
+import org.kebs.app.kotlin.apollo.common.dto.qa.SageValuesDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -204,7 +205,7 @@ class InvoiceDaoService(
         }
     }
 
-    fun createPaymentDetailsOnStgReconciliationTable(user: String, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails, paymentTypeTable : String): StagingPaymentReconciliation {
+    fun createPaymentDetailsOnStgReconciliationTable(user: String, invoiceBatchDetails: InvoiceBatchDetailsEntity, invoiceAccountDetails: InvoiceAccountDetails, paymentTypeTable : String, userArrayDetails: List<SageValuesDto>? =null): StagingPaymentReconciliation {
         val map = commonDaoServices.serviceMapDetails(appId)
         var invoiceDetails = StagingPaymentReconciliation()
         with(invoiceDetails) {
@@ -236,7 +237,7 @@ class InvoiceDaoService(
 
         when {
             applicationMapProperties.mapInvoiceTransactionsForPermit ==paymentTypeTable -> {
-                postInvoiceToSageServices.postInvoiceTransactionToSageQa(invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"),invoiceAccountDetails, user, map)
+                postInvoiceToSageServices.postInvoiceTransactionToSageQa(invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"),invoiceAccountDetails, user, map,userArrayDetails?: throw Exception("BATCHED DETAILS CAN'T BE NULL"))
             }
             applicationMapProperties.mapInvoiceTransactionsForMSFuelReconciliation == paymentTypeTable -> {
                 postInvoiceToSageServices.postInvoiceTransactionToSageMS(invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"),invoiceAccountDetails, user, map)
@@ -307,21 +308,23 @@ class InvoiceDaoService(
                 }
                 permitBatchedDetails = qaDaoServices.updateQAInvoiceBatchDetails(permitBatchedDetails, "SYSTEM")
 
-                var permitMasterInvoice = qaDaoServices.findInvoicesPermitWithBatchID(permitBatchedDetails.id?: throw  ExpectedDataNotFound("Missing Batch ID QA For invoice"))
+                val permitMasterInvoice = qaDaoServices.findALlInvoicesPermitWithBatchID(permitBatchedDetails.id?: throw  ExpectedDataNotFound("Missing Batch ID QA For invoice"))
 
-                with(permitMasterInvoice){
-                    paymentStatus =10
-                    receiptNo = permitBatchedDetails.receiptNo
+                permitMasterInvoice.forEach { permitInvoice->
+                    with(permitInvoice){
+                        paymentStatus =10
+                        receiptNo = permitBatchedDetails.receiptNo
+                    }
+                   val permitInvoiceUpdated = qaDaoServices.updateQAMasterInvoiceDetails(permitInvoice,"SYSTEM")
+
+                    var permitDetails = qaDaoServices.findPermitBYID(permitInvoiceUpdated.permitId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Payment Status"))
+
+                    with(permitDetails){
+                        paidStatus = 1
+                        permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                    }
+                    permitDetails = qaDaoServices.permitUpdate(permitDetails, "SYSTEM")
                 }
-                permitMasterInvoice = qaDaoServices.updateQAMasterInvoiceDetails(permitMasterInvoice,"SYSTEM")
-
-                var permitDetails = qaDaoServices.findPermitBYID(permitMasterInvoice.permitId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Payment Status"))
-
-                with(permitDetails){
-                   paidStatus = 1
-                    permitStatus = applicationMapProperties.mapQaStatusPaymentDone
-                }
-                permitDetails = qaDaoServices.permitUpdate(permitDetails, "SYSTEM")
 
                 with(updatedBatchInvoiceDetail){
                    status = 10

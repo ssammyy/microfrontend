@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {Observable} from 'rxjs';
+import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
 import {
   BusinessLines,
   BusinessLinesService,
@@ -19,6 +19,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {RegionsEntityDto} from '../../../core/store/data/master/master.model';
 import {MsService} from '../../../core/store/data/ms/ms.service';
 import {CompanyTurnOverUpdateDto, FirmTypeEntityDto} from '../../../core/store/data/qa/qa.model';
+import {DataTableDirective} from 'angular-datatables';
 
 @Component({
   selector: 'app-company-list',
@@ -26,7 +27,7 @@ import {CompanyTurnOverUpdateDto, FirmTypeEntityDto} from '../../../core/store/d
   styleUrls: ['./company-list.component.css'],
 })
 export class CompanyListComponent implements OnInit {
-
+  @ViewChild('editModal') editModal !: TemplateRef<any>;
   // companies$: Observable<Company[]>;
   businessLines$: Observable<BusinessLines[]>;
   businessNatures$: Observable<BusinessNatures[]>;
@@ -51,6 +52,13 @@ export class CompanyListComponent implements OnInit {
   msCountiesList: County[] = null;
   msTowns: Town[] = null;
   msTownsOriginal: Town[] = [];
+  loading = false;
+  loadingText: string;
+
+  dtOptions: DataTables.Settings = {};
+  dtTrigger1: Subject<any> = new Subject<any>();
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
 
 
   constructor(
@@ -64,6 +72,7 @@ export class CompanyListComponent implements OnInit {
       private formBuilder: FormBuilder,
       private SpinnerService: NgxSpinnerService,
       private store$: Store<any>,
+
   ) {
     this.filterName = '';
     this.businessNatures$ = naturesService.entities$;
@@ -72,6 +81,12 @@ export class CompanyListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.dtOptions = {
+      processing: true,
+      dom: 'Bfrtip',
+    };
+
     // this.companies$ = this.service.entities$;
     // this.service.clearCache();
     this.loadCompanies();
@@ -109,6 +124,26 @@ export class CompanyListComponent implements OnInit {
       firmType: ['', Validators.required],
       town: ['', Validators.required],
     });
+  }
+
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance) {
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+      }
+    });
+    setTimeout(() => {
+      this.dtTrigger1.next();
+    });
+
+  }
+
+  // tslint:disable-next-line:use-life-cycle-interface
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger1.unsubscribe();
   }
 
   get formCompanyDetailsForm(): any {
@@ -183,10 +218,13 @@ export class CompanyListComponent implements OnInit {
   }
 
   loadCompanies() {
+    this.loading= true;
+    this.loadingText = "Retrieving Please Wait ...."
     this.SpinnerService.show();
     this.service.loadAllCompanyList().subscribe(
         (data) => {
           this.loadedData = data;
+          this.rerender();
           this.SpinnerService.hide();
         },
         error => {
@@ -209,7 +247,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   updateTurnoverRecord(record: Company) {
-    this.currDivLabel = `UPDATE Firm Type DETAILS`;
+    this.currDivLabel = `UPDATE FIRM TYPE DETAILS`;
     this.currDiv = 'updateTurnOver';
     this.updateTurnOverDetailsForm.reset();
     this.updateTurnOverDetailsForm?.get('companyProfileID')?.setValue(record.id);

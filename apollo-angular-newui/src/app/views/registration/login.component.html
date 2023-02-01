@@ -755,15 +755,18 @@
 
 </style>
 <div class="container-fluid" style="margin-top: 5%">
-    <div class="loading-spinner ">
-        <ngx-spinner
-                bdColor="rgba(51,51,51,0.8)"
-                size="medium"
-                color="#fff"
-                type="ball-scale-multiple"
-        >
-            <p style="font-size: 20px; color: white">Loading Please Wait...</p>
-        </ngx-spinner>
+    <div *ngIf="loading">
+
+        <div class="loading-spinner ">
+            <ngx-spinner
+                    bdColor="rgba(51,51,51,0.8)"
+                    size="medium"
+                    color="#fff"
+                    type="ball-scale-multiple"
+            >
+                <p style="font-size: 20px; color: white">{{loadingText}}</p>
+            </ngx-spinner>
+        </div>
     </div>
     <h2 class="welcome">
         Welcome
@@ -817,9 +820,13 @@
     <br>
     <a class="reset-credentials" href="#" routerLink="/register">Sign Up</a>
     <br>
+    <a class="reset-credentials" href="./assets/usermanual/20220616KIMS-Manufacturer_User_Interface_Manual-QualityAssurance%20v2.pdf" target="_blank">QA Manufacturer User Manual</a>
+    <br>
     <a class="reset-credentials" href="#" routerLink="/register/registerTivet">Sign Up As A Tivet/Ngo/Self Help Group</a>
     <br>
     <a class="reset-credentials" href="#" routerLink="/request-standards">Request For A Standard</a>
+    <br>
+    <a class="reset-credentials" href="#" routerLink="/comStdRequest">Request For A Company Standard</a>
     <br>
     <a class="reset-credentials" href="#" routerLink="/complain">Fill in Complain</a>
     <br>

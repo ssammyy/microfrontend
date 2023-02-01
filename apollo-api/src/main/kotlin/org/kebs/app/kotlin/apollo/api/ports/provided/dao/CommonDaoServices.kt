@@ -231,7 +231,7 @@ class CommonDaoServices(
     fun serializeToXml(fileName: String, obj: Any): File {
         try {
             val xmlString = xmlMapper.writeValueAsString(obj)
-            KotlinLogging.logger { }.info(":::::: The XML String: $xmlString :::::::")
+           // KotlinLogging.logger { }.info(":::::: The XML String: $xmlString :::::::")
 
 //            val targetFile = File(fileName)
             val targetFile = File(Files.createTempDir(), fileName)
@@ -327,7 +327,7 @@ class CommonDaoServices(
 
         val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
         val formatted = current.format(formatter)
-        KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
+       // KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
 
         //TODO: Add static fields to config file
         var finalFileName = filePrefix
@@ -340,7 +340,7 @@ class CommonDaoServices(
             .plus(".xml")
         finalFileName = finalFileName.replace("\\s".toRegex(), "")
 
-        KotlinLogging.logger { }.info(":::::: Final filename: $finalFileName :::::::")
+      //  KotlinLogging.logger { }.info(":::::: Final filename: $finalFileName :::::::")
 
         return finalFileName
     }
@@ -1592,11 +1592,12 @@ class CommonDaoServices(
         valuesMapped: Any,
         map: ServiceMapsEntity,
         sr: ServiceRequestsEntity,
-        attachmentFilePath: String? = null
+        attachmentFilePath: String? = null,
+        subjectAppendValue: String? = null
     ): Boolean {
 
         KotlinLogging.logger { }.info { "Started Mail process" }
-        notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr)
+        notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr, subjectAppendValue)
             ?.let { list ->
                 list.forEach { buffer ->
                     /**
@@ -1633,11 +1634,12 @@ class CommonDaoServices(
         email: MutableList<String?>,
         uuid: String,
         data: Any?,
-        sr: ServiceRequestsEntity? = null
+        sr: ServiceRequestsEntity? = null,
+        subjectAppendValue: String? = null
     ): List<NotificationsBufferEntity>? {
         notificationsRepo.findByServiceMapIdAndUuidAndStatus(map, uuid, map.activeStatus)
             ?.let { notifications ->
-                return generateBufferedNotification(notifications, map, email, data, sr)
+                return generateBufferedNotification(notifications, map, email, data, sr,subjectAppendValue)
             }
             ?: throw MissingConfigurationException("Notification for current Scenario is missing, review setup and try again later")
 
@@ -1720,7 +1722,8 @@ class CommonDaoServices(
         map: ServiceMapsEntity,
         emails: MutableList<String?>,
         data: Any?,
-        sr: ServiceRequestsEntity? = null
+        sr: ServiceRequestsEntity? = null,
+        subjectAppendValue: String? = null
     ): List<NotificationsBufferEntity>? {
         val buffers = mutableListOf<NotificationsBufferEntity>()
 
@@ -1735,7 +1738,14 @@ class CommonDaoServices(
             var buffer = NotificationsBufferEntity()
             with(buffer) {
                 messageBody = composeMessage(data, notification)
-                subject = notification.subject
+                subject = when {
+                    subjectAppendValue!=null -> {
+                        notification.varField2 +" "+notification.subject
+                    }
+                    else -> {
+                        notification.subject
+                    }
+                }
                 serviceRequestId = sr?.id
                 transactionReference = sr?.transactionReference
                 sender = notification.sender

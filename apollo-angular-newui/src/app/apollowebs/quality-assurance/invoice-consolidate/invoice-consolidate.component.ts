@@ -13,6 +13,9 @@ import Swal from 'sweetalert2';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {DataTableDirective} from "angular-datatables";
 import {HttpErrorResponse} from "@angular/common/http";
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
+import {selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
+import {Store} from '@ngrx/store';
 
 declare interface DataTable {
   headerRow: string[];
@@ -32,31 +35,40 @@ export class InvoiceConsolidateComponent implements OnInit {
   public allInvoiceData: PermitInvoiceDto[];
   tasks: PermitInvoiceDto[] = [];
 
+  SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
+
   // consolidatedInvoice: GenerateInvoiceDto;
   name: string;
   checkboxGroup: FormGroup;
   submittedValue: any;
   final_array = [];
   selected = [];
-  messages = []
+  messages = [];
   isWithHolding = 0;
+  branchID: number;
   // permitInvoicesIDS = [];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
-  isDtInitialized: boolean = false
+  isDtInitialized: boolean = false;
   loadingText: string;
 
   constructor(
       private qaService: QaService,
       private router: Router,
+      private store$: Store<any>,
       private fb: FormBuilder,
       private SpinnerService: NgxSpinnerService,
   ) {
   }
 
   ngOnInit() {
+
+    this.store$.select(selectCompanyInfoDtoStateData).pipe().subscribe((u) => {
+      this.branchID = u.branchId;
+    });
+
     this.checkboxGroup = this.fb.group({
      });
     const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
@@ -141,6 +153,10 @@ export class InvoiceConsolidateComponent implements OnInit {
               });
               this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
             },
+            (error: HttpErrorResponse) => {
+              alert(error.message);
+              this.SpinnerService.hide();
+            }
         );
       } else if (
           /* Read more about handling dismissals below */
@@ -210,6 +226,10 @@ export class InvoiceConsolidateComponent implements OnInit {
               });
               this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
             },
+            (error: HttpErrorResponse) => {
+              alert(error.message);
+              this.SpinnerService.hide();
+            }
         );
       } else if (
           /* Read more about handling dismissals below */
@@ -229,7 +249,7 @@ export class InvoiceConsolidateComponent implements OnInit {
 
 
   public getSPCTasks(): void {
-    this.loadingText = "Retrieving Invoices Please Wait ...."
+    this.loadingText = 'Retrieving Invoices Please Wait ....'
 
     this.SpinnerService.show();
     this.qaService.loadInvoiceListWithNoBatchID().subscribe(

@@ -70,6 +70,7 @@ export class ApiEndpointService {
     public static STL_CONTEXT = '/api/v1/migration/stdLevy';
     public static SL_CONTEXT = '/api/auth';
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
+    public static QA_INTERNAL_USER_CONTEXT = `${ApiEndpointService.QA_CONTEXT}/internal-users`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
     public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/sd/wa`;
@@ -115,7 +116,10 @@ export class ApiEndpointService {
         RESET_PASSWORD_VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/resetPasswordValidateToken`,
         VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
         REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
+        REGISTER_TIVET: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerTivet`,
+
         COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
+
         USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/`,
         USER_NOTIFICATION: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/notifications/`,
         USER_DETAILS_SIGNATURE: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/signature`,
@@ -256,6 +260,9 @@ export class ApiEndpointService {
         PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
         PERMIT_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
+        PERMIT_LIST_MIGRATION_DMARK: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded-dmark`,
+        PERMIT_LIST_MIGRATION_FMARK: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded-fmark`,
+
         PERMIT_LIST_ALL: `${ApiEndpointService.QA_CONTEXT}/permit/all-my-permits-loaded`,
         PERMIT_COMPLETELY_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list-completely`,
         DELETE_PERMIT: `${ApiEndpointService.QA_CONTEXT}/permit/delete`,
@@ -312,6 +319,7 @@ export class ApiEndpointService {
         INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
         INVOICE_DETAILS_BALANCE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-balance-details`,
         INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
+        INVOICE_LIST_NO_DETAILS_PERMIT_TYPE: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-permit-type`,
         INVOICE_LIST_ALL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list`,
         INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
         INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
@@ -391,7 +399,7 @@ export class ApiEndpointService {
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
         IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
-        IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getISProposals`,
+        IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getISProposals`,
         IST_VIEW_IS_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getProposal`,
         IST_VIEW_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getProposals`,
         IST_VIEW_IS_PROPOSALS_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/proposal`,
@@ -472,9 +480,9 @@ export class ApiEndpointService {
         ICT_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadDraft`,
         ICT_UPLOAD_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/draft-file-upload`,
         ICT_JC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getJcSecTasks`,
-        ICT_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.SD_ICT_CONTEXT}/view/comDraft`,
+        ICT_UPLOAD_DATA_VIEW_PD: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/view/comDraft`,
         ICT_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnStdDraft`,
-        ICT_COM_DECISION_ON_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnComStdDraft`,
+        ICT_COM_DECISION_ON_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/decisionOnComStdDraft`,
         ICT_COM_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComSecTasks`,
         ICT_PREPARE_COM_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadComStandard`,
         ICT_COM_UPLOAD_SD: `${ApiEndpointService.SD_ICT_CONTEXT}/std-file-upload`,
@@ -484,21 +492,28 @@ export class ApiEndpointService {
 
 
         ICT_COM_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequest`,
+        ICT_COM_STD_REQUEST_PROCESS: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequestProcess`,
         ICT_COM_STD_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraft`,
-        ICT_COM_STD_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraftForComment`,
+        ICT_COM_STD_DRAFT_COMMENT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getUploadedStdDraftForComment`,
         ICT_COM_STD_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/commentOnDraft`,
-        ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getApprovedStdDraft`,
+        ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getApprovedStdDraft`,
         ICT_COM_STD_EDITS_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdDraftForEditing`,
         ICT_COM_STD_PB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComStdPublishing`,
         ICT_COM_STD_COMMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAllComments`,
+        ICT_COM_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftComments`,
+        ICT_COM_DRAFT_COMMENTS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftCommentList`,
         ICT_COM_STD_REQUIREMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/checkRequirements`,
         ICT_COM_STD_EDIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/editStandardDraft`,
         ICT_COM_STD_DRAFTING: `${ApiEndpointService.SD_ICT_CONTEXT}/draughtStandard`,
         ICT_COM_STD_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/proofReadStandard`,
         ICT_COM_STD_DEC_PROOF_READ: `${ApiEndpointService.SD_ICT_CONTEXT}/approveProofReadStandard`,
+        ICT_DECISION_EDITED_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/approveEditedStandard`,
+        ICT_APPROVE_COM_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/approveCompanyStandard`,
+        ICT_UPLOAD_COM_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/uploadStandardDoc`,
+        ICT_REJECT_COM_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/rejectCompanyStandard`,
         ICT_COM_STD_SUBMIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftForEditing`,
-        ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getDraftDocumentList`,
-
+        ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftDocumentList`,
+        ICT_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/submitDraftComments`,
 
 
         // SD SYSTEMIC REVIEW
@@ -663,10 +678,18 @@ export class ApiEndpointService {
 
     };
 
+    public static QA_INTERNAL_USER_ENDPOINT = {
+        LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/permits-list`,
+    };
+
     public static COMPANY_PROFILE_ENDPOINT = {
         LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
         LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
+        TIVETS_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/tivetListing`,
+        TIVETS_UPDATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/updateTivet`,
+        TIVETS_REJECT: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/rejectTivet`,
+
     };
 
     public static MARKET_SURVEILLANCE_PDF_ENDPOINT = {
@@ -728,6 +751,7 @@ export class ApiEndpointService {
         MS_PRODUCT_CATEGORIES: `${ApiEndpointService.MS_COMMON_CONTEXT}/productCategories`,
         MS_BROAD_PRODUCT_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/broadProductCategory`,
         MS_PREDEFINED_RESOURCES_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/predefinedResourcesRequired`,
+        MS_OGA_REQUIRED: `${ApiEndpointService.MS_COMMON_CONTEXT}/ogaList`,
         MS_PRODUCTS: `${ApiEndpointService.MS_COMMON_CONTEXT}/products`,
         MS_PRODUCT_SUB_CATEGORY: `${ApiEndpointService.MS_COMMON_CONTEXT}/productSubcategory`,
         MS_NOTIFICATIONS: `${ApiEndpointService.MS_COMMON_CONTEXT}/notification-list`,
