@@ -614,4 +614,12 @@ export class NewDmarkPermitComponent implements OnInit {
         );
         this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
     }
+
+     // Renewal
+     id:any ="New Applications";
+     tabChange(ids:any){
+       this.id=ids;
+       console.log(this.id);
+     }
+
 }

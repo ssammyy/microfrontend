@@ -468,6 +468,12 @@ import { ComStdRequestProcessComponent } from './apollowebs/standards-developmen
 import { ManageTivetComponent } from './apollowebs/usermanagement/manage-tivet/manage-tivet.component';
 import { InvoiceConsolidateFmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-fmark/invoice-consolidate-fmark.component';
 import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component';
+import { SmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/smark-renewal-applications/smark-renewal-applications.component';
+import { FmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/fmark-renewal-applications/fmark-renewal-applications.component';
+import { SmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/smark-expired-applications/smark-expired-applications.component';
+import { FmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/fmark-expired-applications/fmark-expired-applications.component';
+import { DmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/dmark-expired-applications/dmark-expired-applications.component';
+import { DmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/dmark-renewal-applications/dmark-renewal-applications.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -971,6 +977,18 @@ import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance
         InvoiceConsolidateFmarkComponent,
 
         InvoiceConsolidateDmarkComponent,
+
+        SmarkRenewalApplicationsComponent,
+
+        FmarkRenewalApplicationsComponent,
+
+        SmarkExpiredApplicationsComponent,
+
+        FmarkExpiredApplicationsComponent,
+
+        DmarkExpiredApplicationsComponent,
+
+        DmarkRenewalApplicationsComponent,
 
     ],
     entryComponents: [LoaderComponent],

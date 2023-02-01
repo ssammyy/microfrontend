@@ -637,6 +637,12 @@ import {
 import {
     InvoiceConsolidateDmarkComponent
 } from "./apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component";
+import { DmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/dmark-expired-applications/dmark-expired-applications.component';
+import { DmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/dmark-renewal-applications/dmark-renewal-applications.component';
+import { FmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/fmark-expired-applications/fmark-expired-applications.component';
+import { FmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/fmark-renewal-applications/fmark-renewal-applications.component';
+import { SmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/smark-expired-applications/smark-expired-applications.component';
+import { SmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/smark-renewal-applications/smark-renewal-applications.component';
 export const routes: Routes = [
     {
         path: '',
@@ -988,6 +994,33 @@ export const routes: Routes = [
                 component: ImportInspectionComponent,
             },
         ],
+    },
+
+    {
+        path: 'smarkrenewals-applications', component: AdminLayoutComponent,
+        children: [{path: '', component: SmarkRenewalApplicationsComponent}],
+    },
+    {
+        path: 'smarkexpired-applications', component: AdminLayoutComponent,
+        children: [{path: '', component: SmarkExpiredApplicationsComponent}],
+    },
+
+    {
+        path: 'fmarkrenewals-applications', component: AdminLayoutComponent,
+        children: [{path: '', component: FmarkRenewalApplicationsComponent}],
+    },
+    {
+        path: 'fmarkexpired-applications', component: AdminLayoutComponent,
+        children: [{path: '', component: FmarkExpiredApplicationsComponent}],
+    },
+
+    {
+        path: 'dmarkrenewals-applications', component: AdminLayoutComponent,
+        children: [{path: '', component: DmarkRenewalApplicationsComponent}],
+    },
+    {
+        path: 'dmarkexpired-applications', component: AdminLayoutComponent,
+        children: [{path: '', component: DmarkExpiredApplicationsComponent}],
     },
 
 
