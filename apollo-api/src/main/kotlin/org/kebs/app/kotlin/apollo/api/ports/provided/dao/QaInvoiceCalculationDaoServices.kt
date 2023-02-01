@@ -56,8 +56,7 @@ class QaInvoiceCalculationDaoServices(
         commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
 
         val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
-        val selectedRate = ratesMap.firstOrNull {
-            manufactureTurnOver > (it.min ?: BigDecimal.ZERO) && manufactureTurnOver <= (it.max
+        val selectedRate = ratesMap.firstOrNull { manufactureTurnOver > (it.min ?: BigDecimal.ZERO) && manufactureTurnOver <= (it.max
                 ?: throw NullValueNotAllowedException(
                     "Max needs to be defined"
                 ))
@@ -378,15 +377,16 @@ class QaInvoiceCalculationDaoServices(
             "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         when {
             plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null && plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
-                generateInvoiceForCurrentTime(
-                    invoiceMaster,
-                    selectedRate,
-                    user,
-                    plantDetail,
-                    map,
-                    permit,
-                    tokenGenerated
-                )
+                 throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+            //                generateInvoiceForCurrentTime(
+//                    invoiceMaster,
+//                    selectedRate,
+//                    user,
+//                    plantDetail,
+//                    map,
+//                    permit,
+//                    tokenGenerated
+//                )
             }
             commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
                 val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
@@ -406,15 +406,16 @@ class QaInvoiceCalculationDaoServices(
                 qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
             }
             commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
-                generateInvoiceForCurrentTime(
-                    invoiceMaster,
-                    selectedRate,
-                    user,
-                    plantDetail,
-                    map,
-                    permit,
-                    tokenGenerated
-                )
+                throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+            //                generateInvoiceForCurrentTime(
+//                    invoiceMaster,
+//                    selectedRate,
+//                    user,
+//                    plantDetail,
+//                    map,
+//                    permit,
+//                    tokenGenerated
+//                )
             }
             else -> {
                 throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR LARGE FIRM")
@@ -464,14 +465,11 @@ class QaInvoiceCalculationDaoServices(
         qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
 
         with(plantDetail) {
-            tokenGiven =
-                "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+            tokenGiven = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             invoiceSharedId = invoiceDetailsInspectionFee.id
             inspectionFeeStatus = 1
             paidDate = commonDaoServices.getCurrentDate()
-            endingDate = commonDaoServices.addYearsToCurrentDate(
-                selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS")
-            )
+            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
         }
 
         qaDaoServices.updatePlantDetails(map, user, plantDetail)

@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.Header
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.*
 import org.kebs.app.kotlin.apollo.common.dto.kappa.response.NotificationResponseValue
+import org.kebs.app.kotlin.apollo.common.dto.qa.SageValuesDto
 import org.kebs.app.kotlin.apollo.common.dto.sage.response.SageNotificationResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
@@ -393,7 +394,7 @@ class PostInvoiceToSageServices(
     }
 
 
-    fun postInvoiceTransactionToSageQa(stgID: Long, invoiceAccountDetails: InvoiceDaoService.InvoiceAccountDetails, user: String, map: ServiceMapsEntity) {
+    fun postInvoiceTransactionToSageQa(stgID: Long, invoiceAccountDetails: InvoiceDaoService.InvoiceAccountDetails, user: String, map: ServiceMapsEntity,sageValuesDtoList: List<SageValuesDto>) {
         val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSageConfigIntegrationQa)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
         val invoiceFound = invoiceDaoService.findInvoiceStgReconciliationDetailsByID(stgID)
@@ -418,22 +419,20 @@ class PostInvoiceToSageServices(
                 InvoiceAmnt = invoiceFound.invoiceAmount
                 TaxPINNo = invoiceAccountDetails.accountNumber
                 Withholding = invoiceAccountDetails.isWithHolding
-                region = invoiceAccountDetails.region
-
-
-            }
-
-            val detailBody = SageQADetails().apply {
-                RevenueAcc = invoiceAccountDetails.reveneCode
-                RevenueAccDesc = invoiceAccountDetails.revenueDesc
-                Taxable = 1
-                MAmount = invoiceFound.invoiceAmount
-                TaxAmount = invoiceFound.invoiceTaxAmount
+//                region = invoiceAccountDetails.region
             }
 
             val list = mutableListOf<SageQADetails>()
-            list.add(detailBody)
-
+            sageValuesDtoList.forEach { detailsToBeAdded->
+                val detailBody = SageQADetails().apply {
+                    RevenueAcc = detailsToBeAdded.revenueAcc
+                    RevenueAccDesc = detailsToBeAdded.revenueAccDesc
+                    Taxable = 1
+                    MAmount = detailsToBeAdded.totalAmount
+                    TaxAmount = detailsToBeAdded.taxAmount
+                }
+                list.add(detailBody)
+            }
 
             val rootRequest = SageQARequestBodyB().apply {
                 header = headerBody
@@ -455,8 +454,8 @@ class PostInvoiceToSageServices(
                 customerCode = rootRequest.request?.CustomerCode
                 customerName = rootRequest.request?.CustomerName
                 invoiceDesc = rootRequest.request?.InvoiceDesc
-                revenueAcc = detailBody.RevenueAcc
-                revenueAccDesc = detailBody.RevenueAccDesc
+                revenueAcc = "detailBody.RevenueAcc"
+                revenueAccDesc = "detailBody.RevenueAccDesc"
                 taxable = rootRequest.details!![0].Taxable.toString()
                 invoiceAmnt = rootRequest.details!![0].MAmount.toString()
                 status = 0
