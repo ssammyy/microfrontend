@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.kebs.app.kotlin.apollo.api.service.AmountInWordsService
 import org.kebs.app.kotlin.apollo.api.service.BillStatus
+import org.kebs.app.kotlin.apollo.api.service.ValidateUrl
 import org.kebs.app.kotlin.apollo.store.model.PaymentMethodsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.IDFDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.IDFItemDetailsEntity
@@ -2512,4 +2513,30 @@ class PvocInvoiceData {
             return bills
         }
     }
+}
+
+class CallbackUrlForm {
+    @NotEmpty(message = "Required field")
+    @Size(max = 150, message = "Description should be upto 150 characters")
+    @ValidateUrl(message = "Invalid URL, please check its a valid http or https link")
+    var url: String? = null
+
+    @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
+    @Pattern(
+        regexp = "BASIC|DIGEST",
+        message = "Authentication should be either BASIC or DIGEST",
+        flags = [Pattern.Flag.CASE_INSENSITIVE]
+    )
+    var authentication: String? = null
+
+    @NotEmpty(message = "Required field")
+    @Size(max = 200, message = "Description should be upto 200 characters")
+    var username: String? = null
+
+
+    @NotEmpty(message = "Required field")
+    @Size(max = 4000, message = "Description should be upto 400 characters")
+    var password: String? = null
+
 }

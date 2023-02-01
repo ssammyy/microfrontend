@@ -7,6 +7,7 @@ import {Store} from "@ngrx/store";
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
 import {DataSource} from "ng2-smart-table/lib/lib/data-source/data-source";
 import {LocalDataSource} from "ng2-smart-table";
+import {ViewBillDetailsComponent} from "./view-bill-details/view-bill-details.component";
 
 @Component({
     selector: 'app-corporate-bills',
@@ -25,7 +26,8 @@ export class CorporateBillsComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'CloseBill', title: '<i class="btn btn-sm btn-primary">Close Bill</i>'}
+                {name: 'ViewBill', title: '<i class="fa fa-eye-slash">View Bill</i>'},
+                {name: 'CloseBill', title: '<i class="fa fa-window-close">Close Bill</i>'}
             ],
             position: 'right' // left|right
         },
@@ -177,10 +179,26 @@ export class CorporateBillsComponent implements OnInit {
         }
     }
 
+    viewBill(data: any) {
+        this.dialog.open(ViewBillDetailsComponent, {
+            data: {
+                billDetails: data,
+            }
+        }).afterClosed()
+            .subscribe(
+                res => {
+                    // Closed
+                }
+            )
+    }
+
     onCustomAction(event) {
         switch (event.action) {
             case 'CloseBill':
                 this.closeBill(event.data.id)
+                break
+            case 'ViewBill':
+                this.viewBill(event.data)
                 break
             default:
                 this.message = "Invalid action type: " + event.action

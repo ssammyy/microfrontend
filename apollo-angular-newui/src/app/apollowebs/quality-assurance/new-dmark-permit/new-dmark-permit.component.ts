@@ -32,6 +32,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
     public isLoading = false;
     loading = false;
+    setCloned = false;
     fullname = '';
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
@@ -56,6 +57,7 @@ export class NewDmarkPermitComponent implements OnInit {
     public uploadedFiles: FileList;
     public animation = true;
     public multiple = true;
+    loadingText: string;
 
     public permitID!: string;
 
@@ -236,7 +238,8 @@ export class NewDmarkPermitComponent implements OnInit {
         });
     }
 
-    public clonePermit(): void {
+     clonePermit() {
+        this.SpinnerService.show();
         this.route.fragment.subscribe(params => {
             this.permitID = this.selectedPermit;
             //(this.permitID);
@@ -259,7 +262,10 @@ export class NewDmarkPermitComponent implements OnInit {
                     },
                 );
                 this.sta1 = null;
-                this.sta3= null;
+                this.sta3 = null;
+                this.setCloned= false
+                this.SpinnerService.hide();
+
             }
         });
     }
@@ -323,6 +329,9 @@ export class NewDmarkPermitComponent implements OnInit {
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
             if (this.sta1 == null) {
+                this.loading = true
+                this.loadingText = "Saving"
+
                 this.SpinnerService.show();
                 this.qaService.savePermitSTA1(String(this.DMarkTypeID), this.sta1Form.value).subscribe(
                     (data) => {
@@ -370,6 +379,8 @@ export class NewDmarkPermitComponent implements OnInit {
     onClickSaveSTA3A(valid: boolean) {
         if (valid) {
             if (this.sta3 == null) {
+                this.loadingText = "Saving"
+
                 this.SpinnerService.show();
                 //(this.sta1.id.toString());
                 this.sta3 = {...this.sta3, ...this.sta3FormA.value};
@@ -622,4 +633,7 @@ export class NewDmarkPermitComponent implements OnInit {
        console.log(this.id);
      }
 
+    setClonedMethod() {
+        this.setCloned = true;
+    }
 }

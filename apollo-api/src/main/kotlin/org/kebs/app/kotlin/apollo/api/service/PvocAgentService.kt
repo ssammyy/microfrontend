@@ -60,6 +60,7 @@ class PvocAgentService(
         return response
     }
 
+    @EventListener
     fun consignmentDocumentStatusUpdateEvent(cd: CdInspectionStatusEvent) {
         try {
             val data = mutableMapOf<String, Any?>()
@@ -118,6 +119,29 @@ class PvocAgentService(
         } catch (ex: Exception) {
             KotlinLogging.logger { }.warn("Request failed state: ", ex)
         }
+    }
+
+    fun updateCallbackUrl(form: CallbackUrlForm): ApiResponseModel {
+        val response = ApiResponseModel()
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            if (apiClientService.updateClientCallbackDetails(auth.name, form)) {
+                response.message = "Callback updated"
+                response.responseCode = ResponseCodes.SUCCESS_CODE
+            } else {
+                response.message = "Callback update failed, check authentication method"
+                response.responseCode = ResponseCodes.FAILED_CODE
+            }
+        } catch (ex: Exception) {
+            response.message = "Failed to update callback event URL"
+            response.responseCode = ResponseCodes.FAILED_CODE
+        }
+        return response
+    }
+
+    fun listPushedEventsForClient(clientId: String?, pg: PageRequest): ApiResponseModel {
+        KotlinLogging.logger { }.info("Check published events for PVOC client: $clientId")
+        return this.apiClientService.listPublishedEvents(clientId, pg)
     }
 
     fun timelineIssues(yearMonth: Optional<String>): ApiResponseModel {
@@ -690,17 +714,20 @@ class PvocAgentService(
                         response.data = form
                         response.responseCode = ResponseCodes.SUCCESS_CODE
                         response.message = "Query received"
-
-                        // Send QUERY event to PVOC partner
-                        val data = KebsPvocQueryForm()
-                        data.certNumber = form.certNumber ?: "UNKNOWN"
-                        data.documentType = form.documentType ?: "UNKNOWN"
-                        data.invoiceNumber = form.invoiceNumber ?: "UNKNOWN"
-                        data.ucrNumber = form.ucrNumber ?: "NA"
-                        data.serialNumber = query.serialNumber ?: "NA"
-                        data.rfcNumber = form.rfcNumber
-                        data.kebsQuery = form.kebsQuery
-                        this.apiClientService.publishCallbackEvent(data, apiClient.clientId!!, "QUERY_REQUEST")
+                        try {
+                            // Send QUERY event to PVOC partner
+                            val data = KebsPvocQueryForm()
+                            data.certNumber = form.certNumber ?: "UNKNOWN"
+                            data.documentType = form.documentType ?: "UNKNOWN"
+                            data.invoiceNumber = form.invoiceNumber ?: "UNKNOWN"
+                            data.ucrNumber = form.ucrNumber ?: "NA"
+                            data.serialNumber = query.serialNumber ?: "NA"
+                            data.rfcNumber = form.rfcNumber
+                            data.kebsQuery = form.kebsQuery
+                            this.apiClientService.publishCallbackEvent(data, apiClient.clientId!!, "QUERY_REQUEST")
+                        } catch (ex: Exception) {
+                            KotlinLogging.logger { }.warn("Failed to send query via events URL: ${ex.localizedMessage}")
+                        }
                     } else {
                         response.message = "${form.documentType} with reference ${form.certNumber} does not exists"
                         response.responseCode = ResponseCodes.NOT_FOUND

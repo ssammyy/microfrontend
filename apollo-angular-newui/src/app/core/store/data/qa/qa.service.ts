@@ -765,12 +765,9 @@ export class QaService {
         );
     }
 
-    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto, permitTypeID: number, branchID: number): Observable<AllBatchInvoiceDetailsDto> {
+    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_SUBMIT);
-        const params = new HttpParams()
-            .set('permitTypeID', String(permitTypeID))
-            .set('branchID', String(branchID));
-        return this.http.post<AllBatchInvoiceDetailsDto>(url, data, {params}).pipe(
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {
                 return response;
             }),

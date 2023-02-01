@@ -15,11 +15,8 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header card-header-primary card-header-icon">
-                            <div class="card-icon">
-                                <i class="material-icons">assignment</i>
-                            </div>
-                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
-                                Tasks <span class="badge badge-primary">{{tasks.length}}</span>
+                            <div class="card-title float-left"><button type="button" class="btn btn-sm btn-info" style="color: white; font-weight: bold; width: auto;">
+                                Draft for Adoption of Company Standard
                             </button></div>
                         </div>
                         <div class="card-body">
@@ -119,7 +116,7 @@
                                                                                             </div>
                                                                                         </div>
                                                                                         <button mat-raised-button type="button" data-toggle="modal"
-                                                                                                (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id, 'docx')" target="_blank" class="btn btn-info btn-sm ">
+                                                                                                (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
                                                                                             <i class="fa fa-download"></i> Download Standard Draft</button>
 
                                                                                     </div>
@@ -154,6 +151,19 @@
                                                                     <input type="hidden" name="contactOneFullName" ngModel="{{actionRequest?.contactOneFullName}}" >
                                                                     <input type="hidden" name="contactOneTelephone" ngModel="{{actionRequest?.contactOneTelephone}}" >
                                                                     <input type="hidden" name="contactOneEmail" ngModel="{{actionRequest?.contactOneEmail}}" >
+
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.departmentId}}" name="departmentId" >
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.subject}}" name="subject" >
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.description}}" name="description" >
+
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactTwoFullName}}" name="contactTwoFullName" >
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactTwoTelephone}}" name="contactTwoTelephone" >
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactTwoEmail}}" name="contactTwoEmail" >
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactThreeFullName}}" name="contactThreeFullName" >
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactThreeTelephone}}" name="contactThreeTelephone" >
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactThreeEmail}}" name="contactThreeEmail" >
+
+
                                                                     <!--<input type="hidden" name="accentTo" ngModel="Yes" >-->
 
 

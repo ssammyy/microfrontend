@@ -132,9 +132,9 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['PERMIT_APPLICATION'],
         collapse: 'invoice',
         children: [
-            {path: 'consolidate_invoice', title: 'Consolidate Smark Invoices', ab: 'CSI',},
-            {path: 'consolidate_invoice_fmark', title: 'Consolidate Fmark Invoices', ab: 'CFI',},
-            {path: 'consolidate_invoice_dmark', title: 'Consolidate Dmark Invoices', ab: 'CDI',},
+            {path: 'consolidate_invoice', title: 'Consolidate All Invoices', ab: 'CAI'},
+            // {path: 'consolidate_invoice_fmark', title: 'Consolidate Fmark Invoices', ab: 'CFI',},
+            // {path: 'consolidate_invoice_dmark', title: 'Consolidate Dmark Invoices', ab: 'CDI',},
 
             {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
         ],
@@ -780,12 +780,12 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ'],
         collapse: 'cs',
         children: [
-            // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
-            {path: 'comStdList', title: 'Request Tasks', ab: 'RT'},
-            {path: 'comStdDraft', title: 'Drafting Tasks', ab: 'DT'},
-            {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
+           // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
+            {path: 'comStdList', title: 'Company Standard Requests', ab: 'CSR'},
+            {path: 'comStdDraft', title: 'Uploaded Drafts', ab: 'UT'},
+           // {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
             //{path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
-            {path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
+            //{path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
 
         ],
     },

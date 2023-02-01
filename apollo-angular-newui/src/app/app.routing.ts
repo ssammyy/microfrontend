@@ -1493,10 +1493,14 @@ export const routes: Routes = [
         children: [{path: '', component: IntStdProposalsComponent}],
     },
     {
-        path: 'isProposalComments', component: AdminLayoutComponent,
-        // canActivate: [RouteGuard],
-        children: [{path: '', component: IntStdCommentsComponent}],
+        path: 'isProposalComments/:proposalID',
+        component: IntStdCommentsComponent,
     },
+    // {
+    //     path: 'isProposalComments/:proposalID', component: AdminLayoutComponent,
+    //     // canActivate: [RouteGuard],
+    //     children: [{path: '', component: IntStdCommentsComponent}],
+    // },
     {
         path: 'isPrepareJustification', component: AdminLayoutComponent,
         // canActivate: [RouteGuard],

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {PVOCService} from "../../../../../core/store/data/pvoc/pvoc.service";
-import {LocalDataSource} from "ng2-smart-table";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
     selector: 'app-view-other-documents',
@@ -12,7 +12,7 @@ export class ViewOtherDocumentsComponent implements OnInit {
 
     message: string
     active: any = '1'
-    cocDetails: LocalDataSource
+    cocDetails: BehaviorSubject<any>
     documentId: any
     documentType: any
     documentTypeDesc: any
@@ -21,7 +21,7 @@ export class ViewOtherDocumentsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.cocDetails = new LocalDataSource()
+        this.cocDetails = new BehaviorSubject<any>(null)
         this.activatedRoute.paramMap
             .subscribe(
                 res => {
@@ -51,16 +51,13 @@ export class ViewOtherDocumentsComponent implements OnInit {
 
     loadCocDetails() {
         this.message = null
-        this.cocDetails.empty()
-            .then((res) => {
-                // Cleared coc documents
-            })
+        this.cocDetails.next(null)
 
         this.pvocService.loadCocDetails(this.documentId)
             .subscribe(
                 res => {
                     if (res.responseCode == "00") {
-                        this.cocDetails.load(res.data)
+                        this.cocDetails.next(res.data)
                     } else {
                         this.message = res.message
                     }

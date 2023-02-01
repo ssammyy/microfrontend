@@ -128,7 +128,6 @@ class ForeignPvocIntegrations(
                     cocType = "COC"
                     documentsType = "F"
                     productCategory = "UNKNOWN"
-                    partner = null
                     createdBy = commonDaoServices.loggedInUserAuthentication().name
                     createdOn = commonDaoServices.getTimestamp()
                 }
@@ -218,7 +217,6 @@ class ForeignPvocIntegrations(
                     cocType = "NCR"
                     documentsType = "F"
                     productCategory = "UNKNOWN"
-                    partner = null
                     createdBy = commonDaoServices.loggedInUserAuthentication().name
                     createdOn = commonDaoServices.getTimestamp()
                 }

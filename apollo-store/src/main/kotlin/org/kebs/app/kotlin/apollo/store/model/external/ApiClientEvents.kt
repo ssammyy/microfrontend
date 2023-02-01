@@ -6,9 +6,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "API_APPLICATION_CLIENT_EVENTS")
-class ApiClientEvents: Serializable {
+class ApiClientEvents : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "API_APPLICATION_CLIENT_EVENTS_SEQ_GEN", sequenceName = "API_APPLICATION_CLIENT_EVENTS_SEQ", allocationSize = 1)
+    @SequenceGenerator(
+        name = "API_APPLICATION_CLIENT_EVENTS_SEQ_GEN",
+        sequenceName = "API_APPLICATION_CLIENT_EVENTS_SEQ",
+        allocationSize = 1
+    )
     @GeneratedValue(generator = "API_APPLICATION_CLIENT_EVENTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0
@@ -16,16 +20,22 @@ class ApiClientEvents: Serializable {
     @Column(name = "CLIENT_ID")
     var agentId: Long = 0
 
+    @Column(name = "CLIENT_USER_ID")
+    var clientId: String? = null
+
     @Column(name = "EVENT_NAME", nullable = false)
     var eventName: String? = null
 
     @Column(name = "EVENT_TYPE", nullable = false)
     var eventType: String? = null
 
-    @Column(name = "CONTACT_EMAIL", nullable = false)
+    @Column(name = "DATA_CHECKSUM", nullable = false)
+    var checksum: String? = null
+
+    @Column(name = "CONTACT_EMAIL")
     var contactEmail: String? = null
 
-    @Column(name = "CONTENT", nullable = false)
+    @Column(name = "CONTENT", nullable = false, length = 4000)
     var eventContents: String? = null
 
     @Column(name = "STATUS")

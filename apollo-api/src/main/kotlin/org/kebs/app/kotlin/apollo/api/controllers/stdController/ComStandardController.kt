@@ -29,6 +29,7 @@ class ComStandardController (val comStandardService: ComStandardService,
                              private val companyStandardRepository: CompanyStandardRepository,
                              private val comStandardRequestUploadsRepository: ComStandardRequestUploadsRepository,
                              private val comStandardRequestRepository: ComStandardRequestRepository,
+                             private val standardRepository: StandardRepository,
 
                              ) {
 
@@ -520,7 +521,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
     }
 
-    @GetMapping("/company_standard/getDraftCommentList")
+    @GetMapping("/anonymous/company_standard/getDraftCommentList")
     fun getDraftCommentList(
         response: HttpServletResponse,
         @RequestParam("draftID") draftID: Long
@@ -528,7 +529,7 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getDraftCommentList(draftID)
     }
 
-    @GetMapping("/company_standard/getDraftComments")
+    @GetMapping("/anonymous/company_standard/getDraftComments")
     fun getDraftComments(@RequestParam("draftID") draftID: Long):MutableIterable<ComDraftComments>?
     {
         return comStandardService.getDraftComments(draftID)
@@ -581,8 +582,8 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/decisionOnComStdDraft")
+   // @PreAuthorize("hasAuthority('JC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/anonymous/company_standard/decisionOnComStdDraft")
     fun decisionOnComStdDraft(@RequestBody comStdDraftDecisionDto: ComStdDraftDecisionDto
     ) : ServerResponse
     {
@@ -596,6 +597,20 @@ class ComStandardController (val comStandardService: ComStandardService,
             clause=comStdDraftDecisionDto.clause
             special=comStdDraftDecisionDto.special
             requestNumber=comStdDraftDecisionDto.requestNumber
+            companyName=comStdDraftDecisionDto.companyName
+            companyPhone=comStdDraftDecisionDto.companyPhone
+            contactOneFullName=comStdDraftDecisionDto.contactOneFullName
+            contactOneEmail=comStdDraftDecisionDto.contactOneEmail
+            contactOneTelephone=comStdDraftDecisionDto.contactOneTelephone
+            departmentId=comStdDraftDecisionDto.departmentId
+            subject=comStdDraftDecisionDto.subject
+            description=comStdDraftDecisionDto.description
+            contactTwoFullName=comStdDraftDecisionDto.contactTwoFullName
+            contactTwoTelephone=comStdDraftDecisionDto.contactTwoTelephone
+            contactTwoEmail=comStdDraftDecisionDto.contactTwoEmail
+            contactThreeFullName=comStdDraftDecisionDto.contactThreeFullName
+            contactThreeTelephone=comStdDraftDecisionDto.contactThreeTelephone
+            contactThreeEmail=comStdDraftDecisionDto.contactThreeEmail
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=comStdDraftDecisionDto.requestId
@@ -619,6 +634,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     fun submitDraftForEditing(@RequestBody isDraftDto: CSDraftDto): ServerResponse
     {
         val companyStandard= CompanyStandard().apply {
+            id=isDraftDto.id
             requestNumber=isDraftDto.requestNumber
             comStdNumber=isDraftDto.comStdNumber
             title=isDraftDto.title
@@ -631,6 +647,7 @@ class ComStandardController (val comStandardService: ComStandardService,
             documentType=isDraftDto.docName
             special=isDraftDto.special
             requestId=isDraftDto.requestId
+            draftId=isDraftDto.draftId
             departmentId=isDraftDto.departmentId
             subject=isDraftDto.subject
             description=isDraftDto.description
@@ -645,14 +662,14 @@ class ComStandardController (val comStandardService: ComStandardService,
             contactThreeEmail=isDraftDto.contactThreeEmail
             companyName=isDraftDto.companyName
             companyPhone=isDraftDto.companyPhone
-        }
-        val comStdDraft= ComStdDraft().apply {
-            id=isDraftDto.id
-        }
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
+            status=1
 
-        return ServerResponse(HttpStatus.OK,"Successfully Edited Draft",comStandardService.submitDraftForEditing(companyStandard,comStdDraft))
+        }
+
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
+
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Draft",comStandardService.submitDraftForEditing(companyStandard))
     }
 
     @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -666,7 +683,7 @@ class ComStandardController (val comStandardService: ComStandardService,
     @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getComStdPublishing")
     @ResponseBody
-    fun getComStdPublishing(): MutableList<COMUploadedDraft>
+    fun getComStdPublishing(): MutableList<ComStandard>
     {
         return comStandardService.getComStdPublishing()
     }
@@ -705,19 +722,48 @@ class ComStandardController (val comStandardService: ComStandardService,
     @ResponseBody
     fun editStandardDraft(@RequestBody isDraftDto: CSDraftDto): ServerResponse
     {
+        val draught= isDraftDto.draughting
+
+        var statusNm: Long? = 0
+
+         statusNm = if (draught == "Yes") {
+                    4
+                } else {
+                    5
+                }
 
         val companyStandard= CompanyStandard().apply {
-            requestNumber=isDraftDto.requestNumber
+            draughting=isDraftDto.draughting
             id=isDraftDto.id
+            requestNumber=isDraftDto.requestNumber
+            comStdNumber=isDraftDto.comStdNumber
             title=isDraftDto.title
             scope=isDraftDto.scope
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            preparedBy=isDraftDto.preparedBy
             documentType=isDraftDto.docName
-            comStdNumber=isDraftDto.comStdNumber
             special=isDraftDto.special
-            draughting=isDraftDto.draughting
+            requestId=isDraftDto.requestId
+            draftId=isDraftDto.draftId
+            departmentId=isDraftDto.departmentId
+            subject=isDraftDto.subject
+            description=isDraftDto.description
+            contactOneFullName=isDraftDto.contactOneFullName
+            contactOneTelephone=isDraftDto.contactOneTelephone
+            contactOneEmail=isDraftDto.contactOneEmail
+            contactTwoFullName=isDraftDto.contactTwoFullName
+            contactTwoTelephone=isDraftDto.contactTwoTelephone
+            contactTwoEmail=isDraftDto.contactTwoEmail
+            contactThreeFullName=isDraftDto.contactThreeFullName
+            contactThreeTelephone=isDraftDto.contactThreeTelephone
+            contactThreeEmail=isDraftDto.contactThreeEmail
+            companyName=isDraftDto.companyName
+            companyPhone=isDraftDto.companyPhone
+            status=statusNm
+
+
         }
 
         return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",comStandardService.editStandardDraft(companyStandard))
@@ -738,17 +784,38 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
 
         val companyStandard= CompanyStandard().apply {
-            requestNumber=isDraftDto.requestNumber
+
+            draughting="Yes"
             id=isDraftDto.id
+            requestNumber=isDraftDto.requestNumber
+            comStdNumber=isDraftDto.comStdNumber
             title=isDraftDto.title
             scope=isDraftDto.scope
             normativeReference=isDraftDto.normativeReference
             symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
             clause=isDraftDto.clause
+            preparedBy=isDraftDto.preparedBy
             documentType=isDraftDto.docName
-            comStdNumber=isDraftDto.comStdNumber
             special=isDraftDto.special
+            requestId=isDraftDto.requestId
+            draftId=isDraftDto.draftId
+            departmentId=isDraftDto.departmentId
+            subject=isDraftDto.subject
+            description=isDraftDto.description
+            contactOneFullName=isDraftDto.contactOneFullName
+            contactOneTelephone=isDraftDto.contactOneTelephone
+            contactOneEmail=isDraftDto.contactOneEmail
+            contactTwoFullName=isDraftDto.contactTwoFullName
+            contactTwoTelephone=isDraftDto.contactTwoTelephone
+            contactTwoEmail=isDraftDto.contactTwoEmail
+            contactThreeFullName=isDraftDto.contactThreeFullName
+            contactThreeTelephone=isDraftDto.contactThreeTelephone
+            contactThreeEmail=isDraftDto.contactThreeEmail
+            companyName=isDraftDto.companyName
+            companyPhone=isDraftDto.companyPhone
+            status=5
         }
+
         return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",comStandardService.draughtStandard(companyStandard))
     }
 
@@ -767,16 +834,29 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
 
         val companyStandard= CompanyStandard().apply {
-            requestNumber=isDraftDto.requestNumber
+            draughting=isDraftDto.draughting
             id=isDraftDto.id
-            title=isDraftDto.title
-            scope=isDraftDto.scope
-            normativeReference=isDraftDto.normativeReference
-            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-            clause=isDraftDto.clause
-            documentType=isDraftDto.docName
+            requestNumber=isDraftDto.requestNumber
             comStdNumber=isDraftDto.comStdNumber
-            special=isDraftDto.special
+            documentType=isDraftDto.docName
+            requestId=isDraftDto.requestId
+            draftId=isDraftDto.draftId
+            departmentId=isDraftDto.departmentId
+            subject=isDraftDto.subject
+            description=isDraftDto.description
+            contactOneFullName=isDraftDto.contactOneFullName
+            contactOneTelephone=isDraftDto.contactOneTelephone
+            contactOneEmail=isDraftDto.contactOneEmail
+            contactTwoFullName=isDraftDto.contactTwoFullName
+            contactTwoTelephone=isDraftDto.contactTwoTelephone
+            contactTwoEmail=isDraftDto.contactTwoEmail
+            contactThreeFullName=isDraftDto.contactThreeFullName
+            contactThreeTelephone=isDraftDto.contactThreeTelephone
+            contactThreeEmail=isDraftDto.contactThreeEmail
+            companyName=isDraftDto.companyName
+            companyPhone=isDraftDto.companyPhone
+            status=6
+
         }
         return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",comStandardService.proofReadStandard(companyStandard))
     }
@@ -796,13 +876,16 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
         val companyStandard= CompanyStandard().apply {
             accentTo=iSDraftDecisions.accentTo
-            id=iSDraftDecisions.draftId
+            id=iSDraftDecisions.id
+            draftId=iSDraftDecisions.draftId
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=iSDraftDecisions.requestId
             remarks=iSDraftDecisions.comments
         }
 
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Status Check" + gson.toJson(iSDraftDecisions) }
         return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveProofReadStandard(companyStandard,companyStandardRemarks))
 
     }
@@ -823,12 +906,19 @@ class ComStandardController (val comStandardService: ComStandardService,
     {
         val companyStandard= CompanyStandard().apply {
             accentTo=iSDraftDecisions.accentTo
-            id=iSDraftDecisions.draftId
+            id=iSDraftDecisions.id
+            draftId=iSDraftDecisions.draftId
+
+
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=iSDraftDecisions.requestId
             remarks=iSDraftDecisions.comments
         }
+
+               // val gson = Gson()
+       // KotlinLogging.logger { }.info { "Status Check" + gson.toJson(iSDraftDecisions) }
+
 
         return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveEditedStandard(companyStandard,companyStandardRemarks))
 
@@ -844,13 +934,36 @@ class ComStandardController (val comStandardService: ComStandardService,
 
     //SAC Decision
     @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/company_standard/approveInternationalStandard")
-    fun approveInternationalStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
+    @PostMapping("/company_standard/rejectCompanyStandard")
+    fun rejectCompanyStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
     ) : ServerResponse
     {
         val companyStandard= CompanyStandard().apply {
             accentTo=iSDraftDecisions.accentTo
-            id=iSDraftDecisions.draftId
+            id=iSDraftDecisions.id
+            draftId=iSDraftDecisions.draftId
+
+        }
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=iSDraftDecisions.requestId
+            remarks=iSDraftDecisions.comments
+        }
+
+
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.rejectCompanyStandard(companyStandard,companyStandardRemarks))
+
+    }
+
+
+    @PreAuthorize("hasAuthority('SAC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/company_standard/approveCompanyStandard")
+    fun approveCompanyStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
+    ) : ServerResponse
+    {
+        val companyStandard= CompanyStandard().apply {
+            accentTo=iSDraftDecisions.accentTo
+            id=iSDraftDecisions.id
+            draftId=iSDraftDecisions.draftId
 
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
@@ -860,19 +973,50 @@ class ComStandardController (val comStandardService: ComStandardService,
 
         val standard= Standard().apply {
             title=iSDraftDecisions.title
-            normativeReference=iSDraftDecisions.normativeReference
-            symbolsAbbreviatedTerms=iSDraftDecisions.symbolsAbbreviatedTerms
-            clause=iSDraftDecisions.clause
-            scope=iSDraftDecisions.scope
-            special=iSDraftDecisions.special
             standardNumber=iSDraftDecisions.standardNumber
+            comStdId=iSDraftDecisions.id
         }
 
 
 
-        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveInternationalStandard(companyStandard,companyStandardRemarks,standard))
+        return ServerResponse(HttpStatus.OK,"Decision",comStandardService.approveCompanyStandard(companyStandard,companyStandardRemarks,standard))
 
     }
+
+    //Upload Standard
+    @PostMapping("/company_standard/uploadStandardDoc")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadStandardDoc(
+        @RequestParam("standardID") standardID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val standard = standardRepository.findByIdOrNull(standardID)?: throw Exception("STANDARD DOCUMENT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = DatKebsSdStandardsEntity()
+            with(upload) {
+                sdDocumentId = standard.id
+
+            }
+            comStandardService.uploadCompanyStandardUpload(
+                upload,
+                u,
+                "COMPANY STANDARD",
+                loggedInUser,
+                "COMPANY STANDARD"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+
 
 
     @GetMapping("/company_standard/getCSNumber")
@@ -913,6 +1057,7 @@ class ComStandardController (val comStandardService: ComStandardService,
 
         return sm
     }
+
 
 
 

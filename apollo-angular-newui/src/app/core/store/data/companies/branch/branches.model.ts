@@ -14,9 +14,14 @@ export interface Branches {
     plotNo: string;
     designation: string;
     contactPerson: string;
-  status: boolean;
-  descriptions: string;
-  region: number;
-  county: number;
-  town: number;
+    status: boolean;
+    descriptions: string;
+    region: number;
+    county: number;
+    town: number;
+    inspectionFeeStatus: boolean ;
+    paidDate: Date;
+    endingDate: Date;
+    invoiceSharedId: number;
+    tokenGiven: string;
 }
