@@ -7583,7 +7583,7 @@ class QADaoServices(
         awardedPermitNumber: String
     ): List<PermitMigrationApplicationsEntity> {
 
-        permitMigratedRepo.findByPermitNumber(awardedPermitNumber)
+        permitMigratedRepo.findByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
             ?.let { permitList ->
                 return permitList
             }
@@ -7624,7 +7624,7 @@ class QADaoServices(
         awardedPermitNumber: String
     ): List<PermitMigrationApplicationsEntityDmark> {
 
-        permitMigratedRepoDmark.findAllPermitsByPermitNumber(awardedPermitNumber)
+        permitMigratedRepoDmark.findByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
             ?.let { permitList ->
                 return permitList
             }
@@ -7649,7 +7649,7 @@ class QADaoServices(
         awardedPermitNumber: String
     ): List<PermitMigrationApplicationsEntityFmark> {
 
-        permitMigratedRepoFmark.findByPermitNumber(awardedPermitNumber)
+        permitMigratedRepoFmark.findByPermitNumberOrderByDateOfExpiryDesc(awardedPermitNumber)
             ?.let { permitList ->
                 return permitList
             }

@@ -41,14 +41,16 @@ export class LoginComponent implements OnInit {
   }
 
   public onClickLogin(valid: Boolean) {
-    this.loading= true;
-    this.loadingText = "Logging You In Please Wait ...."
-    this.SpinnerService.show();
+
     if (valid) {
+      this.loading= true;
+      this.loadingText = "Logging You In Please Wait ...."
+      this.SpinnerService.show();
       this.credential = this.loginForm.value;
       this.store$.dispatch(loadAuths({payload: this.credential, redirectUrl: this.returnUrl}));
 
     }
+
 
   }
 

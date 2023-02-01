@@ -911,7 +911,6 @@
                                         id="yearlyTurnover"
                                         name="yearlyTurnover"
                                         required="required" style="width: 100%; height: 60%">
-                                    <option ngValue="null" selected>Please select</option>
                                     <option  [ngValue]="200000" class="dropdown-item"> 200,000 and Below</option>
                                     <option  [ngValue]="500000" class="dropdown-item"> 200,001 - 500,000</option>
                                     <option  [ngValue]="500001" class="dropdown-item"> 500,000 and Above</option>
@@ -952,7 +951,7 @@
                                             [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessLines.errors }"
                                             formControlName="businessLines" id="businessLines"
                                             name="businessLines" required="required" style="width: 100%; height: 75%">
-                                        <option ngValue="null" selected>Please select</option>
+
                                         <option
                                                 *ngFor="let app of apps| filterPipe: {status: true}"
                                                 [ngValue]="app.id"
@@ -982,7 +981,7 @@
                                             [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessNatures.errors }"
                                             formControlName="businessNatures" id="businessNatures"
                                             name="businessNatures" required="required" style="width: 100%; height: 100%">
-                                        <option ngValue="null" selected>Please select</option>
+
                                         <option
                                                 *ngFor="let app of apps| filterPipe:{status: true, businessLinesId:selectedBusinessLine }"
                                                 [ngValue]="app.id"
@@ -1205,7 +1204,7 @@
                                         [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
                                         formControlName="region" id="region"
                                         name="region" required="required" style="width: 100%; height: 60%">
-                                    <option ngValue="null" selected>Please select</option>
+
                                     <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
                                             class="dropdown-item">{{app.region}}</option>
                                 </select>
@@ -1224,7 +1223,7 @@
                                         [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
                                         formControlName="county" id="county"
                                         name="county" required="required" style="width: 100%; height: 60%">
-                                    <option ngValue="null" selected>Please select</option>
+
                                     <option
                                             *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
                                             [ngValue]="app.id"
@@ -1249,7 +1248,6 @@
                                     [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
                                     formControlName="town" id="town"
                                     name="town" required="required" style="width: 100%; height: 60%">
-                                <option ngValue="null" selected>Please select</option>
                                 <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
                                         [ngValue]="app.id"
                                         class="dropdown-item">{{app.town}}</option>
@@ -1476,6 +1474,9 @@
                     <h2 class="welcome">
                         Contact Person Phone Information
                     </h2>
+
+                </div>
+                <div class="row">
                     <h4 class="welcome">
                         Please Enter Your Phone Number To Receive Your OTP
                     </h4>
@@ -1491,13 +1492,15 @@
                         <table>
                             <tr>
                                 <td>
-                                    <input   class="form-control" style="color: white;font-size: 14px; width: 35px;" value="+254" required="required" disabled>
+                                    <input class="form-control" style="color: white;font-size: 14px; width: 35px;"
+                                           value="+254" required="required" disabled>
                                 </td>
-                                <td>  <input style="color: white;font-size: 14px;"
-                                             [ngClass]="{ 'is-invalid': submitted && formStepFiveForm.cellphone.errors }"
-                                             class="form-control two-column-input" formControlName="cellphone" id="cellphone"
-                                             name="cellphone"
-                                             placeholder="xxxxxxxxx" required="required" type="tel">
+                                <td><input style="color: white;font-size: 14px;"
+                                           [ngClass]="{ 'is-invalid': submitted && formStepFiveForm.cellphone.errors }"
+                                           class="form-control two-column-input" formControlName="cellphone"
+                                           id="cellphone"
+                                           name="cellphone"
+                                           placeholder="xxxxxxxxx" required="required" type="tel">
 
                                 </td>
                             </tr>
@@ -1509,11 +1512,13 @@
                         <br>
                     </div>
                     <div class="col">
+
                         <button (throttledClick)="onClickSendOtp()" [disabled]="otpSent"
                                 [hidden]="stepFiveForm.get('cellphone')?.invalid"
                                 [throttleTime]="5000" appPreventDoubleClick
                                 class="login-button mt-2"
                                 type="button"
+                                id="sendOtp"
 
                         >Send OTP {{secondsToHms(time)}} Secs
                         </button>

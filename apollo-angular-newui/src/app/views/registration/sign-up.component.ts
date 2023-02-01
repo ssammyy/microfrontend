@@ -12,7 +12,7 @@ import {
     Go,
     loadBrsValidations,
     loadCountyId,
-    loadRegistrations,
+    loadRegistrations, loadRegistrationsTivet,
     loadResponsesFailure,
     loadSendTokenToPhone,
     loadValidateTokenAndPhone,
@@ -331,6 +331,8 @@ export class SignUpComponent implements OnInit {
     }
 
     onClickValidateOtp() {
+        var sendOtp = document.getElementById("sendOtp");
+
         this.phoneValidated = true;
         this.store$.dispatch(loadValidateTokenAndPhone({
             payload: {
@@ -345,11 +347,12 @@ export class SignUpComponent implements OnInit {
                 // this.stepFourForm?.get('otp')?.reset();
                 this.phoneValidated = d;
                 if (this.phoneValidated) {
+                    this.userSoFar = {...this.userSoFar, ...this.stepFourForm?.value};
                     this.userSoFar = {...this.userSoFar, ...this.stepFiveForm.value};
                     this.company = {...this.company, ...this.companySoFar};
                     this.user = {...this.user, ...this.userSoFar};
 
-                    this.store$.dispatch(loadRegistrations({
+                    this.store$.dispatch(loadRegistrationsTivet({
                         payload: {company: this.company, user: this.user}
                     }));
 
@@ -361,6 +364,7 @@ export class SignUpComponent implements OnInit {
                     });
                 } else {
                     this.otpSent = false;
+                    sendOtp.textContent = "Resend OTP"
                     this.stepFiveForm.get('otp')?.reset();
                     this.store$.dispatch(loadResponsesFailure({
                         error: {
@@ -373,6 +377,7 @@ export class SignUpComponent implements OnInit {
 
             } else {
                 this.otpSent = false;
+                sendOtp.textContent = "Resend OTP"
                 this.phoneValidated = false;
                 // this.stepFourForm?.get('otp')?.reset();
                 return throwError('Could not validate token');
@@ -394,6 +399,8 @@ export class SignUpComponent implements OnInit {
     }
 
     onClickSendOtp() {
+        var sendOtp = document.getElementById("sendOtp");
+
         this.otpSent = true;
         this.time = 59;
         this.timer.subscribe(this.timerObserver);
@@ -405,6 +412,9 @@ export class SignUpComponent implements OnInit {
             this.validationCellphone === '' ||
             this.validationCellphone === null
         ) {
+            this.otpSent = false;
+            sendOtp.textContent = "Resend Otp"
+
             this.store$.dispatch(loadResponsesFailure({
                 error: {
                     payload: 'Enter a valid cellphone number',
@@ -425,7 +435,11 @@ export class SignUpComponent implements OnInit {
                 if (d) {
                     return this.otpSent = d;
                 } else {
+                    this.otpSent = false;
+                    sendOtp.textContent = "Resend Otp"
+
                     return throwError('Unable to send token');
+
                 }
             });
         }
