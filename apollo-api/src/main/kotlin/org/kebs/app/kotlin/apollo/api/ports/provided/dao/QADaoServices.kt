@@ -5463,7 +5463,6 @@ class QADaoServices(
         var invoiceBatchDetails: QaBatchInvoiceEntity? = null
         val sageValuesDtoList = mutableListOf<SageValuesDto>()
         try {
-
             var batchID = batchInvoiceDto.batchID
             batchInvoiceDto.permitInvoicesID
                 ?.forEach { permitId ->
@@ -5828,39 +5827,48 @@ class QADaoServices(
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
             val companyDetails = commonDaoServices.findCompanyProfileWithID(userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS"))
             val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
-            KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
-            val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
-            //Todo ask ken why list comming back does not have the product that is being generated for.
-            val productsManufacture = findAllProductManufactureInPlantWithPlantID(
-                s.activeStatus,
-                s.activeStatus,
-                s.inactiveStatus,
-                permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
-                plantDetail.id
-            )
-
-            KotlinLogging.logger { }.info { "PRODUCT SIZE BEFORE ADDING ONE = ${productsManufacture.size}" }
-//            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
-            when (permitType.id) {
-                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
-                        permit,
-                        user,
-                        manufactureTurnOver,
-                        productsManufacture.size.toLong(),
-                        plantDetail
+            when {
+                plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null && plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
+                    throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+                }
+                commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
+                    KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
+                    val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
+                    //Todo ask ken why list comming back does not have the product that is being generated for.
+                    val productsManufacture = findAllProductManufactureInPlantWithPlantID(
+                        s.activeStatus,
+                        s.activeStatus,
+                        s.inactiveStatus,
+                        permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
+                        plantDetail.id
                     )
-                }
 
-                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
-                }
+                    KotlinLogging.logger { }.info { "PRODUCT SIZE BEFORE ADDING ONE = ${productsManufacture.size}" }
+        //            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
+                    when (permitType.id) {
+                        applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                            invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
+                                permit,
+                                user,
+                                manufactureTurnOver,
+                                productsManufacture.size.toLong(),
+                                plantDetail
+                            )
+                        }
 
-                applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                    invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
+                        applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                            invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
+                        }
+
+                        applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                            invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
+                        }
+                    }
+                }
+                commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
+                    throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
                 }
             }
-
 
             sr.payload = "User[id= ${companyDetails.userId}]"
             sr.names = "${companyDetails.name} ${companyDetails.kraPin}"

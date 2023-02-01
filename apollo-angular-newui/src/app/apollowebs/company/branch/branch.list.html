@@ -46,6 +46,7 @@
                                         <th>ID#</th>
                                         <th>Building</th>
                                         <th>Active</th>
+                                        <th>Inspection Fee Paid</th>
                                         <th class="disabled-sorting text-right">Actions</th>
                                     </tr>
                                     </tfoot>
@@ -58,6 +59,12 @@
                                             </div>
                                             <ng-template #true_span><span id="true">Active</span></ng-template>
                                             <ng-template #false_span><span id="false">Inactive</span></ng-template>
+                                        </td>
+                                        <td>
+                                            <div *ngIf="theRecord.inspectionFeeStatus;  then true_span else false_span">
+                                            </div>
+                                            <ng-template #true_span><span id="true1">Paid</span></ng-template>
+                                            <ng-template #false_span><span id="false1">Not-Paid</span></ng-template>
                                         </td>
                                         <td class="text-right">
                                             <a (click)="viewRecord(theRecord)"

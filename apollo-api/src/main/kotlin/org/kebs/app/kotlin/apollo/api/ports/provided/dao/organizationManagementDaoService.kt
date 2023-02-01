@@ -855,6 +855,11 @@ class RegistrationManagementDaoService(
             region = it.region
             county = it.county
             town = it.town
+            inspectionFeeStatus =it.inspectionFeeStatus == applicationMapProperties.transactionActiveStatus
+            paidDate =it.paidDate
+            endingDate =it.endingDate
+            invoiceSharedId =it.invoiceSharedId
+            tokenGiven =it.tokenGiven
         }
     }
 
