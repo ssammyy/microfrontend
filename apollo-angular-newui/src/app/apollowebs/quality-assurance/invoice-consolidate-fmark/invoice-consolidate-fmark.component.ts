@@ -134,7 +134,7 @@ export class InvoiceConsolidateFmarkComponent implements OnInit {
         consolidatedInvoice.isWithHolding = this.isWithHolding
 
         console.log( consolidatedInvoice.isWithHolding)
-        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice, this.FMarkTypeID, this.branchID).subscribe(
+        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
             (data) => {
               console.log(data);
               this.SpinnerService.hide();
@@ -204,7 +204,7 @@ export class InvoiceConsolidateFmarkComponent implements OnInit {
             consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
             console.log('TEST CONSOLIDATE' + consolidatedInvoice);
             console.log(consolidatedInvoice.permitInvoicesID);
-            this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice, this.FMarkTypeID, this.branchID).subscribe(
+            this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
                 (data) => {
                   this.SpinnerService.hide();
                   swal.fire({

@@ -681,6 +681,39 @@ interface COMUploadedDraft{
     fun getCompanyphone(): String?
 }
 
+interface ComStandard {
+    fun getId(): Long?
+    fun getTitle(): String?
+    fun getScope(): String?
+    fun getNormativeReference(): String?
+    fun getSymbolsAbbreviatedTerms(): String?
+    fun getClause(): String?
+    fun getSpecial(): String?
+    fun getComStdNumber(): String?
+    fun getDocumentType(): String?
+    fun getPreparedBy(): String?
+    fun getUploadDate(): String?
+    fun getRequestNumber(): String?
+    fun getStatus(): String?
+    fun getRequestId(): String?
+    fun getDraftId(): String?
+    fun getDepartmentId(): Long?
+    fun getDepartmentName(): String?
+    fun getSubject(): String?
+    fun getDescription(): String?
+    fun getContactOneFullName(): String?
+    fun getContactOneTelephone(): String?
+    fun getContactOneEmail(): String?
+    fun getContactTwoFullName(): String?
+    fun getContactTwoTelephone(): String?
+    fun getContactTwoEmail(): String?
+    fun getContactThreeFullName(): String?
+    fun getContactThreeTelephone(): String?
+    fun getContactThreeEmail(): String?
+    fun getCompanyName(): String?
+    fun getCompanyPhone(): String?
+}
+
 interface ComStdRequest{
     fun getId(): Long?
     fun getRequestNumber(): String?

@@ -110,18 +110,20 @@ class IntStandardService(
 
         val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
 
+        val proposalId=proposal.id
+
         //iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
         iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
 
         //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-        val targetUrl = "https://kimsint.kebs.org/";
+        val targetUrl = "https://kimsint.kebs.org/isProposalComments/$proposalId";
         stakeholders?.forEach { s ->
             val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
             val recipient = s.email
             val user = s.name
-            val messageBody= "Dear $user,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. $targetUrl "
+            val messageBody= "Dear $user,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl "
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
@@ -130,7 +132,7 @@ class IntStandardService(
         if (listTwo != null) {
             for (recipient in listTwo) {
                 val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
-                val messageBody= "Hope You are Well,An adoption document has been uploaded Kindly login to the system to comment on it.Click on the Link below to view. ${targetUrl} "
+                val messageBody= "Hope You are Well,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl "
                 notifications.sendEmail(recipient, subject, messageBody)
 
             }

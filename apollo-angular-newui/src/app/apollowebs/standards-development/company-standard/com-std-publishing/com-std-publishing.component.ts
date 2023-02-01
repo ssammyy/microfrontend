@@ -30,7 +30,7 @@ export class ComStdPublishingComponent implements OnInit {
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
   isCheckRequirements:ISCheckRequirements[]=[];
-  public actionRequest: ISCheckRequirements | undefined;
+  public actionRequests: ISCheckRequirements | undefined;
   loadingText: string;
   approve: string;
   reject: string;
@@ -164,117 +164,117 @@ export class ComStdPublishingComponent implements OnInit {
 
   }
 
-  public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string): void{
+  public onOpenModals(iSCheckRequirement: ISCheckRequirements,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
     if (mode==='checkRequirementsMet'){
-      this.actionRequest=iSCheckRequirement;
+      this.actionRequests=iSCheckRequirement;
       button.setAttribute('data-target','#checkRequirementsMet');
 
       this.approveRequirementsFormGroup.patchValue(
           {
             accentTo: this.approve,
-            requestId: this.actionRequest.requestId,
-            justificationId: this.actionRequest.justificationNo,
-            draftId: this.actionRequest.id
+            requestId: this.actionRequests.requestId,
+            justificationId: this.actionRequests.justificationNo,
+            draftId: this.actionRequests.id
           }
       );
       this.rejectRequirementsFormGroup.patchValue(
           {
             accentTo: this.reject,
-            requestId: this.actionRequest.requestId,
-            justificationId: this.actionRequest.justificationNo,
-            draftId: this.actionRequest.id
+            requestId: this.actionRequests.requestId,
+            justificationId: this.actionRequests.justificationNo,
+            draftId: this.actionRequests.id
           }
       );
     }
     if (mode==='draftStandardEditing'){
-      this.actionRequest=iSCheckRequirement;
+      this.actionRequests=iSCheckRequirement;
       button.setAttribute('data-target','#draftStandardEditing');
 
       this.editDraughtFormGroup.patchValue(
           {
             accentTo: this.approve,
-            requestId: this.actionRequest.requestId,
-            justificationNo: this.actionRequest.justificationNo,
-            id: this.actionRequest.id,
-            title: this.actionRequest.title,
-            scope:this.actionRequest.scope,
-            normativeReference:this.actionRequest.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause: this.actionRequest.clause,
-            special: this.actionRequest.special,
-            docName:this.actionRequest.documentType,
-            standardNumber:this.actionRequest.isNumber
+            requestId: this.actionRequests.requestId,
+            justificationNo: this.actionRequests.justificationNo,
+            id: this.actionRequests.id,
+            title: this.actionRequests.title,
+            scope:this.actionRequests.scope,
+            normativeReference:this.actionRequests.normativeReference,
+            symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+            clause: this.actionRequests.clause,
+            special: this.actionRequests.special,
+            docName:this.actionRequests.documentType,
+            standardNumber:this.actionRequests.isNumber
           }
       );
 
     }
     if (mode==='standardDrafting'){
-      this.actionRequest=iSCheckRequirement;
+      this.actionRequests=iSCheckRequirement;
       button.setAttribute('data-target','#standardDrafting');
 
       this.draughtFormGroup.patchValue(
           {
             accentTo: this.approve,
-            requestId: this.actionRequest.requestId,
-            justificationNo: this.actionRequest.justificationNo,
-            id: this.actionRequest.id,
-            title: this.actionRequest.title,
-            scope:this.actionRequest.scope,
-            normativeReference:this.actionRequest.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause: this.actionRequest.clause,
-            special: this.actionRequest.special,
-            docName:this.actionRequest.documentType,
-            standardNumber:this.actionRequest.isNumber
+            requestId: this.actionRequests.requestId,
+            justificationNo: this.actionRequests.justificationNo,
+            id: this.actionRequests.id,
+            title: this.actionRequests.title,
+            scope:this.actionRequests.scope,
+            normativeReference:this.actionRequests.normativeReference,
+            symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+            clause: this.actionRequests.clause,
+            special: this.actionRequests.special,
+            docName:this.actionRequests.documentType,
+            standardNumber:this.actionRequests.isNumber
           }
       );
 
     }
     if (mode==='standardProofreading'){
-      this.actionRequest=iSCheckRequirement;
+      this.actionRequests=iSCheckRequirement;
       button.setAttribute('data-target','#standardProofreading');
 
       this.proofReadFormGroup.patchValue(
           {
             accentTo: this.approve,
-            requestId: this.actionRequest.requestId,
-            justificationNo: this.actionRequest.justificationNo,
-            id: this.actionRequest.id,
-            title: this.actionRequest.title,
-            scope:this.actionRequest.scope,
-            normativeReference:this.actionRequest.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause: this.actionRequest.clause,
-            special: this.actionRequest.special,
-            docName:this.actionRequest.documentType,
-            standardNumber:this.actionRequest.isNumber
+            requestId: this.actionRequests.requestId,
+            justificationNo: this.actionRequests.justificationNo,
+            id: this.actionRequests.id,
+            title: this.actionRequests.title,
+            scope:this.actionRequests.scope,
+            normativeReference:this.actionRequests.normativeReference,
+            symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+            clause: this.actionRequests.clause,
+            special: this.actionRequests.special,
+            docName:this.actionRequests.documentType,
+            standardNumber:this.actionRequests.isNumber
           }
       );
 
     }
     if (mode==='approveChanges'){
-      this.actionRequest=iSCheckRequirement;
+      this.actionRequests=iSCheckRequirement;
       button.setAttribute('data-target','#approveChanges');
 
       this.approveRequirementsFormGroup.patchValue(
           {
             accentTo: this.approve,
-            requestId: this.actionRequest.requestId,
-            justificationId: this.actionRequest.justificationNo,
-            draftId: this.actionRequest.id
+            requestId: this.actionRequests.requestId,
+            justificationId: this.actionRequests.justificationNo,
+            draftId: this.actionRequests.id
           }
       );
       this.rejectRequirementsFormGroup.patchValue(
           {
             accentTo: this.reject,
-            requestId: this.actionRequest.requestId,
-            justificationId: this.actionRequest.justificationNo,
-            draftId: this.actionRequest.id
+            requestId: this.actionRequests.requestId,
+            justificationId: this.actionRequests.justificationNo,
+            draftId: this.actionRequests.id
           }
       );
     }

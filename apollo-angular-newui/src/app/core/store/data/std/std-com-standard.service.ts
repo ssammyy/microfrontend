@@ -15,7 +15,7 @@ import {
   COMPreliminaryDraft,
   ComStandard,
   ComStandardJC,
-  ComStdAction, ComStdCommitteeRemarks, ComStdRemarks,
+  ComStdAction, ComStdCommitteeRemarks, ComStdDraftEdit, ComStdRemarks,
   ComStdRequest,
   Department, InternationalStandardsComments,
   ISCheckRequirements, ISDraftDecision, IStandardDraftEdit, IStandardUpload,
@@ -277,6 +277,25 @@ export class StdComStandardService {
       headers: {
         'enctype': 'multipart/form-data'
       }, params: {'comStdDraftID': comStdDraftID}
+    }).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          // console.warn(`getAllFault( ${fault.message} )`);
+          return throwError(fault);
+        })
+    );
+  }
+
+  //upload Draft Document
+  public uploadCompanyStandard(standardID: string, data: FormData): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_COM_STANDARD);
+
+    return this.http.post<any>(url, data, {
+      headers: {
+        'enctype': 'multipart/form-data'
+      }, params: {'standardID': standardID}
     }).pipe(
         map(function (response: any) {
           return response;
@@ -574,10 +593,10 @@ export class StdComStandardService {
     );
   }
 
-  public editStandardDraft(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+  public editStandardDraft(comStdDraftEdit: ComStdDraftEdit): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_EDIT_DRAFT);
     const params = new HttpParams();
-    return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+    return this.http.post<ComStdDraftEdit>(url, comStdDraftEdit, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -587,10 +606,10 @@ export class StdComStandardService {
     );
   }
 
-  public draughtStandard(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+  public draughtStandard(comStdDraftEdit: ComStdDraftEdit): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFTING);
     const params = new HttpParams();
-    return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+    return this.http.post<ComStdDraftEdit>(url, comStdDraftEdit, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -600,10 +619,10 @@ export class StdComStandardService {
     );
   }
 
-  public proofReadStandard(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+  public proofReadStandard(comStdDraftEdit: ComStdDraftEdit): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_PROOF_READ);
     const params = new HttpParams();
-    return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+    return this.http.post<ComStdDraftEdit>(url, comStdDraftEdit, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -615,6 +634,32 @@ export class StdComStandardService {
 
   public approveProofReadStandard(isDraftDecision: ISDraftDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DEC_PROOF_READ);
+    const params = new HttpParams();
+    return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public approveEditedDraft(isDraftDecision: ISDraftDecision): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_APPROVE_COM_STANDARD);
+    const params = new HttpParams();
+    return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+
+  public rejectCompanyStandard(isDraftDecision: ISDraftDecision): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_REJECT_COM_STANDARD);
     const params = new HttpParams();
     return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
         map(function (response: any) {

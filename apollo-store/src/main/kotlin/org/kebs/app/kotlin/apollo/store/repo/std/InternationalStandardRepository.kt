@@ -64,7 +64,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "WHERE  s.STATUS IN('0','1','3','4','5','6','7') ORDER BY s.ID DESC",
         nativeQuery = true
     )
-    fun getComStdPublishing(): MutableList<COMUploadedDraft>
+    fun getComStdPublishing(): MutableList<ComStandard>
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
@@ -123,7 +123,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
 
 
 
-    @Query("SELECT MAX(ID) FROM SD_COM_STANDARD", nativeQuery = true)
+    @Query("SELECT NVL (max(ID),0) as MaxId FROM SD_COM_STANDARD", nativeQuery = true)
     fun getMaxComStdId(): String
 
     @Query(
@@ -312,7 +312,7 @@ interface ComStdDraftRepository : JpaRepository<ComStdDraft, Long> {
 
 }
 interface ComStandardDraftCommentsRepository : JpaRepository<ComDraftComments, Long> {
-    fun findByDraftID(id: Long): MutableIterable<ComDraftComments>?
+    fun findByDraftIDOrderByIdDesc(id: Long): MutableIterable<ComDraftComments>?
 
     @Query(
         value = "SELECT ID as id  FROM SD_COM_DRAFT_COMMENTS  WHERE DRAFT_ID= :id ",
@@ -366,7 +366,7 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
         value = "SELECT ID as id, DOC_NAME as docName,TITLE as title,CIRCULATION_DATE as circulationDate,NAME_OF_ORGANIZATION AS nameOfOrganization,NAME_OF_RESPONDENT AS nameOfRespondent,DATE_PREPARED as preparedDate," +
                 "PROPOSAL_NUMBER as proposalNumber,UPLOADED_BY as uploadedBy,REMARKS as remarks,ASSIGNED_TO as assignedTo,CLOSING_DATE AS closingDate,SCOPE as scope,TC_SEC_NAME AS tcSecName," +
                 "ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,STANDARD_NUMBER as standardNumber FROM SD_ADOPTION_PROPOSAL " +
-                "WHERE  STATUS='0' ORDER BY ID DESC",
+                "WHERE  STATUS='0' AND ID=:proposalID ORDER BY ID DESC",
         nativeQuery = true
     )
     fun getProposalDetails(): MutableList<ProposalDetails>
@@ -760,7 +760,7 @@ interface ReviewStandardRemarksRepository : JpaRepository<ReviewStandardRemarks,
 }
 
 interface CompanyStandardRemarksRepository : JpaRepository<CompanyStandardRemarks, Long> {
-    fun findByRequestId(id: Long): MutableIterable<CompanyStandardRemarks>?
+    fun findByRequestIdOrderByIdDesc(id: Long): MutableIterable<CompanyStandardRemarks>?
 }
 
 

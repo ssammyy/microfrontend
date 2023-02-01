@@ -765,7 +765,7 @@ export class QaService {
         );
     }
 
-    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto, permitTypeID: number, branchID: number): Observable<AllBatchInvoiceDetailsDto> {
+    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_SUBMIT);
         const params = new HttpParams()
             .set('permitTypeID', String(permitTypeID))
