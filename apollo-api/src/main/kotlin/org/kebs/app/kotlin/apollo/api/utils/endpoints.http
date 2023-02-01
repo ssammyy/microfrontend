@@ -695,12 +695,17 @@ GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedFmar
 ###
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedSmarkPermits
 
+###
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAwardedDmarkPermits
 
 ###
 GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllCompanies
 
 ###
-GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=9154
+GET https://kims.kebs.org:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=9154
+
+###
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByCompanyName?companyName=MAISHA MABATI MILLS LTD
 
 
 ###

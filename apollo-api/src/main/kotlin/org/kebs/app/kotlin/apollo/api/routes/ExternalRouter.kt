@@ -41,6 +41,8 @@ class ExternalRouter {
             POST("/document/query/response", handler::pvocPartnerQueryResponse)
             GET("/document/queries", handler::kebsPartnerQueries)
             GET("/timeline/issues", handler::pvocTimelineIssues)
+            POST("/update/events/url", handler::updateCallbackUrl)
+            GET("/published/events", handler::publishedEvents)
         }
     }
 }

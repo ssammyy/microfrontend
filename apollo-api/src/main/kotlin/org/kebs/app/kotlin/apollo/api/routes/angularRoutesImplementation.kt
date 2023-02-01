@@ -503,6 +503,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "/company".nest {
                 GET("/un-payed-invoices", handler::permitInvoiceListUnPaid)
                 POST("/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
+                POST("/generate-inspection-fee", handler::handleGenerateInspectionFeesDetails)
             }
             "/permit".nest {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)

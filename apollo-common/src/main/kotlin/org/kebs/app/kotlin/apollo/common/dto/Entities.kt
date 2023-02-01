@@ -963,6 +963,11 @@ class PlantEntityDto {
     var region: Long? = null
     var county: Long? = null
     var town: Long? = null
+    var inspectionFeeStatus: Boolean = false
+    var paidDate: Date? = null
+    var endingDate: Date? = null
+    var invoiceSharedId: Long? = null
+    var tokenGiven: String? = null
 }
 
 class ProfileDirectorsEntityDto {

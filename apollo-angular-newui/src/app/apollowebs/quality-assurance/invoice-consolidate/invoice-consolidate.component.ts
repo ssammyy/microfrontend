@@ -139,7 +139,7 @@ export class InvoiceConsolidateComponent implements OnInit {
         consolidatedInvoice.isWithHolding = this.isWithHolding
 
         console.log( consolidatedInvoice.isWithHolding)
-        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice, this.SMarkTypeID, this.branchID).subscribe(
+        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
             (data) => {
               console.log(data);
               this.SpinnerService.hide();
@@ -213,7 +213,7 @@ export class InvoiceConsolidateComponent implements OnInit {
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
         console.log('TEST CONSOLIDATE' + consolidatedInvoice);
         console.log(consolidatedInvoice.permitInvoicesID);
-        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice, this.SMarkTypeID, this.branchID).subscribe(
+        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
             (data) => {
               this.SpinnerService.hide();
               swal.fire({
@@ -252,7 +252,7 @@ export class InvoiceConsolidateComponent implements OnInit {
     this.loadingText = 'Retrieving Invoices Please Wait ....'
 
     this.SpinnerService.show();
-    this.qaService.loadInvoiceListWithNoBatchIDPermitType(this.SMarkTypeID, this.branchID).subscribe(
+    this.qaService.loadInvoiceListWithNoBatchID().subscribe(
         (response: PermitInvoiceDto[]) => {
           this.SpinnerService.hide();
           this.tasks = response;

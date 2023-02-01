@@ -132,9 +132,9 @@ export const ROUTES: RouteInfo[] = [
         privilege: ['PERMIT_APPLICATION'],
         collapse: 'invoice',
         children: [
-            {path: 'consolidate_invoice', title: 'Consolidate Smark Invoices', ab: 'CSI',},
-            {path: 'consolidate_invoice_fmark', title: 'Consolidate Fmark Invoices', ab: 'CFI',},
-            {path: 'consolidate_invoice_dmark', title: 'Consolidate Dmark Invoices', ab: 'CDI',},
+            {path: 'consolidate_invoice', title: 'Consolidate All Invoices', ab: 'CAI'},
+            // {path: 'consolidate_invoice_fmark', title: 'Consolidate Fmark Invoices', ab: 'CFI',},
+            // {path: 'consolidate_invoice_dmark', title: 'Consolidate Dmark Invoices', ab: 'CDI',},
 
             {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
         ],
