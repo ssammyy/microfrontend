@@ -14,7 +14,7 @@ import {
     ISJustificationProposal,
     ISSacSecTASKS,
     ISStandard, IStandardDraftEdit, IStandardUpload,
-    ISTcSecTASKS,
+    ISTcSecTASKS, IstProposalComment,
     ListJustification,
     NWAStandard,
     ProposalComment,
@@ -73,6 +73,13 @@ export class StdIntStandardService {
     public getProposal(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSAL);
         const params = new HttpParams();
+        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+
+    public getSessionProposals(proposalId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_PROPOSAL);
+        const params = new HttpParams().set('proposalId', proposalId);
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
@@ -280,10 +287,24 @@ export class StdIntStandardService {
         );
     }
 
-  public submitAPComments(proposalComment: ProposalComment): Observable<any> {
+
+    public submitProposalComments(istProposalComment: IstProposalComment): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_PROP_COMMENTS);
+        const params = new HttpParams();
+        return this.http.post<IstProposalComment>(url, istProposalComment, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+  public submitAPComments(istProposalComment: IstProposalComment): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_AP_COMMENTS);
     const params = new HttpParams();
-    return this.http.post<ProposalComment>(url, proposalComment, {params}).pipe(
+    return this.http.post<IstProposalComment>(url, istProposalComment, {params}).pipe(
         map(function (response: any) {
           return response;
         }),

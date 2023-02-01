@@ -110,7 +110,7 @@ import {ComStdRequestListComponent,} from './apollowebs/standards-development/co
 import {IntStdResponsesListComponent,} from './apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component';
 import {ComStdJcJustificationComponent,} from './apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component';
 import {IntStdJustificationListComponent,} from './apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component';
-import {IntStdCommentsComponent,} from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
+import {IntStdCommentsComponent,} from './apollowebs/standards-development/international-standard/international-standard-proposal/int-std-comments/int-std-comments.component';
 import {CompanyStandardRequestComponent,} from './apollowebs/standards-development/company-standard/company-standard-request/company-standard-request.component';
 import {RequestStandardReviewComponent,} from './apollowebs/standards-development/systemic-review/request-standard-review/request-standard-review.component';
 import {SystemicReviewCommentsComponent,} from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
@@ -468,6 +468,8 @@ import { ComStdRequestProcessComponent } from './apollowebs/standards-developmen
 import { ManageTivetComponent } from './apollowebs/usermanagement/manage-tivet/manage-tivet.component';
 import { InvoiceConsolidateFmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-fmark/invoice-consolidate-fmark.component';
 import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component';
+import { IntStdProposalCommentsComponent } from './apollowebs/standards-development/international-standard/int-std-proposal-comments/int-std-proposal-comments.component';
+import { ComStdDraftCommentsComponent } from './apollowebs/standards-development/company-standard/com-std-draft-comments/com-std-draft-comments.component';
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -971,6 +973,10 @@ import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance
         InvoiceConsolidateFmarkComponent,
 
         InvoiceConsolidateDmarkComponent,
+
+        IntStdProposalCommentsComponent,
+
+        ComStdDraftCommentsComponent,
 
     ],
     entryComponents: [LoaderComponent],

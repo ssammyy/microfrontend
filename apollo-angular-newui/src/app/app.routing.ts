@@ -66,7 +66,7 @@ import {
 } from './apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component';
 import {
     IntStdCommentsComponent,
-} from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
+} from './apollowebs/standards-development/international-standard/international-standard-proposal/int-std-comments/int-std-comments.component';
 import {
     SystemicReviewCommentsComponent,
 } from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
@@ -637,6 +637,8 @@ import {
 import {
     InvoiceConsolidateDmarkComponent
 } from "./apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component";
+import {IntStdProposalCommentsComponent} from "./apollowebs/standards-development/international-standard/int-std-proposal-comments/int-std-proposal-comments.component";
+import {ComStdDraftCommentsComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-comments/com-std-draft-comments.component";
 export const routes: Routes = [
     {
         path: '',
@@ -1460,9 +1462,15 @@ export const routes: Routes = [
         children: [{path: '', component: IntStdProposalsComponent}],
     },
     {
-        path: 'isProposalComments/:proposalID',
+        path: 'isPropComments/:proposalId', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdProposalCommentsComponent}],
+    },
+    {
+        path: 'isProposalComments/:proposalId',
         component: IntStdCommentsComponent,
     },
+
     // {
     //     path: 'isProposalComments/:proposalID', component: AdminLayoutComponent,
     //     // canActivate: [RouteGuard],
@@ -1672,6 +1680,11 @@ export const routes: Routes = [
     {
         path: 'comStdDraftComment/:comDraftID',
         component: ComStdDraftCommentComponent,
+    },
+    {
+        path: 'comStdDraftComments/:comDraftID', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdDraftCommentsComponent}],
     },
 
     {

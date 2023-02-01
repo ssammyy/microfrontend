@@ -37,6 +37,8 @@
                                         <th class="knw">Closing Date</th>
                                         <th>Standard Number</th>
                                         <th class="referenceMaterial">Prepared By</th>
+                                        <th class="knw">Deadline</th>
+                                        <th class="knw">No. Of Comments</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
@@ -49,6 +51,8 @@
                                         <td>{{isAdoptionProposal.closingDate}}</td>
                                         <td>{{isAdoptionProposal.standardNumber}}</td>
                                         <td>{{isAdoptionProposal.tcSecName}}</td>
+                                        <td>{{isAdoptionProposal.deadlineDate | date: 'yyyy-MM-dd'}}</td>
+                                        <td>{{isAdoptionProposal.noOfComments}}</td>
                                         <td><a  (click)="onOpenModal(isAdoptionProposal,'decisionOnProposal')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Decision on Proposal</a></td>
                                     </tr>
                                     </tbody>

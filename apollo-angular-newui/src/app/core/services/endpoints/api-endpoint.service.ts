@@ -399,11 +399,13 @@ export class ApiEndpointService {
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
         IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
-        IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getISProposals`,
+        IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getISProposals`,
         IST_VIEW_IS_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getProposal`,
-        IST_VIEW_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getProposals`,
+        IST_VIEW_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getSessionProposals`,
+        IST_VIEW_PROPOSALS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getProposals`,
         IST_VIEW_IS_PROPOSALS_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/proposal`,
-        IST_SUBMIT_AP_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/SubmitAPComments`,
+        IST_SUBMIT_AP_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitAPComments`,
+        IST_SUBMIT_PROP_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/submitProposalComments`,
         IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
         IST_INT_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserTasks`,
         IST_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getAllComments`,
@@ -495,6 +497,7 @@ export class ApiEndpointService {
         ICT_COM_STD_REQUEST_PROCESS: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequestProcess`,
         ICT_COM_STD_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraft`,
         ICT_COM_STD_DRAFT_COMMENT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getUploadedStdDraftForComment`,
+        ICT_COM_STD_DRAFTS_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedSDraftForComment`,
         ICT_COM_STD_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/commentOnDraft`,
         ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getApprovedStdDraft`,
         ICT_COM_STD_EDITS_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdDraftForEditing`,
@@ -514,6 +517,7 @@ export class ApiEndpointService {
         ICT_COM_STD_SUBMIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftForEditing`,
         ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftDocumentList`,
         ICT_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/submitDraftComments`,
+        ICT_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftComment`,
 
 
         // SD SYSTEMIC REVIEW

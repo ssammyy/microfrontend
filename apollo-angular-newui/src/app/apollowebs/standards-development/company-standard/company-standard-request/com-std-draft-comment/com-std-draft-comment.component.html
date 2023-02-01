@@ -75,113 +75,132 @@
                                         </div>
                                         <form (ngSubmit)="onSubmit()" [formGroup]="uploadCommentsFormGroup" class="form">
                                             <div class="modal-body">
-                                                <div class="form-body">
+                                                <h4 style="font-weight: bold">
+                                                    The Kenya Bureau of Standards intends to adopt a Company Standard as detailed here below
+                                                </h4>
+                                                <div class="row col-12">
+                                                    <div class="form-group col-12">
+                                                        <label><b>Title</b></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input" value="{{actionRequest?.title}}" name="commentTitle" formControlName="commentTitle"
+                                                                  placeholder="Title" type="text" disabled></textarea>
 
-                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                        <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
-                                                            <div>
-                                                                <div class="d-flex w-100 align-items-center" >
-                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
-                                                                </div>
-                                                            </div>
-                                                            <button mat-raised-button type="button" data-toggle="modal"
-                                                                    (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
-                                                                <i class="fa fa-download"></i> Download Standard Draft</button>
-
-                                                        </div>
-
-
-                                                    </a>
+                                                    </div>
 
                                                     <div class="form-group col-12">
-                                                        <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <label><b>Document Type</b></label>
                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" formControlName="commentTitle" name="commentTitle"
-                                                                  placeholder="Title" type="text">{{actionRequest?.title}}</textarea>
+                                                                  class="form-control one-column-input" value="{{docName}}" name="commentDocumentType" formControlName="commentDocumentType"
+                                                                  placeholder="Document Type" type="text" disabled></textarea>
+                                                    </div>
+
+                                                    <div class="form-group col-12">
+                                                        <label><b>Date</b></label>
+                                                        <textarea class="form-control one-column-input" value="{{actionRequest?.uploadDate}}" formControlName="uploadDate" disabled name="uploadDate"></textarea>
 
                                                     </div>
                                                     <div class="form-group col-12">
-                                                        <label><b>Name of Organization</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" formControlName="nameOfOrganization" name="nameOfOrganization"
-                                                                  placeholder="Name of Organization" type="text"></textarea>
+                                                        <label><b>Name of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input
+                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                class="form-control one-column-input"  formControlName="nameOfRespondent" name="nameOfRespondent"
+                                                                placeholder="" type="text" >
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Email of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input
+                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                class="form-control one-column-input"  formControlName="emailOfRespondent" name="emailOfRespondent"
+                                                                placeholder="" type="text" >
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Phone Number of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input
+                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                class="form-control one-column-input"  formControlName="phoneOfRespondent" name="phoneOfRespondent"
+                                                                placeholder="" type="text" >
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Organization</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <input
+                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                class="form-control one-column-input"   formControlName="nameOfOrganization" name="nameOfOrganization"
+                                                                placeholder="" type="text" >
+
 
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" formControlName="comClause" name="comClause"
-                                                                  placeholder="Clause" type="text"></textarea>
+                                                                  class="form-control one-column-input"  name="clause" formControlName="clause"
+                                                                  placeholder="Clause" type="text" ></textarea>
 
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label><b>Paragraph</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" formControlName="comParagraph" name="comParagraph"
-                                                                  placeholder="Paragraph" type="text"></textarea>
+                                                                  class="form-control one-column-input"  name="paragraph" formControlName="paragraph"
+                                                                  placeholder="Paragraph" type="text" ></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Type of Comment</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input"  name="typeOfComment" formControlName="typeOfComment"
+                                                                  placeholder="Type of Comment" type="text" ></textarea>
+
+                                                    </div>
+                                                    <div class="form-group col-12">
+                                                        <label><b>Comments</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                  class="form-control one-column-input"  name="comment" formControlName="comment"
+                                                                  placeholder="Comments" type="text" ></textarea>
 
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label><b>Proposed Change</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" formControlName="proposedChange" name="proposedChange"
-                                                                  placeholder="Proposed Change" type="text"></textarea>
+                                                                  class="form-control one-column-input"  name="proposedChange" formControlName="proposedChange"
+                                                                  placeholder="Proposed Change" type="text" ></textarea>
 
                                                     </div>
+
                                                     <div class="form-group col-12">
-                                                        <label><b>Document Type</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                        <label><b>Observation</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" formControlName="commentDocumentType" name="commentDocumentType"
-                                                                  placeholder="Document Type" type="text"></textarea>
+                                                                  class="form-control one-column-input" formControlName="observation" name="observation"
+                                                                  placeholder="TC/Stakeholders Observation" type="text"></textarea>
 
                                                     </div>
                                                     <div class="form-group col-12">
-                                                        <label><b>Draft Acceptable as Presented?</b><span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
-                                                        <mat-radio-group aria-label="Select an option" formControlName="adoptDraft" name="adoptDraft" required>
-                                                            <mat-radio-button  value="Yes">Yes</mat-radio-button>
-                                                            <mat-radio-button value="No">No</mat-radio-button>
-                                                        </mat-radio-group>
-                                                    </div>
-                                                    <div class="form-group col-12">
-                                                        <label><b>Reasons for Acceptance / Not Acceptance</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" formControlName="reason" name="reason"
-                                                                  placeholder="Reasons for Acceptance / Not Acceptance" type="text"></textarea>
+                                                        <label>Company Standard Drafts</label>
+                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                            <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
+                                                                <div>
+                                                                    <div class="d-flex w-100 align-items-center" >
+                                                                        <h3 class="mb-1" style="color: #0d0505"><b>Company Standard Draft Version- {{d+1}} </b></h3>
+                                                                    </div>
+                                                                </div>
+                                                                <button mat-raised-button type="button" data-toggle="modal"
+                                                                        (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
+                                                                    <i class="fa fa-download"></i> Download Standard Draft</button>
 
-                                                    </div>
-                                                    <div class="form-group col-12">
-                                                        <label><b>Recommendations</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" formControlName="recommendations" name="recommendations"
-                                                                  placeholder="Recommendations" type="text"></textarea>
+                                                            </div>
 
-                                                    </div>
-                                                    <div class="form-group col-12">
-                                                        <label><b>Name of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input
-                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                class="form-control one-column-input" formControlName="nameOfRespondent" name="nameOfRespondent"
-                                                                placeholder="" type="text" >
-                                                    </div>
-                                                    <div class="form-group col-12">
-                                                        <label><b>Position of Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <input
-                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                class="form-control one-column-input" formControlName="positionOfRespondent" name="positionOfRespondent"
-                                                                placeholder="" type="text" >
-                                                    </div>
 
+                                                        </a>
+                                                    </div>
 
 
                                                 </div>
                                             </div>
+
                                             <input type="hidden" name="requestID" formControlName="requestID" value="{{actionRequest?.requestId}}" >
                                             <input type="hidden" name="draftID"  formControlName="draftID" value="{{actionRequest?.id}}" >
+                                            <div >
+                                                <button type="button" class="btn btn-default btn-sm float-left" data-dismiss="modal">Close</button>
+                                                <button  *ngIf="uploadCommentsFormGroup.valid" [disabled]="!uploadCommentsFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
 
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary btn-sm"  >Save Comment</button>
                                             </div>
                                         </form>
                                     </div>

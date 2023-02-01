@@ -67,7 +67,8 @@ class SendEntryNumberToKraServices(
                 noOfRecords = numberRecords
                 val join = numberRecords + globalVar
                 hash = kraDataEncryption(join)
-                //   KotlinLogging.logger { }.info { "Input :  = $join" }
+                 ///  KotlinLogging.logger { }.info { "User ID :  = $loginId" }
+                  // KotlinLogging.logger { }.info { "Password :  = $password" }
             }
             val detailBody = KraDetails().apply {
                 entryNumber = companyProfile.entryNumber

@@ -477,6 +477,24 @@ export interface finalSubmit {
 }
 
 // **********************************************************International Standards Adoption**********************************************************
+export interface IstProposalComment{
+    commentTitle: string;
+    scope: string;
+    clause: string;
+    proposalID: number;
+    standardNumber: string;
+    commentDocumentType: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    preparedDate: Timestamp<any>;
+    paragraph: string;
+    typeOfComment: string;
+    comment: string;
+    proposedChange: string;
+    observation: string;
+}
 export interface ProposalComment {
     adoption_proposal_comment: string;
     commentTitle: string;
@@ -499,19 +517,22 @@ export interface ProposalComment {
 
 export interface ComDraftComment {
     commentTitle: string;
-    comNameOfOrganization: string;
-    comClause: string;
-    comParagraph: string;
-    proposedChange: string;
     commentDocumentType: string;
-    adoptDraft: string;
-    reason: string;
-    recommendations: string;
+    uploadDate: Timestamp<any>;
     nameOfRespondent: string;
-    positionOfRespondent: string;
+    emailOfRespondent: string;
+    phoneOfRespondent: string;
     nameOfOrganization: string;
-    requestID: number;
-    draftID: number;
+    clause: string;
+    paragraph: string;
+    typeOfComment: string;
+    comment: string;
+    proposedChange: string;
+    observation: string;
+    requestID: string;
+    draftID: string;
+
+
 }
 
 export interface ISAdoptionProposal {
@@ -536,6 +557,9 @@ export interface ISAdoptionProposal {
     stakeholdersList: string[];
     addStakeholdersList: string[];
     iStandardNumber: string;
+    deadlineDate: Timestamp<any>;
+    noOfComments: number;
+    preparedDate: Timestamp<any>;
 }
 
 export interface ISJustificationProposal {
@@ -1274,6 +1298,7 @@ export interface COMPreliminaryDraft {
     companyName: string;
     companyPhone: string;
     commentCount: number;
+    uploadDate: Timestamp<any>;
 }
 
 export interface ComApproveDraft {

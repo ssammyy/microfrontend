@@ -132,6 +132,13 @@ class IntStandardController(
         return internationalStandardService.getProposals(proposalId)
     }
 
+    @GetMapping("/international_standard/getSessionProposals")
+    @ResponseBody
+    fun getSessionProposals(@RequestParam("proposalId") proposalId: Long): MutableList<ProposalDetails>
+    {
+        return internationalStandardService.getProposals(proposalId)
+    }
+
 
     //********************************************************** Submit Comments **********************************************************
    //view Proposal Document
@@ -156,28 +163,52 @@ class IntStandardController(
     }
 
     //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
-    @PostMapping("/international_standard/submitAPComments")
+    @PostMapping("/international_standard/submitProposalComments")
     @ResponseBody
-    fun submitAPComments(@RequestBody iSAdoptionProposalComments: ISAdoptionProposalComments  ): ServerResponse{
+    fun submitProposalComments(@RequestBody iSAdoptionProposalComments: ISPropComments  ): ServerResponse{
         val isAdoptionComments= ISAdoptionComments().apply {
-            user_id=iSAdoptionProposalComments.user_id
-            adoption_proposal_comment=iSAdoptionProposalComments.adoption_proposal_comment
-            comment_time=iSAdoptionProposalComments.comment_time
+            adoption_proposal_comment=iSAdoptionProposalComments.comment
             proposalID=iSAdoptionProposalComments.proposalID
             commentTitle=iSAdoptionProposalComments.commentTitle
             commentDocumentType=iSAdoptionProposalComments.commentDocumentType
-            comNameOfOrganization=iSAdoptionProposalComments.comNameOfOrganization
-            comClause=iSAdoptionProposalComments.comClause
-            comParagraph=iSAdoptionProposalComments.comParagraph
+            comNameOfOrganization=iSAdoptionProposalComments.nameOfOrganization
+            comClause=iSAdoptionProposalComments.clause
+            scope=iSAdoptionProposalComments.scope
+            dateOfApplication=iSAdoptionProposalComments.preparedDate
+            comParagraph=iSAdoptionProposalComments.paragraph
+            observation=iSAdoptionProposalComments.observation
             typeOfComment=iSAdoptionProposalComments.typeOfComment
             proposedChange=iSAdoptionProposalComments.proposedChange
-            adopt=iSAdoptionProposalComments.adopt
-            reasonsForNotAcceptance=iSAdoptionProposalComments.reasonsForNotAcceptance
             recommendations=iSAdoptionProposalComments.recommendations
             nameOfRespondent=iSAdoptionProposalComments.nameOfRespondent
             positionOfRespondent=iSAdoptionProposalComments.positionOfRespondent
             nameOfOrganization=iSAdoptionProposalComments.nameOfOrganization
-            dateOfApplication=iSAdoptionProposalComments.dateOfApplication
+        }
+
+        return ServerResponse(HttpStatus.OK,"Comment Has been submitted",internationalStandardService.submitAPComments(isAdoptionComments))
+    }
+
+    //@PreAuthorize("hasAuthority('STAKEHOLDERS_SD_MODIFY')")
+    @PostMapping("/anonymous/international_standard/submitAPComments")
+    @ResponseBody
+    fun submitAPComments(@RequestBody iSAdoptionProposalComments: ISPropComments  ): ServerResponse{
+        val isAdoptionComments= ISAdoptionComments().apply {
+            adoption_proposal_comment=iSAdoptionProposalComments.comment
+            proposalID=iSAdoptionProposalComments.proposalID
+            commentTitle=iSAdoptionProposalComments.commentTitle
+            commentDocumentType=iSAdoptionProposalComments.commentDocumentType
+            comNameOfOrganization=iSAdoptionProposalComments.nameOfOrganization
+            comClause=iSAdoptionProposalComments.clause
+            scope=iSAdoptionProposalComments.scope
+            dateOfApplication=iSAdoptionProposalComments.preparedDate
+            comParagraph=iSAdoptionProposalComments.paragraph
+            observation=iSAdoptionProposalComments.observation
+            typeOfComment=iSAdoptionProposalComments.typeOfComment
+            proposedChange=iSAdoptionProposalComments.proposedChange
+            recommendations=iSAdoptionProposalComments.recommendations
+            nameOfRespondent=iSAdoptionProposalComments.nameOfRespondent
+            positionOfRespondent=iSAdoptionProposalComments.positionOfRespondent
+            nameOfOrganization=iSAdoptionProposalComments.nameOfOrganization
         }
 
         return ServerResponse(HttpStatus.OK,"Comment Has been submitted",internationalStandardService.submitAPComments(isAdoptionComments))

@@ -1174,7 +1174,7 @@ class RegistrationDaoServices(
 
                             val sm = CommonDaoServices.MessageSuccessFailDTO()
                             sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-                            sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+                            sm.message = "You have Successfully Registered, Email Has been sent with Entry Number "
 
                             slFormResponse="Entry number is ${eNumber.entryNumber}, Check your E-mail for registration details"
 
