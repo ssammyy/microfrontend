@@ -393,6 +393,62 @@ class QADaoServices(
             ?: throw NullValueNotAllowedException("Record not found")
     }
 
+    fun updateInspectionFeesDetailsDetails(
+        branchID: Long,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+    ): UserCompanyEntityDto? {
+
+        companyProfileRepo.findByIdOrNull(user.companyId)
+            ?.let { entity ->
+                val branchDetails =findPlantDetails(branchID)
+
+                entity.apply {
+                    val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
+                    firmCategory = firmTypeDetails.id
+                    yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
+                    modifiedBy = user.userName
+                    modifiedOn = Timestamp.from(Instant.now())
+                }
+
+                val companyProfileEntity = companyProfileRepo.save(entity)
+
+                return UserCompanyEntityDto(
+                    companyProfileEntity.name,
+                    companyProfileEntity.kraPin,
+                    companyProfileEntity.userId,
+                    null,
+                    companyProfileEntity.registrationNumber,
+                    companyProfileEntity.postalAddress,
+                    companyProfileEntity.physicalAddress,
+                    companyProfileEntity.plotNumber,
+                    companyProfileEntity.companyEmail,
+                    companyProfileEntity.companyTelephone,
+                    companyProfileEntity.yearlyTurnover,
+                    companyProfileEntity.businessLines,
+                    companyProfileEntity.businessNatures,
+                    companyProfileEntity.buildingName,
+                    null,
+                    companyProfileEntity.streetName,
+                    companyProfileEntity.directorIdNumber,
+                    companyProfileEntity.region,
+                    companyProfileEntity.county,
+                    companyProfileEntity.town,
+                    null,
+                    null,
+                    null,
+                    null,
+                    iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
+                ).apply {
+                    id = companyProfileEntity.id
+
+                    status = companyProfileEntity.status
+                }
+
+            }
+            ?: throw NullValueNotAllowedException("Record not found")
+    }
+
 
 //    fun findPermitIdByPermitRefNumber(permitRefNumber: String): PermitApplicationsEntity
 //    {
@@ -5766,7 +5822,7 @@ class QADaoServices(
             KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
             val manufactureTurnOver =
                 companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
-            //Todo ask ken why list comming back does not have the product that is being generated for.
+            //Todo ask ken why list coming back does not have the product that is being generated for.
             val productsManufacture = findAllProductManufactureInPlantWithPlantID(
                 s.activeStatus,
                 s.activeStatus,

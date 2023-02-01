@@ -2186,6 +2186,26 @@ class QualityAssuranceHandler(
         }
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun handleGenerateInspectionFeesDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val branchID = req.paramOrNull("branchID")?.toLong()?: throw ExpectedDataNotFound("Required Branch ID, check config")
+            qaDaoServices.updateInspectionFeesDetailsDetails(branchID, loggedInUser, map)
+                ?.let { ok().body(it)
+                }
+                ?: onErrors("We could not process your request at the moment")
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+    }
+
 
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
@@ -2418,9 +2438,9 @@ class QualityAssuranceHandler(
             )
 
             //Create FMARK From SMark
-//            if (permit.fmarkGenerateStatus == 1) {
-//                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
-//            }
+            if (permit.fmarkGenerateStatus == 1) {
+                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
+            }
             //Update Permit Details
             with(permit) {
                 applicationStatus = map.activeStatus

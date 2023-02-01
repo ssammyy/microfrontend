@@ -130,7 +130,6 @@ data class NewBatchInvoiceDto(
     var permitRefNumber: String? = null,
     var permitInvoicesID: Array<Long>? = null,
     var isWithHolding: Long? = null,
-
     ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
