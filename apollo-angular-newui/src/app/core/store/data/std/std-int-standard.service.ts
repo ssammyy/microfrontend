@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    ComJcJustificationDec,
+    ComJcJustificationDec, CommentOnProposalStakeHolder,
     GazetteNotice,
     InternationalStandardsComments,
     ISAdoptionComments,
@@ -555,7 +555,7 @@ export class StdIntStandardService {
     public getAllComments(proposalId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_PROPOSAL_COMMENTS);
         const params = new HttpParams().set('proposalId', proposalId);
-        return this.http.get<StakeholderProposalComments>(url, {params}).pipe();
+        return this.http.get<CommentOnProposalStakeHolder>(url, {params}).pipe();
     }
     public getUserComments(id: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_JUSTIFICATION_COMMENTS);

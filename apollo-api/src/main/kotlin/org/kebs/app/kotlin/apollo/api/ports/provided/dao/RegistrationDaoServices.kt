@@ -1092,9 +1092,9 @@ class RegistrationDaoServices(
        val countOfSlForm= stdLevyNotificationFormDTO.companyProfileID?.let { stdLevyNotificationFormRepository.countByManufacturerId(it) }
         val toCheckSl: Long = 0
 
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
-//        println("SL FORM ID$countOfSlForm");
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
+        //println("SL FORM ID$countOfSlForm");
 
         if (countOfSlForm != null) {
 //            if (countOfSlForm == toCheckSl){
@@ -1141,26 +1141,26 @@ class RegistrationDaoServices(
                                     }
 
                                     companyProfileRepo.save(entity)
-                                    stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-                                        ?.let {stgLevyEntryNumber->
-                                            with(stgLevyEntryNumber){
-                                                manufacturerId = eNumber.entryNumber
-                                            }
-
-                                            stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
-
-                                            val payload = "${eNumber.name} ${eNumber.registrationNumber}"
-                                            val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(eNumber, s, null)
-                                            commonDaoServices.sendEmailAfterCompose(
-                                                loggedInUser,
-                                                applicationMapProperties.mapUserEntryNumberNotification,
-                                                emailEntity,
-                                                appId,
-                                                payload
-                                            )
-
-                                        }
-                                        ?: throw Exception("Company ID Was not Found")
+//                                    stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+//                                        ?.let {stgLevyEntryNumber->
+//                                            with(stgLevyEntryNumber){
+//                                                manufacturerId = eNumber.entryNumber
+//                                            }
+//
+//                                            stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
+//
+//                                            val payload = "${eNumber.name} ${eNumber.registrationNumber}"
+//                                            val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(eNumber, s, null)
+//                                            commonDaoServices.sendEmailAfterCompose(
+//                                                loggedInUser,
+//                                                applicationMapProperties.mapUserEntryNumberNotification,
+//                                                emailEntity,
+//                                                appId,
+//                                                payload
+//                                            )
+//
+//                                        }
+//                                        ?: throw Exception("Company ID Was not Found")
                                     //                stdLevyNotificationFormDTO.companyProfileID?.let {
                                     //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
                                     //                        it, commonDaoServices.getUserName(loggedInUser), map)
@@ -1302,7 +1302,7 @@ class RegistrationDaoServices(
                         val sm = CommonDaoServices.MessageSuccessFailDTO()
                         sm.closeLink =
                             "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-                        sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+                        sm.message = "You have Successfully Registered, Email Has been sent with Entry Number "
 
                         slFormResponse =
                             "Entry number is ${eNumber.entryNumber}, Check your E-mail for registration details"

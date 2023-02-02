@@ -603,6 +603,8 @@ interface ISProposalComments{
     fun getPositionOfRespondent(): String?
     fun getNameOfOrganization(): String?
     fun getDateOfApplication(): String?
+    fun getScope(): String?
+    fun getObservation(): String?
 }
 interface ISUploadedDraft{
     fun getId(): Long?

@@ -1560,12 +1560,14 @@ export interface StakeholderProposalComments {
     id: number;
     user_id: number;
     adoption_proposal_comment: string;
+    adoptionComment: string;
     comment_time: string;
     taskId: string;
     proposalID: number;
     commentTitle: string;
     commentDocumentType: string;
     comNameOfOrganization: string;
+    clause: string;
     comClause: string;
     comParagraph: string;
     typeOfComment: string;
@@ -1576,6 +1578,30 @@ export interface StakeholderProposalComments {
     positionOfRespondent: string;
     reasonsForNotAcceptance: string;
     recommendations: string;
+
+}
+export interface CommentOnProposalStakeHolder{
+    id: number;
+    userId: string;
+    adoptionComment: string;
+    commentTime: Timestamp<any>;
+    proposalId: number;
+    title: string;
+    documentType: string;
+    clause: string;
+    comNameOfOrganization: string;
+    paragraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+    adopt: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: Timestamp<any>;
+    scope: string;
+    observation: string;
 }
 
 export interface StandardsForReview {

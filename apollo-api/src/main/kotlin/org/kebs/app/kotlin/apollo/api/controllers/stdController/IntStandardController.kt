@@ -215,13 +215,18 @@ class IntStandardController(
     }
 
 
-    @GetMapping("/international_standard/getAllComments")
-    fun getAllComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISAdoptionComments>?
+    @GetMapping("/international_standard/getAllComment")
+    fun getAllComment(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISAdoptionComments>?
     {
         return internationalStandardService.getAllComments(proposalId)
     }
 
-
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/international_standard/getAllComments")
+    fun getAllComments(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISProposalComments>?
+    {
+        return internationalStandardService.getProposalComments(proposalId)
+    }
 
     @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getProposalComments")
