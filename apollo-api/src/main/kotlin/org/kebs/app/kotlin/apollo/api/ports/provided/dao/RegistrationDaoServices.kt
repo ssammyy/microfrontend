@@ -1141,26 +1141,26 @@ class RegistrationDaoServices(
                                     }
 
                                     companyProfileRepo.save(entity)
-//                                    stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
-//                                        ?.let {stgLevyEntryNumber->
-//                                            with(stgLevyEntryNumber){
-//                                                manufacturerId = eNumber.entryNumber
-//                                            }
-//
-//                                            stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
-//
-//                                            val payload = "${eNumber.name} ${eNumber.registrationNumber}"
-//                                            val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(eNumber, s, null)
-//                                            commonDaoServices.sendEmailAfterCompose(
-//                                                loggedInUser,
-//                                                applicationMapProperties.mapUserEntryNumberNotification,
-//                                                emailEntity,
-//                                                appId,
-//                                                payload
-//                                            )
-//
-//                                        }
-//                                        ?: throw Exception("Company ID Was not Found")
+                                    stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(stdLevyNotificationFormDTO.companyProfileID)
+                                        ?.let {stgLevyEntryNumber->
+                                            with(stgLevyEntryNumber){
+                                                manufacturerId = eNumber.entryNumber
+                                            }
+
+                                            stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
+
+                                            val payload = "${eNumber.name} ${eNumber.registrationNumber}"
+                                            val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(eNumber, s, null)
+                                            commonDaoServices.sendEmailAfterCompose(
+                                                loggedInUser,
+                                                applicationMapProperties.mapUserEntryNumberNotification,
+                                                emailEntity,
+                                                appId,
+                                                payload
+                                            )
+
+                                        }
+                                        ?: throw Exception("Company ID Was not Found")
                                     //                stdLevyNotificationFormDTO.companyProfileID?.let {
                                     //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
                                     //                        it, commonDaoServices.getUserName(loggedInUser), map)
@@ -1263,33 +1263,33 @@ class RegistrationDaoServices(
                                 }
 
                                 companyProfileRepo.save(entity)
-//                                stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(
-//                                    stdLevyNotificationFormDTO.companyProfileID
-//                                )
-//                                    ?.let { stgLevyEntryNumber ->
-//                                        with(stgLevyEntryNumber) {
-//                                            manufacturerId = eNumber.entryNumber
-//                                        }
-//
-//                                        stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
-//
-//                                        val payload = "${eNumber.name} ${eNumber.registrationNumber}"
-//                                        val emailEntity =
-//                                            commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(
-//                                                eNumber,
-//                                                s,
-//                                                null
-//                                            )
-//                                        commonDaoServices.sendEmailAfterCompose(
-//                                            loggedInUser,
-//                                            applicationMapProperties.mapUserEntryNumberNotification,
-//                                            emailEntity,
-//                                            appId,
-//                                            payload
-//                                        )
-//
-//                                    }
-//                                    ?: throw Exception("Company ID Was not Found")
+                                stagingStandardsLevyManufacturerEntryNumberRepo.findByIdOrNull(
+                                    stdLevyNotificationFormDTO.companyProfileID
+                                )
+                                    ?.let { stgLevyEntryNumber ->
+                                        with(stgLevyEntryNumber) {
+                                            manufacturerId = eNumber.entryNumber
+                                        }
+
+                                        stagingStandardsLevyManufacturerEntryNumberRepo.save(stgLevyEntryNumber)
+
+                                        val payload = "${eNumber.name} ${eNumber.registrationNumber}"
+                                        val emailEntity =
+                                            commonDaoServices.userRegisteredEntryNumberSuccessfullEmailCompose(
+                                                eNumber,
+                                                s,
+                                                null
+                                            )
+                                        commonDaoServices.sendEmailAfterCompose(
+                                            loggedInUser,
+                                            applicationMapProperties.mapUserEntryNumberNotification,
+                                            emailEntity,
+                                            appId,
+                                            payload
+                                        )
+
+                                    }
+                                    ?: throw Exception("Company ID Was not Found")
                                 //                stdLevyNotificationFormDTO.companyProfileID?.let {
                                 //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
                                 //                        it, commonDaoServices.getUserName(loggedInUser), map)
