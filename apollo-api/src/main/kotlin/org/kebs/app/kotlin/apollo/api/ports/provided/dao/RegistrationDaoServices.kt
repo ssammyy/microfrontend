@@ -1161,10 +1161,10 @@ class RegistrationDaoServices(
 
                                         }
                                         ?: throw Exception("Company ID Was not Found")
-                                    //                stdLevyNotificationFormDTO.companyProfileID?.let {
-                                    //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
-                                    //                        it, commonDaoServices.getUserName(loggedInUser), map)
-                                    //                }
+                                                    stdLevyNotificationFormDTO.companyProfileID?.let {
+                                                        sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
+                                                            it, commonDaoServices.getUserName(loggedInUser), map)
+                                                    }
 
 
 
@@ -1290,10 +1290,10 @@ class RegistrationDaoServices(
 
                                     }
                                     ?: throw Exception("Company ID Was not Found")
-                                //                stdLevyNotificationFormDTO.companyProfileID?.let {
-                                //                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
-                                //                        it, commonDaoServices.getUserName(loggedInUser), map)
-                                //                }
+                                                stdLevyNotificationFormDTO.companyProfileID?.let {
+                                                    sendEntryNumberToKraServices.postEntryNumberTransactionToKra(
+                                                        it, commonDaoServices.getUserName(loggedInUser), map)
+                                                }
 
 
                             } ?: throw Exception("Company ID Was not Found")
