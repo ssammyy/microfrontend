@@ -30,10 +30,11 @@ import {
     StgInvoiceBalanceDto,
     TaskDto,
 } from './qa.model';
-import {Company} from '../companies';
+import {Branches, Company} from '../companies';
 import Swal from 'sweetalert2';
 import swal from 'sweetalert2';
 import {SSFSendingComplianceStatus, WorkPlanInspectionDto} from '../ms/ms.model';
+import {BusinessLines, BusinessNatures} from '../business';
 
 @Injectable({
     providedIn: 'root',
@@ -155,6 +156,21 @@ export class QaService {
         );
     }
 
+    public generateInspectionFees(data: Branches): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.GENERATE_INSPECTION_FEES_INVOICE);
+        const params = new HttpParams()
+            .set('branchID', String(data.id));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
 
     public loadAllCompanyList(): Observable<Company[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_COMPANY_LIST);
@@ -173,6 +189,32 @@ export class QaService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_FIRM_TYPE_LIST);
         return this.http.get<FirmTypeEntityDto[]>(url).pipe(
             map(function (response: FirmTypeEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadBusinessLinesList(): Observable<BusinessLines[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_BUSINESS_LINES);
+        return this.http.get<BusinessLines[]>(url).pipe(
+            map(function (response: BusinessLines[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadBusinessNaturesList(): Observable<BusinessNatures[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_BUSINESS_NATURES);
+        return this.http.get<BusinessNatures[]>(url).pipe(
+            map(function (response: BusinessNatures[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
