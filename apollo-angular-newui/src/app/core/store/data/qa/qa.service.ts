@@ -30,7 +30,7 @@ import {
     StgInvoiceBalanceDto,
     TaskDto,
 } from './qa.model';
-import {Company} from '../companies';
+import {Branches, Company} from '../companies';
 import Swal from 'sweetalert2';
 import swal from 'sweetalert2';
 import {SSFSendingComplianceStatus, WorkPlanInspectionDto} from '../ms/ms.model';
@@ -145,6 +145,21 @@ export class QaService {
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.UPDATE_COMPANY_TURN_OVER);
         const params = new HttpParams();
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public generateInspectionFees(data: Branches): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.GENERATE_INSPECTION_FEES_INVOICE);
+        const params = new HttpParams()
+            .set('branchID', String(data.id));
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;

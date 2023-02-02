@@ -976,6 +976,7 @@ class PlantEntityDto {
     var endingDate: Date? = null
     var invoiceSharedId: Long? = null
     var tokenGiven: String? = null
+    var invoiceBatchID: Long? = null
 }
 
 class ProfileDirectorsEntityDto {

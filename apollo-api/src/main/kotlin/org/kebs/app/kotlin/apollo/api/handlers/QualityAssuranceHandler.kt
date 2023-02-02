@@ -3879,8 +3879,7 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val batchID =
-                req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
+            val batchID = req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
             val batchInvoiceDetails = qaDaoServices.findBatchInvoicesWithID(batchID)
             KotlinLogging.logger { }.info(":::::: BATCH INVOICE :::::::")
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
@@ -4002,6 +4001,15 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     fun companyGetApprovalRequest(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val allpaidInvoices = qaDaoServices.findAllMyPayments(loggedInUser)
+
+        return ok().body(allpaidInvoices)
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun companyGetInspectionInvoiceDetails(req: ServerRequest): ServerResponse {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val allpaidInvoices = qaDaoServices.findAllMyPayments(loggedInUser)

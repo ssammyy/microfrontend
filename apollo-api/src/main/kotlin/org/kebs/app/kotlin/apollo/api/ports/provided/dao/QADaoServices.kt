@@ -272,7 +272,22 @@ class QADaoServices(
             }
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
-       fun findAllUserTasksQAMHODRMHOFByTaskID(
+
+    fun findInspectionInvoiceDetails(
+        user: UsersEntity,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByAssessorIdAndOldPermitStatusIsNullAndUserTaskId(userId, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+
+
+    fun findAllUserTasksQAMHODRMHOFByTaskID(
         user: UsersEntity,
         auth: Authentication,
         authToCompareWith: String,
@@ -404,7 +419,7 @@ class QADaoServices(
                 val branchDetails =findPlantDetails(branchID)
                 //todo: Change value to correct payment type
                 val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdSmark)
-                val inspectionInvoiceFound = qaInvoiceCalculation.calculatePaymentInspectionFees(user,permitType,entity.yearlyTurnover?: throw Exception("MISSING YEARLY TURN OVER FOR THE COMPANY"),branchDetails,map)
+                var inspectionInvoiceFound = qaInvoiceCalculation.calculatePaymentInspectionFees(user,permitType,entity.yearlyTurnover?: throw Exception("MISSING YEARLY TURN OVER FOR THE COMPANY"),branchDetails,map)
                 val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(branchDetails.region ?: throw Exception("MISSING REGION ID"), permitType.id ?: throw Exception("MISSING REGION ID"))
 
                 var batchInvoiceInspection = QaBatchInvoiceEntity()
@@ -420,6 +435,14 @@ class QADaoServices(
                     createdOn = commonDaoServices.getTimestamp()
                 }
                 batchInvoiceInspection = invoiceQaBatchRepo.save(batchInvoiceInspection)
+
+                with(inspectionInvoiceFound) {
+                    batchInvoiceNo = batchInvoiceInspection.id
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+
+                inspectionInvoiceFound = invoiceMasterDetailsRepo.save(inspectionInvoiceFound)
 
                 val sageValuesDtoList = mutableListOf<SageValuesDto>()
 
@@ -439,6 +462,11 @@ class QADaoServices(
 
                 //submit to staging invoices
                 val batchInvoice = permitMultipleInvoiceSubmitInvoice(map, user, newBatchInvoiceDto, sageValuesDtoList).second
+
+                with(branchDetails){
+                    varField10 = batchInvoiceInspection.id.toString()
+                }
+                manufacturePlantRepository.save(branchDetails)
 
                 return mapBatchInvoiceDetails(batchInvoice, user, map)
             }?: throw NullValueNotAllowedException("No Company Record not found")
