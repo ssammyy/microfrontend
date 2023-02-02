@@ -669,9 +669,9 @@ class ComStandardService(
                 val companyPhone= comStdDraft.companyPhone
                 val contactTel=comStdDraft.contactOneTelephone
                 val draftId=comStdDraft.id
-                val targetUrl = "https://kimsint.kebs.org/comStdDraftComment/$draftId";
+                val targetUrl = "https://kimsint.kebs.org/comStdApproved/$draftId";
                 val subject = "Company Standard Draft"
-                val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to comment. $targetUrl  "
+                val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to make Decision. $targetUrl  "
 
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)

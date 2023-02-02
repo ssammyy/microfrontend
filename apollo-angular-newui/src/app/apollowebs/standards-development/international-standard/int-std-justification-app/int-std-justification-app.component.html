@@ -75,8 +75,8 @@
                                                                     <a class="nav-item nav-link" id="nav-proposal-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequest?.proposalId) data-toggle="tab" href="#nav-proposal-list-comments" role="tab" aria-controls="nav-proposal-list-comments" aria-selected="false">Stakeholders Comments</a>
                                                                     <a class="nav-item nav-link" id="nav-spc-justification-list-comments-tab" (click)=toggleDisplayCommentsTab(actionRequest?.proposalId) data-toggle="tab" href="#nav-spc-justification-list-comments" role="tab" aria-controls="nav-spc-justification-list-comments" aria-selected="false">Remarks</a>
 
-                                                                    <a class="nav-item nav-link" id="nav-approve-justification-tab" data-toggle="tab" href="#nav-approve-justification" role="tab" aria-controls="nav-approve-justification" aria-selected="false">Approve</a>
-                                                                    <a class="nav-item nav-link" id="nav-reject-justification-tab" data-toggle="tab" href="#nav-reject-justification" role="tab" aria-controls="nav-reject-justification" aria-selected="false">Reject</a>
+                                                                    <a class="nav-item nav-link" id="nav-approve-justification-tab" data-toggle="tab" href="#nav-approve-justification" role="tab" aria-controls="nav-approve-justification" aria-selected="false">Decision on Justification</a>
+<!--                                                                    <a class="nav-item nav-link" id="nav-reject-justification-tab" data-toggle="tab" href="#nav-reject-justification" role="tab" aria-controls="nav-reject-justification" aria-selected="false">Reject</a>-->
                                                                 </div>
                                                             </nav>
                                                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-justification-content">
@@ -364,6 +364,18 @@
                                                                                         <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
                                                                                         <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                     </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label>Decision On Justification</label>
+                                                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control" required
+                                                                                                formControlName="accentTo"
+                                                                                                name="accentTo"
+                                                                                        >
+                                                                                            <option disabled>--Select Option--</option>
+                                                                                            <option  value="Yes">Approve Proposal</option>
+                                                                                            <option value="No">Reject Proposal</option>
+                                                                                        </select>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >
                                                                                 <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.proposalId}}" >
@@ -372,31 +384,31 @@
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Approve</button>
+                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
-                                                                <div class="tab-pane fade" id="nav-reject-justification" role="tabpanel" aria-labelledby="nav-reject-justification-tab">
-                                                                    <form (ngSubmit)="rejectSpcJustification()" [formGroup]="rejectSpcJustificationFormGroup" class="form">
-                                                                        <div class="modal-body">
-                                                                            <div class="form-body">
-                                                                                <div class="row">
-                                                                                    <div class="form-group col-12">
-                                                                                        <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
-                                                                                        <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.proposalId}}" >
-                                                                                <input type="hidden" formControlName="justificationId" name="justificationId" value="{{actionRequest?.id}}" >
-                                                                                <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Reject</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
+<!--                                                                <div class="tab-pane fade" id="nav-reject-justification" role="tabpanel" aria-labelledby="nav-reject-justification-tab">-->
+<!--                                                                    <form (ngSubmit)="rejectSpcJustification()" [formGroup]="rejectSpcJustificationFormGroup" class="form">-->
+<!--                                                                        <div class="modal-body">-->
+<!--                                                                            <div class="form-body">-->
+<!--                                                                                <div class="row">-->
+<!--                                                                                    <div class="form-group col-12">-->
+<!--                                                                                        <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>-->
+<!--                                                                                        <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>-->
+<!--                                                                                    </div>-->
+<!--                                                                                </div>-->
+<!--                                                                                <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.proposalId}}" >-->
+<!--                                                                                <input type="hidden" formControlName="justificationId" name="justificationId" value="{{actionRequest?.id}}" >-->
+<!--                                                                                <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >-->
+<!--                                                                            </div>-->
+<!--                                                                        </div>-->
+<!--                                                                        <div class="modal-footer">-->
+<!--                                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>-->
+<!--                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Reject</button>-->
+<!--                                                                        </div>-->
+<!--                                                                    </form>-->
+<!--                                                                </div>-->
                                                             </div>
 
                                                         </div>
