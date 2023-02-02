@@ -113,4 +113,8 @@ class ISAdoptionProposal {
     @Basic
     var deadlineDate: Timestamp?=null
 
+    @Column(name = "NUMBER_OF_COMMENTS")
+    @Basic
+    var noOfComments: Long? = null
+
 }

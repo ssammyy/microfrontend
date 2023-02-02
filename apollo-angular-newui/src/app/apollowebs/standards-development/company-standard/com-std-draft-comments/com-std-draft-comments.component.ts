@@ -2,25 +2,29 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-    ApproveDraft,
-    ComJcJustificationDec,
-    COMPreliminaryDraft,
-    DocView
-} from "../../../../../core/store/data/std/std.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {StdComStandardService} from "../../../../../core/store/data/std/std-com-standard.service";
+  ApproveDraft,
+  ComJcJustificationDec,
+  COMPreliminaryDraft,
+  DocView
+} from "../../../../core/store/data/std/std.model";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
-import {NotificationService} from "../../../../../core/store/data/std/notification.service";
-import {HttpErrorResponse} from "@angular/common/http";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {ActivatedRoute} from "@angular/router";
-import {DocumentDTO} from "../../../../../core/store/data/levy/levy.model";
+import {HttpErrorResponse} from "@angular/common/http";
+import {selectUserInfo} from "../../../../core/store";
+import {Store} from "@ngrx/store";
+
+declare const $: any;
 
 @Component({
-  selector: 'app-com-std-draft-comment',
-  templateUrl: './com-std-draft-comment.component.html',
-  styleUrls: ['./com-std-draft-comment.component.css']
+  selector: 'app-com-std-draft-comments',
+  templateUrl: './com-std-draft-comments.component.html',
+  styleUrls: ['./com-std-draft-comments.component.css']
 })
-export class ComStdDraftCommentComponent implements OnInit {
+export class ComStdDraftCommentsComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
@@ -33,11 +37,15 @@ export class ComStdDraftCommentComponent implements OnInit {
   docDetails: DocView[] = [];
 
   blob: Blob;
-    loadingText: string;
-    public uploadCommentsFormGroup!: FormGroup;
-    docName='';
+  loadingText: string;
+  public uploadCommentsFormGroup!: FormGroup;
+  docName='';
+  fullname = '';
+  email = '';
+  organization = '';
 
   constructor(
+      private store$: Store<any>,
       private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
@@ -46,7 +54,6 @@ export class ComStdDraftCommentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    //this.getUploadedStdDraftForComment();
     this.activatedRoute.paramMap.subscribe(
         rs => {
           this.comDraftID = rs.get('comDraftID');
@@ -57,26 +64,34 @@ export class ComStdDraftCommentComponent implements OnInit {
     this.getUploadedStdDraftForComment(this.comDraftID);
     this.docName='Company Standard'
 
-      this.uploadCommentsFormGroup = this.formBuilder.group({
-          commentTitle:[],
-          commentDocumentType:[],
-          uploadDate:[],
-          nameOfRespondent:[],
-          emailOfRespondent:[],
-          phoneOfRespondent:[],
-          nameOfOrganization:[],
-          clause:[],
-          paragraph:[],
-          typeOfComment:[],
-          comment:[],
-          proposedChange:[],
-          observation:[],
-          requestID:[],
-          draftID:[]
+    this.uploadCommentsFormGroup = this.formBuilder.group({
+      commentTitle:[],
+      commentDocumentType:[],
+      uploadDate:[],
+      nameOfRespondent:[],
+      emailOfRespondent:[],
+      phoneOfRespondent:[],
+      nameOfOrganization:[],
+      clause:[],
+      paragraph:[],
+      typeOfComment:[],
+      comment:[],
+      proposedChange:[],
+      observation:[],
+      requestID:[],
+      draftID:[]
 
-      });
+    });
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      return this.fullname = u.fullName;
+    });
+
+    this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+      return this.email = u.email;
+    });
+
+    this.organization="KEBS"
   }
-
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
@@ -95,7 +110,7 @@ export class ComStdDraftCommentComponent implements OnInit {
   }
   public getUploadedStdDraftForComment(comDraftID: string): void{
     this.SpinnerService.show();
-    this.stdComStandardService.getUploadedStdDraftForComment(comDraftID).subscribe(
+    this.stdComStandardService.getUploadedSDraftForComment(comDraftID).subscribe(
         (response: COMPreliminaryDraft[])=> {
           this.SpinnerService.hide();
           this.rerender();
@@ -114,30 +129,33 @@ export class ComStdDraftCommentComponent implements OnInit {
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
-      this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
-          (response: DocumentDTO[]) => {
-              this.documentDTOs = response;
-              this.SpinnerService.hide();
-              //console.log(this.documentDTOs)
-          },
-          (error: HttpErrorResponse) => {
-              this.SpinnerService.hide();
-              //console.log(error.message);
-          }
-      );
+    this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+        (response: DocumentDTO[]) => {
+          this.documentDTOs = response;
+          this.SpinnerService.hide();
+          //console.log(this.documentDTOs)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          //console.log(error.message);
+        }
+    );
 
     if (mode==='approveDraft'){
       this.actionRequest=task;
       button.setAttribute('data-target','#approveDraft');
-        this.uploadCommentsFormGroup.patchValue(
-            {
-                commentTitle: this.actionRequest.title,
-                requestID: this.actionRequest.requestId,
-                draftID: this.actionRequest.id,
-                commentDocumentType: this.docName,
-                uploadDate: this.actionRequest.uploadDate
-            }
-        );
+      this.uploadCommentsFormGroup.patchValue(
+          {
+            commentTitle: this.actionRequest.title,
+            requestID: this.actionRequest.requestId,
+            draftID: this.actionRequest.id,
+            commentDocumentType: this.docName,
+            uploadDate: this.actionRequest.uploadDate,
+            nameOfRespondent:this.fullname,
+            emailOfRespondent:this.email,
+            nameOfOrganization:this.organization
+          }
+      );
     }
 
 
@@ -158,25 +176,25 @@ export class ComStdDraftCommentComponent implements OnInit {
     });
   }
 
-    onSubmit(): void {
-        this.loadingText = "Saving...";
-        this.SpinnerService.show();
-        console.log(this.uploadCommentsFormGroup.value);
-        this.stdComStandardService.submitDraftComments(this.uploadCommentsFormGroup.value).subscribe(
-            (response ) => {
-                console.log(response);
-                this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
-                this.getUploadedStdDraftForComment(this.comDraftID);
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                this.showToasterError('Error', `Error Try Again`);
-                console.log(error.message);
-            }
-        );
-        this.hideModalComment();
-    }
+  onSubmit(): void {
+    this.loadingText = "Saving...";
+    this.SpinnerService.show();
+    console.log(this.uploadCommentsFormGroup.value);
+    this.stdComStandardService.submitDraftComment(this.uploadCommentsFormGroup.value).subscribe(
+        (response ) => {
+          console.log(response);
+          this.SpinnerService.hide();
+          this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
+          this.getUploadedStdDraftForComment(this.comDraftID);
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Try Again`);
+          console.log(error.message);
+        }
+    );
+    this.hideModalComment();
+  }
 
   public commentOnDraft(approveDraft: ApproveDraft): void{
     this.SpinnerService.show();
@@ -198,29 +216,29 @@ export class ComStdDraftCommentComponent implements OnInit {
     this.hideModalComment();
   }
 
-    // viewFile(pdfId: number,fileUploaded: File) {
-    //     this.SpinnerService.hide();
-    //     this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
-    //         (dataPdf: any) => {
-    //             const blob = new Blob([fileUploaded.slice()], {type: fileUploaded.type});
-    //
-    //             // tslint:disable-next-line:prefer-const
-    //             let downloadURL = window.URL.createObjectURL(blob);
-    //             const link = document.createElement('a');
-    //             link.href = downloadURL;
-    //             link.download = fileUploaded.name;
-    //             link.click();
-    //             console.log(fileUploaded)
-    //         },
-    //         (error: HttpErrorResponse) => {
-    //             this.SpinnerService.hide();
-    //             this.showToasterError('Error', `Error Processing Request`);
-    //             console.log(error.message);
-    //             this.getUploadedStdDraftForComment(this.comDraftID);
-    //             //alert(error.message);
-    //         }
-    //     );
-    // }
+  // viewFile(pdfId: number,fileUploaded: File) {
+  //     this.SpinnerService.hide();
+  //     this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+  //         (dataPdf: any) => {
+  //             const blob = new Blob([fileUploaded.slice()], {type: fileUploaded.type});
+  //
+  //             // tslint:disable-next-line:prefer-const
+  //             let downloadURL = window.URL.createObjectURL(blob);
+  //             const link = document.createElement('a');
+  //             link.href = downloadURL;
+  //             link.download = fileUploaded.name;
+  //             link.click();
+  //             console.log(fileUploaded)
+  //         },
+  //         (error: HttpErrorResponse) => {
+  //             this.SpinnerService.hide();
+  //             this.showToasterError('Error', `Error Processing Request`);
+  //             console.log(error.message);
+  //             this.getUploadedStdDraftForComment(this.comDraftID);
+  //             //alert(error.message);
+  //         }
+  //     );
+  // }
 
   viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
@@ -253,5 +271,6 @@ export class ComStdDraftCommentComponent implements OnInit {
   public hideModalComment() {
     this.closeModalComment?.nativeElement.click();
   }
+
 
 }

@@ -91,6 +91,22 @@ class ComDraftComments {
     @Basic
     var positionOfRespondent:String? =null
 
+    @Column(name="UPLOAD_DATE")
+    @Basic
+    var uploadDate:Timestamp? =null
+
+    @Column(name="EMAIL_OF_RESPONDENT")
+    @Basic
+    var emailOfRespondent:String? =null
+
+    @Column(name="PHONE_OF_RESPONDENT")
+    @Basic
+    var phoneOfRespondent:String? =null
+
+    @Column(name="OBSERVATION")
+    @Basic
+    var observation:String? =null
+
 
 
 

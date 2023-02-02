@@ -118,7 +118,7 @@ class IntStandardService(
         //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-        val targetUrl = "https://kimsint.kebs.org/isProposalComments/$proposalId";
+        val targetUrl = "https://kimsint.kebs.org/isPropComments/$proposalId";
         stakeholders?.forEach { s ->
             val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
             val recipient = s.email
@@ -129,10 +129,11 @@ class IntStandardService(
             }
         }
 
+        val targetUrl2 = "https://kimsint.kebs.org/isProposalComments/$proposalId";
         if (listTwo != null) {
             for (recipient in listTwo) {
                 val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
-                val messageBody= "Hope You are Well,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl "
+                val messageBody= "Hope You are Well,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "
                 notifications.sendEmail(recipient, subject, messageBody)
 
             }
@@ -180,26 +181,37 @@ class IntStandardService(
     //Submit Adoption Proposal comments
     fun submitAPComments(isAdoptionComments: ISAdoptionComments){
         val variables: MutableMap<String, Any> = HashMap()
-        isAdoptionComments.user_id=isAdoptionComments.user_id
+
         isAdoptionComments.adoption_proposal_comment=isAdoptionComments.adoption_proposal_comment
+        isAdoptionComments.proposalID=isAdoptionComments.proposalID
         isAdoptionComments.commentTitle=isAdoptionComments.commentTitle
         isAdoptionComments.commentDocumentType=isAdoptionComments.commentDocumentType
         isAdoptionComments.comNameOfOrganization=isAdoptionComments.comNameOfOrganization
         isAdoptionComments.comClause=isAdoptionComments.comClause
+        isAdoptionComments.scope=isAdoptionComments.scope
+        isAdoptionComments.dateOfApplication=isAdoptionComments.dateOfApplication
         isAdoptionComments.comParagraph=isAdoptionComments.comParagraph
+        isAdoptionComments.observation=isAdoptionComments.observation
         isAdoptionComments.typeOfComment=isAdoptionComments.typeOfComment
         isAdoptionComments.proposedChange=isAdoptionComments.proposedChange
-        isAdoptionComments.proposalID=isAdoptionComments.proposalID
-        isAdoptionComments.adopt=isAdoptionComments.adopt
-        isAdoptionComments.reasonsForNotAcceptance=isAdoptionComments.reasonsForNotAcceptance
         isAdoptionComments.recommendations=isAdoptionComments.recommendations
         isAdoptionComments.nameOfRespondent=isAdoptionComments.nameOfRespondent
         isAdoptionComments.positionOfRespondent=isAdoptionComments.positionOfRespondent
         isAdoptionComments.nameOfOrganization=isAdoptionComments.nameOfOrganization
-        isAdoptionComments.dateOfApplication=isAdoptionComments.dateOfApplication
 
         isAdoptionComments.comment_time = Timestamp(System.currentTimeMillis())
         isAdoptionCommentsRepository.save(isAdoptionComments)
+
+        val commentNumber=isAdoptionProposalRepository.getCommentCount(isAdoptionComments.proposalID)
+
+        isAdoptionProposalRepository.findByIdOrNull(isAdoptionComments.proposalID)?.let { iSAdoptionProposal ->
+            with(iSAdoptionProposal) {
+                noOfComments= commentNumber+1
+
+            }
+            isAdoptionProposalRepository.save(iSAdoptionProposal)
+        }?: throw Exception("REQUEST NOT FOUND")
+
         println("Comment Submitted")
     }
 

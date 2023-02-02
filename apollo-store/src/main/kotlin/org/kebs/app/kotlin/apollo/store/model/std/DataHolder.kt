@@ -429,7 +429,7 @@ interface ManufacturerStatusHolder{
 interface ProposalDetails{
     fun getId(): Long?
     fun getDocName(): String?
-    fun getPreparedDate(): String?
+    fun getPreparedDate(): Timestamp?
     fun getProposalNumber(): String?
     fun getUploadedBy(): String?
     fun getRemarks(): String?
@@ -444,6 +444,8 @@ interface ProposalDetails{
     fun getAdoptionAcceptableAsPresented(): String?
     fun getReasonsForNotAcceptance(): String?
     fun getStandardNumber(): String?
+    fun getDeadlineDate(): Timestamp?
+    fun getNoOfComments(): Long?
 }
 
 interface RegisteredFirms{
@@ -601,6 +603,8 @@ interface ISProposalComments{
     fun getPositionOfRespondent(): String?
     fun getNameOfOrganization(): String?
     fun getDateOfApplication(): String?
+    fun getScope(): String?
+    fun getObservation(): String?
 }
 interface ISUploadedDraft{
     fun getId(): Long?

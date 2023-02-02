@@ -402,6 +402,14 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getUploadedStdDraftForComment(comDraftID)
     }
 
+    @GetMapping("/company_standard/getUploadedSDraftForComment")
+    @ResponseBody
+    fun getUploadedSDraftForComment(@RequestParam("comDraftID") comDraftID: Long): MutableList<ComStdDraft>
+    {
+
+        return comStandardService.getUploadedStdDraftForComment(comDraftID)
+    }
+
     @PreAuthorize("hasAuthority('PL_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getUploadedStdDraft")
     @ResponseBody
@@ -492,18 +500,17 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getAllComments(requestId)
     }
 
-
-    @PostMapping("/anonymous/company_standard/submitDraftComments")
-    fun submitDraftComments(@RequestBody comDraftCommentDto: ComDraftCommentDto
+    @PostMapping("/company_standard/submitDraftComment")
+    fun submitDraftComment(@RequestBody comDraftCommentDto: ComDraftCommentDto
     ) : ServerResponse
     {
 
         val comDraftComments= ComDraftComments().apply {
-            draftComment=comDraftCommentDto.draftComment
+            draftComment=comDraftCommentDto.comment
             commentTitle=comDraftCommentDto.commentTitle
             commentDocumentType=comDraftCommentDto.commentDocumentType
-            comClause=comDraftCommentDto.comClause
-            comParagraph=comDraftCommentDto.comParagraph
+            comClause=comDraftCommentDto.clause
+            comParagraph=comDraftCommentDto.paragraph
             typeOfComment=comDraftCommentDto.typeOfComment
             proposedChange=comDraftCommentDto.proposedChange
             requestID=comDraftCommentDto.requestID
@@ -515,6 +522,43 @@ class ComStandardController (val comStandardService: ComStandardService,
             adoptStandard=comDraftCommentDto.adoptStandard
             adoptDraft=comDraftCommentDto.adoptDraft
             reason=comDraftCommentDto.reason
+            uploadDate=comDraftCommentDto.uploadDate
+            emailOfRespondent=comDraftCommentDto.emailOfRespondent
+            phoneOfRespondent=comDraftCommentDto.phoneOfRespondent
+            observation=comDraftCommentDto.observation
+        }
+
+        return ServerResponse(HttpStatus.OK,"Comment Updated",comStandardService.submitDraftComments(comDraftComments))
+
+    }
+
+
+    @PostMapping("/anonymous/company_standard/submitDraftComments")
+    fun submitDraftComments(@RequestBody comDraftCommentDto: ComDraftCommentDto
+    ) : ServerResponse
+    {
+
+        val comDraftComments= ComDraftComments().apply {
+            draftComment=comDraftCommentDto.comment
+            commentTitle=comDraftCommentDto.commentTitle
+            commentDocumentType=comDraftCommentDto.commentDocumentType
+            comClause=comDraftCommentDto.clause
+            comParagraph=comDraftCommentDto.paragraph
+            typeOfComment=comDraftCommentDto.typeOfComment
+            proposedChange=comDraftCommentDto.proposedChange
+            requestID=comDraftCommentDto.requestID
+            draftID=comDraftCommentDto.draftID
+            recommendations=comDraftCommentDto.recommendations
+            nameOfRespondent=comDraftCommentDto.nameOfRespondent
+            positionOfRespondent=comDraftCommentDto.positionOfRespondent
+            nameOfOrganization=comDraftCommentDto.nameOfOrganization
+            adoptStandard=comDraftCommentDto.adoptStandard
+            adoptDraft=comDraftCommentDto.adoptDraft
+            reason=comDraftCommentDto.reason
+            uploadDate=comDraftCommentDto.uploadDate
+            emailOfRespondent=comDraftCommentDto.emailOfRespondent
+            phoneOfRespondent=comDraftCommentDto.phoneOfRespondent
+            observation=comDraftCommentDto.observation
         }
 
         return ServerResponse(HttpStatus.OK,"Comment Updated",comStandardService.submitDraftComments(comDraftComments))
