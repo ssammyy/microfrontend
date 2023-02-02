@@ -123,7 +123,10 @@
                                             <!--                                            </div>-->
                                             <div class="col-md-4 mb-3">
                                                 <button class="btn btn-primary"
+
+
                                                         onclick="validationFunction('validateQPAMSDetails');"
+
                                                         type="submit">
                                                     Save
                                                 </button>
@@ -1286,6 +1289,24 @@
     }
 
 </script>
+
+<!--Autosaving for inspection report-->
+
+<script>
+    const textareas = document.querySelectorAll("textarea");
+
+    textareas.forEach(textarea => {
+        textarea.addEventListener("input", function() {
+            localStorage.setItem(this.id, this.value);
+        });
+
+        const storedValue = localStorage.getItem(textarea.id);
+        if (storedValue) {
+            textarea.value = storedValue;
+        }
+    });
+</script>
+
 </body>
 </html>
 

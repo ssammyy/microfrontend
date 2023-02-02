@@ -449,6 +449,16 @@ import {DmarkAdminComponent} from './apollowebs/qualityAssuranceAdmin/dmark-admi
 import {BillDetailsComponent} from './apollowebs/invoice/corporate/view-transactions/bill-details/bill-details.component';
 import {ViewBillDetailsComponent} from "./apollowebs/invoice/corporate-bills/view-bill-details/view-bill-details.component";
 
+// import { ComStdRequestProcessComponent } from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
+// import { ManageTivetComponent } from './apollowebs/usermanagement/manage-tivet/manage-tivet.component';
+// import { InvoiceConsolidateFmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-fmark/invoice-consolidate-fmark.component';
+// import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component';
+import { SmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/smark-renewal-applications/smark-renewal-applications.component';
+import { FmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/fmark-renewal-applications/fmark-renewal-applications.component';
+import { SmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/smark-expired-applications/smark-expired-applications.component';
+import { FmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/fmark-expired-applications/fmark-expired-applications.component';
+import { DmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/dmark-expired-applications/dmark-expired-applications.component';
+import { DmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/dmark-renewal-applications/dmark-renewal-applications.component';
 import { IntStdProposalCommentsComponent } from './apollowebs/standards-development/international-standard/int-std-proposal-comments/int-std-proposal-comments.component';
 import { ComStdDraftCommentsComponent } from './apollowebs/standards-development/company-standard/com-std-draft-comments/com-std-draft-comments.component';
 import {ComStdRequestProcessComponent} from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
@@ -976,6 +986,18 @@ import {ComStdDraftCommentComponent} from "./apollowebs/standards-development/co
         IntStdProposalCommentsComponent,
 
         ComStdDraftCommentsComponent,
+
+        SmarkRenewalApplicationsComponent,
+
+        FmarkRenewalApplicationsComponent,
+
+        SmarkExpiredApplicationsComponent,
+
+        FmarkExpiredApplicationsComponent,
+
+        DmarkExpiredApplicationsComponent,
+
+        DmarkRenewalApplicationsComponent,
 
         BillDetailsComponent,
         ViewBillDetailsComponent,
