@@ -193,7 +193,16 @@ export class AllComplaintsDetailsDto {
     complaintProcessStatus: boolean;
     workPlanRefNumber: string;
     workPlanBatchRefNumber: string;
+    // reAssigningDetails: reAssignRegionDto;
+
 }
+
+// export class reAssignRegionDto{
+//     reassigningHODFirstName: string;
+//     reassigningHODLastName: string;
+//     reassigningHODEmail: string;
+//     reassignedRegion: number;
+// }
 
 export class MSRemarksDto {
     id: number;
@@ -373,6 +382,7 @@ export class ComplaintDetailsDto {
     productSubcategory: string;
     productName: string;
     productBrand: string;
+    region: string;
     county: string;
     town: string;
     marketCenter: string;
