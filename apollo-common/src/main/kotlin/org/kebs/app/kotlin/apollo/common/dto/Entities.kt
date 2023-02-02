@@ -825,6 +825,8 @@ data class FmarkEntityDto(
     var smarkPermitID: Long? = null,
 )
 
+
+
 data class ProductSubcategoryEntityDto(
     var id: Long? = null,
     var name: String? = null,
@@ -968,6 +970,7 @@ class PlantEntityDto {
     var endingDate: Date? = null
     var invoiceSharedId: Long? = null
     var tokenGiven: String? = null
+    var invoiceBatchID: Long? = null
 }
 
 class ProfileDirectorsEntityDto {

@@ -14,6 +14,8 @@ import {
 } from 'src/app/core/store';
 import {Store} from '@ngrx/store';
 import {Router} from "@angular/router";
+import {QaService} from '../../../core/store/data/qa/qa.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-branch',
@@ -36,6 +38,8 @@ export class BranchList implements OnInit {
 
   constructor(
       private service: BranchesService,
+      private qaService: QaService,
+      private SpinnerService: NgxSpinnerService,
       private store$: Store<any>,
       private router: Router
   ) {
@@ -94,5 +98,31 @@ export class BranchList implements OnInit {
   viewRecord(record: Branches) {
     this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'companies/view/branch'}));
+  }
+
+  onClickGenerateInspectionFee(record: Branches) {
+      this.qaService.showSuccessWith2Message('Are you sure your want to Generate inspection invoice?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'Generate Inspection Invoice\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.generateInspectionFee(record);
+          });
+  }
+
+
+  generateInspectionFee(record: Branches) {
+
+      this.qaService.generateInspectionFees(record).subscribe(
+          (data: any) => {
+            this.SpinnerService.hide();
+            this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.qaService.showError('AN ERROR OCCURRED');
+          },
+      );
+
   }
 }

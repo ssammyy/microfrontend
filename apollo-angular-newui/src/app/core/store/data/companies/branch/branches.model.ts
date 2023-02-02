@@ -24,4 +24,5 @@ export interface Branches {
     endingDate: Date;
     invoiceSharedId: number;
     tokenGiven: string;
+    invoiceBatchID: number;
 }
