@@ -108,6 +108,53 @@
 
 
 </style>
+<style>
+    .login-button {
+        background-color: #0594FF;
+        color: #ffffff;
+        padding: 10px 35px;
+        border: none;
+        border-radius: 100px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .error-msg {
+        color: red;
+        display: inline-block;
+        position: absolute;
+        top: 34px;
+        /* font-size: 10px; */
+        font-size: 75%;
+        margin-top: 2.604167em;
+        top: calc(100% - 1.72916667em);
+    }
+
+    .fix-error-icon {
+        top: 27px;
+    }
+
+</style>
+<div *ngIf="displayError">
+    <!-- <span class="glyphicon glyphicon-remove form-control-feedback fix-error-icon"></span> -->
+    <span class="sr-only">(error)</span>
+    <div class="error-msg">
+        {{ errorMsg }}
+    </div>
+</div>
+<div *ngIf="loading">
+
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+</div>
 
 <div [ngSwitch]="step">
     <div *ngSwitchCase="0">
@@ -120,46 +167,62 @@
 
                 <div class="col">
 
-                    <div class="form-group" style="margin-top: 3%">
-                        <label class="input-placeholder"><b>Please Select Institution Type</b></label>
-                        <select
-                                [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.institutionType.errors }"
-                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                class="form-control two-column-input" formControlName="institutionType"
-                                id="institutionType"
-                                name="institutionType"
-                                required="required" style="width: 60%; height: 60%">
-                            <option ngValue="null" selected>Please select</option>
-                            <option value="University" class="dropdown-item"> University</option>
-                            <option value="Tivet" class="dropdown-item"> Tivet</option>
-                            <option value="NGO" class="dropdown-item"> NGO</option>
-                            <option value="Self Help Group" class="dropdown-item"> Self Help Group</option>
+                    <!--                    <div class="form-group" style="margin-top: 3%">-->
+                    <!--                        <label class="input-placeholder"><b>Please Select Institution Type</b></label>-->
+                    <!--                        <select-->
+                    <!--                                [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.institutionType.errors }"-->
+                    <!--                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+                    <!--                                class="form-control two-column-input" formControlName="institutionType"-->
+                    <!--                                id="institutionType"-->
+                    <!--                                name="institutionType"-->
+                    <!--                                required="required" style="width: 60%; height: 60%">-->
+                    <!--                            <option ngValue="null" selected>Please select</option>-->
+                    <!--                            <option value="University" class="dropdown-item"> University</option>-->
+                    <!--                            <option value="Tivet" class="dropdown-item"> Tivet</option>-->
+                    <!--                            <option value="NGO" class="dropdown-item"> NGO</option>-->
+                    <!--                            <option value="Self Help Group" class="dropdown-item"> Self Help Group</option>-->
 
-                        </select>
-                        <div *ngIf="submitted && formStepZeroForm.institutionType.errors"
-                             class="invalid-feedback">
-                            <div *ngIf="formStepZeroForm.institutionType.errors.required">The Institution Type is
-                                required
-                            </div>
-                        </div>
+                    <!--                        </select>-->
+                    <!--                        <div *ngIf="submitted && formStepZeroForm.institutionType.errors"-->
+                    <!--                             class="invalid-feedback">-->
+                    <!--                            <div *ngIf="formStepZeroForm.institutionType.errors.required">The Institution Type is-->
+                    <!--                                required-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
 
-                    </div>
+                    <!--                    </div>-->
                 </div>
 
+                <div class="form-group">
+                    <mat-form-field>
+                        <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                    class="form-control two-column-input" required
+                                    formControlName="institutionType"
+                                    name="institutionType"
+                                    placeholder="Institution Type"
+                                    [class.is-invalid]="formStepZeroForm.institutionType.invalid && formStepZeroForm.institutionType.touched">
 
-                <div class="form-group" style="margin-top: 3%">
-                    <label class="input-placeholder" for="institutionName"><b>Institution Name</b></label>
-                    <input [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.registrationNumber.errors }"
-                           aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                           class="form-control two-column-input" formControlName="institutionName"
-                           id="institutionName" name="institutionName"
-                           placeholder="Institution Name" style="width: 60%;color: white;font-size: 14px;"
-                           type="text">
-                    <div *ngIf="submitted && formStepZeroForm.institutionName.errors" class="invalid-feedback">
-                        <div *ngIf="formStepZeroForm.institutionName.errors.required">Institution Name is
-                            required
-                        </div>
-                    </div>
+                            <mat-option value="University" class="dropdown-item"> University</mat-option>
+                            <mat-option value="Tivet" class="dropdown-item"> Tivet</mat-option>
+                            <mat-option value="NGO" class="dropdown-item"> NGO</mat-option>
+                            <mat-option value="Self Help Group" class="dropdown-item"> Self Help Group</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group">
+                    <mat-form-field class="example-full-width has-label"
+                                    [ngClass]="displayFieldCss(stepZeroForm, 'institutionName')">
+                        <input type="text"
+                               matInput
+                               id="institutionName"
+                               placeholder="Institution Name *"
+                               (ngModelChange)="textValidationType($event)"
+                               formControlName="institutionName">
+                        <app-field-error-display [displayError]="isFieldValid(stepZeroForm, 'institutionName')"
+                                                 errorMsg="Please Enter Institution Name">
+                        </app-field-error-display>
+                    </mat-form-field>
                 </div>
 
 
@@ -185,144 +248,108 @@
                             General Institution Information
                         </h2>
                     </div>
-                    <div class="row input-row">
+                    <div class="row">
 
-                        <div class="col">
-
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label class="input-placeholder"><b>Institution Registration Number*</b></label>
-                                <input style="color: white;font-size: 14px;"
-                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.registrationNumber.errors }"
-                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                       class="form-control two-column-input" formControlName="registrationNumber"
-                                       id="registrationNumber"
-                                       name="registrationNumber" placeholder="Institution registration number"
-                                       required="required">
-                                <div *ngIf="submitted && formStepOneForm.registrationNumber.errors"
-                                     class="invalid-feedback">
-                                    <div *ngIf="formStepOneForm.registrationNumber.errors.required">The id number of one
-                                        director is required
-                                    </div>
-                                </div>
-
+                                <mat-form-field class="example-full-width has-label"
+                                                [ngClass]="displayFieldCss(stepOneForm, 'registrationNumber')">
+                                    <input style="color: white;font-size: 14px;" type="text"
+                                           matInput
+                                           class="form-control two-column-input"
+                                           id="registrationNumber"
+                                           placeholder="Institution Registration Number *"
+                                           (ngModelChange)="textValidationType($event)"
+                                           formControlName="registrationNumber">
+                                    <app-field-error-display
+                                            [displayError]="isFieldValid(stepOneForm, 'registrationNumber')"
+                                            errorMsg="Please Enter Institution Registration Number">
+                                    </app-field-error-display>
+                                </mat-form-field>
                             </div>
                         </div>
 
-                        <div class="col">
-
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label class="input-placeholder"><b>Director's Id Number</b></label>
-                                <input style="color: white;font-size: 14px;"
-                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.directorIdNumber.errors }"
-                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                       class="form-control two-column-input" formControlName="directorIdNumber"
-                                       id="directorIdNumber"
-                                       name="directorIdNumber"
-                                       placeholder="The id number of one director" required="required" type="text">
-                                <div *ngIf="submitted && formStepOneForm.directorIdNumber.errors"
-                                     class="invalid-feedback">
-                                    <div *ngIf="formStepOneForm.directorIdNumber.errors.required">The id number of one
-                                        director
-                                    </div>
-                                </div>
-
+                                <mat-form-field class="example-full-width has-label"
+                                                [ngClass]="displayFieldCss(stepOneForm, 'directorIdNumber')">
+                                    <input style="color: white;font-size: 14px;" type="text"
+                                           matInput
+                                           class="form-control two-column-input"
+                                           id="directorIdNumber"
+                                           placeholder="Director's Id Number *"
+                                           (ngModelChange)="numberValidationType($event)"
+                                           formControlName="directorIdNumber">
+                                    <app-field-error-display
+                                            [displayError]="isFieldValid(stepOneForm, 'directorIdNumber')"
+                                            errorMsg="Please Enter The Id Number Of One Director">
+                                    </app-field-error-display>
+                                </mat-form-field>
                             </div>
+
                         </div>
 
                     </div>
 
                     <div class="row input-row">
-
-                        <!--                        <div class="col">-->
-                        <!--                            <div class="form-group">-->
-                        <!--                                <label class="input-placeholder"><b>Company Name</b></label>-->
-                        <!--                                <input style="color: white;font-size: 14px;"-->
-                        <!--                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.name.errors }"-->
-                        <!--                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-                        <!--                                       class="form-control two-column-input" formControlName="name" id="name"-->
-                        <!--                                       name="name"-->
-                        <!--                                       placeholder="The Company name" required="required" type="text">-->
-                        <!--                                <div *ngIf="submitted && formStepOneForm.name.errors" class="invalid-feedback">-->
-                        <!--                                    <div *ngIf="formStepOneForm.name.errors.required">The Company name required</div>-->
-                        <!--                                </div>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
-
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label class="input-placeholder"><b>KRA Pin If Present</b></label>
-                                <input style="color: white;font-size: 14px;"
-                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.kraPin.errors }"
-                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                       class="form-control two-column-input" formControlName="kraPin" id="kraPin"
-                                       name="kraPin"
-                                       placeholder="The kraPin" type="text">
-                                <!--                                <div *ngIf="submitted && formStepOneForm.kraPin.errors" class="invalid-feedback">-->
-                                <!--                                    <div *ngIf="formStepOneForm.kraPin.errors.required">The Company name required</div>-->
-                                <!--                                </div>-->
+                                <mat-form-field class="example-full-width has-label"
+                                                [ngClass]="displayFieldCss(stepOneForm, 'kraPin')">
+                                    <input style="color: white;font-size: 14px;" type="text"
+                                           matInput
+                                           class="form-control two-column-input"
+                                           id="kraPin"
+                                           placeholder="KRA Pin If Present"
+                                           formControlName="kraPin">
+                                </mat-form-field>
                             </div>
+
                         </div>
+
 
                     </div>
 
-                    <div class="row input-row">
-
-                        <div class="col">
-
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label class="input-placeholder"><b>Yearly Turnover</b></label>
-                                <select
-                                        [ngClass]="{ 'is-invalid': submitted && formStepOneForm.yearlyTurnover.errors }"
-                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                        class="form-control two-column-input" formControlName="yearlyTurnover"
-                                        id="yearlyTurnover"
-                                        name="yearlyTurnover"
-                                        required="required" style="width: 100%; height: 60%">
-                                    <option [ngValue]="200000" class="dropdown-item"> 200,000 and Below</option>
-                                    <option [ngValue]="500000" class="dropdown-item"> 200,001 - 500,000</option>
-                                    <option [ngValue]="500001" class="dropdown-item"> 500,000 and Above</option>
+                                <mat-form-field>
+                                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                class="form-control two-column-input" required
+                                                formControlName="yearlyTurnover"
+                                                name="yearlyTurnover"
+                                                placeholder="Yearly Turnover"
+                                                [class.is-invalid]="formStepOneForm.yearlyTurnover.invalid && formStepOneForm.yearlyTurnover.touched">
 
-                                </select>
-
-
-                                <!--                                <input style="color: white;font-size: 14px;"-->
-                                <!--                                       [ngClass]="{ 'is-invalid': submitted && formStepOneForm.yearlyTurnover.errors }"-->
-                                <!--                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-                                <!--                                       class="form-control two-column-input" formControlName="yearlyTurnover"-->
-                                <!--                                       id="yearlyTurnover"-->
-                                <!--                                       name="yearlyTurnover"-->
-                                <!--                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"-->
-                                <!--                                       placeholder="The yearly Turnover"-->
-                                <!--                                       required="required"-->
-                                <!--                                       type="number"/>-->
-
-
-                                <div *ngIf="submitted && formStepOneForm.yearlyTurnover.errors"
-                                     class="invalid-feedback">
-                                    <div *ngIf="formStepOneForm.yearlyTurnover.errors.required">The yearly Turnover is
-                                        required
-                                    </div>
-                                </div>
-
+                                        <mat-option value="200000" class="dropdown-item"> Small(200,000 and Below)
+                                        </mat-option>
+                                        <mat-option value="500000" class="dropdown-item"> Medium( 200,001 - 500,000)
+                                        </mat-option>
+                                        <mat-option value="500001" class="dropdown-item"> Large( 500,000 and Above)
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
                             </div>
-                        </div>
 
-                        <div class="col">
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label class="input-placeholder" for="businessLines">
-                                    Line Of Business
-                                </label>
-                                <br>
                                 <ng-container *ngIf="businessLines$ | async as apps">
-                                    <select (ngModelChange)="updateSelectedBusinessLine()"
-                                            [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessLines.errors }"
-                                            formControlName="businessLines" id="businessLines"
-                                            name="businessLines" required="required" style="width: 100%; height: 75%">
-                                        <option
-                                                *ngFor="let app of apps| filterPipe: {status: true}"
-                                                [ngValue]="app.id"
-                                                class="dropdown-item">{{app.name}}</option>
-                                    </select>
+                                    <mat-form-field>
+                                        <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control two-column-input" required
+                                                    formControlName="businessLines"
+                                                    name="businessLines"
+                                                    placeholder="Line Of Business"
+                                                    [class.is-invalid]="formStepOneForm.businessLines.invalid && formStepOneForm.businessLines.touched">
+
+                                            <mat-option *ngFor="let app of apps| filterPipe: {status: true}"
+                                                        value="{{app.id}}"
+                                                        class="dropdown-item">{{app.name}}</mat-option>
+
+                                        </mat-select>
+                                    </mat-form-field>
+
 
                                 </ng-container>
                                 <div *ngIf="submitted && formStepOneForm.businessLines.errors" class="invalid-feedback">
@@ -337,22 +364,25 @@
                     <div class="row input-row col-12">
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="input-placeholder" for="businessLines">
-                                    Nature of Business
-                                </label>
-                                <br>
                                 <ng-container
                                         *ngIf="businessNatures$ | async as apps">
-                                    <select (ngModelChange)="updateSelectedBusinessNatures()"
-                                            [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessNatures.errors }"
-                                            formControlName="businessNatures" id="businessNatures"
-                                            name="businessNatures" required="required"
-                                            style="width: 100%; height: 100%">
-                                        <option
-                                                *ngFor="let app of apps| filterPipe:{status: true, businessLinesId:selectedBusinessLine }"
-                                                [ngValue]="app.id"
-                                                class="dropdown-item">{{app.name}}</option>
-                                    </select>
+                                    <mat-form-field>
+                                        <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control two-column-input"
+                                                    (ngModelChange)="updateSelectedBusinessNatures()"
+                                                    [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessNatures.errors }"
+                                                    formControlName="businessNatures" id="businessNatures"
+                                                    name="businessNatures" required
+                                                    placeholder="Business Nature"
+                                                    [class.is-invalid]="formStepOneForm.businessLines.invalid && formStepOneForm.businessLines.touched">
+
+                                            <mat-option
+                                                    *ngFor="let app of apps| filterPipe:{status: true, businessLinesId:selectedBusinessLine }"
+                                                    value="{{app.id}}"
+                                                    class="dropdown-item">{{app.name}}</mat-option>
+
+                                        </mat-select>
+                                    </mat-form-field>
 
                                 </ng-container>
                                 <div *ngIf="submitted && formStepOneForm.businessNatures.errors"
@@ -404,41 +434,93 @@
 
                     <div class="row input-row">
 
+
                         <div class="col">
-                            <div class="form-group" style="margin-top: 3%">
-                                <label class="input-placeholder"><b>Postal Address</b></label>
-                                <input style="color: white;font-size: 14px;"
-                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.postalAddress.errors }"
-                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                       class="form-control two-column-input" formControlName="postalAddress"
-                                       id="postalAddress"
-                                       name="postalAddress" placeholder="Institution postal address" required="required"
-                                       type="text">
-                                <div *ngIf="submitted && formStepTwoForm.postalAddress.errors" class="invalid-feedback">
-                                    <div *ngIf="formStepTwoForm.postalAddress.errors.required">The Postal Address is
-                                        required
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <mat-form-field class="example-full-width has-label"
+                                                [ngClass]="displayFieldCss(stepTwoForm, 'postalAddress')">
+                                    <input style="color: white;font-size: 14px;" type="text"
+                                           matInput
+                                           class="form-control two-column-input"
+                                           id="postalAddress"
+                                           placeholder="Institution Postal Address"
+                                           (ngModelChange)="textValidationType($event)"
+                                           formControlName="postalAddress">
+                                    <app-field-error-display
+                                            [displayError]="isFieldValid(stepTwoForm, 'postalAddress')"
+                                            errorMsg="The Postal Address is
+                                     required">
+                                    </app-field-error-display>
+                                </mat-form-field>
                             </div>
                         </div>
 
                         <div class="col">
-                            <div class="form-group" style="margin-top: 3%">
-                                <label class="input-placeholder"><b>Physical Address</b></label>
-                                <input style="color: white;font-size: 14px;"
-                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.physicalAddress.errors }"
-                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                       class="form-control two-column-input" formControlName="physicalAddress"
-                                       id="physicalAddress"
-                                       name="physicalAddress" placeholder="The physical address" required="required"
-                                       type="text">
-                                <div *ngIf="submitted && formStepTwoForm.physicalAddress.errors"
-                                     class="invalid-feedback">
-                                    <div *ngIf="formStepTwoForm.physicalAddress.errors.required">The physical address is
-                                        required
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <mat-form-field class="example-full-width has-label"
+                                                [ngClass]="displayFieldCss(stepTwoForm, 'physicalAddress')">
+                                    <input style="color: white;font-size: 14px;" type="text"
+                                           matInput
+                                           class="form-control two-column-input"
+                                           id="physicalAddress"
+                                           placeholder="Institution Physical Address *"
+                                           (ngModelChange)="textValidationType($event)"
+                                           formControlName="physicalAddress">
+                                    <app-field-error-display
+                                            [displayError]="isFieldValid(stepTwoForm, 'physicalAddress')"
+                                            errorMsg="The Physical Address is
+                                     required">
+                                    </app-field-error-display>
+                                </mat-form-field>
                             </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <mat-form-field class="example-full-width has-label"
+                                                [ngClass]="displayFieldCss(stepTwoForm, 'plotNumber')">
+                                    <input style="color: white;font-size: 14px;" type="text"
+                                           matInput
+                                           class="form-control two-column-input"
+                                           id="plotNumber"
+                                           placeholder="Institution Plot Number *"
+                                           (ngModelChange)="textValidationType($event)"
+                                           formControlName="plotNumber">
+                                    <app-field-error-display
+                                            [displayError]="isFieldValid(stepTwoForm, 'plotNumber')"
+                                            errorMsg="The Plot Number is
+                                     required">
+                                    </app-field-error-display>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <mat-form-field class="example-full-width has-label"
+                                                [ngClass]="{'has-success':validEmailRegister===true}">
+                                    <input style="color: white;font-size: 14px;"
+                                           type="email"
+                                           class="form-control two-column-input"
+                                           matInput
+                                           placeholder="Institution Official Email Address *"
+                                           [errorStateMatcher]="matcher"
+                                           formControlName="companyEmail"
+                                           (ngModelChange)="emailValidationRegister($event)">
+                                    <mat-error
+                                            *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                                        Please enter a valid email address
+                                    </mat-error>
+                                    <mat-error *ngIf="emailFormControl.hasError('required')">
+                                        Email is <strong>required</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+
                         </div>
 
                     </div>
@@ -447,60 +529,22 @@
 
                         <div class="col">
                             <div class="form-group" style="margin-top: 3%">
-                                <label class="input-placeholder"><b>Plot Number</b></label>
-                                <input style="color: white;font-size: 14px;"
-                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.plotNumber.errors }"
-                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                       class="form-control two-column-input" formControlName="plotNumber"
-                                       id="plotNumber"
-                                       name="plotNumber" placeholder="The plot number" required="required" type="text">
-                                <div *ngIf="submitted && formStepTwoForm.plotNumber.errors" class="invalid-feedback">
-                                    <div *ngIf="formStepTwoForm.plotNumber.errors.required">The Plot Number is
-                                        required
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group" style="margin-top: 3%">
-                                <label class="input-placeholder"><b>Institution Email</b></label>
-                                <input style="color: white;font-size: 14px;"
-                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyEmail.errors }"
-                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                       class="form-control two-column-input" formControlName="companyEmail"
-                                       id="companyEmail"
-                                       name="companyEmail" placeholder="The Institution email address"
-                                       required="required"
-                                       type="email">
-                                <div *ngIf="submitted && formStepTwoForm.companyEmail.errors" class="invalid-feedback">
-                                    <div *ngIf="formStepTwoForm.companyEmail.errors.required">The Institution email
-                                        address
-                                        is required
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                <mat-form-field class="example-full-width has-label"
+                                                [ngClass]="displayFieldCss(stepTwoForm, 'companyTelephone')">
+                                    <input style="color: white;font-size: 14px;" type="number"
+                                           matInput
+                                           class="form-control two-column-input"
+                                           id="companyTelephone"
+                                           placeholder="Institution Phone Number *"
+                                           (ngModelChange)="numberValidationType($event)"
+                                           formControlName="companyTelephone">
+                                    <app-field-error-display
+                                            [displayError]="isFieldValid(stepTwoForm, 'companyTelephone')"
+                                            errorMsg="The Institution phone number is required">
+                                    </app-field-error-display>
+                                </mat-form-field>
 
-                    </div>
 
-                    <div class="row input-row">
-
-                        <div class="col">
-                            <div class="form-group" style="margin-top: 3%">
-                                <label class="input-placeholder"><b>Institution Phone</b></label>
-                                <input style="color: white;font-size: 14px;"
-                                       [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyTelephone.errors }"
-                                       aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                       class="form-control two-column-input" formControlName="companyTelephone"
-                                       id="companyTelephone"
-                                       name="companyTelephone" placeholder="The Institution phone number"
-                                       required="required" type="text">
-                                <div *ngIf="submitted && formStepTwoForm.companyTelephone.errors"
-                                     class="invalid-feedback">
-                                    <div *ngIf="formStepTwoForm.companyTelephone.errors.required">The Institution phone
-                                        number is required
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col"></div>
@@ -533,71 +577,91 @@
                 </div>
                 <div class="row input-row">
                     <div class="col">
-                        <div class="form-group" style="margin-top: 3%">
-                            <label class="input-placeholder"><b>Building Name</b></label>
-                            <input style="color: white;font-size: 14px;"
-                                   [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.buildingName.errors }"
-                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                   class="form-control two-column-input" formControlName="buildingName"
+                        <div class="form-group">
+                            <mat-form-field class="example-full-width has-label"
+                                        [ngClass]="displayFieldCss(stepThreeForm, 'buildingName')">
+                            <input style="color: white;font-size: 14px;" type="text"
+                                   matInput
+                                   class="form-control two-column-input"
                                    id="buildingName"
-                                   name="buildingName" placeholder="Building Name" required="required" type="text">
-                            <div *ngIf="submitted && formStepThreeForm.buildingName.errors" class="invalid-feedback">
-                                <div *ngIf="formStepThreeForm.buildingName.errors.required">The Building Name is
-                                    required
-                                </div>
+                                   placeholder="Building Name *"
+                                   (ngModelChange)="textValidationType($event)"
+                                   formControlName="buildingName">
+                            <app-field-error-display
+                                    [displayError]="isFieldValid(stepThreeForm, 'buildingName')"
+                                    errorMsg="The Building Name is
+                                    required">
+                            </app-field-error-display>
+                        </mat-form-field>
                             </div>
-                        </div>
                     </div>
 
                     <div class="col">
-                        <label class="input-placeholder"><b>Street Name</b></label>
-                        <input style="color: white;font-size: 14px;"
-                               [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.streetName.errors }"
-                               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                               class="form-control two-column-input" formControlName="streetName" id="streetName"
-                               name="streetName" placeholder="The street name" required="required" type="text">
-                        <div *ngIf="submitted && formStepThreeForm.streetName.errors" class="invalid-feedback">
-                            <div *ngIf="formStepThreeForm.streetName.errors.required">The street name is required</div>
+                        <div class="form-group">
+                            <mat-form-field class="example-full-width has-label"
+                                            [ngClass]="displayFieldCss(stepThreeForm, 'streetName')">
+                                <input style="color: white;font-size: 14px;" type="text"
+                                       matInput
+                                       class="form-control two-column-input"
+                                       id="streetName"
+                                       placeholder="Street Name *"
+                                       (ngModelChange)="textValidationType($event)"
+                                       formControlName="streetName">
+                                <app-field-error-display
+                                        [displayError]="isFieldValid(stepThreeForm, 'streetName')"
+                                        errorMsg="The Street Name is
+                                    required">
+                                </app-field-error-display>
+                            </mat-form-field>
                         </div>
+
+
+
+
+
                     </div>
 
                 </div>
                 <div class="row input-row">
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
-                            <label class="input-placeholder"><b>Region</b></label>
-                            <br>
                             <ng-container *ngIf="region$ | async as apps">
-                                <select (ngModelChange)="updateSelectedRegion()"
-                                        [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
-                                        formControlName="region" id="region"
-                                        name="region" required="required" style="width: 100%; height: 60%">
-                                    <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
-                                            class="dropdown-item">{{app.region}}</option>
-                                </select>
-                                <div *ngIf="submitted && formStepThreeForm.region.errors" class="invalid-feedback">
-                                    <div *ngIf="formStepThreeForm.region.errors.required">The Region is required</div>
-                                </div>
+                                <mat-form-field>
+                                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                class="form-control two-column-input"
+                                                (ngModelChange)="updateSelectedRegion()"
+                                                [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
+                                                formControlName="region" id="region"
+                                                name="region" required
+                                                placeholder="Region"
+                                                [class.is-invalid]="formStepThreeForm.region.invalid && formStepThreeForm.region.touched">
+                                        <mat-option style="color: white;font-size: 14px;"
+                                                *ngFor="let app of apps| filterPipe: {status: true}"
+                                                value="{{app.id}}"
+                                                class="dropdown-item">{{app.region}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
                             </ng-container>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-group" style="margin-top: 3%">
-                            <label class="input-placeholder"><b>County</b></label>
-                            <br>
                             <ng-container *ngIf="county$ | async as apps">
-                                <select (ngModelChange)="updateSelectedCounty()"
-                                        [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
-                                        formControlName="county" id="county"
-                                        name="county" required="required" style="width: 100%; height: 60%">
-                                    <option
-                                            *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
-                                            [ngValue]="app.id"
-                                            class="dropdown-item">{{app.county}}</option>
-                                </select>
-                                <div *ngIf="submitted && formStepThreeForm.county.errors" class="invalid-feedback">
-                                    <div *ngIf="formStepThreeForm.county.errors.required">The County is required</div>
-                                </div>
+                                <mat-form-field>
+                                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                class="form-control two-column-input"
+                                                (ngModelChange)="updateSelectedCounty()"
+                                                [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
+                                                formControlName="county" id="county"
+                                                name="county" required
+                                                placeholder="County"
+                                                [class.is-invalid]="formStepThreeForm.county.invalid && formStepThreeForm.county.touched">
+                                        <mat-option style="color: white;font-size: 14px;" type="text"
+                                                *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
+                                                value="{{app.id}}"
+                                                class="dropdown-item">{{app.county}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
                             </ng-container>
                         </div>
                     </div>
@@ -605,38 +669,43 @@
                 <div class="row input-row">
 
                     <div class="col">
-                        <label class="input-placeholder" for="town">
-                            Town
-                        </label>
-                        <br>
                         <ng-container *ngIf="town$ | async as apps">
-                            <select (ngModelChange)="updateSelectedTown()"
-                                    [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
-                                    formControlName="town" id="town"
-                                    name="town" required="required" style="width: 100%; height: 60%">
-                                <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
-                                        [ngValue]="app.id"
-                                        class="dropdown-item">{{app.town}}</option>
-                            </select>
-                            <div *ngIf="submitted && formStepThreeForm.town.errors" class="invalid-feedback">
-                                <div *ngIf="formStepThreeForm.town.errors.required">The town is required</div>
-                            </div>
+                            <mat-form-field>
+                                <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                            class="form-control two-column-input"
+                                            (ngModelChange)="updateSelectedTown()"
+                                            [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
+                                            formControlName="town" id="town"
+                                            name="town" required
+                                            placeholder="Town"
+                                            [class.is-invalid]="formStepThreeForm.town.invalid && formStepThreeForm.town.touched">
+                                    <mat-option style="color: white;font-size: 14px;" type="text"
+                                            *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                                            value="{{app.id}}"
+                                            class="dropdown-item">{{app.town}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </ng-container>
+
+
                     </div>
                     <div class="col">
-                        <div class="form-group" style="margin-top: 3%">
-                            <label class="input-placeholder"><b>Branch Name</b></label>
-                            <input style="color: white;font-size: 14px;"
-                                   [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.branchName.errors }"
-                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                   class="form-control two-column-input" formControlName="branchName"
-                                   id="branchName"
-                                   name="branchName" placeholder="Branch Name" required="required" type="text">
-                            <div *ngIf="submitted && formStepThreeForm.branchName.errors" class="invalid-feedback">
-                                <div *ngIf="formStepThreeForm.branchName.errors.required">The Branch Name is
-                                    required
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <mat-form-field class="example-full-width has-label"
+                                            [ngClass]="displayFieldCss(stepThreeForm, 'branchName')">
+                                <input style="color: white;font-size: 14px;" type="text"
+                                       matInput
+                                       class="form-control two-column-input"
+                                       id="branchName"
+                                       placeholder="Branch Name *"
+                                       (ngModelChange)="textValidationType($event)"
+                                       formControlName="branchName">
+                                <app-field-error-display
+                                        [displayError]="isFieldValid(stepThreeForm, 'branchName')"
+                                        errorMsg="The Branch Name is
+                                    required">
+                                </app-field-error-display>
+                            </mat-form-field>
                         </div>
                     </div>
 
@@ -646,7 +715,7 @@
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                     </div>
                     <div class="col">
-                        <button [disabled]="!stepThreeForm.valid" class="login-button" type="submit">NEXT</button>
+                        <button  class="login-button" type="submit">NEXT</button>
                     </div>
                 </div>
 
@@ -669,151 +738,137 @@
 
                 <div class="row input-row">
                     <div class="col">
-                        <label class="input-placeholder" for="firstName">
-                            First Name
-                        </label>
-                        <br>
-                        <input style="color: white;font-size: 14px;"
-                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.firstName.errors }"
-                               class="form-control two-column-input" formControlName="firstName" id="firstName"
-                               name="firstName"
-                               placeholder="" required="required" type="text">
-                        <div *ngIf="submitted && formStepFourForm.firstName.errors" class="invalid-feedback">
-                            <div *ngIf="formStepFourForm.firstName.errors.required">The First name is required</div>
+                        <div class="form-group">
+                            <mat-form-field class="example-full-width has-label"
+                                            [ngClass]="displayFieldCss(stepFourForm, 'firstName')">
+                                <input style="color: white;font-size: 14px;" type="text"
+                                       matInput
+                                       class="form-control two-column-input"
+                                       id="firstName"
+                                       placeholder="First Name *"
+                                       (ngModelChange)="textValidationType($event)"
+                                       formControlName="firstName">
+                                <app-field-error-display
+                                        [displayError]="isFieldValid(stepFourForm, 'firstName')"
+                                        errorMsg="Your First Name is
+                                    required">
+                                </app-field-error-display>
+                            </mat-form-field>
                         </div>
                     </div>
                     <div class="col">
-                        <label class="input-placeholder" for="lastName">
-                            Last Name
-                        </label>
-                        <br>
-                        <input style="color: white;font-size: 14px;"
-                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.lastName.errors }"
-                               class="form-control two-column-input" formControlName="lastName" id="lastName"
-                               name="lastName"
-                               placeholder="" required="required" type="text">
-                        <div *ngIf="submitted && formStepFourForm.lastName.errors" class="invalid-feedback">
-                            <div *ngIf="formStepFourForm.lastName.errors.required">The last name is required</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row input-row">
-
-                    <!--                    <div class="col">-->
-                    <!--                        <label class="input-placeholder" for="userName">-->
-                    <!--                            User Name-->
-                    <!--                        </label>-->
-                    <!--                        <br>-->
-                    <!--                        <input style="color: white;font-size: 14px;"-->
-                    <!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.userName.errors }"-->
-                    <!--                               class="form-control two-column-input" formControlName="userName" id="userName"-->
-                    <!--                               name="userName"-->
-                    <!--                               placeholder="" required="required" type="text">-->
-                    <!--                        <div *ngIf="submitted && formStepFourForm.userName.errors" class="invalid-feedback">-->
-                    <!--                            <div *ngIf="formStepFourForm.userName.errors.required">The userName is required</div>-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-                    <div class="col">
-                        <label class="input-placeholder" for="email">
-                            Email address
-                        </label>
-                        <br>
-                        <input style="color: white;font-size: 14px;"
-                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.email.errors }"
-                               class="form-control two-column-input" formControlName="email" id="email"
-                               name="email"
-                               placeholder="" required="required" type="email">
-                        <div *ngIf="submitted && formStepFourForm.email.errors" class="invalid-feedback">
-                            <div *ngIf="formStepFourForm.email.errors.required">The email is required</div>
+                        <div class="form-group">
+                            <mat-form-field class="example-full-width has-label"
+                                            [ngClass]="displayFieldCss(stepFourForm, 'lastName')">
+                                <input style="color: white;font-size: 14px;" type="text"
+                                       matInput
+                                       class="form-control two-column-input"
+                                       id="lastName"
+                                       placeholder="Last Name *"
+                                       (ngModelChange)="textValidationType($event)"
+                                       formControlName="lastName">
+                                <app-field-error-display
+                                        [displayError]="isFieldValid(stepFourForm, 'lastName')"
+                                        errorMsg="Your Last Name is
+                                    required">
+                                </app-field-error-display>
+                            </mat-form-field>
                         </div>
                     </div>
                 </div>
 
                 <div class="row input-row">
                     <div class="col">
-                        <label class="input-placeholder" for="credentials">
-                            Password
-                        </label>
-                        <br>
-                        <input style="color: white;font-size: 14px;"
-                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.credentials.errors }"
-                               class="form-control two-column-input" formControlName="credentials" id="credentials"
-                               name="credentials"
-                               placeholder="enter password" required="required" type="password">
-                        <div *ngIf="submitted && formStepFourForm.credentials.errors" class="invalid-feedback">
-                            <div *ngIf="formStepFourForm.credentials.errors.required">The credentials is required</div>
+                        <div class="form-group">
+                            <mat-form-field class="example-full-width has-label"
+                                            [ngClass]="{'has-success':validEmailRegister===true}">
+                                <input style="color: white;font-size: 14px;"
+                                       type="email"
+                                       class="form-control two-column-input"
+                                       matInput
+                                       placeholder="Email Address *"
+                                       [errorStateMatcher]="matcher"
+                                       formControlName="email"
+                                       (ngModelChange)="emailValidationRegister($event)">
+                                <mat-error
+                                        *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                                    Please enter a valid email address
+                                </mat-error>
+                                <mat-error *ngIf="emailFormControl.hasError('required')">
+                                    Email is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
                         </div>
-                    </div>
-                    <div class="col">
-                        <label class="input-placeholder" for="confirmCredentials">
-                            Confirm Password
-                        </label>
-                        <br>
-                        <input style="color: white;font-size: 14px;"
-                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.confirmCredentials.errors }"
-                               class="form-control two-column-input" formControlName="confirmCredentials"
-                               id="confirmCredentials"
-                               name="confirmCredentials"
-                               placeholder="password confirmation" required="required" type="password">
-                        <div *ngIf="submitted && formStepFourForm.confirmCredentials.errors" class="invalid-feedback">
-                            <div *ngIf="formStepFourForm.confirmCredentials.errors.required">The confirm Credentials is
-                                required
-                            </div>
-                        </div>
+
+
                     </div>
                 </div>
 
-                <!--                <div class="row input-row">-->
+                <div class="row input-row">
+                    <mat-form-field class="example-full-width has-label" [ngClass]="{'has-success':validPasswordRegister===true}">
+                        <input type="password"
+                               matInput
+                               id="password"
+                               placeholder="Password *"
+                               (ngModelChange)="passwordValidationRegister($event)"
+                               formControlName="credentials">
+                        <app-field-error-display [displayError]="isFieldValid(stepFourForm, 'credentials')" errorMsg="Enter a valid password.">
+                        </app-field-error-display>
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width has-label" [ngClass]="{'has-success':validConfirmPasswordRegister===true}"
+                                    [ngClass]="displayFieldCss(stepFourForm, 'credentials')">
+                        <input type="password"
+                               matInput
+                               id="confirmPassword"
+                               placeholder="Confirm Password *"
+                               (ngModelChange)="confirmPasswordValidationRegister($event)"
+                               formControlName="confirmCredentials">
+                        <app-field-error-display
+                                [displayError]="isFieldValid(stepFourForm, 'confirmCredentials')" errorMsg="These passwords don't match. Try again!">
+                        </app-field-error-display>
+                    </mat-form-field>
 
-                <!--                    <div class="col">-->
-                <!--                        <label class="input-placeholder" for="cellphone">-->
-                <!--                            Cellphone-->
-                <!--                        </label>-->
-                <!--                        <br>-->
-                <!--                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.cellphone.errors }"-->
-                <!--                               class="form-control two-column-input" formControlName="cellphone" id="cellphone"-->
-                <!--                               name="cellphone"-->
-                <!--                               placeholder="e.g 254xxxxxx" required="required" type="tel">-->
-                <!--                        <div *ngIf="submitted && formStepFourForm.cellphone.errors" class="invalid-feedback">-->
-                <!--                            <div *ngIf="formStepFourForm.cellphone.errors.required">The cell phone is required</div>-->
-                <!--                        </div>-->
-                <!--                        <br>-->
-                <!--                    </div>-->
-                <!--                    <div class="col">-->
-                <!--                        <button (throttledClick)="onClickSendOtp()" [disabled]="otpSent"-->
-                <!--                                [hidden]="stepFourForm.get('cellphone')?.invalid"-->
-                <!--                                [throttleTime]="5000" appPreventDoubleClick-->
-                <!--                                class="login-button mt-2"-->
-                <!--                                type="button"-->
 
-                <!--                        >Send OTP {{secondsToHms(time)}}-->
-                <!--                        </button>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-                <!--                <div class="row input-row">-->
 
-                <!--                    <div class="col">-->
-                <!--                        <label class="input-placeholder" for="otp">-->
-                <!--                            OTP-->
-                <!--                        </label>-->
-                <!--                        <br>-->
-                <!--                        <input class="form-control two-column-input" formControlName="otp" id="otp"-->
-                <!--                               name="otp"-->
-                <!--                               placeholder="The OTP" required="required" type="text">-->
-                <!--                        <br>-->
-                <!--                    </div>-->
-                <!--                    <div class="col">-->
-                <!--                        <button (click)="onClickValidateOtp()" [hidden]="stepFourForm.get('otp')?.invalid"-->
-                <!--                                class="login-button mt-2"-->
-                <!--                                type="button"-->
-                <!--                        >Validate OTP-->
-                <!--                        </button>-->
-                <!--                    </div>-->
 
-                <!--                </div>-->
 
-                <br>
+
+
+
+<!--                    <div class="col">-->
+<!--                        <label class="input-placeholder" for="credentials">-->
+<!--                            Password-->
+<!--                        </label>-->
+<!--                        <br>-->
+<!--                        <input style="color: white;font-size: 14px;"-->
+<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.credentials.errors }"-->
+<!--                               class="form-control two-column-input" formControlName="credentials" id="credentials"-->
+<!--                               name="credentials"-->
+<!--                               placeholder="enter password" required="required" type="password">-->
+<!--                        <div *ngIf="submitted && formStepFourForm.credentials.errors" class="invalid-feedback">-->
+<!--                            <div *ngIf="formStepFourForm.credentials.errors.required">The credentials is required</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col">-->
+<!--                        <label class="input-placeholder" for="confirmCredentials">-->
+<!--                            Confirm Password-->
+<!--                        </label>-->
+<!--                        <br>-->
+<!--                        <input style="color: white;font-size: 14px;"-->
+<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.confirmCredentials.errors }"-->
+<!--                               class="form-control two-column-input" formControlName="confirmCredentials"-->
+<!--                               id="confirmCredentials"-->
+<!--                               name="confirmCredentials"-->
+<!--                               placeholder="password confirmation" required="required" type="password">-->
+<!--                        <div *ngIf="submitted && formStepFourForm.confirmCredentials.errors" class="invalid-feedback">-->
+<!--                            <div *ngIf="formStepFourForm.confirmCredentials.errors.required">The confirm Credentials is-->
+<!--                                required-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+
+
                 <div class="row">
                     <div class="col">
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>

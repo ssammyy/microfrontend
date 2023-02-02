@@ -558,6 +558,10 @@ class ComStandardService(
     //Submit Adoption Proposal comments
     fun submitDraftComments(comDraftComments: ComDraftComments){
         val variables: MutableMap<String, Any> = HashMap()
+        comDraftComments.uploadDate=comDraftComments.uploadDate
+        comDraftComments.emailOfRespondent=comDraftComments.emailOfRespondent
+        comDraftComments.phoneOfRespondent=comDraftComments.phoneOfRespondent
+        comDraftComments.observation=comDraftComments.observation
         comDraftComments.draftComment=comDraftComments.draftComment
         comDraftComments.commentTitle=comDraftComments.commentTitle
         comDraftComments.commentDocumentType=comDraftComments.commentDocumentType

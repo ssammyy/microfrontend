@@ -17,6 +17,22 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
+                        <ul class="tabs-container">
+                            <li class="tab-link" id="new-application" (click)="tabChange('New Applications')"> <i class="material-icons">task</i>Make New Application</li>
+                            <li class="tab-link" id="renewal-applications" (click)="tabChange('Renewal Applications')"><i class="material-icons">assignment</i>Renewal Applications</li>
+                            <li class="tab-link" id="ongoing-applications" (click)="tabChange('Ongoing Applications')"><i class="material-icons">done_outline</i>Ongoing Applications</li>
+                            <li class="tab-link" id="awarded-applications" (click)="tabChange('Awarded Applications')"><i class="material-icons">verified</i>Awarded Applications</li>
+                            <li class="tab-link" id="expired-applications" (click)="tabChange('Expired Applications')"><i class="material-icons">report_problem</i>Expired Applications</li>
+                          </ul>
+                        </div>
+                        </div>
+                        </div>
+
+<div *ngIf="id == 'New Applications'" class="w-100"> 
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
                         <div class="card-header card-header-primary card-header-icon">
                             <div class="card-icon">
                                 <i class="material-icons">assignment</i>
@@ -897,6 +913,47 @@
                     </div>
                 </div>
             </div>
+
+            <!-- end of row -->
+            </div>
+
+            <!-- end of new applications -->
+
+            <div *ngIf="id == 'Renewal Applications'" class="w-100">
+                
+           <app-dmark-renewal-applications></app-dmark-renewal-applications>
+                   
+                
+
+                </div>
+
+                <!-- end of renewal -->
+
+                <div *ngIf="id == 'Ongoing Applications'" class="w-100"> 
+
+                   <app-dmark-applications-all></app-dmark-applications-all>
+                
+                </div>
+
+                <!-- end of Ongoing -->
+
+                <div *ngIf="id == 'Awarded Applications'" class="w-100"> 
+
+                    <app-dmark-all-awarded-applications></app-dmark-all-awarded-applications>
+                  
+                
+                </div>
+
+                <!-- end of Awarded -->
+
+                <div *ngIf="id == 'Expired Applications'" class="w-100"> 
+
+                    <app-dmark-expired-applications></app-dmark-expired-applications>
+                
+                </div>
+
+                <!-- end of Expired -->
+
         </div>
     </div>
 </div>

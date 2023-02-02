@@ -505,6 +505,12 @@ export class StdComStandardService {
   //   return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
   // }
 
+  public getUploadedSDraftForComment(comDraftID: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFTS_COMMENT);
+    const params = new HttpParams().set('comDraftID', comDraftID);
+    return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
+  }
+
   public getUploadedStdDraftForComment(comDraftID: any): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT_COMMENT);
     const params = new HttpParams().set('comDraftID', comDraftID);
@@ -524,6 +530,18 @@ export class StdComStandardService {
     );
   }
 
+  public submitDraftComment(comDraftComment: ComDraftComment): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SUBMIT_DRAFT_COMMENT);
+    const params = new HttpParams();
+    return this.http.post<ComDraftComment>(url, comDraftComment, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
   public submitDraftComments(comDraftComment: ComDraftComment): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SUBMIT_DRAFT_COMMENTS);
     const params = new HttpParams();

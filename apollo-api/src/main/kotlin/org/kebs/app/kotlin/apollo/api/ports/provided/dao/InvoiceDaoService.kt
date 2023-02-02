@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServi
 import org.kebs.app.kotlin.apollo.api.service.PaymentStatus
 import org.kebs.app.kotlin.apollo.common.dto.qa.SageValuesDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
@@ -17,6 +18,8 @@ import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitRatingRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceDetailsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
@@ -27,16 +30,20 @@ import java.math.BigDecimal
 
 @Service
 class InvoiceDaoService(
-        private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
-        private val billTransactionRepo: IBillTransactionsEntityRepository,
-        private val billsRepo: IBillPaymentsRepository,
-        private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
-        private val invoiceLogPaymentRepo: ILogStgPaymentReconciliationRepo,
-        private val iPaymentMethodsRepo: IPaymentMethodsRepository,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val iDemandNoteRepository: IDemandNoteRepository,
-        private val iDemandNoteItemsRepository: IDemandNoteItemsDetailsRepository,
-        private val commonDaoServices: CommonDaoServices,
+    private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
+    private val billTransactionRepo: IBillTransactionsEntityRepository,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+    private val iPermitRatingRepo: IPermitRatingRepository,
+    private val billsRepo: IBillPaymentsRepository,
+    private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
+    private val invoiceLogPaymentRepo: ILogStgPaymentReconciliationRepo,
+    private val iPaymentMethodsRepo: IPaymentMethodsRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val qaInvoiceDetailsRepo: IQaInvoiceDetailsRepository,
+    private val companyProfileRepo: ICompanyProfileRepository,
+    private val iDemandNoteRepository: IDemandNoteRepository,
+    private val iDemandNoteItemsRepository: IDemandNoteItemsDetailsRepository,
+    private val commonDaoServices: CommonDaoServices,
 ) {
 
     @Lazy
@@ -310,12 +317,29 @@ class InvoiceDaoService(
 
                 val permitMasterInvoice = qaDaoServices.findALlInvoicesPermitWithBatchID(permitBatchedDetails.id?: throw  ExpectedDataNotFound("Missing Batch ID QA For invoice"))
 
-                permitMasterInvoice.forEach { permitInvoice->
-                    with(permitInvoice){
+                permitMasterInvoice.forEach { permitInvoiceMaster->
+                    qaInvoiceDetailsRepo.findByStatusAndInvoiceMasterIdAndInspectionStatus(1,permitInvoiceMaster.id,1)?.forEach {inspectionFeeCheck->
+                        manufacturePlantRepository.findByInvoiceSharedId(inspectionFeeCheck.id)
+                            ?.let { plantDetails->
+                                companyProfileRepo.findByIdOrNull(plantDetails.companyProfileId)
+                                    ?.let {manufacture->
+                                        val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
+                                        val selectedRate = ratesMap.firstOrNull { manufacture.yearlyTurnover!! > (it.min ?: BigDecimal.ZERO) && manufacture.yearlyTurnover!! <= (it.max ?: throw NullValueNotAllowedException("Max needs to be defined")) } ?: throw NullValueNotAllowedException("Rate not found")
+                                        with(plantDetails){
+                                            inspectionFeeStatus = 1
+                                            paidDate = commonDaoServices.getCurrentDate()
+                                            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+                                        }
+                                }
+                        }
+                    }
+
+                    with(permitInvoiceMaster){
                         paymentStatus =10
                         receiptNo = permitBatchedDetails.receiptNo
                     }
-                   val permitInvoiceUpdated = qaDaoServices.updateQAMasterInvoiceDetails(permitInvoice,"SYSTEM")
+
+                   val permitInvoiceUpdated = qaDaoServices.updateQAMasterInvoiceDetails(permitInvoiceMaster,"SYSTEM")
 
                     var permitDetails = qaDaoServices.findPermitBYID(permitInvoiceUpdated.permitId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Payment Status"))
 

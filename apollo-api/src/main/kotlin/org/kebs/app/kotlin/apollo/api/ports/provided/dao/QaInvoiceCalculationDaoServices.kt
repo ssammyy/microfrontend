@@ -91,12 +91,7 @@ class QaInvoiceCalculationDaoServices(
         }
 
         if (permit.fmarkGenerateStatus == 1) {
-            calculatePaymentFMarkOnSMark(
-                permit,
-                user,
-                qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark),
-                invoiceMaster
-            )
+            calculatePaymentFMarkOnSMark(permit, user, qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark), invoiceMaster)
         }
 
 
@@ -295,9 +290,9 @@ class QaInvoiceCalculationDaoServices(
         with(plantDetail) {
             tokenGiven = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             invoiceSharedId = invoiceDetailsInspectionFee.id
-            inspectionFeeStatus = 1
-            paidDate = commonDaoServices.getCurrentDate()
-            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+            inspectionFeeStatus = 0
+//            paidDate = commonDaoServices.getCurrentDate()
+//            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
         }
 
         qaDaoServices.updatePlantDetails(map, user, plantDetail)

@@ -53,6 +53,7 @@ interface IManufacturerProductRepository : HazelcastRepository<ManufactureProduc
 @Repository
 interface IManufacturePlantDetailsRepository : HazelcastRepository<ManufacturePlantDetailsEntity, Long> {
     //    fun findByProductName(productName: String): ManufacturePlantDetailsEntity?
+    fun findByInvoiceSharedId(invoiceSharedId: Long): ManufacturePlantDetailsEntity?
     fun findByUserId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?
     fun findByStatusAndId(status: Int, id: Long): List<ManufacturePlantDetailsEntity>?
     fun findByCompanyProfileId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?

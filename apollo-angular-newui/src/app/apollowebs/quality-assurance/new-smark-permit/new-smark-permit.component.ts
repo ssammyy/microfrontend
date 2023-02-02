@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -15,12 +15,18 @@ import {
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto
 } from '../../../core/store/data/qa/qa.model';
-import swal from 'sweetalert2';
+// permits
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {loadBranchId, loadCompanyId, selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
+import {UserEntityDto, UserEntityService} from "../../../core/store";
+import {Observable, Subject} from "rxjs";
+import {Titles, TitlesService} from "../../../core/store/data/title";
+import {HttpErrorResponse} from "@angular/common/http";
+import {DataTableDirective} from "angular-datatables";
+import swal from "sweetalert2";
 
 declare const $: any;
 
@@ -82,6 +88,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
     cloned:boolean;
 
+    
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -89,7 +96,14 @@ export class NewSmarkPermitComponent implements OnInit {
                 private formBuilder: FormBuilder,
                 private _loading: LoadingService,
                 private SpinnerService: NgxSpinnerService,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+
+                private service: UserEntityService,
+                private titleService: TitlesService,
+             
+
+
+                ) {
     }
 
     ngOnInit(): void {
@@ -266,13 +280,17 @@ export class NewSmarkPermitComponent implements OnInit {
 
 
                   //  }
+
+
+                
+
+        // permits
+
+    
+
+
                 }
-         //   }
-     //   );
-
-
-
-  //  }
+   
 
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
@@ -1016,4 +1034,14 @@ export class NewSmarkPermitComponent implements OnInit {
         // this.SelectedSectionId=sselect;
         // this.SelectedSectionId = Selectedfood;
     }
+
+    // Renewal
+    id:any ="New Applications";
+    tabChange(ids:any){
+      this.id=ids;
+      console.log(this.id);
+    }
+
+ 
+
 }

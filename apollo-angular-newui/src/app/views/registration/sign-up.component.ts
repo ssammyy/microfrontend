@@ -11,8 +11,8 @@ import {
     CountyService,
     Go,
     loadBrsValidations,
-    loadCountyId,
-    loadRegistrations, loadRegistrationsTivet,
+    loadCountyId, loadRegistrations,
+    loadRegistrationsTivet,
     loadResponsesFailure,
     loadSendTokenToPhone,
     loadValidateTokenAndPhone,
@@ -47,7 +47,7 @@ export class SignUpComponent implements OnInit {
     timer!: Observable<number>;
     timerObserver!: PartialObserver<number>;
     step = 0;
-    isShow=true;
+    isShow = true;
 
     public clicked = false;
 
@@ -234,12 +234,12 @@ export class SignUpComponent implements OnInit {
 
     updateSelectedBusinessNatures() {
         this.selectedBusinessNature = this.stepOneForm?.get('businessNatures')?.value;
-        const ratings = [84,85,86,87,88,89,90,91,92,93,94,95];
+        const ratings = [84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95];
         console.log(this.selectedBusinessNature);
-        if(ratings.includes(this.selectedBusinessNature)){
-            this.isShow=!this.isShow;
-        }else{
-            this.isShow=true;
+        if (ratings.includes(this.selectedBusinessNature)) {
+            this.isShow = !this.isShow;
+        } else {
+            this.isShow = true;
         }
         console.log(this.selectedBusinessNature)
 
@@ -347,12 +347,12 @@ export class SignUpComponent implements OnInit {
                 // this.stepFourForm?.get('otp')?.reset();
                 this.phoneValidated = d;
                 if (this.phoneValidated) {
-                    this.userSoFar = {...this.userSoFar, ...this.stepFourForm?.value};
+                    // this.userSoFar = {...this.userSoFar, ...this.stepFourForm?.value};
                     this.userSoFar = {...this.userSoFar, ...this.stepFiveForm.value};
                     this.company = {...this.company, ...this.companySoFar};
                     this.user = {...this.user, ...this.userSoFar};
 
-                    this.store$.dispatch(loadRegistrationsTivet({
+                    this.store$.dispatch(loadRegistrations({
                         payload: {company: this.company, user: this.user}
                     }));
 
