@@ -34,6 +34,26 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var kraPin: String? = null
 
+    @Column(name = "UPDATE_DETAILS_STATUS")
+    @Basic
+    var updateDetailsStatus: Int? = null
+
+    @Column(name = "UPDATE_DETAILS_COMMENT")
+    @Basic
+    var updateDetailsComment: String? = null
+
+    @Column(name = "REQUESTER_COMMENT")
+    @Basic
+    var requesterComment: String? = null
+
+    @Column(name = "UPDATE_FIRM_TYPE")
+    @Basic
+    var updateFirmType: Int? = null
+
+    @Column(name = "REQUESTER_ID")
+    @Basic
+    var requesterId: Int? = null
+
     @Column(name = "MANUFACTURE_STATUS")
     @Basic
     var manufactureStatus: Int? = null
