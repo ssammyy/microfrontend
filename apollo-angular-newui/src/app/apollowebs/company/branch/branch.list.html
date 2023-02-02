@@ -38,6 +38,7 @@
                                         <th>ID#</th>
                                         <th>Building</th>
                                         <th>Active</th>
+                                        <th>Inspection Fee Paid</th>
                                         <th class="disabled-sorting text-right">Actions</th>
                                     </tr>
                                     </thead>
@@ -61,10 +62,10 @@
                                             <ng-template #false_span><span id="false">Inactive</span></ng-template>
                                         </td>
                                         <td>
-                                            <div *ngIf="theRecord.inspectionFeeStatus;  then true_span else false_span">
+                                            <div *ngIf="theRecord.inspectionFeeStatus;  then true_paid else false_paid">
                                             </div>
-                                            <ng-template #true_span><span id="true1">Paid</span></ng-template>
-                                            <ng-template #false_span><span id="false1">Not-Paid</span></ng-template>
+                                            <ng-template #true_paid><span id="true1">Paid</span></ng-template>
+                                            <ng-template #false_paid><span id="false1">Not-Paid</span></ng-template>
                                         </td>
                                         <td class="text-right">
                                             <a (click)="viewRecord(theRecord)"
@@ -73,10 +74,14 @@
                                             <a (click)="editRecord(theRecord)"
                                                class="btn btn-link btn-info"><i
                                                     class="material-icons">remove_red_eye</i>Edit Details</a>
-                                            <!--                                            <a (click)="onClickUsers(theRecord)"-->
-                                            <!--                                               class="btn btn-link btn-warning btn-just-icon edit"><i-->
-                                            <!--                                                    class="material-icons">dvr</i></a>-->
+                                            <br>
+                                            <a *ngIf="!theRecord.inspectionFeeStatus" (click)="onClickGenerateInspectionFee(theRecord)"
+                                               class="btn btn-link btn-info"><i
+                                                    class="material-icons">remove_red_eye</i>Generate Inspection Invoice</a>
 
+                                            <a *ngIf="theRecord.invoiceBatchID!=null" href="/invoiceDetails#{{theRecord.invoiceBatchID}}"
+                                               class="btn btn-link btn-info btn-just-icon view"><i
+                                                    class="material-iconpny IDs">remove_red_eye</i>View Invoice Generated</a>
 
                                         </td>
 
