@@ -39,6 +39,9 @@ class SystemApiClient : Serializable {
     @Column(name = "CALLBACK_USERNAME", nullable = true)
     var callbackUsername: String? = null
 
+    @Column(name = "AUTHENTICATION_METHOD", nullable = true)
+    var authenticationMethod: String? = null
+
     @Column(name = "CALLBACK_PASSWORD", nullable = true)
     var callbackPassword: String? = null
 

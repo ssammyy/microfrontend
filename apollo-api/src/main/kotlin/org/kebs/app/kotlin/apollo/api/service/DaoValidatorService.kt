@@ -1,8 +1,10 @@
 package org.kebs.app.kotlin.apollo.api.service
 
 import org.springframework.stereotype.Service
-import javax.validation.ConstraintViolation
-import javax.validation.Validator
+import java.net.MalformedURLException
+import java.net.URL
+import javax.validation.*
+import kotlin.reflect.KClass
 
 @Service
 class DaoValidatorService(private var validator: Validator) {
@@ -18,4 +20,34 @@ class DaoValidatorService(private var validator: Validator) {
         }
         return errors
     }
+}
+
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+@Constraint(validatedBy = [UrlValidator::class])
+@MustBeDocumented
+annotation class ValidateUrl(
+    val message: String = "Invalid ip address",
+    val groups: Array<KClass<*>> = [],
+    val payload: Array<KClass<out Payload>> = []
+)
+
+class UrlValidator : ConstraintValidator<ValidateUrl, String> {
+    override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
+        try {
+            var url: URL? = null
+            if (!value.isNullOrEmpty()) {
+                url = URL(value)
+                // Only valid if its http or https
+                if (!(url.protocol == "http" || url.protocol == "https")) {
+                    return false
+                }
+            }
+            return url != null
+        } catch (ex: MalformedURLException) {
+
+        }
+        return false
+    }
+
 }

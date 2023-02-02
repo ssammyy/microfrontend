@@ -93,7 +93,7 @@ class CocItemsEntity : Serializable {
     @Basic
     var productCategory: String? = null
 
-    @Column(name = "SHIPMENT_QUANTITY_DELIVERED", nullable = true, precision = 2)
+    @Column(name = "SHIPMENT_QUANTITY_DELIVERED", nullable = true, precision = 19, scale = 2)
     @Basic
     var shipmentQuantityDelivered: BigDecimal = BigDecimal.ZERO
 

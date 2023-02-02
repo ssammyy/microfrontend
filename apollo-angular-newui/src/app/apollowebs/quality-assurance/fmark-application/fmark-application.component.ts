@@ -149,4 +149,12 @@ export class FmarkApplicationComponent implements OnInit {
             );
         }
     }
+
+      // Renewal
+      id:any ="New Applications";
+      tabChange(ids:any){
+        this.id=ids;
+        console.log(this.id);
+      }
+ 
 }

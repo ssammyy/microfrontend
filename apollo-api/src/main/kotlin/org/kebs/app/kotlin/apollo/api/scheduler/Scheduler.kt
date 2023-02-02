@@ -76,7 +76,6 @@ class Scheduler(
 @EnableScheduling
 @Profile("default")
 class SchedulerDevelopment(
-    private val msDaoServices: MarketSurveillanceFuelDaoServices,
     private val schedulerImpl: SchedulerImpl,
     private val qaDaoServices: QADaoServices,
     private val standardLevyService: StandardLevyService,

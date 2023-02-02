@@ -5,7 +5,6 @@ import {CommonModule, DatePipe} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
-
 import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 // @ts-ignore
 import {MatButtonModule} from '@angular/material/button';
@@ -110,7 +109,7 @@ import {ComStdRequestListComponent,} from './apollowebs/standards-development/co
 import {IntStdResponsesListComponent,} from './apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component';
 import {ComStdJcJustificationComponent,} from './apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component';
 import {IntStdJustificationListComponent,} from './apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component';
-import {IntStdCommentsComponent,} from './apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component';
+import {IntStdCommentsComponent,} from './apollowebs/standards-development/international-standard/international-standard-proposal/int-std-comments/int-std-comments.component';
 import {CompanyStandardRequestComponent,} from './apollowebs/standards-development/company-standard/company-standard-request/company-standard-request.component';
 import {RequestStandardReviewComponent,} from './apollowebs/standards-development/systemic-review/request-standard-review/request-standard-review.component';
 import {SystemicReviewCommentsComponent,} from './apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component';
@@ -440,34 +439,46 @@ import {IntStdProofReadComponent} from './apollowebs/standards-development/inter
 import {IntStdApproveDraftComponent} from './apollowebs/standards-development/international-standard/int-std-approve-draft/int-std-approve-draft.component';
 import {IntStdEditedDraftComponent} from './apollowebs/standards-development/international-standard/int-std-edited-draft/int-std-edited-draft.component';
 import {IntStdSacApprovalComponent} from './apollowebs/standards-development/international-standard/int-std-sac-approval/int-std-sac-approval.component';
-// import {RichTextEditorModule} from "@syncfusion/ej2-angular-richtexteditor";
-// import {DocumentEditorContainerAllModule} from "@syncfusion/ej2-angular-documenteditor";
-import { IntStdGazetteComponent } from './apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component';
-import { MsDashboardComponent } from './apollowebs/market-surveillance/ms-dashboard/ms-dashboard.component';
-import { ComStdDraftCommentComponent } from './apollowebs/standards-development/company-standard/company-standard-request/com-std-draft-comment/com-std-draft-comment.component';
-import { SchemeMembershipFormComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component';
-import { SchemeMembershipReviewComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component';
-import { SchemeMembershipSicComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component';
-import { RegisterTivetComponent } from './views/registration/register-tivet/register-tivet.component';
-import { ComplaintMonitoringComponent } from './apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component';
-import { FieldInspectionSummaryComponent } from './apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component';
-import { WorkplanMonitoringToolComponent } from './apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component';
-import { ComStdAppDraftComponent } from './apollowebs/standards-development/company-standard/company-standard-request/com-std-app-draft/com-std-app-draft.component';
-import { IntStdPublishingComponent } from './apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component';
-import { ComStdPublishingComponent } from './apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component';
-import { ComStdEditorComponent } from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
 import {CorporateBillsComponent} from './apollowebs/invoice/corporate-bills/corporate-bills.component';
-import { CompanyListComponent } from './apollowebs/company/company-list/company-list.component';
-import { HofReviewProposalComponent } from './apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component';
-import { PermitDetailsComponent } from './apollowebs/qualityAssuranceAdmin/permit-details/permit-details.component';
-import { SmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
-import { FmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
-import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
+import {CompanyListComponent} from './apollowebs/company/company-list/company-list.component';
+import {HofReviewProposalComponent} from './apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component';
+import {PermitDetailsComponent} from './apollowebs/qualityAssuranceAdmin/permit-details/permit-details.component';
+import {SmarkAdminComponent} from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
+import {FmarkAdminComponent} from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
+import {DmarkAdminComponent} from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
+import {BillDetailsComponent} from './apollowebs/invoice/corporate/view-transactions/bill-details/bill-details.component';
+import {ViewBillDetailsComponent} from "./apollowebs/invoice/corporate-bills/view-bill-details/view-bill-details.component";
 
-import { ComStdRequestProcessComponent } from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
-import { ManageTivetComponent } from './apollowebs/usermanagement/manage-tivet/manage-tivet.component';
-import { InvoiceConsolidateFmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-fmark/invoice-consolidate-fmark.component';
-import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component';
+// import { ComStdRequestProcessComponent } from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
+// import { ManageTivetComponent } from './apollowebs/usermanagement/manage-tivet/manage-tivet.component';
+// import { InvoiceConsolidateFmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-fmark/invoice-consolidate-fmark.component';
+// import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component';
+import { SmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/smark-renewal-applications/smark-renewal-applications.component';
+import { FmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/fmark-renewal-applications/fmark-renewal-applications.component';
+import { SmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/smark-expired-applications/smark-expired-applications.component';
+import { FmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/fmark-expired-applications/fmark-expired-applications.component';
+import { DmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/dmark-expired-applications/dmark-expired-applications.component';
+import { DmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/dmark-renewal-applications/dmark-renewal-applications.component';
+import { IntStdProposalCommentsComponent } from './apollowebs/standards-development/international-standard/int-std-proposal-comments/int-std-proposal-comments.component';
+import { ComStdDraftCommentsComponent } from './apollowebs/standards-development/company-standard/com-std-draft-comments/com-std-draft-comments.component';
+import {ComStdRequestProcessComponent} from './apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component';
+import {ManageTivetComponent} from './apollowebs/usermanagement/manage-tivet/manage-tivet.component';
+import {InvoiceConsolidateFmarkComponent} from './apollowebs/quality-assurance/invoice-consolidate-fmark/invoice-consolidate-fmark.component';
+import {InvoiceConsolidateDmarkComponent} from './apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component';
+import {ComplaintMonitoringComponent} from "./apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component";
+import {SchemeMembershipSicComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component";
+import {SchemeMembershipReviewComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component";
+import {FieldInspectionSummaryComponent} from "./apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component";
+import {WorkplanMonitoringToolComponent} from "./apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component";
+import {IntStdPublishingComponent} from "./apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component";
+import {IntStdGazetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
+import {MsDashboardComponent} from "./apollowebs/market-surveillance/ms-dashboard/ms-dashboard.component";
+import {SchemeMembershipFormComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component";
+import {RegisterTivetComponent} from "./views/registration/register-tivet/register-tivet.component";
+import {ComStdAppDraftComponent} from "./apollowebs/standards-development/company-standard/company-standard-request/com-std-app-draft/com-std-app-draft.component";
+import {ComStdPublishingComponent} from "./apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component";
+import {ComStdEditorComponent} from "./apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component";
+import {ComStdDraftCommentComponent} from "./apollowebs/standards-development/company-standard/company-standard-request/com-std-draft-comment/com-std-draft-comment.component";
 
 //import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -972,6 +983,24 @@ import { InvoiceConsolidateDmarkComponent } from './apollowebs/quality-assurance
 
         InvoiceConsolidateDmarkComponent,
 
+        IntStdProposalCommentsComponent,
+
+        ComStdDraftCommentsComponent,
+
+        SmarkRenewalApplicationsComponent,
+
+        FmarkRenewalApplicationsComponent,
+
+        SmarkExpiredApplicationsComponent,
+
+        FmarkExpiredApplicationsComponent,
+
+        DmarkExpiredApplicationsComponent,
+
+        DmarkRenewalApplicationsComponent,
+
+        BillDetailsComponent,
+        ViewBillDetailsComponent,
     ],
     entryComponents: [LoaderComponent],
     providers: [DatePipe, MatNativeDateModule],

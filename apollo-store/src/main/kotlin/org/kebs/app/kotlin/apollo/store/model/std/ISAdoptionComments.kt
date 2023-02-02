@@ -87,5 +87,13 @@ class ISAdoptionComments {
     @Basic
     var dateOfApplication:Timestamp? =null
 
+    @Column(name="SCOPE")
+    @Basic
+    var scope:String? =null
+
+    @Column(name="OBSERVATION")
+    @Basic
+    var observation:String? =null
+
 
 }

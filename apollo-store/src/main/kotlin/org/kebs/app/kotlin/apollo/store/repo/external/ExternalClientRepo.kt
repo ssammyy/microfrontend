@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.repo.external
 
-import org.kebs.app.kotlin.apollo.store.model.CfgStatusValuesEntity
 import org.kebs.app.kotlin.apollo.store.model.external.ApiClientEvents
 import org.kebs.app.kotlin.apollo.store.model.external.SystemApiClient
 import org.springframework.data.domain.Page
@@ -14,5 +13,6 @@ interface ApiClientRepo: HazelcastRepository<SystemApiClient, Long> {
 }
 
 interface ApiClientEventsRepo: HazelcastRepository<ApiClientEvents, Long> {
+    fun findByClientId(clientId: String?, pg: Pageable): Page<ApiClientEvents>
 
 }
