@@ -191,7 +191,7 @@ export class ComplaintNewComponent implements OnInit {
     });
 
     this.stepThreeForm = new FormGroup({
-      region: new FormControl(),
+      region: new FormControl('', [Validators.required]),
       county: new FormControl('', [Validators.required]),
       town: new FormControl('', [Validators.required]),
       marketCenter: new FormControl('', [Validators.required]),
@@ -348,6 +348,7 @@ export class ComplaintNewComponent implements OnInit {
     this.complaintDetails = this.stepTwoForm.value;
     this.locationDetails = this.stepThreeForm.value;
 
+    console.log(this.locationDetails);
     window.$('#complaintModal').modal('show');
   }
 
@@ -374,7 +375,7 @@ export class ComplaintNewComponent implements OnInit {
   }
 
   saveDetailsFirst(): any {
-    console.log('Button Clicked');
+    console.log('Save Button Clicked');
     if (this?.uploadedFiles?.length > 0) {
       this.SpinnerService.show();
       const file = this.uploadedFiles;
@@ -388,6 +389,7 @@ export class ComplaintNewComponent implements OnInit {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
       }
+
       this.msService.saveComplaintFiles(formData).subscribe(
           (data2: MSComplaintSubmittedSuccessful) => {
             console.log(data2);

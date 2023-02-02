@@ -76,10 +76,13 @@
     height: 100px;
     margin: 0px 30px;
     overflow: hidden;
-    display: grid;
-    grid-template-columns: 0.5fr 1fr auto 1fr;
-    grid-template-rows: auto;
-    grid-template-areas:
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    /*grid-template-columns: 0.5fr 1fr auto 1fr;*/
+    /*grid-template-rows: auto;*/
+    /*grid-template-areas:*/
     "kebs-image  title . vision-2030";
   }
 
@@ -780,6 +783,16 @@
       <h5>
         Self-Service Portal
       </h5>
+    </div>
+    <div class="userManual">
+
+        <a class="nav-link" href="../../assets/usermanual/20220616KIMS-Manufacturer_User_Interface_Manual-QualityAssurance%20v2.pdf"
+           target="_blank" >
+          <i class="material-icons">assignment</i>
+
+          <span>   <b>Manufacturer's User Manual</b></span>
+        </a>
+
     </div>
     <div class="vision-2030">
       <img alt="Vision2030_logo" class="vision-image" id="logo" src="assets/images/Vision2030_logo.svg">
