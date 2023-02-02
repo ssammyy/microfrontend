@@ -345,11 +345,8 @@ export class RegisterTivetComponent implements OnInit {
     }
 
     onClickValidateOtp() {
-        var sendOtp = document.getElementById("sendOtp");
-
-        this.loading = true;
-        this.loadingText = "Validating OTP"
-        this.SpinnerService.show()
+        const sendOtp = document.getElementById("sendOtp");
+        this.run("Validating OTP")
         this.phoneValidated = true;
         this.store$.dispatch(loadValidateTokenAndPhone({
             payload: {
@@ -358,7 +355,6 @@ export class RegisterTivetComponent implements OnInit {
             }
         }));
         this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
-            console.log(`status inside is ${d}`);
             if (d) {
                 this.otpSent = true;
                 // this.stepFourForm?.get('otp')?.reset();
@@ -374,7 +370,6 @@ export class RegisterTivetComponent implements OnInit {
                     }));
 
                     this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((succeeded) => {
-                        console.log(`status inside is ${succeeded}`);
                         if (succeeded) {
                             return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
                         } else {
@@ -384,7 +379,6 @@ export class RegisterTivetComponent implements OnInit {
                     });
                 } else {
                     this.otpSent = false;
-                    this.SpinnerService.hide()
                     sendOtp.textContent = "Resend OTP"
                     this.stepFiveForm.get('otp')?.reset();
                     this.store$.dispatch(loadResponsesFailure({
@@ -398,7 +392,6 @@ export class RegisterTivetComponent implements OnInit {
 
             } else {
                 this.otpSent = false;
-                this.SpinnerService.hide()
                 sendOtp.textContent = "Resend OTP"
                 this.phoneValidated = false;
                 // this.stepFourForm?.get('otp')?.reset();
@@ -424,7 +417,8 @@ export class RegisterTivetComponent implements OnInit {
     }
 
     onClickSendOtp() {
-        var sendOtp = document.getElementById("sendOtp");
+        const sendOtp = document.getElementById("sendOtp");
+        this.run("Sending OTP")
 
         this.otpSent = true;
         this.time = 59;
@@ -456,7 +450,6 @@ export class RegisterTivetComponent implements OnInit {
             }));
 
             this.store$.pipe(select(selectTokenSentStateOtpSent)).subscribe((d) => {
-                console.log(`value of inside is ${d}`);
                 if (d) {
 
                     return this.otpSent = false;
@@ -553,6 +546,26 @@ export class RegisterTivetComponent implements OnInit {
         } else {
             this.validConfirmPasswordRegister = false;
         }
+    }
+
+
+    run(message: string): void {
+        this.loading = true;
+        this.loadingText = message
+        this.SpinnerService.show()
+
+        this.runAsync().then(() => {
+            this.loading = false;
+            this.SpinnerService.hide()
+        });
+    }
+
+    runAsync(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, 2000)
+        });
     }
 
 }
