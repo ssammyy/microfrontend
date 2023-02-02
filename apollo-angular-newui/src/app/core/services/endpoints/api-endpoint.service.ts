@@ -683,6 +683,8 @@ export class ApiEndpointService {
     };
 
     public static COMPANY_PROFILE_ENDPOINT = {
+        LOAD_BUSINESS_LINES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessLines/load`,
+        LOAD_BUSINESS_NATURES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessNatures/load`,
         LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
         LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,

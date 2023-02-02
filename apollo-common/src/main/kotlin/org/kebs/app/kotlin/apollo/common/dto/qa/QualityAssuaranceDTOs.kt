@@ -41,6 +41,13 @@ data class CommonPermitDto(
     var firmTypeName: String? = null,
 )
 
+data class CompanyApprovalRequestDto(
+    var companyID: String? = null,
+    var approvalStatus: String? = null,
+    var requestStatus: String? = null,
+    var commentDetails: String? = null
+)
+
 data class WorkPlanDto(
     var firmName: String? = null,
     var refNumber: String? = null,

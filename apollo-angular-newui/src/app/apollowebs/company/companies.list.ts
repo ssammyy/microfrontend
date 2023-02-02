@@ -73,6 +73,9 @@ export class CompaniesList implements OnInit {
         this.service.clearCache();
         this.service.getAll().subscribe();
 
+        this.naturesService.getAll().subscribe();
+        this.linesService.getAll().subscribe();
+
         this.loadDataToUse();
 
         this.updateTurnOverDetailsForm = this.formBuilder.group({
@@ -173,12 +176,21 @@ export class CompaniesList implements OnInit {
                 this.qaService.showError('AN ERROR OCCURRED');
             },
         );
+        this.qaService.loadFirmPermitList().subscribe(
+            (dataFirmType: FirmTypeEntityDto[]) => {
+                this.loadedFirmType = dataFirmType;
+            },
+            error => {
+                console.log(error);
+                this.qaService.showError('AN ERROR OCCURRED');
+            },
+        );
     }
 
-    editRecord(record: Company) {
-        this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
-        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company'}));
-    }
+    // editRecord(record: Company) {
+    //     this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
+    //     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company'}));
+    // }
 
 
     onClickPlantDetails(record: Company) {
@@ -197,12 +209,20 @@ export class CompaniesList implements OnInit {
     // }
 
     viewRecord(record: Company) {
-        this.currDivLabel = `COMPANY DETAILS`;
+        this.currDivLabel = `COMPANY DETAILS : ${record.name}`;
         this.currDiv = 'viewCompanyDetails';
         this.selectedRegion = record.region;
         this.companyDetailsForm.patchValue(record);
         this.companyDetailsForm.disable();
-        console.log('record to view' + record);
+        window.$('#companyDetailsModal').modal('show');
+    }
+
+    editRecord(record: Company) {
+        this.currDivLabel = `COMPANY DETAILS : ${record.name}`;
+        this.currDiv = 'editCompanyDetails';
+        this.selectedRegion = record.region;
+        this.companyDetailsForm.patchValue(record);
+        this.companyDetailsForm.enable();
         window.$('#companyDetailsModal').modal('show');
     }
 

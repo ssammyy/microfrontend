@@ -2194,8 +2194,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val branchID = req.paramOrNull("branchID")?.toLong()?: throw ExpectedDataNotFound("Required Branch ID, check config")
             qaDaoServices.updateInspectionFeesDetailsDetails(branchID, loggedInUser, map)
-                ?.let { ok().body(it)
-                }
+                .let { ok().body(it)}
                 ?: onErrors("We could not process your request at the moment")
 
 
@@ -3998,9 +3997,16 @@ class QualityAssuranceHandler(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val allpaidInvoices = qaDaoServices.findAllMyPayments(loggedInUser)
 
+        return ok().body(allpaidInvoices)
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun companyGetApprovalRequest(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val allpaidInvoices = qaDaoServices.findAllMyPayments(loggedInUser)
 
         return ok().body(allpaidInvoices)
-
     }
 
 
