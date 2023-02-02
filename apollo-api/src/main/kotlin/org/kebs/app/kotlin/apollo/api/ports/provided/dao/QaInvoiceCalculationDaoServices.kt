@@ -91,12 +91,7 @@ class QaInvoiceCalculationDaoServices(
         }
 
         if (permit.fmarkGenerateStatus == 1) {
-            calculatePaymentFMarkOnSMark(
-                permit,
-                user,
-                qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark),
-                invoiceMaster
-            )
+            calculatePaymentFMarkOnSMark(permit, user, qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark), invoiceMaster)
         }
 
 

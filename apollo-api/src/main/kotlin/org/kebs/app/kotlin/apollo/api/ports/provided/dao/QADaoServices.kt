@@ -354,7 +354,7 @@ class QADaoServices(
 
     }
 
-    fun updateCompanyTurnOverDetails(
+    fun updateDownGradeCompanyTurnOverDetails(
         dto: CompanyTurnOverUpdateDto,
         user: UsersEntity,
         map: ServiceMapsEntity,
@@ -362,50 +362,71 @@ class QADaoServices(
 
         companyProfileRepo.findByIdOrNull(dto.companyProfileID)
             ?.let { entity ->
-                entity.apply {
-                    val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
-                    firmCategory = firmTypeDetails.id
-                    yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
-                    modifiedBy = user.userName
-                    modifiedOn = Timestamp.from(Instant.now())
+                if(entity.updateFirmType==dto.selectedFirmTypeID){
+                    entity.apply {
+                        val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
+                        updateDetailsStatus = null
+                        updateDetailsComment = null
+                        requesterComment = null
+                        updateFirmType = null
+                        requesterId = null
+                        firmCategory = firmTypeDetails.id
+                        yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
+                        modifiedBy = user.userName
+                        modifiedOn = Timestamp.from(Instant.now())
+                    }
+
+                    //If the upgradeType is 1 means UpGarding while if the UpgradeType is 0 means downgrading
+                    if(entity.upgradeType==1){
+                        val allPlantDetails = findAllPlantDetailsWithCompanyID(entity.id?:throw ExpectedDataNotFound("Missing Company ID"))
+                        val allPermitDetailsNotPaid = permitRepo.findByPermitTypeAndPaidStatusAndCompanyIdAndInvoiceGeneratedAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(applicationMapProperties.mapQAPermitTypeIdSmark,map.initStatus, entity.id!!,map.activeStatus)
+                        allPermitDetailsNotPaid?.forEach { permits->
+
+                        }
+                    }
+
+                    val companyProfileEntity = companyProfileRepo.save(entity)
+
+
+
+                    return UserCompanyEntityDto(
+                        companyProfileEntity.name,
+                        companyProfileEntity.kraPin,
+                        companyProfileEntity.userId,
+                        null,
+                        companyProfileEntity.registrationNumber,
+                        companyProfileEntity.postalAddress,
+                        companyProfileEntity.physicalAddress,
+                        companyProfileEntity.plotNumber,
+                        companyProfileEntity.companyEmail,
+                        companyProfileEntity.companyTelephone,
+                        companyProfileEntity.yearlyTurnover,
+                        companyProfileEntity.businessLines,
+                        companyProfileEntity.businessNatures,
+                        companyProfileEntity.buildingName,
+                        null,
+                        companyProfileEntity.streetName,
+                        companyProfileEntity.directorIdNumber,
+                        companyProfileEntity.region,
+                        companyProfileEntity.county,
+                        companyProfileEntity.town,
+                        null,
+                        null,
+                        null,
+                        null,
+                        iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
+                    ).apply {
+                        id = companyProfileEntity.id
+
+                        status = companyProfileEntity.status
+                    }
+                }else {
+                    val selectedFirmType = findFirmTypeById(dto.selectedFirmTypeID)
+                    val requiredFirmType = entity.updateFirmType?.let { findFirmTypeById(it) }
+                     throw NullValueNotAllowedException("Your are Upgrading/downgrading to ${selectedFirmType.firmType}, While request was to upgrade/downgrade to ${requiredFirmType?.firmType}")
                 }
 
-                val companyProfileEntity = companyProfileRepo.save(entity)
-
-                return UserCompanyEntityDto(
-                    companyProfileEntity.name,
-                    companyProfileEntity.kraPin,
-                    companyProfileEntity.userId,
-                    null,
-                    companyProfileEntity.registrationNumber,
-                    companyProfileEntity.postalAddress,
-                    companyProfileEntity.physicalAddress,
-                    companyProfileEntity.plotNumber,
-                    companyProfileEntity.companyEmail,
-                    companyProfileEntity.companyTelephone,
-                    companyProfileEntity.yearlyTurnover,
-                    companyProfileEntity.businessLines,
-                    companyProfileEntity.businessNatures,
-                    companyProfileEntity.buildingName,
-                    null,
-                    companyProfileEntity.streetName,
-                    companyProfileEntity.directorIdNumber,
-                    companyProfileEntity.region,
-                    companyProfileEntity.county,
-                    companyProfileEntity.town,
-                    null,
-                    null,
-                    null,
-                    null,
-                    iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
-                ).apply {
-                    id = companyProfileEntity.id
-
-                    status = companyProfileEntity.status
-                }
-
-            }
-            ?: throw NullValueNotAllowedException("Record not found")
+            } ?: throw NullValueNotAllowedException("Record not found")
     }
 
     fun updateInspectionFeesDetailsDetails(
@@ -2748,10 +2769,9 @@ class QADaoServices(
     ): InvoiceDetailsDto? {
         return when (permitDetails.invoiceGenerated) {
             1 -> {
-                var v: QaInvoiceMasterDetailsEntity = when {
+                val v: QaInvoiceMasterDetailsEntity = when {
                     permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permitDetails.smarkGeneratedFrom == 1 -> {
-                        val findSMarkID =
-                            findSmarkWithFmarkId(permitDetails.id ?: throw Exception("MISSING PERMIT ID")).smarkId
+                        val findSMarkID = findSmarkWithFmarkId(permitDetails.id ?: throw Exception("MISSING PERMIT ID")).smarkId
                         val findSMark = findPermitBYUserIDAndId(
                             findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
                             permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")

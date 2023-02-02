@@ -48,6 +48,14 @@ data class CompanyApprovalRequestDto(
     var commentDetails: String? = null
 )
 
+data class CompanyUpdateDetailsDto(
+    var updateDetailsStatus: Int? = null,
+    var updateDetailsComment: String? = null,
+    var requesterComment: String? = null,
+    var updateFirmType: Int? = null,
+    var requesterId: Int? = null,
+)
+
 data class WorkPlanDto(
     var firmName: String? = null,
     var refNumber: String? = null,

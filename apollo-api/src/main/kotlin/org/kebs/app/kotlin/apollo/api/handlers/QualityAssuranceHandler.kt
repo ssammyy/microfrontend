@@ -2169,7 +2169,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             when {
                 errors.allErrors.isEmpty() -> {
-                    qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
+                    qaDaoServices.updateDownGradeCompanyTurnOverDetails(body, loggedInUser, map)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 
