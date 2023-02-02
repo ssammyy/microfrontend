@@ -17,6 +17,8 @@ import {RegistrationService} from "./registration.service";
 import {loadResponsesFailure, loadResponsesSuccess} from "../../response";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiResponse} from "../../../../domain/response.model";
+import {NgxSpinnerService} from "ngx-spinner";
+
 
 
 @Injectable()
@@ -138,17 +140,21 @@ export class RegistrationEffects {
 
     doRegisterTivet: Observable<Action> = createEffect(
         () =>
+
             this.actions$.pipe(
                 ofType(loadRegistrationsTivet),
                 switchMap((action) => this.service.registerTivet(action.payload)
                     .pipe(
                         mergeMap((data) => {
                             if (data.status == 200) {
+                                this.SpinnerService.show()
                                 return [
                                     loadRegistrationsSuccess({data: data, succeeded: true}),
                                     loadResponsesSuccess({message: data})
                                 ];
                             } else {
+                                this.SpinnerService.hide()
+
                                 return [
                                     loadResponsesFailure({error: data})
                                 ];
@@ -201,7 +207,9 @@ export class RegistrationEffects {
 
     constructor(
         private actions$: Actions,
-        private service: RegistrationService
+        private service: RegistrationService,
+        private SpinnerService: NgxSpinnerService,
+
     ) {
     }
 
