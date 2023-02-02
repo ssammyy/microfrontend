@@ -5834,7 +5834,7 @@ class QADaoServices(
                 commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
                     KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
                     val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
-                    //Todo ask ken why list comming back does not have the product that is being generated for.
+                    //Todo ask ken why list coming back does not have the product that is being generated for.
                     val productsManufacture = findAllProductManufactureInPlantWithPlantID(
                         s.activeStatus,
                         s.activeStatus,
