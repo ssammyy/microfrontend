@@ -2619,9 +2619,9 @@ class QADaoServices(
     ): List<PermitInvoiceDto> {
         val permitsInvoiceList = mutableListOf<PermitInvoiceDto>()
         permitInvoices.map { pi ->
-            val permitDetails = findPermitBYID(pi.permitId ?: throw Exception("Invalid Permit ID"))
+            val permitDetails = pi.permitId?.let { findPermitBYID(it) }
             if (plantID != null) {
-                if (permitDetails.attachedPlantId == plantID) {
+                if (permitDetails?.attachedPlantId == plantID) {
                     permitsInvoiceList.add(
                         PermitInvoiceDto(
                             pi.permitId,
@@ -2644,8 +2644,8 @@ class QADaoServices(
                     PermitInvoiceDto(
                         pi.permitId,
                         pi.invoiceRef,
-                        permitDetails.commodityDescription,
-                        permitDetails.tradeMark,
+                        permitDetails?.commodityDescription,
+                        permitDetails?.tradeMark,
                         pi.totalAmount,
                         pi.paymentStatus,
                         pi.permitRefNumber,
