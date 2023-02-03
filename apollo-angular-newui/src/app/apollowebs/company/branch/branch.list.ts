@@ -14,6 +14,8 @@ import {
 } from 'src/app/core/store';
 import {Store} from '@ngrx/store';
 import {Router} from "@angular/router";
+import {QaService} from '../../../core/store/data/qa/qa.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-branch',
@@ -33,9 +35,20 @@ export class BranchList implements OnInit {
   submitted = false;
   selectedCompany = 0;
   roles: string[];
+  blob: Blob;
+
+  loading = false;
+  loadingText: string;
+
+  selectedBranch: Branches;
+  uploadedFilesOnly: FileList;
+  currDivLabel!: string;
+  currDiv!: string;
 
   constructor(
       private service: BranchesService,
+      private qaService: QaService,
+      private SpinnerService: NgxSpinnerService,
       private store$: Store<any>,
       private router: Router
   ) {
@@ -94,5 +107,98 @@ export class BranchList implements OnInit {
   viewRecord(record: Branches) {
     this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'companies/view/branch'}));
+  }
+
+  onClickGenerateInspectionFee(record: Branches) {
+      this.qaService.showSuccessWith2Message('Are you sure your want to Generate inspection invoice?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'Generate Inspection Invoice\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+            this.generateInspectionFee(record);
+          });
+  }
+
+  uploadInspectionReport(record: Branches) {
+    this.currDivLabel = `BRANCH INSPECTION INVOICE DETAILS : ${record.branchName}`;
+    this.currDiv = 'uploadInspectionReport';
+    this.selectedBranch = record;
+    window.$('#myModalUpload').modal('show');
+  }
+
+  onClickUploadInspectionFee(record: Branches) {
+    if (this.uploadedFilesOnly.length > 0) {
+    this.qaService.showSuccessWith2Message('Are you sure your want to Upload the selected inspection invoice?', 'You won\'t be able to revert back after submission!',
+        // tslint:disable-next-line:max-line-length
+        `You can click \'Upload Inspection Invoice\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+          this.saveFilesResults(record);
+        });
+    } else {
+      this.qaService.showError('NO FILE SELECTED FOR UPLOADED');
+    }
+  }
+
+  saveFilesResults(record: Branches) {
+    if (this.uploadedFilesOnly.length > 0) {
+      this.SpinnerService.show();
+      const file = this.uploadedFilesOnly;
+      const formData = new FormData();
+      formData.append('branchID', String(record.id));
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+      this.qaService.saveUploadFile(formData).subscribe(
+          (data: any) => {
+            console.log(data);
+            // this.loadStandards();
+            this.SpinnerService.hide();
+            this.qaService.showSuccess('FILE UPLOADED SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.qaService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  viewUploadDetailsPdfFile(ssfID: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.qaService.loadInspectionFeesUploadDetailsPDF(String(ssfID)).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `#-${fileName}`;
+          link.click();
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+        },
+    );
+  }
+
+
+
+  generateInspectionFee(record: Branches) {
+
+      this.qaService.generateInspectionFees(record).subscribe(
+          (data: any) => {
+            this.SpinnerService.hide();
+            this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.qaService.showError('AN ERROR OCCURRED');
+          },
+      );
+
   }
 }

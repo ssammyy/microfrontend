@@ -860,6 +860,8 @@ class RegistrationManagementDaoService(
             endingDate =it.endingDate
             invoiceSharedId =it.invoiceSharedId
             tokenGiven =it.tokenGiven
+            invoiceBatchID =it.varField10?.toLong()
+            uploadedPdfID =it.varField9?.toLong()
         }
     }
 

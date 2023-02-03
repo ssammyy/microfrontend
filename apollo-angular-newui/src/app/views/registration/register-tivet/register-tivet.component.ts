@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {interval, Observable, PartialObserver, Subject, throwError} from "rxjs";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {
     BrsLookUpRequest,
     BusinessLines,
@@ -29,7 +29,16 @@ import {
 } from "../../../core/store";
 import {select, Store} from "@ngrx/store";
 import {takeUntil} from "rxjs/operators";
-import {ConfirmedValidator} from "../../../core/shared/confirmed.validator";
+import {NgxSpinnerService} from "ngx-spinner";
+import {ErrorStateMatcher} from "@angular/material/core";
+import {PasswordValidation} from "../../../apollowebs/forms/password-validation";
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+        const isSubmitted = form && form.submitted;
+        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    }
+}
 
 @Component({
     selector: 'app-register-tivet',
@@ -37,14 +46,16 @@ import {ConfirmedValidator} from "../../../core/shared/confirmed.validator";
     styleUrls: ['./register-tivet.component.css']
 })
 export class RegisterTivetComponent implements OnInit {
-
+    @Input() errorMsg: string;
+    @Input() displayError: boolean;
     ispause = new Subject();
     time = 59;
     timer!: Observable<number>;
     timerObserver!: PartialObserver<number>;
     step = 0;
     isShow = true;
-
+    loading = false;
+    loadingText: string;
     public clicked = false;
 
     stepZeroForm!: FormGroup;
@@ -79,6 +90,21 @@ export class RegisterTivetComponent implements OnInit {
     submitted = false;
     selectedId: number;
 
+    validEmailRegister: boolean = false;
+
+    validTextType: boolean = false;
+    validNumberType: boolean = false;
+    pattern = "https?://.+";
+
+    emailFormControl = new FormControl('', [
+        Validators.required,
+        Validators.email,
+    ]);
+
+    matcher = new MyErrorStateMatcher();
+
+    validConfirmPasswordRegister = false;
+    validPasswordRegister = false;
 
     constructor(private service: RegistrationPayloadService,
                 private linesService: BusinessLinesService,
@@ -87,6 +113,7 @@ export class RegisterTivetComponent implements OnInit {
                 private countyService: CountyService,
                 private townService: TownService,
                 private formBuilder: FormBuilder,
+                private SpinnerService: NgxSpinnerService,
                 private store$: Store<any>,) {
         this.businessNatures$ = naturesService.entities$;
         this.businessLines$ = linesService.entities$;
@@ -99,6 +126,29 @@ export class RegisterTivetComponent implements OnInit {
         // townService.getAll().subscribe();
         naturesService.getAll().subscribe();
         linesService.getAll().subscribe();
+    }
+
+    isFieldValid(form: FormGroup, field: string) {
+        return !form.get(field).valid && form.get(field).touched;
+    }
+
+    displayFieldCss(form: FormGroup, field: string) {
+        return {
+            'has-error': this.isFieldValid(form, field),
+            'has-feedback': this.isFieldValid(form, field)
+        };
+    }
+
+
+    validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateAllFormFields(control);
+            }
+        });
     }
 
     ngOnInit(): void {
@@ -135,15 +185,15 @@ export class RegisterTivetComponent implements OnInit {
             otherCategory: new FormControl('', [])
         });
 
-        this.stepTwoForm = new FormGroup({
-            postalAddress: new FormControl(),
-            physicalAddress: new FormControl('', [Validators.required]),
-            plotNumber: new FormControl('', [Validators.required]),
-            companyEmail: new FormControl('', [Validators.required]),
-            companyTelephone: new FormControl('', [Validators.required])
+        this.stepTwoForm = this.formBuilder.group({
+            postalAddress: [''],
+            physicalAddress: ['', Validators.required],
+            plotNumber: ['', Validators.required],
+            companyEmail: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
+            companyTelephone: ['', Validators.required],
         });
         this.stepThreeForm = new FormGroup({
-            buildingName: new FormControl(),
+            buildingName: new FormControl('', [Validators.required]),
             branchName: new FormControl('', [Validators.required]),
             streetName: new FormControl('', [Validators.required]),
             region: new FormControl('', [Validators.required]),
@@ -152,16 +202,16 @@ export class RegisterTivetComponent implements OnInit {
         });
 
         this.stepFourForm = this.formBuilder.group({
-                firstName: [],
-                lastName: ['', Validators.required],
-                //userName: ['', Validators.required],
-                email: ['', Validators.required],
-                credentials: ['', Validators.required],
-                confirmCredentials: ['', [Validators.required]]
-            },
-            {
-                validators: ConfirmedValidator('credentials', 'confirmCredentials')
-            });
+            firstName: ['', Validators.required],
+            lastName: ['', Validators.required],
+            //userName: ['', Validators.required],
+            email: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
+            credentials: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
+            confirmCredentials: ['', Validators.required],
+        }, {
+            validator: PasswordValidation.MatchCredentials // your validation method
+        });
+
 
         this.stepFiveForm = this.formBuilder.group({
             cellphone: ['', Validators.required],
@@ -171,27 +221,39 @@ export class RegisterTivetComponent implements OnInit {
 
     }
 
-    get formStepZeroForm(): any {
+    get formStepZeroForm()
+        :
+        any {
         return this.stepZeroForm.controls;
     }
 
-    get formStepOneForm(): any {
+    get formStepOneForm()
+        :
+        any {
         return this.stepOneForm.controls;
     }
 
-    get formStepTwoForm(): any {
+    get formStepTwoForm()
+        :
+        any {
         return this.stepTwoForm.controls;
     }
 
-    get formStepThreeForm(): any {
+    get formStepThreeForm()
+        :
+        any {
         return this.stepThreeForm.controls;
     }
 
-    get formStepFourForm(): any {
+    get formStepFourForm()
+        :
+        any {
         return this.stepFourForm.controls;
     }
 
-    get formStepFiveForm(): any {
+    get formStepFiveForm()
+        :
+        any {
         return this.stepFiveForm.controls;
     }
 
@@ -239,7 +301,10 @@ export class RegisterTivetComponent implements OnInit {
     }
 
 
-    onClickRegisterCompany(valid: boolean) {
+    onClickRegisterCompany(valid
+                               :
+                               boolean
+    ) {
         if (valid) {
             // if (this.phoneValidated) {
             //   this.company = {...this.company, ...this.companySoFar};
@@ -280,6 +345,8 @@ export class RegisterTivetComponent implements OnInit {
     }
 
     onClickValidateOtp() {
+        const sendOtp = document.getElementById("sendOtp");
+        this.run("Validating OTP")
         this.phoneValidated = true;
         this.store$.dispatch(loadValidateTokenAndPhone({
             payload: {
@@ -288,7 +355,6 @@ export class RegisterTivetComponent implements OnInit {
             }
         }));
         this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
-            console.log(`status inside is ${d}`);
             if (d) {
                 this.otpSent = true;
                 // this.stepFourForm?.get('otp')?.reset();
@@ -304,14 +370,15 @@ export class RegisterTivetComponent implements OnInit {
                     }));
 
                     this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((succeeded) => {
-                        console.log(`status inside is ${succeeded}`);
                         if (succeeded) {
                             return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
+                        } else {
+                            this.otpSent = false;
+                            this.SpinnerService.hide()
                         }
                     });
                 } else {
                     this.otpSent = false;
-                    var sendOtp = document.getElementById("sendOtp");
                     sendOtp.textContent = "Resend OTP"
                     this.stepFiveForm.get('otp')?.reset();
                     this.store$.dispatch(loadResponsesFailure({
@@ -335,7 +402,10 @@ export class RegisterTivetComponent implements OnInit {
 
     }
 
-    secondsToHms(d: number) {
+    secondsToHms(d
+                     :
+                     number
+    ) {
         d = Number(d);
         // const m = Math.floor(d % 3600 / 60);
         const s = Math.floor(d % 3600 % 60);
@@ -347,7 +417,8 @@ export class RegisterTivetComponent implements OnInit {
     }
 
     onClickSendOtp() {
-        var sendOtp = document.getElementById("sendOtp");
+        const sendOtp = document.getElementById("sendOtp");
+        this.run("Sending OTP")
 
         this.otpSent = true;
         this.time = 59;
@@ -379,9 +450,9 @@ export class RegisterTivetComponent implements OnInit {
             }));
 
             this.store$.pipe(select(selectTokenSentStateOtpSent)).subscribe((d) => {
-                console.log(`value of inside is ${d}`);
                 if (d) {
-                    return this.otpSent = d;
+
+                    return this.otpSent = false;
                 } else {
                     this.otpSent = false;
                     sendOtp.textContent = "Resend Otp"
@@ -399,11 +470,14 @@ export class RegisterTivetComponent implements OnInit {
         if (this.step > 1) {
             this.step = this.step - 1;
         } else {
-            this.step = 1;
+            this.step = 0;
         }
     }
 
-    onClickNext(valid: boolean) {
+    onClickNext(valid
+                    :
+                    boolean
+    ) {
         if (valid) {
             switch (this.step) {
                 case 1:
@@ -432,5 +506,66 @@ export class RegisterTivetComponent implements OnInit {
 
     }
 
+    emailValidationRegister(e) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (re.test(String(e).toLowerCase())) {
+            this.validEmailRegister = true;
+        } else {
+            this.validEmailRegister = false;
+        }
+    }
+
+
+    textValidationType(e) {
+        if (e) {
+            this.validTextType = true;
+        } else {
+            this.validTextType = false;
+        }
+    }
+
+    numberValidationType(e) {
+        if (e) {
+            this.validNumberType = true;
+        } else {
+            this.validNumberType = false;
+        }
+    }
+
+    passwordValidationRegister(e) {
+        if (e.length > 5) {
+            this.validPasswordRegister = true;
+        } else {
+            this.validPasswordRegister = false;
+        }
+    }
+
+    confirmPasswordValidationRegister(e) {
+        if (this.stepFourForm.controls['credentials'].value === e) {
+            this.validConfirmPasswordRegister = true;
+        } else {
+            this.validConfirmPasswordRegister = false;
+        }
+    }
+
+
+    run(message: string): void {
+        this.loading = true;
+        this.loadingText = message
+        this.SpinnerService.show()
+
+        this.runAsync().then(() => {
+            this.loading = false;
+            this.SpinnerService.hide()
+        });
+    }
+
+    runAsync(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, 2000)
+        });
+    }
 
 }

@@ -41,6 +41,21 @@ data class CommonPermitDto(
     var firmTypeName: String? = null,
 )
 
+data class CompanyApprovalRequestDto(
+    var companyID: String? = null,
+    var approvalStatus: String? = null,
+    var requestStatus: String? = null,
+    var commentDetails: String? = null
+)
+
+data class CompanyUpdateDetailsDto(
+    var updateDetailsStatus: Int? = null,
+    var updateDetailsComment: String? = null,
+    var requesterComment: String? = null,
+    var updateFirmType: Int? = null,
+    var requesterId: Int? = null,
+)
+
 data class WorkPlanDto(
     var firmName: String? = null,
     var refNumber: String? = null,
@@ -138,6 +153,7 @@ data class NewBatchInvoiceDto(
     var permitRefNumber: String? = null,
     var permitInvoicesID: Array<Long>? = null,
     var isWithHolding: Long? = null,
+    var differenceInvoices: Int? = null,
     ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

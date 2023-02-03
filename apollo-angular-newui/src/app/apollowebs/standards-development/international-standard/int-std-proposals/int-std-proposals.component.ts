@@ -2,10 +2,11 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  InternationalStandardsComments,
-  ISAdoptionProposal,
-  StakeholderProposalComments,
-  StandardReviewTasks
+    CommentOnProposalStakeHolder,
+    InternationalStandardsComments,
+    ISAdoptionProposal,
+    StakeholderProposalComments,
+    StandardReviewTasks
 } from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Store} from "@ngrx/store";
@@ -31,7 +32,7 @@ export class IntStdProposalsComponent implements OnInit {
   public actionRequest: ISAdoptionProposal | undefined;
   public approveProposalFormGroup!: FormGroup;
   public rejectProposalFormGroup!: FormGroup;
-  stakeholderProposalComments: StakeholderProposalComments[] = [];
+  stakeholderProposalComments: CommentOnProposalStakeHolder[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
   loadingText: string;
   approve: string;
@@ -137,10 +138,10 @@ export class IntStdProposalsComponent implements OnInit {
     this.loadingText = "Loading ...."
     this.SpinnerService.show();
     this.stdIntStandardService.getAllComments(proposalId).subscribe(
-        (response: StakeholderProposalComments[]) => {
+        (response: CommentOnProposalStakeHolder[]) => {
           this.stakeholderProposalComments = response;
           this.SpinnerService.hide();
-          console.log(this.stakeholderProposalComments)
+          //console.log(this.stakeholderProposalComments)
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -158,7 +159,7 @@ export class IntStdProposalsComponent implements OnInit {
         (response: InternationalStandardsComments[]) => {
           this.internationalStandardsComments = response;
           this.SpinnerService.hide();
-          console.log(this.internationalStandardsComments)
+          //console.log(this.internationalStandardsComments)
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

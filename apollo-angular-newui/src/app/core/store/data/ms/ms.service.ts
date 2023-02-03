@@ -890,6 +890,7 @@ export class MsService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public loadSearchSeizedGoodsViewList(page: string, records: string, seizedGoodsViewSearchValues: SeizedGoodsViewSearchValues): Observable<ApiResponseModel> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SEIZED_GOODS_SEARCH);

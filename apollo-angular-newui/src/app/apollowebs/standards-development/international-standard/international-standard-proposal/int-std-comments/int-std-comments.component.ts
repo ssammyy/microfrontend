@@ -2,12 +2,12 @@ import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
-import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
-import {ISAdoptionComments, ISAdoptionProposal, ProposalComments} from "../../../../core/store/data/std/std.model";
-import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {StdIntStandardService} from "../../../../../core/store/data/std/std-int-standard.service";
+import {ISAdoptionComments, ISAdoptionProposal, ProposalComments} from "../../../../../core/store/data/std/std.model";
+import {NotificationService} from "../../../../../core/store/data/std/notification.service";
 import {Store} from "@ngrx/store";
-import {selectUserInfo} from "../../../../core/store";
-import {DefaulterDetails} from "../../../../core/store/data/levy/levy.model";
+import {selectUserInfo} from "../../../../../core/store";
+import {DefaulterDetails} from "../../../../../core/store/data/levy/levy.model";
 import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
@@ -32,7 +32,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
     dtElement: DataTableDirective;
     isDtInitialized: boolean = false
   public actionRequest: ISAdoptionProposal | undefined;
-    proposalID: string;
+    proposalId: string;
   constructor(
       private store$: Store<any>,
       private formBuilder: FormBuilder,
@@ -43,33 +43,35 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getProposals(this.proposalID);
+
       this.activatedRoute.paramMap.subscribe(
           rs => {
-              this.proposalID = rs.get('proposalID');
+              this.proposalId = rs.get('proposalId');
 
           },
       );
+      this.getProposals(this.proposalId);
+      //console.log(this.proposalId);
 
       this.uploadCommentsFormGroup = this.formBuilder.group({
-          adoption_proposal_comment: [],
-          commentTitle: [],
-          commentDocumentType: [],
-          comNameOfOrganization: [],
-          comClause:[],
-          comParagraph:[],
-          proposedChange:[],
-          taskId:[],
+          commentTitle:[],
+          scope:[],
+          clause:[],
           proposalID:[],
-          typeOfComment:[],
-          adopt:['', Validators.required],
-          reasonsForNotAcceptance:[],
+          standardNumber:[],
+          commentDocumentType:[],
           recommendations:[],
           nameOfRespondent:[],
           positionOfRespondent:[],
           nameOfOrganization:[],
-          dateOfApplication:[],
-          standardNumber:[]
+          preparedDate:[],
+          paragraph:[],
+          typeOfComment:[],
+          comment:[],
+          proposedChange:[],
+          observation:[],
+          emailOfRespondent:['', Validators.required],
+          phoneOfRespondent:['', Validators.required]
 
       });
 
@@ -77,6 +79,10 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
       return this.fullname = u.fullName;
     });
   }
+
+    get formUploadComment(): any {
+        return this.uploadCommentsFormGroup.controls;
+    }
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -90,10 +96,10 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
 
   }
 
-    public getProposals(proposalID: string): void{
+    public getProposals(proposalId: string): void{
         this.loadingText = "Retrieving Proposals ...."
         this.SpinnerService.show();
-        this.stdIntStandardService.getProposals(proposalID).subscribe(
+        this.stdIntStandardService.getProposals(proposalId).subscribe(
             (response: ISAdoptionProposal[]) => {
                 this.isAdoptionProposals = response;
                 console.log(this.isAdoptionProposals);
@@ -163,12 +169,14 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
       button.setAttribute('data-target','#commentModal');
         this.uploadCommentsFormGroup.patchValue(
             {
-                taskId: this.actionRequest.taskId,
-                comNameOfOrganization: this.actionRequest.nameOfOrganization,
                 commentTitle: this.actionRequest.title,
                 scope: this.actionRequest.scope,
-                comClause: this.actionRequest.clause,
-                proposalID: this.actionRequest.id
+                clause: this.actionRequest.clause,
+                proposalID: this.actionRequest.id,
+                standardNumber: this.actionRequest.standardNumber,
+                commentDocumentType: this.actionRequest.docName,
+                preparedDate:this.actionRequest.preparedDate
+
             }
         );
     }
@@ -186,7 +194,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
                 console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
-                this.getProposals(this.proposalID);
+                this.getProposals(this.proposalId);
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();

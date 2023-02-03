@@ -337,10 +337,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     }
 
     @Bean
-    fun migrationRegistrationRoutes(
-        handler: RegistrationHandler,
-        otherHandler: MasterDataHandler,
-        msHandler: NewMarketSurveillanceHandler
+    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler, msHandler: NewMarketSurveillanceHandler
     ) = router {
         "/api/v1/migration/".nest {
             "anonymous".nest {
@@ -502,6 +499,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/payments", handler::permitInvoiceListPaid)
             "/company".nest {
                 GET("/un-payed-invoices", handler::permitInvoiceListUnPaid)
+                GET("/approval-request-edit", handler::companyGetApprovalRequest)
                 POST("/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
                 POST("/generate-inspection-fee", handler::handleGenerateInspectionFeesDetails)
             }

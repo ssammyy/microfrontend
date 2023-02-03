@@ -2789,7 +2789,7 @@
                                     <div class="form-group">
                                         <label><b>Region</b> </label>
                                         <input class="form-control two-column-input"
-                                               formControlName="regionName" ngModel="{{workPlanInspection?.region}}" disabled
+                                               formControlName="regionName" ngModel="{{workPlanInspection?.region}}"
                                                name="regionName" required type="text">
                                     </div>
                                 </div>
@@ -2798,13 +2798,23 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Town</b> </label>
+                                        <label><b>County</b> </label>
                                         <input class="form-control two-column-input"
-                                               formControlName="town" ngModel="{{workPlanInspection?.townMarketCenter}}" disabled
-                                               name="town" required type="text">
+                                               formControlName="county" ngModel="{{workPlanInspection?.county}}"
+                                               name="county" required type="text">
                                     </div>
                                 </div>
 
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Town</b> </label>
+                                        <input class="form-control two-column-input"
+                                               formControlName="town" ngModel="{{workPlanInspection?.townMarketCenter}}"
+                                               name="town" required type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Market Centre</b> </label>
@@ -2813,6 +2823,7 @@
                                                name="marketCenter" required type="text">
                                     </div>
                                 </div>
+
                             </div>
 
                             <h4 class="mb-3" style="color: #0066B1">Outlet Details</h4>

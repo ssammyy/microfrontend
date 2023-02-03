@@ -30,10 +30,11 @@ import {
     StgInvoiceBalanceDto,
     TaskDto,
 } from './qa.model';
-import {Company} from '../companies';
+import {Branches, Company} from '../companies';
 import Swal from 'sweetalert2';
 import swal from 'sweetalert2';
 import {SSFSendingComplianceStatus, WorkPlanInspectionDto} from '../ms/ms.model';
+import {BusinessLines, BusinessNatures} from '../business';
 
 @Injectable({
     providedIn: 'root',
@@ -138,12 +139,68 @@ export class QaService {
         });
     }
 
+    public loadInspectionFeesUploadDetailsPDF(fileID: string): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.VIEW_PDF_INSPECTION_FEES_INVOICE);
+        const params = new HttpParams()
+            .set('fileID', fileID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    public saveUploadFile(data: FormData): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.COMPANY_PROFILE_ENDPOINT.UPLOAD_INSPECTION_FEES_INVOICE,
+        );
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
     // tslint:disable-next-line:max-line-length
     public qaUpdateFirmType(data: CompanyTurnOverUpdateDto): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.UPDATE_COMPANY_TURN_OVER);
         const params = new HttpParams();
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public generateInspectionFees(data: Branches): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.GENERATE_INSPECTION_FEES_INVOICE);
+        const params = new HttpParams()
+            .set('branchID', String(data.id));
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
@@ -173,6 +230,32 @@ export class QaService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_FIRM_TYPE_LIST);
         return this.http.get<FirmTypeEntityDto[]>(url).pipe(
             map(function (response: FirmTypeEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadBusinessLinesList(): Observable<BusinessLines[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_BUSINESS_LINES);
+        return this.http.get<BusinessLines[]>(url).pipe(
+            map(function (response: BusinessLines[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadBusinessNaturesList(): Observable<BusinessNatures[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_BUSINESS_NATURES);
+        return this.http.get<BusinessNatures[]>(url).pipe(
+            map(function (response: BusinessNatures[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -1230,6 +1313,7 @@ export class QaService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public updateManufacturingProcessDetailsSta10(qaSta10ID: string, data: STA10ManufacturingProcessDto[]): Observable<STA10ManufacturingProcessDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS);
         const params = new HttpParams()
