@@ -5570,12 +5570,8 @@ class QADaoServices(
 
                             with(invoiceDetails) {
                                 description = "${permitInvoiceFound.invoiceRef},$description"
-                                totalAmount = totalAmount?.plus(
-                                    permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
-                                )
-                                totalTaxAmount = totalTaxAmount?.plus(
-                                    permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
-                                )
+                                totalAmount = totalAmount?.plus(permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
+                                totalTaxAmount = totalTaxAmount?.plus(permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
 
                             }
                             invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)
@@ -5584,8 +5580,8 @@ class QADaoServices(
                                 revenueAcc = paymentRevenueCode.revenueCode
                                 revenueAccDesc = paymentRevenueCode.revenueDescription
                                 taxable = 1
-                                totalAmount = invoiceBatchDetails!!.totalAmount
-                                taxAmount = invoiceBatchDetails!!.totalTaxAmount
+                                totalAmount = permitInvoiceFound.totalAmount
+                                taxAmount = permitInvoiceFound.taxAmount
                             }
                             sageValuesDtoList.add(detailBody)
                         }
@@ -5599,12 +5595,8 @@ class QADaoServices(
                                 if (batchInvoiceDto.isWithHolding == 1L) {
                                     var foundTotalAmount = permitInvoiceFound.totalAmount
                                     foundTotalAmount = foundTotalAmount?.minus(permitInvoiceFound.taxAmount!!)
-
-                                    val taxFoundAmount =
-                                        foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
-
+                                    val taxFoundAmount = foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
                                     foundTotalAmount = taxFoundAmount?.let { foundTotalAmount?.plus(it) }
-
                                     with(permitInvoiceFound) {
                                         totalAmount = foundTotalAmount
                                         taxAmount = taxFoundAmount
@@ -5615,12 +5607,13 @@ class QADaoServices(
                                     permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
                                 }
                                 status = s.activeStatus
-                                description = "${permitInvoiceFound.invoiceRef}"
-                                totalAmount = permitInvoiceFound.totalAmount
-                                totalTaxAmount = permitInvoiceFound.taxAmount
+                                description = "${permitInvoiceFound.invoiceRef},$description"
+                                totalAmount = totalAmount?.plus(permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
+                                totalTaxAmount = totalTaxAmount?.plus(permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
                                 createdBy = commonDaoServices.concatenateName(user)
                                 createdOn = commonDaoServices.getTimestamp()
                             }
+
                             batchInvoicePermit = invoiceQaBatchRepo.save(batchInvoicePermit)
 
                             with(permitInvoiceFound) {
@@ -5636,8 +5629,8 @@ class QADaoServices(
                                 revenueAcc = paymentRevenueCode.revenueCode
                                 revenueAccDesc = paymentRevenueCode.revenueDescription
                                 taxable = 1
-                                totalAmount = invoiceBatchDetails!!.totalAmount
-                                taxAmount = invoiceBatchDetails!!.totalTaxAmount
+                                totalAmount = permitInvoiceFound.totalAmount
+                                taxAmount = permitInvoiceFound.taxAmount
                             }
                             sageValuesDtoList.add(detailBody)
 
@@ -5649,8 +5642,7 @@ class QADaoServices(
                     KotlinLogging.logger { }.info("batch ID = ${invoiceBatchDetails?.id}")
 
                     sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.createdBy}]"
-                    sr.names =
-                        "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}${permitInvoiceFound.taxAmount}"
+                    sr.names = "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}${permitInvoiceFound.taxAmount}"
                     sr.varField1 = invoiceBatchDetails?.id.toString()
 
                     sr.responseStatus = sr.serviceMapsId?.successStatusCode
