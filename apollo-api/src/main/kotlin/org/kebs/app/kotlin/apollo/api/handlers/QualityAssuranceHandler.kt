@@ -2447,9 +2447,6 @@ class QualityAssuranceHandler(
             //Calculate Invoice Details
             val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null)
 
-            if(invoiceCreated.){
-
-            }
             //Update Permit Details
             with(permit) {
                 sendApplication = map.activeStatus
