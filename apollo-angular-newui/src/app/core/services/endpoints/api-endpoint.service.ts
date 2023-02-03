@@ -410,6 +410,7 @@ export class ApiEndpointService {
         IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
         IST_INT_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserTasks`,
         IST_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getAllComments`,
+        IST_COM_STD_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getDraftComments`,
         IST_JUSTIFICATION_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserComments`,
         IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
         IST_APPROVED_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProposals`,
@@ -451,6 +452,7 @@ export class ApiEndpointService {
         IS_UPLOAD_STD_GZT: `${ApiEndpointService.SD_IST_CONTEXT}/gzt-file-upload`,
         IST_VIEW_IS_STANDARD_GZT_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/gazettement`,
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
+        IST_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitDraftComments`,
 
 
         // SD COMPANY STANDARDS

@@ -12,10 +12,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.common.dto.std.ISJustificationDecision
-import org.kebs.app.kotlin.apollo.common.dto.std.InternationalStandardTasks
-import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
@@ -61,6 +58,7 @@ class IntStandardService(
     private val comStdDraftRepository: ComStdDraftRepository,
     private val comStandardDraftUploadsRepository: ComStandardDraftUploadsRepository,
     private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository,
+    private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
 
 
     ) {
@@ -225,6 +223,7 @@ class IntStandardService(
         return isAdoptionProposalRepository.getProposals(proposalId)
     }
 
+    //Submit Adoption Proposal comments
     fun submitDraftComments(comDraftComments: ComDraftComments){
         val variables: MutableMap<String, Any> = HashMap()
         comDraftComments.uploadDate=comDraftComments.uploadDate
@@ -250,7 +249,7 @@ class IntStandardService(
         comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
         comStandardDraftCommentsRepository.save(comDraftComments)
 
-        val commentNumber=comStdDraftRepository.getDraftCommentCount(comDraftComments.draftID)
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(comDraftComments.draftID)
 
 
 
@@ -339,51 +338,112 @@ class IntStandardService(
         return isAdoptionCommentsRepository.findByProposalID(proposalId)
     }
 
-    // Decision on Proposal
     fun decisionOnProposal(
-        iSAdoptionProposal: ISAdoptionProposal,
-        internationalStandardRemarks: InternationalStandardRemarks
-    ) : String {
+        comStdDraft: ComStdDraft,
+        companyStandardRemarks: CompanyStandardRemarks
+    ) : ResponseMsg {
+        var response=""
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        iSAdoptionProposal.accentTo=iSAdoptionProposal.accentTo
-        val decision=iSAdoptionProposal.accentTo
-
+        comStdDraft.accentTo=comStdDraft.accentTo
+        val decision=comStdDraft.accentTo
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(comStdDraft.id)
+        // val countNo=commentNumber.toString()
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
-        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
-        internationalStandardRemarks.role = "TC SEC"
+        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.remarks= companyStandardRemarks.remarks
+        companyStandardRemarks.status = 1.toString()
+        companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        companyStandardRemarks.remarkBy = usersName
+        companyStandardRemarks.role = "TC Secretary"
+        companyStandardRemarks.standardType = "International Standard"
+        val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(5))
+
+        if (commentNumber>0){
+            if (decision == "Yes") {
+                comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+                    with(comStdDraft) {
+                        status = 1
+
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
+                    response="Draft Approved"
+                }?: throw Exception("DRAFT NOT FOUND")
 
 
-        if (decision == "Yes") {
+            } else if (decision == "No") {
+                comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
 
-            isAdoptionProposalRepository.findByIdOrNull(internationalStandardRemarks.proposalId)?.let { iSAdoptionProposal ->
-                with(iSAdoptionProposal) {
-                    status = 1
+                    with(comStdDraft) {
+                        status = 2
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
 
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-            }?: throw Exception("PROPOSAL NOT FOUND")
+                    response="Draft Not Approved"
+                } ?: throw Exception("DRAFT NOT FOUND")
 
-        } else if (decision == "No") {
-            isAdoptionProposalRepository.findByIdOrNull(internationalStandardRemarks.proposalId)?.let { iSAdoptionProposal ->
 
-                with(iSAdoptionProposal) {
-                    status = 4
-                }
-                isAdoptionProposalRepository.save(iSAdoptionProposal)
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-            } ?: throw Exception("PROPOSAL NOT FOUND")
+            }
 
+        }else{
+            response="A Decision cannot be made on the Draft since none of the Stakeholders has commented on it."
         }
 
-        return "Actioned"
+        return ResponseMsg(response)
     }
+
+    fun getDraftComments(requestId: Long): MutableIterable<CompanyStandardRemarks>? {
+        return companyStandardRemarksRepository.findCommentsOnDraft(requestId)
+    }
+
+    // Decision on Proposal
+//    fun decisionOnProposal(
+//        iSAdoptionProposal: ISAdoptionProposal,
+//        internationalStandardRemarks: InternationalStandardRemarks
+//    ) : String {
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        iSAdoptionProposal.accentTo=iSAdoptionProposal.accentTo
+//        val decision=iSAdoptionProposal.accentTo
+//
+//        val fName = loggedInUser.firstName
+//        val sName = loggedInUser.lastName
+//        val usersName = "$fName  $sName"
+//        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
+//        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
+//        internationalStandardRemarks.status = 1.toString()
+//        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+//        internationalStandardRemarks.remarkBy = usersName
+//        internationalStandardRemarks.role = "TC SEC"
+//
+//
+//        if (decision == "Yes") {
+//
+//            isAdoptionProposalRepository.findByIdOrNull(internationalStandardRemarks.proposalId)?.let { iSAdoptionProposal ->
+//                with(iSAdoptionProposal) {
+//                    status = 1
+//
+//                }
+//                isAdoptionProposalRepository.save(iSAdoptionProposal)
+//                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+//            }?: throw Exception("PROPOSAL NOT FOUND")
+//
+//        } else if (decision == "No") {
+//            isAdoptionProposalRepository.findByIdOrNull(internationalStandardRemarks.proposalId)?.let { iSAdoptionProposal ->
+//
+//                with(iSAdoptionProposal) {
+//                    status = 4
+//                }
+//                isAdoptionProposalRepository.save(iSAdoptionProposal)
+//                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+//            } ?: throw Exception("PROPOSAL NOT FOUND")
+//
+//        }
+//
+//        return "Actioned"
+//    }
 
     fun getApprovedProposals(): MutableList<ProposalDetails>{
         return isAdoptionProposalRepository.getApprovedProposals();

@@ -553,7 +553,7 @@ class ComStandardService(
     }
 
     fun getAllComments(requestId: Long): MutableIterable<CompanyStandardRemarks>? {
-        return companyStandardRemarksRepository.findByRequestIdOrderByIdDesc(requestId)
+        return companyStandardRemarksRepository.findCommentsOnDraft(requestId)
     }
 
     //Submit Adoption Proposal comments
@@ -617,6 +617,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Joint Committee"
+        companyStandardRemarks.standardType = "Company Standard"
 
 
         return companyStandardRemarksRepository.save(companyStandardRemarks)
@@ -643,6 +644,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Joint Committee"
+        companyStandardRemarks.standardType = "Company Standard"
         val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(5))
 
         if (commentNumber>0){
@@ -732,6 +734,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Company"
+        companyStandardRemarks.standardType = "Company Standard"
         val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(2))
         val comStandard= getCSNumber()
 
@@ -897,6 +900,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
+        companyStandardRemarks.standardType = "Company Standard"
 
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1071,6 +1075,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
+        companyStandardRemarks.standardType = "Company Standard"
 
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1108,6 +1113,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
+        companyStandardRemarks.standardType = "Company Standard"
 
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1156,6 +1162,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Standard Editor"
+        companyStandardRemarks.standardType = "Company Standard"
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
 
@@ -1194,6 +1201,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Standard Editor"
+        companyStandardRemarks.standardType = "Company Standard"
 
 
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->

@@ -51,6 +51,15 @@ class ComStdDraftDto(
 
 class ResponseMsg (val responseMessage: String) {
 }
+class IntStdDraftDecisionDto(
+    var requestId: Long?=null,
+    var comments: String?=null,
+    var accentTo: String?=null,
+    var proposalId: Long?=null,
+    var draftId: Long?=null
+){
+
+}
 
 class ComStdDraftDecisionDto(
     var title: String?=null,

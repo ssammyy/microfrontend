@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
-    ComJcJustificationDec, CommentOnProposalStakeHolder,
+    ComDraftComment,
+    ComJcJustificationDec, CommentOnProposalStakeHolder, ComStdRemarks,
     GazetteNotice,
-    InternationalStandardsComments,
+    InternationalStandardsComments, InterNationalStdDecision,
     ISAdoptionComments,
     ISAdoptionJustification,
     ISAdoptionProposal, ISCheckRequirements,
@@ -94,6 +95,12 @@ export class StdIntStandardService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSAL);
         const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+    public getDraftComment(requestId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_COM_STD_COMMENTS);
+        const params = new HttpParams().set('requestId', requestId);
+        return this.http.get<ComStdRemarks>(url, {params}).pipe();
     }
 
 
@@ -323,6 +330,20 @@ export class StdIntStandardService {
         );
     }
 
+
+    public submitDraftComments(comDraftComment: ComDraftComment): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENTS);
+        const params = new HttpParams();
+        return this.http.post<ComDraftComment>(url, comDraftComment, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
     public getDraftDocumentList(comStdDraftID: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT_DOCUMENT_LIST);
         const params = new HttpParams().set('comStdDraftID', comStdDraftID);
@@ -363,10 +384,10 @@ export class StdIntStandardService {
     return this.http.get<ISTcSecTASKS[]>(url, {params}).pipe();
   }
 
-  public decisionOnProposal(iSDecision: ISDecision): Observable<any> {
+  public decisionOnProposal(iSDecision: InterNationalStdDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_ON_PROPOSAL);
     const params = new HttpParams();
-    return this.http.post<ProposalComments>(url, iSDecision, {params}).pipe(
+    return this.http.post<InterNationalStdDecision>(url, iSDecision, {params}).pipe(
         map(function (response: any) {
           return response;
         }),

@@ -80,7 +80,9 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
           proposedChange:[],
           observation:[],
           emailOfRespondent:['', Validators.required],
-          phoneOfRespondent:['', Validators.required]
+          phoneOfRespondent:['', Validators.required],
+          draftID: [],
+          requestID:[]
 
       });
 
@@ -208,7 +210,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
         console.log(this.uploadCommentsFormGroup.value);
-        this.stdComStandardService.submitDraftComments(this.uploadCommentsFormGroup.value).subscribe(
+        this.stdIntStandardService.submitDraftComments(this.uploadCommentsFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 this.SpinnerService.hide();

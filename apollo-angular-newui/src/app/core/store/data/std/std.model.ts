@@ -567,6 +567,7 @@ export interface ISAdoptionProposal {
     contactOneEmail: string;
     contactOneFullName: string;
     contactOneTelephone: string;
+    remarks: string;
 }
 
 export interface ISJustificationProposal {
@@ -777,6 +778,12 @@ export interface IStandardDraftEdit {
     proposalId: number;
     docName: string;
     standardNumber: string;
+}
+export interface InterNationalStdDecision{
+    comments:string;
+    accentTo:string;
+    proposalId:number;
+    draftId:number;
 }
 
 export interface ISDecision {

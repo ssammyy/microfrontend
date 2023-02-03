@@ -64,24 +64,64 @@ curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDet
 "HEADER": {
 "loginId": "KEBSUSER",
 "password": "password@1",
-"hash": "afbaea14b4f765f3d47407508a017de8e92a028beb626edac1c3e3d7d5040a1b",
+"hash": "a3ff89d16f63a1529b254ae6bda522274636284d6e37722ab586c132a1af2b44",
 "noOfRecords": "1",
-"transmissionDate": "28-10-2022T10:44:10"
+"transmissionDate": "03-02-2023T15:50:22"
 },
 "PENALTYINFO": [
 {
-"entryNo": "20221028236438",
-"periodTo": "2022-09-30",
-"periodFrom": "2022-09-01",
-"PenaltyOrderNo": 33801,
-"penaltyPayable": 100,
-"kraPin": "A001112210H",
-"penaltyGenDate": "28-10-2022T11:45:25",
-"manufacName": "URBAN SPRINGS WATER POINT"
+"entryNo": "22435",
+"periodTo": "31-12-2022",
+"periodFrom": "01-12-2022",
+"penaltyPayable": "100",
+"kraPin": "P051399927T",
+"penaltyGenDate": "03-02-2023T15:24:04",
+"manufacName": "CABLE CONNECT LIMITED",
+"PenaltyOrderNo": "33864"
 }
 ]
 }
 }'
+
+
+
+curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDetails' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"REQUEST": {
+  "HEADER": {
+  "loginId": "KEBSUSER",
+  "password": "password@1",
+  "hash": "FA925E07A78FDC967F13C274EB62F71E24316F92665DE963DD8E317414DD905A",
+  "noOfRecords": "2",
+  "transmissionDate": "15-02-2020T12:01:01"
+   },
+   "PENALTYINFO": [
+    {
+    "PenaltyOrderNo": "3",
+        "entryNo": "8",
+        "kraPin": "A008087125R",
+        "manufacName": "rAPHCHEM sUPPLIES678",
+        "periodFrom": "01-01-2020",
+        "periodTo": "31-12-2020",
+        "penaltyGenDate": "15-02-2020T12:01:01",
+        "penaltyPayable": "20000"
+       },
+        {
+       "PenaltyOrderNo": "30",
+       "entryNo": "90",
+       "kraPin": "A008087125R",
+       "manufacName": "rAPHCHEM yuiiiii",
+       "periodFrom": "31-01-2020",
+      "periodTo": "01-12-2020",
+       "penaltyGenDate": "15-02-2020T12:01:01",
+       "penaltyPayable": "20000"
+     }
+  ]
+ }
+}'
+
+
 
 
 curl -k --location --request POST 'https://196.61.52.30/KEBS/kebs/sendPenaltyDetails' \

@@ -247,6 +247,38 @@ class IntStandardController(
         return ServerResponse(HttpStatus.OK,"Comment Has been submitted",internationalStandardService.submitAPComments(isAdoptionComments))
     }
 
+    @PostMapping("/anonymous/international_standard/submitDraftComments")
+    fun submitDraftComments(@RequestBody comDraftCommentDto: ComDraftCommentDto
+    ) : ServerResponse
+    {
+
+        val comDraftComments= ComDraftComments().apply {
+            draftComment=comDraftCommentDto.comment
+            commentTitle=comDraftCommentDto.commentTitle
+            commentDocumentType=comDraftCommentDto.commentDocumentType
+            comClause=comDraftCommentDto.clause
+            comParagraph=comDraftCommentDto.paragraph
+            typeOfComment=comDraftCommentDto.typeOfComment
+            proposedChange=comDraftCommentDto.proposedChange
+            requestID=comDraftCommentDto.requestID
+            draftID=comDraftCommentDto.draftID
+            recommendations=comDraftCommentDto.recommendations
+            nameOfRespondent=comDraftCommentDto.nameOfRespondent
+            positionOfRespondent=comDraftCommentDto.positionOfRespondent
+            nameOfOrganization=comDraftCommentDto.nameOfOrganization
+            adoptStandard=comDraftCommentDto.adoptStandard
+            adoptDraft=comDraftCommentDto.adoptDraft
+            reason=comDraftCommentDto.reason
+            uploadDate=comDraftCommentDto.uploadDate
+            emailOfRespondent=comDraftCommentDto.emailOfRespondent
+            phoneOfRespondent=comDraftCommentDto.phoneOfRespondent
+            observation=comDraftCommentDto.observation
+        }
+
+        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComments(comDraftComments))
+
+    }
+
 
     @GetMapping("/international_standard/getAllComment")
     fun getAllComment(@RequestParam("proposalId") proposalId: Long):MutableIterable<ISAdoptionComments>?
@@ -282,22 +314,29 @@ class IntStandardController(
     //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/decisionOnProposal")
-    fun decisionOnProposal(@RequestBody iSDecisions: ISTDecisions
+    fun decisionOnProposal(@RequestBody comStdDraftDecisionDto: IntStdDraftDecisionDto
     ) : ServerResponse
     {
-        val iSAdoptionProposal= ISAdoptionProposal().apply {
-            accentTo=iSDecisions.accentTo
+        val comStdDraft= ComStdDraft().apply {
+            id=comStdDraftDecisionDto.draftId
         }
-        val internationalStandardRemarks= InternationalStandardRemarks().apply {
-            proposalId=iSDecisions.proposalId
-            remarks=iSDecisions.comments
+
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=comStdDraftDecisionDto.proposalId
+            remarks=comStdDraftDecisionDto.comments
         }
 
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDecisions) }
 
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnProposal(iSAdoptionProposal,internationalStandardRemarks))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnProposal(comStdDraft,companyStandardRemarks))
 
+    }
+
+    @GetMapping("/international_standard/getDraftComments")
+    fun getDraftComments(@RequestParam("requestId") requestId: Long):MutableIterable<CompanyStandardRemarks>?
+    {
+        return internationalStandardService.getDraftComments(requestId)
     }
 
     @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
