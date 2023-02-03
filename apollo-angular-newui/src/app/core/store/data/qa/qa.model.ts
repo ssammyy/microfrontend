@@ -133,8 +133,8 @@ export class GenerateInvoiceDto {
     permitInvoicesID: number[];
 }
 export class GenerateInvoiceWithWithholdingDto {
-    batchID: bigint;
-    plantID: bigint;
+    batchID: number;
+    plantID: number;
     permitRefNumber: string;
     permitInvoicesID: number[];
     isWithHolding: number;
