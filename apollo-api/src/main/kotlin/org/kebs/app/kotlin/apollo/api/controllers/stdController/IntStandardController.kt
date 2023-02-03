@@ -319,6 +319,7 @@ class IntStandardController(
     {
         val comStdDraft= ComStdDraft().apply {
             id=comStdDraftDecisionDto.draftId
+            accentTo=comStdDraftDecisionDto.accentTo
         }
 
         val companyStandardRemarks= CompanyStandardRemarks().apply {

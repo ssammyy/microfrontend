@@ -360,6 +360,9 @@ class IntStandardService(
         companyStandardRemarks.standardType = "International Standard"
         val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(5))
 
+//                val gson = Gson()
+//              KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
+
         if (commentNumber>0){
             if (decision == "Yes") {
                 comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
