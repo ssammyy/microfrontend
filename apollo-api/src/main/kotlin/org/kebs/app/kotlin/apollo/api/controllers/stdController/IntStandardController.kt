@@ -29,7 +29,8 @@ class IntStandardController(
     private val isUploadStandardRepository: ISUploadStandardRepository,
     private val sdisGazetteNoticeUploadsRepository: SDISGazetteNoticeUploadsRepository,
     private val isGazetteNoticeRepository: ISGazetteNoticeRepository,
-    private val commonDaoServices: CommonDaoServices
+    private val commonDaoServices: CommonDaoServices,
+    private val comStdDraftRepository: ComStdDraftRepository,
     ) {
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/international_standard/deploy")
@@ -83,6 +84,38 @@ class IntStandardController(
 //        val gson = Gson()
 //        KotlinLogging.logger { }.info { "Request Proposal:" + gson.toJson(iSAdoptionProposalDto) }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal,stakeholders))
+    }
+
+    @PostMapping("/international_standard/draft-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadDraftFiles(
+        @RequestParam("comStdDraftID") comStdDraftID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val comDraft = comStdDraftRepository.findByIdOrNull(comStdDraftID)?: throw Exception("DRAFT DOCUMENT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = ComStandardDraftUploads()
+            with(upload) {
+                comDraftDocumentId = comDraft.id
+
+            }
+            internationalStandardService.uploadDrFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "INTERNATIONAL STANDARD DRAFT"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
     }
 
     @PostMapping("/international_standard/file-upload")

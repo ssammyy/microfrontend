@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs";
-import {ISAdoptionProposal, ProposalComments} from "../../../../core/store/data/std/std.model";
+import {DocView, ISAdoptionProposal, ProposalComments} from "../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DataTableDirective} from "angular-datatables";
 import {Store} from "@ngrx/store";
@@ -10,6 +10,8 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {ActivatedRoute} from "@angular/router";
 import {selectUserInfo} from "../../../../core/store";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 
 declare const $: any;
 
@@ -34,11 +36,14 @@ export class IntStdProposalCommentsComponent implements OnInit {
   isDtInitialized: boolean = false
   public actionRequest: ISAdoptionProposal | undefined;
   proposalId: string;
+  documentDTOs: DocumentDTO[] = [];
+  docDetails: DocView[] = [];
 
   constructor(
       private store$: Store<any>,
       private formBuilder: FormBuilder,
       private stdIntStandardService: StdIntStandardService,
+      private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService: NotificationService,
       private activatedRoute: ActivatedRoute,
@@ -56,24 +61,27 @@ export class IntStdProposalCommentsComponent implements OnInit {
     //console.log(this.proposalId);
 
     this.uploadCommentsFormGroup = this.formBuilder.group({
-      commentTitle: [],
+        commentTitle:[],
+        commentDocumentType:[],
+        uploadDate:[],
+        nameOfRespondent:[],
+        emailOfRespondent:[],
+        phoneOfRespondent:[],
+        nameOfOrganization:[],
+        clause:[],
+        paragraph:[],
+        typeOfComment:[],
+        comment:[],
+        proposedChange:[],
+        observation:[],
+        requestID:[],
+        draftID:[],
       scope: [],
-      clause: [],
       proposalID: [],
       standardNumber: [],
-      commentDocumentType: [],
       recommendations: [],
-      nameOfRespondent: [],
       positionOfRespondent: [],
-      nameOfOrganization: [],
-      preparedDate: [],
-      paragraph: [],
-      typeOfComment: [],
-      comment: [],
-      proposedChange: [],
-      observation: [],
-      emailOfRespondent: ['', Validators.required],
-      phoneOfRespondent: ['', Validators.required]
+      preparedDate: []
     });
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
@@ -128,7 +136,31 @@ export class IntStdProposalCommentsComponent implements OnInit {
         }
     );
   }
-  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string): void{
+
+  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.stdIntStandardService.viewProposalPDF(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error opening document`);
+          alert(error.message);
+        }
+    );
+  }
+
+  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -137,18 +169,31 @@ export class IntStdProposalCommentsComponent implements OnInit {
     if (mode==='comment'){
       this.actionRequest=isAdoptionProposal;
       button.setAttribute('data-target','#commentModal');
+      this.stdIntStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+          (response: DocumentDTO[]) => {
+            this.documentDTOs = response;
+            this.SpinnerService.hide();
+            //console.log(this.documentDTOs)
+          },
+          (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
+            //console.log(error.message);
+          }
+      );
       this.uploadCommentsFormGroup.patchValue(
           {
-            commentTitle: this.actionRequest.title,
+              commentTitle: this.actionRequest.title,
+              requestID: this.actionRequest.id,
+              draftID: this.actionRequest.draftId,
+              commentDocumentType: this.actionRequest.docName,
+              uploadDate: this.actionRequest.preparedDate,
+              nameOfRespondent:this.fullname,
+              emailOfRespondent:this.email,
+              nameOfOrganization:this.organization,
             scope: this.actionRequest.scope,
             clause: this.actionRequest.clause,
-            proposalID: this.actionRequest.id,
             standardNumber: this.actionRequest.standardNumber,
-            commentDocumentType: this.actionRequest.docName,
-            preparedDate:this.actionRequest.preparedDate,
-            nameOfRespondent:this.fullname,
-            emailOfRespondent:this.email,
-            nameOfOrganization:this.organization
+            preparedDate:this.actionRequest.preparedDate
 
           }
       );
@@ -159,25 +204,27 @@ export class IntStdProposalCommentsComponent implements OnInit {
 
   }
 
-  onSubmit(): void {
-    this.loadingText = "Saving...";
-    this.SpinnerService.show();
-    console.log(this.uploadCommentsFormGroup.value);
-    this.stdIntStandardService.submitProposalComments(this.uploadCommentsFormGroup.value).subscribe(
-        (response ) => {
-          console.log(response);
-          this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
-          this.getSessionProposals(this.proposalId);
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Try Again`);
-          console.log(error.message);
-        }
-    );
-    this.hideModalComment();
-  }
+    onSubmit(): void {
+        this.loadingText = "Saving...";
+        this.SpinnerService.show();
+        console.log(this.uploadCommentsFormGroup.value);
+        this.stdComStandardService.submitDraftComment(this.uploadCommentsFormGroup.value).subscribe(
+            (response ) => {
+                console.log(response);
+                this.SpinnerService.hide();
+                this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
+                this.getSessionProposals(this.proposalId);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModalComment();
+    }
+
+
 
   @ViewChild('closeModalComment') private closeModalComment: ElementRef | undefined;
 

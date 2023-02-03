@@ -474,6 +474,7 @@ class ComStandardService(
         cs.contactThreeFullName = comStdDraft.contactThreeFullName
         cs.contactThreeTelephone = comStdDraft.contactThreeTelephone
         cs.contactThreeEmail = comStdDraft.contactThreeEmail
+        cs.standardType="Company Standard"
 
         val draftId=comStdDraftRepository.save(cs)
 

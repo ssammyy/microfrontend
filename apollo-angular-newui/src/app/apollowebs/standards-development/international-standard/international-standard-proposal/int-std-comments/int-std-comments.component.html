@@ -48,7 +48,7 @@
                                         <td>{{isAdoptionProposal.closingDate}}</td>
                                         <td>{{isAdoptionProposal.deadlineDate | date: 'yyyy-MM-dd'}}</td>
                                         <td>{{isAdoptionProposal.noOfComments}}</td>
-                                        <td><a  (click)="onOpenModal(isAdoptionProposal,'comment')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve"> Make Comment</a></td>
+                                        <td><a  (click)="onOpenModal(isAdoptionProposal,'comment',isAdoptionProposal.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve"> Make Comment</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -68,12 +68,30 @@
                                                     </h4>
                                                     <div class="row col-12">
                                                         <div class="form-group col-12">
-                                                        <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input" value="{{actionRequest?.standardNumber}}" name="standardNumber" formControlName="standardNumber"
-                                                                  placeholder="Standard Number" type="text" disabled></textarea>
+                                                            <label>International Standard Drafts</label>
+                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
+                                                                    <div>
+                                                                        <div class="d-flex w-100 align-items-center" >
+                                                                            <h3 class="mb-1" style="color: #0d0505"><b>International Standard Draft Version- {{d+1}} </b></h3>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                                            (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
+                                                                        <i class="fa fa-download"></i> Download Standard Draft</button>
 
-                                                    </div>
+                                                                </div>
+
+
+                                                            </a>
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                      class="form-control one-column-input" value="{{actionRequest?.standardNumber}}" name="standardNumber" formControlName="standardNumber"
+                                                                      placeholder="Standard Number" type="text" disabled></textarea>
+
+                                                        </div>
                                                         <div class="form-group col-12">
                                                             <label><b>Title</b></label>
                                                             <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -98,28 +116,30 @@
                                                             <label><b>Name of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                             <input
                                                                     aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                    class="form-control one-column-input" formControlName="nameOfRespondent" name="nameOfRespondent"
+                                                                    class="form-control one-column-input"  formControlName="nameOfRespondent" name="nameOfRespondent"
                                                                     placeholder="" type="text" >
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label><b>Email of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                            <input  [class.is-invalid]="formUploadComment.emailOfRespondent.invalid && formUploadComment.emailOfRespondent.touched"
+                                                            <input
                                                                     aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                    class="form-control one-column-input" formControlName="emailOfRespondent" name="emailOfRespondent"
+                                                                    class="form-control one-column-input"  formControlName="emailOfRespondent" name="emailOfRespondent"
                                                                     placeholder="" type="text" >
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label><b>Phone Number of Recipient/Respondent</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                            <input [class.is-invalid]="formUploadComment.phoneOfRespondent.invalid && formUploadComment.phoneOfRespondent.touched"
+                                                            <input
                                                                     aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                    class="form-control one-column-input" formControlName="phoneOfRespondent" name="phoneOfRespondent"
+                                                                    class="form-control one-column-input"  formControlName="phoneOfRespondent" name="phoneOfRespondent"
                                                                     placeholder="" type="text" >
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label><b>Organization</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                      class="form-control one-column-input"  name="nameOfOrganization" formControlName="nameOfOrganization"
-                                                                      placeholder="Name of Organization" type="text" ></textarea>
+                                                            <input
+                                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                    class="form-control one-column-input"   formControlName="nameOfOrganization" name="nameOfOrganization"
+                                                                    placeholder="" type="text" >
+
 
                                                         </div>
                                                         <div class="form-group col-12">
@@ -138,9 +158,16 @@
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label><b>Type of Comment</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                      class="form-control one-column-input"  name="typeOfComment" formControlName="typeOfComment"
-                                                                      placeholder="Type of Comment" type="text" ></textarea>
+                                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                    class="form-control" required
+                                                                    formControlName="typeOfComment"
+                                                                    name="typeOfComment"
+                                                            >
+                                                                <option disabled>--Select Option--</option>
+                                                                <option  value="Technical">Technical</option>
+                                                                <option value="Editorial">Editorial</option>
+                                                                <option value="General">General</option>
+                                                            </select>
 
                                                         </div>
                                                         <div class="form-group col-12">
@@ -170,7 +197,8 @@
                                                     </div>
                                                 </div>
 
-                                                <input type="hidden" formControlName="proposalID" value="{{actionRequest?.id}}" name="proposalID" >
+                                                <input type="hidden" formControlName="requestID" value="{{actionRequest?.id}}" name="requestID" >
+                                                <input type="hidden" formControlName="draftID" value="{{actionRequest?.draftId}}" name="draftID" >
                                                 <div >
                                                     <button type="button" class="btn btn-default btn-sm float-left" data-dismiss="modal">Close</button>
                                                     <button  *ngIf="uploadCommentsFormGroup.valid" [disabled]="!uploadCommentsFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>

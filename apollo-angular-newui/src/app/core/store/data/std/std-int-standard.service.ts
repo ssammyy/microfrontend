@@ -25,7 +25,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import {DefaulterDetails, SiteVisitRemarks} from "../levy/levy.model";
+import {DefaulterDetails, DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +53,26 @@ export class StdIntStandardService {
         })
     );
   }
+
+    //upload Draft Document
+    public uploadPDFileDetails(comStdDraftID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_PD);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'comStdDraftID': comStdDraftID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public uploadFileDetails(isProposalID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DOCUMENT);
 
@@ -285,6 +305,28 @@ export class StdIntStandardService {
                 return throwError(fault);
             })
         );
+    }
+
+    public viewCompanyDraft(comStdDraftID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_DATA_VIEW_PD);
+        const params = new HttpParams()
+            .set('comStdDraftID', comStdDraftID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getDraftDocumentList(comStdDraftID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT_DOCUMENT_LIST);
+        const params = new HttpParams().set('comStdDraftID', comStdDraftID);
+        return this.http.get<DocumentDTO[]>(url, {params}).pipe();
     }
 
 

@@ -145,9 +145,16 @@
                                                     </div>
                                                     <div class="form-group col-12">
                                                         <label><b>Type of Comment</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input"  name="typeOfComment" formControlName="typeOfComment"
-                                                                  placeholder="Type of Comment" type="text" ></textarea>
+                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                class="form-control" required
+                                                                formControlName="typeOfComment"
+                                                                name="typeOfComment"
+                                                        >
+                                                            <option disabled>--Select Option--</option>
+                                                            <option  value="Technical">Technical</option>
+                                                            <option value="Editorial">Editorial</option>
+                                                            <option value="General">General</option>
+                                                        </select>
 
                                                     </div>
                                                     <div class="form-group col-12">

@@ -560,6 +560,13 @@ export interface ISAdoptionProposal {
     deadlineDate: Timestamp<any>;
     noOfComments: number;
     preparedDate: Timestamp<any>;
+    draftId: number;
+    draftNumber: string;
+    draftTitle: string;
+    companyName: string;
+    contactOneEmail: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
 }
 
 export interface ISJustificationProposal {

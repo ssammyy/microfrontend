@@ -58,6 +58,9 @@ class IntStandardService(
     private val nwaWorkshopDraftRepository: NwaWorkShopDraftRepository,
     private val standardRepository: StandardRepository,
     private val userListRepository: UserListRepository,
+    private val comStdDraftRepository: ComStdDraftRepository,
+    private val comStandardDraftUploadsRepository: ComStandardDraftUploadsRepository,
+    private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository,
 
 
     ) {
@@ -89,10 +92,11 @@ class IntStandardService(
 
 
     //prepare Adoption Proposal
-    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal, stakeholders: MutableList<NamesList>?) : ISAdoptionProposal
+    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal, stakeholders: MutableList<NamesList>?) : ComStdDraft
     {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
+        val datePrepared=commonDaoServices.getTimestamp()
         iSAdoptionProposal.proposal_doc_name=iSAdoptionProposal.proposal_doc_name
         iSAdoptionProposal.circulationDate=iSAdoptionProposal.circulationDate
         iSAdoptionProposal.closingDate=iSAdoptionProposal.circulationDate
@@ -102,15 +106,33 @@ class IntStandardService(
         iSAdoptionProposal.iStandardNumber=iSAdoptionProposal.iStandardNumber
 
         iSAdoptionProposal.uploadedBy=iSAdoptionProposal.uploadedBy
-        iSAdoptionProposal.preparedDate = commonDaoServices.getTimestamp()
+        iSAdoptionProposal.preparedDate = datePrepared
         iSAdoptionProposal.status = 0
         iSAdoptionProposal.proposalNumber = getPRNumber()
-        val deadline: Timestamp = Timestamp.valueOf(iSAdoptionProposal.preparedDate!!.toLocalDateTime().plusDays(30))
+        val deadline: Timestamp = Timestamp.valueOf(datePrepared.toLocalDateTime().plusDays(30))
         iSAdoptionProposal.deadlineDate=deadline
 
         val proposal =isAdoptionProposalRepository.save(iSAdoptionProposal)
 
         val proposalId=proposal.id
+
+        val cs = ComStdDraft()
+        cs.draftNumber = getDRNumber()
+        cs.title= iSAdoptionProposal.title
+        cs.deadlineDate=deadline
+        cs.proposalId=proposalId
+        cs.comStdNumber=iSAdoptionProposal.iStandardNumber
+        cs.scope=iSAdoptionProposal.scope
+        cs.companyName="KEBS"
+        cs.contactOneEmail=loggedInUser.email
+        cs.contactOneFullName=loggedInUser.firstName + loggedInUser.lastName
+        cs.contactOneTelephone=loggedInUser.cellphone
+        cs.status = 0
+        cs.uploadDate=datePrepared
+        cs.standardType="International Standard"
+
+
+        val draftId=comStdDraftRepository.save(cs)
 
         //iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
         iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
@@ -118,7 +140,7 @@ class IntStandardService(
         //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-        val targetUrl = "https://kimsint.kebs.org/isPropComments/$proposalId";
+        val targetUrl = "https://kimsint.kebs.org/isPropComments/$draftId";
         stakeholders?.forEach { s ->
             val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
             val recipient = s.email
@@ -129,7 +151,7 @@ class IntStandardService(
             }
         }
 
-        val targetUrl2 = "https://kimsint.kebs.org/isProposalComments/$proposalId";
+        val targetUrl2 = "https://kimsint.kebs.org/isProposalComments/$draftId";
         if (listTwo != null) {
             for (recipient in listTwo) {
                 val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
@@ -139,8 +161,34 @@ class IntStandardService(
             }
         }
 
-     return proposal
+     return draftId
 
+    }
+
+    // Upload International Draft
+    fun uploadDrFile(
+        uploads: ComStandardDraftUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): ComStandardDraftUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = docFile.contentType
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return comStandardDraftUploadsRepository.save(uploads)
     }
 
 
@@ -175,6 +223,47 @@ class IntStandardService(
 
     fun getProposals(proposalId: Long): MutableList<ProposalDetails> {
         return isAdoptionProposalRepository.getProposals(proposalId)
+    }
+
+    fun submitDraftComments(comDraftComments: ComDraftComments){
+        val variables: MutableMap<String, Any> = HashMap()
+        comDraftComments.uploadDate=comDraftComments.uploadDate
+        comDraftComments.emailOfRespondent=comDraftComments.emailOfRespondent
+        comDraftComments.phoneOfRespondent=comDraftComments.phoneOfRespondent
+        comDraftComments.observation=comDraftComments.observation
+        comDraftComments.draftComment=comDraftComments.draftComment
+        comDraftComments.commentTitle=comDraftComments.commentTitle
+        comDraftComments.commentDocumentType=comDraftComments.commentDocumentType
+        comDraftComments.comClause=comDraftComments.comClause
+        comDraftComments.comParagraph=comDraftComments.comParagraph
+        comDraftComments.typeOfComment=comDraftComments.typeOfComment
+        comDraftComments.proposedChange=comDraftComments.proposedChange
+        comDraftComments.requestID=comDraftComments.requestID
+        comDraftComments.draftID=comDraftComments.draftID
+        comDraftComments.recommendations=comDraftComments.recommendations
+        comDraftComments.nameOfRespondent=comDraftComments.nameOfRespondent
+        comDraftComments.positionOfRespondent=comDraftComments.positionOfRespondent
+        comDraftComments.nameOfOrganization=comDraftComments.nameOfOrganization
+        comDraftComments.adoptStandard=comDraftComments.adoptStandard
+        comDraftComments.adoptDraft=comDraftComments.adoptDraft
+        comDraftComments.reason=comDraftComments.reason
+        comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
+        comStandardDraftCommentsRepository.save(comDraftComments)
+
+        val commentNumber=comStdDraftRepository.getDraftCommentCount(comDraftComments.draftID)
+
+
+
+        comStdDraftRepository.findByIdOrNull(comDraftComments.draftID)?.let { comStdDraft ->
+            with(comStdDraft) {
+                commentCount= commentNumber+1
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("REQUEST NOT FOUND")
+
+
+        println("Comment Submitted")
     }
 
 
@@ -1271,6 +1360,32 @@ class IntStandardService(
         val year = Calendar.getInstance()[Calendar.YEAR]
 
         return "$startId/$finalValue:$year"
+    }
+
+    fun getDRNumber(): String {
+        var allRequests = comStdDraftRepository.getMaxDraftId()
+
+        var lastId: String? = "0"
+//        var finalValue = 1
+        var startId = "DRAFT"
+
+        //allRequests = allRequests+1
+
+        val c = allRequests
+        val d = c.toInt()
+        val x = 1
+        val z = x  + d
+
+        val finalValue = z.toString()
+
+//        println("Sum of x+y = $finalValue")
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+        val month = Calendar.getInstance().get(Calendar.MONTH)+1
+
+        return "$startId/$finalValue/$month:$year"
+
+
     }
 
     fun getISNumber(): String
