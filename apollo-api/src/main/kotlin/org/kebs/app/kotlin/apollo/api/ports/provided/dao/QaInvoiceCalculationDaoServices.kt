@@ -60,6 +60,10 @@ class QaInvoiceCalculationDaoServices(
 
         KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 
+        if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId== selectedRate.id && plantDetail.inspectionFeeStatus!=1){
+            throw Exception("Kindly Pay the Inspection fees First before submitting current application")
+        }
+
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
 
         when {
@@ -536,8 +540,8 @@ class QaInvoiceCalculationDaoServices(
                 }
 
                 qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
-            }
-            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
+
+            }commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
                 throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
             }
             else -> {
