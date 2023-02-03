@@ -5,6 +5,7 @@ import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.time.LocalDateTime
 
 
 data class ST10Dto(
@@ -414,7 +415,7 @@ data class PermitEntityDto(
     var dateOfExpiry: Date? = null,
     var permitStatus: String? = null,
     var userId: Long? = null,
-    var createdOn: Timestamp? = null,
+    var createdOn: LocalDateTime? = null,
     var county: String? = null,
     var town: String? = null,
     var region: String? = null,
@@ -443,7 +444,7 @@ data class ReportPermitEntityDto(
     var dateOfExpiry: Date? = null,
     var permitStatus: String? = null,
     var userId: Long? = null,
-    var createdOn: Timestamp? = null,
+    var createdOn: LocalDateTime? = null,
     var county: String? = null,
     var town: String? = null,
     var region: String? = null,
@@ -491,7 +492,7 @@ data class PermitDetailsDto(
     var faxNo: String? = null,
     var plotNo: String? = null,
     var email: String? = null,
-    var createdOn: Timestamp? = null,
+    var createdOn: LocalDateTime? = null,
     var dateOfIssue: Date? = null,
     var dateOfExpiry: Date? = null,
     var effectiveDate: Date? = null,
@@ -650,7 +651,7 @@ data class InspectionReportDto
     var varField9: String? = null,
     var varField10: String? = null,
     var createdBy: String? = null,
-    var createdOn: Timestamp? = null,
+    var createdOn: LocalDateTime? = null,
     var modifiedBy: String? = null,
     var modifiedOn: Timestamp? = null,
     var deleteBy: String? = null,

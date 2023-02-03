@@ -2492,7 +2492,7 @@ class QADaoServices(
                 p.dateOfExpiry,
                 p.permitStatus?.let { findPermitStatus(it).processStatusName },
                 p.userId,
-                p.createdOn,
+                p.createdOn!!.toLocalDateTime(),
                 p.attachedPlantId?.let {
                     commonDaoServices.findCountiesEntityByCountyId(
                         findPlantDetailsB(it)?.county ?: -1L, map.activeStatus
@@ -2563,7 +2563,7 @@ class QADaoServices(
                 i.varField9,
                 i.varField10,
                 i.createdBy,
-                i.createdOn,
+                i.createdOn!!.toLocalDateTime(),
                 i.modifiedBy,
                 i.modifiedOn,
                 i.deleteBy,
@@ -2870,7 +2870,7 @@ class QADaoServices(
             faxNo = plantAttached?.faxNo
             plotNo = plantAttached?.plotNo
             email = plantAttached?.emailAddress
-            createdOn = permit.createdOn
+            createdOn = permit.createdOn!!.toLocalDateTime()
             dateOfIssue = permit.dateOfIssue
             dateOfExpiry = permit.dateOfExpiry
             effectiveDate = permit.effectiveDate
@@ -7378,7 +7378,7 @@ class QADaoServices(
                 p.dateOfExpiry,
                 p.permitStatus?.let { findPermitStatus(it).processStatusName },
                 p.userId,
-                p.createdOn,
+                p.createdOn!!.toLocalDateTime(),
                 p.attachedPlantId?.let {
                     commonDaoServices.findCountiesEntityByCountyId(
                         findPlantDetails(it).county ?: -1L, map.activeStatus
