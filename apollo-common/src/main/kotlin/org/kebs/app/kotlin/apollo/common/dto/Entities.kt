@@ -577,6 +577,8 @@ data class CompanyTurnOverUpdateDto(
     var companyProfileID: Long,
     @NotEmpty(message = "is mandatory")
     var selectedFirmTypeID: Long,
+    @NotEmpty(message = "is mandatory")
+    var upgradeType: Long,
 
 )
 
@@ -971,6 +973,7 @@ class PlantEntityDto {
     var invoiceSharedId: Long? = null
     var tokenGiven: String? = null
     var invoiceBatchID: Long? = null
+    var uploadedPdfID: Long? = null
 }
 
 class ProfileDirectorsEntityDto {

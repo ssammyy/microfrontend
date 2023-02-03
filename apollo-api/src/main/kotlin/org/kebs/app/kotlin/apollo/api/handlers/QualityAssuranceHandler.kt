@@ -2169,7 +2169,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             when {
                 errors.allErrors.isEmpty() -> {
-                    qaDaoServices.updateDownGradeCompanyTurnOverDetails(body, loggedInUser, map)
+                    qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 
@@ -2428,13 +2428,8 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            var permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
-            val permitType = qaDaoServices.findPermitType(
-                permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found")
-            )
+            var permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found"))
 
             // Create FMARK From SMark
             if (permit.fmarkGenerateStatus == 1) {

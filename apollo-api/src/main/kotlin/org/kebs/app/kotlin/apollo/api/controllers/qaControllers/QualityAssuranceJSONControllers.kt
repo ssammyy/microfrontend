@@ -1,21 +1,34 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
+import kotlinx.coroutines.runBlocking
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
+import org.kebs.app.kotlin.apollo.common.dto.ms.WorkPlanInspectionDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
+import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
+import org.kebs.app.kotlin.apollo.store.repo.IManufacturePlantDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.UserSignatureRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitRatingRepository
 import org.springframework.core.io.ResourceLoader
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerResponse
 import java.io.ByteArrayInputStream
+import java.math.BigDecimal
 import javax.servlet.http.HttpServletResponse
 
 
@@ -24,6 +37,9 @@ import javax.servlet.http.HttpServletResponse
 class QualityAssuranceJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
     private val qaDaoServices: QADaoServices,
+    private val iPermitRatingRepo: IPermitRatingRepository,
+    private val companyProfileRepo: ICompanyProfileRepository,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val reportsDaoService: ReportsDaoService,
     private val resourceLoader: ResourceLoader,
     private val notifications: Notifications,
@@ -43,6 +59,68 @@ class QualityAssuranceJSONControllers(
     private val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
     val fMarkImageFile = fMarkImageResource.file.toString()
 
+
+    @PostMapping("/upload/inspection-invoice")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateWorkPlanDestructionReportUpload(
+        @RequestParam("branchID") branchID: Long,
+        @RequestParam("docFile") docFile: MultipartFile,
+        model: Model
+    ): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val branchDetails =qaDaoServices.findPlantDetails(branchID)
+        val upload = QaUploadsEntity()
+        with(upload) {
+            versionNumber = 1
+            sta3Status = 0
+            ordinaryStatus = 0
+        }
+
+        val fileDoc = qaDaoServices.uploadQaFile(
+            upload,
+            docFile,
+            "INSPECTION_INVOICE_PAID",
+            "NOT_PERMIT_DETAILS",
+            loggedInUser
+        )
+
+        companyProfileRepo.findByIdOrNull(branchDetails.companyProfileId)
+            ?.let {manufacture->
+                val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
+                val selectedRate = ratesMap.firstOrNull { manufacture.yearlyTurnover!! > (it.min ?: BigDecimal.ZERO) && manufacture.yearlyTurnover!! <= (it.max ?: throw NullValueNotAllowedException("Max needs to be defined")) } ?: throw NullValueNotAllowedException("Rate not found")
+                with(branchDetails){
+                    varField9 = fileDoc.id.toString()
+                    inspectionFeeStatus = 1
+                    paidDate = commonDaoServices.getCurrentDate()
+                    endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+                }
+                manufacturePlantRepository.save(branchDetails)
+                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")
+            }?: throw NullValueNotAllowedException("No Company Record not found")
+
+    }
+
+    @GetMapping("/view/inspection-invoice")
+    fun viewPDFFileLabResultsDocument(
+        response: HttpServletResponse,
+        @RequestParam("fileID") fileID: Long
+    ) {
+        val fileUploaded = qaDaoServices.findUploadedFileBYId(fileID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
 
     @GetMapping("/view/attached")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

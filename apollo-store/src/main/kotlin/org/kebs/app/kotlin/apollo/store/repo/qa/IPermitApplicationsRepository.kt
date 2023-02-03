@@ -683,7 +683,8 @@ interface IQaRemarksEntityRepository : HazelcastRepository<QaRemarksEntity, Long
 
 @Repository
 interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMasterDetailsEntity, Long> {
-    fun findByPermitId(permitId: Long): QaInvoiceMasterDetailsEntity?
+    fun findByPermitIdAndVarField10IsNull(permitId: Long): QaInvoiceMasterDetailsEntity?
+    fun findByPermitIdAndVarField10(permitId: Long,varField10: String): QaInvoiceMasterDetailsEntity?
     fun findAllByBatchInvoiceNo(
         batchInvoiceNo: Long
     ): List<QaInvoiceMasterDetailsEntity>?

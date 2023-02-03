@@ -354,7 +354,7 @@ class QADaoServices(
 
     }
 
-    fun updateDownGradeCompanyTurnOverDetails(
+    fun updateCompanyTurnOverDetails(
         dto: CompanyTurnOverUpdateDto,
         user: UsersEntity,
         map: ServiceMapsEntity,
@@ -362,7 +362,7 @@ class QADaoServices(
 
         companyProfileRepo.findByIdOrNull(dto.companyProfileID)
             ?.let { entity ->
-                if(entity.updateFirmType==dto.selectedFirmTypeID){
+//                if(entity.updateFirmType==dto.selectedFirmTypeID){
                     entity.apply {
                         val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
                         updateDetailsStatus = null
@@ -380,14 +380,25 @@ class QADaoServices(
                     if(entity.upgradeType==1){
                         val allPlantDetails = findAllPlantDetailsWithCompanyID(entity.id?:throw ExpectedDataNotFound("Missing Company ID"))
                         val allPermitDetailsNotPaid = permitRepo.findByPermitTypeAndPaidStatusAndCompanyIdAndInvoiceGeneratedAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(applicationMapProperties.mapQAPermitTypeIdSmark,map.initStatus, entity.id!!,map.activeStatus)
-                        allPermitDetailsNotPaid?.forEach { permits->
+                        allPermitDetailsNotPaid?.forEach { permit->
+                            //Calculate Invoice Details
+                            val invoiceCreated = permitInvoiceCalculationSmartFirmUpGrade(map, user, permit, null).second
 
+                            //Update Permit Details
+                            with(permit) {
+                                paidStatus = 0
+                                sendApplication = map.activeStatus
+                                endOfProductionStatus = map.inactiveStatus
+                                invoiceGenerated = map.activeStatus
+                                varField10 = map.activeStatus.toString()
+                                permitStatus = applicationMapProperties.mapQaStatusPPayment
+                            }
+                            permitUpdateDetails(permit, map, user).second
                         }
+
                     }
 
                     val companyProfileEntity = companyProfileRepo.save(entity)
-
-
 
                     return UserCompanyEntityDto(
                         companyProfileEntity.name,
@@ -420,11 +431,12 @@ class QADaoServices(
 
                         status = companyProfileEntity.status
                     }
-                }else {
-                    val selectedFirmType = findFirmTypeById(dto.selectedFirmTypeID)
-                    val requiredFirmType = entity.updateFirmType?.let { findFirmTypeById(it) }
-                     throw NullValueNotAllowedException("Your are Upgrading/downgrading to ${selectedFirmType.firmType}, While request was to upgrade/downgrade to ${requiredFirmType?.firmType}")
-                }
+//                }
+//        else {
+//                    val selectedFirmType = findFirmTypeById(dto.selectedFirmTypeID)
+//                    val requiredFirmType = entity.updateFirmType?.let { findFirmTypeById(it) }
+//                     throw NullValueNotAllowedException("Your are Upgrading/downgrading to ${selectedFirmType.firmType}, While request was to upgrade/downgrade to ${requiredFirmType?.firmType}")
+//                }
 
             } ?: throw NullValueNotAllowedException("Record not found")
     }
@@ -2099,7 +2111,7 @@ class QADaoServices(
     fun findPermitInvoiceByPermitID(
         permitID: Long
     ): QaInvoiceMasterDetailsEntity {
-        invoiceMasterDetailsRepo.findByPermitId(permitID)?.let {
+        invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permitID)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
@@ -5941,6 +5953,79 @@ class QADaoServices(
         return Pair(sr, invoiceGenerated)
     }
 
+    fun permitInvoiceCalculationSmartFirmUpGrade(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        permit: PermitApplicationsEntity,
+        invoiceDetails: QaInvoiceDetailsEntity?,
+    ): Pair<ServiceRequestsEntity, QaInvoiceMasterDetailsEntity?> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
+        try {
+
+            val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+            val companyDetails = commonDaoServices.findCompanyProfileWithID(userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS"))
+            val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+            when {
+                plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null && plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
+                    throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+                }
+                commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
+                    KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
+                    val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
+                    //Todo ask ken why list coming back does not have the product that is being generated for.
+                    val productsManufacture = findAllProductManufactureInPlantWithPlantID(
+                        s.activeStatus,
+                        s.activeStatus,
+                        s.inactiveStatus,
+                        permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
+                        plantDetail.id
+                    )
+
+                    KotlinLogging.logger { }.info { "PRODUCT SIZE BEFORE ADDING ONE = ${productsManufacture.size}" }
+        //            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
+                    when (permitType.id) {
+                        applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                            invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMarkAfterFirmUpgrade(
+                                permit,
+                                user,
+                                manufactureTurnOver,
+                                productsManufacture.size.toLong(),
+                                plantDetail
+                            )
+                        }
+                    }
+                }
+                commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
+                    throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+                }
+            }
+
+            sr.payload = "User[id= ${companyDetails.userId}]"
+            sr.names = "${companyDetails.name} ${companyDetails.kraPin}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, invoiceGenerated)
+    }
+
     fun permitInvoiceSTKPush(
         s: ServiceMapsEntity,
         user: UsersEntity,
@@ -7318,7 +7403,7 @@ class QADaoServices(
                         it
                     )
                 }?.firmCategory?.let { findFirmTypeById(it).firmType },
-                p.id?.let { invoiceMasterDetailsRepo.findByPermitId(it)?.totalAmount },
+                p.id?.let { invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(it)?.totalAmount },
                 standardNumber = p.productStandard?.let { findStandardsByID(it).standardNumber },
                 standardTitle = p.productStandard?.let { findStandardsByID(it).standardTitle },
                 physicalAddress = p.attachedPlantId?.let { findPlantDetails(it) }?.physicalAddress,

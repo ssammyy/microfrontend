@@ -139,6 +139,47 @@ export class QaService {
         });
     }
 
+    public loadInspectionFeesUploadDetailsPDF(fileID: string): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.VIEW_PDF_INSPECTION_FEES_INVOICE);
+        const params = new HttpParams()
+            .set('fileID', fileID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+    public saveUploadFile(data: FormData): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.COMPANY_PROFILE_ENDPOINT.UPLOAD_INSPECTION_FEES_INVOICE,
+        );
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
     // tslint:disable-next-line:max-line-length
     public qaUpdateFirmType(data: CompanyTurnOverUpdateDto): Observable<any> {
         console.log(data);
@@ -1272,6 +1313,7 @@ export class QaService {
         );
     }
 
+    // tslint:disable-next-line:max-line-length
     public updateManufacturingProcessDetailsSta10(qaSta10ID: string, data: STA10ManufacturingProcessDto[]): Observable<STA10ManufacturingProcessDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS);
         const params = new HttpParams()

@@ -330,6 +330,7 @@ class InvoiceDaoService(
                                             paidDate = commonDaoServices.getCurrentDate()
                                             endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
                                         }
+                                         manufacturePlantRepository.save(plantDetails)
                                 }
                         }
                     }
