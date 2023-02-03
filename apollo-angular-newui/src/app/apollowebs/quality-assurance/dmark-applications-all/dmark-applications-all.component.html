@@ -60,7 +60,7 @@
                                             <td>{{allPermitDat.dateOfExpiry}}</td>
                                             <td>{{allPermitDat.permitStatus}}</td>
                                             <td *ngIf="1!=allPermitDat.processStatusID" class="text-right">
-                                                <a href="/permitdetails##{{allPermitDat.id}}"><i
+                                                <a href="/permitdetails#{{allPermitDat.id}}"><i
                                                         class="material-icons">remove_red_eye</i></a>
                                                 <br>
                                                 <a *ngIf="(allPermitDat.permitStatus=='PENDING PAYMENT'||allPermitDat.permitStatus=='DRAFT'||allPermitDat.permitStatus=='PENDING SUBMISSION') && allPermitDat.versionNumber=='1'"
@@ -71,7 +71,7 @@
 
                                             </td>
                                             <td *ngIf="1==allPermitDat.processStatusID" class="text-right">
-                                                <a href="/dmark/newDmarkPermit#{{allPermitDat.id}}"><i
+                                                <a href="/permitdetails#{{allPermitDat.id}}"><i
                                                         class="material-icons">remove_red_eye</i></a>
                                                 <br>
                                                 <a *ngIf="(allPermitDat.permitStatus=='PENDING PAYMENT'||allPermitDat.permitStatus=='DRAFT'||allPermitDat.permitStatus=='PENDING SUBMISSION') && allPermitDat.versionNumber=='1'"

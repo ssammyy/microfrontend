@@ -167,6 +167,7 @@ class PenaltyHeader {
 
 class PenaltyDetail{
 
+
     @NotEmpty(message = "Required field")
     var PenaltyOrderNo: String? = null
 
@@ -387,8 +388,9 @@ class KraPenaltyRequest {
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     var periodFrom: String? = null
 
-//    @JsonProperty("PenaltyOrderNo")
-    var PenaltyOrderNo: Long?  = null
+    @JsonProperty("PenaltyOrderNo")
+    var penaltyOrderNo: Long?  = null
+
     var penaltyPayable : Long? = null
     var kraPin: String? = null
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss")

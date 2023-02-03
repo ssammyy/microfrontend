@@ -507,6 +507,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
+                GET("/smark-clone-list", handler::permitListMigrationSmark)
+                GET("/dmark-clone-list", handler::permitListMigrationDmark)
+
                 GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/my-permits-loaded", handler::permitListAwardedMigrationb)
                 GET("/my-permits-loaded-dmark", handler::permitListAwardedMigrationDmark)

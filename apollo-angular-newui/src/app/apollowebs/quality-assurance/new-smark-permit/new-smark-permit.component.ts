@@ -39,6 +39,12 @@ export class NewSmarkPermitComponent implements OnInit {
     fullname = '';
     status: number;
     loading = false;
+    loadingText: string;
+
+    setCloned = false;
+
+    hideCloneButton = false;
+
     SelectedSectionId;
     sta1Form: FormGroup;
     sta10Form: FormGroup;
@@ -177,7 +183,7 @@ export class NewSmarkPermitComponent implements OnInit {
         });
         this.sta10FormG = this.formBuilder.group({});
 
-        this.qaService.loadPermitList(this.smarkID.toString()).subscribe(
+        this.qaService.loadCloneSmarkPermitList(this.smarkID.toString()).subscribe(
             (data: any) => {
                 this.allPermitData = data;
             });
@@ -334,6 +340,9 @@ export class NewSmarkPermitComponent implements OnInit {
 
 
     public clonePermit(): void {
+        this.loading = true
+        this.loadingText = "Cloning"
+        this.SpinnerService.show();
         this.route.fragment.subscribe(params => {
             this.permitID = this.selectedPermit;
             //(this.permitID);
@@ -360,9 +369,7 @@ export class NewSmarkPermitComponent implements OnInit {
                                 this.sta10FilesList = this.allSta10Details.sta10FilesList;
                                 this.sta10FormF.patchValue(this.allSta10Details.sta10FirmDetails);
 
-                                this.cloned = true;
-                                this.sta1 =null
-                                this.sta10Details = null
+
 
                                 // if(this.sta10FilesList.map())
                                 // {
@@ -372,6 +379,11 @@ export class NewSmarkPermitComponent implements OnInit {
                         );
                     },
                 );
+
+                this.setCloned = true
+                this.loading = false
+                this.hideCloneButton = false;
+                this.SpinnerService.hide();
 
 
             }
@@ -541,7 +553,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
-            if (this.sta1 == null) {
+            if (this.sta1 == null || this.setCloned == true) {
                 this.SpinnerService.show();
                 this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
                     (data) => {
@@ -588,7 +600,7 @@ export class NewSmarkPermitComponent implements OnInit {
         if (valid) {
             this.SpinnerService.show();
            //(this.sta1.id.toString());
-            if (this.sta10Details == null) {
+            if (this.sta10Details == null|| this.setCloned == true) {
                 this.qaService.saveFirmDetailsSta10(this.sta1.id.toString(), this.sta10Form.value).subscribe(
                     (data) => {
                         this.sta10Details = data;
@@ -1040,6 +1052,10 @@ export class NewSmarkPermitComponent implements OnInit {
     tabChange(ids:any){
       this.id=ids;
       console.log(this.id);
+    }
+
+    setClonedMethod() {
+        this.hideCloneButton = true;
     }
 
  

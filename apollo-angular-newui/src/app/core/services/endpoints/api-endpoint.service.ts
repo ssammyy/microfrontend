@@ -258,6 +258,9 @@ export class ApiEndpointService {
         FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
         QA_MPESA_STK_PUSH: `${ApiEndpointService.QA_CONTEXT}/permit/mpesa/stk-push`,
         PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+        CLONE_LIST_SMARK: `${ApiEndpointService.QA_CONTEXT}/permit/smark-clone-list`,
+        CLONE_LIST_DMARK: `${ApiEndpointService.QA_CONTEXT}/permit/dmark-clone-list`,
+
         PERMIT_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
         PERMIT_LIST_MIGRATION_DMARK: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded-dmark`,
@@ -398,6 +401,7 @@ export class ApiEndpointService {
         // SD INTERNATIONAL STANDARDS
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
+        IST_UPLOAD_PD: `${ApiEndpointService.SD_IST_CONTEXT}/draft-file-upload`,
         IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
         IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getISProposals`,
         IST_VIEW_IS_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getProposal`,
@@ -409,6 +413,7 @@ export class ApiEndpointService {
         IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
         IST_INT_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserTasks`,
         IST_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getAllComments`,
+        IST_COM_STD_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getDraftComments`,
         IST_JUSTIFICATION_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserComments`,
         IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
         IST_APPROVED_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProposals`,
@@ -450,6 +455,7 @@ export class ApiEndpointService {
         IS_UPLOAD_STD_GZT: `${ApiEndpointService.SD_IST_CONTEXT}/gzt-file-upload`,
         IST_VIEW_IS_STANDARD_GZT_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/gazettement`,
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
+        IST_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitDraftComments`,
 
 
         // SD COMPANY STANDARDS

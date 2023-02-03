@@ -567,6 +567,8 @@ export class StdComStandardService {
     return this.http.get<ComStdRemarks>(url, {params}).pipe();
   }
 
+
+
   public getDraftComments(draftID: any): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_DRAFT_COMMENTS);
     const params = new HttpParams().set('draftID', draftID);

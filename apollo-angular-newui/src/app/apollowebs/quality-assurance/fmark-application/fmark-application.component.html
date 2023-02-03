@@ -59,7 +59,7 @@
                                                 placeholder="Select Standardization Mark Linked To The Fmark"
                                                 [class.is-invalid]="formFmarkForm.smarkPermitID.invalid && formFmarkForm.smarkPermitID.touched">
                                         <mat-option *ngFor="let permit of allPermitData"
-                                                    value="{{permit.id}}">{{permit.tradeMark}}</mat-option>
+                                                    value="{{permit.id}}">{{permit.tradeMark}} , {{permit.productName}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
