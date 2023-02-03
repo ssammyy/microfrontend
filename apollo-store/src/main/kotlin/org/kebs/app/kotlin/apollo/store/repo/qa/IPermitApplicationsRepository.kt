@@ -693,7 +693,7 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         batchInvoiceNo: Long
     ): QaInvoiceMasterDetailsEntity?
 
-    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10IsNull(
         userId: Long,
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?
