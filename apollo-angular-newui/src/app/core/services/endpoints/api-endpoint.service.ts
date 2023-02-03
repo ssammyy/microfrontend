@@ -258,6 +258,9 @@ export class ApiEndpointService {
         FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
         QA_MPESA_STK_PUSH: `${ApiEndpointService.QA_CONTEXT}/permit/mpesa/stk-push`,
         PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+        CLONE_LIST_SMARK: `${ApiEndpointService.QA_CONTEXT}/permit/smark-clone-list`,
+        CLONE_LIST_DMARK: `${ApiEndpointService.QA_CONTEXT}/permit/dmark-clone-list`,
+
         PERMIT_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
         PERMIT_LIST_MIGRATION_DMARK: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded-dmark`,

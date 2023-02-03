@@ -85,15 +85,21 @@
                                                                     Permit STA3?</h3>
 
                                                                 <label for="attachedPlant">Select Permit</label>
-                                                                <select [(ngModel)]="selectedPermit" id="attachedPlanto"
-                                                                        class="form-control" (change)="setClonedMethod()">
-                                                                    <option selected>Select Permit</option>
-                                                                    <option *ngFor="let permit of allPermitData"
-                                                                            [ngValue]="permit.id"
-                                                                            class="dropdown-item">{{permit.productName}}</option>
 
-                                                                </select>
-                                                                <div *ngIf="setCloned === true">
+                                                                <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+
+                                                                            [(ngModel)]="selectedPermit" id="attachedPlanto"
+                                                                            class="form-control" (selectionChange)="setClonedMethod()"
+                                                                            placeholder="Select Permit">
+
+                                                                    <mat-option
+                                                                            *ngFor="let permit of allPermitData"
+                                                                            value="{{permit.id}}"
+                                                                            class="dropdown-item">{{permit.productName}}</mat-option>
+
+                                                                </mat-select>
+
+                                                                <div *ngIf="hideCloneButton === true">
                                                                     <button class="btn btn-info float-right"
                                                                             (click)="clonePermit()">
                                                                         Clone
@@ -109,7 +115,7 @@
 
                                                         <fieldset class="wizard-fieldset show">
                                                             <form (ngSubmit)="onClickSaveSTA1(sta1Form.valid)"
-                                                                  [formGroup]="sta1Form" class="form"
+                                                                  [formGroup]="sta1Form" class="form" id="formSta10"
                                                                   enctype="multipart/form-data">
                                                                 <h4><b>STA 1 Form </b></h4>
                                                                 <p>I/We the undersigned hereby apply for the

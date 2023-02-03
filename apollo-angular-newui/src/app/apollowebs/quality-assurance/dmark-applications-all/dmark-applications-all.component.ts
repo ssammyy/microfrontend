@@ -90,6 +90,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
+                this.displayUsers= false
                 this.SpinnerService.show();
                 this.qaService.deletePermit(String(id), this.allPermitData).subscribe(
                     (response = 'Successful Deletion') => {

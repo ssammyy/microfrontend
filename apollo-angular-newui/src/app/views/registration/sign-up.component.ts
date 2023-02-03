@@ -316,6 +316,7 @@ export class SignUpComponent implements OnInit {
                     select(selectBrsValidationCompany)).subscribe((record: Company) => {
                     this.stepOneForm.patchValue(record);
                     this.stepTwoForm.patchValue(record);
+
                     this.stepThreeForm.patchValue(record);
                     this.stepFourForm.patchValue(record);
                     this.stepFiveForm.patchValue(record);

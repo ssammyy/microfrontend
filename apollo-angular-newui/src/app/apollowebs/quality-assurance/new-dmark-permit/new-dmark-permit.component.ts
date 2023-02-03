@@ -33,6 +33,9 @@ export class NewDmarkPermitComponent implements OnInit {
     public isLoading = false;
     loading = false;
     setCloned = false;
+
+    hideCloneButton = false;
+
     fullname = '';
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
@@ -160,7 +163,7 @@ export class NewDmarkPermitComponent implements OnInit {
                 this.plants = data;
             }
         );
-        this.qaService.loadPermitList(this.DMarkTypeID.toString()).subscribe(
+        this.qaService.loadCloneDmarkPermitList(this.DMarkTypeID.toString()).subscribe(
             (data: any) => {
                 this.allPermitData = data;
             });
@@ -226,7 +229,7 @@ export class NewDmarkPermitComponent implements OnInit {
                                 this.sta3 = data1;
                                 this.sta3FormA.patchValue(this.sta3);
                                 this.sta3FormB.patchValue(this.sta3);
-                                this.sta3FormC.patchValue(this.sta3);
+                                this.sta3FormB.patchValue(this.sta3);
                                 this.sta3FormD.patchValue(this.sta3);
                                 this.sta3FilesList = this.sta3.sta3FilesList;
                             },
@@ -238,7 +241,9 @@ export class NewDmarkPermitComponent implements OnInit {
         });
     }
 
-     clonePermit() {
+    clonePermit() {
+        this.loading = true
+        this.loadingText = "Cloning"
         this.SpinnerService.show();
         this.route.fragment.subscribe(params => {
             this.permitID = this.selectedPermit;
@@ -261,10 +266,17 @@ export class NewDmarkPermitComponent implements OnInit {
                         );
                     },
                 );
-                this.sta1 = null;
-                this.sta3 = null;
-                this.setCloned= false
+
+                this.sta1Form.get('id').setValue('');
+                this.sta3FormA.get('id').setValue('');
+                this.sta3FormB.get('id').setValue('');
+                this.sta3FormC.get('id').setValue('');
+                this.sta3FormD.get('id').setValue('');
+                this.setCloned = true
+                this.loading = false
+                this.hideCloneButton = false;
                 this.SpinnerService.hide();
+                this.gotoSta10()
 
             }
         });
@@ -328,7 +340,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
-            if (this.sta1 == null) {
+            if (this.sta1 == null || this.setCloned == true) {
                 this.loading = true
                 this.loadingText = "Saving"
 
@@ -378,7 +390,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickSaveSTA3A(valid: boolean) {
         if (valid) {
-            if (this.sta3 == null) {
+            if (this.sta3 == null|| this.setCloned == true) {
                 this.loadingText = "Saving"
 
                 this.SpinnerService.show();
@@ -626,14 +638,21 @@ export class NewDmarkPermitComponent implements OnInit {
         this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
     }
 
-     // Renewal
-     id:any ="New Applications";
-     tabChange(ids:any){
-       this.id=ids;
-       console.log(this.id);
-     }
+    // Renewal
+    id: any = "New Applications";
+
+    tabChange(ids: any) {
+        this.id = ids;
+        console.log(this.id);
+    }
 
     setClonedMethod() {
-        this.setCloned = true;
+        this.hideCloneButton = true;
     }
+
+    gotoSta10() {
+        let el = document.getElementById('formSta10');
+        el.scrollTop = el.scrollHeight;
+    }
+
 }
