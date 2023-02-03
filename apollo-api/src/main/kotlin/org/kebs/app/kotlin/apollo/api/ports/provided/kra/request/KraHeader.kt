@@ -389,7 +389,7 @@ class KraPenaltyRequest {
     var periodFrom: String? = null
 
     @JsonProperty("PenaltyOrderNo")
-    var penaltyOrderNo: Long?  = null
+    var PenaltyOrderNo: Long?  = null
 
     var penaltyPayable : Long? = null
     var kraPin: String? = null

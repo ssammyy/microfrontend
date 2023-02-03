@@ -257,7 +257,7 @@ class SendEntryNumberToKraServices(
                     entryNo = penaltyDetail.getEntryNo()
                     periodTo = penaltyDetail.getPeriodTo()?.let { commonDaoServices.convertDateToKRADate(it) }
                     periodFrom = penaltyDetail.getPeriodFrom()?.let { commonDaoServices.convertDateToKRADate(it) }
-                    penaltyOrderNo = penaltyDetail.getPenaltyOrderNo()
+                    PenaltyOrderNo = penaltyDetail.getPenaltyOrderNo()
                     penaltyPayable = penaltyDetail.getPenaltyPayable()
                     kraPin = penaltyDetail.getkraPin()
                     globalVariable = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(penaltyDetail.getPenaltyGenDate())
@@ -342,7 +342,7 @@ class SendEntryNumberToKraServices(
              entryNo = p.getEntryNo()
              periodTo = p.getPeriodTo()?.let { commonDaoServices.convertDateToKRADate(it) }
              periodFrom = p.getPeriodFrom()?.let { commonDaoServices.convertDateToKRADate(it) }
-             penaltyOrderNo = p.getPenaltyOrderNo()
+             PenaltyOrderNo = p.getPenaltyOrderNo()
              penaltyPayable = p.getPenaltyPayable()
              kraPin = p.getkraPin()
              globalVariable = SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss").format(p.getPenaltyGenDate())
