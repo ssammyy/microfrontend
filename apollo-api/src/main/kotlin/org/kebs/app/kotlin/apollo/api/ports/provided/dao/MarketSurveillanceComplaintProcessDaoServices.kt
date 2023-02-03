@@ -752,6 +752,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complainantEmailComposed,
                                 map,
                                 complaintUpdated.first,
+                                null,
                                 complainantEmailComposed.refNumber
                             )
                         }
@@ -876,6 +877,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complainantEmailComposed,
                                 map,
                                 complaintUpdated.first,
+                                null,
                                 complainantEmailComposed.refNumber
                             )
                         }
@@ -941,6 +943,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complainantEmailComposed,
                                 map,
                                 complaintUpdated.first,
+                                null,
                                 complainantEmailComposed.refNumber
                             )
                         }
@@ -1005,6 +1008,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complainantEmailComposed,
                                 map,
                                 complaintUpdated.first,
+                                null,
                                 complainantEmailComposed.refNumber
                             )
                         }
