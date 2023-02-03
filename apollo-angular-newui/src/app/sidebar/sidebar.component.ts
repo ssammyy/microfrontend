@@ -160,23 +160,23 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'apply',
         privilege: ['MANUFACTURER_ADMIN', 'PVOC_APPLICATION_PROCESS'],
     },
-    {
-        path: '',
-        title: 'QA Reports',
-        type: 'sub',
-        icontype: 'receipt',
-        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
-        collapse: 'reports',
-        children: [
-            {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
-            {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
-            {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
-            {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
-            {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+    // {
+    //     path: '',
+    //     title: 'QA Reports',
+    //     type: 'sub',
+    //     icontype: 'receipt',
+    //     privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+    //     collapse: 'reports',
+    //     children: [
+    //         {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
+    //         {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
+    //         {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
+    //         {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
+    //         {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
 
 
-        ],
-    },
+    //     ],
+    // },
 
 
     // Quality Assurance Admin
@@ -208,6 +208,25 @@ export const ROUTES: RouteInfo[] = [
         privilege: [],
 
     },
+
+    {
+        path: '',
+        title: 'QA Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
+            {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
+            {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
+            {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
+            {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+
+
+        ],
+    },
+
 
 
     //DI

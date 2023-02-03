@@ -272,7 +272,8 @@
                             <div class="form-group">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepOneForm, 'kraPin')">
-                                    <input style="color: white;font-size: 14px;" type="text"
+                                    <input #kra (input)="kra.value = kra.value.toUpperCase()"
+                                            style="color: white;font-size: 14px;" type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="kraPin"
