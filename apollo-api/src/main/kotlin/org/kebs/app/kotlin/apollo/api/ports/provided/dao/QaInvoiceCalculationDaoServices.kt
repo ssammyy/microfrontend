@@ -658,27 +658,42 @@ class QaInvoiceCalculationDaoServices(
         val maxProductNumber = selectedRate.countBeforeFree ?: throw Exception("MISSING COUNT BEFORE FEE VALUE")
 
         if (productNumber <= maxProductNumber) {
-            val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
-                invoiceMasterId = invoiceMaster.id
-                umo = "PER"
-                generatedDate = Timestamp.from(Instant.now())
-                tokenValue = plantDetail.tokenGiven
-                itemDescName = selectedRate.invoiceDesc
-                itemQuantity = BigDecimal.valueOf(1)
-                itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
-                permitStatus = 1
-                status = 1
-                createdOn = Timestamp.from(Instant.now())
-                createdBy = commonDaoServices.concatenateName(user)
-            }
+            if (plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null) {
+                generateInvoice4SmallAndMedium(
+                    invoiceMaster,
+                    tokenGenerated,
+                    selectedRate,
+                    user,
+                    plantDetail,
+                    map,
+                    permit
+                )
+            } else if (plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null) {
+                val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
+                    invoiceMasterId = invoiceMaster.id
+                    umo = "PER"
+                    generatedDate = Timestamp.from(Instant.now())
+                    tokenValue = plantDetail.tokenGiven
+                    itemDescName = selectedRate.invoiceDesc
+                    itemQuantity = BigDecimal.valueOf(1)
+                    itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
+                    permitStatus = 1
+                    status = 1
+                    createdOn = Timestamp.from(Instant.now())
+                    createdBy = commonDaoServices.concatenateName(user)
+                }
 
-            qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
+                qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
 
-            permit.apply {
-                permitFeeToken = plantDetail.tokenGiven
+                permit.apply {
+                    permitFeeToken = plantDetail.tokenGiven
+                }
+                qaDaoServices.permitUpdateDetails(permit, map, user)
+
+            } else {
+                throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR MEDIUM/SMALL FIRM")
             }
-            qaDaoServices.permitUpdateDetails(permit, map, user)
-        }else if (productNumber > maxProductNumber) {
+        } else if (productNumber > maxProductNumber) {
             val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
                 invoiceMasterId = invoiceMaster.id
                 umo = "PER"
