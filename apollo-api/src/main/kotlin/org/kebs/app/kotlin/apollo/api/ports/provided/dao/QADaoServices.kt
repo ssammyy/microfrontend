@@ -727,6 +727,29 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID} and permitType ID ${permitTypeID}")
     }
 
+
+    //Dmarks Get Permits with filled Sta3
+    fun findAllDmarkFirmPermitsWithPermitType(companyID: Long, permitTypeID: Long): List<PermitApplicationsEntity> {
+        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta3FilledStatusIsNotNull(companyID, permitTypeID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID} and permitType ID ${permitTypeID}")
+    }
+
+    //Smarks Get Permits with filled Sta3
+    fun findAllSmarkFirmPermitsWithPermitType(companyID: Long, permitTypeID: Long): List<PermitApplicationsEntity> {
+        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta10FilledStatusIsNotNull(companyID, permitTypeID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID} and permitType ID ${permitTypeID}")
+    }
+
+
+
     fun findAllFirmPermitsAwardedWithPermitType(
         companyID: Long,
         awardedStatus: Int,
@@ -856,9 +879,7 @@ class QADaoServices(
         try {
             val response = permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
             KotlinLogging.logger { }.info("The response is $response")
-            permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
-                return permitList
-            }
+
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
 
@@ -878,20 +899,10 @@ class QADaoServices(
         KotlinLogging.logger { }.info { userId }
         KotlinLogging.logger { }.info { attachedPlantId }
         KotlinLogging.logger { }.info { permitNumber }
-        //  permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
-//        permitRepo.findByPermitRefNumber(permitNumber)?.let {
-//
-//            if (it.isNullOrEmpty()) {
-//                throw ExpectedDataNotFound("This Permit is not assigned to you")
-//
-//
-//            } else {
+
         try {
             val response = permitRepo.migratePermitsToNewUserDmark(userId, permitNumber, attachedPlantId)
             KotlinLogging.logger { }.info("The response is $response")
-            permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
-                return permitList
-            }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
 
@@ -911,20 +922,11 @@ class QADaoServices(
         KotlinLogging.logger { }.info { userId }
         KotlinLogging.logger { }.info { attachedPlantId }
         KotlinLogging.logger { }.info { permitNumber }
-        //  permitRepo.migratePermitsToNewUser(userId, permitNumber, attachedPlantId)
-//        permitRepo.findByPermitRefNumber(permitNumber)?.let {
-//
-//            if (it.isNullOrEmpty()) {
-//                throw ExpectedDataNotFound("This Permit is not assigned to you")
-//
-//
-//            } else {
+
         try {
             val response = permitRepo.migratePermitsToNewUserFmark(userId, permitNumber, attachedPlantId)
             KotlinLogging.logger { }.info("The response is $response")
-            permitRepo.findByUserIdAndVarField9IsNull(userId)?.let { permitList ->
-                return permitList
-            }
+
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
 
@@ -2116,6 +2118,14 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
     }
 
+    fun findPermitInvoiceByPermitIDB(
+        permitID: Long
+    ): QaInvoiceMasterDetailsEntity {
+        invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permitID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
+    }
+
     fun findSTA3WithPermitIDAndRefNumber(permitRefNumber: String, permitID: Long): QaSta3Entity {
         sta3Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
             return it
@@ -2446,6 +2456,24 @@ class QADaoServices(
     ): List<PermitEntityDto> {
         return listPermits(findAllFirmPermitsWithPermitType(companyID, permitType), map)
     }
+
+    fun listFirmPermitListWithPermitTypeDmark(
+        companyID: Long,
+        permitType: Long,
+        map: ServiceMapsEntity
+    ): List<PermitEntityDto> {
+        return listPermits(findAllDmarkFirmPermitsWithPermitType(companyID, permitType), map)
+    }
+
+    fun listFirmPermitListWithPermitTypeSmark(
+        companyID: Long,
+        permitType: Long,
+        map: ServiceMapsEntity
+    ): List<PermitEntityDto> {
+        return listPermits(findAllSmarkFirmPermitsWithPermitType(companyID, permitType), map)
+    }
+
+
 
     fun listPermits(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity): List<PermitEntityDto> {
         return permits.map { p ->
@@ -2788,9 +2816,7 @@ class QADaoServices(
                             permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
                         )
                         findPermitInvoiceByPermitID(findSMark.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
-
                     }
-
                     else -> {
                         findPermitInvoiceByPermitID(permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
                     }
@@ -5886,14 +5912,10 @@ class QADaoServices(
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
             val companyDetails = commonDaoServices.findCompanyProfileWithID(userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS"))
             val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
-            when {
-                plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null && plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
-                    throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
-                }
-                commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
-                    KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
+
+            when (permitType.id) {
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
-                    //Todo ask ken why list coming back does not have the product that is being generated for.
                     val productsManufacture = findAllProductManufactureInPlantWithPlantID(
                         s.activeStatus,
                         s.activeStatus,
@@ -5901,33 +5923,24 @@ class QADaoServices(
                         permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
                         plantDetail.id
                     )
-
-                    KotlinLogging.logger { }.info { "PRODUCT SIZE BEFORE ADDING ONE = ${productsManufacture.size}" }
-        //            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
-                    when (permitType.id) {
-                        applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                            invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
-                                permit,
-                                user,
-                                manufactureTurnOver,
-                                productsManufacture.size.toLong(),
-                                plantDetail
-                            )
-                        }
-
-                        applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                            invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
-                        }
-
-                        applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                            invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
-                        }
-                    }
+                    invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
+                        permit,
+                        user,
+                        manufactureTurnOver,
+                        productsManufacture.size.toLong(),
+                        plantDetail
+                    )
                 }
-                commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
-                    throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
+                }
+
+                applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                    invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
                 }
             }
+
 
             sr.payload = "User[id= ${companyDetails.userId}]"
             sr.names = "${companyDetails.name} ${companyDetails.kraPin}"

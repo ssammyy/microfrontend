@@ -654,8 +654,7 @@ class QaInvoiceCalculationDaoServices(
         productNumber: Long
     ) {
 
-        val tokenGenerated =
-            "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+        val tokenGenerated = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         val maxProductNumber = selectedRate.countBeforeFree ?: throw Exception("MISSING COUNT BEFORE FEE VALUE")
 
         if (productNumber <= maxProductNumber) {

@@ -395,10 +395,10 @@ export class PermitDetailsComponent implements OnInit {
             }
             // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
             this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                (dataSta1) => {
-                  this.sta1 = dataSta1;
-                  this.sta1Form.patchValue(this.sta1);
-                },
+              (dataSta1) => {
+                this.sta1 = dataSta1;
+                this.sta1Form.patchValue(this.sta1);
+              },  
             );
             console.log(`${this.sta10PersonnelDetails.length}`);
             this.qaService.viewSTA10Details(String(this.allPermitDetails.permitDetails.id)).subscribe(

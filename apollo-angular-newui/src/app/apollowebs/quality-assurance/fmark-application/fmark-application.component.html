@@ -3,13 +3,36 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <ul class="tabs-container">
-                        <li class="tab-link" id="new-application" (click)="tabChange('New Applications')"> <i class="material-icons">task</i>Make New Application</li>
-                        <li class="tab-link" id="renewal-applications" (click)="tabChange('Renewal Applications')"><i class="material-icons">assignment</i>Renewal Applications</li>
-                        <li class="tab-link" id="ongoing-applications" (click)="tabChange('Ongoing Applications')"><i class="material-icons">done_outline</i>Ongoing Applications</li>
-                        <li class="tab-link" id="awarded-applications" (click)="tabChange('Awarded Applications')"><i class="material-icons">verified</i>Awarded Applications</li>
-                        <li class="tab-link" id="expired-applications" (click)="tabChange('Expired Applications')"><i class="material-icons">report_problem</i>Expired Applications</li>
-                      </ul>
+                  
+                    <ul class=" tabs-container nav nav-pills nav-pills-rose nav-pills-icons justify-content-center" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" id="new-application" (click)="tabChange('New Applications')" role="tablist">
+                                <i class="material-icons">task</i>Make New Applications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" id="renewal-applications" (click)="tabChange('Renewal Applications')" role="tablist">
+                                <i class="material-icons">assignment</i>Renewal Applications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" id="ongoing-applications" (click)="tabChange('Ongoing Applications')" role="tablist">
+                                <i class="material-icons">done_outline</i>Ongoing Applications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" id="awarded-applications" (click)="tabChange('Awarded Applications')" role="tablist">
+                                <i class="material-icons">verified</i>Awarded Applications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" id="expired-applications" (click)="tabChange('Expired Applications')" role="tablist">
+                                <i class="material-icons">report_problem</i>Expired Applications
+                            </a>
+                        </li>
+                    </ul>
+
+
                     </div>
                     </div>
                     </div>
@@ -36,7 +59,7 @@
                                                 placeholder="Select Standardization Mark Linked To The Fmark"
                                                 [class.is-invalid]="formFmarkForm.smarkPermitID.invalid && formFmarkForm.smarkPermitID.touched">
                                         <mat-option *ngFor="let permit of allPermitData"
-                                                    value="{{permit.id}}">{{permit.tradeMark}}</mat-option>
+                                                    value="{{permit.id}}">{{permit.tradeMark}} , {{permit.productName}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
