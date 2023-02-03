@@ -1056,7 +1056,7 @@ export const routes: Routes = [
     ],
 
   },
-//   {
+ //   {
 //     path: 'Permit-details', component: AdminLayoutComponent,
 //     // canActivate: [RouteGuard]
 
@@ -1065,7 +1065,7 @@ export const routes: Routes = [
 //     ],
 
 //   },
-  {
+{
     path: 'permit-details', component: PermitDetailsComponent,
   },
 
