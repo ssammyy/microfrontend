@@ -185,12 +185,12 @@ export class RegisterTivetComponent implements OnInit {
             otherCategory: new FormControl('', [])
         });
 
-        this.stepTwoForm = new FormGroup({
-            postalAddress: new FormControl(),
-            physicalAddress: new FormControl('', [Validators.required]),
-            plotNumber: new FormControl('', [Validators.required]),
-            companyEmail: new FormControl('', [Validators.required]),
-            companyTelephone: new FormControl('', [Validators.required])
+        this.stepTwoForm = this.formBuilder.group({
+            postalAddress: [''],
+            physicalAddress: ['', Validators.required],
+            plotNumber: ['', Validators.required],
+            companyEmail: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
+            companyTelephone: ['', Validators.required],
         });
         this.stepThreeForm = new FormGroup({
             buildingName: new FormControl('', [Validators.required]),
@@ -205,7 +205,7 @@ export class RegisterTivetComponent implements OnInit {
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             //userName: ['', Validators.required],
-            email: ['', Validators.required],
+            email: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
             credentials: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
             confirmCredentials: ['', Validators.required],
         }, {
