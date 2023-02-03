@@ -2950,7 +2950,7 @@ class QADaoServices(
     fun mapAllPermitDetailsTogether(
         permit: PermitApplicationsEntity,
         batchID: Long?,
-        map: ServiceMapsEntity
+        map: ServiceMapsEntity,
     ): AllPermitDetailsDto {
         return AllPermitDetailsDto(
             permitDetails(permit, map),
@@ -5958,7 +5958,7 @@ class QADaoServices(
             sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
             sr.responseMessage = e.message
             sr = serviceRequestsRepository.save(sr)
-
+            throw Exception(sr.responseMessage)
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")

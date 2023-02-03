@@ -548,7 +548,8 @@ data class AllPermitDetailsDto(
     var sta10FilesList: List<FilesListDto>? = null,
     var labResultsList: PermitSSFLabResultsDto? = null,
     var schemeOfSuperVision: FilesListDto? = null,
-    var batchID: Long? = null
+    var batchID: Long? = null,
+    var branchInspectionPaid: Long? = null
 )
 
 

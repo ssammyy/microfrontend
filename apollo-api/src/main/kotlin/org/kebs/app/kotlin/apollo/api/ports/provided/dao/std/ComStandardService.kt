@@ -474,6 +474,7 @@ class ComStandardService(
         cs.contactThreeFullName = comStdDraft.contactThreeFullName
         cs.contactThreeTelephone = comStdDraft.contactThreeTelephone
         cs.contactThreeEmail = comStdDraft.contactThreeEmail
+        cs.standardType="Company Standard"
 
         val draftId=comStdDraftRepository.save(cs)
 
@@ -552,7 +553,7 @@ class ComStandardService(
     }
 
     fun getAllComments(requestId: Long): MutableIterable<CompanyStandardRemarks>? {
-        return companyStandardRemarksRepository.findByRequestIdOrderByIdDesc(requestId)
+        return companyStandardRemarksRepository.findCommentsOnDraft(requestId)
     }
 
     //Submit Adoption Proposal comments
@@ -616,6 +617,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Joint Committee"
+        companyStandardRemarks.standardType = "Company Standard"
 
 
         return companyStandardRemarksRepository.save(companyStandardRemarks)
@@ -642,6 +644,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Joint Committee"
+        companyStandardRemarks.standardType = "Company Standard"
         val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(5))
 
         if (commentNumber>0){
@@ -669,9 +672,9 @@ class ComStandardService(
                 val companyPhone= comStdDraft.companyPhone
                 val contactTel=comStdDraft.contactOneTelephone
                 val draftId=comStdDraft.id
-                val targetUrl = "https://kimsint.kebs.org/comStdDraftComment/$draftId";
+                val targetUrl = "https://kimsint.kebs.org/comStdApproved/$draftId";
                 val subject = "Company Standard Draft"
-                val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to comment. $targetUrl  "
+                val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to make Decision. $targetUrl  "
 
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)
@@ -731,6 +734,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Company"
+        companyStandardRemarks.standardType = "Company Standard"
         val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(2))
         val comStandard= getCSNumber()
 
@@ -896,6 +900,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
+        companyStandardRemarks.standardType = "Company Standard"
 
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1070,6 +1075,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
+        companyStandardRemarks.standardType = "Company Standard"
 
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1107,6 +1113,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
+        companyStandardRemarks.standardType = "Company Standard"
 
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1155,6 +1162,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Standard Editor"
+        companyStandardRemarks.standardType = "Company Standard"
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
 
@@ -1193,6 +1201,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Standard Editor"
+        companyStandardRemarks.standardType = "Company Standard"
 
 
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->

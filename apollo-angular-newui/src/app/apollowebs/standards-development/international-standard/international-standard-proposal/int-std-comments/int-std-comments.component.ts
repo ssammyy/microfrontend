@@ -3,14 +3,20 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {StdIntStandardService} from "../../../../../core/store/data/std/std-int-standard.service";
-import {ISAdoptionComments, ISAdoptionProposal, ProposalComments} from "../../../../../core/store/data/std/std.model";
+import {
+    DocView,
+    ISAdoptionComments,
+    ISAdoptionProposal,
+    ProposalComments
+} from "../../../../../core/store/data/std/std.model";
 import {NotificationService} from "../../../../../core/store/data/std/notification.service";
 import {Store} from "@ngrx/store";
 import {selectUserInfo} from "../../../../../core/store";
-import {DefaulterDetails} from "../../../../../core/store/data/levy/levy.model";
+import {DefaulterDetails, DocumentDTO} from "../../../../../core/store/data/levy/levy.model";
 import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
+import {StdComStandardService} from "../../../../../core/store/data/std/std-com-standard.service";
 
 declare const $: any;
 
@@ -33,10 +39,13 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
     isDtInitialized: boolean = false
   public actionRequest: ISAdoptionProposal | undefined;
     proposalId: string;
+    documentDTOs: DocumentDTO[] = [];
+    docDetails: DocView[] = [];
   constructor(
       private store$: Store<any>,
       private formBuilder: FormBuilder,
       private stdIntStandardService : StdIntStandardService,
+      private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
       private activatedRoute: ActivatedRoute,
@@ -71,7 +80,9 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
           proposedChange:[],
           observation:[],
           emailOfRespondent:['', Validators.required],
-          phoneOfRespondent:['', Validators.required]
+          phoneOfRespondent:['', Validators.required],
+          draftID: [],
+          requestID:[]
 
       });
 
@@ -158,7 +169,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
         }
     );
   }
-  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string): void{
+  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -167,15 +178,25 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
     if (mode==='comment'){
       this.actionRequest=isAdoptionProposal;
       button.setAttribute('data-target','#commentModal');
+        this.stdIntStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+            (response: DocumentDTO[]) => {
+                this.documentDTOs = response;
+                this.SpinnerService.hide();
+                //console.log(this.documentDTOs)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                //console.log(error.message);
+            }
+        );
         this.uploadCommentsFormGroup.patchValue(
             {
                 commentTitle: this.actionRequest.title,
-                scope: this.actionRequest.scope,
-                clause: this.actionRequest.clause,
-                proposalID: this.actionRequest.id,
-                standardNumber: this.actionRequest.standardNumber,
+                requestID: this.actionRequest.id,
+                draftID: this.actionRequest.draftId,
                 commentDocumentType: this.actionRequest.docName,
-                preparedDate:this.actionRequest.preparedDate
+                uploadDate: this.actionRequest.preparedDate,
+                standardNumber: this.actionRequest.standardNumber
 
             }
         );
@@ -189,7 +210,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
         console.log(this.uploadCommentsFormGroup.value);
-        this.stdIntStandardService.submitAPComments(this.uploadCommentsFormGroup.value).subscribe(
+        this.stdIntStandardService.submitDraftComments(this.uploadCommentsFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 this.SpinnerService.hide();

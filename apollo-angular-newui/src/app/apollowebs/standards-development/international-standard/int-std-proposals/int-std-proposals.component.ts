@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-    CommentOnProposalStakeHolder,
+    CommentOnProposalStakeHolder, ComStdCommitteeRemarks, ComStdRemarks,
     InternationalStandardsComments,
     ISAdoptionProposal,
     StakeholderProposalComments,
@@ -15,6 +15,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 
 @Component({
   selector: 'app-int-std-proposals',
@@ -34,11 +36,19 @@ export class IntStdProposalsComponent implements OnInit {
   public rejectProposalFormGroup!: FormGroup;
   stakeholderProposalComments: CommentOnProposalStakeHolder[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
+    comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   loadingText: string;
   approve: string;
   reject: string;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
+    documentDTOs: DocumentDTO[] = [];
+    comStdRemarks: ComStdRemarks[] = [];
+    blob: Blob;
+    isShowRemarksTabs= true;
+    isShowCommentsTabs= true;
+    isShowMainTab= true;
+    isShowMainTabs= true;
 
   constructor(
       private store$: Store<any>,
@@ -46,6 +56,7 @@ export class IntStdProposalsComponent implements OnInit {
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
       private formBuilder: FormBuilder,
+      private stdComStandardService:StdComStandardService,
   ) { }
 
   ngOnInit(): void {
@@ -53,7 +64,8 @@ export class IntStdProposalsComponent implements OnInit {
     this.approveProposalFormGroup= this.formBuilder.group({
       accentTo:[],
       proposalId:[],
-      comments:[]
+      comments:[],
+        draftId:[],
 
     });
     this.rejectProposalFormGroup= this.formBuilder.group({
@@ -84,6 +96,7 @@ export class IntStdProposalsComponent implements OnInit {
           this.SpinnerService.hide();
           this.rerender();
           this.isAdoptionProposals = response;
+          console.log(this.isAdoptionProposals);
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
@@ -91,7 +104,7 @@ export class IntStdProposalsComponent implements OnInit {
         }
     );
   }
-  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string): void {
+  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,comStdDraftID: number): void {
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -100,10 +113,22 @@ export class IntStdProposalsComponent implements OnInit {
     if (mode === 'decisionOnProposal') {
       this.actionRequest = isAdoptionProposal;
       button.setAttribute('data-target', '#decisionOnProposal');
+        this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+            (response: DocumentDTO[]) => {
+                this.documentDTOs = response;
+                this.SpinnerService.hide();
+                //console.log(this.documentDTOs)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                //console.log(error.message);
+            }
+        );
       this.approveProposalFormGroup.patchValue(
           {
             accentTo: this.approve,
-            proposalId: this.actionRequest.id
+            proposalId: this.actionRequest.id,
+              draftId: this.actionRequest.draftId
           }
       );
       this.rejectProposalFormGroup.patchValue(
@@ -134,24 +159,74 @@ export class IntStdProposalsComponent implements OnInit {
 
   }
 
-  toggleDisplayRemarksTab(proposalId: number){
-    this.loadingText = "Loading ...."
-    this.SpinnerService.show();
-    this.stdIntStandardService.getAllComments(proposalId).subscribe(
-        (response: CommentOnProposalStakeHolder[]) => {
-          this.stakeholderProposalComments = response;
-          this.SpinnerService.hide();
-          //console.log(this.stakeholderProposalComments)
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          console.log(error.message);
-        }
-    );
-    this.isShowRemarksTab = !this.isShowRemarksTab;
-    this.isShowCommentsTab= true;
+    viewDraftFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
 
-  }
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getProposal();
+                //alert(error.message);
+            }
+        );
+    }
+
+    displayDraftComments(draftID: number){
+        //this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.stdComStandardService.getDraftComments(draftID).subscribe(
+            (response: ComStdCommitteeRemarks[]) => {
+                this.comStdCommitteeRemarks = response;
+                this.SpinnerService.hide();
+                console.log(this.comStdCommitteeRemarks)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowRemarksTab = !this.isShowRemarksTab;
+        this.isShowCommentsTab= true;
+        this.isShowMainTab= true;
+        this.isShowMainTabs= true;
+
+    }
+
+    toggleDisplayRemarksTab(requestId: number){
+        this.loadingText = "Loading ...."
+        this.SpinnerService.show();
+        this.stdIntStandardService.getDraftComment(requestId).subscribe(
+            (response: ComStdRemarks[]) => {
+                this.comStdRemarks = response;
+                this.SpinnerService.hide();
+                 console.log(this.comStdRemarks)
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+        this.isShowCommentsTab = !this.isShowCommentsTab;
+        this.isShowRemarksTab= true;
+        this.isShowMainTab= true;
+        this.isShowMainTabs= true;
+
+    }
+
+
   toggleDisplayCommentsTab(id: number){
     this.loadingText = "Loading ...."
     this.SpinnerService.show();

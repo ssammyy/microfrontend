@@ -2527,6 +2527,12 @@ class QualityAssuranceHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             var permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+//
+//            val companyDetails = commonDaoServices.findCompanyProfileWithID(loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS"))
+//            val plantDetail = qaDaoServices.findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+//
+//
+
             val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found"))
 
             //Update Permit Details
@@ -2537,7 +2543,7 @@ class QualityAssuranceHandler(
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
             //Calculate Invoice Details
-            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).second
+            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null)
 
             //Update Permit Details
             with(permit) {

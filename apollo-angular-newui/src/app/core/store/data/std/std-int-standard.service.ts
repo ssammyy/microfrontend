@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
-    ComJcJustificationDec, CommentOnProposalStakeHolder,
+    ComDraftComment,
+    ComJcJustificationDec, CommentOnProposalStakeHolder, ComStdRemarks,
     GazetteNotice,
-    InternationalStandardsComments,
+    InternationalStandardsComments, InterNationalStdDecision,
     ISAdoptionComments,
     ISAdoptionJustification,
     ISAdoptionProposal, ISCheckRequirements,
@@ -25,7 +26,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
-import {DefaulterDetails, SiteVisitRemarks} from "../levy/levy.model";
+import {DefaulterDetails, DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,26 @@ export class StdIntStandardService {
         })
     );
   }
+
+    //upload Draft Document
+    public uploadPDFileDetails(comStdDraftID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_PD);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'comStdDraftID': comStdDraftID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public uploadFileDetails(isProposalID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DOCUMENT);
 
@@ -74,6 +95,12 @@ export class StdIntStandardService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSAL);
         const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+    public getDraftComment(requestId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_COM_STD_COMMENTS);
+        const params = new HttpParams().set('requestId', requestId);
+        return this.http.get<ComStdRemarks>(url, {params}).pipe();
     }
 
 
@@ -287,6 +314,42 @@ export class StdIntStandardService {
         );
     }
 
+    public viewCompanyDraft(comStdDraftID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_DATA_VIEW_PD);
+        const params = new HttpParams()
+            .set('comStdDraftID', comStdDraftID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+
+    public submitDraftComments(comDraftComment: ComDraftComment): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENTS);
+        const params = new HttpParams();
+        return this.http.post<ComDraftComment>(url, comDraftComment, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getDraftDocumentList(comStdDraftID: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFT_DOCUMENT_LIST);
+        const params = new HttpParams().set('comStdDraftID', comStdDraftID);
+        return this.http.get<DocumentDTO[]>(url, {params}).pipe();
+    }
+
 
     public submitProposalComments(istProposalComment: IstProposalComment): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_PROP_COMMENTS);
@@ -321,10 +384,10 @@ export class StdIntStandardService {
     return this.http.get<ISTcSecTASKS[]>(url, {params}).pipe();
   }
 
-  public decisionOnProposal(iSDecision: ISDecision): Observable<any> {
+  public decisionOnProposal(iSDecision: InterNationalStdDecision): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_ON_PROPOSAL);
     const params = new HttpParams();
-    return this.http.post<ProposalComments>(url, iSDecision, {params}).pipe(
+    return this.http.post<InterNationalStdDecision>(url, iSDecision, {params}).pipe(
         map(function (response: any) {
           return response;
         }),

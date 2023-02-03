@@ -156,4 +156,14 @@ class ComStdDraft {
     @Column(name="COMMENT_COUNT")
     @Basic
     var commentCount : Long?=null
+
+    @Column(name="PROPOSAL_ID")
+    @Basic
+    var proposalId : Long?=null
+
+    @Column(name="STANDARD_TYPE")
+    @Basic
+    var standardType: String?=null
+
+
 }
