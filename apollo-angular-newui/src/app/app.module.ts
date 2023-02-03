@@ -995,6 +995,7 @@ import {ComStdDraftCommentComponent} from "./apollowebs/standards-development/co
 
         BillDetailsComponent,
         ViewBillDetailsComponent,
+       
     ],
     entryComponents: [LoaderComponent],
     providers: [DatePipe, MatNativeDateModule],
