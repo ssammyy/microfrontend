@@ -534,7 +534,7 @@ class QADaoServices(
         userID: Long,
         status: Int
     ): List<QaInvoiceMasterDetailsEntity> {
-        invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(userID, status)
+        invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10IsNull(userID, status)
             ?.let { it ->
                 return it
             }
@@ -2113,8 +2113,7 @@ class QADaoServices(
     ): QaInvoiceMasterDetailsEntity {
         invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permitID)?.let {
             return it
-        }
-            ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
+        } ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
     }
 
     fun findSTA3WithPermitIDAndRefNumber(permitRefNumber: String, permitID: Long): QaSta3Entity {
@@ -5297,7 +5296,7 @@ class QADaoServices(
 
         // submit invoice to get way
         with(newBatchInvoiceDto) {
-            batchID = batchInvoice.first.id!!
+            batchID = batchInvoice.first?.id!!
         }
 
         val batchInvoiceDetails = permitMultipleInvoiceSubmitInvoice( map, loggedInUser, newBatchInvoiceDto, batchInvoice.second).second
@@ -5517,7 +5516,7 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         batchInvoiceDto: NewBatchInvoiceDto,
-    ): Pair<ServiceRequestsEntity, Pair<QaBatchInvoiceEntity,List<SageValuesDto>>> {
+    ): Pair<ServiceRequestsEntity, Pair<QaBatchInvoiceEntity?,List<SageValuesDto>>> {
 
         var sr = commonDaoServices.createServiceRequest(s)
         var invoiceBatchDetails: QaBatchInvoiceEntity? = null
@@ -5648,7 +5647,7 @@ class QADaoServices(
 
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, Pair(invoiceBatchDetails ?: throw Exception("INVALID BATCH INVOICE DETAILS"),sageValuesDtoList))
+        return Pair(sr, Pair(invoiceBatchDetails,sageValuesDtoList))
     }
 
     fun permitMultipleInvoiceRemoveInvoice(

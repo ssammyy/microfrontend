@@ -3775,7 +3775,7 @@ class QualityAssuranceHandler(
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             newBatchInvoiceDto.isWithHolding = dto.isWithHolding
             with(newBatchInvoiceDto) {
-                batchID =batchInvoiceDetails.first.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =batchInvoiceDetails.first?.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             KotlinLogging.logger { }.info("Withholding Status = ${newBatchInvoiceDto.isWithHolding}")
@@ -3844,7 +3844,7 @@ class QualityAssuranceHandler(
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             with(newBatchInvoiceDto) {
-                batchID =batchInvoiceDetails.first.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =batchInvoiceDetails.first?.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
 
@@ -3856,9 +3856,9 @@ class QualityAssuranceHandler(
 //                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID")
 //            ).second
 
-            qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails.first, loggedInUser, map).let {
-                return ok().body(it)
-            }
+                qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails.first!!, loggedInUser, map).let {
+                    return ok().body(it)
+                }
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)

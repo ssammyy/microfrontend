@@ -67,7 +67,7 @@ class QualityAssuranceJSONControllers(
         @RequestParam("branchID") branchID: Long,
         @RequestParam("docFile") docFile: MultipartFile,
         model: Model
-    ): ServerResponse {
+    ) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
         val branchDetails =qaDaoServices.findPlantDetails(branchID)
@@ -97,9 +97,8 @@ class QualityAssuranceJSONControllers(
                     endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
                 }
                 manufacturePlantRepository.save(branchDetails)
-                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")
+//                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")
             }?: throw NullValueNotAllowedException("No Company Record not found")
-
     }
 
     @GetMapping("/view/inspection-invoice")
