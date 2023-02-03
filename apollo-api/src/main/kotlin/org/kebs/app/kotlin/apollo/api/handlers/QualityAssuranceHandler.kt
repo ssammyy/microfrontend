@@ -2431,10 +2431,6 @@ class QualityAssuranceHandler(
             var permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
             val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found"))
 
-            // Create FMARK From SMark
-            if (permit.fmarkGenerateStatus == 1) {
-                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
-            }
             //Update Permit Details
             with(permit) {
                 applicationStatus = map.activeStatus
@@ -2455,11 +2451,11 @@ class QualityAssuranceHandler(
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
 
-//            //Start DMARK PROCESS
-//            qualityAssuranceBpmn.startQADmAppPaymentProcess(
-//                permit.id ?: throw Exception("MISSING PERMIT ID"), null
-//            )
-//
+            // Create FMARK From SMark
+            if (permit.fmarkGenerateStatus == 1) {
+                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
+            }
+
 //            //Complete Submit Application
 //            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
 //                permit.permitForeignStatus == 1)
