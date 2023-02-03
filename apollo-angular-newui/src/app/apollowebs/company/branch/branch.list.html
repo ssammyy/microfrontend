@@ -1,6 +1,19 @@
 <div class="main-content">
     <div class="container-fluid">
+        <div *ngIf="loading">
 
+            <div class="loading-spinner ">
+                <ngx-spinner
+                        bdColor="rgba(51,51,51,0.8)"
+                        size="medium"
+                        color="#fff"
+                        type="ball-scale-multiple"
+                >
+                    <p style="font-size: 20px; color: white">Loading Please Wait...</p>
+<!--                    <p style="font-size: 20px; color: white">{{loadingText}}</p>-->
+                </ngx-spinner>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-12">
@@ -78,10 +91,16 @@
                                             <a *ngIf="!theRecord.inspectionFeeStatus" (click)="onClickGenerateInspectionFee(theRecord)"
                                                class="btn btn-link btn-info"><i
                                                     class="material-icons">remove_red_eye</i>Generate Inspection Invoice</a>
-
+                                            <a *ngIf="!theRecord.inspectionFeeStatus"
+                                               class="btn btn-link btn-info" (click)="uploadInspectionReport(theRecord)" mat-raised-button="" data-toggle="modal"
+                                               data-target="#myModalUpload"><i class="material-icons">remove_red_eye</i>Upload Inspection Invoice</a>
+                                            <br>
                                             <a *ngIf="theRecord.invoiceBatchID!=null" href="/invoiceDetails#{{theRecord.invoiceBatchID}}"
                                                class="btn btn-link btn-info btn-just-icon view"><i
                                                     class="material-iconpny IDs">remove_red_eye</i>View Invoice Generated</a>
+                                            <a *ngIf="theRecord.uploadedPdfID!=null" (click)="viewUploadDetailsPdfFile(theRecord?.uploadedPdfID, 'Inspection fees Invoice','application/pdf')"
+                                               class="btn btn-link btn-info"><i
+                                                    class="material-icons">remove_red_eye</i>View Invoice Uploaded</a>
 
                                         </td>
 
@@ -99,4 +118,46 @@
         </div>
         <!-- end row -->
     </div>
+    <!-- Dynamic UPLOAD Modal -->
+    <div class="modal fade" id="myModalUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFilesOnly" name="files" id="files"
+                                                         fileslimit="1" accept=".pdf"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadInspectionReport')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickUploadInspectionFee(selectedBranch);"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  End Dynamic UPLOADS Modal -->
 </div>

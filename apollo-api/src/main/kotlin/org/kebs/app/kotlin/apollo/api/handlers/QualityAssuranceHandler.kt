@@ -2169,7 +2169,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             when {
                 errors.allErrors.isEmpty() -> {
-                    qaDaoServices.updateDownGradeCompanyTurnOverDetails(body, loggedInUser, map)
+                    qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 
@@ -2428,13 +2428,8 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            var permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
-            val permitType = qaDaoServices.findPermitType(
-                permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found")
-            )
+            var permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found"))
 
             // Create FMARK From SMark
             if (permit.fmarkGenerateStatus == 1) {
@@ -3780,7 +3775,7 @@ class QualityAssuranceHandler(
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             newBatchInvoiceDto.isWithHolding = dto.isWithHolding
             with(newBatchInvoiceDto) {
-                batchID =batchInvoiceDetails.first.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =batchInvoiceDetails.first?.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
             KotlinLogging.logger { }.info("Withholding Status = ${newBatchInvoiceDto.isWithHolding}")
@@ -3849,7 +3844,7 @@ class QualityAssuranceHandler(
             //Add created invoice consolidated id to my batch id to be submitted
             val newBatchInvoiceDto = NewBatchInvoiceDto()
             with(newBatchInvoiceDto) {
-                batchID =batchInvoiceDetails.first.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                batchID =batchInvoiceDetails.first?.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
 
@@ -3861,9 +3856,9 @@ class QualityAssuranceHandler(
 //                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID")
 //            ).second
 
-            qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails.first, loggedInUser, map).let {
-                return ok().body(it)
-            }
+                qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails.first!!, loggedInUser, map).let {
+                    return ok().body(it)
+                }
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)

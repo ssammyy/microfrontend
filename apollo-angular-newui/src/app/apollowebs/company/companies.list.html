@@ -9,7 +9,8 @@
                     color="#fff"
                     type="ball-scale-multiple"
             >
-                <p style="font-size: 20px; color: white">{{loadingText}}</p>
+                <p style="font-size: 20px; color: white">Loading Please Wait...</p>
+<!--                <p style="font-size: 20px; color: white">{{loadingText}}</p>-->
             </ngx-spinner>
         </div>
     </div>
@@ -69,9 +70,9 @@
                                                class="btn btn-link btn-info"><i
                                                     class="material-icons">remove_red_eye</i>Update Firm Type</a>
                                             <br>
-<!--                                            <a (click)="editRecord(row)" data-target="#companyDetailsModal"-->
-<!--                                               data-toggle="modal"-->
-<!--                                               class="btn btn-link btn-info"><i class="material-icons">remove_red_eye</i> Edit Details</a>-->
+                                            <a (click)="editRecord(row)" data-target="#companyDetailsModal"
+                                               data-toggle="modal"
+                                               class="btn btn-link btn-info"><i class="material-icons">remove_red_eye</i> Edit Details</a>
                                             <a (click)="onClickPlantDetails(row)"
                                                class="btn btn-link btn-warning"><i
                                                     class="material-icons">dvr</i> View Branches</a>
@@ -435,7 +436,13 @@
                     <div class="modal-footer">
                         <button class="btn btn-danger" data-dismiss="modal" mat-raised-button
                                 type="button">
-                            Close
+                            <Closeo></Closeo>
+                        </button>
+                        <button *ngIf="(currDiv == 'editCompanyDetails')" mat-raised-button type="button" class="btn btn-success"
+                                (click)="onClickSaveCompanyDetails(companyDetailsForm.valid);"
+                                [disabled]="!companyDetailsForm.valid"
+                                data-dismiss="modal"
+                        >SUBMIT
                         </button>
                     </div>
 
