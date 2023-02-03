@@ -207,7 +207,7 @@ export class InvoiceConsolidateComponent implements OnInit {
         });
         console.log(permitInvoicesIDS);
         const consolidatedInvoice = new GenerateInvoiceDto;
-        consolidatedInvoice.batchID = null;
+        consolidatedInvoice.batchID = -1;
         consolidatedInvoice.plantID = null;
         consolidatedInvoice.permitRefNumber = null;
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
@@ -222,7 +222,7 @@ export class InvoiceConsolidateComponent implements OnInit {
                 customClass: {
                   confirmButton: 'btn btn-success form-wizard-next-btn ',
                 },
-                icon: 'success'
+                icon: 'success',
               });
               this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
             },

@@ -127,8 +127,8 @@ export class PermitAllRemarksDetailsDto {
 }
 
 export class GenerateInvoiceDto {
-    batchID: bigint;
-    plantID: bigint;
+    batchID: number;
+    plantID: number;
     permitRefNumber: string;
     permitInvoicesID: number[];
 }
@@ -137,7 +137,7 @@ export class GenerateInvoiceWithWithholdingDto {
     plantID: bigint;
     permitRefNumber: string;
     permitInvoicesID: number[];
-    isWithHolding:number;
+    isWithHolding: number;
 }
 
 export class SSFPDFListDetailsDto {

@@ -5554,7 +5554,7 @@ class QADaoServices(
                     val userID = user.id ?: throw Exception("INVALID USER ID")
                     var permitInvoiceFound = findPermitInvoiceByPermitID(permitId)
                     val permitDetails = findPermitBYID(permitId)
-                    val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
+                    val permitType = findPermitType(permitDetails.permitType?: throw Exception("MISSING PERMIT TYPE ID"))
                     val attachedPermitPlantDetails =findPlantDetails(permitDetails.attachedPlantId?: throw Exception("MISSING PLANT DETAILS (ID)"))
                     val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(attachedPermitPlantDetails.region ?: throw Exception("MISSING REGION ID"), permitType.id ?: throw Exception("MISSING REGION ID"))
 
@@ -5906,7 +5906,7 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(s)
         var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
-        try {
+
 
             val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
@@ -5951,17 +5951,17 @@ class QADaoServices(
             sr = serviceRequestsRepository.save(sr)
             sr.processingEndDate = Timestamp.from(Instant.now())
 
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
-//            KotlinLogging.logger { }.trace(e.message, e)
-            sr.status = sr.serviceMapsId?.exceptionStatus
-            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
-            sr.responseMessage = e.message
-            sr = serviceRequestsRepository.save(sr)
-            throw Exception(sr.responseMessage)
-        }
-
-        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message, e)
+////            KotlinLogging.logger { }.trace(e.message, e)
+//            sr.status = sr.serviceMapsId?.exceptionStatus
+//            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+//            sr.responseMessage = e.message
+//            sr = serviceRequestsRepository.save(sr)
+//            throw ExpectedDataNotFound(sr.responseMessage)
+//        }
+//
+//        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, invoiceGenerated)
     }
 
