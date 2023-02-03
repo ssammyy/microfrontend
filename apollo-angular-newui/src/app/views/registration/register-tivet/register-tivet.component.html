@@ -134,6 +134,11 @@
         top: 27px;
     }
 
+    ::ng-deep .mat-select-value{
+        color: white!important;  }
+
+
+
 </style>
 <div *ngIf="displayError">
     <!-- <span class="glyphicon glyphicon-remove form-control-feedback fix-error-icon"></span> -->
@@ -164,39 +169,10 @@
                 Enter Details
             </h2>
             <div class="form-body">
-
-                <div class="col">
-
-                    <!--                    <div class="form-group" style="margin-top: 3%">-->
-                    <!--                        <label class="input-placeholder"><b>Please Select Institution Type</b></label>-->
-                    <!--                        <select-->
-                    <!--                                [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.institutionType.errors }"-->
-                    <!--                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-                    <!--                                class="form-control two-column-input" formControlName="institutionType"-->
-                    <!--                                id="institutionType"-->
-                    <!--                                name="institutionType"-->
-                    <!--                                required="required" style="width: 60%; height: 60%">-->
-                    <!--                            <option ngValue="null" selected>Please select</option>-->
-                    <!--                            <option value="University" class="dropdown-item"> University</option>-->
-                    <!--                            <option value="Tivet" class="dropdown-item"> Tivet</option>-->
-                    <!--                            <option value="NGO" class="dropdown-item"> NGO</option>-->
-                    <!--                            <option value="Self Help Group" class="dropdown-item"> Self Help Group</option>-->
-
-                    <!--                        </select>-->
-                    <!--                        <div *ngIf="submitted && formStepZeroForm.institutionType.errors"-->
-                    <!--                             class="invalid-feedback">-->
-                    <!--                            <div *ngIf="formStepZeroForm.institutionType.errors.required">The Institution Type is-->
-                    <!--                                required-->
-                    <!--                            </div>-->
-                    <!--                        </div>-->
-
-                    <!--                    </div>-->
-                </div>
-
                 <div class="form-group">
                     <mat-form-field>
                         <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                    class="form-control two-column-input" required
+                                    required
                                     formControlName="institutionType"
                                     name="institutionType"
                                     placeholder="Institution Type"
@@ -213,7 +189,7 @@
                 <div class="form-group">
                     <mat-form-field class="example-full-width has-label"
                                     [ngClass]="displayFieldCss(stepZeroForm, 'institutionName')">
-                        <input type="text"
+                        <input style="color: white;font-size: 14px;" type="text"
                                matInput
                                id="institutionName"
                                placeholder="Institution Name *"
@@ -296,7 +272,8 @@
                             <div class="form-group">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepOneForm, 'kraPin')">
-                                    <input style="color: white;font-size: 14px;" type="text"
+                                    <input #kra (input)="kra.value = kra.value.toUpperCase()"
+                                            style="color: white;font-size: 14px;" type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="kraPin"
@@ -315,7 +292,7 @@
                             <div class="form-group">
                                 <mat-form-field>
                                     <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                class="form-control two-column-input" required
+                                                required
                                                 formControlName="yearlyTurnover"
                                                 name="yearlyTurnover"
                                                 placeholder="Yearly Turnover"
@@ -337,7 +314,7 @@
                                 <ng-container *ngIf="businessLines$ | async as apps">
                                     <mat-form-field>
                                         <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                    class="form-control two-column-input" required
+                                                    required
                                                     formControlName="businessLines"
                                                     name="businessLines"
                                                     placeholder="Line Of Business"
@@ -361,14 +338,14 @@
 
                         </div>
                     </div>
-                    <div class="row input-row col-12">
-                        <div class="col-6">
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <ng-container
                                         *ngIf="businessNatures$ | async as apps">
                                     <mat-form-field>
                                         <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                    class="form-control two-column-input"
+
                                                     (ngModelChange)="updateSelectedBusinessNatures()"
                                                     [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessNatures.errors }"
                                                     formControlName="businessNatures" id="businessNatures"
@@ -579,21 +556,21 @@
                     <div class="col">
                         <div class="form-group">
                             <mat-form-field class="example-full-width has-label"
-                                        [ngClass]="displayFieldCss(stepThreeForm, 'buildingName')">
-                            <input style="color: white;font-size: 14px;" type="text"
-                                   matInput
-                                   class="form-control two-column-input"
-                                   id="buildingName"
-                                   placeholder="Building Name *"
-                                   (ngModelChange)="textValidationType($event)"
-                                   formControlName="buildingName">
-                            <app-field-error-display
-                                    [displayError]="isFieldValid(stepThreeForm, 'buildingName')"
-                                    errorMsg="The Building Name is
+                                            [ngClass]="displayFieldCss(stepThreeForm, 'buildingName')">
+                                <input style="color: white;font-size: 14px;" type="text"
+                                       matInput
+                                       class="form-control two-column-input"
+                                       id="buildingName"
+                                       placeholder="Building Name *"
+                                       (ngModelChange)="textValidationType($event)"
+                                       formControlName="buildingName">
+                                <app-field-error-display
+                                        [displayError]="isFieldValid(stepThreeForm, 'buildingName')"
+                                        errorMsg="The Building Name is
                                     required">
-                            </app-field-error-display>
-                        </mat-form-field>
-                            </div>
+                                </app-field-error-display>
+                            </mat-form-field>
+                        </div>
                     </div>
 
                     <div class="col">
@@ -616,9 +593,6 @@
                         </div>
 
 
-
-
-
                     </div>
 
                 </div>
@@ -628,7 +602,6 @@
                             <ng-container *ngIf="region$ | async as apps">
                                 <mat-form-field>
                                     <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                class="form-control two-column-input"
                                                 (ngModelChange)="updateSelectedRegion()"
                                                 [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
                                                 formControlName="region" id="region"
@@ -636,9 +609,9 @@
                                                 placeholder="Region"
                                                 [class.is-invalid]="formStepThreeForm.region.invalid && formStepThreeForm.region.touched">
                                         <mat-option style="color: white;font-size: 14px;"
-                                                *ngFor="let app of apps| filterPipe: {status: true}"
-                                                value="{{app.id}}"
-                                                class="dropdown-item">{{app.region}}</mat-option>
+                                                    *ngFor="let app of apps| filterPipe: {status: true}"
+                                                    value="{{app.id}}"
+                                                    class="dropdown-item">{{app.region}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </ng-container>
@@ -649,7 +622,7 @@
                             <ng-container *ngIf="county$ | async as apps">
                                 <mat-form-field>
                                     <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                class="form-control two-column-input"
+
                                                 (ngModelChange)="updateSelectedCounty()"
                                                 [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
                                                 formControlName="county" id="county"
@@ -657,9 +630,9 @@
                                                 placeholder="County"
                                                 [class.is-invalid]="formStepThreeForm.county.invalid && formStepThreeForm.county.touched">
                                         <mat-option style="color: white;font-size: 14px;" type="text"
-                                                *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
-                                                value="{{app.id}}"
-                                                class="dropdown-item">{{app.county}}</mat-option>
+                                                    *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
+                                                    value="{{app.id}}"
+                                                    class="dropdown-item">{{app.county}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </ng-container>
@@ -672,7 +645,6 @@
                         <ng-container *ngIf="town$ | async as apps">
                             <mat-form-field>
                                 <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                            class="form-control two-column-input"
                                             (ngModelChange)="updateSelectedTown()"
                                             [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
                                             formControlName="town" id="town"
@@ -680,9 +652,9 @@
                                             placeholder="Town"
                                             [class.is-invalid]="formStepThreeForm.town.invalid && formStepThreeForm.town.touched">
                                     <mat-option style="color: white;font-size: 14px;" type="text"
-                                            *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
-                                            value="{{app.id}}"
-                                            class="dropdown-item">{{app.town}}</mat-option>
+                                                *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                                                value="{{app.id}}"
+                                                class="dropdown-item">{{app.town}}</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </ng-container>
@@ -715,7 +687,7 @@
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                     </div>
                     <div class="col">
-                        <button  class="login-button" type="submit">NEXT</button>
+                        <button class="login-button" type="submit">NEXT</button>
                     </div>
                 </div>
 
@@ -805,67 +777,38 @@
                 </div>
 
                 <div class="row input-row">
-                    <mat-form-field class="example-full-width has-label" [ngClass]="{'has-success':validPasswordRegister===true}">
-                        <input type="password"
-                               matInput
-                               id="password"
-                               placeholder="Password *"
-                               (ngModelChange)="passwordValidationRegister($event)"
-                               formControlName="credentials">
-                        <app-field-error-display [displayError]="isFieldValid(stepFourForm, 'credentials')" errorMsg="Enter a valid password.">
-                        </app-field-error-display>
-                    </mat-form-field>
-                    <mat-form-field class="example-full-width has-label" [ngClass]="{'has-success':validConfirmPasswordRegister===true}"
-                                    [ngClass]="displayFieldCss(stepFourForm, 'credentials')">
-                        <input type="password"
-                               matInput
-                               id="confirmPassword"
-                               placeholder="Confirm Password *"
-                               (ngModelChange)="confirmPasswordValidationRegister($event)"
-                               formControlName="confirmCredentials">
-                        <app-field-error-display
-                                [displayError]="isFieldValid(stepFourForm, 'confirmCredentials')" errorMsg="These passwords don't match. Try again!">
-                        </app-field-error-display>
-                    </mat-form-field>
+                    <div class="col-md-6">
+                        <mat-form-field class="example-full-width has-label"
+                                        [ngClass]="{'has-success':validPasswordRegister===true}">
+                            <input type="password"
+                                   matInput
+                                   id="password"
+                                   placeholder="Password *"
+                                   (ngModelChange)="passwordValidationRegister($event)"
+                                   formControlName="credentials">
+                            <app-field-error-display [displayError]="isFieldValid(stepFourForm, 'credentials')"
+                                                     errorMsg="Enter a valid password.">
+                            </app-field-error-display>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
 
+                        <mat-form-field class="example-full-width has-label"
+                                        [ngClass]="{'has-success':validConfirmPasswordRegister===true}"
+                                        [ngClass]="displayFieldCss(stepFourForm, 'credentials')">
+                            <input type="password"
+                                   matInput
+                                   id="confirmPassword"
+                                   placeholder="Confirm Password *"
+                                   (ngModelChange)="confirmPasswordValidationRegister($event)"
+                                   formControlName="confirmCredentials">
+                            <app-field-error-display
+                                    [displayError]="isFieldValid(stepFourForm, 'confirmCredentials')"
+                                    errorMsg="These passwords don't match. Try again!">
+                            </app-field-error-display>
+                        </mat-form-field>
+                    </div>
 
-
-
-
-
-
-
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="credentials">-->
-<!--                            Password-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;"-->
-<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.credentials.errors }"-->
-<!--                               class="form-control two-column-input" formControlName="credentials" id="credentials"-->
-<!--                               name="credentials"-->
-<!--                               placeholder="enter password" required="required" type="password">-->
-<!--                        <div *ngIf="submitted && formStepFourForm.credentials.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFourForm.credentials.errors.required">The credentials is required</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col">-->
-<!--                        <label class="input-placeholder" for="confirmCredentials">-->
-<!--                            Confirm Password-->
-<!--                        </label>-->
-<!--                        <br>-->
-<!--                        <input style="color: white;font-size: 14px;"-->
-<!--                               [ngClass]="{ 'is-invalid': submitted && formStepFourForm.confirmCredentials.errors }"-->
-<!--                               class="form-control two-column-input" formControlName="confirmCredentials"-->
-<!--                               id="confirmCredentials"-->
-<!--                               name="confirmCredentials"-->
-<!--                               placeholder="password confirmation" required="required" type="password">-->
-<!--                        <div *ngIf="submitted && formStepFourForm.confirmCredentials.errors" class="invalid-feedback">-->
-<!--                            <div *ngIf="formStepFourForm.confirmCredentials.errors.required">The confirm Credentials is-->
-<!--                                required-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
                 </div>
 
 
@@ -940,8 +883,7 @@
                                 class="login-button mt-2"
                                 type="button"
                                 id="sendOtp"
-
-                        >Send OTP {{secondsToHms(time)}} Secs
+                        >Send OTP
                         </button>
                     </div>
                 </div>

@@ -694,6 +694,8 @@ export class ApiEndpointService {
         LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
         GENERATE_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/company/generate-inspection-fee`,
+        UPLOAD_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/upload/inspection-invoice`,
+        VIEW_PDF_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/view/inspection-invoice`,
         TIVETS_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/tivetListing`,
         TIVETS_UPDATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/updateTivet`,
         TIVETS_REJECT: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/rejectTivet`,

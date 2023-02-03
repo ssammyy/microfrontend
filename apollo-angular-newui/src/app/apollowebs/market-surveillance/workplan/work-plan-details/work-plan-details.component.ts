@@ -1232,21 +1232,31 @@ export class WorkPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      nameProduct: {
-        title: 'PRODUCT BRAND NAME',
-        type: 'string',
-        filter: false,
-      },
       fileRefNumber: {
         title: 'FILE REF NUMBER',
         type: 'string',
         filter: false,
       },
-      disposal: {
-        title: 'DISPOSAL',
+      nameProduct: {
+        title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
+      lbIdTradeMark: {
+        title: 'BRAND/TRADEMARK',
+        type: 'string',
+        filter: false,
+      },
+      // sampleReferences: {
+      //   title: 'SAMPLE REF',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // disposal: {
+      //   title: 'DISPOSAL',
+      //   type: 'string',
+      //   filter: false,
+      // },
       bsNumber: {
         title: 'BS NUMBER',
         type: 'string',
@@ -1280,27 +1290,38 @@ export class WorkPlanDetailsComponent implements OnInit {
       confirmDelete: true,
     },
     noDataMessage: 'No data found',
+
     columns: {
       // id: {
       //   title: '#',
       //   type: 'string',
       //   filter: false
       // },
-      nameProduct: {
-        title: 'PRODUCT BRAND NAME',
-        type: 'string',
-        filter: false,
-      },
       fileRefNumber: {
         title: 'FILE REF NUMBER',
         type: 'string',
         filter: false,
       },
-      disposal: {
-        title: 'DISPOSAL',
+      nameProduct: {
+        title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
+      lbIdTradeMark: {
+        title: 'BRAND/TRADEMARK',
+        type: 'string',
+        filter: false,
+      },
+      // sampleReferences: {
+      //   title: 'SAMPLE REF',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // disposal: {
+      //   title: 'DISPOSAL',
+      //   type: 'string',
+      //   filter: false,
+      // },
       bsNumber: {
         title: 'BS NUMBER',
         type: 'string',
@@ -1338,27 +1359,38 @@ export class WorkPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      nameProduct: {
-        title: 'PRODUCT BRAND NAME',
-        type: 'string',
-        filter: false,
-      },
       fileRefNumber: {
         title: 'FILE REF NUMBER',
         type: 'string',
         filter: false,
       },
-      disposal: {
-        title: 'DISPOSAL',
+      nameProduct: {
+        title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
+      lbIdTradeMark: {
+        title: 'BRAND/TRADEMARK',
+        type: 'string',
+        filter: false,
+      },
+      // sampleReferences: {
+      //   title: 'SAMPLE REF',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // disposal: {
+      //   title: 'DISPOSAL',
+      //   type: 'string',
+      //   filter: false,
+      // },
       // bsNumber: {
       //   title: 'BS NUMBER',
       //   type: 'string',
       //   filter: false,
       // },
     },
+
     pager: {
       display: true,
       perPage: 20,
@@ -1738,6 +1770,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       function: ['', Validators.required],
       department: ['', Validators.required],
       regionName: ['', Validators.required],
+      county: ['', Validators.required],
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
       outletName: ['', Validators.required],
@@ -4738,8 +4771,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
-
-    if (this.seizureForm.valid && this.uploadedFilesSeizedGoods.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
+    if (this.seizureForm.valid && this.uploadedFilesSeizedGoods?.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {

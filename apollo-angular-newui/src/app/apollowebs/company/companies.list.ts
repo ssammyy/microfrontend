@@ -3,9 +3,9 @@ import {
     BusinessLines,
     BusinessLinesService, BusinessNatures, BusinessNaturesService,
     Company, CompanyService, County, CountyService,
-    Go, loadCompanyId, RegionService, Town, TownService
+    Go, loadCompanyId, loadResponsesFailure, loadResponsesSuccess, RegionService, Town, TownService,
 } from '../../core/store';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {CompanyTurnOverUpdateDto, FirmTypeEntityDto} from '../../core/store/data/qa/qa.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -13,11 +13,13 @@ import {RegionsEntityDto} from '../../core/store/data/master/master.model';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {MsService} from '../../core/store/data/ms/ms.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {catchError} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
     selector: 'app-companies',
     templateUrl: './companies.list.html',
-    styles: []
+    styles: [],
 })
 export class CompaniesList implements OnInit {
     @ViewChild('editModal') editModal !: TemplateRef<any>;
@@ -31,6 +33,7 @@ export class CompaniesList implements OnInit {
     msRegions: RegionsEntityDto[] = null;
     msCountiesList: County[] = null;
     msTowns: Town[] = null;
+    companySaveDetails: Company;
 
     submitted = false;
     currDivLabel!: string;
@@ -47,7 +50,7 @@ export class CompaniesList implements OnInit {
 
     loading = false;
     loadingText: string;
-    
+
 
     constructor(
         private qaService: QaService,
@@ -94,7 +97,7 @@ export class CompaniesList implements OnInit {
             otherBusinessNatureType: ['', Validators.required],
             postalAddress: ['', Validators.required],
             physicalAddress: ['', Validators.required],
-            plotNumber: ['', Validators.required],
+            plotNumber: null,
             companyEmail: ['', Validators.required],
             companyTelephone: ['', Validators.required],
             buildingName: ['', Validators.required],
@@ -222,7 +225,8 @@ export class CompaniesList implements OnInit {
         this.currDiv = 'editCompanyDetails';
         this.selectedRegion = record.region;
         this.companyDetailsForm.patchValue(record);
-        this.companyDetailsForm.enable();
+        this.companyDetailsForm.disable();
+        this.companyDetailsForm.get('kraPin').enable();
         window.$('#companyDetailsModal').modal('show');
     }
 
@@ -267,5 +271,64 @@ export class CompaniesList implements OnInit {
                 },
             );
         }
+    }
+
+    onClickSaveCompanyDetails(valid: boolean) {
+        this.submitted = true;
+        if (valid) {
+            this.msService.showSuccessWith2Message('Are you sure your want to Save the details?', 'You won\'t be able to revert back after submission!',
+                // tslint:disable-next-line:max-line-length
+                `You can click \'Edit Details\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+                    this.saveCompanyDetails(valid);
+                });
+        } else {
+            this.msService.showError('FILL IN ALL REQUIRED FIELD AS HIGHLIGHTED');
+        }
+    }
+
+    saveCompanyDetails(valid: boolean) {
+        if (valid) {
+            this.companySaveDetails = {...this.companySaveDetails, ...this.companyDetailsForm.value};
+
+            this.service.update(this.companySaveDetails).subscribe(
+                (a) => {
+                    this.store$.dispatch(
+                        loadResponsesSuccess({
+                            message: {
+                                response: '00',
+                                payload: `Successfully saved ${a.name}`,
+                                status: 200,
+                            },
+                        }),
+                    );
+                    return this.store$.dispatch(Go({
+                        payload: null,
+                        link: 'dashboard/companies',
+                        redirectUrl: 'dashboard/companies',
+                    }));
+
+
+                },
+                catchError(
+                    (err: HttpErrorResponse) => {
+                        return of(loadResponsesFailure({
+                            error: {
+                                payload: err.error,
+                                status: err.status,
+                                response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`,
+                            },
+                        }));
+                    }));
+        } else {
+            this.store$.dispatch(loadResponsesFailure({
+                error: {
+                    payload: 'Some required details are missing, kindly recheck',
+                    status: 100,
+                    response: '05',
+                },
+            }));
+
+        }
+
     }
 }

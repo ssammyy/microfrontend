@@ -428,6 +428,7 @@ export class ComplaintDetailsComponent implements OnInit {
               },
               error => {
                 console.log(error);
+                console.log("Cannot get region");
                 this.msService.showError('AN ERROR OCCURRED');
               },
           );
@@ -636,7 +637,7 @@ export class ComplaintDetailsComponent implements OnInit {
   onClickSaveReAssignRegion(valid: boolean) {
     this.msService.showSuccessWith2Message('Are you sure your want to Update The Region Details?', 'You won\'t be able to revert back after submission!',
         // tslint:disable-next-line:max-line-length
-        'You can click the \'RE-ASSIGN REGION\' button to update details', 'COMPLAINT ACCEPT/REJECT SUCCESSFUL', () => {
+        'You can click the \'RE-ASSIGN REGION\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
           this.saveReAssignRegion(valid);
         });
   }

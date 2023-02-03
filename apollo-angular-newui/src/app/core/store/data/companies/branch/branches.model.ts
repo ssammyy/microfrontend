@@ -25,4 +25,5 @@ export interface Branches {
     invoiceSharedId: number;
     tokenGiven: string;
     invoiceBatchID: number;
+    uploadedPdfID: number;
 }
