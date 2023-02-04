@@ -70,6 +70,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
+  averageCompliance: number;
+  columnValues: any[];
   active: Number = 0;
   selectedFile: File;
   selectedRefNo: string;
@@ -1664,6 +1666,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.currentDateDetails = new Date();
 
     console.log('currentdate' + this.currentDateDetails);
+
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       this.userLoggedInID = u.id;
@@ -4310,7 +4313,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     window.$('#seizureDeclarationModal').modal('show');
   }
 
-  viewSeizedDetails(data: SeizureListDto, initialReportStatus: boolean) {
+    viewSeizedDetails(data: SeizureListDto, initialReportStatus: boolean) {
     this.seizureForm.patchValue(data);
     this.selectedSeizedDetails = data;
     const paramDetails = data.seizureList;
