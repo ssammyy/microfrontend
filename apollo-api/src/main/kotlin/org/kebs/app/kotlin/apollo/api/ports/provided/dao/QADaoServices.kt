@@ -2820,11 +2820,8 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
     }
 
-    fun findSTA3WithPermitIDAndRefNumber(permitRefNumber: String, permitID: Long): QaSta3Entity {
-        sta3Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
-            return it
-        }
-            ?: throw ExpectedDataNotFound("No STA3 found with the following PERMIT REF NO =$permitRefNumber and Permit ID =$permitID")
+    fun findSTA3WithPermitIDAndRefNumber(permitRefNumber: String, permitID: Long): QaSta3Entity? {
+        return sta3Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)
     }
 
 //    fun findSTA3WithPermitRefNumber(permitRefNumber: String): QaSta3Entity {
@@ -2885,11 +2882,8 @@ class QADaoServices(
     }
 
 
-    fun findSTA10WithPermitRefNumberANdPermitID(permitRefNumber: String, permitID: Long): QaSta10Entity {
-        sta10Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
-            return it
-        }
-            ?: throw ExpectedDataNotFound("No STA10 found with the following PERMIT REF NO =$permitRefNumber and Permit ID =$permitID")
+    fun findSTA10WithPermitRefNumberANdPermitID(permitRefNumber: String, permitID: Long): QaSta10Entity? {
+        return sta10Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)
     }
 
 //    fun findSTA10WithPermitRefNumberBY(permitRefNumber: String): QaSta10Entity {
@@ -3687,6 +3681,7 @@ class QADaoServices(
         batchID: Long?,
         map: ServiceMapsEntity,
     ): AllPermitDetailsDto {
+        val permitID = permit.id?: throw Exception("MISSING PERMIT ID")
         return AllPermitDetailsDto(
             permitDetails(permit, map),
             permitsRemarksDTO(permit),
@@ -3719,7 +3714,10 @@ class QADaoServices(
                 permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")
             ),
             permit.sscId?.let { findUploadedFileBYId(it).let { f -> filesDtoDetails(f) } },
-            batchID
+            batchID,
+            null,
+            findSTA3WithPermitIDAndRefNumber(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID)?.let { mapDtoSTA3View(it,permitID) },
+            findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber?: throw Exception("Missing Permit Ref Number"), permitID)?.let { listSTA10ViewDetails(permitID, it) }
         )
     }
 
@@ -3745,22 +3743,22 @@ class QADaoServices(
         return permitsList.sortedBy { it.visitsScheduled }
     }
 
-    fun listSTA10ViewDetails(
-        sta10FirmDetails: STA10SectionADto,
-        sta10PersonnelDetails: List<STA10PersonnelDto>,
-        sta10ProductsManufactureDetails: List<STA10ProductsManufactureDto>,
-        sta10RawMaterialsDetails: List<STA10RawMaterialsDto>,
-        sta10MachineryAndPlantDetails: List<STA10MachineryAndPlantDto>,
-        sta10ManufacturingProcessDetails: List<STA10ManufacturingProcessDto>,
-        sta10FileList: List<QaUploadsEntity>,
-    ): AllSTA10DetailsDto {
+    fun listSTA10ViewDetails(permitID: Long, qaSta10Entity: QaSta3Entity): AllSTA10DetailsDto {
+        val qaSta10ID = qaSta10Entity.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
+        val sta10Personnel = findPersonnelWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        val sta10Products = findProductsManufactureWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        val sta10Raw = findRawMaterialsWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        val sta10MachinePlant = findMachinePlantsWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        val sta10ManufacturingProcess = findManufacturingProcessesWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+        val sta10FileList = findAllUploadedFileBYPermitIDAndSta10Status(permitID, 1)
+
         return AllSTA10DetailsDto(
-            sta10FirmDetails,
-            sta10PersonnelDetails,
-            sta10ProductsManufactureDetails,
-            sta10RawMaterialsDetails,
-            sta10MachineryAndPlantDetails,
-            sta10ManufacturingProcessDetails,
+            mapDtoSTA10SectionAAndQaSta10View(qaSta10Entity),
+            listSTA10Personnel(sta10Personnel),
+            listSTA10Product(sta10Products),
+            listSTA10RawMaterials(sta10Raw),
+            listSTA10MachinePlants(sta10MachinePlant),
+            listSTA10ManufacturingProcess(sta10ManufacturingProcess),
             listFilesDto(sta10FileList)
         )
     }
@@ -5550,7 +5548,7 @@ class QADaoServices(
                     val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
                         oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                         oldPermit.id ?: throw Exception("INVALID PERMIT ID")
-                    )
+                    )?: throw ExpectedDataNotFound("MISSING STA 10 DETAILS")
                     var newSta10 = QaSta10Entity()
                     newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
                     newSta10.id = null
@@ -6933,7 +6931,7 @@ class QADaoServices(
             val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                 permit.id ?: throw Exception("INVALID PERMIT ID")
-            )
+            )?: throw ExpectedDataNotFound("MISSING STA 10 DETAILS")
             var newSta10 = QaSta10Entity()
             newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
             newSta10.id = null
