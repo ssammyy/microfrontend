@@ -14,6 +14,11 @@ data class SectionApplyDto(
     var sectionRemarks: String? = null
 )
 
+data class StandardsApplyDto(
+    var productStandardID: Long? = null,
+    var sectionRemarks: String? = null
+)
+
 data class CompletenessApplyDto(
     @NotNull(message = "Required Completeness Status")
     var hofQamCompletenessStatus: Boolean,

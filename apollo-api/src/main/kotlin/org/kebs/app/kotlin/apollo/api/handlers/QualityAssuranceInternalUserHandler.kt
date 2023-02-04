@@ -63,7 +63,8 @@ class QualityAssuranceInternalUserHandler(
     fun getAllMyTaskList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
-            qaDaoServices.findLoggedInUserTask(page)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
+            qaDaoServices.findLoggedInUserTask(page,permitTypeID)
                 .let {
                     ok().body(it)
                 }
@@ -143,6 +144,29 @@ class QualityAssuranceInternalUserHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updatePermitAssignOfficerDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun updatePermitDetailsStandards(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val body = req.body<StandardsApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, StandardsApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitStandardsDetails(permitID,body)
                         .let {
                             ok().body(it)
                         }

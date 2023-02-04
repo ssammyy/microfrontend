@@ -143,7 +143,7 @@ class QADaoServices(
                 " or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')"
     )
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun findLoggedInUserTask(page: PageRequest): ApiResponseModel {
+    fun findLoggedInUserTask(page: PageRequest, permitTypeID: Long): ApiResponseModel {
         val auth = commonDaoServices.loggedInUserAuthentication()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -152,8 +152,9 @@ class QADaoServices(
             when (a.authority) {
                 "QA_OFFICER_READ" -> {
                     listPermits(
-                        findAllQAOPermitListWithTaskID(
+                        findAllQAOPermitListWithPermitTypeTaskID(
                             loggedInUser,
+                            permitTypeID,
                             applicationMapProperties.mapUserTaskNameQAO
                         ), map
                     ).let { permitListMyTasksAddedTogether.addAll(it) }
@@ -163,8 +164,9 @@ class QADaoServices(
             when (a.authority) {
                 "QA_ASSESSORS_READ" -> {
                     listPermits(
-                        findAllAssessorPermitListWithTaskID(
+                        findAllAssessorPermitListWithPermitTypeTaskID(
                             loggedInUser,
+                            permitTypeID,
                             applicationMapProperties.mapUserTaskNameASSESSORS
                         ), map
                     ).let { permitListMyTasksAddedTogether.addAll(it) }
@@ -177,6 +179,7 @@ class QADaoServices(
                         loggedInUser,
                         auth,
                         "QA_HOD_READ",
+                        permitTypeID,
                         map,
                         applicationMapProperties.mapUserTaskNameHOD
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
@@ -189,6 +192,7 @@ class QADaoServices(
                         loggedInUser,
                         auth,
                         "QA_HOF_READ",
+                        permitTypeID,
                         map,
                         applicationMapProperties.mapUserTaskNameHOF
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
@@ -201,6 +205,7 @@ class QADaoServices(
                         loggedInUser,
                         auth,
                         "QA_RM_READ",
+                        permitTypeID,
                         map,
                         applicationMapProperties.mapUserTaskNameRM
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
@@ -213,6 +218,7 @@ class QADaoServices(
                         loggedInUser,
                         auth,
                         "QA_MANAGER_READ",
+                        permitTypeID,
                         map,
                         applicationMapProperties.mapUserTaskNameQAM
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
@@ -225,6 +231,7 @@ class QADaoServices(
                         loggedInUser,
                         auth,
                         "QA_PAC_SECRETARY_READ",
+                        permitTypeID,
                         applicationMapProperties.mapUserTaskNamePACSECRETARY
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
@@ -236,6 +243,7 @@ class QADaoServices(
                         loggedInUser,
                         auth,
                         "QA_PSC_MEMBERS_READ",
+                        permitTypeID,
                         applicationMapProperties.mapUserTaskNamePSC
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
@@ -247,6 +255,7 @@ class QADaoServices(
                         loggedInUser,
                         auth,
                         "QA_PCM_READ",
+                        permitTypeID,
                         applicationMapProperties.mapUserTaskNamePCM
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
@@ -290,28 +299,31 @@ class QADaoServices(
         body: SectionApplyDto
     ): ApiResponseModel {
         val map = commonDaoServices.serviceMapDetails(appId)
-         try {
-             val loggedInUser = commonDaoServices.loggedInUserDetails()
-             var permit = findPermitBYID(permitID)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
 
-             with(permit) {
-                 divisionId = commonDaoServices.findSectionWIthId(body.sectionId ?: throw Exception("SECTION ID IS MISSING")).divisionId?.id
-             }
+            with(permit) {
+                divisionId = commonDaoServices.findSectionWIthId(
+                    body.sectionId ?: throw Exception("SECTION ID IS MISSING")
+                ).divisionId?.id
+            }
 
-             //updating of Details in DB
-             val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
 
-             return when (updateResults.first.status) {
-                 map.successStatus -> {
-                     permit = updateResults.second
-                     val batchID: Long? = getBatchID(permit, map, permitID)
-                     val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
-                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
-                 }
-                 else -> {
-                     commonDaoServices.setErrorResponse(updateResults.first.responseMessage?: "UNKNOWN_ERROR")
-                 }
-             }
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
         } catch (error: Exception) {
             return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
         }
@@ -324,38 +336,40 @@ class QADaoServices(
         body: CompletenessApplyDto
     ): ApiResponseModel {
         val map = commonDaoServices.serviceMapDetails(appId)
-         try {
-             val loggedInUser = commonDaoServices.loggedInUserDetails()
-             var permit = findPermitBYID(permitID)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
 
-             with(permit) {
-                 when {
-                     body.hofQamCompletenessStatus -> {
-                         hofQamCompletenessStatus = 1
-                         permitStatus = applicationMapProperties.mapQaStatusPQAOAssign
-                     }
-                     else -> {
-                         hofQamCompletenessStatus = 0
-                         permitStatus = applicationMapProperties.mapQaStatusIncompleteAppl
-                     }
-                 }
-                 hofQamCompletenessRemarks = body.hofQamCompletenessRemarks
-             }
+            with(permit) {
+                when {
+                    body.hofQamCompletenessStatus -> {
+                        hofQamCompletenessStatus = 1
+                        permitStatus = applicationMapProperties.mapQaStatusPQAOAssign
+                    }
 
-             //updating of Details in DB
-             val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+                    else -> {
+                        hofQamCompletenessStatus = 0
+                        permitStatus = applicationMapProperties.mapQaStatusIncompleteAppl
+                    }
+                }
+                hofQamCompletenessRemarks = body.hofQamCompletenessRemarks
+            }
 
-             return when (updateResults.first.status) {
-                 map.successStatus -> {
-                     permit = updateResults.second
-                     val batchID: Long? = getBatchID(permit, map, permitID)
-                     val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
-                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
-                 }
-                 else -> {
-                     commonDaoServices.setErrorResponse(updateResults.first.responseMessage?: "UNKNOWN_ERROR")
-                 }
-             }
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
         } catch (error: Exception) {
             return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
         }
@@ -368,31 +382,76 @@ class QADaoServices(
         body: AssignOfficerApplyDto
     ): ApiResponseModel {
         val map = commonDaoServices.serviceMapDetails(appId)
-         try {
-             val loggedInUser = commonDaoServices.loggedInUserDetails()
-             var permit = findPermitBYID(permitID)
-             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
-             with(permit) {
-                 qaoId = body.assignOfficerID
-                 permitStatus = applicationMapProperties.mapQaStatusPStandardsAdding
-                 userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                 factoryVisit = commonDaoServices.getCalculatedDate(permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}"))
-             }
-             //updating of Details in DB
-             val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+            with(permit) {
+                qaoId = body.assignOfficerID
+                permitStatus = applicationMapProperties.mapQaStatusPStandardsAdding
+                userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                factoryVisit = commonDaoServices.getCalculatedDate(
+                    permitType.factoryVisitDate
+                        ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}")
+                )
+            }
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
 
-             return when (updateResults.first.status) {
-                 map.successStatus -> {
-                     permit = updateResults.second
-                     val batchID: Long? = getBatchID(permit, map, permitID)
-                     val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
-                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
-                 }
-                 else -> {
-                     commonDaoServices.setErrorResponse(updateResults.first.responseMessage?: "UNKNOWN_ERROR")
-                 }
-             }
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitStandardsDetails(
+        permitID: Long,
+        body: StandardsApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(permit) {
+//                 qaoId = body.assignOfficerID
+                permitStatus = applicationMapProperties.mapQaStatusPStandardsAdding
+                userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                factoryVisit = commonDaoServices.getCalculatedDate(
+                    permitType.factoryVisitDate
+                        ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}")
+                )
+            }
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
         } catch (error: Exception) {
             return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
         }
