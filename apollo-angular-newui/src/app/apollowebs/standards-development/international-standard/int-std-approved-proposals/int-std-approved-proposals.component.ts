@@ -85,7 +85,9 @@ export class IntStdApprovedProposalsComponent implements OnInit {
       positiveVotes:[],
       negativeVotes:[],
       scope:[],
-      proposalId:[]
+      proposalId:[],
+        draftId: [],
+
     });
   }
   ngOnDestroy(): void {
@@ -181,7 +183,8 @@ export class IntStdApprovedProposalsComponent implements OnInit {
             scope: this.actionRequest.scope,
             circulationDate: this.actionRequest.circulationDate,
             closingDate: this.actionRequest.closingDate,
-            proposalId: this.actionRequest.id
+            proposalId: this.actionRequest.id,
+              draftId: this.actionRequest.draftId,
 
           }
       );

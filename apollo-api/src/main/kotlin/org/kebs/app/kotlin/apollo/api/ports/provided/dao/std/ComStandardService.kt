@@ -477,6 +477,7 @@ class ComStandardService(
         cs.standardType="Company Standard"
 
         val draftId=comStdDraftRepository.save(cs)
+        val draftNo=draftId.id
 
         val committeeLists = comStdJointCommitteeRepository.getCommitteeList(comStdDraft.requestId)
 
@@ -495,7 +496,7 @@ class ComStandardService(
         }?: throw Exception("REQUEST NOT FOUND")
 
 
-        val targetUrl = "https://kimsint.kebs.org/comStdDraftComment/$draftId";
+        val targetUrl = "https://kimsint.kebs.org/comStdDraftComment/$draftNo";
         committeeLists.forEach { c ->
             val subject = "Company Standard Draft"
             val messageBody= "Hope You are Well,A Draft for a company standard has been uploaded. Click on the Link below to comment. $targetUrl  "
@@ -766,6 +767,7 @@ class ComStandardService(
                 cs.comStdNumber = comStandard
                 cs.draftId=comStdDraft.id
                 cs.requestId=comStdDraft.requestId
+                cs.standardType="Company Standard"
 
                 val draftStandard= companyStandardRepository.save(cs)
 
@@ -901,7 +903,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
-        companyStandardRemarks.standardType = "Company Standard"
+        companyStandardRemarks.standardType = companyStandard.standardType
 
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1076,7 +1078,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
-        companyStandardRemarks.standardType = "Company Standard"
+        companyStandardRemarks.standardType = companyStandard.standardType
 
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1114,7 +1116,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
-        companyStandardRemarks.standardType = "Company Standard"
+        companyStandardRemarks.standardType = companyStandard.standardType
 
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
@@ -1163,7 +1165,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Standard Editor"
-        companyStandardRemarks.standardType = "Company Standard"
+        companyStandardRemarks.standardType = companyStandard.standardType
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
 
@@ -1187,7 +1189,7 @@ class ComStandardService(
 
         standard.title=standard.title
         standard.standardNumber=standard.standardNumber
-        standard.standardType="Company Standard"
+        standard.standardType=companyStandard.standardType
         standard.status=0
         standard.dateFormed=Timestamp(System.currentTimeMillis())
         standard.comStdId=standard.comStdId
@@ -1202,7 +1204,7 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Standard Editor"
-        companyStandardRemarks.standardType = "Company Standard"
+        companyStandardRemarks.standardType = companyStandard.standardType
 
 
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->

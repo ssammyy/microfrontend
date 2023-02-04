@@ -419,6 +419,8 @@ export class ApiEndpointService {
         IST_APPROVED_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProposals`,
         IST_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/prepareJustification`,
         IST_VIEW_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getISJustification`,
+        IST_APP_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getJustification`,
+        IST_APPR_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedJustification`,
         IST_VIEW_APP_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedISJustification`,
         IST_UPLOAD_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftForEditing`,
         IST_VIEW_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getUploadedDraft`,
