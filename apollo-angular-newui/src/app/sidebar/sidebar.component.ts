@@ -185,7 +185,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standardization Mark',
         type: 'link',
         icontype: 'class',
-        privilege: [],
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
 
 
     },
@@ -195,17 +195,17 @@ export const ROUTES: RouteInfo[] = [
         title: 'Fortification Mark',
         type: 'link',
         icontype: 'recommended',
-        privilege: [],
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
 
 
     },
-    ,
+
     {
         path: '/dmark-admin',
         title: 'Diamond Mark',
         type: 'link',
         icontype: 'verified',
-        privilege: [],
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
 
     },
 
