@@ -491,7 +491,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     }
 
     @Bean
-    fun migrationQualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
+    fun migrationQualityAssuranceRoutes(handler: QualityAssuranceHandler,internalUserhandler: QualityAssuranceInternalUserHandler) = router {
         "/api/v1/migration/qa".nest {
             GET("/sections-list", handler::sectionListMigration)
             GET("/branch-list", handler::branchListMigration)
@@ -628,7 +628,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             }
 
             "internal-users".nest{
-                GET("/permits-list", handler::getAllMyTaskList)
+                "/view".nest {
+                    GET("/permits-list", internalUserhandler::getAllMyTaskList)
+                    GET("/permit-detail", internalUserhandler::getPermitDetails)
+                }
             }
 
         }
