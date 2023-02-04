@@ -604,29 +604,61 @@ import {
 // import {
 //     PrepareDraftComponent
 // } from "./apollowebs/standards-development/committee-module/prepare-draft/prepare-draft.component";
-import {IntStdGazetteComponent} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
-import {ComStdDraftCommentComponent} from "./apollowebs/standards-development/company-standard/company-standard-request/com-std-draft-comment/com-std-draft-comment.component";
-import {SchemeMembershipFormComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component";
-import {SchemeMembershipReviewComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component";
-import {SchemeMembershipSicComponent} from "./apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component";
+import {
+    IntStdGazetteComponent
+} from "./apollowebs/standards-development/international-standard/int-std-gazette/int-std-gazette.component";
+import {
+    ComStdDraftCommentComponent
+} from "./apollowebs/standards-development/company-standard/company-standard-request/com-std-draft-comment/com-std-draft-comment.component";
+import {
+    SchemeMembershipFormComponent
+} from "./apollowebs/standards-development/schemeMembership/scheme-membership-form/scheme-membership-form.component";
+import {
+    SchemeMembershipReviewComponent
+} from "./apollowebs/standards-development/schemeMembership/scheme-membership-review/scheme-membership-review.component";
+import {
+    SchemeMembershipSicComponent
+} from "./apollowebs/standards-development/schemeMembership/scheme-membership-sic/scheme-membership-sic.component";
 import {RegisterTivetComponent} from "./views/registration/register-tivet/register-tivet.component";
-import {ComplaintMonitoringComponent} from "./apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component";
-import {FieldInspectionSummaryComponent} from "./apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component";
-import {WorkplanMonitoringToolComponent} from "./apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component";
-import {ComStdAppDraftComponent} from "./apollowebs/standards-development/company-standard/company-standard-request/com-std-app-draft/com-std-app-draft.component";
-import {IntStdPublishingComponent} from "./apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component";
-import {ComStdPublishingComponent} from "./apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component";
-import {ComStdEditorComponent} from "./apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component";
-import {SampleSubmittedTimelineComponent} from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
+import {
+    ComplaintMonitoringComponent
+} from "./apollowebs/market-surveillance/reports/complaint-monitoring/complaint-monitoring.component";
+import {
+    FieldInspectionSummaryComponent
+} from "./apollowebs/market-surveillance/reports/field-inspection-summary/field-inspection-summary.component";
+import {
+    WorkplanMonitoringToolComponent
+} from "./apollowebs/market-surveillance/reports/workplan-monitoring-tool/workplan-monitoring-tool.component";
+import {
+    ComStdAppDraftComponent
+} from "./apollowebs/standards-development/company-standard/company-standard-request/com-std-app-draft/com-std-app-draft.component";
+import {
+    IntStdPublishingComponent
+} from "./apollowebs/standards-development/international-standard/int-std-publishing/int-std-publishing.component";
+import {
+    ComStdPublishingComponent
+} from "./apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component";
+import {
+    ComStdEditorComponent
+} from "./apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component";
+import {
+    SampleSubmittedTimelineComponent
+} from './apollowebs/market-surveillance/reports/sample-submitted-timeline/sample-submitted-timeline.component';
 import {CorporateBillsComponent} from "./apollowebs/invoice/corporate-bills/corporate-bills.component";
-import {ViewRfcCocDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
-import {ViewRfcCorDocumentsComponent} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
+import {
+    ViewRfcCocDocumentsComponent
+} from "./apollowebs/pvoc/documents/rfc-coc-documents/view-rfc-coc-documents/view-rfc-coc-documents.component";
+import {
+    ViewRfcCorDocumentsComponent
+} from "./apollowebs/pvoc/documents/rfc-cor-documents/view-rfc-cor-documents/view-rfc-cor-documents.component";
 import {CompanyListComponent} from './apollowebs/company/company-list/company-list.component';
-import { SmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
-import { DmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
-import { FmarkAdminComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
-import { PermitDetailsComponent } from './apollowebs/qualityAssuranceAdmin/permit-details/permit-details.component';
-import {ComStdRequestProcessComponent} from "./apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component";
+import {SmarkAdminComponent} from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-admin.component';
+import {DmarkAdminComponent} from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-admin.component';
+import {FmarkAdminComponent} from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-admin.component';
+import {PermitDetailsComponent} from './apollowebs/qualityAssuranceAdmin/permit-details/permit-details.component';
+import {
+    ComStdRequestProcessComponent
+} from "./apollowebs/standards-development/company-standard/com-std-request-process/com-std-request-process.component";
 import {
     HofReviewProposalComponent
 } from "./apollowebs/standards-development/formationOfTc/hof-review-proposal/hof-review-proposal.component";
@@ -637,14 +669,44 @@ import {
 import {
     InvoiceConsolidateDmarkComponent
 } from "./apollowebs/quality-assurance/invoice-consolidate-dmark/invoice-consolidate-dmark.component";
-import { DmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/dmark-expired-applications/dmark-expired-applications.component';
-import { DmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/dmark-renewal-applications/dmark-renewal-applications.component';
-import { FmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/fmark-expired-applications/fmark-expired-applications.component';
-import { FmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/fmark-renewal-applications/fmark-renewal-applications.component';
-import { SmarkExpiredApplicationsComponent } from './apollowebs/quality-assurance/smark-expired-applications/smark-expired-applications.component';
-import { SmarkRenewalApplicationsComponent } from './apollowebs/quality-assurance/smark-renewal-applications/smark-renewal-applications.component';
-import {IntStdProposalCommentsComponent} from "./apollowebs/standards-development/international-standard/int-std-proposal-comments/int-std-proposal-comments.component";
-import {ComStdDraftCommentsComponent} from "./apollowebs/standards-development/company-standard/com-std-draft-comments/com-std-draft-comments.component";
+import {
+    DmarkExpiredApplicationsComponent
+} from './apollowebs/quality-assurance/dmark-expired-applications/dmark-expired-applications.component';
+import {
+    DmarkRenewalApplicationsComponent
+} from './apollowebs/quality-assurance/dmark-renewal-applications/dmark-renewal-applications.component';
+import {
+    FmarkExpiredApplicationsComponent
+} from './apollowebs/quality-assurance/fmark-expired-applications/fmark-expired-applications.component';
+import {
+    FmarkRenewalApplicationsComponent
+} from './apollowebs/quality-assurance/fmark-renewal-applications/fmark-renewal-applications.component';
+import {
+    SmarkExpiredApplicationsComponent
+} from './apollowebs/quality-assurance/smark-expired-applications/smark-expired-applications.component';
+import {
+    SmarkRenewalApplicationsComponent
+} from './apollowebs/quality-assurance/smark-renewal-applications/smark-renewal-applications.component';
+import {
+    IntStdProposalCommentsComponent
+} from "./apollowebs/standards-development/international-standard/int-std-proposal-comments/int-std-proposal-comments.component";
+import {
+    ComStdDraftCommentsComponent
+} from "./apollowebs/standards-development/company-standard/com-std-draft-comments/com-std-draft-comments.component";
+import {
+    InspectionReportDetailsComponent
+} from "./apollowebs/qualityAssuranceAdmin/inspection-report-details/inspection-report-details.component";
+import {
+    InspectionReportListComponent
+} from "./apollowebs/qualityAssuranceAdmin/inspection-report-list/inspection-report-list.component";
+import {
+    NewInspectionReportComponent
+} from "./apollowebs/qualityAssuranceAdmin/new-inspection-report/new-inspection-report.component";
+import {
+    PermitDetailsAdminComponent
+} from "./apollowebs/qualityAssuranceAdmin/permit-details-admin/permit-details-admin.component";
+import {StaDetailsComponent} from "./apollowebs/qualityAssuranceAdmin/sta-details/sta-details.component";
+
 export const routes: Routes = [
     {
         path: '',
@@ -1026,52 +1088,86 @@ export const routes: Routes = [
     },
 
 
-   // quality Assurance Admin
+    // quality Assurance Admin
 
-{
-    path: 'smark-admin', component: AdminLayoutComponent,
-    // canActivate: [RouteGuard]
+    {
+        path: 'smark-admin', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard]
 
-    children: [
-        {path: '', component: SmarkAdminComponent},
-    ],
+        children: [
+            {path: '', component: SmarkAdminComponent},
+        ],
 
-  },
+    },
 
-  {
-    path: 'dmark-admin', component: AdminLayoutComponent,
-    // canActivate: [RouteGuard]
+    {
+        path: 'dmark-admin', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard]
 
-    children: [
-        {path: '', component: DmarkAdminComponent},
-    ],
+        children: [
+            {path: '', component: DmarkAdminComponent},
+        ],
 
-  },
-  {
-    path: 'fmark-admin', component: AdminLayoutComponent,
-    // canActivate: [RouteGuard]
+    },
+    {
+        path: 'fmark-admin', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard]
 
-    children: [
-        {path: '', component: FmarkAdminComponent},
-    ],
+        children: [
+            {path: '', component: FmarkAdminComponent},
+        ],
 
-  },
- //   {
-//     path: 'Permit-details', component: AdminLayoutComponent,
-//     // canActivate: [RouteGuard]
+    },
 
-//     children: [
-//         {path: '', component: PermitDetailsComponent},
-//     ],
+    {
+        path: 'inspection-report-details', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard]
 
-//   },
-{
-    path: 'permit-details', component: PermitDetailsComponent,
-  },
+        children: [
+            {path: '', component: InspectionReportDetailsComponent},
+        ],
 
+    },
+    {
+        path: 'inspection-report-list', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard]
 
+        children: [
+            {path: '', component: InspectionReportListComponent},
+        ],
 
+    },
+    {
+        path: 'new-inspection-report', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard]
 
+        children: [
+            {path: '', component: NewInspectionReportComponent},
+        ],
+
+    },
+    {
+        path: 'permit-details-admin', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard]
+
+        children: [
+            {path: '', component: PermitDetailsAdminComponent},
+        ],
+
+    },
+    {
+        path: 'sta-details', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard]
+
+        children: [
+            {path: '', component: StaDetailsComponent},
+        ],
+
+    },
+
+    {
+        path: 'permit-details', component: PermitDetailsComponent,
+    },
 
 
     {
