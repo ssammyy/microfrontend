@@ -116,14 +116,29 @@ export class StdIntStandardService {
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
 
+
     public getApprovedProposals(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPROVED_PROPOSAL);
         const params = new HttpParams();
         return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
     }
-    public getISJustification(): any {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_JUSTIFICATION);
+
+
+    public getJustification(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APP_JUSTIFICATION);
         const params = new HttpParams();
+        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+    public getApprovedJustification(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_APPR_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.get<ISAdoptionProposal>(url, {params}).pipe();
+    }
+
+    public getISJustification(draftId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_JUSTIFICATION);
+        const params = new HttpParams().set('draftId', draftId);
         return this.http.get<ISJustificationProposal>(url, {params}).pipe();
     }
     public getApprovedISJustification(): any {
