@@ -632,6 +632,14 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
                     GET("/permit-detail", internalUserhandler::getPermitDetails)
                 }
+                "/apply".nest {
+                    "/permit".nest {
+                        POST("/section", internalUserhandler::updatePermitDetailsSection)
+                        POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
+                        POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
+                    }
+                GET("/permit-detail", internalUserhandler::getPermitDetails)
+            }
             }
 
         }

@@ -6,6 +6,30 @@ import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import javax.validation.constraints.NotNull
+
+
+data class SectionApplyDto(
+    var sectionId: Long? = null,
+    var sectionRemarks: String? = null
+)
+
+data class CompletenessApplyDto(
+    @NotNull(message = "Required Completeness Status")
+    var hofQamCompletenessStatus: Boolean,
+    var hofQamCompletenessRemarks: String? = null
+)
+
+data class AssignOfficerApplyDto(
+    var assignOfficerID: Long? = null,
+    var sectionRemarks: String? = null
+)
+
+
+
+
+
+
 
 
 data class ST10Dto(
