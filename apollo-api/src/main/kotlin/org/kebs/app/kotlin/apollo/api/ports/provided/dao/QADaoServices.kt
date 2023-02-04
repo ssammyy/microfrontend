@@ -3715,7 +3715,7 @@ class QADaoServices(
             ),
             permit.sscId?.let { findUploadedFileBYId(it).let { f -> filesDtoDetails(f) } },
             batchID,
-            null,
+            jasyptStringEncryptor.encrypt(permit.id.toString()),
             findSTA3WithPermitIDAndRefNumber(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID)?.let { mapDtoSTA3View(it,permitID) },
             findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber?: throw Exception("Missing Permit Ref Number"), permitID)?.let { listSTA10ViewDetails(permitID, it) }
         )
@@ -3743,7 +3743,7 @@ class QADaoServices(
         return permitsList.sortedBy { it.visitsScheduled }
     }
 
-    fun listSTA10ViewDetails(permitID: Long, qaSta10Entity: QaSta3Entity): AllSTA10DetailsDto {
+    fun listSTA10ViewDetails(permitID: Long, qaSta10Entity: QaSta10Entity): AllSTA10DetailsDto {
         val qaSta10ID = qaSta10Entity.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
         val sta10Personnel = findPersonnelWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
         val sta10Products = findProductsManufactureWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")

@@ -3385,13 +3385,6 @@ class QualityAssuranceHandler(
             val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID)?: throw ExpectedDataNotFound("MISSING STA 10 DETAILS")
             //Find all sta 10 personnel in charge  add
             val qaSta10ID = qaSta10Entity.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
-            val sta10Personnel = qaDaoServices.findPersonnelWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
-            val sta10Products = qaDaoServices.findProductsManufactureWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
-            val sta10Raw = qaDaoServices.findRawMaterialsWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
-            val sta10MachinePlant = qaDaoServices.findMachinePlantsWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
-            val sta10ManufacturingProcess = qaDaoServices.findManufacturingProcessesWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
-            val sta10FileList = qaDaoServices.findAllUploadedFileBYPermitIDAndSta10Status(permit.id ?: throw Exception("MISSING PERMIT ID"), 1)
-
 
             qaDaoServices.listSTA10ViewDetails(permitID, qaSta10Entity).let { return ok().body(it) }
 

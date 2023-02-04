@@ -24,6 +24,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 //import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 
 import mu.KotlinLogging
+import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
@@ -47,6 +48,7 @@ class QualityAssuranceInternalUserHandler(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
     private val qaDaoServices: QADaoServices,
+    private val jasyptStringEncryptor: StringEncryptor,
     private val validator: Validator,
 
     ): AbstractValidationHandler() {
@@ -77,7 +79,8 @@ class QualityAssuranceInternalUserHandler(
 
     fun getPermitDetails(req: ServerRequest): ServerResponse {
         return try {
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
             qaDaoServices.findPermitDetails(permitID)
                 .let {
                     ok().body(it)
@@ -114,7 +117,8 @@ class QualityAssuranceInternalUserHandler(
     }
     fun updatePermitDetailsCompleteness(req: ServerRequest): ServerResponse {
         return try {
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
             val body = req.body<CompletenessApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, CompletenessApplyDto::class.java.name)
             validator.validate(body, errors)
@@ -137,7 +141,8 @@ class QualityAssuranceInternalUserHandler(
     }
     fun updatePermitDetailsAssignOfficer(req: ServerRequest): ServerResponse {
         return try {
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
             val body = req.body<AssignOfficerApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, AssignOfficerApplyDto::class.java.name)
             validator.validate(body, errors)
@@ -160,7 +165,8 @@ class QualityAssuranceInternalUserHandler(
     }
     fun updatePermitDetailsStandards(req: ServerRequest): ServerResponse {
         return try {
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
             val body = req.body<StandardsApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, StandardsApplyDto::class.java.name)
             validator.validate(body, errors)
@@ -183,7 +189,8 @@ class QualityAssuranceInternalUserHandler(
     }
     fun updatePermitDetailsScheduleInspection(req: ServerRequest): ServerResponse {
         return try {
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
             val body = req.body<ScheduleInspectionApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, ScheduleInspectionApplyDto::class.java.name)
             validator.validate(body, errors)
@@ -206,7 +213,8 @@ class QualityAssuranceInternalUserHandler(
     }
     fun updatePermitDetailsInspectionCheckList(req: ServerRequest): ServerResponse {
         return try {
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
             val body = req.body<AllInspectionDetailsApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, AllInspectionDetailsApplyDto::class.java.name)
             validator.validate(body, errors)
