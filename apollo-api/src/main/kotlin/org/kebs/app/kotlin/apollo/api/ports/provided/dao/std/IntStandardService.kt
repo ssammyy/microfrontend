@@ -458,7 +458,7 @@ class IntStandardService(
     }
 
     //prepare justification
-    fun prepareJustification(iSAdoptionJustification: ISAdoptionJustification) : ISAdoptionJustification
+    fun prepareJustification(iSAdoptionJustification: ISAdoptionJustification) : String
     {
         val variables: MutableMap<String, Any> = HashMap()
         iSAdoptionJustification.meetingDate=iSAdoptionJustification.meetingDate
@@ -475,6 +475,7 @@ class IntStandardService(
         iSAdoptionJustification.negativeVotes=iSAdoptionJustification.negativeVotes
         iSAdoptionJustification.remarks=iSAdoptionJustification.remarks
         iSAdoptionJustification.proposalId=iSAdoptionJustification.proposalId
+        iSAdoptionJustification.draftId=iSAdoptionJustification.draftId
 
         iSAdoptionJustification.submissionDate = Timestamp(System.currentTimeMillis())
 
@@ -489,23 +490,24 @@ class IntStandardService(
         //email to Head of publishing
         val targetUrl = "https://kimsint.kebs.org/";
         userList.forEach { item->
-            val recipient="stephenmuganda@gmail.com"
-            //val recipient= item.getUserEmail()
+          //  val recipient="stephenmuganda@gmail.com"
+            val recipient= item.getUserEmail()
             val subject = "Justification"
             val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Justification for International Standard has been prepared."
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
         }
-        isAdoptionProposalRepository.findByIdOrNull(iSAdoptionJustification.proposalId)?.let { iSAdoptionProposal ->
-            with(iSAdoptionProposal) {
-                status = 2
+        comStdDraftRepository.findByIdOrNull(iSAdoptionJustification.draftId)?.let { comStdDraft ->
 
+            with(comStdDraft) {
+                status = 3
             }
-            isAdoptionProposalRepository.save(iSAdoptionProposal)
-        } ?: throw Exception("PROPOSAL NOT FOUND")
+            comStdDraftRepository.save(comStdDraft)
 
-        return iSAdoptionJustificationRepository.save(iSAdoptionJustification)
+        } ?: throw Exception("DRAFT NOT FOUND")
+
+        return "Justification Uploaded"
 
     }
 
@@ -534,8 +536,9 @@ class IntStandardService(
         return isJustificationUploadsRepository.save(uploads)
     }
 
-    fun getISJustification(): MutableList<ISAdoptionProposalJustification> {
-        return iSAdoptionJustificationRepository.getISJustification()
+
+    fun getISJustification(): MutableList<ProposalDetails>{
+        return isAdoptionProposalRepository.getISJustification();
     }
 
     //Get IS justification Document
@@ -543,9 +546,110 @@ class IntStandardService(
         return isJustificationUploadsRepository.findByIsJSDocumentId(isJSDocumentId) ?: throw ExpectedDataNotFound("No File found with the following [ id=$isJSDocumentId]")
     }
 
+    fun decisionOnJustification(
+        comStdDraft: ComStdDraft,
+        companyStandardRemarks: CompanyStandardRemarks
+    ) : ResponseMsg {
+        var response=""
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        comStdDraft.accentTo=comStdDraft.accentTo
+        val decision=comStdDraft.accentTo
+        val commentNumber=comStdDraftRepository.getISDraftCommentCount(comStdDraft.id)
+        // val countNo=commentNumber.toString()
+        val fName = loggedInUser.firstName
+        val sName = loggedInUser.lastName
+        val usersName = "$fName  $sName"
+        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.remarks= companyStandardRemarks.remarks
+        companyStandardRemarks.status = 1.toString()
+        companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
+        companyStandardRemarks.remarkBy = usersName
+        companyStandardRemarks.role = "TC Secretary"
+        companyStandardRemarks.standardType = "International Standard"
+        val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(5))
+
+
+            if (decision == "Yes") {
+                comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+                    with(comStdDraft) {
+                        status = 4
+
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
+                    response="Draft Approved"
+                }?: throw Exception("DRAFT NOT FOUND")
+
+
+            } else if (decision == "No") {
+                comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
+
+                    with(comStdDraft) {
+                        status = 5
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
+
+                    response="Draft Not Approved"
+                } ?: throw Exception("DRAFT NOT FOUND")
+
+
+            }
+
+        return ResponseMsg(response)
+    }
+
+
+    fun submitDraftForEditing(companyStandard: CompanyStandard) : CompanyStandard
+    {
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+
+        companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
+            with(companyStandard) {
+                title=companyStandard.title
+                departmentId = companyStandard.departmentId
+                subject=companyStandard.subject
+                description=companyStandard.description
+                status=companyStandard.status
+                comStdNumber = companyStandard.comStdNumber
+                documentType=companyStandard.documentType
+                draftId=companyStandard.draftId
+                requestId=companyStandard.requestId
+                standardType="International Standard"
+                scope=companyStandard.scope
+                normativeReference=companyStandard.normativeReference
+                symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
+                clause=companyStandard.clause
+                preparedBy=loggedInUser.firstName + loggedInUser.lastName
+                special = companyStandard.special
+
+            }
+
+        }?: throw Exception("DRAFT NOT FOUND")
+
+        val draftStandard= companyStandardRepository.save(companyStandard)
+
+        var userList= companyStandardRepository.getHopEmailList()
+
+        //email to Head of publishing
+        val targetUrl = "https://kimsint.kebs.org/";
+        userList.forEach { item->
+            //val recipient="stephenmuganda@gmail.com"
+            val recipient= item.getUserEmail()
+            val subject = "Standard"
+            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded."
+            if (recipient != null) {
+                notifications.sendEmail(recipient, subject, messageBody)
+            }
+        }
+        return draftStandard
+    }
+
 
     // Decision on Justification
-    fun decisionOnJustification(
+    fun decisionOnJustificationx(
         iSAdoptionJustification: ISAdoptionJustification,
         internationalStandardRemarks: InternationalStandardRemarks
     ) : String {

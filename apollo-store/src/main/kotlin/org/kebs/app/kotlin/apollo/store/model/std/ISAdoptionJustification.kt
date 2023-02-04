@@ -133,6 +133,10 @@ class ISAdoptionJustification {
     @Basic
     var proposalId: Long? = null
 
+    @Column(name = "DRAFT_ID")
+    @Basic
+    var draftId: Long? = null
+
 
 
 

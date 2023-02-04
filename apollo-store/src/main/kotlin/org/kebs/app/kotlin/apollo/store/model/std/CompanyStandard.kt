@@ -140,5 +140,9 @@ class CompanyStandard {
     @Column(name="COMPANY_PHONE")
     @Basic
     var companyPhone: String?=null
+
+    @Column(name="STANDARD_TYPE")
+    @Basic
+    var standardType: String?=null
 }
 

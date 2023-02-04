@@ -394,11 +394,22 @@ interface ISAdoptionProposalRepository : JpaRepository<ISAdoptionProposal, Long>
                 "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName," +
                 "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
                 "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail," +
-                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID WHERE d.ID=:id AND d.STATUS=1 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID WHERE  d.STATUS=1 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
         nativeQuery = true
     )
 
     fun getApprovedProposals(): MutableList<ProposalDetails>
+
+    @Query(
+        value = "SELECT p.ID as id, p.DOC_NAME as docName,p.TITLE as title,p.CIRCULATION_DATE as circulationDate,p.NAME_OF_ORGANIZATION AS nameOfOrganization,p.NAME_OF_RESPONDENT AS nameOfRespondent,p.DATE_PREPARED as preparedDate," +
+                "p.PROPOSAL_NUMBER as proposalNumber,p.UPLOADED_BY as uploadedBy,p.REMARKS as remarks,p.ASSIGNED_TO as assignedTo,p.CLOSING_DATE AS closingDate,p.SCOPE as scope,p.TC_SEC_NAME AS tcSecName," +
+                "p.ADOPTION_ACCEPTABLE_AS_PRESENTED AS adoptionAcceptableAsPresented,p.REASONS_FOR_NOT_ACCEPTANCE AS reasonsForNotAcceptance,p.STANDARD_NUMBER as standardNumber,p.DEADLINE_DATE as deadlineDate,d.COMMENT_COUNT as noOfComments," +
+                "d.ID as draftId,d.DRAFT_NUMBER as draftNumber,d.title as draftTitle,d.COM_STANDARD_NUMBER as iStandardNumber,d.COMPANY_NAME as companyName,d.CONTACT_ONE_EMAIL as contactOneEmail," +
+                "d.CONTACT_ONE_FULL_NAME as contactOneFullName,d.CONTACT_ONE_TELEPHONE as contactOneTelephone FROM SD_ADOPTION_PROPOSAL p LEFT JOIN SD_COM_STD_DRAFT d ON p.ID=d.PROPOSAL_ID WHERE  d.STATUS=3 AND d.STANDARD_TYPE='International Standard'  ORDER BY p.ID DESC",
+        nativeQuery = true
+    )
+
+    fun getISJustification(): MutableList<ProposalDetails>
 
     @Query("SELECT NVL (NUMBER_OF_COMMENTS,0) as NUMBER_OF_COMMENTS FROM SD_ADOPTION_PROPOSAL WHERE ID=:proposalID", nativeQuery = true)
     fun getCommentCount(@Param("proposalID") proposalID: Long?): Long
