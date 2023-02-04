@@ -284,8 +284,7 @@ class QualityAssuranceController(
 
         //Find Permit with permit ID
         var permitDetails = qaDaoServices.findPermitBYID(permitId)
-        val permitType =
-            qaDaoServices.findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+        val permitType = qaDaoServices.findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
         var returnDetails: Pair<PermitApplicationsEntity, String> =
             assignDefalutDetailsDetails(map, permitDetails, loggedInUser)
@@ -295,9 +294,7 @@ class QualityAssuranceController(
 
         if (permit.sectionId != null) {
             with(permit) {
-                divisionId = commonDaoServices.findSectionWIthId(
-                    sectionId ?: throw Exception("SECTION ID IS MISSING")
-                ).divisionId?.id
+                divisionId = commonDaoServices.findSectionWIthId(sectionId ?: throw Exception("SECTION ID IS MISSING")).divisionId?.id
             }
         } else if (permit.qaoId != null && permit.assignOfficerStatus == map.activeStatus) {
             with(permit) {
@@ -308,12 +305,7 @@ class QualityAssuranceController(
         }
 
         //updating of Details in DB
-        val updateResults = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                permitDetails
-            ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        val updateResults = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser)
 
         result = updateResults.first
 
@@ -1070,9 +1062,7 @@ class QualityAssuranceController(
         val userDetails =
             commonDaoServices.findUserByID(permitDetailsDB.qaoId ?: throw ExpectedDataNotFound("MISSING QAO ID"))
         permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
-        permitDetailsDB.factoryVisit = commonDaoServices.getCalculatedDate(
-            permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE")
-        )
+        permitDetailsDB.factoryVisit = commonDaoServices.getCalculatedDate(permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE"))
         when (permitDetailsDB.permitType) {
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 permitDetailsDB = qaDaoServices.permitInsertStatus(

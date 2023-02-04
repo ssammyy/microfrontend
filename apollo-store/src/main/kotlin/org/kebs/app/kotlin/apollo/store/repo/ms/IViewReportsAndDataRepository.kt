@@ -157,6 +157,13 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
 }
 
 @Repository
+interface IWorkPlanMonitoringSameTaskDateEntityRepository : HazelcastRepository<WorkPlanMonitoringSameTaskDateEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<WorkPlanMonitoringSameTaskDateEntity>
+
+    fun findAllByWorkplanYearIdAndTimeActivityDateAndCountyIdAndRegionIdAndTownsId(workplanYearId: Long, timeActivityDate:java.sql.Date,countyId:Long,regionId: Long,townsId:Long ): List<WorkPlanMonitoringSameTaskDateEntity>
+}
+
+@Repository
 interface IFieldInspectionSummaryReportViewRepository : HazelcastRepository<FieldInspectionSummaryReportViewEntity, Long> {
     override fun findAll(pageable: Pageable): Page<FieldInspectionSummaryReportViewEntity>
 

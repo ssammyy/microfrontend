@@ -479,6 +479,11 @@ import {ComStdAppDraftComponent} from './apollowebs/standards-development/compan
 import {ComStdPublishingComponent} from './apollowebs/standards-development/company-standard/com-std-publishing/com-std-publishing.component';
 import {ComStdEditorComponent} from './apollowebs/standards-development/company-standard/com-std-editor/com-std-editor.component';
 import {ComStdDraftCommentComponent} from './apollowebs/standards-development/company-standard/company-standard-request/com-std-draft-comment/com-std-draft-comment.component';
+import { StaDetailsComponent } from './apollowebs/qualityAssuranceAdmin/sta-details/sta-details.component';
+import { InspectionReportDetailsComponent } from './apollowebs/qualityAssuranceAdmin/inspection-report-details/inspection-report-details.component';
+import { InspectionReportListComponent } from './apollowebs/qualityAssuranceAdmin/inspection-report-list/inspection-report-list.component';
+import { NewInspectionReportComponent } from './apollowebs/qualityAssuranceAdmin/new-inspection-report/new-inspection-report.component';
+import { PermitDetailsAdminComponent } from './apollowebs/qualityAssuranceAdmin/permit-details-admin/permit-details-admin.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1001,6 +1006,11 @@ import {ComStdDraftCommentComponent} from './apollowebs/standards-development/co
 
         BillDetailsComponent,
         ViewBillDetailsComponent,
+        StaDetailsComponent,
+        InspectionReportDetailsComponent,
+        InspectionReportListComponent,
+        NewInspectionReportComponent,
+        PermitDetailsAdminComponent,
 
     ],
     entryComponents: [LoaderComponent],

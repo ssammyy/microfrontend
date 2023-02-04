@@ -134,33 +134,6 @@ class QualityAssuranceHandler(
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
-
-    /*:::::::::::::::::::::::::::::::::::::::::::::START INTERNAL USER FUNCTIONALITY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    fun getAllMyTaskList(req: ServerRequest): ServerResponse {
-        return try {
-            val auth = commonDaoServices.loggedInUserAuthentication()
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
-            val map = commonDaoServices.serviceMapDetails(appId)
-            var permitListMyTasksAddedTogether = mutableListOf<PermitEntityDto>()
-            permitListMyTasksAddedTogether = qaDaoServices.findLoggedInUserTask(auth, loggedInUser, map,permitListMyTasksAddedTogether)
-            ok().body(permitListMyTasksAddedTogether.distinct())
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-            badRequest().body(e.message ?: "UNKNOWN_ERROR")
-        }
-    }
-
-
-
-
-
-
-
-    /*:::::::::::::::::::::::::::::::::::::::::::::END INTERNAL USER FUNCTIONALITY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-
-
-
     fun notSupported(req: ServerRequest): ServerResponse = badRequest().body("Invalid Request: Not supported")
 
     @PreAuthorize(
@@ -2794,8 +2767,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
             var permit: PermitApplicationsEntity? = null
             permit = when {

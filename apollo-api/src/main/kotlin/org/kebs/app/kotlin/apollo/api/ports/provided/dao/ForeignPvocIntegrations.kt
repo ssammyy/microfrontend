@@ -1002,6 +1002,10 @@ class ForeignPvocIntegrations(
 
     fun foreignRiskProfile(rfc: RiskProfileForm, s: ServiceMapsEntity, user: PvocPartnersEntity): RiskProfileEntity? {
         val auth = this.commonDaoServices.loggedInUserAuthentication()
+        val count = this.riskProfileRepository.countByCreatedByAndHsCode(auth.name, rfc.hsCode ?: "")
+        if (count > 0) {
+            throw ExpectedDataNotFound("Found existing hs code categorized by same PVOC")
+        }
         val risk = RiskProfileEntity()
         risk.brandName = rfc.brandName
         risk.categorizationDate = rfc.categorizationDate

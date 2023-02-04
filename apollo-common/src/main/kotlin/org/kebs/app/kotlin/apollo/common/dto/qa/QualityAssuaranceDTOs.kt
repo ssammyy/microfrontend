@@ -6,6 +6,35 @@ import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import javax.validation.constraints.NotNull
+
+
+data class SectionApplyDto(
+    var sectionId: Long? = null,
+    var sectionRemarks: String? = null
+)
+
+data class StandardsApplyDto(
+    var productStandardID: Long? = null,
+    var sectionRemarks: String? = null
+)
+
+data class CompletenessApplyDto(
+    @NotNull(message = "Required Completeness Status")
+    var hofQamCompletenessStatus: Boolean,
+    var hofQamCompletenessRemarks: String? = null
+)
+
+data class AssignOfficerApplyDto(
+    var assignOfficerID: Long? = null,
+    var sectionRemarks: String? = null
+)
+
+
+
+
+
+
 
 
 data class ST10Dto(
@@ -540,7 +569,6 @@ data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
     var remarksDetails: PermitAllRemarksDetailsDto? = null,
     var invoiceDetails: InvoiceDetailsDto? = null,
-//    var standardList: List<UserEntityDto>? = null,
     var officerList: List<UserEntityDto>? = null,
     var oldVersionList: List<PermitEntityDto>? = null,
     var ordinaryFilesList: List<FilesListDto>? = null,
