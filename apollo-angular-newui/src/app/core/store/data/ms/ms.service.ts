@@ -1269,19 +1269,19 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public msWorkPlanScheduleSaveDataReport(batchReferenceNo: string, referenceNo: string, data: DataReportDto): Observable<WorkPlanInspectionDto> {
+    public msWorkPlanScheduleSaveDataReport(data: FormData): Observable<WorkPlanInspectionDto> {
         console.log(data);
          // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_DATA_REPORT);
-        const params = new HttpParams()
-            .set('batchReferenceNo', batchReferenceNo)
-            .set('referenceNo', referenceNo);
-        return this.http.post<WorkPlanInspectionDto>(url, data, {params}).pipe(
-            map(function (response: WorkPlanInspectionDto) {
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
-                // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
             }),
         );

@@ -5554,7 +5554,7 @@ class QADaoServices(
                     val userID = user.id ?: throw Exception("INVALID USER ID")
                     var permitInvoiceFound = findPermitInvoiceByPermitID(permitId)
                     val permitDetails = findPermitBYID(permitId)
-                    val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
+                    val permitType = findPermitType(permitDetails.permitType?: throw Exception("MISSING PERMIT TYPE ID"))
                     val attachedPermitPlantDetails =findPlantDetails(permitDetails.attachedPlantId?: throw Exception("MISSING PLANT DETAILS (ID)"))
                     val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(attachedPermitPlantDetails.region ?: throw Exception("MISSING REGION ID"), permitType.id ?: throw Exception("MISSING REGION ID"))
 
@@ -5570,12 +5570,8 @@ class QADaoServices(
 
                             with(invoiceDetails) {
                                 description = "${permitInvoiceFound.invoiceRef},$description"
-                                totalAmount = totalAmount?.plus(
-                                    permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
-                                )
-                                totalTaxAmount = totalTaxAmount?.plus(
-                                    permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
-                                )
+                                totalAmount = totalAmount?.plus(permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
+                                totalTaxAmount = totalTaxAmount?.plus(permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
 
                             }
                             invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)
@@ -5584,8 +5580,8 @@ class QADaoServices(
                                 revenueAcc = paymentRevenueCode.revenueCode
                                 revenueAccDesc = paymentRevenueCode.revenueDescription
                                 taxable = 1
-                                totalAmount = invoiceBatchDetails!!.totalAmount
-                                taxAmount = invoiceBatchDetails!!.totalTaxAmount
+                                totalAmount = permitInvoiceFound.totalAmount
+                                taxAmount = permitInvoiceFound.taxAmount
                             }
                             sageValuesDtoList.add(detailBody)
                         }
@@ -5599,12 +5595,8 @@ class QADaoServices(
                                 if (batchInvoiceDto.isWithHolding == 1L) {
                                     var foundTotalAmount = permitInvoiceFound.totalAmount
                                     foundTotalAmount = foundTotalAmount?.minus(permitInvoiceFound.taxAmount!!)
-
-                                    val taxFoundAmount =
-                                        foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
-
+                                    val taxFoundAmount = foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
                                     foundTotalAmount = taxFoundAmount?.let { foundTotalAmount?.plus(it) }
-
                                     with(permitInvoiceFound) {
                                         totalAmount = foundTotalAmount
                                         taxAmount = taxFoundAmount
@@ -5615,12 +5607,13 @@ class QADaoServices(
                                     permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
                                 }
                                 status = s.activeStatus
-                                description = "${permitInvoiceFound.invoiceRef}"
-                                totalAmount = permitInvoiceFound.totalAmount
-                                totalTaxAmount = permitInvoiceFound.taxAmount
+                                description = "${permitInvoiceFound.invoiceRef},$description"
+                                totalAmount = totalAmount?.plus(permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
+                                totalTaxAmount = totalTaxAmount?.plus(permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
                                 createdBy = commonDaoServices.concatenateName(user)
                                 createdOn = commonDaoServices.getTimestamp()
                             }
+
                             batchInvoicePermit = invoiceQaBatchRepo.save(batchInvoicePermit)
 
                             with(permitInvoiceFound) {
@@ -5636,8 +5629,8 @@ class QADaoServices(
                                 revenueAcc = paymentRevenueCode.revenueCode
                                 revenueAccDesc = paymentRevenueCode.revenueDescription
                                 taxable = 1
-                                totalAmount = invoiceBatchDetails!!.totalAmount
-                                taxAmount = invoiceBatchDetails!!.totalTaxAmount
+                                totalAmount = permitInvoiceFound.totalAmount
+                                taxAmount = permitInvoiceFound.taxAmount
                             }
                             sageValuesDtoList.add(detailBody)
 
@@ -5649,8 +5642,7 @@ class QADaoServices(
                     KotlinLogging.logger { }.info("batch ID = ${invoiceBatchDetails?.id}")
 
                     sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.createdBy}]"
-                    sr.names =
-                        "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}${permitInvoiceFound.taxAmount}"
+                    sr.names = "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}${permitInvoiceFound.taxAmount}"
                     sr.varField1 = invoiceBatchDetails?.id.toString()
 
                     sr.responseStatus = sr.serviceMapsId?.successStatusCode
@@ -5906,7 +5898,7 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(s)
         var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
-        try {
+
 
             val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
@@ -5951,17 +5943,17 @@ class QADaoServices(
             sr = serviceRequestsRepository.save(sr)
             sr.processingEndDate = Timestamp.from(Instant.now())
 
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
-//            KotlinLogging.logger { }.trace(e.message, e)
-            sr.status = sr.serviceMapsId?.exceptionStatus
-            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
-            sr.responseMessage = e.message
-            sr = serviceRequestsRepository.save(sr)
-            throw Exception(sr.responseMessage)
-        }
-
-        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message, e)
+////            KotlinLogging.logger { }.trace(e.message, e)
+//            sr.status = sr.serviceMapsId?.exceptionStatus
+//            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+//            sr.responseMessage = e.message
+//            sr = serviceRequestsRepository.save(sr)
+//            throw ExpectedDataNotFound(sr.responseMessage)
+//        }
+//
+//        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, invoiceGenerated)
     }
 

@@ -368,6 +368,7 @@ class IntStandardController(
             negativeVotes=iSAdoptionJustifications.negativeVotes
             remarks=iSAdoptionJustifications.remarks
             proposalId=iSAdoptionJustifications.proposalId
+            draftId=iSAdoptionJustifications.draftId
         }
 
 
@@ -377,10 +378,66 @@ class IntStandardController(
     @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getISJustification")
     @ResponseBody
-    fun getISJustification(): MutableList<ISAdoptionProposalJustification>
+    fun getISJustification(): MutableList<ProposalDetails>
     {
         return internationalStandardService.getISJustification()
     }
+
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/international_standard/decisionOnJustification")
+    fun decisionOnJustification(@RequestBody comStdDraftDecisionDto: IntStdDraftDecisionDto
+    ) : ServerResponse
+    {
+        val comStdDraft= ComStdDraft().apply {
+            id=comStdDraftDecisionDto.draftId
+            accentTo=comStdDraftDecisionDto.accentTo
+        }
+
+        val companyStandardRemarks= CompanyStandardRemarks().apply {
+            requestId=comStdDraftDecisionDto.proposalId
+            remarks=comStdDraftDecisionDto.comments
+        }
+
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDecisions) }
+
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnJustification(comStdDraft,companyStandardRemarks))
+
+    }
+
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/international_standard/submitDraftForEditing")
+    @ResponseBody
+    fun submitDraftForEditing(@RequestBody isDraftDto: CSDraftDto): ServerResponse
+    {
+        val companyStandard= CompanyStandard().apply {
+            comStdNumber=isDraftDto.comStdNumber
+            title=isDraftDto.title
+            scope=isDraftDto.scope
+            normativeReference=isDraftDto.normativeReference
+            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+            clause=isDraftDto.clause
+            documentType=isDraftDto.documentType
+            preparedBy=isDraftDto.preparedBy
+            documentType=isDraftDto.docName
+            special=isDraftDto.special
+            requestId=isDraftDto.requestId
+            draftId=isDraftDto.draftId
+            departmentId=isDraftDto.departmentId
+            subject=isDraftDto.subject
+            description=isDraftDto.description
+            status=1
+
+        }
+
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
+
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Draft",internationalStandardService.submitDraftForEditing(companyStandard))
+    }
+
 
     //
     @PostMapping("/international_standard/js-file-upload")
@@ -438,23 +495,23 @@ class IntStandardController(
     }
 
     //decision on Adoption Proposal
-    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/international_standard/decisionOnJustification")
-    fun decisionOnJustification(@RequestBody iSJustificationDecisions: ISJustificationDecisions
-    ) : ServerResponse
-    {
-        val iSAdoptionJustification= ISAdoptionJustification().apply {
-            accentTo=iSJustificationDecisions.accentTo
-            id=iSJustificationDecisions.justificationId
-        }
-        val internationalStandardRemarks= InternationalStandardRemarks().apply {
-            proposalId=iSJustificationDecisions.proposalId
-            remarks=iSJustificationDecisions.comments
-        }
-
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnJustification(iSAdoptionJustification,internationalStandardRemarks))
-
-    }
+//    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+//    @PostMapping("/international_standard/decisionOnJustification")
+//    fun decisionOnJustification(@RequestBody iSJustificationDecisions: ISJustificationDecisions
+//    ) : ServerResponse
+//    {
+//        val iSAdoptionJustification= ISAdoptionJustification().apply {
+//            accentTo=iSJustificationDecisions.accentTo
+//            id=iSJustificationDecisions.justificationId
+//        }
+//        val internationalStandardRemarks= InternationalStandardRemarks().apply {
+//            proposalId=iSJustificationDecisions.proposalId
+//            remarks=iSJustificationDecisions.comments
+//        }
+//
+//        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.decisionOnJustification(iSAdoptionJustification,internationalStandardRemarks))
+//
+//    }
 
     @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedISJustification")
@@ -479,30 +536,8 @@ class IntStandardController(
         return internationalStandardService.justificationDecision(isJustificationDecision,internationalStandardRemarks)
     }
 
-    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-    @PostMapping("/international_standard/submitDraftForEditing")
-    @ResponseBody
-    fun submitDraftForEditing(@RequestBody isDraftDto: ISDraftDto): ServerResponse
-    {
-        val iSUploadStandard= ISUploadStandard().apply {
-            proposalId=isDraftDto.proposalId
-            justificationNo=isDraftDto.justificationNo
-            id=isDraftDto.id
-            title=isDraftDto.title
-            scope=isDraftDto.scope
-            normativeReference=isDraftDto.normativeReference
-            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-            clause=isDraftDto.clause
-            iSNumber=isDraftDto.standardNumber
-            preparedBy=isDraftDto.preparedBy
-            documentType=isDraftDto.docName
-            special=isDraftDto.special
-        }
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
 
-        return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.submitDraftForEditing(iSUploadStandard))
-    }
+
 
     @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getUploadedDraft")

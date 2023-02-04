@@ -8,7 +8,7 @@ import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto, CompanyTurnOverUpdateDto, FilterDto, FirmTypeEntityDto,
     FmarkEntityDto,
-    GenerateInvoiceDto,
+    GenerateInvoiceDto, GenerateInvoiceWithWithholdingDto,
     MPesaPushDto,
     PermitDto,
     PermitEntityDetails,
@@ -876,7 +876,7 @@ export class QaService {
         );
     }
 
-    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+    public createInvoiceConsolidatedDetails(data: GenerateInvoiceWithWithholdingDto): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_SUBMIT);
         return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {
@@ -889,7 +889,7 @@ export class QaService {
         );
     }
 
-    public removeInvoiceFromConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+    public removeInvoiceFromConsolidatedDetails(data: GenerateInvoiceWithWithholdingDto): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_REMOVE);
         return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {
