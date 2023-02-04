@@ -83,6 +83,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   addLabParamStatus = true;
   addProductsStatus = true;
   addSeizureProductsStatus = true;
+  isInitialReport: boolean = false;
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
@@ -2728,6 +2729,20 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   }
 
+  closeSeizureDeclarationRecord() {
+    window.$('#seizureDeclarationModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#investInspectReportModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#investInspectReportModal').modal('show');
+    }, 500);
+
+  }
+
   closePopUpsModal3() {
     window.$('#myModal3').modal('hide');
     window.$('body').removeClass('modal-open');
@@ -4295,7 +4310,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     window.$('#seizureDeclarationModal').modal('show');
   }
 
-  viewSeizedDetails(data: SeizureListDto) {
+  viewSeizedDetails(data: SeizureListDto, initialReportStatus: boolean) {
     this.seizureForm.patchValue(data);
     this.selectedSeizedDetails = data;
     const paramDetails = data.seizureList;
@@ -4305,6 +4320,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
     this.seizureForm.disable();
     this.addSeizureProductsStatus = false;
+    this.isInitialReport = initialReportStatus;
     window.$('#seizureDeclarationModal').modal('show');
   }
 
@@ -4373,7 +4389,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         this.updateSeizedDetails(event.data);
         break;
       case 'viewRecord':
-        this.viewSeizedDetails(event.data);
+        this.viewSeizedDetails(event.data, false);
         break;
       case 'viewUpload':
         this.viewSeizedProductsFileSaved(event.data);
