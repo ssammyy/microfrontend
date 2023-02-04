@@ -540,7 +540,6 @@ data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
     var remarksDetails: PermitAllRemarksDetailsDto? = null,
     var invoiceDetails: InvoiceDetailsDto? = null,
-//    var standardList: List<UserEntityDto>? = null,
     var officerList: List<UserEntityDto>? = null,
     var oldVersionList: List<PermitEntityDto>? = null,
     var ordinaryFilesList: List<FilesListDto>? = null,
