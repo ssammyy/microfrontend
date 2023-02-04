@@ -89,40 +89,40 @@ export const ROUTES: RouteInfo[] = [
     },
 
     {
-        path: '/dmark',
+        path: '/dmark/newDmarkPermit',
         title: 'Diamond Mark',
-        type: 'sub',
+        type: 'link',
         icontype: 'verified',
         privilege: ['PERMIT_APPLICATION'],
         collapse: 'forms',
         children: [
-            {path: 'newDmarkPermit', title: 'Make Application', ab: 'MA'},
-            {path: 'all_dmark', title: 'All My Applications', ab: 'AMA'},
-            {path: 'all_dmark_awarded', title: 'Awarded Applications', ab: 'AA'},
+            // {path: 'newDmarkPermit', title: 'Make Application', ab: 'MA'},
+            // {path: 'all_dmark', title: 'All My Applications', ab: 'AMA'},
+            // {path: 'all_dmark_awarded', title: 'Awarded Applications', ab: 'AA'},
         ],
     }, {
-        path: '/smark',
+        path: '/smark/newSmarkPermit',
         title: 'Standardization Mark',
-        type: 'sub',
+        type: 'link',
         icontype: 'class',
         privilege: ['PERMIT_APPLICATION'],
         collapse: 'tables',
         children: [
-            {path: 'newSmarkPermit', title: 'Make Application', ab: 'MA'},
-            {path: 'all_smark', title: 'All My Applications', ab: 'AMA'},
-            {path: 'all_smark_awarded', title: 'Awarded Applications', ab: 'AA'},
+            // {path: 'newSmarkPermit', title: 'Make Application', ab: 'MA'},
+            // {path: 'all_smark', title: 'All My Applications', ab: 'AMA'},
+            // {path: 'all_smark_awarded', title: 'Awarded Applications', ab: 'AA'},
         ],
     }, {
-        path: '/fmark',
+        path: '/fmark/application',
         title: 'Fortification Mark',
-        type: 'sub',
+        type: 'link',
         icontype: 'recommended',
         privilege: ['PERMIT_APPLICATION'],
         collapse: 'fmark',
         children: [
-            {path: 'application', title: 'Make Application', ab: 'MA'},
-            {path: 'fMarkAllApp', title: 'All My Applications', ab: 'AMA'},
-            {path: 'all_fmark_awarded', title: 'Awarded Applications', ab: 'AA'},
+            // {path: 'application', title: 'Make Application', ab: 'MA'},
+            // {path: 'fMarkAllApp', title: 'All My Applications', ab: 'AMA'},
+            // {path: 'all_fmark_awarded', title: 'Awarded Applications', ab: 'AA'},
         ],
     }, {
         path: '/invoice',
@@ -160,23 +160,23 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'apply',
         privilege: ['MANUFACTURER_ADMIN', 'PVOC_APPLICATION_PROCESS'],
     },
-    {
-        path: '',
-        title: 'QA Reports',
-        type: 'sub',
-        icontype: 'receipt',
-        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
-        collapse: 'reports',
-        children: [
-            {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
-            {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
-            {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
-            {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
-            {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+    // {
+    //     path: '',
+    //     title: 'QA Reports',
+    //     type: 'sub',
+    //     icontype: 'receipt',
+    //     privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+    //     collapse: 'reports',
+    //     children: [
+    //         {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
+    //         {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
+    //         {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
+    //         {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
+    //         {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
 
 
-        ],
-    },
+    //     ],
+    // },
 
 
     // Quality Assurance Admin
@@ -208,6 +208,25 @@ export const ROUTES: RouteInfo[] = [
         privilege: [],
 
     },
+
+    {
+        path: '',
+        title: 'QA Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'reports/all_applications', title: 'All Applications', ab: 'AP'},
+            {path: 'reports/permits_granted', title: 'Permits Granted', ab: 'PG'},
+            {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
+            {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
+            {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+
+
+        ],
+    },
+
 
 
     //DI

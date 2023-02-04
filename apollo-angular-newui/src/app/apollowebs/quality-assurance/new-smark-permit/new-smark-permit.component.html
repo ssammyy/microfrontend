@@ -11,6 +11,46 @@
 <!--    </div>-->
     <div class="main-content">
         <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                    
+                          <ul class=" tabs-container nav nav-pills nav-pills-rose nav-pills-icons justify-content-center" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" id="new-application" (click)="tabChange('New Applications')" role="tablist">
+                                    <i class="material-icons">task</i>Make New Applications
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" id="renewal-applications" (click)="tabChange('Renewal Applications')" role="tablist">
+                                    <i class="material-icons">assignment</i>Renewal Applications
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" id="ongoing-applications" (click)="tabChange('Ongoing Applications')" role="tablist">
+                                    <i class="material-icons">done_outline</i>Ongoing Applications
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" id="awarded-applications" (click)="tabChange('Awarded Applications')" role="tablist">
+                                    <i class="material-icons">verified</i>Awarded Applications
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" id="expired-applications" (click)="tabChange('Expired Applications')" role="tablist">
+                                    <i class="material-icons">report_problem</i>Expired Applications
+                                </a>
+                            </li>
+                        </ul>
+
+
+                        </div>
+                        </div>
+                        </div>
+
+<div *ngIf="id == 'New Applications'" class="w-100">                
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -40,17 +80,25 @@
                                                             <h3>Would You Like To Clone This STA10 With A Similar Permit STA10?</h3>
 
                                                             <label for="attachedPlant">Select Permit</label>
-                                                            <select [(ngModel)]="selectedPermit" id="attachedPlanto" class="form-control">
-                                                                <option selected>Select Permit</option>
-                                                                <option *ngFor="let permit of allPermitData"
-                                                                        [ngValue]="permit.id"
-                                                                        class="dropdown-item">{{permit.productName}}</option>
+                                                            <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
 
-                                                            </select>
-                                                            <button class="btn btn-info float-right"
-                                                                    (click)="clonePermit()">
-                                                                Clone
-                                                            </button>
+                                                                        [(ngModel)]="selectedPermit" id="attachedPlanto"
+                                                                        class="form-control" (selectionChange)="setClonedMethod()"
+                                                                        placeholder="Select Permit">
+
+                                                                <mat-option
+                                                                        *ngFor="let permit of allPermitData"
+                                                                        value="{{permit.id}}"
+                                                                        class="dropdown-item">{{permit.productName}}</mat-option>
+
+                                                            </mat-select>
+
+                                                            <div *ngIf="hideCloneButton === true">
+                                                                <button class="btn btn-info float-right"
+                                                                        (click)="clonePermit()">
+                                                                    Clone
+                                                                </button>
+                                                            </div>
 
                                                         </div>
                                                             <div class="form-group col-6">
@@ -161,31 +209,31 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
-<!--                                                                <div *ngIf="SelectedSectionId==71" class="row">-->
-<!--                                                                    <div class="form-group col-12">-->
-<!--                                                                        <label for="createFmark"><span-->
-<!--                                                                                style=" color: red;">*NOTE: Fortification Requirement If you are applying for the following products:</span></label>-->
-<!--                                                                        &lt;!&ndash;        <p>The following products require Fortification Mark:</p>&ndash;&gt;-->
-<!--                                                                        <ul>-->
-<!--                                                                            <li>Edible fats and oil</li>-->
-<!--                                                                            <li>Maize flour</li>-->
-<!--                                                                            <li>Wheat flour</li>-->
-<!--                                                                            <li>Sugar & Salt (Optional)</li>-->
-<!--                                                                        </ul>-->
-<!--                                                                        <p>You'll be required to apply for fortification-->
-<!--                                                                            permit.</p>-->
-<!--                                                                        <select id="createFmark" class="form-control"-->
-<!--                                                                                formControlName="createFmark"-->
-<!--                                                                                name="createFmark">-->
-<!--                                                                            <option selected>Are you applying for-->
-<!--                                                                                FMark-->
-<!--                                                                            </option>-->
-<!--                                                                            <option value="0">No</option>-->
-<!--                                                                            <option value="1">Yes</option>-->
-<!--                                                                        </select>-->
-<!--                                                                    </div>-->
+                                                                <div *ngIf="SelectedSectionId==71" class="row">
+                                                                    <div class="form-group col-12">
+                                                                        <label for="createFmark"><span
+                                                                                style=" color: red;">*NOTE: Fortification Requirement If you are applying for the following products:</span></label>
+                                                                        <!--        <p>The following products require Fortification Mark:</p>-->
+                                                                        <ul>
+                                                                            <li>Edible fats and oil</li>
+                                                                            <li>Maize flour</li>
+                                                                            <li>Wheat flour</li>
+                                                                            <li>Sugar & Salt (Optional)</li>
+                                                                        </ul>
+                                                                        <p>You'll be required to apply for fortification
+                                                                            permit.</p>
+                                                                        <select id="createFmark" class="form-control"
+                                                                                formControlName="createFmark"
+                                                                                name="createFmark">
+                                                                            <option selected>Are you applying for
+                                                                                FMark
+                                                                            </option>
+                                                                            <option value="0">No</option>
+                                                                            <option value="1">Yes</option>
+                                                                        </select>
+                                                                    </div>
 
-<!--                                                                </div>-->
+                                                                </div>
 
 
                                                                 <div *ngIf="sta1Form.valid" class="form-group clearfix">
@@ -1811,6 +1859,47 @@ parameters Monitored">
                     </div>
                 </div>
             </div>
+
+            <!-- end of row -->
+            </div>
+
+            <!-- end of new application -->
+
+            <div *ngIf="id == 'Renewal Applications'" class="w-100">    
+                
+                   <app-smark-renewal-applications></app-smark-renewal-applications>
+
+            </div>
+
+            <!-- end of renewal Applications -->
+
+            <div *ngIf="id == 'Ongoing Applications'" class="w-100">    
+                
+                
+                <app-smark-applications-all></app-smark-applications-all> 
+                
+
+            </div>
+
+            <!-- end of Ongoing Applications -->
+
+            <div *ngIf="id == 'Awarded Applications'" class="w-100">     
+
+                <app-smark-all-awarded-applications></app-smark-all-awarded-applications>  
+
+            </div>
+
+            <!-- end of Awarded Applications -->
+
+            <div *ngIf="id == 'Expired Applications'" class="w-100">     
+
+                <app-smark-expired-applications></app-smark-expired-applications>  
+
+            </div>
+
+            <!-- end of Expired Applications -->
+
+
         </div>
     </div>
 </div>

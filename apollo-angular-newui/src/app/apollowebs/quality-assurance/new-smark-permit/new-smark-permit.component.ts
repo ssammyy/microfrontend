@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -15,12 +15,18 @@ import {
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto
 } from '../../../core/store/data/qa/qa.model';
-import swal from 'sweetalert2';
+// permits
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {loadBranchId, loadCompanyId, selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
+import {UserEntityDto, UserEntityService} from "../../../core/store";
+import {Observable, Subject} from "rxjs";
+import {Titles, TitlesService} from "../../../core/store/data/title";
+import {HttpErrorResponse} from "@angular/common/http";
+import {DataTableDirective} from "angular-datatables";
+import swal from "sweetalert2";
 
 declare const $: any;
 
@@ -33,6 +39,12 @@ export class NewSmarkPermitComponent implements OnInit {
     fullname = '';
     status: number;
     loading = false;
+    loadingText: string;
+
+    setCloned = false;
+
+    hideCloneButton = false;
+
     SelectedSectionId;
     sta1Form: FormGroup;
     sta10Form: FormGroup;
@@ -82,6 +94,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
     cloned:boolean;
 
+    
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -89,7 +102,14 @@ export class NewSmarkPermitComponent implements OnInit {
                 private formBuilder: FormBuilder,
                 private _loading: LoadingService,
                 private SpinnerService: NgxSpinnerService,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+
+                private service: UserEntityService,
+                private titleService: TitlesService,
+             
+
+
+                ) {
     }
 
     ngOnInit(): void {
@@ -163,7 +183,7 @@ export class NewSmarkPermitComponent implements OnInit {
         });
         this.sta10FormG = this.formBuilder.group({});
 
-        this.qaService.loadPermitList(this.smarkID.toString()).subscribe(
+        this.qaService.loadCloneSmarkPermitList(this.smarkID.toString()).subscribe(
             (data: any) => {
                 this.allPermitData = data;
             });
@@ -266,13 +286,17 @@ export class NewSmarkPermitComponent implements OnInit {
 
 
                   //  }
+
+
+                
+
+        // permits
+
+    
+
+
                 }
-         //   }
-     //   );
-
-
-
-  //  }
+   
 
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
@@ -316,6 +340,9 @@ export class NewSmarkPermitComponent implements OnInit {
 
 
     public clonePermit(): void {
+        this.loading = true
+        this.loadingText = "Cloning"
+        this.SpinnerService.show();
         this.route.fragment.subscribe(params => {
             this.permitID = this.selectedPermit;
             //(this.permitID);
@@ -342,9 +369,7 @@ export class NewSmarkPermitComponent implements OnInit {
                                 this.sta10FilesList = this.allSta10Details.sta10FilesList;
                                 this.sta10FormF.patchValue(this.allSta10Details.sta10FirmDetails);
 
-                                this.cloned = true;
-                                this.sta1 =null
-                                this.sta10Details = null
+
 
                                 // if(this.sta10FilesList.map())
                                 // {
@@ -354,6 +379,11 @@ export class NewSmarkPermitComponent implements OnInit {
                         );
                     },
                 );
+
+                this.setCloned = true
+                this.loading = false
+                this.hideCloneButton = false;
+                this.SpinnerService.hide();
 
 
             }
@@ -523,7 +553,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
-            if (this.sta1 == null) {
+            if (this.sta1 == null || this.setCloned == true) {
                 this.SpinnerService.show();
                 this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
                     (data) => {
@@ -570,7 +600,7 @@ export class NewSmarkPermitComponent implements OnInit {
         if (valid) {
             this.SpinnerService.show();
            //(this.sta1.id.toString());
-            if (this.sta10Details == null) {
+            if (this.sta10Details == null|| this.setCloned == true) {
                 this.qaService.saveFirmDetailsSta10(this.sta1.id.toString(), this.sta10Form.value).subscribe(
                     (data) => {
                         this.sta10Details = data;
@@ -1016,4 +1046,18 @@ export class NewSmarkPermitComponent implements OnInit {
         // this.SelectedSectionId=sselect;
         // this.SelectedSectionId = Selectedfood;
     }
+
+    // Renewal
+    id:any ="New Applications";
+    tabChange(ids:any){
+      this.id=ids;
+      console.log(this.id);
+    }
+
+    setClonedMethod() {
+        this.hideCloneButton = true;
+    }
+
+ 
+
 }

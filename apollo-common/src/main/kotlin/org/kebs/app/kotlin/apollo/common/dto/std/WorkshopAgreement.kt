@@ -329,6 +329,26 @@ data class ISAdoptionProposalDto(
 
 }
 
+data class ISPropComments(
+    var commentTitle: String?=null,
+    var scope: String?=null,
+    var clause: String?=null,
+    var proposalID: Long?=null,
+    var standardNumber: String?=null,
+    var commentDocumentType: String?=null,
+    var recommendations: String?=null,
+    var nameOfRespondent: String?=null,
+    var positionOfRespondent: String?=null,
+    var nameOfOrganization: String?=null,
+    var preparedDate: Timestamp?=null,
+    var paragraph: String?=null,
+    var typeOfComment: String?=null,
+    var comment: String?=null,
+    var proposedChange: String?=null,
+    var observation: String?=null,
+){
+
+}
 
 
 data class ISAdoptionProposalComments(
@@ -368,7 +388,8 @@ data class ISAdoptionJustifications(
     var positiveVotes:Long?=null,
     var negativeVotes:Long?=null,
     var remarks:String?=null,
-    var proposalId:Long?=null
+    var proposalId:Long?=null,
+    var draftId:Long?=null
 ){
 
 }

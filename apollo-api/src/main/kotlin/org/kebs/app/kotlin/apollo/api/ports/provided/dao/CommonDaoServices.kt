@@ -1740,7 +1740,7 @@ class CommonDaoServices(
                 messageBody = composeMessage(data, notification)
                 subject = when {
                     subjectAppendValue!=null -> {
-                        notification.varField2 +" "+notification.subject
+                        notification.subject +" "+subjectAppendValue
                     }
                     else -> {
                         notification.subject

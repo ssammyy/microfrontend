@@ -564,6 +564,7 @@ data class DataReportDto(
         var totalComplianceScore: String? = null,
         var remarks: String? = null,
         var productsList: List<DataReportParamsDto>? = null,
+        var docList: List<Long>? = null,
 )
 
 data class DataReportParamsDto(
@@ -758,6 +759,7 @@ data class SampleSubmissionDto(
         var lbIdBatchNo: String? = null,
         var lbIdContDecl: String? = null,
         var lbIdDateOfManf: Date? = null,
+        var sampleCollectionDate: Date? = null,
         var lbIdExpiryDate: Date? = null,
         var lbIdTradeMark: String? = null,
         var noteTransResults: String? = null,
@@ -860,6 +862,12 @@ data class MSSSFLabResultsDto(
         var parametersListTested: List<LabResultsParamDto>? = null,
 )
 
+//data class reAssignRegionDto(
+//        var reassigningHODFirstName: String? = null,
+//        var reassigningHODLastName: String? = null,
+//        var reassigningHODEmail: String? = null,
+//        var reassignedRegion: Number? = null
+//)
 data class MSSSFComplianceStatusDetailsDto(
         var sffId: Long? = null,
         var bsNumber: String? = null,
@@ -1162,7 +1170,8 @@ data class AllComplaintsDetailsDto(
         var sampleLabResults: MSSSFLabResultsDto? = null,
         var complaintProcessStatus: Boolean,
         var workPlanRefNumber: String?= null,
-        var workPlanBatchRefNumber: String?= null
+        var workPlanBatchRefNumber: String?= null,
+//        var reAssigningDetails: reAssignRegionDto? = null,
 )
 
 data class ComplaintsDetailsDto(
@@ -1190,6 +1199,7 @@ data class ComplaintsDetailsDto(
         var productSubcategory: String? = null,
         var productName: String? = null,
         var productBrand: String? = null,
+        var region: String? = null,
         var county: String? = null,
         var town: String? = null,
         var marketCenter: String? = null,
@@ -1437,7 +1447,8 @@ data class ComplaintDto(
         var productBrand: String? = null,
         var complaintDescription: String? = null,
         var complaintSampleDetails: String? = null,
-        var remedySought: String? = null
+        var remedySought: String? = null,
+        var productName: String? = null
 )
 
 data class ComplaintCustomersDto(

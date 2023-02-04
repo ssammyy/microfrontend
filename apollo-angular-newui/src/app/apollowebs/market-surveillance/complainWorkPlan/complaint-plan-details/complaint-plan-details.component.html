@@ -2789,7 +2789,7 @@
                                     <div class="form-group">
                                         <label><b>Region</b> </label>
                                         <input class="form-control two-column-input"
-                                               formControlName="regionName" ngModel="{{workPlanInspection?.region}}" disabled
+                                               formControlName="regionName" ngModel="{{workPlanInspection?.region}}"
                                                name="regionName" required type="text">
                                     </div>
                                 </div>
@@ -2798,13 +2798,23 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>Town</b> </label>
+                                        <label><b>County</b> </label>
                                         <input class="form-control two-column-input"
-                                               formControlName="town" ngModel="{{workPlanInspection?.townMarketCenter}}" disabled
-                                               name="town" required type="text">
+                                               formControlName="county" ngModel="{{workPlanInspection?.county}}"
+                                               name="county" required type="text">
                                     </div>
                                 </div>
 
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Town</b> </label>
+                                        <input class="form-control two-column-input"
+                                               formControlName="town" ngModel="{{workPlanInspection?.townMarketCenter}}"
+                                               name="town" required type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Market Centre</b> </label>
@@ -2817,57 +2827,6 @@
 
                             <h4 class="mb-3" style="color: #0066B1">Outlet Details</h4>
                             <h5 class="mb-3" style="color: black">Fill in below Outlet details</h5>
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Outlet Details</b> </label>-->
-<!--                                        <textarea [class.is-invalid]="formDataReportForm.outletDetails.invalid && formDataReportForm.outletDetails.errors"-->
-<!--                                                  class="form-control two-column-input"-->
-<!--                                                  formControlName="outletDetails"-->
-<!--                                                  name="outletDetails" required type="text"></textarea>-->
-<!--                                        <div *ngIf="submitted && formDataReportForm.outletDetails.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formDataReportForm.outletDetails.errors.required">Outlet Details is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-
-<!--                            </div>-->
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Person met</b> </label>-->
-<!--                                        <input [class.is-invalid]="formDataReportForm.personMet.invalid && formDataReportForm.personMet.errors"-->
-<!--                                               class="form-control two-column-input"-->
-<!--                                               formControlName="personMet"-->
-<!--                                               name="personMet" required type="text">-->
-<!--                                        <div *ngIf="submitted && formDataReportForm.personMet.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formDataReportForm.personMet.errors.required">Person met is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Most Recurring Non-Compliant</b> </label>-->
-<!--                                        <input [class.is-invalid]="formDataReportForm.mostRecurringNonCompliant.invalid && formDataReportForm.mostRecurringNonCompliant.errors"-->
-<!--                                               class="form-control two-column-input"-->
-<!--                                               formControlName="mostRecurringNonCompliant"-->
-<!--                                               name="mostRecurringNonCompliant" required type="text">-->
-<!--                                        <div *ngIf="submitted && formDataReportForm.mostRecurringNonCompliant.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formDataReportForm.mostRecurringNonCompliant.errors.required">Person met is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-
-
-
-<!--                            </div>-->
-
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -3221,6 +3180,7 @@
                                             <button *ngIf="dataReportParamForm.valid" mat-raised-button
                                                     class="btn btn-success" (click)="onClickAddDataReportParam()" type="button" >SAVE PARAMS
                                             </button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -3272,12 +3232,12 @@
                         </div>
                     </div>
 
-                    <div class="row" >
+                    <div  *ngIf="addProductsStatus" class="row" >
                         <div class="col">
                             <div  class="form-group">
                                 <label for="files"><b>Upload Documents Here</b></label>
                                 <form #demoForm="ngForm">
-                                    <file-upload [(ngModel)]="uploadedFilesDataReport" name="files" id="uploadedFilesDataReportComp"
+                                    <file-upload [(ngModel)]="uploadedFilesDataReport" name="files" id="uploadedFilesDataReportWP"
                                                  [fileslimit]="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
                                 </form>
                             </div>

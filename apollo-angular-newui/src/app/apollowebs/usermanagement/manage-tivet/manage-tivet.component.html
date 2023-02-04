@@ -1,5 +1,4 @@
 <div *ngIf="loading">
-
     <div class="loading-spinner ">
         <ngx-spinner
                 bdColor="rgba(51,51,51,0.8)"
@@ -27,80 +26,7 @@
                                 <i class="material-icons">manage_accounts</i> Tivets/NGOS/Universities
                             </a>
                         </li>
-                        <!--                        <li class="nav-item">-->
-                        <!--                            <a class="nav-link" data-toggle="tab" href="#link7" role="tablist">-->
-                        <!--                                <i class="material-icons">person_outline</i> Roles-->
-                        <!--                            </a>-->
-                        <!--                        </li>-->
-                        <!--                        <li class="nav-item">-->
-                        <!--                            <a class="nav-link" data-toggle="tab" href="#link19" role="tablist">-->
-                        <!--                                <i class="material-icons">menu</i>Menus-->
-                        <!--                            </a>-->
-                        <!--                        </li>-->
-                        <!--                        <li class="nav-item">-->
-                        <!--                            <a class="nav-link" data-toggle="tab" href="#link9" role="tablist">-->
-                        <!--                                <i class="material-icons">person_add_alt</i> Assign Menus-->
-                        <!--                            </a>-->
-                        <!--                        </li>-->
-
                     </ul>
-                    <!--                    <div class="tab-content tab-space tab-subcategories">-->
-                    <!--                        <div class="tab-pane" id="link7">-->
-                    <!--                            <div class="card">-->
-                    <!--                                <div class="card-header">-->
-                    <!--                                    <h4 class="card-title">Add and Manage Role</h4>-->
-                    <!--                                    <p class="card-category">-->
-                    <!--                                        Role Management-->
-                    <!--                                    </p>-->
-                    <!--                                </div>-->
-                    <!--                                <div class="card-body">-->
-                    <!--                                    <div class="card-body">-->
-                    <!--                                        <div class="material-datatables">-->
-                    <!--                                            <table id="datatablesd"-->
-                    <!--                                                   class="table table-striped table-no-bordered table-hover"-->
-                    <!--                                                   cellspacing="0" width="100%" style="width:100%">-->
-                    <!--                                                <thead>-->
-                    <!--                                                <tr>-->
-                    <!--                                                    <th>{{ dataTable2.headerRow[0] }}</th>-->
-                    <!--                                                    <th>{{ dataTable2.headerRow[1] }}</th>-->
-                    <!--                                                    <th>{{ dataTable2.headerRow[2] }}</th>-->
-                    <!--                                                    <th class="disabled-sorting text-right">{{ dataTable2.headerRow[3] }}</th>-->
-                    <!--                                                </tr>-->
-                    <!--                                                </thead>-->
-                    <!--                                                <tfoot>-->
-                    <!--                                                <tr>-->
-                    <!--                                                    <th>{{ dataTable2.footerRow[0] }}</th>-->
-                    <!--                                                    <th>{{ dataTable2.footerRow[1] }}</th>-->
-                    <!--                                                    <th>{{ dataTable2.footerRow[2] }}</th>-->
-                    <!--                                                    <th class="text-right">{{ dataTable2.footerRow[3] }}</th>-->
-                    <!--                                                </tr>-->
-                    <!--                                                </tfoot>-->
-                    <!--                                                <tbody>-->
-                    <!--                                                <tr *ngFor="let row of dataTable2.dataRows">-->
-                    <!--                                                    <td>{{row[0]}}</td>-->
-                    <!--                                                    <td>{{row[1]}}</td>-->
-                    <!--                                                    <td>{{row[2]}}</td>-->
-                    <!--                                                    <td class="text-right">-->
-                    <!--                                                        <a href="javascript:void(0)"-->
-                    <!--                                                           class="btn btn-link btn-info btn-just-icon like"><i-->
-                    <!--                                                                class="material-icons">add</i></a>-->
-                    <!--                                                        <a href="javascript:void(0)"-->
-                    <!--                                                           class="btn btn-link btn-warning btn-just-icon edit"><i-->
-                    <!--                                                                class="material-icons">dvr</i></a>-->
-                    <!--                                                        <a href="javascript:void(0)"-->
-                    <!--                                                           class="btn btn-link btn-danger btn-just-icon remove"><i-->
-                    <!--                                                                class="material-icons">close</i></a>-->
-                    <!--                                                    </td>-->
-                    <!--                                                </tr>-->
-                    <!--                                                </tbody>-->
-                    <!--                                            </table>-->
-                    <!--                                        </div>-->
-
-                    <!--                                    </div>-->
-
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                        </div>-->
                     <div class="tab-pane active" id="link8">
                         <div class="card">
                             <div class="card-header card-header-primary card-header-icon">
@@ -178,12 +104,22 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
+                                        <label><b>Institution Type</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.varField1}}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
                                         <label><b>Name</b></label>
                                         <input class="form-control two-column-input"
                                                value="{{actionRequest?.name}}" readonly>
                                     </div>
                                 </div>
 
+
+                            </div>
+                            <div class="row">
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Email</b></label>
@@ -193,7 +129,104 @@
                                     </div>
                                 </div>
 
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Phone</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.companyTelephone}}" readonly>
+
+                                    </div>
+                                </div>
+
                             </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Registration Number</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.registrationNumber}}" readonly>
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>KRA Pin</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.kraPin}}" readonly>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <br><br>
+                            <h5 class="mb-3" style="color: #0066B1">Address Details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Postal Address</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.postalAddress}}" readonly>
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Plot Number</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.plotNumber}}" readonly>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Building Name</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.buildingName}}" readonly>
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Street Name</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.streetName}}" readonly>
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Physical Address</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.physicalAddress}}" readonly>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <br><br>
+                            <h5 class="mb-3" style="color: #0066B1">User Detail</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Email Address</b></label>
+                                        <input class="form-control two-column-input"
+                                               value="{{actionRequest?.createdBy}}" readonly>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
 
                             <input type="hidden" formControlName="id" ngModel="{{actionRequest?.id}}" readonly>
 

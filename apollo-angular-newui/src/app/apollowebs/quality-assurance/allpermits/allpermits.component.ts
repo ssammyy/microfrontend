@@ -87,7 +87,7 @@ export class AllpermitsComponent implements OnInit {
                 this.qaService.loadPermitMigratededList(<string>$(`#input-field`).val()).subscribe(
                     (response: PermitEntityDto[]) => {
                         console.log(response);
-                        this.tcTasks = response;
+                        // this.tcTasks = response;
                         this.getAllPermits();
                     },
                     (error: HttpErrorResponse) => {
@@ -143,7 +143,7 @@ export class AllpermitsComponent implements OnInit {
                 this.qaService.loadPermitMigratededListDmark(<string>$(`#input-field`).val()).subscribe(
                     (response: PermitEntityDto[]) => {
                         console.log(response);
-                        this.tcTasks = response;
+                        // this.tcTasks = response;
                         this.getAllPermits();
                     },
                     (error: HttpErrorResponse) => {
@@ -198,7 +198,7 @@ export class AllpermitsComponent implements OnInit {
                 this.qaService.loadPermitMigratededListFmark(<string>$(`#input-field`).val()).subscribe(
                     (response: PermitEntityDto[]) => {
                         console.log(response);
-                        this.tcTasks = response;
+                        // this.tcTasks = response;
                         this.getAllPermits();
                     },
                     (error: HttpErrorResponse) => {

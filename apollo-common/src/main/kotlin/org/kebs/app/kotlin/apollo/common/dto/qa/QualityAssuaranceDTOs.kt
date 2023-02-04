@@ -5,6 +5,7 @@ import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.time.LocalDateTime
 
 
 data class ST10Dto(
@@ -39,6 +40,21 @@ data class CommonPermitDto(
     var regionID: Long? = null,
     var firmTypeID: Long? = null,
     var firmTypeName: String? = null,
+)
+
+data class CompanyApprovalRequestDto(
+    var companyID: String? = null,
+    var approvalStatus: String? = null,
+    var requestStatus: String? = null,
+    var commentDetails: String? = null
+)
+
+data class CompanyUpdateDetailsDto(
+    var updateDetailsStatus: Int? = null,
+    var updateDetailsComment: String? = null,
+    var requesterComment: String? = null,
+    var updateFirmType: Int? = null,
+    var requesterId: Int? = null,
 )
 
 data class WorkPlanDto(
@@ -138,6 +154,7 @@ data class NewBatchInvoiceDto(
     var permitRefNumber: String? = null,
     var permitInvoicesID: Array<Long>? = null,
     var isWithHolding: Long? = null,
+    var differenceInvoices: Int? = null,
     ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -398,7 +415,7 @@ data class PermitEntityDto(
     var dateOfExpiry: Date? = null,
     var permitStatus: String? = null,
     var userId: Long? = null,
-    var createdOn: Timestamp? = null,
+    var createdOn: LocalDateTime? = null,
     var county: String? = null,
     var town: String? = null,
     var region: String? = null,
@@ -427,7 +444,7 @@ data class ReportPermitEntityDto(
     var dateOfExpiry: Date? = null,
     var permitStatus: String? = null,
     var userId: Long? = null,
-    var createdOn: Timestamp? = null,
+    var createdOn: LocalDateTime? = null,
     var county: String? = null,
     var town: String? = null,
     var region: String? = null,
@@ -475,7 +492,7 @@ data class PermitDetailsDto(
     var faxNo: String? = null,
     var plotNo: String? = null,
     var email: String? = null,
-    var createdOn: Timestamp? = null,
+    var createdOn: LocalDateTime? = null,
     var dateOfIssue: Date? = null,
     var dateOfExpiry: Date? = null,
     var effectiveDate: Date? = null,
@@ -531,7 +548,8 @@ data class AllPermitDetailsDto(
     var sta10FilesList: List<FilesListDto>? = null,
     var labResultsList: PermitSSFLabResultsDto? = null,
     var schemeOfSuperVision: FilesListDto? = null,
-    var batchID: Long? = null
+    var batchID: Long? = null,
+    var branchInspectionPaid: Long? = null
 )
 
 
@@ -633,7 +651,7 @@ data class InspectionReportDto
     var varField9: String? = null,
     var varField10: String? = null,
     var createdBy: String? = null,
-    var createdOn: Timestamp? = null,
+    var createdOn: LocalDateTime? = null,
     var modifiedBy: String? = null,
     var modifiedOn: Timestamp? = null,
     var deleteBy: String? = null,

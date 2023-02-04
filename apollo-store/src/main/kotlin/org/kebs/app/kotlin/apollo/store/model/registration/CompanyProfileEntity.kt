@@ -34,6 +34,26 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var kraPin: String? = null
 
+    @Column(name = "UPDATE_DETAILS_STATUS")
+    @Basic
+    var updateDetailsStatus: Int? = null
+
+    @Column(name = "UPDATE_DETAILS_COMMENT")
+    @Basic
+    var updateDetailsComment: String? = null
+
+    @Column(name = "REQUESTER_COMMENT")
+    @Basic
+    var requesterComment: String? = null
+
+    @Column(name = "UPDATE_FIRM_TYPE")
+    @Basic
+    var updateFirmType: Long? = null
+
+    @Column(name = "REQUESTER_ID")
+    @Basic
+    var requesterId: Long? = null
+
     @Column(name = "MANUFACTURE_STATUS")
     @Basic
     var manufactureStatus: Int? = null
@@ -274,134 +294,7 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var slFormStatus: Int? = 0
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as CompanyProfileEntity
-        return id == that.id &&
-                name == that.name &&
-                firmCategory == that.firmCategory &&
-                physicalAddress == that.physicalAddress &&
-                userId == that.userId &&
-                kraPin == that.kraPin &&
-                registrationNumber == that.registrationNumber &&
-                postalAddress == that.postalAddress &&
-                plotNumber == that.plotNumber &&
-                companyEmail == that.companyEmail &&
-                companyTelephone == that.companyTelephone &&
-                yearlyTurnover == that.yearlyTurnover &&
-                businessLines == that.businessLines &&
-                businessNatures == that.businessNatures &&
-                buildingName == that.buildingName &&
-                closedCommodityManufactured == that.closedCommodityManufactured &&
-                closedContractsUndertaken == that.closedContractsUndertaken &&
-                streetName == that.streetName &&
-                userClassification == that.userClassification &&
-                region == that.region &&
-                county == that.county &&
-                town == that.town &&
-                factoryVisitDate == that.factoryVisitDate &&
-                factoryVisitStatus == that.factoryVisitStatus &&
-                manufactureStatus == that.manufactureStatus &&
-                entryNumber == that.entryNumber &&
-                directorIdNumber == that.directorIdNumber &&
-                description == that.description &&
-                status == that.status &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                accentTo == that.accentTo &&
-                taskId == that.taskId &&
-                taskType == that.taskType &&
-                assignStatus == that.assignStatus &&
-                assignedTo == that.assignedTo &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn &&
-                branchName == that.branchName &&
-                typeOfManufacture == that.typeOfManufacture &&
-                businessLineName == that.businessLineName &&
-                businessNatureName == that.businessNatureName &&
-                regionName == that.regionName &&
-                countyName == that.countyName &&
-                townName == that.townName &&
-                suspensionStatus == that.suspensionStatus &&
-                closureStatus == that.closureStatus &&
-                otherBusinessNatureType == that.otherBusinessNatureType &&
-                slFormStatus == that.slFormStatus
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(
-            id,
-            name,
-            userId,
-            kraPin,
-            registrationNumber,
-            firmCategory,
-            postalAddress,
-            plotNumber,
-            entryNumber,
-            directorIdNumber,
-            physicalAddress,
-            companyEmail,
-            companyTelephone,
-            yearlyTurnover,
-            businessLines,
-            businessNatures,
-            buildingName,
-            streetName,
-            closedCommodityManufactured,
-            closedContractsUndertaken,
-            userClassification,
-            region,
-            county,
-            town,
-            factoryVisitDate,
-            factoryVisitStatus,
-            manufactureStatus,
-            description,
-            status,
-            varField1,
-            varField2,
-            varField3,
-            varField4,
-            varField5,
-            varField6,
-            varField7,
-            varField8,
-            varField9,
-            varField10,
-            accentTo,
-            taskId,
-            taskType,
-            assignStatus,
-            assignedTo,
-            createdBy,
-            createdOn,
-            modifiedBy,
-            modifiedOn,
-            deleteBy,
-            deletedOn,
-            branchName,
-            typeOfManufacture,
-            businessLineName,
-            businessNatureName,
-            regionName,
-            countyName,
-            townName,
-            otherBusinessNatureType,
-            slFormStatus
-        )
-    }
+    @Column(name = "UPGRADE_TYPE")
+    @Basic
+    var upgradeType: Int? = 0
 }

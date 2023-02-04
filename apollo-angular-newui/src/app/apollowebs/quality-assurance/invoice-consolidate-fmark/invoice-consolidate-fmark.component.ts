@@ -197,7 +197,7 @@ export class InvoiceConsolidateFmarkComponent implements OnInit {
               }
             });
             console.log(permitInvoicesIDS);
-            const consolidatedInvoice = new GenerateInvoiceDto;
+            const consolidatedInvoice = new GenerateInvoiceWithWithholdingDto;
             consolidatedInvoice.batchID = null;
             consolidatedInvoice.plantID = null;
             consolidatedInvoice.permitRefNumber = null;

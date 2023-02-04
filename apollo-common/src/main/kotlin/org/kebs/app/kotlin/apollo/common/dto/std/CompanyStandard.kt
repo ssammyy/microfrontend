@@ -51,6 +51,15 @@ class ComStdDraftDto(
 
 class ResponseMsg (val responseMessage: String) {
 }
+class IntStdDraftDecisionDto(
+    var requestId: Long?=null,
+    var comments: String?=null,
+    var accentTo: String?=null,
+    var proposalId: Long?=null,
+    var draftId: Long?=null
+){
+
+}
 
 class ComStdDraftDecisionDto(
     var title: String?=null,
@@ -85,20 +94,28 @@ class ComStdDraftDecisionDto(
 }
 
 class ComDraftCommentDto(
-    var draftComment: String?=null,
     var commentTitle: String?=null,
     var commentDocumentType: String?=null,
+    var uploadDate: Timestamp?=null,
+    var nameOfRespondent: String?=null,
+    var emailOfRespondent: String?=null,
+    var phoneOfRespondent: String?=null,
+    var nameOfOrganization: String?=null,
+    var clause: String?=null,
+    var paragraph: String?=null,
+    var typeOfComment: String?=null,
+    var comment: String?=null,
+    var proposedChange: String?=null,
+    var observation: String?=null,
+    var requestID: Long?=null,
+    var draftID: Long?=null,
+
+    var draftComment: String?=null,
     var comNameOfOrganization: String?=null,
     var comClause: String?=null,
     var comParagraph: String?=null,
-    var typeOfComment: String?=null,
-    var proposedChange: String?=null,
-    var requestID: Long?=null,
-    var draftID: Long?=null,
     var recommendations: String?=null,
-    var nameOfRespondent: String?=null,
     var positionOfRespondent: String?=null,
-    var nameOfOrganization: String?=null,
     var adoptStandard: String?=null,
     var adoptDraft: String?=null,
     var reason: String?=null,

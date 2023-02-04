@@ -1868,6 +1868,7 @@ class MarketSurveillanceFuelDaoServices(
             lbIdBatchNo = body.lbIdBatchNo
             lbIdContDecl = body.lbIdContDecl
             lbIdDateOfManf = body.lbIdDateOfManf
+            sampleCollectionDate = body.sampleCollectionDate
             lbIdExpiryDate = body.lbIdExpiryDate
             lbIdTradeMark = body.lbIdTradeMark
             noteTransResults = body.noteTransResults
@@ -3640,6 +3641,7 @@ class MarketSurveillanceFuelDaoServices(
             data.lbIdBatchNo,
             data.lbIdContDecl,
             data.lbIdDateOfManf,
+            data.sampleCollectionDate,
             data.lbIdExpiryDate,
             data.lbIdTradeMark,
             data.noteTransResults,

@@ -1220,21 +1220,31 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      nameProduct: {
-        title: 'PRODUCT BRAND NAME',
-        type: 'string',
-        filter: false,
-      },
       fileRefNumber: {
         title: 'FILE REF NUMBER',
         type: 'string',
         filter: false,
       },
-      disposal: {
-        title: 'DISPOSAL',
+      nameProduct: {
+        title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
+      lbIdTradeMark: {
+        title: 'BRAND/TRADEMARK',
+        type: 'string',
+        filter: false,
+      },
+      // sampleReferences: {
+      //   title: 'SAMPLE REF',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // disposal: {
+      //   title: 'DISPOSAL',
+      //   type: 'string',
+      //   filter: false,
+      // },
       bsNumber: {
         title: 'BS NUMBER',
         type: 'string',
@@ -1274,21 +1284,31 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      nameProduct: {
-        title: 'PRODUCT BRAND NAME',
-        type: 'string',
-        filter: false,
-      },
       fileRefNumber: {
         title: 'FILE REF NUMBER',
         type: 'string',
         filter: false,
       },
-      disposal: {
-        title: 'DISPOSAL',
+      nameProduct: {
+        title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
+      lbIdTradeMark: {
+        title: 'BRAND/TRADEMARK',
+        type: 'string',
+        filter: false,
+      },
+      // sampleReferences: {
+      //   title: 'SAMPLE REF',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // disposal: {
+      //   title: 'DISPOSAL',
+      //   type: 'string',
+      //   filter: false,
+      // },
       bsNumber: {
         title: 'BS NUMBER',
         type: 'string',
@@ -1326,21 +1346,31 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       //   type: 'string',
       //   filter: false
       // },
-      nameProduct: {
-        title: 'PRODUCT BRAND NAME',
-        type: 'string',
-        filter: false,
-      },
       fileRefNumber: {
         title: 'FILE REF NUMBER',
         type: 'string',
         filter: false,
       },
-      disposal: {
-        title: 'DISPOSAL',
+      nameProduct: {
+        title: 'PRODUCT NAME',
         type: 'string',
         filter: false,
       },
+      lbIdTradeMark: {
+        title: 'BRAND/TRADEMARK',
+        type: 'string',
+        filter: false,
+      },
+      // sampleReferences: {
+      //   title: 'SAMPLE REF',
+      //   type: 'string',
+      //   filter: false,
+      // },
+      // disposal: {
+      //   title: 'DISPOSAL',
+      //   type: 'string',
+      //   filter: false,
+      // },
       // bsNumber: {
       //   title: 'BS NUMBER',
       //   type: 'string',
@@ -1728,6 +1758,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       function: ['', Validators.required],
       department: ['', Validators.required],
       regionName: ['', Validators.required],
+      county: ['', Validators.required],
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
       outletDetails: ['', Validators.required],
@@ -2541,7 +2572,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   updatePreliminaryReportHOFHODIO() {
     if (this.workPlanInspection?.msPreliminaryReportStatus) {
-      this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport)
+      // tslint:disable-next-line:max-line-length
+      this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport);
       this.investInspectReportForm.patchValue(this.selectedPreliminaryReportDetails);
       this.dataSaveDataInspectorInvestList = [];
       for (let prod = 0; prod < this.selectedPreliminaryReportDetails?.kebsInspectors.length; prod++) {
@@ -2553,7 +2585,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         this.dataSaveBsNumber.push(this.selectedPreliminaryReportDetails.bsNumbersList[prod]);
       }
 
-      console.log(this.selectedPreliminaryReportDetails)
+      console.log(this.selectedPreliminaryReportDetails);
     }
   }
 
@@ -3282,7 +3314,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.msService.msWorkPlanScheduleDetailsStartOnsiteActivities(
         this.workPlanInspection.batchDetails.referenceNumber,
         this.workPlanInspection.referenceNumber,
-        this.dataSaveStartOnsiteActivities
+        this.dataSaveStartOnsiteActivities,
     ).subscribe(
         (data: any) => {
           this.workPlanInspection = data;
@@ -4408,7 +4440,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
-  checkProductCompliance(permit: string){
+  checkProductCompliance(permit: string) {
     console.log(permit);
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
     const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
@@ -4649,13 +4681,20 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   saveDataReport() {
     if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
       this.SpinnerService.show();
+      const file = this.uploadedFilesDataReport;
       this.dataSaveDataReport = {...this.dataSaveDataReport, ...this.dataReportForm.value};
       this.dataSaveDataReport.productsList = this.dataSaveDataReportParamList;
-      this.msService.msWorkPlanScheduleSaveDataReport(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-          this.dataSaveDataReport,
-      ).subscribe(
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+      formData.append('docTypeName', 'DATA_REPORT_UPLOAD');
+      formData.append('data', JSON.stringify(this.dataSaveDataReport));
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+
+      this.msService.msWorkPlanScheduleSaveDataReport(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -4682,16 +4721,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveSeizureDeclaration() {
     this.submitted = true;
-    if (this.seizureForm.valid && this.uploadedFilesSeizedGoods.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
+    if (this.seizureForm.valid && this.uploadedFilesSeizedGoods?.length > 0 && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.saveSeizureDeclaration();
           });
-
-    }
-    else{
-      console.log("Seizure Form Fields arent filled");
+    } else {
+      this.msService.showError('Fill in all the fields! (Make sure you\'ve uploaded a file)');
     }
   }
 
@@ -5159,8 +5196,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   addStandard() {
-    let standard = this.standardsInput.nativeElement.value;
-    if(standard != ""  && !this.standardsArray.includes(standard)){
+    const standard = this.standardsInput.nativeElement.value;
+    if (standard != ''  && !this.standardsArray.includes(standard)) {
       this.standardsArray.push(standard);
     }
     this.standardsInput.nativeElement.value = '';

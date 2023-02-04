@@ -752,6 +752,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complainantEmailComposed,
                                 map,
                                 complaintUpdated.first,
+                                null,
                                 complainantEmailComposed.refNumber
                             )
                         }
@@ -876,6 +877,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complainantEmailComposed,
                                 map,
                                 complaintUpdated.first,
+                                null,
                                 complainantEmailComposed.refNumber
                             )
                         }
@@ -941,6 +943,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complainantEmailComposed,
                                 map,
                                 complaintUpdated.first,
+                                null,
                                 complainantEmailComposed.refNumber
                             )
                         }
@@ -1005,6 +1008,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 complainantEmailComposed,
                                 map,
                                 complaintUpdated.first,
+                                null,
                                 complainantEmailComposed.refNumber
                             )
                         }
@@ -1037,15 +1041,18 @@ class MarketSurveillanceComplaintProcessDaoServices(
         with(complaintLocationDetails) {
             county = body.countyID
             town = body.townID
+
 //            region = body.regionID
             region = body.regionID?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).id }
         }
         complaintLocationDetails = complaintLocationRepo.save(complaintLocationDetails)
 
-//        with(complaintFound){
+        with(complaintFound){
+            hodAssigned = null
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
 //            msProcessId = applicationMapProperties.msComplaintProcessAssignHOF
-//            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
-//        }
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
+        }
 
         val remarksDto = RemarksToAddDto()
         with(remarksDto){
@@ -1787,6 +1794,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             with(complaint) {
                 complaintTitle = complaintDto.complaintTitle
                 complaintDetails = complaintDto.complaintDescription
+                productString = complaintDto.productName
                 complaintSampleDetails = complaintDto.complaintSampleDetails
                 remedySought = complaintDto.remedySought
                 targetedProducts = complaintDto.productBrand
@@ -2213,6 +2221,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
             comp.productString,
 //            comp.product?.let { commonDaoServices.findProductByID(it).name },
             complaintLocationDetails.productBrand,
+            complaintLocationDetails.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region },
             complaintLocationDetails.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
             complaintLocationDetails.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
             complaintLocationDetails.marketCenter,

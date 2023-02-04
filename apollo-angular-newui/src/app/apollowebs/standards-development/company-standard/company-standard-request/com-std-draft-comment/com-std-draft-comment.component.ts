@@ -35,6 +35,7 @@ export class ComStdDraftCommentComponent implements OnInit {
   blob: Blob;
     loadingText: string;
     public uploadCommentsFormGroup!: FormGroup;
+    docName='';
 
   constructor(
       private stdComStandardService:StdComStandardService,
@@ -54,21 +55,24 @@ export class ComStdDraftCommentComponent implements OnInit {
     );
     //console.log(this.comDraftID);
     this.getUploadedStdDraftForComment(this.comDraftID);
+    this.docName='Company Standard'
 
       this.uploadCommentsFormGroup = this.formBuilder.group({
           commentTitle:[],
-          comClause:[],
-          comParagraph:[],
-          proposedChange:[],
           commentDocumentType:[],
-          adoptDraft:[],
-          reason:[],
-          recommendations:[],
+          uploadDate:[],
           nameOfRespondent:[],
-          positionOfRespondent:[],
+          emailOfRespondent:[],
+          phoneOfRespondent:[],
           nameOfOrganization:[],
+          clause:[],
+          paragraph:[],
+          typeOfComment:[],
+          comment:[],
+          proposedChange:[],
+          observation:[],
           requestID:[],
-          draftID:[],
+          draftID:[]
 
       });
   }
@@ -129,7 +133,9 @@ export class ComStdDraftCommentComponent implements OnInit {
             {
                 commentTitle: this.actionRequest.title,
                 requestID: this.actionRequest.requestId,
-                draftID: this.actionRequest.id
+                draftID: this.actionRequest.id,
+                commentDocumentType: this.docName,
+                uploadDate: this.actionRequest.uploadDate
             }
         );
     }

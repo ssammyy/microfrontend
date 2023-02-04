@@ -260,6 +260,14 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         companyId: Long, permitType: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta3FilledStatusIsNotNull(
+        companyId: Long, permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta10FilledStatusIsNotNull(
+        companyId: Long, permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByCompanyIdAndPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(
         companyId: Long, permitType: Long, permitAwardStatus: Int
     ): List<PermitApplicationsEntity>?
@@ -270,6 +278,10 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndPaidStatusAndCompanyIdAndInvoiceGeneratedAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
+        permitType: Long, paidStatus: Int, companyId: Long, invoiceGenerated: Int
     ): List<PermitApplicationsEntity>?
 
     fun findByCompanyIdAndOldPermitStatusIsNullAndUserTaskId(
@@ -657,6 +669,7 @@ interface IQaAwardedPermitTrackerEntityRepository : HazelcastRepository<QaAwarde
 @Repository
 interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEntity, Long> {
     fun findByStatusAndInvoiceMasterId(status: Int, invoiceMasterId: Long): List<QaInvoiceDetailsEntity>?
+    fun findByStatusAndInvoiceMasterIdAndInspectionStatus(status: Int, invoiceMasterId: Long, inspectionStatus: Int): List<QaInvoiceDetailsEntity>?
     fun findByInvoiceMasterId(invoiceMasterId: Long): List<QaInvoiceDetailsEntity>?
 //    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
@@ -678,7 +691,8 @@ interface IQaRemarksEntityRepository : HazelcastRepository<QaRemarksEntity, Long
 
 @Repository
 interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMasterDetailsEntity, Long> {
-    fun findByPermitId(permitId: Long): QaInvoiceMasterDetailsEntity?
+    fun findByPermitIdAndVarField10IsNull(permitId: Long): QaInvoiceMasterDetailsEntity?
+    fun findByPermitIdAndVarField10(permitId: Long,varField10: String): QaInvoiceMasterDetailsEntity?
     fun findAllByBatchInvoiceNo(
         batchInvoiceNo: Long
     ): List<QaInvoiceMasterDetailsEntity>?
@@ -687,7 +701,7 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         batchInvoiceNo: Long
     ): QaInvoiceMasterDetailsEntity?
 
-    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10IsNull(
         userId: Long,
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?

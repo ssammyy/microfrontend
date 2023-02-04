@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
+import org.kebs.app.kotlin.apollo.common.dto.qa.SageValuesDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.MsSampleSubmissionEntity
@@ -42,6 +43,7 @@ class MSJSONControllers(
     private val marketSurveillanceDaoComplaintServices: MarketSurveillanceComplaintProcessDaoServices,
     private val msWorkPlanDaoService: MarketSurveillanceWorkPlanDaoServices,
     private val seizureDeclarationRepo: IMsSeizureRepository,
+    private val dataReportParameterRepo: IDataReportParameterRepository,
     private val msFuelDaoService: MarketSurveillanceFuelDaoServices,
     private val usersSignatureRepository: UserSignatureRepository,
     private val limsServices: LimsServices,
@@ -384,6 +386,64 @@ class MSJSONControllers(
             }
             else -> {
                 throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(mainSized.first))
+            }
+        }
+
+    }
+
+    @PostMapping("/workPlan/inspection/add/data-report")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addWorkPlanInspectionDataReport(
+        @RequestParam("referenceNo") referenceNo: String,
+        @RequestParam("batchReferenceNo") batchReferenceNo: String,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): WorkPlanInspectionDto {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = msWorkPlanDaoService.findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = msWorkPlanDaoService.findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        val gson = Gson()
+        val body = gson.fromJson(data, DataReportDto::class.java)
+
+        if (docFile!=null) {
+            body.docList?.forEach { fileDel->
+                msUploadRepo.deleteById(fileDel)
+            }
+        }
+
+        val fileDocList = mutableListOf<Long>()
+        docFile?.forEach { fileDoc ->
+            val fileDocSaved =   msWorkPlanDaoService.saveOnsiteUploadFiles(fileDoc,map,loggedInUser,"DATA REPORT",workPlanScheduled)
+            fileDocSaved.second.id?.let { fileDocList.add(it) }
+        }
+
+
+        with(body){
+            docList = fileDocList
+        }
+
+        val dataReportFileSaved = msWorkPlanDaoService.workPlanInspectionDetailsAddDataReport(body, workPlanScheduled, map, loggedInUser)
+
+        when (dataReportFileSaved.first.status) {
+            map.successStatus -> {
+                val dataReportParamList = dataReportFileSaved.second.id.let { msWorkPlanDaoService.findDataReportParamsByDataReportID(it) }
+                dataReportParamList?.forEach { paramRemove ->
+                    val result: DataReportParamsDto? = body.productsList?.find { actor -> actor.id == paramRemove.id }
+                    if (result == null) {
+                        dataReportParameterRepo.deleteById(paramRemove.id)
+                    }
+                }
+
+                body.productsList?.forEach { param ->
+                    msWorkPlanDaoService.workPlanInspectionDetailsAddDataReportParams(param, dataReportFileSaved.second, map, loggedInUser)
+                }
+                return msWorkPlanDaoService.workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+            }
+            else -> {
+                throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(dataReportFileSaved.first))
             }
         }
 

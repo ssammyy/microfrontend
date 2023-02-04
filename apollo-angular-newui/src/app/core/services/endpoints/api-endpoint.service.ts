@@ -258,6 +258,9 @@ export class ApiEndpointService {
         FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
         QA_MPESA_STK_PUSH: `${ApiEndpointService.QA_CONTEXT}/permit/mpesa/stk-push`,
         PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+        CLONE_LIST_SMARK: `${ApiEndpointService.QA_CONTEXT}/permit/smark-clone-list`,
+        CLONE_LIST_DMARK: `${ApiEndpointService.QA_CONTEXT}/permit/dmark-clone-list`,
+
         PERMIT_LIST_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
         PERMIT_LIST_MIGRATION: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded`,
         PERMIT_LIST_MIGRATION_DMARK: `${ApiEndpointService.QA_CONTEXT}/permit/my-permits-loaded-dmark`,
@@ -398,15 +401,19 @@ export class ApiEndpointService {
         // SD INTERNATIONAL STANDARDS
         IST_GET_STD_STAKE_HOLDERS: `${ApiEndpointService.SD_IST_CONTEXT}/findStandardStakeholders`,
         IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
+        IST_UPLOAD_PD: `${ApiEndpointService.SD_IST_CONTEXT}/draft-file-upload`,
         IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
-        IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getISProposals`,
+        IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getISProposals`,
         IST_VIEW_IS_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getProposal`,
-        IST_VIEW_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getProposals`,
+        IST_VIEW_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getSessionProposals`,
+        IST_VIEW_PROPOSALS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getProposals`,
         IST_VIEW_IS_PROPOSALS_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/proposal`,
-        IST_SUBMIT_AP_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/SubmitAPComments`,
+        IST_SUBMIT_AP_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitAPComments`,
+        IST_SUBMIT_PROP_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/submitProposalComments`,
         IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
         IST_INT_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserTasks`,
         IST_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getAllComments`,
+        IST_COM_STD_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getDraftComments`,
         IST_JUSTIFICATION_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/getUserComments`,
         IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
         IST_APPROVED_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProposals`,
@@ -448,6 +455,7 @@ export class ApiEndpointService {
         IS_UPLOAD_STD_GZT: `${ApiEndpointService.SD_IST_CONTEXT}/gzt-file-upload`,
         IST_VIEW_IS_STANDARD_GZT_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/gazettement`,
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
+        IST_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitDraftComments`,
 
 
         // SD COMPANY STANDARDS
@@ -495,6 +503,7 @@ export class ApiEndpointService {
         ICT_COM_STD_REQUEST_PROCESS: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequestProcess`,
         ICT_COM_STD_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedStdDraft`,
         ICT_COM_STD_DRAFT_COMMENT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getUploadedStdDraftForComment`,
+        ICT_COM_STD_DRAFTS_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/getUploadedSDraftForComment`,
         ICT_COM_STD_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/commentOnDraft`,
         ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getApprovedStdDraft`,
         ICT_COM_STD_EDITS_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdDraftForEditing`,
@@ -514,6 +523,7 @@ export class ApiEndpointService {
         ICT_COM_STD_SUBMIT_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftForEditing`,
         ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftDocumentList`,
         ICT_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/submitDraftComments`,
+        ICT_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftComment`,
 
 
         // SD SYSTEMIC REVIEW
@@ -683,9 +693,14 @@ export class ApiEndpointService {
     };
 
     public static COMPANY_PROFILE_ENDPOINT = {
+        LOAD_BUSINESS_LINES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessLines/load`,
+        LOAD_BUSINESS_NATURES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessNatures/load`,
         LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
         LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
+        GENERATE_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/company/generate-inspection-fee`,
+        UPLOAD_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/upload/inspection-invoice`,
+        VIEW_PDF_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/view/inspection-invoice`,
         TIVETS_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/tivetListing`,
         TIVETS_UPDATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/updateTivet`,
         TIVETS_REJECT: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/rejectTivet`,

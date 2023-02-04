@@ -477,6 +477,24 @@ export interface finalSubmit {
 }
 
 // **********************************************************International Standards Adoption**********************************************************
+export interface IstProposalComment{
+    commentTitle: string;
+    scope: string;
+    clause: string;
+    proposalID: number;
+    standardNumber: string;
+    commentDocumentType: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    preparedDate: Timestamp<any>;
+    paragraph: string;
+    typeOfComment: string;
+    comment: string;
+    proposedChange: string;
+    observation: string;
+}
 export interface ProposalComment {
     adoption_proposal_comment: string;
     commentTitle: string;
@@ -499,19 +517,22 @@ export interface ProposalComment {
 
 export interface ComDraftComment {
     commentTitle: string;
-    comNameOfOrganization: string;
-    comClause: string;
-    comParagraph: string;
-    proposedChange: string;
     commentDocumentType: string;
-    adoptDraft: string;
-    reason: string;
-    recommendations: string;
+    uploadDate: Timestamp<any>;
     nameOfRespondent: string;
-    positionOfRespondent: string;
+    emailOfRespondent: string;
+    phoneOfRespondent: string;
     nameOfOrganization: string;
-    requestID: number;
-    draftID: number;
+    clause: string;
+    paragraph: string;
+    typeOfComment: string;
+    comment: string;
+    proposedChange: string;
+    observation: string;
+    requestID: string;
+    draftID: string;
+
+
 }
 
 export interface ISAdoptionProposal {
@@ -536,6 +557,17 @@ export interface ISAdoptionProposal {
     stakeholdersList: string[];
     addStakeholdersList: string[];
     iStandardNumber: string;
+    deadlineDate: Timestamp<any>;
+    noOfComments: number;
+    preparedDate: Timestamp<any>;
+    draftId: number;
+    draftNumber: string;
+    draftTitle: string;
+    companyName: string;
+    contactOneEmail: string;
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    remarks: string;
 }
 
 export interface ISJustificationProposal {
@@ -746,6 +778,12 @@ export interface IStandardDraftEdit {
     proposalId: number;
     docName: string;
     standardNumber: string;
+}
+export interface InterNationalStdDecision{
+    comments:string;
+    accentTo:string;
+    proposalId:number;
+    draftId:number;
 }
 
 export interface ISDecision {
@@ -1274,6 +1312,7 @@ export interface COMPreliminaryDraft {
     companyName: string;
     companyPhone: string;
     commentCount: number;
+    uploadDate: Timestamp<any>;
 }
 
 export interface ComApproveDraft {
@@ -1535,12 +1574,14 @@ export interface StakeholderProposalComments {
     id: number;
     user_id: number;
     adoption_proposal_comment: string;
+    adoptionComment: string;
     comment_time: string;
     taskId: string;
     proposalID: number;
     commentTitle: string;
     commentDocumentType: string;
     comNameOfOrganization: string;
+    clause: string;
     comClause: string;
     comParagraph: string;
     typeOfComment: string;
@@ -1551,6 +1592,30 @@ export interface StakeholderProposalComments {
     positionOfRespondent: string;
     reasonsForNotAcceptance: string;
     recommendations: string;
+
+}
+export interface CommentOnProposalStakeHolder{
+    id: number;
+    userId: string;
+    adoptionComment: string;
+    commentTime: Timestamp<any>;
+    proposalId: number;
+    title: string;
+    documentType: string;
+    clause: string;
+    comNameOfOrganization: string;
+    paragraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+    adopt: string;
+    reasonsForNotAcceptance: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    dateOfApplication: Timestamp<any>;
+    scope: string;
+    observation: string;
 }
 
 export interface StandardsForReview {

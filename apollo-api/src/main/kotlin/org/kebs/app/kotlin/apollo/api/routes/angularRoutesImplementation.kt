@@ -337,10 +337,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     }
 
     @Bean
-    fun migrationRegistrationRoutes(
-        handler: RegistrationHandler,
-        otherHandler: MasterDataHandler,
-        msHandler: NewMarketSurveillanceHandler
+    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler, msHandler: NewMarketSurveillanceHandler
     ) = router {
         "/api/v1/migration/".nest {
             "anonymous".nest {
@@ -502,6 +499,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/payments", handler::permitInvoiceListPaid)
             "/company".nest {
                 GET("/un-payed-invoices", handler::permitInvoiceListUnPaid)
+                GET("/approval-request-edit", handler::companyGetApprovalRequest)
                 POST("/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
                 POST("/generate-inspection-fee", handler::handleGenerateInspectionFeesDetails)
             }
@@ -509,6 +507,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
+                GET("/smark-clone-list", handler::permitListMigrationSmark)
+                GET("/dmark-clone-list", handler::permitListMigrationDmark)
+
                 GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/my-permits-loaded", handler::permitListAwardedMigrationb)
                 GET("/my-permits-loaded-dmark", handler::permitListAwardedMigrationDmark)
@@ -794,7 +795,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/add".nest {
                         POST("/charge-sheet", handler::addWorkPlanScheduleChargeSheet)
-                        POST("/data-report", handler::addWorkPlanDataReportSheet)
+//                        POST("/data-report", handler::addWorkPlanDataReportSheet)
                         POST("/end-data-report", handler::endAddingWorkPlanDataReportSheet)
 //                        POST("/seizure-declaration", handler::addWorkPlanSeizureDeclaration)
                         POST("/end-seizure-declaration", handler::addWorkPlanEndSeizureDeclaration)

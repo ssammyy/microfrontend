@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {
     BrsLookUpRequest,
     BusinessLines,
@@ -11,8 +11,8 @@ import {
     CountyService,
     Go,
     loadBrsValidations,
-    loadCountyId,
-    loadRegistrations, loadRegistrationsTivet,
+    loadCountyId, loadRegistrations,
+    loadRegistrationsTivet,
     loadResponsesFailure,
     loadSendTokenToPhone,
     loadValidateTokenAndPhone,
@@ -33,7 +33,14 @@ import {select, Store} from '@ngrx/store';
 import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
 import {ConfirmedValidator} from '../../core/shared/confirmed.validator';
 import {takeUntil} from 'rxjs/operators';
-
+import {ErrorStateMatcher} from "@angular/material/core";
+import {NgxSpinnerService} from "ngx-spinner";
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+        const isSubmitted = form && form.submitted;
+        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    }
+}
 
 @Component({
     selector: 'app-sign-up',
@@ -41,13 +48,14 @@ import {takeUntil} from 'rxjs/operators';
     styles: []
 })
 export class SignUpComponent implements OnInit {
-
+    @Input() errorMsg: string;
+    @Input() displayError: boolean;
     ispause = new Subject();
     time = 59;
     timer!: Observable<number>;
     timerObserver!: PartialObserver<number>;
     step = 0;
-    isShow=true;
+    isShow = true;
 
     public clicked = false;
 
@@ -81,6 +89,24 @@ export class SignUpComponent implements OnInit {
     submitted = false;
     selectedId: number;
 
+    loading = false;
+    loadingText: string;
+    validEmailRegister: boolean = false;
+
+    validTextType: boolean = false;
+    validNumberType: boolean = false;
+    pattern = "https?://.+";
+
+    emailFormControl = new FormControl('', [
+        Validators.required,
+        Validators.email,
+    ]);
+
+    matcher = new MyErrorStateMatcher();
+
+    validConfirmPasswordRegister = false;
+    validPasswordRegister = false;
+
 
     constructor(
         private service: RegistrationPayloadService,
@@ -91,6 +117,8 @@ export class SignUpComponent implements OnInit {
         private townService: TownService,
         private formBuilder: FormBuilder,
         private store$: Store<any>,
+        private SpinnerService: NgxSpinnerService,
+
     ) {
 
 
@@ -107,6 +135,28 @@ export class SignUpComponent implements OnInit {
         linesService.getAll().subscribe();
 
 
+    }
+    isFieldValid(form: FormGroup, field: string) {
+        return !form.get(field).valid && form.get(field).touched;
+    }
+
+    displayFieldCss(form: FormGroup, field: string) {
+        return {
+            'has-error': this.isFieldValid(form, field),
+            'has-feedback': this.isFieldValid(form, field)
+        };
+    }
+
+
+    validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateAllFormFields(control);
+            }
+        });
     }
 
     ngOnInit(): void {
@@ -142,12 +192,12 @@ export class SignUpComponent implements OnInit {
             otherCategory: new FormControl('', [])
         });
 
-        this.stepTwoForm = new FormGroup({
-            postalAddress: new FormControl(),
-            physicalAddress: new FormControl('', [Validators.required]),
-            plotNumber: new FormControl('', [Validators.required]),
-            companyEmail: new FormControl('', [Validators.required]),
-            companyTelephone: new FormControl('', [Validators.required])
+        this.stepTwoForm = this.formBuilder.group({
+            postalAddress: [''],
+            physicalAddress: ['', Validators.required],
+            plotNumber: ['', Validators.required],
+            companyEmail: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
+            companyTelephone: ['', Validators.required],
         });
         this.stepThreeForm = new FormGroup({
             buildingName: new FormControl(),
@@ -162,7 +212,7 @@ export class SignUpComponent implements OnInit {
                 firstName: [],
                 lastName: ['', Validators.required],
                 //userName: ['', Validators.required],
-                email: ['', Validators.required],
+                email: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
                 credentials: ['', Validators.required],
                 confirmCredentials: ['', [Validators.required]]
             },
@@ -234,12 +284,12 @@ export class SignUpComponent implements OnInit {
 
     updateSelectedBusinessNatures() {
         this.selectedBusinessNature = this.stepOneForm?.get('businessNatures')?.value;
-        const ratings = [84,85,86,87,88,89,90,91,92,93,94,95];
+        const ratings = [84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95];
         console.log(this.selectedBusinessNature);
-        if(ratings.includes(this.selectedBusinessNature)){
-            this.isShow=!this.isShow;
-        }else{
-            this.isShow=true;
+        if (ratings.includes(this.selectedBusinessNature)) {
+            this.isShow = !this.isShow;
+        } else {
+            this.isShow = true;
         }
         console.log(this.selectedBusinessNature)
 
@@ -266,6 +316,7 @@ export class SignUpComponent implements OnInit {
                     select(selectBrsValidationCompany)).subscribe((record: Company) => {
                     this.stepOneForm.patchValue(record);
                     this.stepTwoForm.patchValue(record);
+
                     this.stepThreeForm.patchValue(record);
                     this.stepFourForm.patchValue(record);
                     this.stepFiveForm.patchValue(record);
@@ -331,8 +382,8 @@ export class SignUpComponent implements OnInit {
     }
 
     onClickValidateOtp() {
-        var sendOtp = document.getElementById("sendOtp");
-
+        const sendOtp = document.getElementById("sendOtp");
+        this.run("Validating OTP")
         this.phoneValidated = true;
         this.store$.dispatch(loadValidateTokenAndPhone({
             payload: {
@@ -341,23 +392,21 @@ export class SignUpComponent implements OnInit {
             }
         }));
         this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
-            console.log(`status inside is ${d}`);
             if (d) {
                 this.otpSent = true;
                 // this.stepFourForm?.get('otp')?.reset();
                 this.phoneValidated = d;
                 if (this.phoneValidated) {
-                    this.userSoFar = {...this.userSoFar, ...this.stepFourForm?.value};
+                    // this.userSoFar = {...this.userSoFar, ...this.stepFourForm?.value};
                     this.userSoFar = {...this.userSoFar, ...this.stepFiveForm.value};
                     this.company = {...this.company, ...this.companySoFar};
                     this.user = {...this.user, ...this.userSoFar};
 
-                    this.store$.dispatch(loadRegistrationsTivet({
+                    this.store$.dispatch(loadRegistrations({
                         payload: {company: this.company, user: this.user}
                     }));
 
                     this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((succeeded) => {
-                        console.log(`status inside is ${succeeded}`);
                         if (succeeded) {
                             return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
                         }
@@ -399,7 +448,8 @@ export class SignUpComponent implements OnInit {
     }
 
     onClickSendOtp() {
-        var sendOtp = document.getElementById("sendOtp");
+        const sendOtp = document.getElementById("sendOtp");
+        this.run("Sending OTP")
 
         this.otpSent = true;
         this.time = 59;
@@ -431,7 +481,6 @@ export class SignUpComponent implements OnInit {
             }));
 
             this.store$.pipe(select(selectTokenSentStateOtpSent)).subscribe((d) => {
-                console.log(`value of inside is ${d}`);
                 if (d) {
                     return this.otpSent = d;
                 } else {
@@ -479,6 +528,67 @@ export class SignUpComponent implements OnInit {
             this.step += 1;
         }
 
+    }
+    emailValidationRegister(e) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (re.test(String(e).toLowerCase())) {
+            this.validEmailRegister = true;
+        } else {
+            this.validEmailRegister = false;
+        }
+    }
+
+
+    textValidationType(e) {
+        if (e) {
+            this.validTextType = true;
+        } else {
+            this.validTextType = false;
+        }
+    }
+
+    numberValidationType(e) {
+        if (e) {
+            this.validNumberType = true;
+        } else {
+            this.validNumberType = false;
+        }
+    }
+
+    passwordValidationRegister(e) {
+        if (e.length > 5) {
+            this.validPasswordRegister = true;
+        } else {
+            this.validPasswordRegister = false;
+        }
+    }
+
+    confirmPasswordValidationRegister(e) {
+        if (this.stepFourForm.controls['credentials'].value === e) {
+            this.validConfirmPasswordRegister = true;
+        } else {
+            this.validConfirmPasswordRegister = false;
+        }
+    }
+
+
+    run(message: string): void {
+        this.loading = true;
+        this.loadingText = message
+        this.SpinnerService.show()
+
+        this.runAsync().then(() => {
+            this.loading = false;
+            this.SpinnerService.hide()
+        });
+    }
+
+    runAsync(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, 2000)
+        });
     }
 
 

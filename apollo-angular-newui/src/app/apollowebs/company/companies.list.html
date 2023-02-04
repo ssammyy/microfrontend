@@ -9,7 +9,8 @@
                     color="#fff"
                     type="ball-scale-multiple"
             >
-                <p style="font-size: 20px; color: white">{{loadingText}}</p>
+                <p style="font-size: 20px; color: white">Loading Please Wait...</p>
+<!--                <p style="font-size: 20px; color: white">{{loadingText}}</p>-->
             </ngx-spinner>
         </div>
     </div>
@@ -65,15 +66,13 @@
                                                data-toggle="modal"
                                                class="btn btn-link btn-info"
                                             ><i class="material-icons">remove_red_eye</i>View Details</a>
-                                            <br>
                                             <a (click)="updateTurnoverRecord(row)"
                                                class="btn btn-link btn-info"><i
                                                     class="material-icons">remove_red_eye</i>Update Firm Type</a>
                                             <br>
-                                            <a (click)="editRecord(row)"
-                                               class="btn btn-link btn-info"><i
-                                                    class="material-icons">remove_red_eye</i> Edit Details</a>
-                                            <br>
+                                            <a (click)="editRecord(row)" data-target="#companyDetailsModal"
+                                               data-toggle="modal"
+                                               class="btn btn-link btn-info"><i class="material-icons">remove_red_eye</i> Edit Details</a>
                                             <a (click)="onClickPlantDetails(row)"
                                                class="btn btn-link btn-warning"><i
                                                     class="material-icons">dvr</i> View Branches</a>
@@ -261,6 +260,10 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                    </div>
+                                </div>
                             </div>
                             <br>
                             <h5 class="mb-3" style="color: #0066B1">Address & Contact Information</h5>
@@ -431,9 +434,14 @@
                     </form>
 
                     <div class="modal-footer">
-                        <button class="btn btn-danger" data-dismiss="modal" mat-raised-button
-                                type="button">
-                            Close
+                        <button mat-raised-button type="button"
+                                class="btn btn-danger" data-dismiss="modal" >Close
+                        </button>
+                        <button *ngIf="(currDiv == 'editCompanyDetails')" mat-raised-button type="button" class="btn btn-success"
+                                (click)="onClickSaveCompanyDetails(companyDetailsForm.valid);"
+                                [disabled]="!companyDetailsForm.valid"
+                                data-dismiss="modal"
+                        >SUBMIT
                         </button>
                     </div>
 

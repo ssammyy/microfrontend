@@ -60,6 +60,10 @@ class QaInvoiceCalculationDaoServices(
 
         KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 
+        if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId== selectedRate.id && plantDetail.inspectionFeeStatus!=1){
+            throw Exception("Kindly Pay the Inspection fees First before submitting current application")
+        }
+
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
 
         when {
@@ -91,16 +95,67 @@ class QaInvoiceCalculationDaoServices(
         }
 
         if (permit.fmarkGenerateStatus == 1) {
-            calculatePaymentFMarkOnSMark(
-                permit,
-                user,
-                qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark),
-                invoiceMaster
-            )
+            calculatePaymentFMarkOnSMark(permit, user, qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark), invoiceMaster)
         }
 
 
         invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, permitType, user)
+
+
+        KotlinLogging.logger { }.info { "invoice Master total Amount = ${invoiceMaster.totalAmount}" }
+
+        return invoiceMaster
+    }
+
+    fun calculatePaymentSMarkAfterFirmUpgrade(
+        permit: PermitApplicationsEntity,
+        user: UsersEntity,
+        manufactureTurnOver: BigDecimal,
+        productNumber: Long,
+        plantDetail: ManufacturePlantDetailsEntity
+    ): QaInvoiceMasterDetailsEntity {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("INVALID PERMIT TYPE ID"))
+        BigDecimal(permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS"))
+        commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+
+        val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
+        val selectedRate = ratesMap.firstOrNull { manufactureTurnOver > (it.min ?: BigDecimal.ZERO) && manufactureTurnOver <= (it.max ?: throw NullValueNotAllowedException("Max needs to be defined")) } ?: throw NullValueNotAllowedException("Rate not found")
+
+        KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
+
+        var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
+
+        when {
+            applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == selectedRate.id -> {
+                calculatePaymentSMarkLargeFirm(permit, invoiceMaster, map, user, plantDetail, selectedRate)
+            }
+            applicationMapProperties.mapQASmarkMediumTurnOverId == selectedRate.id -> {
+                calculatePaymentSMarkMediumOrSmallFirm(
+                    permit,
+                    invoiceMaster,
+                    map,
+                    user,
+                    plantDetail,
+                    selectedRate,
+                    productNumber
+                )
+            }
+            applicationMapProperties.mapQASmarkJuakaliTurnOverId == selectedRate.id -> {
+                calculatePaymentSMarkMediumOrSmallFirm(
+                    permit,
+                    invoiceMaster,
+                    map,
+                    user,
+                    plantDetail,
+                    selectedRate,
+                    productNumber
+                )
+            }
+        }
+
+
+        invoiceMaster = calculateTotalInvoiceAmountToPayAfterUpGarde(invoiceMaster, permitType, user)
 
 
         KotlinLogging.logger { }.info { "invoice Master total Amount = ${invoiceMaster.totalAmount}" }
@@ -121,6 +176,36 @@ class QaInvoiceCalculationDaoServices(
                     totalAmountPayable = totalAmountPayable.plus(
                         invoice.itemAmount ?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
                     )
+                }
+            } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
+
+        val totalAmountTaxPayable = totalAmountPayable.multiply(permitType.taxRate)
+
+        with(invoiceMaster) {
+            paymentStatus = 0
+            taxAmount = totalAmountTaxPayable
+            subTotalBeforeTax = totalAmountPayable
+            totalAmount = totalAmountPayable.plus(totalAmountTaxPayable)
+            modifiedOn = Timestamp.from(Instant.now())
+            modifiedBy = commonDaoServices.concatenateName(user)
+        }
+
+        return qaInvoiceMasterDetailsRepo.save(invoiceMaster)
+    }
+
+    fun calculateTotalInvoiceAmountToPayAfterUpGarde(
+        invoiceMaster: QaInvoiceMasterDetailsEntity,
+        permitType: PermitTypesEntity,
+        user: UsersEntity
+    ): QaInvoiceMasterDetailsEntity {
+        var totalAmountPayable: BigDecimal = BigDecimal.ZERO
+        qaInvoiceDetailsRepo.findByInvoiceMasterId(invoiceMaster.id)
+            ?.let { invoiceDetailsList ->
+                invoiceDetailsList.forEach { invoice ->
+                    qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
+                        ?.let {masterInvoicePrevious->
+                            totalAmountPayable = masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount ?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                    }
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
 
@@ -295,9 +380,9 @@ class QaInvoiceCalculationDaoServices(
         with(plantDetail) {
             tokenGiven = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             invoiceSharedId = invoiceDetailsInspectionFee.id
-            inspectionFeeStatus = 1
-            paidDate = commonDaoServices.getCurrentDate()
-            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+            inspectionFeeStatus = 0
+//            paidDate = commonDaoServices.getCurrentDate()
+//            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
         }
 
         qaDaoServices.updatePlantDetails(map, user, plantDetail)
@@ -404,7 +489,7 @@ class QaInvoiceCalculationDaoServices(
         invoiceDetailsOthers: QaInvoiceDetailsEntity
     ): Pair<QaInvoiceDetailsEntity, QaInvoiceMasterDetailsEntity> {
 
-        qaInvoiceMasterDetailsRepo.findByPermitId(permit.id ?: throw Exception("PERMIT ID MISSING"))
+        qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permit.id ?: throw Exception("PERMIT ID MISSING"))
             ?.let { invoiceMaster ->
                 var invoiceDetails = invoiceDetailsOthers.apply {
                     invoiceMasterId = invoiceMaster.id
@@ -435,19 +520,52 @@ class QaInvoiceCalculationDaoServices(
 
         val tokenGenerated = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         when {
-            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null && plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
+            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null -> {
                  throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
-            //                generateInvoiceForCurrentTime(
-//                    invoiceMaster,
-//                    selectedRate,
-//                    user,
-//                    plantDetail,
-//                    map,
-//                    permit,
-//                    tokenGenerated
-//                )
+            }
+            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
+
+                val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
+                    invoiceMasterId = invoiceMaster.id
+                    tokenValue = plantDetail.tokenGiven
+                    umo = "PER"
+                    generatedDate = Timestamp.from(Instant.now())
+                    itemDescName = selectedRate.invoiceDesc
+                    itemQuantity = BigDecimal.valueOf(1)
+                    itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
+                    permitStatus = 1
+                    status = 1
+                    createdOn = Timestamp.from(Instant.now())
+                    createdBy = commonDaoServices.concatenateName(user)
+                }
+
+                qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
+
+            }commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
+                throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+            }
+            else -> {
+                throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR LARGE FIRM")
+            }
+        }
+    }
+
+    fun calculatePaymentSMarkLargeFirmUpgrade(
+        permit: PermitApplicationsEntity,
+        invoiceMaster: QaInvoiceMasterDetailsEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        plantDetail: ManufacturePlantDetailsEntity,
+        selectedRate: PermitRatingEntity
+    ) {
+
+        val tokenGenerated = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+        when {
+            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null && plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
+                throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
             }
             commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
+
                 val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
                     invoiceMasterId = invoiceMaster.id
                     tokenValue = plantDetail.tokenGiven
@@ -466,15 +584,6 @@ class QaInvoiceCalculationDaoServices(
             }
             commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
                 throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
-            //                generateInvoiceForCurrentTime(
-//                    invoiceMaster,
-//                    selectedRate,
-//                    user,
-//                    plantDetail,
-//                    map,
-//                    permit,
-//                    tokenGenerated
-//                )
             }
             else -> {
                 throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR LARGE FIRM")
@@ -549,8 +658,7 @@ class QaInvoiceCalculationDaoServices(
         productNumber: Long
     ) {
 
-        val tokenGenerated =
-            "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+        val tokenGenerated = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         val maxProductNumber = selectedRate.countBeforeFree ?: throw Exception("MISSING COUNT BEFORE FEE VALUE")
 
         if (productNumber <= maxProductNumber) {
