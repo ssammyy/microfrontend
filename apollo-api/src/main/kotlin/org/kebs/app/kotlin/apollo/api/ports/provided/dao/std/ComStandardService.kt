@@ -903,8 +903,6 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
-        companyStandardRemarks.standardType = companyStandard.standardType
-
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
                 with(companyStandard) {
@@ -1078,8 +1076,6 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
-        companyStandardRemarks.standardType = companyStandard.standardType
-
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
             with(companyStandard) {
@@ -1116,8 +1112,6 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "HOP"
-        companyStandardRemarks.standardType = companyStandard.standardType
-
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
                 with(companyStandard) {
@@ -1165,7 +1159,6 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Standard Editor"
-        companyStandardRemarks.standardType = companyStandard.standardType
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
 
@@ -1189,7 +1182,6 @@ class ComStandardService(
 
         standard.title=standard.title
         standard.standardNumber=standard.standardNumber
-        standard.standardType=companyStandard.standardType
         standard.status=0
         standard.dateFormed=Timestamp(System.currentTimeMillis())
         standard.comStdId=standard.comStdId
@@ -1204,8 +1196,6 @@ class ComStandardService(
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         companyStandardRemarks.remarkBy = usersName
         companyStandardRemarks.role = "Standard Editor"
-        companyStandardRemarks.standardType = companyStandard.standardType
-
 
             companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
                 with(companyStandard) {

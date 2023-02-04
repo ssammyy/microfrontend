@@ -61,7 +61,7 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
                 "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
                 "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
-                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,\n" +
+                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
                 "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
                 "WHERE  s.STATUS IN('0','1','3','4','5','6','7') ORDER BY s.ID DESC",
         nativeQuery = true

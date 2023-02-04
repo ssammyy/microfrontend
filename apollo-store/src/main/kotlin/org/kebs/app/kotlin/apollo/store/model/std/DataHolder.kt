@@ -724,6 +724,7 @@ interface ComStandard {
     fun getContactThreeEmail(): String?
     fun getCompanyName(): String?
     fun getCompanyPhone(): String?
+    fun getStandardType(): String?
 }
 
 interface ComStdRequest{

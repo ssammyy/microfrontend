@@ -184,7 +184,6 @@ class ISDraftDecisions(
     @JsonProperty("justificationId") val justificationId: Long,
     @JsonProperty("draftId") val draftId: Long,
     @JsonProperty("comments") val comments: String,
-    @JsonProperty("standardType") val standardType: String,
     @JsonProperty("requestId") val requestId: Long,
     @JsonProperty("id") val id: Long
 ){
@@ -210,7 +209,6 @@ class ISDraftDecisionsStd(
     @JsonProperty("scope") val scope: String?,
     @JsonProperty("special") val special: String?,
     @JsonProperty("standardNumber") val standardNumber: String?,
-    @JsonProperty("standardType") val standardType: String?,
     @JsonProperty("requestId") val requestId: Long?,
     @JsonProperty("id") val id: Long
 

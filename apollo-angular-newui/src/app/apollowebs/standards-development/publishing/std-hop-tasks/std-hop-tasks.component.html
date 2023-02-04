@@ -253,13 +253,11 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th class="knw">Request Number</th>
-                                    <th class="sl">Company Name</th>
-                                    <th class="sl">Phone Number</th>
-                                    <th class="requestNumber">Title </th>
-                                    <th class="knw">Company Contact Name</th>
-                                    <th class="sl">Company Contact Telephone</th>
-                                    <th class="sl">Company Contact Email</th>
+                                    <th class="knw">Title</th>
+                                    <th class="sl">Scope</th>
+                                    <th class="sl">Clause</th>
+                                    <th class="requestNumber">Standard Type </th>
+                                    <th class="knw">Standard Number</th>
                                     <th>Date</th>
                                     <th class="action">Action</th>
                                 </tr>
@@ -267,13 +265,11 @@
                                 <tbody>
                                 <tr  *ngFor="let isCheckRequirement of isCheckRequirements let i=index">
                                     <td>{{i+1}}</td>
-                                    <td>{{isCheckRequirement.requestNumber}}</td>
-                                    <td>{{isCheckRequirement.companyName}}</td>
-                                    <td>{{isCheckRequirement.companyPhone}}</td>
                                     <td>{{isCheckRequirement.title}}</td>
-                                    <td>{{isCheckRequirement.contactOneFullName}}</td>
-                                    <td>{{isCheckRequirement.contactOneTelephone}}</td>
-                                    <td>{{isCheckRequirement.contactOneEmail}}</td>
+                                    <td>{{isCheckRequirement.scope}}</td>
+                                    <td>{{isCheckRequirement.clause}}</td>
+                                    <td>{{isCheckRequirement.standardType}}</td>
+                                    <td>{{isCheckRequirement.comStdNumber}}</td>
                                     <td>{{isCheckRequirement.uploadDate}}</td>
                                     <td *ngIf="isCheckRequirement.status==0"><a  (click)="onOpenModals(isCheckRequirement,'draftStandardForEditing',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Submit Draft Standard For Editing</a></td>
                                     <td *ngIf="isCheckRequirement.status==1"><a  (click)="onOpenModals(isCheckRequirement,'checkRequirementsMet',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Check Requirements</a></td>

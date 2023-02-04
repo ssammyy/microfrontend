@@ -743,7 +743,6 @@ class ComStandardController (val comStandardService: ComStandardService,
             accentTo=iSDraftDecisions.accentTo
             draftId=iSDraftDecisions.draftId
             id=iSDraftDecisions.id
-            standardType=iSDraftDecisions.standardType
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=iSDraftDecisions.requestId
@@ -923,7 +922,6 @@ class ComStandardController (val comStandardService: ComStandardService,
             accentTo=iSDraftDecisions.accentTo
             id=iSDraftDecisions.id
             draftId=iSDraftDecisions.draftId
-            standardType=iSDraftDecisions.standardType
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=iSDraftDecisions.requestId
@@ -954,7 +952,6 @@ class ComStandardController (val comStandardService: ComStandardService,
             accentTo=iSDraftDecisions.accentTo
             id=iSDraftDecisions.id
             draftId=iSDraftDecisions.draftId
-            standardType=iSDraftDecisions.standardType
 
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
@@ -988,7 +985,6 @@ class ComStandardController (val comStandardService: ComStandardService,
             accentTo=iSDraftDecisions.accentTo
             id=iSDraftDecisions.id
             draftId=iSDraftDecisions.draftId
-            standardType=iSDraftDecisions.standardType
 
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
@@ -1011,7 +1007,6 @@ class ComStandardController (val comStandardService: ComStandardService,
             accentTo=iSDraftDecisions.accentTo
             id=iSDraftDecisions.id
             draftId=iSDraftDecisions.draftId
-            standardType=iSDraftDecisions.standardType
 
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
