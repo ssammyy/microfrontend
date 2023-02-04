@@ -1892,6 +1892,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     });
 
     this.sampleSubmitForm = this.formBuilder.group({
+      valueToClone: null,
       id: null,
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
@@ -2748,7 +2749,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         this.updateDataReport(event.data);
         break;
       case 'viewDataReportUploads':
-        console.log("view datasheet uploads");
+        console.log('view datasheet uploads');
         console.log(event.data);
         break;
     }
@@ -4499,7 +4500,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
-  checkProductCompliance(permit: string){
+  checkProductCompliance(permit: string) {
     console.log(permit);
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
     const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
@@ -4640,6 +4641,19 @@ export class WorkPlanDetailsComponent implements OnInit {
     // this.sampleSubmitParamsForm?.get('laboratoryName')?.reset();
   }
 
+  onClickCloneDataSSF() {
+    const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
+    this.sampleSubmitForm.patchValue(selectedClone);
+    this.sampleSubmitForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.parametersList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    this.sampleSubmitForm.enable();
+    this.addLabParamStatus = true;
+  }
+
   removeDataReportParam(index) {
     console.log(index);
     if (index === 0) {
@@ -4777,9 +4791,8 @@ export class WorkPlanDetailsComponent implements OnInit {
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.saveSeizureDeclaration();
           });
-    }
-    else{
-      this.msService.showError("Fill in all the fields! (Make sure you've uploaded a file)");
+    } else {
+      this.msService.showError('Fill in all the fields! (Make sure you\'ve uploaded a file)');
     }
   }
 
@@ -5259,8 +5272,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   addStandard() {
-    let standard = this.standardsInput.nativeElement.value;
-    if(standard != "" && !this.standardsArray.includes(standard)){
+    const standard = this.standardsInput.nativeElement.value;
+    if (standard != '' && !this.standardsArray.includes(standard)) {
       this.standardsArray.push(standard);
     }
     this.standardsInput.nativeElement.value = '';

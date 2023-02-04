@@ -1591,6 +1591,7 @@ export class SampleSubmissionDto {
     lbIdBatchNo: string;
     lbIdContDecl: string;
     lbIdDateOfManf: Date;
+    sampleCollectionDate: Date;
     lbIdExpiryDate: Date;
     lbIdTradeMark: string;
     noteTransResults: string;

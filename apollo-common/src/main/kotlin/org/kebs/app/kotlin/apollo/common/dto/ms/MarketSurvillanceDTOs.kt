@@ -758,6 +758,7 @@ data class SampleSubmissionDto(
         var lbIdBatchNo: String? = null,
         var lbIdContDecl: String? = null,
         var lbIdDateOfManf: Date? = null,
+        var sampleCollectionDate: Date? = null,
         var lbIdExpiryDate: Date? = null,
         var lbIdTradeMark: String? = null,
         var noteTransResults: String? = null,

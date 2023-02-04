@@ -3252,13 +3252,13 @@
                         </div>
                     </div>
 
-                    <div class="row" >
+                    <div  *ngIf="addProductsStatus" class="row" >
                         <div class="col">
                             <div  class="form-group">
                                 <label for="files"><b>Upload Documents Here</b></label>
                                 <form #demoForm="ngForm">
                                     <file-upload [(ngModel)]="uploadedFilesDataReport" name="files" id="uploadedFilesDataReportWP"
-                                                 [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                                 [fileslimit]="5" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
                                 </form>
                             </div>
                         </div>
@@ -5831,6 +5831,27 @@
                 <div class="modal-body">
                     <form [formGroup]="sampleSubmitForm">
                         <div >
+                            <div class="row" *ngIf="workPlanInspection.sampleSubmitted.length!=0">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Sample Submission to Clone</b></label>
+                                        <input type="text" list="valueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" #standardsInput>
+                                        <datalist id="valueToCloneList">
+                                            <option *ngFor="let app of workPlanInspection.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
+                                        </datalist>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button  mat-raised-button
+                                                class="btn btn-success" (click)="onClickCloneDataSSF()" type="button" >CLONE
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <br>
                             <h5 class="mb-3" style="color: #0066B1">Sample Submission Details</h5>
                             <div class="row">
                                 <div class="col">
