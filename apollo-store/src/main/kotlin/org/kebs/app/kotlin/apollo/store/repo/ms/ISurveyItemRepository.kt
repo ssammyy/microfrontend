@@ -27,6 +27,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
+import java.sql.Date
 
 @Repository
 interface ISurveyItemRepository : HazelcastRepository<SurveyItemsEntity, Long> {
@@ -105,7 +106,12 @@ interface IWorkPlanGenerateRepository : HazelcastRepository<MsWorkPlanGeneratedE
     fun findByWorkPlanYearIdAndMsProcessEndedStatus(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
     fun findByWorkPlanYearIdAndMsProcessEndedStatusAndComplaintIdIsNotNull(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
 
-    fun findAllByWorkPlanYearIdAndTimeActivityDateAndApprovedStatus(workPlanYearId: Long,msProcessEndedStatus: Int,pageable: Pageable): Page<MsWorkPlanGeneratedEntity>?
+    fun findAllByWorkPlanYearIdAndTimeActivityDateAndApprovedStatus(
+        workPlanYearId: Long,
+        timeActivityDate: Date,
+        approvedStatus: Int,
+        pageable: Pageable
+    ): Page<MsWorkPlanGeneratedEntity>?
 
 
 
