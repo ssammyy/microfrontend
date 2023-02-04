@@ -564,6 +564,7 @@ data class DataReportDto(
         var totalComplianceScore: String? = null,
         var remarks: String? = null,
         var productsList: List<DataReportParamsDto>? = null,
+        var docList: List<Long>? = null,
 )
 
 data class DataReportParamsDto(

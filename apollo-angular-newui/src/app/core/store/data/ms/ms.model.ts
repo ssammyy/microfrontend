@@ -1193,6 +1193,7 @@ export class DataReportDto {
     totalComplianceScore: number;
     remarks: string;
     productsList: DataReportParamsDto[];
+    docList: number[];
 }
 
 
