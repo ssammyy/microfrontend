@@ -298,7 +298,7 @@
                                                 <td th:text="${fileParam.fileType}"></td>
                                                 <td th:text="${fileParam.documentType}"></td>
                                                 <td th:text="${fileParam.versionNumber}"></td>
-                                                <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}"
+                                                <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}" th:target="_blank"
                                                        class="btn btn-primary itemViewBtn">view</a></td>
                                             </tr>
                                             </tbody>
@@ -390,7 +390,7 @@
                                                     <td th:text="${fileParam.documentType}"></td>
                                                     <td th:text="${fileParam.versionNumber}"></td>
                                                     <td>
-                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}"
+                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}" th:target="_blank"
                                                            class="btn btn-primary itemViewBtn">view</a></td>
                                                 </tr>
                                                 </tbody>
@@ -423,7 +423,7 @@
                                                     <td th:text="${sscParam.fileType}"></td>
                                                     <td th:text="${sscParam.versionNumber}"></td>
                                                     <td>
-                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${sscParam.id})}"
+                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${sscParam.id})}" th:target="_blank"
                                                            class="btn btn-primary itemViewBtn">view</a>
                                                     </td>
                                                 </tr>
@@ -457,7 +457,7 @@
                                                     <td th:text="${apParam.documentType}"></td>
                                                     <td th:text="${apParam.versionNumber}"></td>
                                                     <td>
-                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${apParam.id})}"
+                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${apParam.id})}" th:target="_blank"
                                                            class="btn btn-primary itemViewBtn">view</a>
                                                     </td>
                                                 </tr>
