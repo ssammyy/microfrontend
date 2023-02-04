@@ -98,7 +98,7 @@ export class UserProfileMainComponent implements OnInit {
         this.getVerificationStatus();
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
             this.userId = u.id;
-            this.email= u.email;
+            this.email = u.email;
         });
         this.emailActivationFormGroup = this.formBuilder.group({
             userId: [],
@@ -116,7 +116,6 @@ export class UserProfileMainComponent implements OnInit {
         this.loaduserinfo()
 
     }
-
 
 
     loaduserinfo() {
@@ -160,69 +159,93 @@ export class UserProfileMainComponent implements OnInit {
         );
 
     }
-    showToasterSuccess(title:string,message:string){
+
+    showToasterSuccess(title: string, message: string) {
         this.notifyService.showSuccess(message, title)
 
     }
-    showToasterError(title:string,message:string){
+
+    showToasterError(title: string, message: string) {
         this.notifyService.showError(message, title)
 
     }
 
     onClickSave(valid: boolean) {
-        // if (valid) {
-        this.user = {...this.user, ...this.stepOneForm.value};
-        this.service.update(this.user).subscribe(
-            (a) => {
+        const phone = this.stepOneForm.controls['personalContactNumber'].value;
+        if(phone =="")
+        {
+            this.showToasterError("Error","Please Enter Phonenumber") ;
+        }
+        else if(phone.length!=12)
+        {
+            this.showToasterError("Error","Please Enter Valid Phonenumber") ;
 
-                this.store$.dispatch(
-                    loadResponsesSuccess({
-                        message: {
-                            response: '00',
-                            payload: `Profile Successfully Updated.`,
-                            status: 200
-                        }
-                    })
-                );
-                return this.store$.dispatch(Go({
-                    payload: null,
-                    link: 'profile',
-                    redirectUrl: 'profile'
-                }));
+        }
+        else if(phone.substring(0,3) !='254')
+        {
+            this.showToasterError("Error","Please Enter  Phonenumber With Correct Format") ;
 
+        }
+        else {
 
-            },
-            catchError(
-                (err: HttpErrorResponse) => {
-                    return of(loadResponsesFailure({
-                        error: {
-                            payload: err.error,
-                            status: err.status,
-                            response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
-                        }
+            const email = this.stepOneForm.controls['email'].value;
+            this.stepOneForm.controls['userName'].setValue(email)
+
+            // if (valid) {
+            this.user = {...this.user, ...this.stepOneForm.value};
+            console.log(this.user)
+            this.service.update(this.user).subscribe(
+                (a) => {
+
+                    this.store$.dispatch(
+                        loadResponsesSuccess({
+                            message: {
+                                response: '00',
+                                payload: `Profile Successfully Updated.`,
+                                status: 200
+                            }
+                        })
+                    );
+                    return this.store$.dispatch(Go({
+                        payload: null,
+                        link: 'profile',
+                        redirectUrl: 'profile'
                     }));
-                }));
 
 
-        //  }
-        // else {
-        //     this.store$.dispatch(loadResponsesFailure({
-        //         error: {
-        //             payload: 'Some required details are missing, kindly recheck',
-        //             status: 100,
-        //             response: '05'
-        //         }
-        //     }));
-        // }
+                },
+                catchError(
+                    (err: HttpErrorResponse) => {
+                        return of(loadResponsesFailure({
+                            error: {
+                                payload: err.error,
+                                status: err.status,
+                                response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                            }
+                        }));
+                    }));
+
+
+            //  }
+            // else {
+            //     this.store$.dispatch(loadResponsesFailure({
+            //         error: {
+            //             payload: 'Some required details are missing, kindly recheck',
+            //             status: 100,
+            //             response: '05'
+            //         }
+            //     }));
+            // }
+        }
     }
 
-    public getVerificationStatus(): void{
+    public getVerificationStatus(): void {
         this.levyService.getVerificationStatus().subscribe(
-            (response)=> {
+            (response) => {
                 this.emailVerificationStatus = response;
                 // console.log(this.emailVerificationStatus);
             },
-            (error: HttpErrorResponse)=>{
+            (error: HttpErrorResponse) => {
                 console.log(error.message)
                 //alert(error.message);
             }
@@ -231,7 +254,7 @@ export class UserProfileMainComponent implements OnInit {
 
     toggleDisplayEmailForm() {
         this.isShowSendEmailForm = !this.isShowSendEmailForm;
-        this.isShowConfirmEmailForm=true;
+        this.isShowConfirmEmailForm = true;
 
     }
 
@@ -240,12 +263,12 @@ export class UserProfileMainComponent implements OnInit {
         console.log(this.emailActivationFormGroup.value);
         this.SpinnerService.show();
         this.levyService.sendEmailVerificationToken(this.emailActivationFormGroup.value).subscribe(
-            (response ) => {
+            (response) => {
                 console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Token has been generated and sent to your email Address`);
-                this.isShowConfirmEmailForm=!this.isShowConfirmEmailForm;
-                this.isShowSendEmailForm=true;
+                this.isShowConfirmEmailForm = !this.isShowConfirmEmailForm;
+                this.isShowSendEmailForm = true;
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -275,11 +298,11 @@ export class UserProfileMainComponent implements OnInit {
         console.log(this.activateEmailFormGroup.value);
         this.SpinnerService.show();
         this.levyService.confirmEmailAddress(this.activateEmailFormGroup.value).subscribe(
-            (response ) => {
+            (response) => {
                 console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Email Address Validated`);
-                this.isShowSendEmailForm=true;
+                this.isShowSendEmailForm = true;
                 this.isShowConfirmEmailForm = true;
                 // this.router.navigateByUrl('/dashboard').then(r => {});
             },
@@ -290,6 +313,7 @@ export class UserProfileMainComponent implements OnInit {
             }
         );
     }
+
     showNotification(from: any, align: any) {
         const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 

@@ -97,8 +97,8 @@
                                                    data-target="#myModalUpload"><i class="material-icons">remove_red_eye</i>Upload Inspection Invoice</a>
                                                 <br>
                                                 <a *ngIf="theRecord.invoiceBatchID!=null" href="/invoiceDetails#{{theRecord.invoiceBatchID}}"
-                                                   class="btn btn-link btn-info btn-just-icon view"><i
-                                                        class="material-iconpny IDs">remove_red_eye</i>View Invoice Generated</a>
+                                                   class="btn btn-link btn-info"><i
+                                                        class="material-icons">remove_red_eye</i>View Invoice Generated</a>
                                                 <a *ngIf="theRecord.uploadedPdfID!=null" (click)="viewUploadDetailsPdfFile(theRecord?.uploadedPdfID, 'Inspection fees Invoice','application/pdf')"
                                                    class="btn btn-link btn-info"><i
                                                         class="material-icons">remove_red_eye</i>View Invoice Uploaded</a>

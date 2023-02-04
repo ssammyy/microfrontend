@@ -82,29 +82,29 @@ class SchedulerDevelopment(
     private val sendEntryNumberToKraServices : SendEntryNumberToKraServices,
     private val invoiceDaoService: InvoiceDaoService
 ) {
-    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
-    fun updateDemandNotes() {
-        invoiceDaoService.updateOfInvoiceTables()
-        qaDaoServices.assignPermitApplicationAfterPayment()
-        qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
-        schedulerImpl.updateLabResultsWithDetails()
-        schedulerImpl.updateFirmTypeStatus()
-        schedulerImpl.updatePaidDemandNotesStatus()
-//        standardLevyService.sendLevyPaymentReminders()
-        //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
-//        msDaoServices.updateRemediationDetailsAfterPaymentDone()
-        KotlinLogging.logger { }.trace("DEV: UPDATED DEMAND NOTES on SW")
-    }
-
-    //@Scheduled(cron = "\${scheduler.cron.monthly}")
-    @Scheduled(fixedDelay = 600_000) //3 Minutes for now
-    fun runMonthlyScheduler() {
-        standardLevyService.sendLevyPaymentReminders()
-        sendEntryNumberToKraServices.postPenaltyDetailsToKra()
-    }
-
-    @Scheduled(cron = "\${scheduler.cron.daily}")
-    fun runDailyScheduler() {
-        schedulerImpl.updateOverDueTask()
-    }
+//    @Scheduled(fixedDelay = 5_000)//60 Seconds for now
+//    fun updateDemandNotes() {
+//        invoiceDaoService.updateOfInvoiceTables()
+//        qaDaoServices.assignPermitApplicationAfterPayment()
+//        qaDaoServices.updatePermitWithDiscountWithPaymentDetails()
+//        schedulerImpl.updateLabResultsWithDetails()
+//        schedulerImpl.updateFirmTypeStatus()
+//        schedulerImpl.updatePaidDemandNotesStatus()
+////        standardLevyService.sendLevyPaymentReminders()
+//        //   KotlinLogging.logger { }.info("DEV: UPDATED DEMAND NOTES on SW")
+////        msDaoServices.updateRemediationDetailsAfterPaymentDone()
+//        KotlinLogging.logger { }.trace("DEV: UPDATED DEMAND NOTES on SW")
+//    }
+//
+//    //@Scheduled(cron = "\${scheduler.cron.monthly}")
+//    @Scheduled(fixedDelay = 600_000) //3 Minutes for now
+//    fun runMonthlyScheduler() {
+////        standardLevyService.sendLevyPaymentReminders()
+////        sendEntryNumberToKraServices.postPenaltyDetailsToKra()
+//    }
+//
+//    @Scheduled(cron = "\${scheduler.cron.daily}")
+//    fun runDailyScheduler() {
+//        schedulerImpl.updateOverDueTask()
+//    }
 }

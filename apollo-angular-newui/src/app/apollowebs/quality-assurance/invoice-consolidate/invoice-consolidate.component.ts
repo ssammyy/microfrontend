@@ -4,15 +4,15 @@ import {Router} from '@angular/router';
 import {
   GenerateInvoiceDto,
   GenerateInvoiceWithWithholdingDto,
-  PermitInvoiceDto
+  PermitInvoiceDto,
 } from '../../../core/store/data/qa/qa.model';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Subject} from 'rxjs';
 import swal from 'sweetalert2';
 import Swal from 'sweetalert2';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {DataTableDirective} from "angular-datatables";
-import {HttpErrorResponse} from "@angular/common/http";
+import {DataTableDirective} from 'angular-datatables';
+import {HttpErrorResponse} from '@angular/common/http';
 import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 import {selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
 import {Store} from '@ngrx/store';
@@ -28,7 +28,7 @@ declare const $: any;
 @Component({
   selector: 'app-invoice-consolidate',
   templateUrl: './invoice-consolidate.component.html',
-  styleUrls: ['./invoice-consolidate.component.css']
+  styleUrls: ['./invoice-consolidate.component.css'],
 })
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
@@ -51,7 +51,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
-  isDtInitialized: boolean = false;
+  isDtInitialized = false;
   loadingText: string;
 
   constructor(
@@ -72,7 +72,7 @@ export class InvoiceConsolidateComponent implements OnInit {
     this.checkboxGroup = this.fb.group({
      });
     const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
-    this.getSPCTasks()
+    this.getSPCTasks();
 
 
   }
@@ -101,7 +101,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   }
 
   setWithHoldingToTrue(checked) {
-    if(checked) {
+    if (checked) {
       this.isWithHolding = 1;
     }
   }
@@ -113,9 +113,9 @@ export class InvoiceConsolidateComponent implements OnInit {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger'
+        cancelButton: 'btn btn-danger',
       },
-      buttonsStyling: false
+      buttonsStyling: false,
     });
 
     swalWithBootstrapButtons.fire({
@@ -125,7 +125,7 @@ export class InvoiceConsolidateComponent implements OnInit {
       showCancelButton: true,
       confirmButtonText: 'Yes!',
       cancelButtonText: 'No!',
-      reverseButtons: true
+      reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
         this.SpinnerService.show();
@@ -136,9 +136,9 @@ export class InvoiceConsolidateComponent implements OnInit {
         consolidatedInvoice.plantID = null;
         consolidatedInvoice.permitRefNumber = permitRefNumber;
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
-        consolidatedInvoice.isWithHolding = this.isWithHolding
+        consolidatedInvoice.isWithHolding = this.isWithHolding;
 
-        console.log( consolidatedInvoice.isWithHolding)
+        console.log( consolidatedInvoice.isWithHolding);
         this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
             (data) => {
               console.log(data);
@@ -149,14 +149,14 @@ export class InvoiceConsolidateComponent implements OnInit {
                 customClass: {
                   confirmButton: 'btn btn-success form-wizard-next-btn ',
                 },
-                icon: 'success'
+                icon: 'success',
               });
               this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
             },
             (error: HttpErrorResponse) => {
               alert(error.message);
               this.SpinnerService.hide();
-            }
+            },
         );
       } else if (
           /* Read more about handling dismissals below */
@@ -165,7 +165,7 @@ export class InvoiceConsolidateComponent implements OnInit {
         swalWithBootstrapButtons.fire(
             'Cancelled',
             'You can click the \'On the side Check Box for Consolidating\' more than one invoice.',
-            'error'
+            'error',
         );
       }
     });
@@ -175,9 +175,9 @@ export class InvoiceConsolidateComponent implements OnInit {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger'
+        cancelButton: 'btn btn-danger',
       },
-      buttonsStyling: false
+      buttonsStyling: false,
     });
 
     swalWithBootstrapButtons.fire({
@@ -187,7 +187,7 @@ export class InvoiceConsolidateComponent implements OnInit {
       showCancelButton: true,
       confirmButtonText: 'Yes!',
       cancelButtonText: 'No!',
-      reverseButtons: true
+      reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
         this.SpinnerService.show();
@@ -206,8 +206,8 @@ export class InvoiceConsolidateComponent implements OnInit {
           }
         });
         console.log(permitInvoicesIDS);
-        const consolidatedInvoice = new GenerateInvoiceDto;
-        consolidatedInvoice.batchID = null;
+        const consolidatedInvoice = new GenerateInvoiceWithWithholdingDto;
+        consolidatedInvoice.batchID = -1;
         consolidatedInvoice.plantID = null;
         consolidatedInvoice.permitRefNumber = null;
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
@@ -222,14 +222,14 @@ export class InvoiceConsolidateComponent implements OnInit {
                 customClass: {
                   confirmButton: 'btn btn-success form-wizard-next-btn ',
                 },
-                icon: 'success'
+                icon: 'success',
               });
               this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
             },
             (error: HttpErrorResponse) => {
               alert(error.message);
               this.SpinnerService.hide();
-            }
+            },
         );
       } else if (
           /* Read more about handling dismissals below */
@@ -238,10 +238,10 @@ export class InvoiceConsolidateComponent implements OnInit {
         swalWithBootstrapButtons.fire(
             'Cancelled',
             'You can click the \'On the side Check Box for Consolidating\' more than one invoice.',
-            'error'
+            'error',
         );
       }
-        }
+        },
     );
 
 
@@ -249,7 +249,7 @@ export class InvoiceConsolidateComponent implements OnInit {
 
 
   public getSPCTasks(): void {
-    this.loadingText = 'Retrieving Invoices Please Wait ....'
+    this.loadingText = 'Retrieving Invoices Please Wait ....';
 
     this.SpinnerService.show();
     this.qaService.loadInvoiceListWithNoBatchID().subscribe(
@@ -263,14 +263,14 @@ export class InvoiceConsolidateComponent implements OnInit {
               this.dtTrigger.next();
             });
           } else {
-            this.isDtInitialized = true
+            this.isDtInitialized = true;
             this.dtTrigger.next();
           }
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
           this.SpinnerService.hide();
-        }
+        },
     );
   }
 
