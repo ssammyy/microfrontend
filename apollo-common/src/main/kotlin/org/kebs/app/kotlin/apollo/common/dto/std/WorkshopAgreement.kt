@@ -388,7 +388,8 @@ data class ISAdoptionJustifications(
     var positiveVotes:Long?=null,
     var negativeVotes:Long?=null,
     var remarks:String?=null,
-    var proposalId:Long?=null
+    var proposalId:Long?=null,
+    var draftId:Long?=null
 ){
 
 }

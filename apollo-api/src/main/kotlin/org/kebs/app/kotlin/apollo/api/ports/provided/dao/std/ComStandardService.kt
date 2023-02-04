@@ -849,6 +849,7 @@ class ComStandardService(
                 documentType=companyStandard.documentType
                 draftId=companyStandard.draftId
                 requestId=companyStandard.requestId
+                standardType="Company Standard"
 
             }
 
