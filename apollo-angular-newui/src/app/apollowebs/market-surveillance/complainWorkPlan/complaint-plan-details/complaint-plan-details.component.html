@@ -3337,419 +3337,7 @@
     </div>
     <!-- End DATA Report Modal -->
 
-    <!-- SEIZURE Modal -->
-    <div class="modal fade" id="seizureDeclarationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Fill in the Details to generate a Seizure Notification</h4>
-                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        <i class="material-icons">clear</i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form [formGroup]="seizureForm">
-                        <div class="row" *ngIf="workPlanInspection.seizureDeclarationDto.length!=0">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label><b>Select the Seizure Form to clone</b></label>
-                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" #standardsInput>
-                                    <datalist id="seizureFormValueToCloneList">
-                                        <option *ngFor="let app of workPlanInspection.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
-                                    </datalist>
-                                </div>
-                            </div>
 
-                            <div class="col">
-                                <div class="form-group">
-                                    <button  mat-raised-button
-                                             class="btn btn-outline-success" (click)="onClickCloneSeizureForm()" type="button" >CLONE
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <h5 class="mb-3" style="color: #0066B1">Seizure Form Details</h5>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label><b>Form Serial Number</b> </label>
-                                    <input [class.is-invalid]="formSeizureForm.serialNumber.invalid && formSeizureForm.serialNumber.errors"
-                                           class="form-control two-column-input"
-                                           formControlName="serialNumber"
-                                           name="serialNumber" required type="text">
-                                    <div *ngIf="submitted && formSeizureForm.serialNumber.errors" class="invalid-feedback">
-                                        <div *ngIf="formSeizureForm.serialNumber.errors.required">This field is
-                                            required
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label><b>Product</b> </label>
-                                    <input [class.is-invalid]="formSeizureForm.productField.invalid && formSeizureForm.productField.errors"
-                                           class="form-control two-column-input"
-                                           formControlName="productField"
-                                           name="productField" required type="text">
-                                    <div *ngIf="submitted && formSeizureForm.productField.errors" class="invalid-feedback">
-                                        <div *ngIf="formSeizureForm.productField.errors.required">This field is
-                                            required
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <h5 class="mb-3" style="color: #0066B1">Seizure Product Details</h5>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label><b>Market Town Center</b> </label>
-                                    <input [class.is-invalid]="formSeizureForm.marketTownCenter.invalid && formSeizureForm.marketTownCenter.errors"
-                                           class="form-control two-column-input"
-                                           formControlName="marketTownCenter"
-                                           name="marketTownCenter" required type="text">
-                                    <div *ngIf="submitted && formSeizureForm.marketTownCenter.errors" class="invalid-feedback">
-                                        <div *ngIf="formSeizureForm.marketTownCenter.errors.required">This field is
-                                            required
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col">
-                                <div class="form-group">
-                                    <label><b>Name Of Outlet</b> </label>
-                                    <input [class.is-invalid]="formSeizureForm.nameOfOutlet.invalid && formSeizureForm.nameOfOutlet.errors"
-                                           class="form-control two-column-input"
-                                           formControlName="nameOfOutlet"
-                                           name="nameOfOutlet" required type="text">
-                                    <div *ngIf="submitted && formSeizureForm.nameOfOutlet.errors" class="invalid-feedback">
-                                        <div *ngIf="formSeizureForm.nameOfOutlet.errors.required">This field is
-                                            required
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label><b>Name Seizing Officer</b> </label>
-                                    <input [class.is-invalid]="formSeizureForm.nameSeizingOfficer.invalid && formSeizureForm.nameSeizingOfficer.errors"
-                                           class="form-control two-column-input"
-                                           formControlName="nameSeizingOfficer"
-                                           name="nameSeizingOfficer" required type="text">
-                                    <div *ngIf="submitted && formSeizureForm.nameSeizingOfficer.errors" class="invalid-feedback">
-                                        <div *ngIf="formSeizureForm.nameSeizingOfficer.errors.required">This field is
-                                            required
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col">
-                                <div class="form-group">
-                                    <label><b>Additional outlet details</b> </label>
-                                    <input [class.is-invalid]="formSeizureForm.additionalOutletDetails.invalid && formSeizureForm.additionalOutletDetails.errors"
-                                           class="form-control two-column-input"
-                                           formControlName="additionalOutletDetails"
-                                           name="additionalOutletDetails" required type="text">
-                                    <div *ngIf="submitted && formSeizureForm.additionalOutletDetails.errors" class="invalid-feedback">
-                                        <div *ngIf="formSeizureForm.additionalOutletDetails.errors.required">This field is
-                                            required
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div *ngIf="addSeizureProductsStatus">
-                            <form [formGroup]="seizureDeclarationForm">
-                                <div >
-                                    <h5 class="mb-3" style="color: #0066B1">Products Details</h5>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Product</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.product.invalid && formSeizureDeclarationForm.product.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="product"
-                                                       name="product" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.product.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.product.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Brand</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.brand.invalid && formSeizureDeclarationForm.brand.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="brand"
-                                                       name="brand" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.brand.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.brand.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Description Of Products Seized</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.descriptionProductsSeized.invalid && formSeizureDeclarationForm.descriptionProductsSeized.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="descriptionProductsSeized"
-                                                       name="descriptionProductsSeized" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.descriptionProductsSeized.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.descriptionProductsSeized.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>sector</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.sector.invalid && formSeizureDeclarationForm.sector.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="sector"
-                                                       name="sector" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.sector.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.sector.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Reason Seizure</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.reasonSeizure.invalid && formSeizureDeclarationForm.reasonSeizure.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="reasonSeizure"
-                                                       name="reasonSeizure" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.reasonSeizure.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.reasonSeizure.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Quantity</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.quantity.invalid && formSeizureDeclarationForm.quantity.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="quantity"
-                                                       name="quantity" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.quantity.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.quantity.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Unit</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.unit.invalid && formSeizureDeclarationForm.unit.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="unit"
-                                                       name="unit" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.unit.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.unit.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Estimated Cost</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.estimatedCost.invalid && formSeizureDeclarationForm.estimatedCost.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="estimatedCost"
-                                                       name="estimatedCost" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.estimatedCost.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.estimatedCost.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Current Location</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.currentLocation.invalid && formSeizureDeclarationForm.currentLocation.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="currentLocation"
-                                                       name="currentLocation" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.currentLocation.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.currentLocation.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Are products due for destruction ? </b> </label>
-                                                <select
-                                                        [class.is-invalid]="formSeizureDeclarationForm.productsDestruction.invalid && formSeizureDeclarationForm.productsDestruction.errors"
-                                                        class="form-control two-column-input" formControlName="productsDestruction" name="productsDestruction" required type="text">
-                                                    <option [value]="" selected>Please select </option>
-                                                    <option  [value]="'YES'">YES</option>
-                                                    <option  [value]="'NO'">NO</option>
-                                                    <option  [value]="'UNDETERMINED'">UNDETERMINED</option>
-                                                </select>
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.productsDestruction.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.productsDestruction.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Seizure Serial</b> </label>
-                                                <input [class.is-invalid]="formSeizureDeclarationForm.seizureSerial.invalid && formSeizureDeclarationForm.seizureSerial.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="seizureSerial"
-                                                       name="seizureSerial" required type="text">
-                                                <div *ngIf="submitted && formSeizureDeclarationForm.seizureSerial.errors" class="invalid-feedback">
-                                                    <div *ngIf="formSeizureDeclarationForm.seizureSerial.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <button *ngIf="seizureDeclarationForm.valid" mat-raised-button
-                                                        class="btn btn-success" (click)="onClickAddSeizureItems()" type="button" >SAVE PARAMS
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div>
-                            <div class="material-datatables">
-                                <div class="table-responsive">
-                                    <table id="datatablesSeizureProducts"
-                                           class="table table-striped table-bordered table-hover"
-                                    >
-                                        <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th>Brand</th>
-                                            <th>Description Products Seized</th>
-                                            <th>Sector</th>
-                                            <th>Reason Seizure</th>
-                                            <th>Seizure Serial</th>
-                                            <th>Quantity</th>
-                                            <th>Unit</th>
-                                            <th>Estimated Cost</th>
-                                            <th>Current Location</th>
-                                            <th>Products Destruction</th>
-                                            <th *ngIf="addSeizureProductsStatus">Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr *ngFor="let r of dataSaveSeizureDeclarationList; let i=index">
-                                            <td>{{r.product}}</td>
-                                            <td>{{r.brand}}</td>
-                                            <td>{{r.descriptionProductsSeized}}</td>
-
-                                            <td>{{r.sector}}</td>
-                                            <td>{{r.reasonSeizure}}</td>
-                                            <td>{{r.seizureSerial}}</td>
-                                            <td>{{r.quantity}}</td>
-                                            <td>{{r.unit}}</td>
-                                            <td>{{r.estimatedCost}}</td>
-                                            <td>{{r.currentLocation}}</td>
-                                            <td>{{r.productsDestruction}}</td>
-                                            <td *ngIf="addSeizureProductsStatus">
-                                                <button (click)="removeSeizureProducts(i)"
-                                                        type="button"
-                                                        class="btn btn-warning btn-sm">
-                                                <span class=""
-                                                      aria-hidden="true">Remove</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div *ngIf="addSeizureProductsStatus" class="row">
-                            <div class="col">
-                                <div  class="form-group">
-                                    <label for="files"><b>Upload Documents Here</b></label>
-                                    <form #demoForm="ngForm">
-                                        <file-upload [(ngModel)]="uploadedFilesSeizedGoods" name="files" id="files89"
-                                                     [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
-                                    </form>
-                                </div>
-                            </div>
-
-                        </div>
-                    </form>
-                    <div class="modal-footer">
-                        <button  mat-raised-button type="button" class="btn btn-danger"
-                                 data-dismiss="modal">
-                            Close
-                        </button>
-                        <div *ngIf="addSeizureProductsStatus">
-                            <button *ngIf="seizureForm.valid" mat-raised-button   data-dismiss="modal"
-                                    class="btn btn-success" (click)="onClickSaveSeizureDeclaration()" type="button" >SUBMIT
-                            </button>
-                            <button *ngIf="seizureForm.invalid" mat-raised-button (click)="onClickSaveSeizureDeclaration()" class="btn btn-success" type="button" >SUBMIT
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End SEIZURE Modal -->
 
     <!-- INSPECTION AND INVESTIGATION REPORT Modal -->
     <div class="modal fade" id="investInspectReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -4153,37 +3741,28 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <h4 class="mb-3" style="color: #0066B1">Summary of Siezed Goods</h4>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Sized Goods</h4>
 
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Brand</th>
-                                    <th>Description Products Seized</th>
-                                    <th>Sector</th>
-                                    <th>Reason Seizure</th>
-                                    <th>Seizure Serial</th>
-                                    <th>Quantity</th>
-                                    <th>Unit</th>
-                                    <th>Estimated Cost</th>
-                                    <th>Current Location</th>
-                                    <th>Products Destruction</th>
+                                    <th>MARKET TOWN CENTER</th>
+                                    <th>NAME OF OUTLET</th>
+                                    <th>NAME SEIZING OFFICER</th>
+                                    <th>VIEW ALL RECORDS</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr *ngFor="let app of workPlanInspection.seizureDeclarationDto">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>Tobacco</td>
-                                    <td>Illegal importation</td>
-                                    <td>SZR001</td>
-                                    <td>500</td>
-                                    <td>packs</td>
-                                    <td>$5000</td>
-                                    <td>Warehouse A</td>
-                                    <td>UNDETERMINED</td>
+                                    <td>{{app.marketTownCenter}}</td>
+                                    <td>{{app.nameOfOutlet}}</td>
+                                    <td>{{app.nameSeizingOfficer}}</td>
+                                    <td><button (click)="viewSeizedDetails(app)"
+                                                type="button"
+                                                class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">VIEW</span>
+                                    </button></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -4286,6 +3865,427 @@
         </div>
     </div>
     <!-- End INSPECTION AND INVESTIGATION REPORT Modal -->
+
+    <!-- SEIZURE Modal -->
+    <div class="modal fade" id="seizureDeclarationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill in the Details to generate a Seizure Notification</h4>
+                    <button *ngIf="!isInitialReport" mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                    <button *ngIf="isInitialReport" (click)="closeSeizureDeclarationRecord()" mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="seizureForm">
+                        <div class="row" *ngIf="workPlanInspection.seizureDeclarationDto.length!=0">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Select the Seizure Form to clone</b></label>
+                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" #standardsInput>
+                                    <datalist id="seizureFormValueToCloneList">
+                                        <option *ngFor="let app of workPlanInspection.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <button  mat-raised-button
+                                             class="btn btn-outline-success" (click)="onClickCloneSeizureForm()" type="button" >CLONE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <h5 class="mb-3" style="color: #0066B1">Seizure Form Details</h5>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Form Serial Number</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.serialNumber.invalid && formSeizureForm.serialNumber.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="serialNumber"
+                                           name="serialNumber" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.serialNumber.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.serialNumber.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Product</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.productField.invalid && formSeizureForm.productField.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="productField"
+                                           name="productField" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.productField.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.productField.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <h5 class="mb-3" style="color: #0066B1">Seizure Product Details</h5>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Market Town Center</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.marketTownCenter.invalid && formSeizureForm.marketTownCenter.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="marketTownCenter"
+                                           name="marketTownCenter" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.marketTownCenter.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.marketTownCenter.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Name Of Outlet</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.nameOfOutlet.invalid && formSeizureForm.nameOfOutlet.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="nameOfOutlet"
+                                           name="nameOfOutlet" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.nameOfOutlet.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.nameOfOutlet.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Name Seizing Officer</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.nameSeizingOfficer.invalid && formSeizureForm.nameSeizingOfficer.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="nameSeizingOfficer"
+                                           name="nameSeizingOfficer" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.nameSeizingOfficer.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.nameSeizingOfficer.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Additional outlet details</b> </label>
+                                    <input [class.is-invalid]="formSeizureForm.additionalOutletDetails.invalid && formSeizureForm.additionalOutletDetails.errors"
+                                           class="form-control two-column-input"
+                                           formControlName="additionalOutletDetails"
+                                           name="additionalOutletDetails" required type="text">
+                                    <div *ngIf="submitted && formSeizureForm.additionalOutletDetails.errors" class="invalid-feedback">
+                                        <div *ngIf="formSeizureForm.additionalOutletDetails.errors.required">This field is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div *ngIf="addSeizureProductsStatus">
+                            <form [formGroup]="seizureDeclarationForm">
+                                <div >
+                                    <h5 class="mb-3" style="color: #0066B1">Products Details</h5>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Product</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.product.invalid && formSeizureDeclarationForm.product.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="product"
+                                                       name="product" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.product.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.product.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Brand</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.brand.invalid && formSeizureDeclarationForm.brand.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="brand"
+                                                       name="brand" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.brand.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.brand.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Description Of Products Seized</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.descriptionProductsSeized.invalid && formSeizureDeclarationForm.descriptionProductsSeized.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="descriptionProductsSeized"
+                                                       name="descriptionProductsSeized" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.descriptionProductsSeized.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.descriptionProductsSeized.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>sector</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.sector.invalid && formSeizureDeclarationForm.sector.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="sector"
+                                                       name="sector" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.sector.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.sector.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Reason Seizure</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.reasonSeizure.invalid && formSeizureDeclarationForm.reasonSeizure.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="reasonSeizure"
+                                                       name="reasonSeizure" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.reasonSeizure.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.reasonSeizure.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Quantity</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.quantity.invalid && formSeizureDeclarationForm.quantity.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="quantity"
+                                                       name="quantity" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.quantity.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.quantity.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Unit</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.unit.invalid && formSeizureDeclarationForm.unit.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="unit"
+                                                       name="unit" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.unit.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.unit.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Estimated Cost</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.estimatedCost.invalid && formSeizureDeclarationForm.estimatedCost.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="estimatedCost"
+                                                       name="estimatedCost" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.estimatedCost.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.estimatedCost.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Current Location</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.currentLocation.invalid && formSeizureDeclarationForm.currentLocation.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="currentLocation"
+                                                       name="currentLocation" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.currentLocation.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.currentLocation.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Are products due for destruction ? </b> </label>
+                                                <select
+                                                        [class.is-invalid]="formSeizureDeclarationForm.productsDestruction.invalid && formSeizureDeclarationForm.productsDestruction.errors"
+                                                        class="form-control two-column-input" formControlName="productsDestruction" name="productsDestruction" required type="text">
+                                                    <option [value]="" selected>Please select </option>
+                                                    <option  [value]="'YES'">YES</option>
+                                                    <option  [value]="'NO'">NO</option>
+                                                    <option  [value]="'UNDETERMINED'">UNDETERMINED</option>
+                                                </select>
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.productsDestruction.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.productsDestruction.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Seizure Serial</b> </label>
+                                                <input [class.is-invalid]="formSeizureDeclarationForm.seizureSerial.invalid && formSeizureDeclarationForm.seizureSerial.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="seizureSerial"
+                                                       name="seizureSerial" required type="text">
+                                                <div *ngIf="submitted && formSeizureDeclarationForm.seizureSerial.errors" class="invalid-feedback">
+                                                    <div *ngIf="formSeizureDeclarationForm.seizureSerial.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <button *ngIf="seizureDeclarationForm.valid" mat-raised-button
+                                                        class="btn btn-success" (click)="onClickAddSeizureItems()" type="button" >SAVE PARAMS
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div>
+                            <div class="material-datatables">
+                                <div class="table-responsive">
+                                    <table id="datatablesSeizureProducts"
+                                           class="table table-striped table-bordered table-hover"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Brand</th>
+                                            <th>Description Products Seized</th>
+                                            <th>Sector</th>
+                                            <th>Reason Seizure</th>
+                                            <th>Seizure Serial</th>
+                                            <th>Quantity</th>
+                                            <th>Unit</th>
+                                            <th>Estimated Cost</th>
+                                            <th>Current Location</th>
+                                            <th>Products Destruction</th>
+                                            <th *ngIf="addSeizureProductsStatus">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr *ngFor="let r of dataSaveSeizureDeclarationList; let i=index">
+                                            <td>{{r.product}}</td>
+                                            <td>{{r.brand}}</td>
+                                            <td>{{r.descriptionProductsSeized}}</td>
+
+                                            <td>{{r.sector}}</td>
+                                            <td>{{r.reasonSeizure}}</td>
+                                            <td>{{r.seizureSerial}}</td>
+                                            <td>{{r.quantity}}</td>
+                                            <td>{{r.unit}}</td>
+                                            <td>{{r.estimatedCost}}</td>
+                                            <td>{{r.currentLocation}}</td>
+                                            <td>{{r.productsDestruction}}</td>
+                                            <td *ngIf="addSeizureProductsStatus">
+                                                <button (click)="removeSeizureProducts(i)"
+                                                        type="button"
+                                                        class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="addSeizureProductsStatus" class="row">
+                            <div class="col">
+                                <div  class="form-group">
+                                    <label for="files"><b>Upload Documents Here</b></label>
+                                    <form #demoForm="ngForm">
+                                        <file-upload [(ngModel)]="uploadedFilesSeizedGoods" name="files" id="files89"
+                                                     [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button *ngIf="!isInitialReport"  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button *ngIf="isInitialReport" (click)="closeSeizureDeclarationRecord()" mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <div *ngIf="addSeizureProductsStatus">
+                            <button *ngIf="seizureForm.valid" mat-raised-button   data-dismiss="modal"
+                                    class="btn btn-success" (click)="onClickSaveSeizureDeclaration()" type="button" >SUBMIT
+                            </button>
+                            <button *ngIf="seizureForm.invalid" mat-raised-button (click)="onClickSaveSeizureDeclaration()" class="btn btn-success" type="button" >SUBMIT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End SEIZURE Modal -->
 
     <!-- UPDATE ON DATA AND INITIAL REPORT Modal -->
     <div class="modal fade" id="updateFieldDataReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
