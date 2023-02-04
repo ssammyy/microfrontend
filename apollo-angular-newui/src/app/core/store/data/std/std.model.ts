@@ -1797,6 +1797,7 @@ export interface ISCheckRequirements {
     companyPhone: string;
     draftNumber: string;
     draughting: string;
+    standardType: string;
 }
 
 export interface ComStdRequest {

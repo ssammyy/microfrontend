@@ -4155,15 +4155,17 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>DCF001</td>
-                                    <td>Outlet A</td>
-                                    <td>Positive feedback from customers</td>
-                                    <td>None</td>
+                                <tr *ngFor="let app of workPlanInspection.dataReportDto; let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{app.referenceNumber}}</td>
+                                    <td>{{app.outletName}}</td>
+                                    <td>{{app.summaryFindingsActionsTaken}}</td>
+                                    <td>{{app.remarks}}</td>
                                 </tr>
                                 </tbody>
                             </table>
+
+                            <br>
 
                             <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
                             <div class="table-responsive">
@@ -4185,57 +4187,50 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>1</td>
+                                    <tr *ngFor="let app of workPlanInspection.sampleSubmitted">
+                                        <td>{{app.fileRefNumber}}</td>
                                         <td>Outlet A</td>
-                                        <td>Soda</td>
-                                        <td>Coca-Cola</td>
-                                        <td>Coca-Cola Company, Atlanta, GA</td>
+                                        <td>{{app.nameProduct}}</td>
+                                        <td>{{app.lbIdTradeMark}}</td>
+                                        <td>{{app.address}}</td>
                                         <td>USA</td>
-                                        <td>01/01/2024</td>
-                                        <td>Batch1</td>
+                                        <td>{{app.lbIdExpiryDate}}</td>
+                                        <td>{{app.lbIdBatchNo}}</td>
                                         <td>Permit123</td>
-                                        <td>John Doe</td>
-                                        <td>01/01/2023</td>
-                                        <td>01/02/2023</td>
+                                        <td>{{app.sendersName}}</td>
+                                        <td>{{app.sampleCollectionDate}}</td>
+                                        <td>{{app.sendersDate}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
+                            <br>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
 
-                            <h4 class="mb-3" style="color: #0066B1">Summary of Siezed Goods</h4>
-                            <table class="table table-striped">
+                            <table class="table table-striped table-bordered">
                                 <thead>
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Brand</th>
-                                    <th>Description Products Seized</th>
-                                    <th>Sector</th>
-                                    <th>Reason Seizure</th>
-                                    <th>Seizure Serial</th>
-                                    <th>Quantity</th>
-                                    <th>Unit</th>
-                                    <th>Estimated Cost</th>
-                                    <th>Current Location</th>
-                                    <th>Products Destruction</th>
+                                    <th>MARKET TOWN CENTER</th>
+                                    <th>NAME OF OUTLET</th>
+                                    <th>NAME OF SEIZING OFFICER</th>
+                                    <th>VIEW ALL RECORDS</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Cigarettes</td>
-                                    <td>Marlboro</td>
-                                    <td>500 packs of Marlboro cigarettes</td>
-                                    <td>Tobacco</td>
-                                    <td>Illegal importation</td>
-                                    <td>SZR001</td>
-                                    <td>500</td>
-                                    <td>packs</td>
-                                    <td>$5000</td>
-                                    <td>Warehouse A</td>
-                                    <td>UNDETERMINED</td>
+                                <tr *ngFor="let app of workPlanInspection.seizureDeclarationDto">
+                                    <td>{{app.marketTownCenter}}</td>
+                                    <td>{{app.nameOfOutlet}}</td>
+                                    <td>{{app.nameSeizingOfficer}}</td>
+                                    <td><button (click)="viewSeizedDetails(app)"
+                                                type="button"
+                                                class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">VIEW</span>
+                                    </button></td>
                                 </tr>
                                 </tbody>
                             </table>
+                            <br>
 
 
 <!--                            <div class="row">-->
