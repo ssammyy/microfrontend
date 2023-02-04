@@ -260,6 +260,14 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         companyId: Long, permitType: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta3FilledStatusIsNotNull(
+        companyId: Long, permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta10FilledStatusIsNotNull(
+        companyId: Long, permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByCompanyIdAndPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(
         companyId: Long, permitType: Long, permitAwardStatus: Int
     ): List<PermitApplicationsEntity>?

@@ -8,7 +8,7 @@ import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto, CompanyTurnOverUpdateDto, FilterDto, FirmTypeEntityDto,
     FmarkEntityDto,
-    GenerateInvoiceDto,
+    GenerateInvoiceDto, GenerateInvoiceWithWithholdingDto,
     MPesaPushDto,
     PermitDto,
     PermitEntityDetails,
@@ -368,6 +368,34 @@ export class QaService {
 
     public loadPermitList(permitTypeID: string): Observable<PermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+    public loadCloneDmarkPermitList(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.CLONE_LIST_DMARK);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: PermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+    public loadCloneSmarkPermitList(permitTypeID: string): Observable<PermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.CLONE_LIST_SMARK);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
         return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
@@ -848,7 +876,7 @@ export class QaService {
         );
     }
 
-    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+    public createInvoiceConsolidatedDetails(data: GenerateInvoiceWithWithholdingDto): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_SUBMIT);
         return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {
@@ -861,7 +889,7 @@ export class QaService {
         );
     }
 
-    public removeInvoiceFromConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+    public removeInvoiceFromConsolidatedDetails(data: GenerateInvoiceWithWithholdingDto): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_REMOVE);
         return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {

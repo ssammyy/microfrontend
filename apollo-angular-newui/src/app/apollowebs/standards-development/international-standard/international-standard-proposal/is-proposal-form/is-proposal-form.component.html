@@ -61,7 +61,7 @@ placeholder="name" type="text" disabled>
                     placeholder="closingDate" type="date" >
         </div>
         <div class="form-group col-12">
-            <label><b>Select Members to add to Joint Committee</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+            <label><b>Select Stakeholders to send Adoption proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
             <ng-multiselect-dropdown
                     [placeholder]="'Select Stakeholders to send Adoption proposal'"
                     [settings]="dropdownSettings"
@@ -107,6 +107,16 @@ placeholder="name" type="text" disabled>
                       class="form-control one-column-input" formControlName="scope" name="scope"
                       placeholder="International Standard Scope" type="text"></textarea>
 
+        </div>
+
+        <div class="row col-12">
+            <div class="form-group col-12">
+                <label><b>Attach Adoption Proposal Document</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                <form #demoForm="ngForm">
+                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".docx" ></file-upload>
+                    <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
+                </form>
+            </div>
         </div>
 <!--        <div class="form-group col-12">-->
 <!--            <label><b>Adoption Acceptable as Presented</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->

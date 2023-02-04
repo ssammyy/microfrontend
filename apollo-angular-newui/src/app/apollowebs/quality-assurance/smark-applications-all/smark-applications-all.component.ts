@@ -103,6 +103,7 @@ export class SmarkApplicationsAllComponent implements OnInit {
                             'Successfully Deleted!',
                             'success'
                         );
+                        this.displayUsers= false
                         this.SpinnerService.hide();
                         this.getAllPermitData();
                     },

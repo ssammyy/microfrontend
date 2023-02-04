@@ -60,6 +60,10 @@ class QaInvoiceCalculationDaoServices(
 
         KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 
+        if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId== selectedRate.id && plantDetail.inspectionFeeStatus!=1){
+            throw Exception("Kindly Pay the Inspection fees First before submitting current application")
+        }
+
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
 
         when {
@@ -516,10 +520,10 @@ class QaInvoiceCalculationDaoServices(
 
         val tokenGenerated = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         when {
-            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null && plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
+            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null -> {
                  throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
             }
-            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
+            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
 
                 val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
                     invoiceMasterId = invoiceMaster.id
@@ -536,8 +540,8 @@ class QaInvoiceCalculationDaoServices(
                 }
 
                 qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
-            }
-            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
+
+            }commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
                 throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
             }
             else -> {
@@ -654,8 +658,7 @@ class QaInvoiceCalculationDaoServices(
         productNumber: Long
     ) {
 
-        val tokenGenerated =
-            "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+        val tokenGenerated = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         val maxProductNumber = selectedRate.countBeforeFree ?: throw Exception("MISSING COUNT BEFORE FEE VALUE")
 
         if (productNumber <= maxProductNumber) {

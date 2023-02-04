@@ -30,11 +30,11 @@ class QaBatchInvoiceEntity : Serializable {
 
     @Column(name = "TOTAL_AMOUNT")
     @Basic
-    var totalAmount: BigDecimal? = null
+    var totalAmount: BigDecimal? = BigDecimal.ZERO
 
     @Column(name = "TOTAL_TAX_AMOUNT")
     @Basic
-    var totalTaxAmount: BigDecimal? = null
+    var totalTaxAmount: BigDecimal? = BigDecimal.ZERO
 
     @Column(name = "CREATION_DATE")
     @Basic

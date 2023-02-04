@@ -41,6 +41,10 @@ class CompanyStandardRemarks : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "STANDARD_TYPE")
+    @Basic
+    var standardType: String? = null
+
     @Column(name = "DATE_OF_REMARK")
     @Basic
     var dateOfRemark: Timestamp? = null

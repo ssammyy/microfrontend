@@ -1,0 +1,114 @@
+.accordion{
+    padding: 10px;
+    cursor:pointer;
+    background: #eee;
+    color:#000;
+    font-weight: 600;
+    margin-top: 4px;
+    border-radius: 2px;
+    margin-bottom: 15px;
+    animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    animation-timing-function: ease;
+    -webkit-animation-timing-function: ease;
+}
+.accordion-content{
+    transition: 4s ease-in-out;
+    padding: 10px;
+    color: #000;
+    background: #fff;
+    border: 1px solid rgb(255, 255, 255);
+    border-bottom-left-radius: 2px;
+    border-top-right-radius: 2px;
+    animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    animation-timing-function: ease;
+    -webkit-animation-timing-function: ease;
+}
+.up-icon{
+    transition: 0.2s ease-out;
+
+}
+
+.icon{
+    animation-name: icon;
+    transform: rotate(180deg);
+    transition: 0.2s ease-out;
+}
+
+.card-body{
+    border: 1px groove #eee;
+}
+.table th{
+ padding: 12px 8px;
+    padding: .75rem;
+    font-weight: bolder;
+    font-size:  .875rem;
+    vertical-align: bottom;
+}
+.table td{
+ padding: .75rem;
+ vertical-align: top;
+    font-size: .875rem;
+    font-weight: 400;
+    padding: 12px 8px;
+    vertical-align: top;
+}
+
+ .th{
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 49%;
+    -ms-flex: 0 49%;
+    flex: 0 49%;
+    font-weight: 600;
+    font-size: 14px;
+    }
+
+ .td{
+        font-size: 14px;
+        -webkit-box-flex: 0;
+        flex: 0 49%;
+    }
+
+.search{
+    float: right;
+    margin-bottom: 5px; display: flex; align-items: center; flex-direction: row;
+    border: 1px solid #eee; height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+textarea:focus{
+    border: 1px solid #3898EC;
+}
+.modal-title{
+    font-size: .9rem;
+    font-weight: 400;
+ padding: 12px 8px;
+    color: #000;
+}
+
+.modal-body{
+    font-size: .875rem;
+    font-weight: 400;
+    padding: 12px 8px;
+    color: #000;
+}
+
+.close[_ngcontent-ciy-c150] {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+}

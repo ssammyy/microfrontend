@@ -31,6 +31,7 @@ export class IsProposalFormComponent implements OnInit {
     public stakeholdersLists : UsersEntity[]=[] ;
     public dropdownSettings: IDropdownSettings = {};
     dropdownList: any[] = [];
+    loadingText='';
 
   constructor(
       private store$: Store<any>,
@@ -111,24 +112,20 @@ export class IsProposalFormComponent implements OnInit {
   get formISProposal(): any{
     return this.isProposalFormGroup.controls;
   }
+
   uploadProposal(): void {
     this.SpinnerService.show();
     console.log(this.isProposalFormGroup.value);
+
+    //const valueString=this.isProposalFormGroup.get("addStakeholdersList")
     const valueString=this.isProposalFormGroup.get("addStakeholdersList").value.split(",")
     this.stdIntStandardService.prepareAdoptionProposal(this.isProposalFormGroup.value,valueString).subscribe(
         (response) => {
-          console.log(response);
+          //console.log(response);
           this.SpinnerService.hide();
             this.showToasterSuccess(response.httpStatus, `Proposal Uploaded`);
-            swal.fire({
-                title: 'Proposal has been Prepared.',
-                buttonsStyling: false,
-                customClass: {
-                    confirmButton: 'btn btn-success ',
-                },
-                icon: 'success'
-            });
-          //this.onClickUploadISDocument(response.body.savedRowID)
+
+          this.onClickSaveUPLOADS(response.body.id)
           this.isProposalFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
@@ -138,6 +135,36 @@ export class IsProposalFormComponent implements OnInit {
         }
     );
   }
+
+    onClickSaveUPLOADS(comStdDraftID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.loadingText = "Uploading Adoption Proposal Document...";
+            this.SpinnerService.show();
+            this.stdIntStandardService.uploadPDFileDetails(comStdDraftID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    swal.fire({
+                        title: 'Adoption Proposal Document Uploaded.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    //this.router.navigate(['/nwaJustification']);
+                },
+            );
+
+        }
+
+    }
 
 
     onClickUploadISDocument(isProposalID: string) {

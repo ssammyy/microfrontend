@@ -62,6 +62,10 @@ class MsSampleSubmissionEntity : Serializable{
     @Basic
     var receiversDate: Date? = null
 
+    @Column(name = "SAMPLE_COLLECTION_DATE")
+    @Basic
+    var sampleCollectionDate: Date? = null
+
     @Column(name = "LB_ID_TRADE_MARK")
     @Basic
     var lbIdTradeMark: String? = null

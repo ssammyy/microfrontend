@@ -136,6 +136,10 @@
 
     ::ng-deep .mat-select-value{
         color: white!important;  }
+    form-control:disabled, .form-control[readonly] {
+        background-color: #1B75BC;
+        opacity: 1;
+    }
 
 
 
@@ -234,6 +238,7 @@
                                                matInput
                                                class="form-control two-column-input"
                                                id="registrationNumber"
+                                               readonly
                                                placeholder="Company Registration Number *"
                                                (ngModelChange)="textValidationType($event)"
                                                formControlName="registrationNumber">
@@ -253,6 +258,7 @@
                                                matInput
                                                class="form-control two-column-input"
                                                id="directorIdNumber"
+                                               readonly
                                                placeholder="Director's Id Number *"
                                                (ngModelChange)="numberValidationType($event)"
                                                formControlName="directorIdNumber">
@@ -278,6 +284,7 @@
                                            id="name"
                                            placeholder="Company Name"
                                            required
+                                           readonly
                                            (ngModelChange)="textValidationType($event)"
                                            formControlName="name">
                                     <app-field-error-display

@@ -4,7 +4,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {
-    Department, DiSdtDECISION, ISAdoptionJustification,
+    Department, DiSdtDECISION, InterNationalStdDecision, ISAdoptionJustification,
     ISAdoptionProposal, ISDecision,
     ISTcSecTASKS, NWADiSdtJustification,
     TechnicalCommittee
@@ -145,7 +145,7 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
   }
   // onDecision
 
-    public onDecision(iSDecision: ISDecision): void{
+    public onDecision(iSDecision: InterNationalStdDecision): void{
         this.SpinnerService.show();
         this.stdIntStandardService.decisionOnProposal(iSDecision).subscribe(
             (response: ISAdoptionProposal) => {
@@ -163,7 +163,7 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
             }
         );
     }
-    public onDecisionReject(iSDecision: ISDecision): void{
+    public onDecisionReject(iSDecision: InterNationalStdDecision): void{
         this.SpinnerService.show();
         this.stdIntStandardService.decisionOnProposal(iSDecision).subscribe(
             (response: ISAdoptionProposal) => {

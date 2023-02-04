@@ -507,6 +507,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
+                GET("/smark-clone-list", handler::permitListMigrationSmark)
+                GET("/dmark-clone-list", handler::permitListMigrationDmark)
+
                 GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/my-permits-loaded", handler::permitListAwardedMigrationb)
                 GET("/my-permits-loaded-dmark", handler::permitListAwardedMigrationDmark)
@@ -792,7 +795,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/add".nest {
                         POST("/charge-sheet", handler::addWorkPlanScheduleChargeSheet)
-                        POST("/data-report", handler::addWorkPlanDataReportSheet)
+//                        POST("/data-report", handler::addWorkPlanDataReportSheet)
                         POST("/end-data-report", handler::endAddingWorkPlanDataReportSheet)
 //                        POST("/seizure-declaration", handler::addWorkPlanSeizureDeclaration)
                         POST("/end-seizure-declaration", handler::addWorkPlanEndSeizureDeclaration)

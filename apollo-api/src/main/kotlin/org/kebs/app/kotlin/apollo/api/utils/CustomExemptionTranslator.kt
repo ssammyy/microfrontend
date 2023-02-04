@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.utils;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
+import org.codehaus.jackson.map.JsonMappingException
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Component
 
@@ -17,10 +18,13 @@ class CustomExemptionTranslator {
                 } else {
                     errors[iex.location.sourceDescription()] = iex.value.toString()
                 }
-
+            }
+            is JsonMappingException -> {
+                errors["body"] = "Invalid JSON data"
+                errors["error"] = ex.cause?.localizedMessage ?: "Unknown"
             }
             else -> {
-                errors.put("body", ex.cause?.message ?: "Unknown")
+                errors["body"] = ex.cause?.message ?: "Unknown"
             }
         }
         return errors

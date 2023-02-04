@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
+  ComStdCommitteeRemarks, ComStdRemarks,
   Department,
   InternationalStandardsComments,
   ISAdoptionProposal, ProposalComments,
@@ -15,6 +16,8 @@ import {StandardDevelopmentService} from "../../../../core/store/data/std/standa
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 
 @Component({
   selector: 'app-int-std-approved-proposals',
@@ -33,17 +36,26 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   public prepareJustificationFormGroup!: FormGroup;
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
+  comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   loadingText: string;
   approve: string;
   reject: string;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
   public departments !: Department[] ;
+  documentDTOs: DocumentDTO[] = [];
+  comStdRemarks: ComStdRemarks[] = [];
+  blob: Blob;
+  isShowRemarksTabs= true;
+  isShowCommentsTabs= true;
+  isShowMainTab= true;
+  isShowMainTabs= true;
 
   constructor(
       private store$: Store<any>,
       private router: Router,
       private stdIntStandardService:StdIntStandardService,
+      private stdComStandardService:StdComStandardService,
       private standardDevelopmentService : StandardDevelopmentService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
@@ -102,24 +114,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
         }
     );
   }
-  toggleDisplayRemarksTab(proposalId: number){
-    this.loadingText = "Loading ...."
-    this.SpinnerService.show();
-    this.stdIntStandardService.getAllComments(proposalId).subscribe(
-        (response: StakeholderProposalComments[]) => {
-          this.stakeholderProposalComments = response;
-          this.SpinnerService.hide();
-          console.log(this.stakeholderProposalComments)
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          console.log(error.message);
-        }
-    );
-    this.isShowRemarksTab = !this.isShowRemarksTab;
-    this.isShowCommentsTab= true;
 
-  }
   toggleDisplayCommentsTab(id: number){
     this.loadingText = "Loading ...."
     this.SpinnerService.show();
@@ -158,12 +153,23 @@ export class IntStdApprovedProposalsComponent implements OnInit {
     this.hideModalPrepareJustification();
   }
 
-  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string): void {
+  public onOpenModal(isAdoptionProposal: ISAdoptionProposal,mode:string,comStdDraftID: number): void {
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle', 'modal');
+    this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+        (response: DocumentDTO[]) => {
+          this.documentDTOs = response;
+          this.SpinnerService.hide();
+          //console.log(this.documentDTOs)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          //console.log(error.message);
+        }
+    );
 
     if (mode === 'prepareJustification') {
       this.actionRequest = isAdoptionProposal;
@@ -221,6 +227,74 @@ export class IntStdApprovedProposalsComponent implements OnInit {
           alert(error.message);
         }
     );
+  }
+
+  viewDraftFile(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+
+          // tslint:disable-next-line:prefer-const
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+          // this.pdfUploadsView = dataPdf;
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          this.showToasterError('Error', `Error Processing Request`);
+          console.log(error.message);
+          this.getApprovedProposals();
+          //alert(error.message);
+        }
+    );
+  }
+
+
+  displayDraftComments(draftID: number){
+    //this.loadingText = "Loading ...."
+    this.SpinnerService.show();
+    this.stdComStandardService.getDraftComments(draftID).subscribe(
+        (response: ComStdCommitteeRemarks[]) => {
+          this.comStdCommitteeRemarks = response;
+          this.SpinnerService.hide();
+          console.log(this.comStdCommitteeRemarks)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+        }
+    );
+    this.isShowRemarksTab = !this.isShowRemarksTab;
+    this.isShowCommentsTab= true;
+    this.isShowMainTab= true;
+    this.isShowMainTabs= true;
+
+  }
+
+  toggleDisplayRemarksTab(requestId: number){
+    this.loadingText = "Loading ...."
+    this.SpinnerService.show();
+    this.stdIntStandardService.getDraftComment(requestId).subscribe(
+        (response: ComStdRemarks[]) => {
+          this.comStdRemarks = response;
+          this.SpinnerService.hide();
+          console.log(this.comStdRemarks)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+        }
+    );
+    this.isShowCommentsTab = !this.isShowCommentsTab;
+    this.isShowRemarksTab= true;
+    this.isShowMainTab= true;
+    this.isShowMainTabs= true;
+
   }
 
 

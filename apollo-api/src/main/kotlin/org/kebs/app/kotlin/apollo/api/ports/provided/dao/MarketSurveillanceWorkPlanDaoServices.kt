@@ -4527,6 +4527,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReportRepo.findByIdOrNull(body.id ?: -1L)
                 ?.let { updateDataReport ->
                     with(updateDataReport) {
+                        docList = body.docList?.let { commonDaoServices.convertClassToJson(it) }
                         referenceNumber = body.referenceNumber
                         physicalLocation = body.physicalLocation
                         outletName = body.outletName
@@ -4554,6 +4555,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
                 } ?: kotlin.run {
                 with(saveDataReport) {
+                    docList = body.docList?.let { commonDaoServices.convertClassToJson(it) }
                     referenceNumber = body.referenceNumber
                     physicalLocation = body.physicalLocation
                     outletName = body.outletName
@@ -5882,6 +5884,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReport.totalComplianceScore,
             null,
             dataReportParam,
+            dataReport.docList?.let { mapUploadListListDto(it) }
         )
     }
 
@@ -6582,6 +6585,11 @@ class MarketSurveillanceWorkPlanDaoServices(
     fun mapBSNumberListDto(bsNumber: String): List<String>? {
         val userListType: Type = object : TypeToken<ArrayList<String?>?>() {}.type
         return gson.fromJson(bsNumber, userListType)
+    }
+
+    fun mapUploadListListDto(docList: String): List<Long>? {
+        val userListType: Type = object : TypeToken<ArrayList<Long?>?>() {}.type
+        return gson.fromJson(docList, userListType)
     }
 
     fun mapRecommendationListDto(recommendation: String): List<RecommendationDto>? {

@@ -446,6 +446,14 @@ interface ProposalDetails{
     fun getStandardNumber(): String?
     fun getDeadlineDate(): Timestamp?
     fun getNoOfComments(): Long?
+    fun getDraftId(): Long?
+    fun getDraftNumber(): String?
+    fun getDraftTitle(): String?
+    fun getIStandardNumber(): String?
+    fun getCompanyName(): String?
+    fun getContactOneEmail(): String?
+    fun getContactOneFullName(): String?
+    fun getContactOneTelephone(): String?
 }
 
 interface RegisteredFirms{

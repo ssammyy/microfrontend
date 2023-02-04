@@ -48,6 +48,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceMasterDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaProcessStatusRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
@@ -92,6 +93,8 @@ class QualityAssuranceHandler(
     private val validator: Validator,
     private val service: StandardsLevyDaoService,
     private val companyProfileEntity: ICompanyProfileRepository,
+    private val invoiceMasterDetailsRepo: IQaInvoiceMasterDetailsRepository,
+
 
 
     ) {
@@ -1736,6 +1739,102 @@ class QualityAssuranceHandler(
 
     }
 
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ')" +
+                " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+    )
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitListMigrationDmark(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitType = qaDaoServices.findPermitType(permitTypeID)
+
+            var permitListAllApplications: List<PermitEntityDto>? = null
+            permitListAllApplications = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.listFirmPermitListWithPermitTypeDmark(
+                        loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID"), permitTypeID, map
+                    )
+                }
+
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.listBranchListWithPermitType(
+                        loggedInUser.plantId ?: throw Exception("MISSING PLANT ID"), permitTypeID, map
+                    )
+                }
+
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize(
+        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ')" +
+                " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+    )
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitListMigrationSmark(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitType = qaDaoServices.findPermitType(permitTypeID)
+
+            var permitListAllApplications: List<PermitEntityDto>? = null
+            permitListAllApplications = when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.listFirmPermitListWithPermitTypeSmark(
+                        loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID"), permitTypeID, map
+                    )
+                }
+
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority != "MODIFY_COMPANY" } && auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    qaDaoServices.listBranchListWithPermitType(
+                        loggedInUser.plantId ?: throw Exception("MISSING PLANT ID"), permitTypeID, map
+                    )
+                }
+
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+
+
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitListAwardedMigrationb(req: ServerRequest): ServerResponse {
@@ -1882,10 +1981,9 @@ class QualityAssuranceHandler(
 
             val permit = qaDaoServices.findPermitBYID(permitID)
 
-            val invoice = qaDaoServices.findPermitInvoiceByPermitID(permitID)
-
-            invoice.id.let { qaDaoServices.deleteInvoice(it) }
-
+            invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permitID)?.let { invoice ->
+                qaDaoServices.deleteInvoice(invoice.id)
+            }
             permit.id?.let { qaDaoServices.deletePermit(it) }
 
             return ok().body(permit)
@@ -2429,12 +2527,14 @@ class QualityAssuranceHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             var permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+//
+//            val companyDetails = commonDaoServices.findCompanyProfileWithID(loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS"))
+//            val plantDetail = qaDaoServices.findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+//
+//
+
             val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found"))
 
-            // Create FMARK From SMark
-            if (permit.fmarkGenerateStatus == 1) {
-                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
-            }
             //Update Permit Details
             with(permit) {
                 applicationStatus = map.activeStatus
@@ -2443,7 +2543,7 @@ class QualityAssuranceHandler(
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
             //Calculate Invoice Details
-            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).second
+            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null)
 
             //Update Permit Details
             with(permit) {
@@ -2455,11 +2555,11 @@ class QualityAssuranceHandler(
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
 
-//            //Start DMARK PROCESS
-//            qualityAssuranceBpmn.startQADmAppPaymentProcess(
-//                permit.id ?: throw Exception("MISSING PERMIT ID"), null
-//            )
-//
+            // Create FMARK From SMark
+            if (permit.fmarkGenerateStatus == 1) {
+                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
+            }
+
 //            //Complete Submit Application
 //            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
 //                permit.permitForeignStatus == 1)
@@ -2475,7 +2575,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
