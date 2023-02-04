@@ -1752,6 +1752,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.dataReportForm = this.formBuilder.group({
       id: null,
+      dataReportValueToClone: null,
       referenceNumber: ['', Validators.required],
       inspectionDate: ['', Validators.required],
       inspectorName: ['', Validators.required],
@@ -1841,6 +1842,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
+      seizureFormValueToClone: null,
       productField: ['', Validators.required],
       serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
@@ -1881,6 +1883,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.sampleSubmitForm = this.formBuilder.group({
       id: null,
+      valueToClone: null,
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: null,
@@ -5205,5 +5208,44 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   deleteItem(index: number) {
     this.standardsArray.splice(index, 1);
+  }
+
+  onClickCloneDataSSF() {
+    const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
+    this.sampleSubmitForm.patchValue(selectedClone);
+    this.sampleSubmitForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.parametersList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    this.sampleSubmitForm.enable();
+    this.addLabParamStatus = true;
+  }
+
+  onClickCloneDataReport(){
+    const selectedClone = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.dataReportForm?.get('dataReportValueToClone')?.value);
+    this.dataReportForm.patchValue(selectedClone);
+    this.dataReportForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.productsList;
+    this.dataSaveDataReportParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveDataReportParamList.push(paramDetails[i]);
+    }
+    this.dataReportForm.enable();
+    this.addLabParamStatus = true;
+
+  }
+  onClickCloneSeizureForm(){
+    const selectedClone = this.workPlanInspection?.seizureDeclarationDto.find(pr => pr.id === this.seizureForm?.get('seizureFormValueToClone')?.value);
+    this.seizureForm.patchValue(selectedClone);
+    this.seizureForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.seizureList;
+    this.dataSaveSeizureDeclarationList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    }
+    this.seizureForm.enable();
+    this.addLabParamStatus = true;
   }
 }

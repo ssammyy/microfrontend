@@ -2724,6 +2724,25 @@
                     <form [formGroup]="dataReportForm">
                         <div>
                             <h4 class="mb-3" style="color: #0066B1">Data Report Details</h4>
+                            <div class="row" *ngIf="workPlanInspection.dataReportDto.length!=0">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select the Data report to clone</b></label>
+                                        <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input" #standardsInput>
+                                        <datalist id="dataReportValueToCloneList">
+                                            <option *ngFor="let app of workPlanInspection.dataReportDto" [value]="app.id">{{app.outletName}}</option>
+                                        </datalist>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button  mat-raised-button
+                                                 class="btn btn-outline-success" (click)="onClickCloneDataReport()" type="button" >CLONE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <h5 class="mb-3" style="color: black">Fill in the Bio Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -3331,6 +3350,25 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="seizureForm">
+                        <div class="row" *ngIf="workPlanInspection.seizureDeclarationDto.length!=0">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label><b>Select the Seizure Form to clone</b></label>
+                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" #standardsInput>
+                                    <datalist id="seizureFormValueToCloneList">
+                                        <option *ngFor="let app of workPlanInspection.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <button  mat-raised-button
+                                             class="btn btn-outline-success" (click)="onClickCloneSeizureForm()" type="button" >CLONE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <h5 class="mb-3" style="color: #0066B1">Seizure Form Details</h5>
                         <div class="row">
                             <div class="col">
@@ -4066,12 +4104,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>DCF001</td>
-                                    <td>Outlet A</td>
-                                    <td>Positive feedback from customers</td>
-                                    <td>None</td>
+                                <tr *ngFor="let app of workPlanInspection.dataReportDto; let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{app.referenceNumber}}</td>
+                                    <td>{{app.outletName}}</td>
+                                    <td>{{app.summaryFindingsActionsTaken}}</td>
+                                    <td>{{app.remarks}}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -4134,10 +4172,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Cigarettes</td>
-                                    <td>Marlboro</td>
-                                    <td>500 packs of Marlboro cigarettes</td>
+                                <tr *ngFor="let app of workPlanInspection.seizureDeclarationDto">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     <td>Tobacco</td>
                                     <td>Illegal importation</td>
                                     <td>SZR001</td>
@@ -4264,7 +4302,7 @@
                     <form [formGroup]="fieldReportAdditionalInfortForm">
                         <div >
                             <h4 class="mb-3" style="color: #0066B1">MS INITIAL REPORT DETAILS</h4>
-                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
+                            <h5 class="mb-3" style="color: black">Fill in below details</h5>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -5904,6 +5942,27 @@
                 <div class="modal-body">
                     <form [formGroup]="sampleSubmitForm">
                         <div >
+                            <div class="row" *ngIf="workPlanInspection.sampleSubmitted.length!=0">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select the SSF to clone</b></label>
+
+                                        <input type="number" list="valueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" #standardsInput>
+                                        <datalist id="valueToCloneList">
+                                            <option *ngFor="let app of workPlanInspection.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
+                                        </datalist>
+
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button  mat-raised-button
+                                                 class="btn btn-outline-success" (click)="onClickCloneDataSSF()" type="button" >CLONE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <h5 class="mb-3" style="color: #0066B1">Sample Submission Details</h5>
                             <div class="row">
                                 <div class="col">
