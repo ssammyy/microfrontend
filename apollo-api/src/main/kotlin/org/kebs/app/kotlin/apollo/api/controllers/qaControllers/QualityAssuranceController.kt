@@ -2683,10 +2683,7 @@ class QualityAssuranceController(
         var versionNumber1 = versionNumber
         var permitDetails1 = permitDetails
         var uploadResults1 = uploadResults
-        versionNumber1 = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSscStatus(
-            permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-            map.activeStatus
-        ).size.toLong().plus(versionNumber1)
+        versionNumber1 = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSscStatus(permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), map.activeStatus).size.toLong().plus(versionNumber1)
 
         uploadResults1 = qaDaoServices.saveQaFileUploads(
             docFile,
