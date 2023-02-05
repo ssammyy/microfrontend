@@ -6,6 +6,179 @@ import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import javax.validation.constraints.NotNull
+
+
+data class SectionApplyDto(
+    var sectionId: Long? = null,
+    var sectionRemarks: String? = null
+)
+
+data class StandardsApplyDto(
+    var productStandardID: Long? = null,
+    var productStandardRemarks: String? = null
+)
+
+data class ScheduleInspectionApplyDto(
+    var inspectionDate: Date? = null,
+    var productStandardRemarks: String? = null
+)
+
+data class SaveLabPDFApplyDto(
+    @NotNull(message = "Required fileName Field")
+    var fileName: String,
+    @NotNull(message = "Required bsNumber Field")
+    var bsNumber: String,
+    @NotNull(message = "Required ssfID Field")
+    var ssfID: Long,
+)
+data class SaveLabComplianceApplyDto(
+    @NotNull(message = "Required pdfSavedID Field")
+    var pdfSavedID: Long,
+    @NotNull(message = "Required complianceStatus Field")
+    var complianceStatus: Boolean,
+    @NotNull(message = "Required complianceRemarks Field")
+    var complianceRemarks: String,
+)
+data class SaveSSFComplianceApplyDto(
+    @NotNull(message = "Required ssfID Field")
+    var ssfID: Long,
+    @NotNull(message = "Required complianceStatus Field")
+    var resultsAnalysis: Boolean,
+    @NotNull(message = "Required complianceRemarks Field")
+    var complianceRemarks: String,
+)
+//data class ApproveInspectionReportApplyDto(
+//    var inspectionReportID: Long?= null,
+//    var approvedRejectedStatus: String?= null,
+//    var supervisorComments: String?= null,
+//    var supervisorName: String?= null,
+//    var supervisorDate: Date?= null,
+//)
+data class SaveRecommendationApplyDto(
+    @NotNull(message = "Required recommendationRemarks Field")
+    var recommendationRemarks: String,
+)
+data class SSFDetailsApplyDto(
+    var id: Long? = null,
+    var ssfNo: String? = null,
+    var ssfSubmissionDate: Date? = null,
+    var bsNumber: String? = null,
+    var brandName: String? = null,
+    var productDescription: String? = null,
+)
+
+data class AllInspectionDetailsApplyDto(
+    var id: Long? = null,
+    var managementSystemsAndStandardsDetailsApply: ManagementSystemsAndStandardsDetailsApplyDto? = null,
+    var operationProcessAndControls: List<OperationProcessAndControlsDetailsApplyDto>? = null,
+    var haccpImplementationDetails: HaccpImplementationDetailsApplyDto? = null,
+    var followPreviousRecommendationsNonConformities: String? = null,
+    var documentsID: List<Long>? = null,
+    var recommendations: String? = null,
+    var inspectorComments: String? = null,
+    var inspectorName: String? = null,
+    var inspectorDate: Date? = null,
+    var supervisorComments: String? = null,
+    var supervisorName: String? = null,
+    var supervisorDate: Date? = null,
+)
+
+data class ManagementSystemsAndStandardsDetailsApplyDto(
+    var id: Long? = null,
+    var firmImplementedAnyManagementSystem: String? = null,
+    var firmImplementedAnyManagementSystemRemarks: String? = null,
+    var indicateRelevantProductStandardCodes: String? = null,
+    var indicateRelevantProductStandardCodesRemarks: String? = null,
+    var complianceApplicableStatutory: String? = null,
+    var complianceApplicableStatutoryRemarks: String? = null,
+    var plantHouseKeeping: String? = null,
+    var plantHouseKeepingRemarks: String? = null,
+    var handlingComplaints: String? = null,
+    var handlingComplaintsRemarks: String? = null,
+    var qualityControlPersonnel: String? = null,
+    var qualityControlPersonnelRemarks: String? = null,
+    var testingFacility: String? = null,
+    var testingFacilityRemarks: String? = null,
+    var equipmentCalibration: String? = null,
+    var equipmentCalibrationRemarks: String? = null,
+    var validitySmarkPermit: String? = null,
+    var validitySmarkPermitRemarks: String? = null,
+    var useTheSmark: String? = null,
+    var useTheSmarkRemarks: String? = null,
+    var changesAffectingProductCertification: String? = null,
+    var changesAffectingProductCertificationRemarks: String? = null,
+    var changesBeenCommunicatedKebs: String? = null,
+    var changesBeenCommunicatedKebsRemarks: String? = null,
+    var samplesDrawn: String? = null,
+    var samplesDrawnRemarks: String? = null,
+)
+
+data class OperationProcessAndControlsDetailsApplyDto(
+    var id: Long? = null,
+    var processFlow: String? = null,
+    var operations: String? = null,
+    var qualityChecks: String? = null,
+    var frequency: String? = null,
+    var records: String? = null,
+    var findings: String? = null,
+)
+
+data class HaccpImplementationDetailsApplyDto(
+    var id: Long? = null,
+    var designFacilitiesConstructionLayout: String? = null,
+    var designFacilitiesConstructionLayoutRemarks: String? = null,
+    var maintenanceSanitationCleaningPrograms: String? = null,
+    var maintenanceSanitationCleaningProgramsRemarks: String? = null,
+    var personnelHygiene: String? = null,
+    var personnelHygieneRemarks: String? = null,
+    var transportationConveyance: String? = null,
+    var transportationConveyanceRemarks: String? = null,
+    var determinationCriticalParameters: String? = null,
+    var determinationCriticalParametersRemarks: String? = null,
+    var evidenceCorrectiveActions: String? = null,
+    var evidenceCorrectiveActionsRemarks: String? = null,
+)
+
+data class StandardizationMarkSchemeDetailsApplyDto(
+    var validitySmarkPermit: String? = null,
+    var useTheSmarkRemarks: String? = null,
+    var changesAffectingProductCertification: String? = null,
+    var changesAffectingProductCertificationRemarks: String? = null,
+    var changesBeenCommunicatedKebs: String? = null,
+    var changesBeenCommunicatedKebsRemarks: String? = null,
+    var samplesDrawn: String? = null,
+    var samplesDrawnRemarks: String? = null,
+)
+
+data class CompletenessApplyDto(
+    @NotNull(message = "Required hofQamCompletenessStatus Status")
+    var hofQamCompletenessStatus: Boolean,
+    var hofQamCompletenessRemarks: String? = null
+)
+data class RecommendationApplyDto(
+    @NotNull(message = "Required recommendationApprovalStatus Status")
+    var recommendationApprovalStatus: Boolean,
+    var recommendationApprovalRemarks: String? = null
+)
+data class ApproveInspectionReportApplyDto(
+    @NotNull(message = "Required approvedRejectedStatus Status")
+    var approvedRejectedStatus: Boolean,
+    @NotNull(message = "Required inspectionReportID Status")
+    var inspectionReportID: Long,
+    var supervisorComments: String? = null
+)
+
+data class AssignOfficerApplyDto(
+    var assignOfficerID: Long? = null,
+    var sectionRemarks: String? = null
+)
+
+
+
+
+
+
 
 
 data class ST10Dto(
@@ -548,7 +721,10 @@ data class AllPermitDetailsDto(
     var labResultsList: PermitSSFLabResultsDto? = null,
     var schemeOfSuperVision: FilesListDto? = null,
     var batchID: Long? = null,
-    var branchInspectionPaid: Long? = null
+    var encryptedPermitId: String? = null,
+    var sta1DTO: STA1Dto? = null,
+    var sta3DTO: STA3Dto? = null,
+    var sta10DTO: AllSTA10DetailsDto? = null
 )
 
 

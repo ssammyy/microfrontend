@@ -376,11 +376,19 @@ class IntStandardController(
     }
 
     @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/international_standard/getJustification")
+    @ResponseBody
+    fun getJustification(): MutableList<ProposalDetails>
+    {
+        return internationalStandardService.getJustification()
+    }
+
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getISJustification")
     @ResponseBody
-    fun getISJustification(): MutableList<ProposalDetails>
+    fun getISJustification(@RequestParam("draftId") draftId: Long): MutableList<ISAdoptionProposalJustification>
     {
-        return internationalStandardService.getISJustification()
+        return internationalStandardService.getISJustification(draftId)
     }
 
     //decision on Adoption Proposal
@@ -406,6 +414,13 @@ class IntStandardController(
 
     }
 
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/international_standard/getApprovedJustification")
+    @ResponseBody
+    fun getApprovedJustification(): MutableList<ProposalDetails>
+    {
+        return internationalStandardService.getApprovedJustification()
+    }
 
     @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/submitDraftForEditing")

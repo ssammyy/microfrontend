@@ -61,6 +61,34 @@ export class PermitEntityDto {
     versionNumber: number;
 }
 
+export class MyTasksPermitEntityDto {
+    id: bigint;
+    firmName: string;
+    permitRefNumber: string;
+    productName: string;
+    tradeMark: string;
+    awardedPermitNumber: string;
+    dateOfIssue: Date;
+    dateOfExpiry: Date;
+    permitStatus: string;
+    userId: bigint;
+    createdOn: Date;
+    county: string;
+    town: string;
+    region: string;
+    divisionValue: string;
+    sectionValue: string;
+    permitAwardStatus: Boolean;
+    permitExpiredStatus: Boolean;
+    taskID: bigint;
+    companyId: bigint;
+    permitType: bigint;
+    processStatusID: bigint;
+    versionNumber: bigint;
+    encryptedPermitId: string;
+    encryptedUserId: string;
+}
+
 export class ReportsPermitEntityDto {
     id: bigint;
     firmName: string;
@@ -132,6 +160,7 @@ export class GenerateInvoiceDto {
     permitRefNumber: string;
     permitInvoicesID: number[];
 }
+
 export class GenerateInvoiceWithWithholdingDto {
     batchID: number;
     plantID: number;
@@ -353,6 +382,8 @@ export class AllPermitDetailsDto {
     labResultsList: PermitSSFLabResultsDto;
     schemeOfSuperVision: FilesListDto;
     batchID: bigint;
+
+    sta10DTO:AllSTA10DetailsDto;
 }
 
 
@@ -432,14 +463,14 @@ export class AllBatchInvoiceDetailsDto {
 }
 
 export class MPesaMessageDto {
-    message: String;
+    message: string;
 }
 
 export class TaskDto {
     permitId: bigint;
-    taskName: String;
+    taskName: string;
     taskCreateTime: Date;
-    permitRefNo: String;
+    permitRefNo: string;
 }
 
 export class Sta10Dto {

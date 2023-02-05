@@ -741,7 +741,7 @@ export const routes: Routes = [
 
     },
     {
-        path: 'permit-details-admin', component: AdminLayoutComponent,
+        path: 'permit-details-admin/:id', component: AdminLayoutComponent,
         // canActivate: [RouteGuard]
 
         children: [

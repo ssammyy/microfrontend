@@ -70,6 +70,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
+  averageCompliance: number;
+  columnValues: any[];
   active: Number = 0;
   selectedFile: File;
   selectedRefNo: string;
@@ -83,6 +85,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   addLabParamStatus = true;
   addProductsStatus = true;
   addSeizureProductsStatus = true;
+  isInitialReport: boolean = false;
   disableDivision = true;
   isImport = 0;
   defaultPageSize = 20;
@@ -1664,6 +1667,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     console.log('currentdate' + this.currentDateDetails);
 
+
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       this.userLoggedInID = u.id;
       this.userProfile = u;
@@ -1752,6 +1756,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.dataReportForm = this.formBuilder.group({
       id: null,
+      dataReportValueToClone: null,
       referenceNumber: ['', Validators.required],
       inspectionDate: ['', Validators.required],
       inspectorName: ['', Validators.required],
@@ -1841,6 +1846,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
+      seizureFormValueToClone: null,
       productField: ['', Validators.required],
       serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
@@ -1881,6 +1887,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.sampleSubmitForm = this.formBuilder.group({
       id: null,
+      valueToClone: null,
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: null,
@@ -2722,6 +2729,20 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     window.$('#sampleLabResultsModal').modal('hide');
     window.$('body').removeClass('modal-open');
     window.$('.modal-backdrop').remove();
+
+  }
+
+  closeSeizureDeclarationRecord() {
+    window.$('#seizureDeclarationModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#investInspectReportModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#investInspectReportModal').modal('show');
+    }, 500);
 
   }
 
@@ -4292,7 +4313,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     window.$('#seizureDeclarationModal').modal('show');
   }
 
-  viewSeizedDetails(data: SeizureListDto) {
+    viewSeizedDetails(data: SeizureListDto, initialReportStatus: boolean) {
     this.seizureForm.patchValue(data);
     this.selectedSeizedDetails = data;
     const paramDetails = data.seizureList;
@@ -4302,6 +4323,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
     this.seizureForm.disable();
     this.addSeizureProductsStatus = false;
+    this.isInitialReport = initialReportStatus;
     window.$('#seizureDeclarationModal').modal('show');
   }
 
@@ -4370,7 +4392,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         this.updateSeizedDetails(event.data);
         break;
       case 'viewRecord':
-        this.viewSeizedDetails(event.data);
+        this.viewSeizedDetails(event.data, false);
         break;
       case 'viewUpload':
         this.viewSeizedProductsFileSaved(event.data);
@@ -5205,5 +5227,44 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   deleteItem(index: number) {
     this.standardsArray.splice(index, 1);
+  }
+
+  onClickCloneDataSSF() {
+    const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
+    this.sampleSubmitForm.patchValue(selectedClone);
+    this.sampleSubmitForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.parametersList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    this.sampleSubmitForm.enable();
+    this.addLabParamStatus = true;
+  }
+
+  onClickCloneDataReport(){
+    const selectedClone = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.dataReportForm?.get('dataReportValueToClone')?.value);
+    this.dataReportForm.patchValue(selectedClone);
+    this.dataReportForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.productsList;
+    this.dataSaveDataReportParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveDataReportParamList.push(paramDetails[i]);
+    }
+    this.dataReportForm.enable();
+    this.addLabParamStatus = true;
+
+  }
+  onClickCloneSeizureForm(){
+    const selectedClone = this.workPlanInspection?.seizureDeclarationDto.find(pr => pr.id === this.seizureForm?.get('seizureFormValueToClone')?.value);
+    this.seizureForm.patchValue(selectedClone);
+    this.seizureForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.seizureList;
+    this.dataSaveSeizureDeclarationList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    }
+    this.seizureForm.enable();
+    this.addLabParamStatus = true;
   }
 }

@@ -568,6 +568,9 @@ export interface ISAdoptionProposal {
     contactOneFullName: string;
     contactOneTelephone: string;
     remarks: string;
+    departmentId: number;
+    subject: string;
+    description: string;
 }
 
 export interface ISJustificationProposal {
@@ -1794,6 +1797,7 @@ export interface ISCheckRequirements {
     companyPhone: string;
     draftNumber: string;
     draughting: string;
+    standardType: string;
 }
 
 export interface ComStdRequest {
