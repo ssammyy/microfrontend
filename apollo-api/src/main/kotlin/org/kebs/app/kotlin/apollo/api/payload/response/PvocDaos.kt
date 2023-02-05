@@ -736,8 +736,11 @@ class RfcDao {
     var idfNumber: String? = null
     var ucrNumber: String? = null
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     var rfcDate: Date? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var receiveDate: Timestamp? = null
     var countryOfDestination: String? = null
     var applicationType: String? = null
     var sorReference: String? = null
@@ -773,7 +776,7 @@ class RfcDao {
     var route: String? = null
     var goodsCondition: String? = null
     var assemblyState: String? = null
-    var linkToAttachedDocuments: String? = null
+    var linkToAttachedDocuments: List<String>? = null
     var clientId: String? = null
     var reviewStatus: String? = null
     var reviewRemarks: String? = null
@@ -822,9 +825,10 @@ class RfcDao {
             rfcEntity.shipmentMethod = rfc.shipmentMethod
             rfcEntity.countryOfSupply = rfc.countryOfSupply
             rfcEntity.route = rfc.route
+            rfcEntity.receiveDate = rfc.createdOn
             rfcEntity.goodsCondition = rfc.goodsCondition
             rfcEntity.assemblyState = rfc.assemblyState
-            rfcEntity.linkToAttachedDocuments = rfc.linkToAttachedDocuments
+            rfcEntity.linkToAttachedDocuments = rfc.linkToAttachedDocuments?.split(",")
             rfcEntity.clientId = rfc.createdBy
             rfcEntity.reviewStatus = when (rfc.reviewStatus) {
                 1 -> "REVIEWED"
@@ -895,10 +899,13 @@ class RfcCorDao {
     var countryOfSupply: String? = null
     var goodsCondition: String? = null
     var assemblyState: String? = null
-    var linkToAttachedDocuments: String? = null
+    var linkToAttachedDocuments: List<String>? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     var preferredInspectionDate: Timestamp? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    var receiveDate: Timestamp? = null
     var make: String? = null
     var model: String? = null
     var chassisNumber: String? = null
@@ -962,7 +969,7 @@ class RfcCorDao {
             rfcEntity.applicantPin = rfc.applicantPin
             rfcEntity.goodsCondition = rfc.goodsCondition
             rfcEntity.assemblyState = rfc.assemblyState
-            rfcEntity.linkToAttachedDocuments = rfc.linkToAttachedDocuments
+            rfcEntity.linkToAttachedDocuments = rfc.linkToAttachedDocuments?.split(",")
             rfcEntity.clientId = rfc.createdBy
             rfcEntity.reviewStatus = when (rfc.reviewStatus) {
                 1 -> "REVIEWED"
@@ -977,6 +984,7 @@ class RfcCorDao {
             rfcEntity.chassisNumber = rfc.chassisNumber
             rfcEntity.yearOfFirstRegistration = rfc.yearOfFirstRegistration
             rfcEntity.yearOfManufacture = rfc.yearOfManufacture
+            rfcEntity.receiveDate = rfc.createdOn
             return rfcEntity
         }
 
