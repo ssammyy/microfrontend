@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router} from '@angular/router';
 import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto,
@@ -16,24 +16,24 @@ import {
     STA10ManufacturingProcessDto,
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
-    STA10RawMaterialsDto
-} from "../../../core/store/data/qa/qa.model";
-import {Form, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {FileUploadValidators} from "@iplab/ngx-file-upload";
-import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
-import {TableData} from "../../../md/md-table/md-table.component";
-import {QaService} from "../../../core/store/data/qa/qa.service";
-import {NgxSpinnerService} from "ngx-spinner";
-import {QaInternalService} from "../../../core/store/data/qa/qa-internal.service";
-import {ApiResponseModel} from "../../../core/store/data/ms/ms.model";
+    STA10RawMaterialsDto,
+} from '../../../core/store/data/qa/qa.model';
+import {Form, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FileUploadValidators} from '@iplab/ngx-file-upload';
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
+import {TableData} from '../../../md/md-table/md-table.component';
+import {QaService} from '../../../core/store/data/qa/qa.service';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {QaInternalService} from '../../../core/store/data/qa/qa-internal.service';
+import {ApiResponseModel} from '../../../core/store/data/ms/ms.model';
 import * as CryptoJS from 'crypto-js';
-import swal from "sweetalert2";
-import {HttpErrorResponse} from "@angular/common/http";
+import swal from 'sweetalert2';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
     selector: 'app-permit-details-admin',
     templateUrl: './permit-details-admin.component.html',
-    styleUrls: ['./permit-details-admin.component.css']
+    styleUrls: ['./permit-details-admin.component.css'],
 })
 export class PermitDetailsAdminComponent implements OnInit {
     @ViewChild('editModal') editModal !: TemplateRef<any>;
@@ -75,16 +75,16 @@ export class PermitDetailsAdminComponent implements OnInit {
     sta10FormF: FormGroup;
     sta10FormG: FormGroup;
 
-    qaMCompleteness:FormGroup;
-    assignOfficer:FormGroup;
-    addStandards:FormGroup;
-    factoryVisit:FormGroup;
+    qaMCompleteness: FormGroup;
+    assignOfficer: FormGroup;
+    addStandards: FormGroup;
+    factoryVisit: FormGroup;
 
 
 
 
 
-    //DTOS
+    // DTOS
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     allPermitDetails: AllPermitDetailsDto;
@@ -144,26 +144,26 @@ export class PermitDetailsAdminComponent implements OnInit {
     ) {
     }
 
-    id: any = "1";
-    permitId: any
+    id: any = '1';
+    permitId: any;
     steps: any;
 
     // stepSoFar: | undefined;
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
-            var key = '11A1764225B11AA1';
-            var encrypted = paramMap.get('id')
+            let key = '11A1764225B11AA1';
+            let encrypted = paramMap.get('id');
             key = CryptoJS.enc.Utf8.parse(key);
-            var decrypted = CryptoJS.AES.decrypt({ciphertext: CryptoJS.enc.Hex.parse(encrypted)}, key, {
+            let decrypted = CryptoJS.AES.decrypt({ciphertext: CryptoJS.enc.Hex.parse(encrypted)}, key, {
                 mode: CryptoJS.mode.ECB,
-                padding: CryptoJS.pad.ZeroPadding
+                padding: CryptoJS.pad.ZeroPadding,
             });
             this.permitId = decrypted.toString(CryptoJS.enc.Utf8);
 
         });
 
         this.steps = 1;
-        this.getSelectedPermit(this.permitId)
+        this.getSelectedPermit(this.permitId);
         this.sta1Form = this.formBuilder.group({
             commodityDescription: [{value: '', disabled: true}, Validators.required],
             applicantName: [{value: '', disabled: true}, Validators.required],
@@ -179,7 +179,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             totalNumberMale: [{value: '', disabled: true}, Validators.required],
             totalNumberPermanentEmployees: [{value: '', disabled: true}, Validators.required],
             totalNumberCasualEmployees: [{value: '', disabled: true}, Validators.required],
-            averageVolumeProductionMonth: [{value: '', disabled: true}, Validators.required]
+            averageVolumeProductionMonth: [{value: '', disabled: true}, Validators.required],
 
         });
 
@@ -187,7 +187,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.sta10FormA = this.formBuilder.group({
             personnelName: [],
             qualificationInstitution: [],
-            dateOfEmployment: []
+            dateOfEmployment: [],
 
         });
 
@@ -196,14 +196,14 @@ export class PermitDetailsAdminComponent implements OnInit {
             productBrand: [],
             productStandardNumber: [],
             available: [],
-            permitNo: []
+            permitNo: [],
         });
 
         this.sta10FormC = this.formBuilder.group({
             name: [],
             origin: [],
             specifications: [],
-            qualityChecksTestingRecords: []
+            qualityChecksTestingRecords: [],
         });
 
         this.sta10FormD = this.formBuilder.group({
@@ -217,7 +217,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             operations: [],
             criticalProcessParametersMonitored: [],
             frequency: [],
-            processMonitoringRecords: []
+            processMonitoringRecords: [],
         });
         this.sta10FormG = this.formBuilder.group({});
 
@@ -234,7 +234,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             calibrationEquipmentLastCalibrated: [{value: '', disabled: true}, Validators.required],
             handlingConsumerComplaints: [{value: '', disabled: true}, Validators.required],
             companyRepresentative: [{value: '', disabled: true}, Validators.required],
-            applicationDate: [{value: '', disabled: true}, Validators.required]
+            applicationDate: [{value: '', disabled: true}, Validators.required],
         });
 
         this.approveRejectSSCForm = this.formBuilder.group({
@@ -252,7 +252,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         this.uploadForm = this.formBuilder.group({
             upLoadDescription: ['', Validators.required],
-            uploadedFile: this.filesControl
+            uploadedFile: this.filesControl,
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
 
@@ -285,14 +285,14 @@ export class PermitDetailsAdminComponent implements OnInit {
             selectAllText: 'Select All',
             unSelectAllText: 'UnSelect All',
             itemsShowLimit: 3,
-            allowSearchFilter: true
+            allowSearchFilter: true,
         };
     }
 
     initForm() {
         this.form = this.formBuilder.group({
-            permits: ['', [Validators.required]]
-        })
+            permits: ['', [Validators.required]],
+        });
     }
 
     tabChange(ids: any) {
@@ -309,7 +309,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     }
 
     newinspectionform(NewInspectionForm) {
-        console.log("Form is submitted")
+        console.log('Form is submitted');
 
     }
 
@@ -424,7 +424,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                         formattedArraySta10 = this.sta10FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id, i.document]);
                         this.tableData2 = {
                             headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                            dataRows: formattedArraySta10
+                            dataRows: formattedArraySta10,
                         };
                     }
                     if (this.allPermitDetails.ordinaryFilesList !== []) {
@@ -433,7 +433,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                         formattedArrayOrdinaryFiles = this.ordinaryFilesList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id]);
                         this.tableData3 = {
                             headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                            dataRows: formattedArrayOrdinaryFiles
+                            dataRows: formattedArrayOrdinaryFiles,
                         };
                     }
                     if (this.allPermitDetails.labResultsList.labResultsList !== []) {
@@ -442,7 +442,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                         formattedArrayLabResultsList = this.labResultsDetailsList.map(i => [i.pdfName, i.complianceStatus, i.sffId, i.complianceRemarks, i.pdfSavedId]);
                         this.tableData4 = {
                             headerRow: ['File Name', 'Compliant Status', 'View Remarks', 'View PDF'],
-                            dataRows: formattedArrayLabResultsList
+                            dataRows: formattedArrayLabResultsList,
                         };
 
                         this.complianceResultsDetailsList = this.allPermitDetails.labResultsList.ssfResultsList;
@@ -450,7 +450,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                         formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
                         this.tableData6 = {
                             headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Add Remarks'],
-                            dataRows: formattedArrayComplianceResultsList
+                            dataRows: formattedArrayComplianceResultsList,
                         };
                     }
                     if (this.allPermitDetails.oldVersionList !== []) {
@@ -459,7 +459,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                         formattedArrayOlderVersionList = this.olderVersionDetailsList.map(i => [i.permitRefNumber, i.createdOn, i.permitStatus, i.versionNumber, i.id]);
                         this.tableData5 = {
                             headerRow: ['Permit Ref Number', 'Created On', 'Status', 'Version Number', 'Action'],
-                            dataRows: formattedArrayOlderVersionList
+                            dataRows: formattedArrayOlderVersionList,
                         };
                     }
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
@@ -498,19 +498,19 @@ export class PermitDetailsAdminComponent implements OnInit {
                                 // ['Description', this.allPermitDetails.invoiceDetails.description],
                                 ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
                                 ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
-                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]
+                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
 
-                            ]
+                            ],
                         };
                         this.SpinnerService.hide();
 
                     }
                 } else {
-                    this.SpinnerService.hide()
-                    this.qaService.showError("Unable To View Permit.")
+                    this.SpinnerService.hide();
+                    this.qaService.showError('Unable To View Permit.');
                     window.history.back();
                 }
-            }
+            },
         );
     }
 
@@ -529,12 +529,12 @@ export class PermitDetailsAdminComponent implements OnInit {
                     // let requestNumber = response.responseText+":"+response.body.body.requestNumber;
                     this.SpinnerService.hide();
                         formDirective.resetForm();
-                        this.qaMCompleteness.reset()
-                      this.qaService.showSuccess("Review Successfully submitted")
+                        this.qaMCompleteness.reset();
+                      this.qaService.showSuccess('Review Successfully submitted');
                     });
 
         } else {
-            this.qaService.showError("Please Try Again")
+            this.qaService.showError('Please Try Again');
 
         }
 

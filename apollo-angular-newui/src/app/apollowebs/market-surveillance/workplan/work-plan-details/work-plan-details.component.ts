@@ -2635,6 +2635,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   updatePreliminaryReportHOFHODIO() {
     if (this.workPlanInspection?.msPreliminaryReportStatus) {
+      // tslint:disable-next-line:max-line-length
       this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport);
       this.investInspectReportForm.patchValue(this.selectedPreliminaryReportDetails);
       this.dataSaveDataInspectorInvestList = [];
