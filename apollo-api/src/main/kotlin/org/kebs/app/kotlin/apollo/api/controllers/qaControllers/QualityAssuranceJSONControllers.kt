@@ -158,6 +158,121 @@ class QualityAssuranceJSONControllers(
 
     }
 
+    @PostMapping("/internal-users/apply/permit/upload-justification-report")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadJustificationReport(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): ApiResponseModel {
+
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            var permit = qaDaoServices.findPermitBYID(permitID)
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            val versionNumber: Long = 1
+            val fileDocList = mutableListOf<Long>()
+            docFile?.forEach { fileDoc ->
+                val uploads = QaUploadsEntity()
+                with(uploads){
+                    ordinaryStatus = 0
+                    justificationReportStatus = 1
+                }
+                val fileDocSaved =   qaDaoServices.saveQaFileUploads(fileDoc, "JUSTIFICATION_REPORT_DMARK_ASSESSMENT", loggedInUser, map, uploads, permit.permitRefNumber?: throw Exception("MISSING PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), versionNumber, 0)
+                fileDocSaved.second.id?.let { fileDocList.add(it) }
+            }
+
+            with(permit) {
+                justificationReportStatus = 1
+                approvedRejectedScheme = 1
+//                jus = fileDocList[0]
+                permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+                userTaskId = applicationMapProperties.mapUserTaskNameHOD
+            }
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PostMapping("/internal-users/apply/permit/upload-assessment-report")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadAssessmentReport(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): ApiResponseModel {
+
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            var permit = qaDaoServices.findPermitBYID(permitID)
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            val versionNumber: Long = 1
+            val fileDocList = mutableListOf<Long>()
+            docFile?.forEach { fileDoc ->
+                val uploads = QaUploadsEntity()
+                with(uploads){
+                    ordinaryStatus = 0
+                    assessmentReportStatus = 1
+                }
+                val fileDocSaved =   qaDaoServices.saveQaFileUploads(fileDoc, "FACTORY_ASSESSMENT_REPORT", loggedInUser, map, uploads, permit.permitRefNumber?: throw Exception("MISSING PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), versionNumber, 0)
+                fileDocSaved.second.id?.let { fileDocList.add(it) }
+            }
+
+//            val hodDetails = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)
+
+            with(permit) {
+                assessmentScheduledStatus = 1
+//                assessmentReportRemarks = 1
+//                jus = fileDocList[0]
+//                hodId = hodDetails?.id
+                permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+                userTaskId = applicationMapProperties.mapUserTaskNameHOD
+            }
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
     /*:::::::::::::::::::::::::::::::::::::::::::::END INTERNAL USER FUNCTIONALITY ANGULAR:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
 

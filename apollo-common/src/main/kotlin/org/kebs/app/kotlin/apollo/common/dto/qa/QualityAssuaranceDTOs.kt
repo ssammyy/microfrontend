@@ -21,7 +21,7 @@ data class StandardsApplyDto(
 
 data class ScheduleInspectionApplyDto(
     var inspectionDate: Date? = null,
-    var productStandardRemarks: String? = null
+    var scheduleRemarks: String? = null
 )
 
 data class SaveLabPDFApplyDto(
@@ -163,6 +163,18 @@ data class RecommendationApplyDto(
 )
 
 data class ApproveRejectPermitApplyDto(
+    @NotNull(message = "Required approvedRejectedStatus Status")
+    var approvedRejectedStatus: Boolean,
+    var approvedRejectedRemarks: String? = null
+)
+
+data class ApproveRejectJustificationReportApplyDto(
+    @NotNull(message = "Required approvedRejectedStatus Status")
+    var approvedRejectedStatus: Boolean,
+    var approvedRejectedRemarks: String? = null
+)
+
+data class ApproveRejectAssessmentReportApplyDto(
     @NotNull(message = "Required approvedRejectedStatus Status")
     var approvedRejectedStatus: Boolean,
     var approvedRejectedRemarks: String? = null
