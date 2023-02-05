@@ -1670,10 +1670,15 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
             <div class="col-lg-3">
                 <div class="card ">
                     <div class="card-header ">
-                        <h4 class="card-title">Actions
-                        </h4>
+                        <h4 class="card-title">Actions</h4>
                     </div>
                     <div class="card-body ">
+<!--                        <div *ngFor="let role of roles">-->
+
+<!--                        </div>-->
+                        <a data-toggle="modal" *ngIf="allPermitDetails?." data-target="#allProcessModel" (click)="openModalAddDetails('updateSection')"
+                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
+
 
                         <a data-toggle="modal" data-target="#reviewcompleteness"
                            class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS</a>
@@ -1716,8 +1721,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <a data-toggle="modal" data-target="#recommendations"
                            class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATIONS</a>
 
-                        <a data-toggle="modal" data-target="#update-section"
-                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
                         <a data-toggle="modal" data-target="#inspection-date"
                            class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE FACTORY VISIT </a>
@@ -1731,6 +1734,61 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                     </div>
                 </div>
+
+                <!-- Dynamic Modal -->
+                <div class="modal fade" id="allProcessModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{currDivLabel}}</h4>
+                                <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div *ngIf="(currDiv == 'reAssignHOF')">
+                                    <form [formGroup]="assignOfficerForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label for="assignedIo"><b>Select officer</b></label>
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Please Select an option"
+                                                                    [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
+                                                                    formControlName="assignedIo" id="assignedIo" name="assignedIo" >
+                                                            <mat-option *ngFor="let app of workPlanInspection.hofList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                    <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                            <textarea id="assignedRemarks" matInput type="text"
+                                                      formControlName="assignedRemarks"
+                                                      name="assignedRemarks">
+                                            </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+
+                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                                </button>
+                                <button *ngIf="(currDiv == 'reAssignOfficer')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSaveAssignIO(assignOfficerForm.valid);"
+                                        [disabled]="!assignOfficerForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--  End Dynamic Modal -->
+
                 <!-- start of modal -->
 
                 <div class="modal fade" id="new-inspection-report" role="dialog">
@@ -7393,6 +7451,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                     </div>
                 </div>
+
 
                 <!-- end of modal addssf-bsnumber -->
 
