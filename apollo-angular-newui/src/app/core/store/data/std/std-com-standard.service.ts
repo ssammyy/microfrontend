@@ -21,7 +21,7 @@ import {
   ISCheckRequirements, ISDraftDecision, IStandardDraftEdit, IStandardUpload,
   NWAPreliminaryDraft,
   NWAWDDecision,
-  NWAWorkShopDraft,
+  NWAWorkShopDraft, PredefinedSdIntCommentsFields,
   Product, ProposalComment,
   StakeholderProposalComments, UserEntity,
   UsersEntity
@@ -530,10 +530,10 @@ export class StdComStandardService {
     );
   }
 
-  public submitDraftComment(comDraftComment: ComDraftComment): Observable<any> {
+  public submitDraftComment(comDraftComment: PredefinedSdIntCommentsFields[]): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SUBMIT_DRAFT_COMMENT);
     const params = new HttpParams();
-    return this.http.post<ComDraftComment>(url, comDraftComment, {params}).pipe(
+    return this.http.post<PredefinedSdIntCommentsFields[]>(url, comDraftComment, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -542,10 +542,10 @@ export class StdComStandardService {
         })
     );
   }
-  public submitDraftComments(comDraftComment: ComDraftComment): Observable<any> {
+  public submitDraftComments(comDraftComment: PredefinedSdIntCommentsFields[]): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SUBMIT_DRAFT_COMMENTS);
     const params = new HttpParams();
-    return this.http.post<ComDraftComment>(url, comDraftComment, {params}).pipe(
+    return this.http.post<PredefinedSdIntCommentsFields[]>(url, comDraftComment, {params}).pipe(
         map(function (response: any) {
           return response;
         }),

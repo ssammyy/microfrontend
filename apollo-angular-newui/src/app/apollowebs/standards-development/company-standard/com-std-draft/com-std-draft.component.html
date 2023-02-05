@@ -221,25 +221,24 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                                                 <option value="No">Reject Draft</option>
                                             </select>
                                         </div>
+                                        <input type="hidden" name="requestId" ngModel="{{actionRequest?.requestId}}" >
+                                        <input type="hidden" name="id" ngModel="{{actionRequest?.id}}" >
+                                        <input type="hidden" name="companyName" ngModel="{{actionRequest?.companyName}}" >
+                                        <input type="hidden" name="companyPhone" ngModel="{{actionRequest?.companyPhone}}" >
+                                        <input type="hidden" name="contactOneFullName" ngModel="{{actionRequest?.contactOneFullName}}" >
+                                        <input type="hidden" name="contactOneTelephone" ngModel="{{actionRequest?.contactOneTelephone}}" >
+                                        <input type="hidden" name="contactOneEmail" ngModel="{{actionRequest?.contactOneEmail}}" >
                                     </div>
-
-
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" mat-raised-button class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                    <button type="submit" mat-raised-button class="btn btn-primary btn-sm" (click)="decisionOnAccept(jcJustificationForm.value)" data-dismiss="modal">Sumbit</button>
+                                </div>
+
                             </div>
-                            <input type="hidden" name="requestId" ngModel="{{actionRequest?.requestId}}" >
-                            <input type="hidden" name="id" ngModel="{{actionRequest?.id}}" >
-                            <input type="hidden" name="companyName" ngModel="{{actionRequest?.companyName}}" >
-                            <input type="hidden" name="companyPhone" ngModel="{{actionRequest?.companyPhone}}" >
-                            <input type="hidden" name="contactOneFullName" ngModel="{{actionRequest?.contactOneFullName}}" >
-                            <input type="hidden" name="contactOneTelephone" ngModel="{{actionRequest?.contactOneTelephone}}" >
-                            <input type="hidden" name="contactOneEmail" ngModel="{{actionRequest?.contactOneEmail}}" >
+
                             <!--<input type="hidden" name="accentTo" ngModel="Yes" >-->
 
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary btn-sm" (click)="decisionOnAccept(jcJustificationForm.value)" data-dismiss="modal">Approve</button>
-                            </div>
                         </form>
                     </div>
                 </div>

@@ -458,6 +458,7 @@ export class ApiEndpointService {
         IST_VIEW_IS_STANDARD_GZT_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/gazettement`,
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
         IST_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitDraftComments`,
+        IST_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftComment`,
 
 
         // SD COMPANY STANDARDS

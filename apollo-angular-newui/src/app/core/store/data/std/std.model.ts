@@ -534,6 +534,44 @@ export interface ComDraftComment {
 
 
 }
+export class PredefinedSdIntCommentsFields{
+    commentTitle: string;
+    commentDocumentType: string;
+    uploadDate: Timestamp<any>;
+    nameOfRespondent: string;
+    emailOfRespondent: string;
+    phoneOfRespondent: string;
+    nameOfOrganization: string;
+    scope: string;
+    clause: string;
+    paragraph: string;
+    typeOfComment: string;
+    comment: string;
+    proposedChange: string;
+    observation: string;
+    requestID: number;
+    draftID: number;
+}
+export class PredefinedSDCommentsFields {
+    standardNumber: string;
+    commentTitle: string;
+    commentDocumentType: string;
+    preparedDate: Timestamp<any>;
+    docName: string;
+    nameOfRespondent: string;
+    emailOfRespondent: string;
+    phoneOfRespondent: string;
+    nameOfOrganization: string;
+    scope: string;
+    clause: string;
+    paragraph: string;
+    typeOfComment: string;
+    comment: string;
+    proposedChange: string;
+    requestID: number;
+    draftID: number;
+    observation: string;
+}
 
 export interface ISAdoptionProposal {
     taskId: string;
@@ -571,6 +609,8 @@ export interface ISAdoptionProposal {
     departmentId: number;
     subject: string;
     description: string;
+    special: string;
+    normativeReference: string;
 }
 
 export interface ISJustificationProposal {
