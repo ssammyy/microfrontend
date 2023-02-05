@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
 import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocumentDao
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.request.RfcItemForm
 import org.kebs.app.kotlin.apollo.api.payload.response.CorEntityDao
 import org.kebs.app.kotlin.apollo.api.payload.response.PvocPartnerDto
 import org.kebs.app.kotlin.apollo.api.payload.response.RfcCorDao
@@ -24,6 +25,7 @@ enum class MonitoringStatus(val status: Int) {
 class PvocMonitoringService(
     private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
     private val rfcRepository: IRfcEntityRepo,
+    private val rfcItemRepository: IRfcItemsRepository,
     private val rfcCorRepository: IRfcCorRepository,
     private val cocItemRepository: ICocItemRepository,
     private val corBakRepository: ICorsBakRepository,
@@ -72,10 +74,22 @@ class PvocMonitoringService(
         return response
     }
 
-    fun listRfcCocCoiRequests(documentType: String, status: Int, page: PageRequest): ApiResponseModel {
+    fun listRfcCocCoiRequests(
+        keywords: String?,
+        documentType: String,
+        status: Int,
+        page: PageRequest
+    ): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val data = this.rfcRepository.findByRfcDocumentTypeAndReviewStatus(documentType, status, page)
+            val data = when {
+                !keywords.isNullOrEmpty() -> this.rfcRepository.findByRfcNumberContainsAndReviewStatus(
+                    keywords,
+                    status,
+                    page
+                )
+                else -> this.rfcRepository.findByReviewStatus(status, page)
+            }
             response.data = RfcDao.fromList(data.toList())
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -97,7 +111,12 @@ class PvocMonitoringService(
                 response.message = "Record not found"
                 response.responseCode = ResponseCodes.NOT_FOUND
             } else {
-                response.data = RfcDao.fromEntity(data.get())
+                val dataMap = mutableMapOf<String, Any>()
+                dataMap["rfc"] = RfcDao.fromEntity(data.get())
+                val items = this.rfcItemRepository.findByRfcId(rfcId)
+                dataMap["items"] = RfcItemForm.fromList(items)
+                dataMap["queries"] = emptyArray<Any>()
+                response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }
@@ -108,10 +127,22 @@ class PvocMonitoringService(
         return response
     }
 
-    fun listRfcCorRequests(status: Int, page: PageRequest): ApiResponseModel {
+    fun listRfcCorRequests(keywords: String?, status: Int, page: PageRequest): ApiResponseModel {
         val response = ApiResponseModel()
         try {
-            val data = this.rfcCorRepository.findByReviewStatusAndStatus(status, 1, page)
+            // Find by chassis number or RfcNumber
+            val data = when {
+                !keywords.isNullOrEmpty() -> this.rfcCorRepository.findByRfcNumberContainsAndReviewStatusAndStatusOrChassisNumberContainsAndReviewStatusAndStatus(
+                    keywords,
+                    status,
+                    1,
+                    keywords,
+                    status,
+                    1,
+                    page
+                )
+                else -> this.rfcCorRepository.findByReviewStatusAndStatus(status, 1, page)
+            }
             response.data = RfcCorDao.fromList(data.toList())
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -134,7 +165,10 @@ class PvocMonitoringService(
                 response.message = "Record not found"
                 response.responseCode = ResponseCodes.NOT_FOUND
             } else {
-                response.data = RfcCorDao.fromEntity(data.get())
+                val dataMap = mutableMapOf<String, Any>()
+                dataMap["rfc"] = RfcCorDao.fromEntity(data.get())
+                dataMap["queries"] = emptyArray<Any>()
+                response.data = dataMap
                 response.message = "Success"
                 response.responseCode = ResponseCodes.SUCCESS_CODE
             }

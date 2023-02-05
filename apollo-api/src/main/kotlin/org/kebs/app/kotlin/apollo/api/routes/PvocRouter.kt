@@ -62,9 +62,11 @@ class PvocRouter {
     fun pvocAgentMonitoring(handler: PvocMonitoringHandler) = router {
         "/api/v1/pvoc/monitoring".nest {
             GET("/get/{applicationStatus}", handler::listMonitoringIssues)
-            GET("/rfc/{rfcId}", handler::getRfcForCoiOrCoc)
-            GET("/rfc/cocs", handler::listRfcsCoc)
-            GET("/rfc/cois", handler::listRfcsCoi)
+            GET("/rfc/coc/{rfcId}", handler::getRfcForCoiOrCoc)
+            GET("/rfc/coc", handler::listRfcsCoc)
+            GET("/rfc/cor/{rfcId}", handler::getRfcForCor)
+            GET("/rfc/cor", handler::listRfcsCor)
+            GET("/rfc/coi", handler::listRfcsCoi)
             GET("/foreign/cois", handler::listForeignCoi)
             GET("/foreign/ncrs", handler::listForeignNcr)
             GET("/foreign/cocs", handler::listForeignCoc)

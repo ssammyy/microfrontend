@@ -19,18 +19,34 @@ class PvocMonitoringHandler(private val pvocMonitoringService: PvocMonitoringSer
     fun listRfcsCoc(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listRfcCocCoiRequests("COC", status?.toInt() ?: 0, page))
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok()
+            .body(pvocMonitoringService.listRfcCocCoiRequests(keywords, "COC", status?.toInt() ?: 0, page))
+    }
+
+    fun listRfcsCor(req: ServerRequest): ServerResponse {
+        val page = extractPage(req)
+        val status = req.paramOrNull("rev_status")
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok().body(pvocMonitoringService.listRfcCorRequests(keywords, status?.toInt() ?: 0, page))
     }
 
     fun listRfcsCoi(req: ServerRequest): ServerResponse {
         val page = extractPage(req)
         val status = req.paramOrNull("rev_status")
-        return ServerResponse.ok().body(pvocMonitoringService.listRfcCocCoiRequests("COI", status?.toInt() ?: 0, page))
+        val keywords = req.paramOrNull("keywords")
+        return ServerResponse.ok()
+            .body(pvocMonitoringService.listRfcCocCoiRequests(keywords, "COI", status?.toInt() ?: 0, page))
     }
 
     fun getRfcForCoiOrCoc(req: ServerRequest): ServerResponse {
         val rfcId = req.pathVariable("rfcId")
         return ServerResponse.ok().body(pvocMonitoringService.getRfcCocCoi(rfcId.toLong()))
+    }
+
+    fun getRfcForCor(req: ServerRequest): ServerResponse {
+        val rfcId = req.pathVariable("rfcId")
+        return ServerResponse.ok().body(pvocMonitoringService.getRfcCor(rfcId.toLong()))
     }
 
     fun listForeignCoi(req: ServerRequest): ServerResponse {
