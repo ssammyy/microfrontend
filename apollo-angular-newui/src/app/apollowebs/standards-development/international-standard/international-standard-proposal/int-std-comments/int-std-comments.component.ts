@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {NgxSpinnerService} from "ngx-spinner";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
@@ -6,7 +6,7 @@ import {StdIntStandardService} from "../../../../../core/store/data/std/std-int-
 import {
     DocView,
     ISAdoptionComments,
-    ISAdoptionProposal,
+    ISAdoptionProposal, PredefinedSDCommentsFields,
     ProposalComments
 } from "../../../../../core/store/data/std/std.model";
 import {NotificationService} from "../../../../../core/store/data/std/notification.service";
@@ -17,6 +17,7 @@ import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {StdComStandardService} from "../../../../../core/store/data/std/std-com-standard.service";
+import {PredefinedResourcesRequired} from "../../../../../core/store/data/ms/ms.model";
 
 declare const $: any;
 
@@ -28,11 +29,18 @@ declare const $: any;
 export class IntStdCommentsComponent implements OnInit,OnDestroy {
   fullname = '';
   blob: Blob;
+    submitted = false;
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  dtTrigger1: Subject<any> = new Subject<any>();
   tasks: ProposalComments[] = [];
   isAdoptionProposals: ISAdoptionProposal[]=[];
+    dataSaveResourcesRequired: PredefinedSDCommentsFields;
+    dataSaveResourcesRequiredList: PredefinedSDCommentsFields[] = [];
     public uploadCommentsFormGroup!: FormGroup;
+        predefinedSDCommentsDataAdded: boolean = false
   loadingText: string;
     @ViewChild(DataTableDirective, {static: false})
     dtElement: DataTableDirective;
@@ -63,26 +71,26 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
       //console.log(this.proposalId);
 
       this.uploadCommentsFormGroup = this.formBuilder.group({
-          commentTitle:[],
-          scope:[],
-          clause:[],
-          proposalID:[],
-          standardNumber:[],
-          commentDocumentType:[],
-          recommendations:[],
-          nameOfRespondent:[],
-          positionOfRespondent:[],
-          nameOfOrganization:[],
-          preparedDate:[],
-          paragraph:[],
-          typeOfComment:[],
-          comment:[],
-          proposedChange:[],
-          observation:[],
-          emailOfRespondent:['', Validators.required],
-          phoneOfRespondent:['', Validators.required],
-          draftID: [],
-          requestID:[]
+          commentTitle:null,
+          scope:null,
+          clause:null,
+          proposalID:null,
+          standardNumber:null,
+          commentDocumentType:null,
+          recommendations:null,
+          nameOfRespondent:null,
+          positionOfRespondent:null,
+          nameOfOrganization:null,
+          preparedDate:null,
+          paragraph:null,
+          typeOfComment:null,
+          comment:null,
+          proposedChange:null,
+          observation:null,
+          emailOfRespondent:null,
+          phoneOfRespondent:null,
+          draftID: null,
+          requestID:null
 
       });
 
@@ -97,6 +105,7 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.dtTrigger1.unsubscribe();
   }
   showToasterError(title:string,message:string){
     this.notifyService.showError(message, title)
@@ -113,17 +122,9 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
         this.stdIntStandardService.getProposals(proposalId).subscribe(
             (response: ISAdoptionProposal[]) => {
                 this.isAdoptionProposals = response;
-                console.log(this.isAdoptionProposals);
+               // console.log(this.isAdoptionProposals);
                 this.SpinnerService.hide();
-                if (this.isDtInitialized) {
-                    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                        dtInstance.destroy();
-                        this.dtTrigger.next();
-                    });
-                } else {
-                    this.isDtInitialized = true
-                    this.dtTrigger.next();
-                }
+                this.rerender();
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -196,7 +197,8 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
                 draftID: this.actionRequest.draftId,
                 commentDocumentType: this.actionRequest.docName,
                 uploadDate: this.actionRequest.preparedDate,
-                standardNumber: this.actionRequest.standardNumber
+                standardNumber: this.actionRequest.standardNumber,
+                preparedDate: this.actionRequest.preparedDate
 
             }
         );
@@ -209,10 +211,10 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
     onSubmit(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        console.log(this.uploadCommentsFormGroup.value);
-        this.stdIntStandardService.submitDraftComments(this.uploadCommentsFormGroup.value).subscribe(
+        // console.log(this.uploadCommentsFormGroup.value);
+        this.stdIntStandardService.submitDraftComments(this.dataSaveResourcesRequiredList).subscribe(
             (response ) => {
-                console.log(response);
+               // console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
                 this.getProposals(this.proposalId);
@@ -257,6 +259,57 @@ export class IntStdCommentsComponent implements OnInit,OnDestroy {
                 '</div>' +
                 '<a href="{3}" target="{4}" data-notify="url"></a>' +
                 '</div>'
+        });
+    }
+
+    // loadNotificationRead
+    onClickAddResource() {
+        this.dataSaveResourcesRequired = this.uploadCommentsFormGroup.value;
+        console.log(this.dataSaveResourcesRequired);
+        // tslint:disable-next-line:max-line-length
+        this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+        console.log(this.dataSaveResourcesRequiredList);
+        this.predefinedSDCommentsDataAdded= true;
+        console.log(this.predefinedSDCommentsDataAdded);
+
+        this.uploadCommentsFormGroup?.get('clause')?.reset();
+        this.uploadCommentsFormGroup?.get('paragraph')?.reset();
+        this.uploadCommentsFormGroup?.get('typeOfComment')?.reset();
+        this.uploadCommentsFormGroup?.get('comment')?.reset();
+        this.uploadCommentsFormGroup?.get('proposedChange')?.reset();
+        this.uploadCommentsFormGroup?.get('observation')?.reset();
+        this.uploadCommentsFormGroup?.get('scope')?.reset();
+    }
+
+    // Remove Form repeater values
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedSDCommentsDataAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickSaveWorkPlanScheduled() {
+        this.submitted = true;
+        console.log(this.dataSaveResourcesRequiredList.length);
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.onSubmit();
+        }
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+            this.dtTrigger1.next();
         });
     }
 

@@ -219,6 +219,8 @@ export class IntStdEditorComponent implements OnInit {
                     draftId: this.actionRequests.draftId,
                     title: this.actionRequests.title,
                     scope:this.actionRequests.scope,
+                    normativeReference:this.actionRequests.normativeReference,
+                    special:this.actionRequests.special,
                     clause:this.actionRequests.clause,
                     comStdNumber:this.actionRequests.standardNumber,
                     contactOneFullName:this.actionRequests.contactOneFullName,

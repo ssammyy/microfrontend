@@ -81,6 +81,7 @@ placeholder="name" type="text" disabled>
                       placeholder="Email Address" type="text"></textarea>
 
         </div>
+
     </div>
 
         <h4 style="font-weight: bold">
@@ -179,7 +180,7 @@ placeholder="name" type="text" disabled>
 <!--    </div>-->
     </div>
     <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
-        <button *ngIf="isProposalFormGroup.valid" [disabled]="!isProposalFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
+        <button  class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
 
     </div>
 
@@ -188,11 +189,7 @@ placeholder="name" type="text" disabled>
 
 
 </form>
-    <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
-        <button *ngIf="!isProposalFormGroup.valid" class="btn btn-sm btn-primary float-right"
-                (click)="showNotification('top','right')">Submit
-        </button>
-    </div>
+
 </div>
 </div>
 </div>

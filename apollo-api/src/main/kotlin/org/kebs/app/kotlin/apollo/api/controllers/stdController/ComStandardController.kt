@@ -501,67 +501,21 @@ class ComStandardController (val comStandardService: ComStandardService,
     }
 
     @PostMapping("/company_standard/submitDraftComment")
-    fun submitDraftComment(@RequestBody comDraftCommentDto: ComDraftCommentDto
+    fun submitDraftComment(@RequestBody comDraftCommentDto: List<ComDraftCommentDto>
     ) : ServerResponse
     {
 
-        val comDraftComments= ComDraftComments().apply {
-            draftComment=comDraftCommentDto.comment
-            commentTitle=comDraftCommentDto.commentTitle
-            commentDocumentType=comDraftCommentDto.commentDocumentType
-            comClause=comDraftCommentDto.clause
-            comParagraph=comDraftCommentDto.paragraph
-            typeOfComment=comDraftCommentDto.typeOfComment
-            proposedChange=comDraftCommentDto.proposedChange
-            requestID=comDraftCommentDto.requestID
-            draftID=comDraftCommentDto.draftID
-            recommendations=comDraftCommentDto.recommendations
-            nameOfRespondent=comDraftCommentDto.nameOfRespondent
-            positionOfRespondent=comDraftCommentDto.positionOfRespondent
-            nameOfOrganization=comDraftCommentDto.nameOfOrganization
-            adoptStandard=comDraftCommentDto.adoptStandard
-            adoptDraft=comDraftCommentDto.adoptDraft
-            reason=comDraftCommentDto.reason
-            uploadDate=comDraftCommentDto.uploadDate
-            emailOfRespondent=comDraftCommentDto.emailOfRespondent
-            phoneOfRespondent=comDraftCommentDto.phoneOfRespondent
-            observation=comDraftCommentDto.observation
-        }
-
-        return ServerResponse(HttpStatus.OK,"Comment Updated",comStandardService.submitDraftComments(comDraftComments))
+        return ServerResponse(HttpStatus.OK,"Comment Updated",comStandardService.submitDraftComments(comDraftCommentDto))
 
     }
 
 
     @PostMapping("/anonymous/company_standard/submitDraftComments")
-    fun submitDraftComments(@RequestBody comDraftCommentDto: ComDraftCommentDto
+    fun submitDraftComments(@RequestBody comDraftCommentDto: List<ComDraftCommentDto>
     ) : ServerResponse
     {
 
-        val comDraftComments= ComDraftComments().apply {
-            draftComment=comDraftCommentDto.comment
-            commentTitle=comDraftCommentDto.commentTitle
-            commentDocumentType=comDraftCommentDto.commentDocumentType
-            comClause=comDraftCommentDto.clause
-            comParagraph=comDraftCommentDto.paragraph
-            typeOfComment=comDraftCommentDto.typeOfComment
-            proposedChange=comDraftCommentDto.proposedChange
-            requestID=comDraftCommentDto.requestID
-            draftID=comDraftCommentDto.draftID
-            recommendations=comDraftCommentDto.recommendations
-            nameOfRespondent=comDraftCommentDto.nameOfRespondent
-            positionOfRespondent=comDraftCommentDto.positionOfRespondent
-            nameOfOrganization=comDraftCommentDto.nameOfOrganization
-            adoptStandard=comDraftCommentDto.adoptStandard
-            adoptDraft=comDraftCommentDto.adoptDraft
-            reason=comDraftCommentDto.reason
-            uploadDate=comDraftCommentDto.uploadDate
-            emailOfRespondent=comDraftCommentDto.emailOfRespondent
-            phoneOfRespondent=comDraftCommentDto.phoneOfRespondent
-            observation=comDraftCommentDto.observation
-        }
-
-        return ServerResponse(HttpStatus.OK,"Comment Updated",comStandardService.submitDraftComments(comDraftComments))
+        return ServerResponse(HttpStatus.OK,"Comment Updated",comStandardService.submitDraftComments(comDraftCommentDto))
 
     }
 

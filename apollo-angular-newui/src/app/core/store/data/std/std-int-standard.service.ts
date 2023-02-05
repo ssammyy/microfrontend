@@ -17,7 +17,7 @@ import {
     ISStandard, IStandardDraftEdit, IStandardUpload,
     ISTcSecTASKS, IstProposalComment,
     ListJustification,
-    NWAStandard,
+    NWAStandard, PredefinedSDCommentsFields,
     ProposalComment,
     ProposalComments,
     StakeholderProposalComments, UsersEntity
@@ -27,6 +27,8 @@ import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.servi
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 import {DefaulterDetails, DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
+import swal from "sweetalert2";
+import Swal from "sweetalert2";
 
 @Injectable({
   providedIn: 'root'
@@ -346,10 +348,10 @@ export class StdIntStandardService {
     }
 
 
-    public submitDraftComments(comDraftComment: ComDraftComment): Observable<any> {
+    public submitDraftComments(comDraftComment: PredefinedSDCommentsFields[]): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENTS);
         const params = new HttpParams();
-        return this.http.post<ComDraftComment>(url, comDraftComment, {params}).pipe(
+        return this.http.post<PredefinedSDCommentsFields[]>(url, comDraftComment, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -357,6 +359,81 @@ export class StdIntStandardService {
                 return throwError(fault);
             })
         );
+    }
+
+    public submitDraftComment(comDraftComment: PredefinedSDCommentsFields[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_DRAFT_COMMENT);
+        const params = new HttpParams();
+        return this.http.post<PredefinedSDCommentsFields[]>(url, comDraftComment, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    showWarning(message: string, fn?: Function) {
+        swal.fire({
+            title: message,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'warning',
+        }).then(() => {
+            if (fn) {
+                fn();
+            }
+        });
+    }
+    showSuccessWith2Message(title: string, text: string, cancelMessage: string, successMessage: string, fn?: Function) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger',
+            },
+            buttonsStyling: false,
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm!',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (fn) {
+                    const results = fn();
+                    if (results === true) {
+                        swalWithBootstrapButtons.fire(
+                            'Submitted!',
+                            successMessage,
+                            'success',
+                        );
+                    } else if (results === false) {
+                        swalWithBootstrapButtons.fire(
+                            'Submitted!',
+                            'AN ERROR OCCURRED',
+                            'error',
+                        );
+                    }
+                }
+
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    cancelMessage,
+                    'error',
+                );
+            }
+        });
     }
 
     public getDraftDocumentList(comStdDraftID: any): Observable<any> {
