@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.CompanyTurnOverUpdateDto
+import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
 import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
@@ -4601,6 +4603,9 @@ class QADaoServices(
         map: ServiceMapsEntity,
     ): AllPermitDetailsDto {
         val permitID = permit.id ?: throw Exception("MISSING PERMIT ID")
+        val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
+
+
         return AllPermitDetailsDto(
             permitDetails(permit, map),
             permitsRemarksDTO(permit),
@@ -4640,10 +4645,25 @@ class QADaoServices(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                 permitID
             )?.let { mapDtoSTA3View(it, permitID) },
-            findSTA10WithPermitRefNumberANdPermitID(
-                permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID
-            )?.let { listSTA10ViewDetails(permitID, it) }
+            findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID)?.let { listSTA10ViewDetails(permitID, it) },
+            loadSectionDetails(departmentEntity, map)
         )
+    }
+
+    fun loadSectionDetails(
+        departmentEntity: DepartmentsEntity,
+        map: ServiceMapsEntity
+    ): List<SectionsEntityDto> {
+        val divisions = commonDaoServices.findDivisionByDepartmentId(departmentEntity, map.activeStatus)
+        val sections = mutableListOf<SectionsEntityDto>()
+        divisions.forEach { div ->
+            val sectionFound = commonDaoServices.findAllSectionsListWithDivision(div, map.activeStatus)
+            sectionFound.forEach { it ->
+                val section = SectionsEntityDto(it.id, it.section, it.divisionId?.id, it.descriptions, it.status == 1) }
+                sections.add(section)
+            }
+        }
+        return sections
     }
 
     fun listWorkPlan(workPlan: List<QaWorkplanEntity>, map: ServiceMapsEntity): List<WorkPlanDto> {

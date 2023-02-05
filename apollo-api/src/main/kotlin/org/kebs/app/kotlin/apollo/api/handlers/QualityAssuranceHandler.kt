@@ -718,7 +718,7 @@ class QualityAssuranceHandler(
 
     }
 
-    private fun loadSectionDetails(
+     fun loadSectionDetails(
         departmentEntity: DepartmentsEntity,
         map: ServiceMapsEntity,
         req: ServerRequest

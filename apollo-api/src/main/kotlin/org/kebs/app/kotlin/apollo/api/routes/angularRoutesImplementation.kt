@@ -635,6 +635,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
                     GET("/permit-detail", internalUserhandler::getPermitDetails)
+//                    GET("/section-list", internalUserhandler::getPermitDetails)
                 }
                 "/apply".nest {
                     "/permit".nest {

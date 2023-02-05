@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
+import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
+import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import java.io.File
 import java.math.BigDecimal
@@ -753,7 +755,8 @@ data class AllPermitDetailsDto(
     var encryptedPermitId: String? = null,
     var sta1DTO: STA1Dto? = null,
     var sta3DTO: STA3Dto? = null,
-    var sta10DTO: AllSTA10DetailsDto? = null
+    var sta10DTO: AllSTA10DetailsDto? = null,
+    var sectionList: List<SectionsEntityDto>? = null,
 )
 
 

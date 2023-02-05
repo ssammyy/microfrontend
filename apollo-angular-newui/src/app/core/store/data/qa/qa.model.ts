@@ -1,3 +1,4 @@
+import { SectionsEntityDto } from '../master/master.model';
 import {UserEntityDto} from '../users';
 
 export class Qa {
@@ -290,6 +291,7 @@ export class PermitEntityDetails {
     fmarkGeneratedID: number;
     oldPermitStatus: number;
     varField7: string;
+    assignOfficerStatus: boolean;
 }
 
 
@@ -383,8 +385,9 @@ export class AllPermitDetailsDto {
     schemeOfSuperVision: FilesListDto;
     batchID: bigint;
     sta10DTO: AllSTA10DetailsDto;
-
     sta1DTO: STA1;
+    sta3DTO: STA3;
+    sectionList: SectionsEntityDto[];
 }
 
 
