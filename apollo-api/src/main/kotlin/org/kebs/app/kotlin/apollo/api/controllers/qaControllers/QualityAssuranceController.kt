@@ -284,8 +284,7 @@ class QualityAssuranceController(
 
         //Find Permit with permit ID
         var permitDetails = qaDaoServices.findPermitBYID(permitId)
-        val permitType =
-            qaDaoServices.findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+        val permitType = qaDaoServices.findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
         var returnDetails: Pair<PermitApplicationsEntity, String> =
             assignDefalutDetailsDetails(map, permitDetails, loggedInUser)
@@ -295,9 +294,7 @@ class QualityAssuranceController(
 
         if (permit.sectionId != null) {
             with(permit) {
-                divisionId = commonDaoServices.findSectionWIthId(
-                    sectionId ?: throw Exception("SECTION ID IS MISSING")
-                ).divisionId?.id
+                divisionId = commonDaoServices.findSectionWIthId(sectionId ?: throw Exception("SECTION ID IS MISSING")).divisionId?.id
             }
         } else if (permit.qaoId != null && permit.assignOfficerStatus == map.activeStatus) {
             with(permit) {
@@ -308,12 +305,7 @@ class QualityAssuranceController(
         }
 
         //updating of Details in DB
-        val updateResults = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                permitDetails
-            ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        val updateResults = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser)
 
         result = updateResults.first
 
@@ -1070,9 +1062,7 @@ class QualityAssuranceController(
         val userDetails =
             commonDaoServices.findUserByID(permitDetailsDB.qaoId ?: throw ExpectedDataNotFound("MISSING QAO ID"))
         permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
-        permitDetailsDB.factoryVisit = commonDaoServices.getCalculatedDate(
-            permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE")
-        )
+        permitDetailsDB.factoryVisit = commonDaoServices.getCalculatedDate(permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE"))
         when (permitDetailsDB.permitType) {
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
@@ -1636,7 +1626,7 @@ class QualityAssuranceController(
             qaInspectionReportRecommendation
         ) as QaInspectionReportRecommendationEntity
 
-        result = qaDaoServices.inspectionRecommendationUpdate(qaInspectionReportRecommendation, map, loggedInUser)
+        result = qaDaoServices.inspectionRecommendationUpdate(qaInspectionReportRecommendation, map, loggedInUser).first
         val userAssigned: UsersEntity
         when {
             //Todo: Create jasper inspection report
@@ -2191,7 +2181,7 @@ class QualityAssuranceController(
             applicationMapProperties.mapPermitRenewMessage -> {
                 val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
                     permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
-                )
+                )?: throw Exception("Missing STA3 Details")
                 QaSta3Entity.id = sta3.id
                 qaDaoServices.sta3Update(
                     commonDaoServices.updateDetails(sta3, QaSta3Entity) as QaSta3Entity,
@@ -2250,7 +2240,7 @@ class QualityAssuranceController(
             applicationMapProperties.mapPermitRenewMessage -> {
                 val sta10 = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
                     permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
-                )
+                )?: throw Exception("Missing STA 10 Details")
                 with(QaSta10Entity){
                     id = sta10.id
                     closedProduction=map.inactiveStatus
@@ -2693,10 +2683,7 @@ class QualityAssuranceController(
         var versionNumber1 = versionNumber
         var permitDetails1 = permitDetails
         var uploadResults1 = uploadResults
-        versionNumber1 = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSscStatus(
-            permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-            map.activeStatus
-        ).size.toLong().plus(versionNumber1)
+        versionNumber1 = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSscStatus(permitDetails1.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), map.activeStatus).size.toLong().plus(versionNumber1)
 
         uploadResults1 = qaDaoServices.saveQaFileUploads(
             docFile,

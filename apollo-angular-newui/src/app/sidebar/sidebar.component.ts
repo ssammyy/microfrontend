@@ -185,7 +185,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standardization Mark',
         type: 'link',
         icontype: 'class',
-        privilege: [],
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
 
 
     },
@@ -195,17 +195,17 @@ export const ROUTES: RouteInfo[] = [
         title: 'Fortification Mark',
         type: 'link',
         icontype: 'recommended',
-        privilege: [],
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
 
 
     },
-    ,
+
     {
         path: '/dmark-admin',
         title: 'Diamond Mark',
         type: 'link',
         icontype: 'verified',
-        privilege: [],
+        privilege: ['QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ', 'QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ'],
 
     },
 
@@ -286,16 +286,16 @@ export const ROUTES: RouteInfo[] = [
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
             },
             {
-                path: 'foreign/documents/rfc/cor',
+                path: 'foreign/rfc/cor',
                 title: 'RFC for COR',
-                ab: 'CN',
+                ab: 'CR',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
             },
             {
-                path: 'foreign/documents/rfc/other',
+                path: 'foreign/rfc/coc',
                 title: 'RFC for COC/COI',
-                ab: 'CN',
+                ab: 'CC',
                 privilege: ['DI_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_DIRECTOR_READ'],
                 // privilege: ['PVOC_INSPECTION_OFFICER_READ', 'PVOC_OFFICER_CHARGE_READ', 'PVOC_ADMIN'],
             },

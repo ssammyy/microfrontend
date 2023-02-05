@@ -52,22 +52,26 @@
                                             <i class="material-icons">message</i> Comments
                                         </a>
                                     </li>
-                                    <li *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true" class="nav-item">
+                                    <li *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true"
+                                        class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link19" role="tablist">
                                             <i class="material-icons">preview</i> Scheme of Supervision
                                         </a>
                                     </li>
-                                    <li *ngIf="allPermitDetails?.labResultsList?.ssfResultsList?.length > 0" class="nav-item">
+                                    <li *ngIf="allPermitDetails?.labResultsList?.ssfResultsList?.length > 0"
+                                        class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link17" role="tablist">
                                             <i class="material-icons">summarize</i> Lab Results
                                         </a>
                                     </li>
-                                    <li *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true" class="nav-item">
+                                    <li *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true"
+                                        class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link18" role="tablist">
                                             <i class="material-icons">money</i> Payment Details
                                         </a>
                                     </li>
-                                    <li *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" class="nav-item">
+                                    <li *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true"
+                                        class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
                                         </a>
@@ -216,8 +220,9 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <div class = "col-md-5">
-                                                <div class="alert alert-info alert-with-icon" data-notify="container" style="background-color: #1b75bc1f; ">
+                                            <div class="col-md-5">
+                                                <div class="alert alert-info alert-with-icon" data-notify="container"
+                                                     style="background-color: #1b75bc1f; ">
                                                     <i class="material-icons" data-notify="icon">push_pin</i>
                                                     <table class="table">
                                                         <tbody>
@@ -382,41 +387,62 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                 <div class="accordion" id="faq">
                                                     <div class="card">
                                                         <div class="card-header" id="faqhead1">
-                                                            <a href="#" class="btn btn-header-link" data-toggle="collapse" data-target="#faq1"
-                                                               aria-expanded="true" aria-controls="faq1" style="width: -webkit-fill-available; background-color: #3a75bc;">STA 1 Form</a>
+                                                            <a href="#" class="btn btn-header-link"
+                                                               data-toggle="collapse" data-target="#faq1"
+                                                               aria-expanded="true" aria-controls="faq1"
+                                                               style="width: -webkit-fill-available; background-color: #3a75bc;">STA
+                                                                1 Form</a>
                                                         </div>
 
-                                                        <div id="faq1" class="collapse show" aria-labelledby="faqhead1" data-parent="#faq">
+                                                        <div id="faq1" class="collapse show" aria-labelledby="faqhead1"
+                                                             data-parent="#faq">
                                                             <div class="card-body">
                                                                 <form [formGroup]="sta1Form" class="form"
-                                                                      enctype="multipart/form-data" >
+                                                                      enctype="multipart/form-data">
                                                                     <div class="row">
                                                                         <div class="form-group col-6">
-                                                                            <label for="commodityDescription">Commodity Description</label>
+                                                                            <label for="commodityDescription">Commodity
+                                                                                Description</label>
                                                                             <input disabled
                                                                                    [class.is-invalid]="formSta1Form.commodityDescription.invalid && formSta1Form.commodityDescription.touched"
-                                                                                   type="text" class="form-control" id="commodityDescription" formControlName="commodityDescription"
-                                                                                   name="commodityDescription" placeholder="Commodity Description" required="">
+                                                                                   type="text" class="form-control"
+                                                                                   id="commodityDescription"
+                                                                                   formControlName="commodityDescription"
+                                                                                   name="commodityDescription"
+                                                                                   placeholder="Commodity Description"
+                                                                                   required="">
                                                                         </div>
                                                                         <div class="form-group col-6">
                                                                             <label for="tradeMark">Trade Mark</label>
-                                                                            <input type="text" disabled [class.is-invalid]="formSta1Form.tradeMark.invalid && formSta1Form.tradeMark.touched"
-                                                                                   class="form-control" id="tradeMark" formControlName="tradeMark" name="tradeMark"
+                                                                            <input type="text" disabled
+                                                                                   [class.is-invalid]="formSta1Form.tradeMark.invalid && formSta1Form.tradeMark.touched"
+                                                                                   class="form-control" id="tradeMark"
+                                                                                   formControlName="tradeMark"
+                                                                                   name="tradeMark"
                                                                                    placeholder="Trade Mark" required="">
                                                                         </div>
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="form-group col-6">
-                                                                            <label for="applicantName">Applicant Name</label>
+                                                                            <label for="applicantName">Applicant
+                                                                                Name</label>
                                                                             <input type="text" disabled
                                                                                    [class.is-invalid]="formSta1Form.applicantName.invalid && formSta1Form.applicantName.touched"
-                                                                                   class="form-control" id="applicantName" formControlName="applicantName" name="applicantName"
-                                                                                   placeholder="Applicant Name" required="">
+                                                                                   class="form-control"
+                                                                                   id="applicantName"
+                                                                                   formControlName="applicantName"
+                                                                                   name="applicantName"
+                                                                                   placeholder="Applicant Name"
+                                                                                   required="">
                                                                         </div>
 
                                                                         <div class="form-group col-6">
-                                                                            <label for="inputState">Select Section</label>
-                                                                            <select id="inputState" disabled class="form-control" [(ngModel)]="SelectedSectionId" formControlName="sectionId"
+                                                                            <label for="inputState">Select
+                                                                                Section</label>
+                                                                            <select id="inputState" disabled
+                                                                                    class="form-control"
+                                                                                    [(ngModel)]="SelectedSectionId"
+                                                                                    formControlName="sectionId"
                                                                                     name="sectionId"
                                                                                     [class.is-invalid]="formSta1Form.sectionId.invalid && formSta1Form.sectionId.touched">
                                                                                 <option selected>Select Section</option>
@@ -429,19 +455,28 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                     <div class="row">
                                                                         <div class="form-group col-6">
-                                                                            <div *ngIf="SelectedSectionId==5" class="row">
+                                                                            <div *ngIf="SelectedSectionId==5"
+                                                                                 class="row">
                                                                                 <div class="form-group col-12">
-                                                                                    <label for="createFmark">Are you applying for Fortification Mark as well<span
-                                                                                            style="font-size: xx-small; color: red;"></span></label>
-                                                                                    <p>The following products require Fortification Mark:</p>
+                                                                                    <label for="createFmark">Are you
+                                                                                        applying for Fortification Mark
+                                                                                        as well<span
+                                                                                                style="font-size: xx-small; color: red;"></span></label>
+                                                                                    <p>The following products require
+                                                                                        Fortification Mark:</p>
                                                                                     <ul>
                                                                                         <li>Edible fats and oil</li>
                                                                                         <li>Sifted Maize</li>
                                                                                         <li>Wheat flour</li>
                                                                                         <li>Sugar & Salt (Optional)</li>
                                                                                     </ul>
-                                                                                    <select id="createFmark" disabled class="form-control" formControlName="createFmark" name="createFmark">
-                                                                                        <option selected>Are you applying for FMark</option>
+                                                                                    <select id="createFmark" disabled
+                                                                                            class="form-control"
+                                                                                            formControlName="createFmark"
+                                                                                            name="createFmark">
+                                                                                        <option selected>Are you
+                                                                                            applying for FMark
+                                                                                        </option>
                                                                                         <option value="0">No</option>
                                                                                         <option value="1">Yes</option>
                                                                                     </select>
@@ -458,8 +493,12 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                         </div>
 
                                                                         <div class="form-group col-6">
-                                                                            <label for="attachedPlant">Attached Branch</label>
-                                                                            <select id="attachedPlant" disabled class="form-control" formControlName="attachedPlant" name="attachedPlant"
+                                                                            <label for="attachedPlant">Attached
+                                                                                Branch</label>
+                                                                            <select id="attachedPlant" disabled
+                                                                                    class="form-control"
+                                                                                    formControlName="attachedPlant"
+                                                                                    name="attachedPlant"
                                                                                     [class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
                                                                                 <option selected>Select Branch</option>
                                                                                 <option *ngFor="let plant of plants"
@@ -475,58 +514,85 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     </div>
                                                     <div class="card">
                                                         <div class="card-header" id="faqhead2">
-                                                            <a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq2"
-                                                               aria-expanded="true" aria-controls="faq2" style="width: -webkit-fill-available; background-color: #3a75bc;">STA10 Form : 1.Firm
+                                                            <a href="#" class="btn btn-header-link collapsed"
+                                                               data-toggle="collapse" data-target="#faq2"
+                                                               aria-expanded="true" aria-controls="faq2"
+                                                               style="width: -webkit-fill-available; background-color: #3a75bc;">STA10
+                                                                Form : 1.Firm
                                                                 details</a>
                                                         </div>
 
-                                                        <div id="faq2" class="collapse" aria-labelledby="faqhead2" data-parent="#faq">
+                                                        <div id="faq2" class="collapse" aria-labelledby="faqhead2"
+                                                             data-parent="#faq">
                                                             <div class="card-body">
-                                                                <form  [formGroup]="sta10Form" action="" class="form"
-                                                                       enctype="multipart/form-data" method="post">
+                                                                <form [formGroup]="sta10Form" action="" class="form"
+                                                                      enctype="multipart/form-data" method="post">
                                                                     <div class="row">
                                                                         <div class="form-group col-6">
-                                                                            <label for="totalNumberMale">Total Number of Male</label>
+                                                                            <label for="totalNumberMale">Total Number of
+                                                                                Male</label>
                                                                             <input type="number" disabled
                                                                                    [class.is-invalid]="formSta10Form.totalNumberMale.invalid && formSta10Form.totalNumberMale.touched"
-                                                                                   class="form-control" id="totalNumberMale" formControlName="totalNumberMale"
-                                                                                   name="totalNumberMale" class="form-control" placeholder="Male">
+                                                                                   class="form-control"
+                                                                                   id="totalNumberMale"
+                                                                                   formControlName="totalNumberMale"
+                                                                                   name="totalNumberMale"
+                                                                                   class="form-control"
+                                                                                   placeholder="Male">
                                                                         </div>
                                                                         <div class="form-group col-6">
-                                                                            <label for="totalNumberFemale">Total Number of Female</label>
+                                                                            <label for="totalNumberFemale">Total Number
+                                                                                of Female</label>
                                                                             <input type="number" disabled
                                                                                    [class.is-invalid]="formSta10Form.totalNumberFemale.invalid && formSta10Form.totalNumberFemale.touched"
-                                                                                   class="form-control" id="totalNumberFemale" formControlName="totalNumberFemale"
-                                                                                   name="totalNumberFemale" class="form-control" placeholder="Female">
+                                                                                   class="form-control"
+                                                                                   id="totalNumberFemale"
+                                                                                   formControlName="totalNumberFemale"
+                                                                                   name="totalNumberFemale"
+                                                                                   class="form-control"
+                                                                                   placeholder="Female">
                                                                         </div>
 
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="form-group col-6">
-                                                                            <label for="totalNumberPermanentEmployees">No. of Permanent Employees</label>
+                                                                            <label for="totalNumberPermanentEmployees">No.
+                                                                                of Permanent Employees</label>
                                                                             <input type="number" disabled
                                                                                    [class.is-invalid]="formSta10Form.totalNumberPermanentEmployees.invalid && formSta10Form.totalNumberPermanentEmployees.touched"
-                                                                                   class="form-control" id="totalNumberPermanentEmployees"
+                                                                                   class="form-control"
+                                                                                   id="totalNumberPermanentEmployees"
                                                                                    formControlName="totalNumberPermanentEmployees"
-                                                                                   name="totalNumberPermanentEmployees" class="form-control" placeholder="No. of Permanent Employees">
+                                                                                   name="totalNumberPermanentEmployees"
+                                                                                   class="form-control"
+                                                                                   placeholder="No. of Permanent Employees">
                                                                         </div>
                                                                         <div class="form-group col-6">
-                                                                            <label for="totalNumberCasualEmployees">No of Casual Employee</label>
+                                                                            <label for="totalNumberCasualEmployees">No
+                                                                                of Casual Employee</label>
                                                                             <input type="number" disabled
                                                                                    [class.is-invalid]="formSta10Form.totalNumberCasualEmployees.invalid && formSta10Form.totalNumberCasualEmployees.touched"
-                                                                                   class="form-control" id="totalNumberCasualEmployees" formControlName="totalNumberCasualEmployees"
-                                                                                   name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual Employee">
+                                                                                   class="form-control"
+                                                                                   id="totalNumberCasualEmployees"
+                                                                                   formControlName="totalNumberCasualEmployees"
+                                                                                   name="totalNumberCasualEmployees"
+                                                                                   class="form-control"
+                                                                                   placeholder="No of Casual Employee">
                                                                         </div>
 
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="form-group col-6">
-                                                                            <label for="averageVolumeProductionMonth">Average Volume Production Month</label>
+                                                                            <label for="averageVolumeProductionMonth">Average
+                                                                                Volume Production Month</label>
                                                                             <input disabled
                                                                                    [class.is-invalid]="formSta10Form.averageVolumeProductionMonth.invalid && formSta10Form.averageVolumeProductionMonth.touched"
-                                                                                   type="text" class="form-control" id="averageVolumeProductionMonth"
+                                                                                   type="text" class="form-control"
+                                                                                   id="averageVolumeProductionMonth"
                                                                                    formControlName="averageVolumeProductionMonth"
-                                                                                   name="averageVolumeProductionMonth" placeholder="Average Volume Production Month" required="">
+                                                                                   name="averageVolumeProductionMonth"
+                                                                                   placeholder="Average Volume Production Month"
+                                                                                   required="">
                                                                         </div>
                                                                     </div>
                                                                     <!--<button class="btn btn-sm btn-primary float-right" (click)="onClickSaveSTA10(sta10Form.valid)">Save</button>-->
@@ -536,15 +602,18 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     </div>
                                                     <div class="card">
                                                         <div class="card-header" id="faqhead3">
-                                                            <a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq3"
-                                                               aria-expanded="true" aria-controls="faq3" style="width: -webkit-fill-available; background-color: #3a75bc;">QUALITY
+                                                            <a href="#" class="btn btn-header-link collapsed"
+                                                               data-toggle="collapse" data-target="#faq3"
+                                                               aria-expanded="true" aria-controls="faq3"
+                                                               style="width: -webkit-fill-available; background-color: #3a75bc;">QUALITY
                                                                 CONTROL/INSPECTION STAFF</a>
                                                         </div>
 
-                                                        <div id="faq3" class="collapse" aria-labelledby="faqhead3" data-parent="#faq">
+                                                        <div id="faq3" class="collapse" aria-labelledby="faqhead3"
+                                                             data-parent="#faq">
                                                             <div class="card-body">
-                                                                <form  [formGroup]="sta10FormA" action="" class="form"
-                                                                       enctype="multipart/form-data" method="post">
+                                                                <form [formGroup]="sta10FormA" action="" class="form"
+                                                                      enctype="multipart/form-data" method="post">
                                                                     <!--<div class="row">-->
                                                                     <!--<div class="col-4">-->
                                                                     <!--<input type="text"  class="form-control" formControlName="personnelName"-->
@@ -572,7 +641,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     <!--<br><br>-->
                                                                     <!--</div>-->
                                                                     <!--</div>-->
-                                                                    <div class="material-datatables" >
+                                                                    <div class="material-datatables">
                                                                         <div class="table-responsive">
                                                                             <table id="datatables"
                                                                                    class="table table-striped table-bordered table-hover"
@@ -602,15 +671,19 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                     <div class="card">
                                                         <div class="card-header" id="faqhead4">
-                                                            <a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq4"
-                                                               aria-expanded="true" aria-controls="faq4" style="width: -webkit-fill-available; background-color: #3a75bc;">Production: Products
+                                                            <a href="#" class="btn btn-header-link collapsed"
+                                                               data-toggle="collapse" data-target="#faq4"
+                                                               aria-expanded="true" aria-controls="faq4"
+                                                               style="width: -webkit-fill-available; background-color: #3a75bc;">Production:
+                                                                Products
                                                                 being manufactured/ Brands</a>
                                                         </div>
 
-                                                        <div id="faq4" class="collapse" aria-labelledby="faqhead4" data-parent="#faq">
+                                                        <div id="faq4" class="collapse" aria-labelledby="faqhead4"
+                                                             data-parent="#faq">
                                                             <div class="card-body">
-                                                                <form  [formGroup]="sta10FormB" action="" class="form"
-                                                                       enctype="multipart/form-data" method="post">
+                                                                <form [formGroup]="sta10FormB" action="" class="form"
+                                                                      enctype="multipart/form-data" method="post">
                                                                     <!--<div class="row">-->
                                                                     <!--<div class="form-group col-6">-->
                                                                     <!--<label for="productName">Product Name</label>-->
@@ -636,7 +709,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     <!--name="available" id="available" class="form-control"  >-->
 
 
-
                                                                     <!--</div>-->
                                                                     <!--</div>-->
                                                                     <!--<div class="row">-->
@@ -657,7 +729,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     <!--</div>-->
                                                                     <!--</div>-->
                                                                     <!--<br><br>-->
-                                                                    <div class="material-datatables" >
+                                                                    <div class="material-datatables">
                                                                         <div class="table-responsive">
                                                                             <table id="production"
                                                                                    class="table table-striped table-bordered table-hover"
@@ -686,15 +758,20 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     </div>
                                                     <div class="card">
                                                         <div class="card-header" id="faqhead5">
-                                                            <a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq5"
-                                                               aria-expanded="true" aria-controls="faq5" style="width: -webkit-fill-available; background-color: #3a75bc;">Raw material : Specify
-                                                                the type of materials and origin (attach their specification where applicable):</a>
+                                                            <a href="#" class="btn btn-header-link collapsed"
+                                                               data-toggle="collapse" data-target="#faq5"
+                                                               aria-expanded="true" aria-controls="faq5"
+                                                               style="width: -webkit-fill-available; background-color: #3a75bc;">Raw
+                                                                material : Specify
+                                                                the type of materials and origin (attach their
+                                                                specification where applicable):</a>
                                                         </div>
 
-                                                        <div id="faq5" class="collapse" aria-labelledby="faqhead5" data-parent="#faq">
+                                                        <div id="faq5" class="collapse" aria-labelledby="faqhead5"
+                                                             data-parent="#faq">
                                                             <div class="card-body">
-                                                                <form  [formGroup]="sta10FormC" action="" class="form"
-                                                                       enctype="multipart/form-data" method="post">
+                                                                <form [formGroup]="sta10FormC" action="" class="form"
+                                                                      enctype="multipart/form-data" method="post">
                                                                     <!--<div class="row">-->
                                                                     <!--<div class="form-group col-6">-->
                                                                     <!--<label for="name">Raw material.</label>-->
@@ -730,15 +807,17 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     <!--</div>-->
                                                                     <!--</div>-->
                                                                     <!--<br><br>-->
-                                                                    <div class="material-datatables" >
+                                                                    <div class="material-datatables">
                                                                         <div class="table-responsive">
-                                                                            <table id="tt" class="table table-striped table-bordered table-hover">
+                                                                            <table id="tt"
+                                                                                   class="table table-striped table-bordered table-hover">
                                                                                 <thead>
                                                                                 <tr>
                                                                                     <th>Raw material</th>
                                                                                     <th>Origin</th>
                                                                                     <th>Specifications</th>
-                                                                                    <th>Quality checks/testing records</th>
+                                                                                    <th>Quality checks/testing records
+                                                                                    </th>
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
@@ -760,14 +839,18 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     </div>
                                                     <div class="card">
                                                         <div class="card-header" id="faqhead6">
-                                                            <a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq6"
-                                                               aria-expanded="true" aria-controls="faq6" style="width: -webkit-fill-available; background-color: #3a75bc;">Machinery and
+                                                            <a href="#" class="btn btn-header-link collapsed"
+                                                               data-toggle="collapse" data-target="#faq6"
+                                                               aria-expanded="true" aria-controls="faq6"
+                                                               style="width: -webkit-fill-available; background-color: #3a75bc;">Machinery
+                                                                and
                                                                 Plant</a>
                                                         </div>
-                                                        <div id="faq6" class="collapse" aria-labelledby="faqhead6" data-parent="#faq">
+                                                        <div id="faq6" class="collapse" aria-labelledby="faqhead6"
+                                                             data-parent="#faq">
                                                             <div class="card-body">
-                                                                <form  [formGroup]="sta10FormD" action="" class="form"
-                                                                       enctype="multipart/form-data" method="post">
+                                                                <form [formGroup]="sta10FormD" action="" class="form"
+                                                                      enctype="multipart/form-data" method="post">
                                                                     <!--<div class="row">-->
                                                                     <!--<div class="form-group col-6">-->
                                                                     <!--<label for="machineName">Machine</label>-->
@@ -1047,13 +1130,14 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     <!--<br><br>-->
                                                                     <!--</div>-->
                                                                     <!--</div>-->
-                                                                    <div class="material-datatables" >
+                                                                    <div class="material-datatables">
                                                                         <div class="table-responsive">
-                                                                            <table id="machinery" class="table table-striped table-bordered table-hover">
+                                                                            <table id="machinery"
+                                                                                   class="table table-striped table-bordered table-hover">
                                                                                 <thead>
                                                                                 <tr>
                                                                                     <th>Machine</th>
-                                                                                    <th>Type/model </th>
+                                                                                    <th>Type/model</th>
                                                                                     <th>Country of Origin</th>
                                                                                 </tr>
                                                                                 </thead>
@@ -1075,14 +1159,17 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     </div>
                                                     <div class="card">
                                                         <div class="card-header" id="faqhead7">
-                                                            <a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq7"
-                                                               aria-expanded="true" aria-controls="faq7" style="width: -webkit-fill-available; background-color: #3a75bc;">Manufacturing
+                                                            <a href="#" class="btn btn-header-link collapsed"
+                                                               data-toggle="collapse" data-target="#faq7"
+                                                               aria-expanded="true" aria-controls="faq7"
+                                                               style="width: -webkit-fill-available; background-color: #3a75bc;">Manufacturing
                                                                 process</a>
                                                         </div>
-                                                        <div id="faq7" class="collapse" aria-labelledby="faqhead7" data-parent="#faq">
+                                                        <div id="faq7" class="collapse" aria-labelledby="faqhead7"
+                                                             data-parent="#faq">
                                                             <div class="card-body">
-                                                                <form  [formGroup]="sta10FormE" action="" class="form"
-                                                                       enctype="multipart/form-data" method="post">
+                                                                <form [formGroup]="sta10FormE" action="" class="form"
+                                                                      enctype="multipart/form-data" method="post">
                                                                     <!--<div class="row">-->
                                                                     <!--<div class="col-6">-->
                                                                     <!--<label for="processFlowOfProduction">Process Flow of Production.</label>-->
@@ -1128,14 +1215,17 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     <!--</div>-->
                                                                     <!--</div>-->
                                                                     <!--<br><br>-->
-                                                                    <div class="material-datatables" >
+                                                                    <div class="material-datatables">
                                                                         <div class="table-responsive">
-                                                                            <table id="manufacturing" class="table table-striped table-bordered table-hover">
+                                                                            <table id="manufacturing"
+                                                                                   class="table table-striped table-bordered table-hover">
                                                                                 <thead>
                                                                                 <tr>
                                                                                     <th>Process Flow of Production</th>
-                                                                                    <th>Operations </th>
-                                                                                    <th>Critical Process parameters Monitored</th>
+                                                                                    <th>Operations</th>
+                                                                                    <th>Critical Process parameters
+                                                                                        Monitored
+                                                                                    </th>
                                                                                     <th>Frequency</th>
                                                                                     <th>Process monitoring records
                                                                                     </th>
@@ -1162,104 +1252,216 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     </div>
                                                     <div class="card">
                                                         <div class="card-header" id="faqhead8">
-                                                            <a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq8"
-                                                               aria-expanded="true" aria-controls="faq8" style="width: -webkit-fill-available; background-color: #3a75bc;">How are non-conforming
-                                                                products handled at the following stages of the manufacturing process:</a>
+                                                            <a href="#" class="btn btn-header-link collapsed"
+                                                               data-toggle="collapse" data-target="#faq8"
+                                                               aria-expanded="true" aria-controls="faq8"
+                                                               style="width: -webkit-fill-available; background-color: #3a75bc;">How
+                                                                are non-conforming
+                                                                products handled at the following stages of the
+                                                                manufacturing process:</a>
                                                         </div>
-                                                        <div id="faq8" class="collapse" aria-labelledby="faqhead8" data-parent="#faq">
+                                                        <div id="faq8" class="collapse" aria-labelledby="faqhead8"
+                                                             data-parent="#faq">
                                                             <div class="card-body">
-                                                                <form  [formGroup]="sta10FormF" action="" class="form"
-                                                                       enctype="multipart/form-data" method="post">
+                                                                <form [formGroup]="sta10FormF" action="" class="form"
+                                                                      enctype="multipart/form-data" method="post">
                                                                     <div class="row">
 
                                                                         <div class="form-group col-12">
-                                                                            <label for="handledManufacturingProcessRawMaterials">i.Raw Materials</label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessRawMaterials.invalid && formSta10FormF.handledManufacturingProcessRawMaterials.touched" type="text"  id="handledManufacturingProcessRawMaterials" formControlName="handledManufacturingProcessRawMaterials" name="handledManufacturingProcessRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
+                                                                            <label for="handledManufacturingProcessRawMaterials">i.Raw
+                                                                                Materials</label>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.handledManufacturingProcessRawMaterials.invalid && formSta10FormF.handledManufacturingProcessRawMaterials.touched"
+                                                                                    type="text"
+                                                                                    id="handledManufacturingProcessRawMaterials"
+                                                                                    formControlName="handledManufacturingProcessRawMaterials"
+                                                                                    name="handledManufacturingProcessRawMaterials"
+                                                                                    class="form-control" rows="3"
+                                                                                    placeholder=""></textarea>
                                                                         </div>
                                                                         <div class="form-group col-12">
-                                                                            <label for="handledManufacturingProcessInprocessProducts">ii.In-process products</label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessInprocessProducts.invalid && formSta10FormF.handledManufacturingProcessInprocessProducts.touched" type="text"  id="handledManufacturingProcessInprocessProducts" formControlName="handledManufacturingProcessInprocessProducts" name="handledManufacturingProcessInprocessProducts" class="form-control" placeholder=""></textarea>
+                                                                            <label for="handledManufacturingProcessInprocessProducts">ii.In-process
+                                                                                products</label>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.handledManufacturingProcessInprocessProducts.invalid && formSta10FormF.handledManufacturingProcessInprocessProducts.touched"
+                                                                                    type="text"
+                                                                                    id="handledManufacturingProcessInprocessProducts"
+                                                                                    formControlName="handledManufacturingProcessInprocessProducts"
+                                                                                    name="handledManufacturingProcessInprocessProducts"
+                                                                                    class="form-control"
+                                                                                    placeholder=""></textarea>
 
                                                                         </div>
                                                                         <div class="form-group col-12">
-                                                                            <label for="handledManufacturingProcessFinalProduct">ii.In-process products</label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessFinalProduct.invalid && formSta10FormF.handledManufacturingProcessFinalProduct.touched" type="text"  id="handledManufacturingProcessFinalProduct" formControlName="handledManufacturingProcessFinalProduct" name="handledManufacturingProcessFinalProduct" class="form-control" placeholder=""></textarea>
+                                                                            <label for="handledManufacturingProcessFinalProduct">ii.In-process
+                                                                                products</label>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.handledManufacturingProcessFinalProduct.invalid && formSta10FormF.handledManufacturingProcessFinalProduct.touched"
+                                                                                    type="text"
+                                                                                    id="handledManufacturingProcessFinalProduct"
+                                                                                    formControlName="handledManufacturingProcessFinalProduct"
+                                                                                    name="handledManufacturingProcessFinalProduct"
+                                                                                    class="form-control"
+                                                                                    placeholder=""></textarea>
 
                                                                         </div>
 
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="form-group col-12">
-                                                                            <label for="strategyInplaceRecallingProducts">What strategy do you have in place for recalling your products from the market that are nonconforming
-                                                                                and have an effect on Health, Safety and Environment?</label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.strategyInplaceRecallingProducts.invalid && formSta10FormF.strategyInplaceRecallingProducts.touched" type="text"  id="strategyInplaceRecallingProducts" formControlName="strategyInplaceRecallingProducts" name="strategyInplaceRecallingProducts" class="form-control" placeholder=""></textarea>
+                                                                            <label for="strategyInplaceRecallingProducts">What
+                                                                                strategy do you have in place for
+                                                                                recalling your products from the market
+                                                                                that are nonconforming
+                                                                                and have an effect on Health, Safety and
+                                                                                Environment?</label>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.strategyInplaceRecallingProducts.invalid && formSta10FormF.strategyInplaceRecallingProducts.touched"
+                                                                                    type="text"
+                                                                                    id="strategyInplaceRecallingProducts"
+                                                                                    formControlName="strategyInplaceRecallingProducts"
+                                                                                    name="strategyInplaceRecallingProducts"
+                                                                                    class="form-control"
+                                                                                    placeholder=""></textarea>
 
                                                                         </div>
                                                                     </div>
-                                                                    <h5>State, where and how you store your raw materials and end products (State facility conditions). </h5>
+                                                                    <h5>State, where and how you store your raw
+                                                                        materials and end products (State facility
+                                                                        conditions). </h5>
                                                                     <div class="row">
 
                                                                         <div class="form-group col-12">
-                                                                            <label for="stateFacilityConditionsRawMaterials">i.Raw Materials</label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsRawMaterials.invalid && formSta10FormF.stateFacilityConditionsRawMaterials.touched" type="text"  id="stateFacilityConditionsRawMaterials" formControlName="stateFacilityConditionsRawMaterials" name="stateFacilityConditionsRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
+                                                                            <label for="stateFacilityConditionsRawMaterials">i.Raw
+                                                                                Materials</label>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.stateFacilityConditionsRawMaterials.invalid && formSta10FormF.stateFacilityConditionsRawMaterials.touched"
+                                                                                    type="text"
+                                                                                    id="stateFacilityConditionsRawMaterials"
+                                                                                    formControlName="stateFacilityConditionsRawMaterials"
+                                                                                    name="stateFacilityConditionsRawMaterials"
+                                                                                    class="form-control" rows="3"
+                                                                                    placeholder=""></textarea>
                                                                         </div>
                                                                         <div class="form-group col-12">
-                                                                            <label for="stateFacilityConditionsEndProduct">ii.End product?</label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsEndProduct.invalid && formSta10FormF.stateFacilityConditionsEndProduct.touched" type="text"  id="stateFacilityConditionsEndProduct" formControlName="stateFacilityConditionsEndProduct" name="stateFacilityConditionsEndProduct" class="form-control" placeholder=" "></textarea>
+                                                                            <label for="stateFacilityConditionsEndProduct">ii.End
+                                                                                product?</label>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.stateFacilityConditionsEndProduct.invalid && formSta10FormF.stateFacilityConditionsEndProduct.touched"
+                                                                                    type="text"
+                                                                                    id="stateFacilityConditionsEndProduct"
+                                                                                    formControlName="stateFacilityConditionsEndProduct"
+                                                                                    name="stateFacilityConditionsEndProduct"
+                                                                                    class="form-control"
+                                                                                    placeholder=" "></textarea>
 
                                                                         </div>
 
                                                                     </div>
-                                                                    <h5>What testing facilities exist on the premises (if any)?
+                                                                    <h5>What testing facilities exist on the premises
+                                                                        (if any)?
                                                                     </h5>
                                                                     <div class="row">
 
                                                                         <div class="form-group col-12">
-                                                                            <label for="testingFacilitiesExistSpecifyEquipment">i. Specify equipment:</label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistSpecifyEquipment.invalid && formSta10FormF.testingFacilitiesExistSpecifyEquipment.touched" type="text"  id="testingFacilitiesExistSpecifyEquipment" formControlName="testingFacilitiesExistSpecifyEquipment" name="testingFacilitiesExistSpecifyEquipment" class="form-control" rows="3" placeholder=""></textarea>
+                                                                            <label for="testingFacilitiesExistSpecifyEquipment">i.
+                                                                                Specify equipment:</label>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.testingFacilitiesExistSpecifyEquipment.invalid && formSta10FormF.testingFacilitiesExistSpecifyEquipment.touched"
+                                                                                    type="text"
+                                                                                    id="testingFacilitiesExistSpecifyEquipment"
+                                                                                    formControlName="testingFacilitiesExistSpecifyEquipment"
+                                                                                    name="testingFacilitiesExistSpecifyEquipment"
+                                                                                    class="form-control" rows="3"
+                                                                                    placeholder=""></textarea>
                                                                         </div>
                                                                         <div class="form-group col-12">
-                                                                            <label for="testingFacilitiesExistStateParametersTested">ii.State parameters tested on site:</label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistStateParametersTested.invalid && formSta10FormF.testingFacilitiesExistStateParametersTested.touched" type="text"  id="testingFacilitiesExistStateParametersTested" formControlName="testingFacilitiesExistStateParametersTested" name="testingFacilitiesExistStateParametersTested" class="form-control" placeholder=" "></textarea>
+                                                                            <label for="testingFacilitiesExistStateParametersTested">ii.State
+                                                                                parameters tested on site:</label>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.testingFacilitiesExistStateParametersTested.invalid && formSta10FormF.testingFacilitiesExistStateParametersTested.touched"
+                                                                                    type="text"
+                                                                                    id="testingFacilitiesExistStateParametersTested"
+                                                                                    formControlName="testingFacilitiesExistStateParametersTested"
+                                                                                    name="testingFacilitiesExistStateParametersTested"
+                                                                                    class="form-control"
+                                                                                    placeholder=" "></textarea>
 
                                                                         </div>
                                                                         <div class="form-group col-12">
-                                                                            <label for="testingFacilitiesSpecifyParametersTested">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested):
+                                                                            <label for="testingFacilitiesSpecifyParametersTested">iii.
+                                                                                Specify any testing arrangement with
+                                                                                other commercial laboratories (Specify
+                                                                                parameters tested):
                                                                             </label>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesSpecifyParametersTested.invalid && formSta10FormF.testingFacilitiesSpecifyParametersTested.touched" type="text"  id="testingFacilitiesSpecifyParametersTested" formControlName="testingFacilitiesSpecifyParametersTested" name="testingFacilitiesSpecifyParametersTested" class="form-control" placeholder=" "></textarea>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.testingFacilitiesSpecifyParametersTested.invalid && formSta10FormF.testingFacilitiesSpecifyParametersTested.touched"
+                                                                                    type="text"
+                                                                                    id="testingFacilitiesSpecifyParametersTested"
+                                                                                    formControlName="testingFacilitiesSpecifyParametersTested"
+                                                                                    name="testingFacilitiesSpecifyParametersTested"
+                                                                                    class="form-control"
+                                                                                    placeholder=" "></textarea>
 
                                                                         </div>
 
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="form-group col-12">
-                                                                            <label for="calibrationEquipmentLastCalibrated">v. Calibration of Equipment</label>
-                                                                            <p>How do you calibrate your measuring equipment stated in 8 (i) above?</p>
-                                                                            <p>(e.g. Weighing scales, Thermometers e.t.c)? Specify when last calibrated.</p>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.calibrationEquipmentLastCalibrated.invalid && formSta10FormF.calibrationEquipmentLastCalibrated.touched" type="text"  id="calibrationEquipmentLastCalibrated" formControlName="calibrationEquipmentLastCalibrated" name="calibrationEquipmentLastCalibrated" class="form-control" rows="3" placeholder=""></textarea>
+                                                                            <label for="calibrationEquipmentLastCalibrated">v.
+                                                                                Calibration of Equipment</label>
+                                                                            <p>How do you calibrate your measuring
+                                                                                equipment stated in 8 (i) above?</p>
+                                                                            <p>(e.g. Weighing scales, Thermometers
+                                                                                e.t.c)? Specify when last
+                                                                                calibrated.</p>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.calibrationEquipmentLastCalibrated.invalid && formSta10FormF.calibrationEquipmentLastCalibrated.touched"
+                                                                                    type="text"
+                                                                                    id="calibrationEquipmentLastCalibrated"
+                                                                                    formControlName="calibrationEquipmentLastCalibrated"
+                                                                                    name="calibrationEquipmentLastCalibrated"
+                                                                                    class="form-control" rows="3"
+                                                                                    placeholder=""></textarea>
                                                                         </div>
 
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="form-group col-12">
-                                                                            <label for="handlingConsumerComplaints">Handling of Complaints</label>
-                                                                            <p>How do you plan to handle (New) or currently handle your consumer’s complaints?</p>
-                                                                            <textarea [class.is-invalid]="formSta10FormF.handlingConsumerComplaints.invalid && formSta10FormF.handlingConsumerComplaints.touched" type="text"  id="handlingConsumerComplaints" formControlName="handlingConsumerComplaints" name="handlingConsumerComplaints" class="form-control" rows="3" placeholder=""></textarea>
+                                                                            <label for="handlingConsumerComplaints">Handling
+                                                                                of Complaints</label>
+                                                                            <p>How do you plan to handle (New) or
+                                                                                currently handle your consumer’s
+                                                                                complaints?</p>
+                                                                            <textarea
+                                                                                    [class.is-invalid]="formSta10FormF.handlingConsumerComplaints.invalid && formSta10FormF.handlingConsumerComplaints.touched"
+                                                                                    type="text"
+                                                                                    id="handlingConsumerComplaints"
+                                                                                    formControlName="handlingConsumerComplaints"
+                                                                                    name="handlingConsumerComplaints"
+                                                                                    class="form-control" rows="3"
+                                                                                    placeholder=""></textarea>
                                                                         </div>
 
                                                                     </div>
                                                                     <div class="row">
                                                                         <div class="form-group col-6">
-                                                                            <label for="companyRepresentative">Company Representative</label>
+                                                                            <label for="companyRepresentative">Company
+                                                                                Representative</label>
                                                                             <input [class.is-invalid]="formSta10FormF.companyRepresentative.invalid && formSta10FormF.companyRepresentative.touched"
-                                                                                   type="text" id="companyRepresentative" formControlName="companyRepresentative"
-                                                                                   name="companyRepresentative" class="form-control" placeholder="">
+                                                                                   type="text"
+                                                                                   id="companyRepresentative"
+                                                                                   formControlName="companyRepresentative"
+                                                                                   name="companyRepresentative"
+                                                                                   class="form-control" placeholder="">
                                                                         </div>
                                                                         <div class="form-group col-6">
                                                                             <label for="applicationDate">Date</label>
                                                                             <input [class.is-invalid]="formSta10FormF.applicationDate.invalid && formSta10FormF.applicationDate.touched"
-                                                                                   type="date" id="applicationDate" formControlName="applicationDate"
-                                                                                   name="applicationDate" class="form-control" placeholder="">
+                                                                                   type="date" id="applicationDate"
+                                                                                   formControlName="applicationDate"
+                                                                                   name="applicationDate"
+                                                                                   class="form-control" placeholder="">
 
                                                                         </div>
                                                                     </div>
@@ -1305,8 +1507,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                             <td>{{row[3]}}</td>
 
                                                             <td class="td-actions text-right">
-                                                                <button mat-raised-button type="button" data-toggle="modal"
-                                                                        (click)="viewPdfFile(row[4], row[0], row[1])" class="btn btn-info {{row[4]}}">
+                                                                <button mat-raised-button type="button"
+                                                                        data-toggle="modal"
+                                                                        (click)="viewPdfFile(row[4], row[0], row[1])"
+                                                                        class="btn btn-info {{row[4]}}">
                                                                     <i class="material-icons">visibility</i>
 
                                                                 </button>
@@ -1339,8 +1543,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                             <!--                            <div *ngIf="row[0]">-->
                                                             <td>{{row[0]}}</td>
                                                             <td class="td-actions text-right">
-                                                                <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
-                                                                        class="btn btn-info {{row[1]}}" (click)="openModalRemarks(row[2])">
+                                                                <button mat-raised-button type="button"
+                                                                        data-toggle="modal" data-target="#myModal2"
+                                                                        class="btn btn-info {{row[1]}}"
+                                                                        (click)="openModalRemarks(row[2])">
                                                                     <i class="material-icons">visibility</i>
 
                                                                 </button>
@@ -1422,8 +1628,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                             <td>{{row[3]}}</td>
 
                                                             <td class="td-actions text-right">
-                                                                <button mat-raised-button type="button" data-toggle="modal"
-                                                                        (click)="viewPdfFile(row[4], row[0], row[1])" class="btn btn-info {{row[4]}}">
+                                                                <button mat-raised-button type="button"
+                                                                        data-toggle="modal"
+                                                                        (click)="viewPdfFile(row[4], row[0], row[1])"
+                                                                        class="btn btn-info {{row[4]}}">
                                                                     <i class="material-icons">visibility</i>
 
                                                                 </button>
@@ -1479,7 +1687,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                 <!--                                <td>{{row[3]}}</td>-->
 
                                                                 <td class="td-actions text-right">
-                                                                    <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                                                    <button mat-raised-button type="button"
+                                                                            data-toggle="modal" data-target="#myModal2"
                                                                             (click)="viewLabRemarks(row[2], row[3], 'viewLabComplianceRemarks')"
                                                                             class="btn btn-info {{row[3]}}">
                                                                         <i class="material-icons">visibility</i>
@@ -1513,7 +1722,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                 <!--                                <td>{{row[3]}}</td>-->
 
                                                                 <td class="td-actions text-right">
-                                                                    <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                                                    <button mat-raised-button type="button"
+                                                                            data-toggle="modal" data-target="#myModal2"
                                                                             (click)="viewLabRemarks(row[1], row[3], 'viewLabResultsRemarks')"
                                                                             class="btn btn-info {{row[3]}}">
                                                                         <i class="material-icons">visibility</i>
@@ -1521,7 +1731,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     </button>
                                                                 </td>
                                                                 <td class="td-actions text-right">
-                                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                                    <button mat-raised-button type="button"
+                                                                            data-toggle="modal"
                                                                             (click)="viewPdfFile(row[4], row[0], 'application/pdf')"
                                                                             class="btn btn-info {{row[4]}}">
                                                                         <i class="material-icons">visibility</i>
@@ -1735,7 +1946,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     </div>
                 </div>
                 <!-- Classic Modal -->
-                <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -1764,7 +1976,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <!--                                            </mat-select>-->
                                                     <!--                                        </mat-form-field>-->
                                                     <!--                                        <input  name="resubmittedDetails" formControlName="resubmittedDetails" id="resubmittedDetails" type="hidden" value="{{resubmitDetail}}">-->
-                                                    <label for="approvedRejectedSchemeRemarks">Feedback For This Permit</label>
+                                                    <label for="approvedRejectedSchemeRemarks">Feedback For This
+                                                        Permit</label>
                                                     <mat-form-field class="example-full-width">
                                             <textarea id="resubmitRemarks" matInput type="text"
                                                       formControlName="resubmitRemarks"
@@ -1784,7 +1997,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                             <div class="form-group">
 
                                                 <div>
-                                                    <label for="approvedRejectedScheme"><b>Approve/Reject SCC</b></label>
+                                                    <label for="approvedRejectedScheme"><b>Approve/Reject
+                                                        SCC</b></label>
                                                     <mat-form-field id="approvedRejectedScheme">
                                                         <mat-select placeholder="Please Select an option"
                                                                     formControlName="approvedRejectedScheme"
@@ -1795,7 +2009,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                         </mat-select>
                                                     </mat-form-field>
-                                                    <label for="approvedRejectedSchemeRemarks">Feedback For This Permit</label>
+                                                    <label for="approvedRejectedSchemeRemarks">Feedback For This
+                                                        Permit</label>
                                                     <mat-form-field class="example-full-width">
                                             <textarea id="approvedRejectedSchemeRemarks" matInput type="text"
                                                       formControlName="approvedRejectedSchemeRemarks"
@@ -1813,18 +2028,22 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                     <form #demoForm="ngForm">
                                         <label for="upLoadDescription">File Description</label>
                                         <mat-form-field class="example-full-width">
-                                            <input [(ngModel)]="upLoadDescription" name="upLoadDescription" id="upLoadDescription"
+                                            <input [(ngModel)]="upLoadDescription" name="upLoadDescription"
+                                                   id="upLoadDescription"
                                                    matInput type="text">
                                         </mat-form-field>
-                                        <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
+                                        <file-upload [(ngModel)]="uploadedFiles" name="files"
+                                                     fileslimit="2"></file-upload>
                                     </form>
                                 </div>
                             </div>
                             <div class="modal-footer">
 
-                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
+                                    Close
                                 </button>
-                                <button *ngIf="(currDiv == 'schemeModal')" mat-raised-button type="button" class="btn btn-success"
+                                <button *ngIf="(currDiv == 'schemeModal')" mat-raised-button type="button"
+                                        class="btn btn-success"
                                         (click)="submitApprovalRejectionSSC();"
                                         [disabled]="!approveRejectSSCForm.valid"
                                         data-dismiss="modal"
@@ -1837,7 +2056,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >RE-SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'uploadModal')" mat-raised-button type="button" class="btn btn-success"
+                                <button *ngIf="(currDiv == 'uploadModal')" mat-raised-button type="button"
+                                        class="btn btn-success"
                                         (click)="uploadDocument();"
                                         data-dismiss="modal"
                                 >UPLOAD
@@ -1849,7 +2069,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                 <!--  End Modal -->
 
                 <!-- Classic Modal -->
-                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">

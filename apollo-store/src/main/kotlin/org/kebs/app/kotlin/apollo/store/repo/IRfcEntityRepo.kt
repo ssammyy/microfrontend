@@ -12,7 +12,8 @@ interface IRfcEntityRepo : HazelcastRepository<RfcEntity, Long> {
     fun findFirstByUcrNumberOrderByVersionDesc(ucrNumber: String): RfcEntity?
     fun findFirstByRfcNumberOrderByVersionDesc(rfcNumber: String): RfcEntity?
     fun findByRfcNumberAndVersion(rfcNumber: String, version: Long): RfcEntity?
-    fun findByRfcDocumentTypeAndReviewStatus(docType: String, status: Int, page: Pageable): Page<RfcEntity>
+    fun findByReviewStatus(status: Int, page: Pageable): Page<RfcEntity>
+    fun findByRfcNumberContainsAndReviewStatus(keyword: String, status: Int, page: Pageable): Page<RfcEntity>
     fun findByPvocTimelineDataId(pvocTimelineDataId: Long): RfcEntity?
 
 }

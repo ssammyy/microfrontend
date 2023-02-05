@@ -337,7 +337,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     }
 
     @Bean
-    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler, msHandler: NewMarketSurveillanceHandler
+    fun migrationRegistrationRoutes(
+        handler: RegistrationHandler, otherHandler: MasterDataHandler, msHandler: NewMarketSurveillanceHandler
     ) = router {
         "/api/v1/migration/".nest {
             "anonymous".nest {
@@ -491,7 +492,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     }
 
     @Bean
-    fun migrationQualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
+    fun migrationQualityAssuranceRoutes(
+        handler: QualityAssuranceHandler,
+        internalUserhandler: QualityAssuranceInternalUserHandler
+    ) = router {
         "/api/v1/migration/qa".nest {
             GET("/sections-list", handler::sectionListMigration)
             GET("/branch-list", handler::branchListMigration)
@@ -627,8 +631,34 @@ class AngularRoutes(private val daoService: DaoFluxService) {
 
             }
 
-            "internal-users".nest{
-                GET("/permits-list", handler::getAllMyTaskList)
+            "internal-users".nest {
+                "/view".nest {
+                    GET("/permits-list", internalUserhandler::getAllMyTaskList)
+                    GET("/permit-detail", internalUserhandler::getPermitDetails)
+                }
+                "/apply".nest {
+                    "/permit".nest {
+                        POST("/section", internalUserhandler::updatePermitDetailsSection)
+                        POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
+                        POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
+                        POST("/assign-assessor", internalUserhandler::updatePermitDetailsAssignAssessor)
+                        POST("/add-standards", internalUserhandler::updatePermitDetailsStandards)
+                        POST("/schedule-inspection", internalUserhandler::updatePermitDetailsScheduleInspection)
+                        POST("/inspection-checklist", internalUserhandler::updatePermitDetailsInspectionCheckList)
+                        POST("/ssf-details", internalUserhandler::updatePermitDetailsSaveSSFDetails)
+                        POST("/lab-save-pdf-selected", internalUserhandler::updatePermitDetailsSaveSelectedLabPDF)
+                        POST("/lab-save-compliance-status", internalUserhandler::updatePermitDetailsLabResultsComplianceStatus)
+                        POST("/ssf-compliance-status", internalUserhandler::updatePermitDetailsSSFCompliance)
+                        POST("/save-recommendation", internalUserhandler::updatePermitDetailsSaveRecommendation)
+                        POST("/approve-reject-inspection-report", internalUserhandler::updatePermitDetailsApproveRejectInspection)
+                        POST("/approve-reject-recommendation", internalUserhandler::updatePermitDetailsApproveRejectRecommendation)
+                        POST("/qam-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitQAM)
+                        POST("/psc-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitPSC)
+                        POST("/pcm-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitPCM)
+
+                    }
+//                    GET("/permit-detail", internalUserhandler::getPermitDetails)
+                }
             }
 
         }
@@ -795,7 +825,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/add".nest {
                         POST("/charge-sheet", handler::addWorkPlanScheduleChargeSheet)
-                        POST("/data-report", handler::addWorkPlanDataReportSheet)
+//                        POST("/data-report", handler::addWorkPlanDataReportSheet)
                         POST("/end-data-report", handler::endAddingWorkPlanDataReportSheet)
 //                        POST("/seizure-declaration", handler::addWorkPlanSeizureDeclaration)
                         POST("/end-seizure-declaration", handler::addWorkPlanEndSeizureDeclaration)

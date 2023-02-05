@@ -61,6 +61,7 @@
     "chartist-plugin-zoom": "0.6.0",
     "ckeditor4-angular": "^3.2.0",
     "core-js": "3.6.5",
+    "crypto-js": "^4.1.1",
     "datatables": "1.10.18",
     "datatables.net": "^1.11.4",
     "datatables.net-bs": "^1.10.20",

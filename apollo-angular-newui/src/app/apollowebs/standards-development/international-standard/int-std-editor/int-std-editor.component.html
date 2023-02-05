@@ -19,186 +19,242 @@
                                 <i class="material-icons">assignment</i>
                             </div>
                             <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
-                                Tasks <span class="badge badge-primary">{{iSJustificationProposals.length}}</span>
+                                Tasks <span class="badge badge-primary">{{isAdoptionProposals.length}}</span>
                             </button></div>
                         </div>
                         <div class="card-body">
                             <div class="toolbar">
-
+                                Location
                             </div>
                             <div class="material-datatables">
                                 <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
                                     <thead>
                                     <tr>
-
-
-
-
                                         <th>#</th>
-                                        <th class="knw">Meeting Date</th>
-                                        <th class="knw">SL Number</th>
-                                        <th class="knw">Edition</th>
-                                        <th class="knw">Requested By</th>
-                                        <th>Acceptance Date</th>
+                                        <th class="knw">Name</th>
+                                        <th class="knw">Title</th>
+                                        <th class="knw">Date of Circulation</th>
+                                        <th class="knw">Closing Date</th>
+                                        <th>Standard Number</th>
+                                        <th class="referenceMaterial">Prepared By</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr  *ngFor="let iSJustificationProposal of iSJustificationProposals let i=index">
+                                    <tr  *ngFor="let isAdoptionProposal of isAdoptionProposals let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{iSJustificationProposal.meetingDate}}</td>
-                                        <td>{{iSJustificationProposal.slNumber}}</td>
-                                        <td>{{iSJustificationProposal.edition}}</td>
-                                        <td>{{iSJustificationProposal.requestedBy}}</td>
-                                        <td>{{iSJustificationProposal.tcAcceptanceDate}}</td>
-                                        <td><a  (click)="onOpenModal(iSJustificationProposal,'draftStandardEditing')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Upload Draft</a></td>
+                                        <td>{{isAdoptionProposal.docName}}</td>
+                                        <td>{{isAdoptionProposal.title}}</td>
+                                        <td>{{isAdoptionProposal.circulationDate}}</td>
+                                        <td>{{isAdoptionProposal.closingDate}}</td>
+                                        <td>{{isAdoptionProposal.standardNumber}}</td>
+                                        <td>{{isAdoptionProposal.tcSecName}}</td>
+                                        <td><a  (click)="onOpenModal(isAdoptionProposal,'decisionOnJustification',isAdoptionProposal.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Upload Draft For Editing</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div class="modal fade" id="draftStandardEditing" tabindex="-1" role="dialog" aria-labelledby="draftStandardEditingLabel" aria-hidden="true">a
+                                <div class="modal fade" id="decisionOnJustification" tabindex="-1" role="dialog" aria-labelledby="decisionOnJustificationLabel" aria-hidden="true">a
                                     <div class="modal-dialog modal-xl" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="draftStandardEditingLabel">Upload Draft</h3>
-                                                <button type="button" #closeModalDraftEditing class="close" data-dismiss="modal" aria-label="Close">
+                                                <h3 class="modal-title" id="decisionOnJustificationLabel">Upload Standard for Editing</h3>
+                                                <button type="button" #closeModalStdEditing class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <hr>
-                                            <section id="draft-tabs">
+                                            <section id="pJustification">
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
                                                             <nav>
-                                                                <div class="nav nav-tabs nav-fill" id="nav-draft-tab" role="tablist">
-                                                                    <a class="nav-item nav-link" id="nav-draft-proposal-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequest?.proposalId) data-toggle="tab" href="#nav-draft-proposal-list-comments" role="tab" aria-controls="nav-hop-proposal-list-comments" aria-selected="false">Stakeholders Comments</a>
-                                                                    <a class="nav-item nav-link" id="nav-draft-justification-list-comments-tab" (click)=toggleDisplayCommentsTab(actionRequest?.proposalId) data-toggle="tab" href="#nav-draft-justification-list-comments" role="tab" aria-controls="nav-hop-justification-list-comments" aria-selected="false">Remarks</a>
-                                                                    <a class="nav-item nav-link active" id="nav-draft-justification-tab" data-toggle="tab" href="#nav-draft-justification" role="tab" aria-controls="nav-draft-justification" aria-selected="false">View Justification</a>
-                                                                    <a class="nav-item nav-link" id="nav-draft-upload-tab" (click)=getProposals(actionRequest?.proposalId) data-toggle="tab" href="#nav-draft-upload" role="tab" aria-controls="nav-draft-upload" aria-selected="false">Standard Draft Editing</a>
+                                                                <div class="nav nav-tabs nav-fill" id="nav-pj-tab" role="tablist">
+                                                                    <a class="nav-item nav-link active" id="nav-jProposal-tab" data-toggle="tab" href="#nav-jProposal" role="tab" aria-controls="nav-jProposal" aria-selected="true">Proposal</a>
+                                                                    <a class="nav-item nav-link" id="nav-jProposal-comments-tab" (click)=displayDraftComments(actionRequests?.draftId) data-toggle="tab" href="#nav-jProposal-comments" role="tab" aria-controls="nav-jProposal-comments" aria-selected="false">Stakeholders Comments</a>
+                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequests?.id) data-toggle="tab" href="#nav-prepare-justification-list-comments" role="tab" aria-controls="nav-prepare-justification-list-comments" aria-selected="false">Remarks</a>
+                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-tab" data-toggle="tab" (click)=getISJustification(actionRequests?.draftId) href="#nav-prepare-justification" role="tab" aria-controls="nav-prepare-justification" aria-selected="false">Justification</a>
+                                                                    <a class="nav-item nav-link" id="nav-upload-std-tab" data-toggle="tab"  href="#nav-upload-std" role="tab" aria-controls="nav-upload-std" aria-selected="false">Upload Draft For Editing</a>
                                                                 </div>
                                                             </nav>
-                                                            <div class="tab-content py-3 px-3 px-sm-0" id="nav-draft-justification-content">
-                                                                <div class="tab-pane fade" id="nav-draft-proposal-list-comments" role="tabpanel" aria-labelledby="nav-draft-proposal-list-comments-tab">
+                                                            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent-pj">
+                                                                <div class="tab-pane fade show active" id="nav-jProposal" role="tabpanel" aria-labelledby="nav-jProposal-tab">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">
-                                                                            <div class="container col-md-12" [hidden]="isShowRemarksTab">
-                                                                                <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
-                                                                                    <nav>
-                                                                                        <div class="nav nav-tabs nav-fill" id="nav-tabs" role="tablist">
-                                                                                            <a *ngFor="let stakeholderProposalComment of stakeholderProposalComments" class="nav-item nav-link " id="nav-comment-tab-{{stakeholderProposalComment.id}}" data-toggle="tab" href="#nav-comment-{{stakeholderProposalComment.id}}" role="tab"  aria-selected="false" >{{stakeholderProposalComment.nameOfRespondent}}</a>
-
+                                                                            <div class="form-group col-12">
+                                                                                <label><b>International Standard Draft</b></label>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center" >
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>International Standard Drafts Version- {{d+1}} </b></h5>
+                                                                                            </div>
                                                                                         </div>
-                                                                                    </nav>
-                                                                                    <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContents">
-                                                                                        <div *ngFor="let stakeholderProposalComment of stakeholderProposalComments" class="tab-pane fade show " id="nav-comment-{{stakeholderProposalComment.id}}" role="tabpanel" >
-                                                                                            <div class="list-group list-group-flush">
-                                                                                                <div class="row col-12">
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                                            <div class="d-flex w-100 justify-content-between">
-                                                                                                                <div>
-                                                                                                                    <div class="d-flex w-100 align-items-center">
-                                                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Title</b></h5>
-                                                                                                                    </div>
-                                                                                                                </div>
+                                                                                        <button mat-raised-button type="button" data-toggle="modal"
+                                                                                                (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="" class="btn btn-info btn-sm ">
+                                                                                            <i class="fa fa-download"></i> Download Standard Draft</button>
 
-                                                                                                            </div>
 
-                                                                                                            <p class="text-sm mb-0">{{stakeholderProposalComment.commentTitle}}.</p>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                                            <div class="d-flex w-100 justify-content-between">
-                                                                                                                <div>
-                                                                                                                    <div class="d-flex w-100 align-items-center">
-                                                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Adopt Proposal as Presented?</b></h5>
-                                                                                                                    </div>
-                                                                                                                </div>
+                                                                                    </div>
 
-                                                                                                            </div>
 
-                                                                                                            <p class="text-sm mb-0">{{stakeholderProposalComment.adopt}}.</p>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                                            <div class="d-flex w-100 justify-content-between">
-                                                                                                                <div>
-                                                                                                                    <div class="d-flex w-100 align-items-center">
-                                                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Reasons to Adopt or not to Adopt?</b></h5>
-                                                                                                                    </div>
-                                                                                                                </div>
-
-                                                                                                            </div>
-
-                                                                                                            <p class="text-sm mb-0">{{stakeholderProposalComment.reasonsForNotAcceptance}}.</p>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                                            <div class="d-flex w-100 justify-content-between">
-                                                                                                                <div>
-                                                                                                                    <div class="d-flex w-100 align-items-center">
-                                                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Recommendations</b></h5>
-                                                                                                                    </div>
-                                                                                                                </div>
-
-                                                                                                            </div>
-
-                                                                                                            <p class="text-sm mb-0">{{stakeholderProposalComment.recommendations}}.</p>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                                            <div class="d-flex w-100 justify-content-between">
-                                                                                                                <div>
-                                                                                                                    <div class="d-flex w-100 align-items-center">
-                                                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Name of Organization</b></h5>
-                                                                                                                    </div>
-                                                                                                                </div>
-
-                                                                                                            </div>
-
-                                                                                                            <p class="text-sm mb-0">{{stakeholderProposalComment.nameOfOrganization}}.</p>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                                            <div class="d-flex w-100 justify-content-between">
-                                                                                                                <div>
-                                                                                                                    <div class="d-flex w-100 align-items-center">
-                                                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Name of Respondent</b></h5>
-                                                                                                                    </div>
-                                                                                                                </div>
-
-                                                                                                            </div>
-
-                                                                                                            <p class="text-sm mb-0">{{stakeholderProposalComment.nameOfRespondent}}.</p>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                                            <div class="d-flex w-100 justify-content-between">
-                                                                                                                <div>
-                                                                                                                    <div class="d-flex w-100 align-items-center">
-                                                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Position of Respondent</b></h5>
-                                                                                                                    </div>
-                                                                                                                </div>
-
-                                                                                                            </div>
-
-                                                                                                            <p class="text-sm mb-0">{{stakeholderProposalComment.positionOfRespondent}}.</p>
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                </div>
+                                                                                </a>
+                                                                            </div>
+                                                                            <div class="list-group list-group-flush">
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Standard Number</b></h5>
                                                                                             </div>
                                                                                         </div>
 
                                                                                     </div>
 
-                                                                                </div>
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.standardNumber}}.</p>
+                                                                                </a>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Document Type</b></h5>
+                                                                                            </div>
+                                                                                        </div>
 
+                                                                                    </div>
+
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.docName}}.</p>
+                                                                                </a>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Title</b></h5>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.title}}.</p>
+                                                                                </a>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Date of Circulation</b></h5>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.circulationDate}}.</p>
+                                                                                </a>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Closing Date</b></h5>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.closingDate}}.</p>
+                                                                                </a>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Name of Respondent</b></h5>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.nameOfRespondent}}.</p>
+                                                                                </a>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Name of Organization</b></h5>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.nameOfOrganization}}.</p>
+                                                                                </a>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Scope</b></h5>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.scope}}.</p>
+                                                                                </a>
+                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                                        <div>
+                                                                                            <div class="d-flex w-100 align-items-center">
+                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Remarks</b></h5>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+
+                                                                                    <p class="text-sm mb-0">{{actionRequests?.remarks}}.</p>
+                                                                                </a>
+
+
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="tab-pane fade" id="nav-jProposal-comments" role="tabpanel" aria-labelledby="nav-jProposal-comments-tab">
+                                                                    <div class="modal-body">
+                                                                        <div class="form-body">
+                                                                            <div class="container col-md-12" [hidden]="isShowRemarksTab">
+                                                                                <p>Numbers</p>
+                                                                                <div class="material-datatables table-responsive col-md-12">
+                                                                                    <table class="table table-striped table-bordered table-hover" datatable
+                                                                                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
+                                                                                        <thead>
+                                                                                        <tr>
+                                                                                            <th>#</th>
+                                                                                            <th class="knw">Time</th>
+                                                                                            <th class="knw">Title</th>
+                                                                                            <th class="knw">Name Of Organization</th>
+                                                                                            <th class="knw">Clause</th>
+                                                                                            <th class="knw">Paragraph</th>
+                                                                                            <th class="knw">Reason</th>
+                                                                                            <th class="knw">Recommendations</th>
+                                                                                            <th class="knw">Name of Respondent</th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr  *ngFor="let comStdCommitteeRemark of comStdCommitteeRemarks let i=index">
+                                                                                            <td>{{i+1}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.commentTime | date: 'yyyy-MM-dd'}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.commentTitle}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.nameOfOrganization}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.comClause}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.comParagraph}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.reason}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.recommendations}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.nameOfRespondent}}</td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -207,18 +263,18 @@
                                                                     </div>
 
                                                                 </div>
-                                                                <div class="tab-pane fade" id="nav-draft-justification-list-comments" role="tabpanel" aria-labelledby="nav-draft-justification-list-comments-tab">
+                                                                <div class="tab-pane fade" id="nav-prepare-justification-list-comments" role="tabpanel" aria-labelledby="nav-prepare-justification-list-comments-tab">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">
                                                                             <div class="container col-md-12" [hidden]="isShowCommentsTab">
                                                                                 <div class="col-12">
-                                                                                    <div class="card" *ngFor="let internationalStandardsComment of internationalStandardsComments">
+                                                                                    <div class="card" *ngFor="let comStdRemark of comStdRemarks">
                                                                                         <div class="card-header">
-                                                                                            <span class="badge badge-info">Comment By</span>{{internationalStandardsComment.remarkBy}} On {{internationalStandardsComment.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
+                                                                                            <span class="badge badge-info">Comment By</span>{{comStdRemark.remarkBy}} On {{comStdRemark.dateOfRemark | date: 'dd/MM/yyyy hh:mm:ss'}}
                                                                                         </div>
                                                                                         <div class="card-body">
                                                                                             <blockquote class="blockquote mb-0">
-                                                                                                <p>Remark: {{internationalStandardsComment.remarks}}.</p>
+                                                                                                <p>Remark: {{comStdRemark.remarks}}.</p>
                                                                                             </blockquote>
                                                                                         </div>
 
@@ -233,205 +289,84 @@
                                                                     </div>
 
                                                                 </div>
-                                                                <div class="tab-pane fade show active " id="nav-draft-justification" role="tabpanel" aria-labelledby="nav-draft-justification-tab">
-                                                                    <div class="modal-body">
-                                                                        <div class="form-body">
-                                                                            <div class="list-group list-group-flush">
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Meeting Date</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.meetingDate}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Number</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.slNumber}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Edition</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.edition}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Requested By</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.requestedBy}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Issues Addressed</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.issuesAddressed}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>TC Acceptance Date</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.tcAcceptanceDate}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Department</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.departmentName}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Positive Votes</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.positiveVotes}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Negative Votes</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.negativeVotes}}.</p>
-                                                                                </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="tab-pane fade" id="nav-draft-upload" role="tabpanel" aria-labelledby="nav-upload-tab">
-                                                                    <div class="container col-md-12" [hidden]="isShowProposalTab">
-                                                                    <form (ngSubmit)="submitDraftForEditing()" [formGroup]="uploadDraftStandardFormGroup" class="form">
+                                                                <div class="tab-pane fade" id="nav-upload-std" role="tabpanel" aria-labelledby="nav-upload-std-tab">
                                                                         <div class="modal-body">
                                                                             <div class="form-body">
-                                                                                <div class="row col-12" *ngFor="let isAdoptionProposal of isAdoptionProposals">
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Document</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" ngModel="{{isAdoptionProposal.docName}}" formControlName="docName" name="docName"
-                                                                                                placeholder="" type="text" disabled>
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Prepared By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" ngModel="{{isAdoptionProposal.tcSecName}}" formControlName="preparedBy" name="preparedBy"
-                                                                                                placeholder="" type="text" disabled>
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" ngModel="{{isAdoptionProposal.standardNumber}}" formControlName="standardNumber" name="standardNumber"
-                                                                                                placeholder="" type="text" disabled>
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                class="form-control one-column-input" ngModel="{{isAdoptionProposal.title}}" formControlName="title" name="title"
-                                                                                                placeholder="" type="text" disabled>
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"   formControlName="normativeReference" name="normativeReference"
-                                                                                                placeholder="Name" type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Symbols Abbreviated Terms</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"   formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms"
-                                                                                                placeholder="Name" type="text">
-                                                                                    </div>
 
-                                                                                    <div class="form-group col-12">
-                                                                                        <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"  formControlName="clause" name="clause"
-                                                                                                placeholder="Name" type="text" >
-                                                                                    </div>
-                                                                                    <div class="form-group col-12">
-                                                                                        <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                  class="form-control one-column-input" ngModel="{{isAdoptionProposal.scope}}" formControlName="scope" name="scope"
-                                                                                                  placeholder="International Standard Scope" type="text" disabled></textarea>
+                                                                                <form (ngSubmit)="submitDraftForEditing()" [formGroup]="uploadDraftStandardFormGroup" class="form">
+                                                                                    <div class="modal-body">
+                                                                                        <div class="form-body">
+                                                                                            <div class="form-group col-12">
+                                                                                                <label><b>International Standard Draft</b></label>
+                                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                                    <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
+                                                                                                        <div>
+                                                                                                            <div class="d-flex w-100 align-items-center" >
+                                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>International Standard Drafts Version- {{d+1}} </b></h5>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <button mat-raised-button type="button" data-toggle="modal"
+                                                                                                                (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
+                                                                                                            <i class="fa fa-download"></i> Download Standard Draft</button>
 
-                                                                                    </div>
-                                                                                    <div class="form-group col-12">
-                                                                                        <label><b>Special</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                                                  class="form-control one-column-input"   formControlName="special" name="special"
-                                                                                                  placeholder="International Standard Special" type="text" ></textarea>
 
-                                                                                    </div>
+                                                                                                    </div>
 
-                                                                                </div>
-                                                                                <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.proposalId}}" >
-                                                                                <input type="hidden" formControlName="justificationNo" name="justificationNo" value="{{actionRequest?.id}}" >
+
+                                                                                                </a>
+                                                                                            </div>
+
+                                                                                            <div class="form-group col-12">
+                                                                                                <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                          class="form-control one-column-input"  formControlName="comStdNumber" name="comStdNumber"
+                                                                                                          placeholder="Standard Number" type="text" >{{actionRequests?.standardNumber}}</textarea>
+
+                                                                                            </div>
+
+                                                                                            <div class="form-group col-12">
+                                                                                                <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                          class="form-control one-column-input"  formControlName="title" name="title"
+                                                                                                          placeholder="Title" type="text" >{{actionRequests?.title}}</textarea>
+
+                                                                                            </div>
+
+                                                                                            <div class="row col-12">
+                                                                                                <div class="form-group col-12">
+                                                                                                    <label><b>Attach Draft</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                    <form #demoForm="ngForm">
+                                                                                                        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".docx" ></file-upload>
+                                                                                                        <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
+                                                                                                    </form>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequests?.draftId}}" >
+                                                                                            <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.id}}" >
+                                                                                            <input type="hidden" formControlName="id" name="id" value="{{actionRequests?.id}}" >
+
+                                                                                            <input type="hidden" formControlName="departmentId" value="{{actionRequests?.departmentId}}" name="departmentId" >
+                                                                                            <input type="hidden" formControlName="subject" value="{{actionRequests?.subject}}" name="subject" >
+                                                                                            <input type="hidden" formControlName="description" value="{{actionRequests?.description}}" name="description" >
+                                                                                            <input type="hidden" formControlName="contactOneFullName" value="{{actionRequests?.contactOneFullName}}" name="contactOneFullName" >
+                                                                                            <input type="hidden" formControlName="contactOneTelephone" value="{{actionRequests?.contactOneTelephone}}" name="contactOneTelephone" >
+                                                                                            <input type="hidden" formControlName="contactOneEmail" value="{{actionRequests?.contactOneEmail}}" name="contactOneEmail" >
+
+
+
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                                                        <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                                                                                    </div>
+                                                                                </form>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
-                                                                        </div>
-                                                                    </form>
-                                                                    </div>
+
                                                                 </div>
+
                                                             </div>
 
                                                         </div>

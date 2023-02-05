@@ -19,6 +19,10 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var referenceNumber: String? = null
 
+    @Column(name = "DOC_LIST")
+    @Basic
+    var docList: String? = null
+
     @Column(name = "PHYSICAL_LOCATION")
     @Basic
     var physicalLocation: String? = null

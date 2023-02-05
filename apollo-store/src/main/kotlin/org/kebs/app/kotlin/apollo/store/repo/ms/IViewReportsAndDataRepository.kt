@@ -160,7 +160,7 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
 interface IWorkPlanMonitoringSameTaskDateEntityRepository : HazelcastRepository<WorkPlanMonitoringSameTaskDateEntity, Long> {
     override fun findAll(pageable: Pageable): Page<WorkPlanMonitoringSameTaskDateEntity>
 
-    fun findAllByWorkplanYearIdAndTimeActivityDateAndCountyIdAndRegionIdAndTownsId(workplanYearId: Long, timeActivityDate:java.sql.Date,countyId:Long,regionId: Long,townsId:Long ): List<MsSampleCollectionView>
+    fun findAllByWorkplanYearIdAndTimeActivityDateAndCountyIdAndRegionIdAndTownsId(workplanYearId: Long, timeActivityDate:java.sql.Date,countyId:Long,regionId: Long,townsId:Long ): List<WorkPlanMonitoringSameTaskDateEntity>
 }
 
 @Repository

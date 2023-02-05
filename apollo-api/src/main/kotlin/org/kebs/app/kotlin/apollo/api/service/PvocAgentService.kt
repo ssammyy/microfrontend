@@ -413,6 +413,9 @@ class PvocAgentService(
                 response.message = "RISK for HS Code: " + form.hsCode + " already exists"
                 response
             }
+        } catch (ex: ExpectedDataNotFound) {
+            response.responseCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
+            response.message = ex.localizedMessage
         } catch (ex: Exception) {
             response.responseCode = ResponseCodes.FAILED_CODE
             response.message = "Failed to add Risk HS code" + form.hsCode

@@ -953,7 +953,6 @@ class ComStandardController (val comStandardService: ComStandardService,
             id=iSDraftDecisions.id
             draftId=iSDraftDecisions.draftId
 
-
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=iSDraftDecisions.requestId

@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
+import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
@@ -8,6 +9,9 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
+import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
+import org.kebs.app.kotlin.apollo.common.dto.ms.DataReportDto
+import org.kebs.app.kotlin.apollo.common.dto.ms.DataReportParamsDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.WorkPlanInspectionDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -60,6 +64,10 @@ class QualityAssuranceJSONControllers(
     val fMarkImageFile = fMarkImageResource.file.toString()
 
 
+
+
+    /*:::::::::::::::::::::::::::::::::::::::::::::START INTERNAL USER FUNCTIONALITY ANGULAR:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+
     @PostMapping("/upload/inspection-invoice")
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -74,17 +82,10 @@ class QualityAssuranceJSONControllers(
         val upload = QaUploadsEntity()
         with(upload) {
             versionNumber = 1
-            sta3Status = 0
             ordinaryStatus = 0
         }
 
-        val fileDoc = qaDaoServices.uploadQaFile(
-            upload,
-            docFile,
-            "INSPECTION_INVOICE_PAID",
-            "NOT_PERMIT_DETAILS",
-            loggedInUser
-        )
+        val fileDoc = qaDaoServices.uploadQaFile(upload, docFile, "INSPECTION_INVOICE_PAID", "NOT_PERMIT_DETAILS", loggedInUser)
 
         companyProfileRepo.findByIdOrNull(branchDetails.companyProfileId)
             ?.let {manufacture->
@@ -100,6 +101,66 @@ class QualityAssuranceJSONControllers(
 //                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")
             }?: throw NullValueNotAllowedException("No Company Record not found")
     }
+
+    @PostMapping("/internal-users/apply/permit/upload-scheme-supervision")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadSchemeOfSupervisionDataReport(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("data") data: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): ApiResponseModel {
+
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            var permit = qaDaoServices.findPermitBYID(permitID)
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            val versionNumber: Long = 1
+            val fileDocList = mutableListOf<Long>()
+            docFile?.forEach { fileDoc ->
+                val uploads = QaUploadsEntity()
+                with(uploads){
+                    ordinaryStatus = 0
+                    sscStatus = 1
+                }
+                val fileDocSaved =   qaDaoServices.saveQaFileUploads(fileDoc, "SCHEME_OF_SUPERVISION", loggedInUser, map, uploads, permit.permitRefNumber?: throw Exception("MISSING PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), versionNumber, 0)
+                fileDocSaved.second.id?.let { fileDocList.add(it) }
+            }
+
+            with(permit) {
+                generateSchemeStatus = 1
+                approvedRejectedScheme = 1
+                sscId = fileDocList[0]
+                permitStatus = applicationMapProperties.mapQaStatusPSSF
+                userTaskId = applicationMapProperties.mapUserTaskNameQAO
+            }
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    /*:::::::::::::::::::::::::::::::::::::::::::::END INTERNAL USER FUNCTIONALITY ANGULAR:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+
+
 
     @GetMapping("/view/inspection-invoice")
     fun viewPDFFileLabResultsDocument(

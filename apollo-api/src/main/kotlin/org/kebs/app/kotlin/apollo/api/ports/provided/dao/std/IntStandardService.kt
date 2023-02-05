@@ -46,6 +46,7 @@ class IntStandardService(
     private val departmentRepository: DepartmentRepository,
     private val departmentListRepository: DepartmentListRepository,
     private val isJustificationUploadsRepository: ISJustificationUploadsRepository,
+    private val isAdoptionJustificationRepository: ISAdoptionJustificationRepository,
     private val isStandardUploadsRepository: ISStandardUploadsRepository,
     private val sdisGazetteNoticeUploadsRepository: SDISGazetteNoticeUploadsRepository,
     private val notifications: Notifications,
@@ -132,13 +133,15 @@ class IntStandardService(
 
         val draftId=comStdDraftRepository.save(cs)
 
+        val draftNumber=draftId.id
+
         //iSAdoptionProposal.stakeholdersList=iSAdoptionProposal.stakeholdersList
         iSAdoptionProposal.addStakeholdersList=iSAdoptionProposal.addStakeholdersList
 
         //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-        val targetUrl = "https://kimsint.kebs.org/isPropComments/$draftId";
+        val targetUrl = "https://kimsint.kebs.org/isPropComments/$draftNumber";
         stakeholders?.forEach { s ->
             val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
             val recipient = s.email
@@ -149,7 +152,7 @@ class IntStandardService(
             }
         }
 
-        val targetUrl2 = "https://kimsint.kebs.org/isProposalComments/$draftId";
+        val targetUrl2 = "https://kimsint.kebs.org/isProposalComments/$draftNumber";
         if (listTwo != null) {
             for (recipient in listTwo) {
                 val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
@@ -453,6 +456,8 @@ class IntStandardService(
     }
 
 
+
+
     fun getUserComments(id: Long): MutableIterable<InternationalStandardRemarks>? {
         return internationalStandardRemarksRepository.findAllByProposalIdOrderByIdDesc(id)
     }
@@ -482,6 +487,16 @@ class IntStandardService(
         iSAdoptionJustification.requestNumber = getRQNumber()
         iSAdoptionJustification.departmentName = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
 
+        isAdoptionJustificationRepository.save(iSAdoptionJustification)
+
+        comStdDraftRepository.findByIdOrNull(iSAdoptionJustification.draftId)?.let { comStdDraft ->
+
+            with(comStdDraft) {
+                status = 3
+            }
+            comStdDraftRepository.save(comStdDraft)
+
+        } ?: throw Exception("DRAFT NOT FOUND")
 
         //variables["ID"] = ispDetails.id
 
@@ -498,17 +513,14 @@ class IntStandardService(
                 notifications.sendEmail(recipient, subject, messageBody)
             }
         }
-        comStdDraftRepository.findByIdOrNull(iSAdoptionJustification.draftId)?.let { comStdDraft ->
 
-            with(comStdDraft) {
-                status = 3
-            }
-            comStdDraftRepository.save(comStdDraft)
-
-        } ?: throw Exception("DRAFT NOT FOUND")
 
         return "Justification Uploaded"
 
+    }
+
+    fun getJustification(): MutableList<ProposalDetails>{
+        return isAdoptionProposalRepository.getISJustification();
     }
 
     fun uploadISJFile(
@@ -537,8 +549,8 @@ class IntStandardService(
     }
 
 
-    fun getISJustification(): MutableList<ProposalDetails>{
-        return isAdoptionProposalRepository.getISJustification();
+    fun getISJustification(draftId: Long): MutableList<ISAdoptionProposalJustification>{
+        return isAdoptionJustificationRepository.getISJustification(draftId);
     }
 
     //Get IS justification Document
@@ -599,6 +611,10 @@ class IntStandardService(
         return ResponseMsg(response)
     }
 
+    fun getApprovedJustification(): MutableList<ProposalDetails>{
+        return isAdoptionProposalRepository.getApprovedJustification();
+    }
+
 
     fun submitDraftForEditing(companyStandard: CompanyStandard) : CompanyStandard
     {
@@ -606,30 +622,32 @@ class IntStandardService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
 
-        companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
-            with(companyStandard) {
-                title=companyStandard.title
-                departmentId = companyStandard.departmentId
-                subject=companyStandard.subject
-                description=companyStandard.description
-                status=companyStandard.status
-                comStdNumber = companyStandard.comStdNumber
-                documentType=companyStandard.documentType
-                draftId=companyStandard.draftId
-                requestId=companyStandard.requestId
-                standardType="International Standard"
-                scope=companyStandard.scope
-                normativeReference=companyStandard.normativeReference
-                symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
-                clause=companyStandard.clause
-                preparedBy=loggedInUser.firstName + loggedInUser.lastName
-                special = companyStandard.special
+        companyStandard.title=companyStandard.title
+        companyStandard.departmentId = companyStandard.departmentId
+        companyStandard.subject=companyStandard.subject
+        companyStandard.description=companyStandard.description
+        companyStandard.status=companyStandard.status
+        companyStandard.comStdNumber = companyStandard.comStdNumber
+        companyStandard.documentType=companyStandard.documentType
+        companyStandard.draftId=companyStandard.draftId
+        companyStandard.requestId=companyStandard.requestId
+        companyStandard.standardType="International Standard"
+        companyStandard.scope=companyStandard.scope
+        companyStandard.normativeReference=companyStandard.normativeReference
+        companyStandard.symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
+        companyStandard.clause=companyStandard.clause
+        companyStandard.preparedBy=loggedInUser.firstName + loggedInUser.lastName
+        companyStandard.special = companyStandard.special
 
-            }
-
-        }?: throw Exception("DRAFT NOT FOUND")
 
         val draftStandard= companyStandardRepository.save(companyStandard)
+        comStdDraftRepository.findByIdOrNull(companyStandard.draftId)?.let { comStdDraft ->
+            with(comStdDraft) {
+                status = 6
+
+            }
+            comStdDraftRepository.save(comStdDraft)
+        }?: throw Exception("DRAFT NOT FOUND")
 
         var userList= companyStandardRepository.getHopEmailList()
 
@@ -722,8 +740,8 @@ class IntStandardService(
             var userList= companyStandardRepository.getStakeHoldersEmailList()
             //email to Head of publishing
             userList.forEach { item->
-                val recipient="stephenmuganda@gmail.com"
-                //val recipient= item.getUserEmail()
+                //val recipient="stephenmuganda@gmail.com"
+                val recipient= item.getUserEmail()
                 val subject = "International Standard"
                 val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, International Standard Adoption Proposal has been approved for publishing."
                 if (recipient != null) {

@@ -29,7 +29,7 @@ import {
   SeizureDeclarationDto, SeizureDto, SeizureListDto,
   SSFSaveComplianceStatusDto, SSFSendingComplianceStatus, WorkPlanCountyTownDto,
   WorkPlanEntityDto,
-  WorkPlanFeedBackDto,
+  WorkPlanFeedBackDto, WorkPlanFilesFoundDto,
   WorkPlanFinalRecommendationDto,
   WorkPlanInspectionDto, WorkPlanProductDto,
   WorkPlanScheduleApprovalDto, WorkPlanScheduleOnsiteDto,
@@ -163,6 +163,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveDataInspectorInvestList: DataInspectorInvestDto[] = [];
   dataSaveBsNumber: string[] = [];
   dataSaveDataReportParamList: DataReportParamsDto[] = [];
+  dataSaveDataReportUploadsList: WorkPlanFilesFoundDto[] = [];
   dataSaveDataReportParam: DataReportParamsDto;
   dataSaveDataInspectorInvest: DataInspectorInvestDto;
   dataSaveSeizure: SeizureListDto;
@@ -216,12 +217,12 @@ export class WorkPlanDetailsComponent implements OnInit {
   productsSelected: 0;
   productSubcategorySelected: 0;
   departmentSelected: 0;
-  uploadedFilesDataReport: FileList;
   labList: LaboratoryDto[];
   roles: string[];
   userLoggedInID: number;
   userProfile: LoggedInUser;
   blob: Blob;
+  uploadedFilesDataReport: FileList;
   uploadedFilesOnly: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
@@ -1100,6 +1101,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       delete: false,
       custom: [
         {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
+        // {name: 'viewUploads', title: '<i  class="btn btn-sm btn-primary">VIEW UPLOADS DETAILS</i>'},
       ],
       position: 'right', // left|right
     },
@@ -1157,7 +1159,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       custom: [
         {name: 'viewRecord', title: '<i  class="btn btn-sm btn-primary">VIEW DATA REPORT DETAILS</i>'},
         {name: 'updateRecord', title: '<i  class="btn btn-sm btn-primary">UPDATE DATA REPORT DETAILS</i>'},
-        {name: 'viewDataReportUploads', title: '<i  class="btn btn-sm btn-primary">VIEW UPLOADS</i>'},
+        // {name: 'viewUploads', title: '<i  class="btn btn-sm btn-primary">VIEW UPLOADS DETAILS</i>'},
       ],
       position: 'right', // left|right
     },
@@ -1764,6 +1766,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.dataReportForm = this.formBuilder.group({
       id: null,
+      dataReportValueToClone: null,
       referenceNumber: ['', Validators.required],
       // inspectionDate: ['', Validators.required],
       inspectorName: ['', Validators.required],
@@ -1853,6 +1856,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
+      seizureFormValueToClone: null,
       productField: ['', Validators.required],
       serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
@@ -2677,6 +2681,21 @@ export class WorkPlanDetailsComponent implements OnInit {
     // }
   }
 
+  // viewUploadDataReport(data: DataReportDto) {
+  //   this.dataReportForm.patchValue(data);
+  //   this.selectedDataReportDetails = data;
+  //   this.totalCompliantValue = data?.totalComplianceScore;
+  //   const paramDetails = data.productsList;
+  //   this.dataSaveDataReportParamList = [];
+  //   for (let i = 0; i < paramDetails.length; i++) {
+  //     this.dataSaveDataReportParamList.push(paramDetails[i]);
+  //   }
+  //   // this.dataReportForm.disable();
+  //   this.addProductsStatus = true;
+  //   window.$('#dataReportModal').modal('show');
+  //   // }
+  // }
+
   updateFieldReport() {
     if (this.workPlanInspection?.investInspectReportStatus &&  this.workPlanInspection?.onsiteEndStatus === false) {
       this.investInspectReportForm.patchValue(this.workPlanInspection?.inspectionInvestigationDto);
@@ -2747,10 +2766,6 @@ export class WorkPlanDetailsComponent implements OnInit {
         break;
       case 'updateRecord':
         this.updateDataReport(event.data);
-        break;
-      case 'viewDataReportUploads':
-        console.log('view datasheet uploads');
-        console.log(event.data);
         break;
     }
   }
@@ -2841,6 +2856,13 @@ export class WorkPlanDetailsComponent implements OnInit {
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveDataReportParamList.push(paramDetails[i]);
     }
+
+    this.dataSaveDataReportUploadsList = [];
+    for (let i = 0; i < data.docList.length; i++) {
+      const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === i);
+      this.dataSaveDataReportUploadsList.push(fileValue);
+    }
+
     this.dataReportForm.disable();
     this.addProductsStatus = false;
     window.$('#dataReportModal').modal('show');
@@ -4274,6 +4296,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
 
+  viewUploadsFileSaved(data: WorkPlanFilesFoundDto) {
+    this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
+  }
+
   viewSeizedProductsFileSaved(data: SeizureListDto) {
     const foundPdfFile = this.workPlanInspection?.workPlanFiles.find(lab => lab.id === data.docID);
     this.viewPdfFile(String(foundPdfFile.id), foundPdfFile.documentType, foundPdfFile.fileContentType);
@@ -4641,19 +4667,6 @@ export class WorkPlanDetailsComponent implements OnInit {
     // this.sampleSubmitParamsForm?.get('laboratoryName')?.reset();
   }
 
-  onClickCloneDataSSF() {
-    const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
-    this.sampleSubmitForm.patchValue(selectedClone);
-    this.sampleSubmitForm?.get('id').setValue(0);
-    const paramDetails = selectedClone.parametersList;
-    this.dataSaveSampleSubmitParamList = [];
-    for (let i = 0; i < paramDetails.length; i++) {
-      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
-    }
-    this.sampleSubmitForm.enable();
-    this.addLabParamStatus = true;
-  }
-
   removeDataReportParam(index) {
     console.log(index);
     if (index === 0) {
@@ -4752,13 +4765,20 @@ export class WorkPlanDetailsComponent implements OnInit {
   saveDataReport() {
     if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
       this.SpinnerService.show();
+      const file = this.uploadedFilesDataReport;
       this.dataSaveDataReport = {...this.dataSaveDataReport, ...this.dataReportForm.value};
       this.dataSaveDataReport.productsList = this.dataSaveDataReportParamList;
-      this.msService.msWorkPlanScheduleSaveDataReport(
-          this.workPlanInspection.batchDetails.referenceNumber,
-          this.workPlanInspection.referenceNumber,
-          this.dataSaveDataReport,
-      ).subscribe(
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
+      formData.append('docTypeName', 'DATA_REPORT_UPLOAD');
+      formData.append('data', JSON.stringify(this.dataSaveDataReport));
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+
+      this.msService.msWorkPlanScheduleSaveDataReport(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
             console.log(data);
@@ -5283,4 +5303,43 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.standardsArray.splice(index, 1);
   }
 
+  onClickCloneDataSSF() {
+
+    const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
+    this.sampleSubmitForm.patchValue(selectedClone);
+    this.sampleSubmitForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.parametersList;
+    this.dataSaveSampleSubmitParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSampleSubmitParamList.push(paramDetails[i]);
+    }
+    this.sampleSubmitForm.enable();
+    this.addLabParamStatus = true;
+  }
+
+  onClickCloneDataReport(){
+    const selectedClone = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.dataReportForm?.get('dataReportValueToClone')?.value);
+    this.dataReportForm.patchValue(selectedClone);
+    this.dataReportForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.productsList;
+    this.dataSaveDataReportParamList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveDataReportParamList.push(paramDetails[i]);
+    }
+    this.dataReportForm.enable();
+    this.addLabParamStatus = true;
+
+  }
+  onClickCloneSeizureForm(){
+    const selectedClone = this.workPlanInspection?.seizureDeclarationDto.find(pr => pr.id === this.seizureForm?.get('seizureFormValueToClone')?.value);
+    this.seizureForm.patchValue(selectedClone);
+    this.seizureForm?.get('id').setValue(0);
+    const paramDetails = selectedClone.seizureList;
+    this.dataSaveSeizureDeclarationList = [];
+    for (let i = 0; i < paramDetails.length; i++) {
+      this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
+    }
+    this.seizureForm.enable();
+    this.addLabParamStatus = true;
+  }
 }

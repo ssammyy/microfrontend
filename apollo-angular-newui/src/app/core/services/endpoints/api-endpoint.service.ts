@@ -419,6 +419,8 @@ export class ApiEndpointService {
         IST_APPROVED_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedProposals`,
         IST_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/prepareJustification`,
         IST_VIEW_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getISJustification`,
+        IST_APP_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getJustification`,
+        IST_APPR_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedJustification`,
         IST_VIEW_APP_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/getApprovedISJustification`,
         IST_UPLOAD_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftForEditing`,
         IST_VIEW_DRAFT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/getUploadedDraft`,
@@ -689,7 +691,16 @@ export class ApiEndpointService {
     };
 
     public static QA_INTERNAL_USER_ENDPOINT = {
-        LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/permits-list`,
+        LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list`,
+        LOAD_PERMIT_DETAIL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permit-detail`,
+        UPDATE_SECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/section`,
+        QAM_COMPLETENESS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/completeness`,
+        ASSIGN_OFFICER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/assign-officer`,
+        ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
+        SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
+        INSPECTION_CHECKLIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection-checklist`,
+
+
     };
 
     public static COMPANY_PROFILE_ENDPOINT = {
