@@ -4659,7 +4659,7 @@ class QADaoServices(
         divisions.forEach { div ->
             val sectionFound = commonDaoServices.findAllSectionsListWithDivision(div, map.activeStatus)
             sectionFound.forEach { it ->
-                val section = SectionsEntityDto(it.id, it.section, it.divisionId?.id, it.descriptions, it.status == 1) }
+                val section = SectionsEntityDto(it.id, it.section, it.divisionId?.id, it.descriptions, it.status == 1)
                 sections.add(section)
             }
         }
