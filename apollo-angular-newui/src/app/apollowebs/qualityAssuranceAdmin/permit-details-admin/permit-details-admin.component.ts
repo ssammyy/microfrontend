@@ -26,6 +26,7 @@ import {QaService} from '../../../core/store/data/qa/qa.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {QaInternalService} from '../../../core/store/data/qa/qa-internal.service';
 import {ApiResponseModel} from '../../../core/store/data/ms/ms.model';
+// @ts-ignore
 import * as CryptoJS from 'crypto-js';
 import swal from 'sweetalert2';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -140,9 +141,12 @@ export class PermitDetailsAdminComponent implements OnInit {
     private permit_id: string;
 
     constructor(private formBuilder: FormBuilder,
-                public router: Router, private route: ActivatedRoute, private qaService: QaService, private SpinnerService: NgxSpinnerService, private internalService: QaInternalService,
-    ) {
-    }
+                public router: Router,
+                private route: ActivatedRoute,
+                private qaService: QaService,
+                private SpinnerService: NgxSpinnerService,
+                private internalService: QaInternalService,
+    ) {}
 
     id: any = '1';
     permitId: any;
@@ -152,9 +156,9 @@ export class PermitDetailsAdminComponent implements OnInit {
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
             let key = '11A1764225B11AA1';
-            let encrypted = paramMap.get('id');
+            const encrypted = paramMap.get('id');
             key = CryptoJS.enc.Utf8.parse(key);
-            let decrypted = CryptoJS.AES.decrypt({ciphertext: CryptoJS.enc.Hex.parse(encrypted)}, key, {
+            const decrypted = CryptoJS.AES.decrypt({ciphertext: CryptoJS.enc.Hex.parse(encrypted)}, key, {
                 mode: CryptoJS.mode.ECB,
                 padding: CryptoJS.pad.ZeroPadding,
             });
