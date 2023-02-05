@@ -77,6 +77,8 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     //    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     fun findByUserName(userName: String): UsersEntity?
 
+
+
     fun findByUserPinIdNumber(userPinIdNumber: String): UsersEntity?
 
     fun findFirstByIdAndStatus(id: Long, status: Int): UsersEntity?

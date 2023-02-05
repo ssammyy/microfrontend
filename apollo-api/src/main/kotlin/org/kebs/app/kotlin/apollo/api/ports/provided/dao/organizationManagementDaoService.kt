@@ -161,7 +161,8 @@ class RegistrationManagementDaoService(
         SecurityContextHolder.getContext().authentication
             ?.name
             ?.let { user ->
-                usersRepo.findByUserName(user)
+                println("############"+user)
+                usersRepo.findByEmail(user)
                     ?.let {
 
                         if (it.id != dto.id) throw InvalidInputException("Attempt to perform unauthorized action")
