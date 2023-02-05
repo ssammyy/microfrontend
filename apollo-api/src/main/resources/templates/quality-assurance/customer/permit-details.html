@@ -70,22 +70,22 @@
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date of Application</div>
                                                     <div class="list-text-accordion"
-                                                         th:text="${#dates.format(permit?.createdOn, 'dd/MM/yyyy')}"></div>
+                                                         th:text="${permit?.createdOn}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date of Issue</div>
                                                     <div class="list-text-accordion"
-                                                         th:text="${#dates.format(permit?.dateOfIssue, 'dd/MM/yyyy')}"></div>
+                                                         th:text="${permit?.dateOfIssue}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Effective Date</div>
                                                     <div class="list-text-accordion"
-                                                         th:text="${#dates.format(permit?.effectiveDate, 'dd/MM/yyyy')}"></div>
+                                                         th:text="${permit?.effectiveDate}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Date of Expiry</div>
                                                     <div class="list-text-accordion"
-                                                         th:text="${#dates.format(permit?.dateOfExpiry, 'dd/MM/yyyy')}"></div>
+                                                         th:text="${permit?.dateOfExpiry}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Description of commodity</div>
@@ -137,19 +137,19 @@
                                                 <li th:if="${permit?.factoryVisit != null}" class="list-item-accordion">
                                                     <div class="list-title-accordion">Scheduled Inspection Date</div>
                                                     <div class="list-text-accordion"
-                                                         th:text="${#dates.format(permit?.factoryVisit, 'dd/MM/yyyy')}"></div>
+                                                         th:text="${permit?.factoryVisit}"></div>
                                                 </li>
                                                 <li th:if="${permit?.inspectionScheduledStatus == true}"
                                                     class="list-item-accordion">
                                                     <div class="list-title-accordion">Actual Inspection Date</div>
                                                     <div class="list-text-accordion"
-                                                         th:text="${#dates.format(permit?.inspectionDate, 'dd/MM/yyyy')}"></div>
+                                                         th:text="${permit?.inspectionDate}"></div>
                                                 </li>
                                                 <li th:if="${permit?.assessmentScheduledStatus == 1}"
                                                     class="list-item-accordion">
                                                     <div class="list-title-accordion">Factory Assessment Date</div>
                                                     <div class="list-text-accordion"
-                                                         th:text="${#dates.format(permit?.assessmentDate, 'dd/MM/yyyy')}"></div>
+                                                         th:text="${permit?.assessmentDate}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Status</div>
@@ -248,7 +248,7 @@
 
                                                 <td th:text="${remarksParam?.processName}"></td>
                                                 <td th:text="${remarksParam?.processBy}"></td>
-                                                <td th:text="${#dates.format(remarksParam?.createdOn, 'dd/MM/yyyy')}"></td>
+                                                <td th:text="${remarksParam?.createdOn}"></td>
                                                 <td th:text="${remarksParam?.createdBy}"></td>
                                                 <td th:if="${remarksParam?.remarksStatus == null}">N/A</td>
                                                 <td th:if="${remarksParam?.remarksStatus != null}"

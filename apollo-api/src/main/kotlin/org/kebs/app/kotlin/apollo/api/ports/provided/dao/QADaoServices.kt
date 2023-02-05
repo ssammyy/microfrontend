@@ -5562,7 +5562,7 @@ class QADaoServices(
                     val sta3 = findSTA3WithPermitIDAndRefNumber(
                         oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                         oldPermit.id ?: throw Exception("INVALID PERMIT ID")
-                    )
+                    )?: throw Exception("Missing STA3 Details")
                     var newSta3 = QaSta3Entity()
                     newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
                     newSta3.id = null
@@ -7056,7 +7056,7 @@ class QADaoServices(
                     val oldSta10 = findSTA10WithPermitRefNumberANdPermitID(
                         permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                         permit.id ?: throw Exception("INVALID PERMIT ID")
-                    )
+                    )?: throw Exception("Missing STA 10 Details")
                     var newSta10 = QaSta10Entity()
                     newSta10 = commonDaoServices.updateDetails(oldSta10, newSta10) as QaSta10Entity
                     newSta10.id = null
@@ -7070,7 +7070,8 @@ class QADaoServices(
                     val sta3 = findSTA3WithPermitIDAndRefNumber(
                         permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                         permit.id ?: throw Exception("INVALID PERMIT ID")
-                    )
+                    )?: throw Exception("Missing STA3 Details")
+
                     var newSta3 = QaSta3Entity()
                     newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
                     newSta3.id = null

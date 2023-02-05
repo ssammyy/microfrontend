@@ -337,7 +337,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     }
 
     @Bean
-    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler, msHandler: NewMarketSurveillanceHandler
+    fun migrationRegistrationRoutes(
+        handler: RegistrationHandler, otherHandler: MasterDataHandler, msHandler: NewMarketSurveillanceHandler
     ) = router {
         "/api/v1/migration/".nest {
             "anonymous".nest {
@@ -491,7 +492,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     }
 
     @Bean
-    fun migrationQualityAssuranceRoutes(handler: QualityAssuranceHandler,internalUserhandler: QualityAssuranceInternalUserHandler) = router {
+    fun migrationQualityAssuranceRoutes(
+        handler: QualityAssuranceHandler,
+        internalUserhandler: QualityAssuranceInternalUserHandler
+    ) = router {
         "/api/v1/migration/qa".nest {
             GET("/sections-list", handler::sectionListMigration)
             GET("/branch-list", handler::branchListMigration)
@@ -627,7 +631,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
 
             }
 
-            "internal-users".nest{
+            "internal-users".nest {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
                     GET("/permit-detail", internalUserhandler::getPermitDetails)
@@ -641,8 +645,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         POST("/schedule-inspection", internalUserhandler::updatePermitDetailsScheduleInspection)
                         POST("/inspection-checklist", internalUserhandler::updatePermitDetailsInspectionCheckList)
                     }
-                GET("/permit-detail", internalUserhandler::getPermitDetails)
-            }
+                    GET("/permit-detail", internalUserhandler::getPermitDetails)
+                }
             }
 
         }

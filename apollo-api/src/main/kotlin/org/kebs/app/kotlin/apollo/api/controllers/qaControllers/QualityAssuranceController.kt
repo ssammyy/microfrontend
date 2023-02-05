@@ -2181,7 +2181,7 @@ class QualityAssuranceController(
             applicationMapProperties.mapPermitRenewMessage -> {
                 val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
                     permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
-                )
+                )?: throw Exception("Missing STA3 Details")
                 QaSta3Entity.id = sta3.id
                 qaDaoServices.sta3Update(
                     commonDaoServices.updateDetails(sta3, QaSta3Entity) as QaSta3Entity,
@@ -2240,7 +2240,7 @@ class QualityAssuranceController(
             applicationMapProperties.mapPermitRenewMessage -> {
                 val sta10 = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
                     permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
-                )
+                )?: throw Exception("Missing STA 10 Details")
                 with(QaSta10Entity){
                     id = sta10.id
                     closedProduction=map.inactiveStatus
