@@ -265,6 +265,40 @@ export class PVOCService {
         });
     }
 
+    loadRfcForCorDocuments(keywords: string, reviewStatus: number, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['rev_status'] = reviewStatus
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/rfc/cor"), {
+            params: params
+        });
+    }
+
+    loadRfcForCocDocuments(keywords: string, reviewStatus: number, page: number, size: number): Observable<any> {
+        let params = {}
+        params["size"] = size
+        params["page"] = page
+        params['rev_status'] = reviewStatus
+        if (keywords) {
+            params["keywords"] = keywords
+        }
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/rfc/coc"), {
+            params: params
+        });
+    }
+
+    loadRfcCorDetails(documentId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/rfc/cor/" + documentId))
+    }
+
+    loadRfcCocDetails(documentId: any): Observable<any> {
+        return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/rfc/coc/" + documentId))
+    }
+
     loadCorDetails(documentId: any): Observable<any> {
         return this.http.get(ApiEndpointService.getEndpoint("/api/v1/pvoc/monitoring/foreign/cor/" + documentId))
     }

@@ -18,7 +18,7 @@ import {
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto
 } from "../../../core/store/data/qa/qa.model";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Form, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FileUploadValidators} from "@iplab/ngx-file-upload";
 import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
 import {TableData} from "../../../md/md-table/md-table.component";
@@ -26,6 +26,9 @@ import {QaService} from "../../../core/store/data/qa/qa.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {QaInternalService} from "../../../core/store/data/qa/qa-internal.service";
 import {ApiResponseModel} from "../../../core/store/data/ms/ms.model";
+import * as CryptoJS from 'crypto-js';
+import swal from "sweetalert2";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
     selector: 'app-permit-details-admin',
@@ -58,6 +61,10 @@ export class PermitDetailsAdminComponent implements OnInit {
     pdfUploadsView: any;
 
     loading = false;
+
+
+
+    /// FORMS
     sta1Form: FormGroup;
     sta10Form: FormGroup;
     sta10FormA: FormGroup;
@@ -67,6 +74,17 @@ export class PermitDetailsAdminComponent implements OnInit {
     sta10FormE: FormGroup;
     sta10FormF: FormGroup;
     sta10FormG: FormGroup;
+
+    qaMCompleteness:FormGroup;
+    assignOfficer:FormGroup;
+    addStandards:FormGroup;
+    factoryVisit:FormGroup;
+
+
+
+
+
+    //DTOS
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     allPermitDetails: AllPermitDetailsDto;
@@ -121,8 +139,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
     private permit_id: string;
 
-    constructor(      private formBuilder: FormBuilder,
-                      public router: Router, private route: ActivatedRoute, private qaService: QaService, private SpinnerService: NgxSpinnerService, private internalService: QaInternalService,
+    constructor(private formBuilder: FormBuilder,
+                public router: Router, private route: ActivatedRoute, private qaService: QaService, private SpinnerService: NgxSpinnerService, private internalService: QaInternalService,
     ) {
     }
 
@@ -133,43 +151,30 @@ export class PermitDetailsAdminComponent implements OnInit {
     // stepSoFar: | undefined;
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
-            this.permitId = decodeURIComponent(paramMap.get('id'));
+            var key = '11A1764225B11AA1';
+            var encrypted = paramMap.get('id')
+            key = CryptoJS.enc.Utf8.parse(key);
+            var decrypted = CryptoJS.AES.decrypt({ciphertext: CryptoJS.enc.Hex.parse(encrypted)}, key, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.ZeroPadding
+            });
+            this.permitId = decrypted.toString(CryptoJS.enc.Utf8);
+
         });
 
-        // this.route.paramMap
-        //     .pipe(map(() => window.history.state))
-        //     .subscribe(state => {
-        //         if (state && state.highlight != undefined) {
-        //             this.permitId = state && state.highlight;
-        //         } else {
-        //             this.router.navigateByUrl('/smark-admin');
-        //
-        //         }
-        //     });
         this.steps = 1;
         this.getSelectedPermit(this.permitId)
         this.sta1Form = this.formBuilder.group({
             commodityDescription: [{value: '', disabled: true}, Validators.required],
             applicantName: [{value: '', disabled: true}, Validators.required],
-            sectionId: [{value: '', disabled: true}, Validators.required],
+            sectionName: [{value: '', disabled: true}, Validators.required],
             permitForeignStatus: [],
-            attachedPlant: [{value: '', disabled: true}, Validators.required],
+            branchName: [{value: '', disabled: true}, Validators.required],
             tradeMark: [{value: '', disabled: true}, Validators.required],
             createFmark: [{value: '', disabled: true}],
-            // inputCountryCode: [{value: '', disabled: true}, Validators.required,Validators.pattern("[0-9 ]{11}")]
 
         });
         this.sta10Form = this.formBuilder.group({
-            // firmName: [{value: '', disabled: true}, Validators.required],
-            // statusCompanyBusinessRegistration: [{value: '', disabled: true}, Validators.required],
-            // ownerNameProprietorDirector: [{value: '', disabled: true}, Validators.required],
-            // postalAddress: [{value: '', disabled: true}, Validators.required],
-            // contactPerson: [{value: '', disabled: true}, Validators.required],
-            // telephone: [{value: '', disabled: true}, Validators.required],
-            // emailAddress: [{value: '', disabled: true}, Validators.required],
-            // physicalLocationMap: [{value: '', disabled: true}, Validators.required],
-            // county: [{value: '', disabled: true}, Validators.required],
-            // town: [{value: '', disabled: true}, Validators.required],
             totalNumberFemale: [{value: '', disabled: true}, Validators.required],
             totalNumberMale: [{value: '', disabled: true}, Validators.required],
             totalNumberPermanentEmployees: [{value: '', disabled: true}, Validators.required],
@@ -251,45 +256,25 @@ export class PermitDetailsAdminComponent implements OnInit {
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
 
-
-        this.qaService.loadSectionList().subscribe(
-            (data: any) => {
-                this.sections = data;
-                // console.log(data);
-            }
-        );
-
-        this.qaService.loadPlantList().subscribe(
-            (data: any) => {
-                this.plants = data;
-                // console.log(data);
-            }
-        );
-
-
-        // // if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-        // this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
-        //     (data: any) => {
-        //         this.pdfSources = data;
-        //     },
-        // );
-        // }
-
-        this.qaService.loadCompletelyPermitAwardedList(this.smarkID).subscribe(
-            (data: any) => {
-                this.allPermitData = data;
-                for (let i = 0; i < data.length; i++) {
-                    const obj = data[i];
-                    let mem_id = obj.id
-                    let names = obj.permitRefNumber;
-
-                    let newArray = {'id': mem_id, 'name': names};
-                    this.memberReturnArray.push(newArray)
-                }
-                this.dropdownList = this.memberReturnArray;
+        this.qaMCompleteness = this.formBuilder.group({
+            hofQamCompletenessStatus: ['', Validators.required],
+            hofQamCompletenessRemarks: ['', Validators.required],
+        });
+        this.assignOfficer = this.formBuilder.group({
+            assignOfficerID: ['', Validators.required],
+            sectionRemarks: ['', Validators.required],
+        });
+        this.addStandards = this.formBuilder.group({
+            productStandardID: ['', Validators.required],
+            productStandardRemarks: ['', Validators.required],
+        });
+        this.factoryVisit = this.formBuilder.group({
+            inspectionDate: ['', Validators.required],
+            productStandardRemarks: ['', Validators.required],
+        });
 
 
-            })
+
 
         this.initForm();
 
@@ -373,6 +358,30 @@ export class PermitDetailsAdminComponent implements OnInit {
         return this.sta10FormF.controls;
     }
 
+    get formQamCompleteness(): any {
+        return this.qaMCompleteness.controls;
+    }
+    get formAssignOfficer(): any {
+        return this.assignOfficer.controls;
+    }
+    get formAddStandards(): any {
+        return this.addStandards.controls;
+    }
+    get formfactoryVisit(): any {
+        return this.factoryVisit.controls;
+    }
+    goToPayment() {
+        this.router.navigate(['/invoice/consolidate_invoice']);
+    }
+
+    goToNewApplication() {
+        this.router.navigate(['/smark/newSmarkPermit']);
+    }
+
+    goToInvoiceGenerated() {
+        this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
+    }
+
 
     public getSelectedPermit(permitId: any): void {
 
@@ -395,14 +404,8 @@ export class PermitDetailsAdminComponent implements OnInit {
                     } else if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
                         this.permitTypeName = 'Fortification';
                     }
-                    // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
-                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                        (dataSta1) => {
-                            this.sta1 = dataSta1;
-                            this.sta1Form.patchValue(this.sta1);
-                        },
-                    );
-                    // console.log(`${this.sta10PersonnelDetails.length}`);
+                    this.sta1 = this.allPermitDetails.sta1DTO;
+                    this.sta1Form.patchValue(this.sta1);
 
                     this.allSTA10Details = this.allPermitDetails.sta10DTO;
                     this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
@@ -511,5 +514,31 @@ export class PermitDetailsAdminComponent implements OnInit {
         );
     }
 
+    reviewForComplemteness(formDirective): void {
+
+        if (this.qaMCompleteness.valid) {
+
+            // if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
+            //     this.onClickSaveUploads("568","Marvin")
+            // }
+
+            this.SpinnerService.show();
+            this.internalService.submitQaMCompleteness(this.permit_id, this.qaMCompleteness.value).subscribe(
+                (response) => {
+
+                    // let requestNumber = response.responseText+":"+response.body.body.requestNumber;
+                    this.SpinnerService.hide();
+                        formDirective.resetForm();
+                        this.qaMCompleteness.reset()
+                      this.qaService.showSuccess("Review Successfully submitted")
+                    });
+
+        } else {
+            this.qaService.showError("Please Try Again")
+
+        }
+
+
+    }
 
 }

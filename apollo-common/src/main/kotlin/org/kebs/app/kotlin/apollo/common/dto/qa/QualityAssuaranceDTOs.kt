@@ -400,7 +400,10 @@ data class STA1Dto(
     var permitForeignStatus: Int? = null,
     var attachedPlant: Long? = null,
     var createFmark: Int? = null,
-)
+    var sectionName: String? = null,
+    var branchName: String? = null,
+
+    )
 
 data class QRCodeScannedQADto(
     var productName: String? = null,
