@@ -54,8 +54,8 @@ export class IsProposalFormComponent implements OnInit {
         title : ['', Validators.required],
         scope : ['', Validators.required],
         iStandardNumber:[],
-        stakeholdersList:[],
-        addStakeholdersList:[]
+        stakeholdersList:['', Validators.required],
+        addStakeholdersList:['', Validators.required]
         // adoptionAcceptableAsPresented : ['', Validators.required],
         // reasonsForNotAcceptance : ['', Validators.required],
         // recommendations : ['', Validators.required],

@@ -5,7 +5,7 @@ import {
     ApproveDraft,
     ComJcJustificationDec,
     COMPreliminaryDraft,
-    DocView
+    DocView, PredefinedSdIntCommentsFields
 } from "../../../../../core/store/data/std/std.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {StdComStandardService} from "../../../../../core/store/data/std/std-com-standard.service";
@@ -25,12 +25,17 @@ export class ComStdDraftCommentComponent implements OnInit {
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  dtTrigger1: Subject<any> = new Subject<any>();
   tasks: COMPreliminaryDraft[] = [];
   public actionRequest: COMPreliminaryDraft | undefined;
   public committeeFormGroup!: FormGroup;
   comDraftID: string;
+    submitted = false;
   documentDTOs: DocumentDTO[] = [];
   docDetails: DocView[] = [];
+    dataSaveResourcesRequired : PredefinedSdIntCommentsFields;
+    dataSaveResourcesRequiredList: PredefinedSdIntCommentsFields[]=[];
+    predefinedSDCommentsDataAdded: boolean = false;
 
   blob: Blob;
     loadingText: string;
@@ -58,27 +63,29 @@ export class ComStdDraftCommentComponent implements OnInit {
     this.docName='Company Standard'
 
       this.uploadCommentsFormGroup = this.formBuilder.group({
-          commentTitle:[],
-          commentDocumentType:[],
-          uploadDate:[],
-          nameOfRespondent:[],
-          emailOfRespondent:[],
-          phoneOfRespondent:[],
-          nameOfOrganization:[],
-          clause:[],
-          paragraph:[],
-          typeOfComment:[],
-          comment:[],
-          proposedChange:[],
-          observation:[],
-          requestID:[],
-          draftID:[]
+          commentTitle:null,
+          commentDocumentType:null,
+          uploadDate:null,
+          nameOfRespondent:null,
+          emailOfRespondent:null,
+          phoneOfRespondent:null,
+          nameOfOrganization:null,
+          scope:null,
+          clause:null,
+          paragraph:null,
+          typeOfComment:null,
+          comment:null,
+          proposedChange:null,
+          observation:null,
+          requestID:null,
+          draftID:null
 
       });
   }
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.dtTrigger1.unsubscribe();
   }
 
   showToasterSuccess(title:string,message:string){
@@ -155,14 +162,15 @@ export class ComStdDraftCommentComponent implements OnInit {
     });
     setTimeout(() => {
       this.dtTrigger.next();
+      this.dtTrigger1.next();
     });
   }
 
     onSubmit(): void {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
-        console.log(this.uploadCommentsFormGroup.value);
-        this.stdComStandardService.submitDraftComments(this.uploadCommentsFormGroup.value).subscribe(
+        //console.log(this.uploadCommentsFormGroup.value);
+        this.stdComStandardService.submitDraftComments(this.dataSaveResourcesRequiredList).subscribe(
             (response ) => {
                 console.log(response);
                 this.SpinnerService.hide();
@@ -198,30 +206,6 @@ export class ComStdDraftCommentComponent implements OnInit {
     this.hideModalComment();
   }
 
-    // viewFile(pdfId: number,fileUploaded: File) {
-    //     this.SpinnerService.hide();
-    //     this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
-    //         (dataPdf: any) => {
-    //             const blob = new Blob([fileUploaded.slice()], {type: fileUploaded.type});
-    //
-    //             // tslint:disable-next-line:prefer-const
-    //             let downloadURL = window.URL.createObjectURL(blob);
-    //             const link = document.createElement('a');
-    //             link.href = downloadURL;
-    //             link.download = fileUploaded.name;
-    //             link.click();
-    //             console.log(fileUploaded)
-    //         },
-    //         (error: HttpErrorResponse) => {
-    //             this.SpinnerService.hide();
-    //             this.showToasterError('Error', `Error Processing Request`);
-    //             console.log(error.message);
-    //             this.getUploadedStdDraftForComment(this.comDraftID);
-    //             //alert(error.message);
-    //         }
-    //     );
-    // }
-
   viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
     this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
@@ -253,5 +237,42 @@ export class ComStdDraftCommentComponent implements OnInit {
   public hideModalComment() {
     this.closeModalComment?.nativeElement.click();
   }
+
+    onClickAddResource() {
+        this.dataSaveResourcesRequired = this.uploadCommentsFormGroup.value;
+        console.log(this.dataSaveResourcesRequired);
+        // tslint:disable-next-line:max-line-length
+        this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+        //console.log(this.dataSaveResourcesRequiredList);
+        this.predefinedSDCommentsDataAdded= true;
+        //console.log(this.predefinedSDCommentsDataAdded);
+
+        this.uploadCommentsFormGroup?.get('clause')?.reset();
+        this.uploadCommentsFormGroup?.get('paragraph')?.reset();
+        this.uploadCommentsFormGroup?.get('typeOfComment')?.reset();
+        this.uploadCommentsFormGroup?.get('comment')?.reset();
+        this.uploadCommentsFormGroup?.get('proposedChange')?.reset();
+        this.uploadCommentsFormGroup?.get('observation')?.reset();
+        this.uploadCommentsFormGroup?.get('scope')?.reset();
+    }
+
+    // Remove Form repeater values
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedSDCommentsDataAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickSaveWorkPlanScheduled() {
+        this.submitted = true;
+        console.log(this.dataSaveResourcesRequiredList.length);
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.onSubmit();
+        }
+    }
 
 }

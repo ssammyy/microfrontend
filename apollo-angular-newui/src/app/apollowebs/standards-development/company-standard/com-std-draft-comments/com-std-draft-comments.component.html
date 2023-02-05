@@ -73,11 +73,29 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form (ngSubmit)="onSubmit()" [formGroup]="uploadCommentsFormGroup" class="form">
+                                        <form  [formGroup]="uploadCommentsFormGroup" class="form">
                                             <div class="modal-body">
                                                 <h4 style="font-weight: bold">
                                                     The Kenya Bureau of Standards intends to adopt a Company Standard as detailed here below
                                                 </h4>
+                                                <div class="form-group col-12">
+                                                    <label>Company Standard Drafts</label>
+                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                        <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
+                                                            <div>
+                                                                <div class="d-flex w-100 align-items-center" >
+                                                                    <h3 class="mb-1" style="color: #0d0505"><b>Company Standard Draft Version- {{d+1}} </b></h3>
+                                                                </div>
+                                                            </div>
+                                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                                    (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
+                                                                <i class="fa fa-download"></i> Download Standard Draft</button>
+
+                                                        </div>
+
+
+                                                    </a>
+                                                </div>
                                                 <div class="row col-12">
                                                     <div class="form-group col-12">
                                                         <label><b>Title</b></label>
@@ -179,37 +197,77 @@
                                                                   placeholder="TC/Stakeholders Observation" type="text"></textarea>
 
                                                     </div>
-                                                    <div class="form-group col-12">
-                                                        <label>Company Standard Drafts</label>
-                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                            <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
-                                                                <div>
-                                                                    <div class="d-flex w-100 align-items-center" >
-                                                                        <h3 class="mb-1" style="color: #0d0505"><b>Company Standard Draft Version- {{d+1}} </b></h3>
-                                                                    </div>
-                                                                </div>
-                                                                <button mat-raised-button type="button" data-toggle="modal"
-                                                                        (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
-                                                                    <i class="fa fa-download"></i> Download Standard Draft</button>
-
-                                                            </div>
-
-
-                                                        </a>
-                                                    </div>
-
-
                                                 </div>
                                             </div>
 
                                             <input type="hidden" name="requestID" formControlName="requestID" value="{{actionRequest?.requestId}}" >
                                             <input type="hidden" name="draftID"  formControlName="draftID" value="{{actionRequest?.id}}" >
-                                            <div >
-                                                <button type="button" class="btn btn-default btn-sm float-left" data-dismiss="modal">Close</button>
-                                                <button  *ngIf="uploadCommentsFormGroup.valid" [disabled]="!uploadCommentsFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
-
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <button *ngIf="uploadCommentsFormGroup.valid" mat-raised-button
+                                                            class="btn btn-success" (click)="onClickAddResource()" type="button" >ADD COMMENT
+                                                    </button>
+                                                </div>
                                             </div>
+
                                         </form>
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Title</th>
+                                                        <th>Document Type</th>
+                                                        <th>Date</th>
+                                                        <th>Name of Recipient</th>
+                                                        <th>Email of Recipient</th>
+                                                        <th>Phone Number of Recipient</th>
+                                                        <th>Organization</th>
+                                                        <th>Clause</th>
+                                                        <th>Paragraph</th>
+                                                        <th>Type of Comment</th>
+                                                        <th>Comment</th>
+                                                        <th>Proposed Change</th>
+                                                        <th>TC/Stakeholders Observation</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let r of dataSaveResourcesRequiredList; let i=index">
+                                                        <td>{{r.commentTitle}}</td>
+                                                        <td>{{r.commentDocumentType}}</td>
+                                                        <td>{{r.uploadDate}}</td>
+                                                        <td>{{r.nameOfRespondent}}</td>
+                                                        <td>{{r.emailOfRespondent}}</td>
+                                                        <td>{{r.phoneOfRespondent}}</td>
+                                                        <td>{{r.nameOfOrganization}}</td>
+                                                        <td>{{r.clause}}</td>
+                                                        <td>{{r.paragraph}}</td>
+                                                        <td>{{r.typeOfComment}}</td>
+                                                        <td>{{r.comment}}</td>
+                                                        <td>{{r.proposedChange}}</td>
+                                                        <td>{{r.observation}}</td>
+                                                        <td>
+                                                            <button (click)="removeDataResource(i)"
+                                                                    type="button"
+                                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div class="modal-footer">
+                                                    <button  mat-raised-button  class="btn btn-danger" type="button" >CLOSE</button>
+                                                    <button *ngIf="predefinedSDCommentsDataAdded" mat-raised-button
+                                                            class="btn btn-success" (click)="onClickSaveWorkPlanScheduled()" type="button" >SUBMIT
+                                                    </button>
+                                                    <button *ngIf="!predefinedSDCommentsDataAdded" mat-raised-button (click)="onClickSaveWorkPlanScheduled()" class="btn btn-danger" type="button" >SUBMIT
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
