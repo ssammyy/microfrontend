@@ -1765,7 +1765,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.dataReportForm = this.formBuilder.group({
       id: null,
       referenceNumber: ['', Validators.required],
-      inspectionDate: ['', Validators.required],
+      // inspectionDate: ['', Validators.required],
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
       department: ['', Validators.required],
