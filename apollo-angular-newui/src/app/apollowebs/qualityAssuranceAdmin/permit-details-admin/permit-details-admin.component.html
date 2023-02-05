@@ -1674,73 +1674,77 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     </div>
                     <div class="card-body ">
                         <div *ngFor="let role of roles">
-                            <div *ngIf="role == 'MS_HOF_MODIFY' || role == 'MS_RM_MODIFY'">
+                            <div *ngIf="role == 'QA_MANAGER_MODIFY' || role == 'QA_HOF_MODIFY' || role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'">
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus" data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('updateSection')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus" data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('permitCompleteness')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.assignOfficerStatus " data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('assignOfficer')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus " data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('assignOfficer')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
                             </div>
                         </div>
-                        <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus" data-target="#allProcessModel"
-                           (click)="openModalAddDetails('updateSection')"
-                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
-
-                        <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus" data-target="#allProcessModel"
-                           (click)="openModalAddDetails('permitCompleteness')"
-                           class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
-
-                        <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.assignOfficerStatus " data-target="#allProcessModel"
-                           (click)="openModalAddDetails('assignOfficer')"
-                           class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
 
-                        <a data-toggle="modal" data-target="#reviewcompleteness"
-                           class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS</a>
 
-                        <a data-toggle="modal" data-target="#assign-officer"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ASSIGN OFFICER</a>
+<!--                        <a data-toggle="modal" data-target="#reviewcompleteness"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS</a>-->
 
-
-                        <a data-toggle="modal" data-target="#myModal"
-                           class="btn btn-kebs mat-raised-button mat-button-base">FILL STA OFFICIAL DETAILS</a>
-
-                        <a data-toggle="modal" data-target="#new-inspection-report"
-                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE NEW INSPECTION REPORT</a>
-
-                        <a data-toggle="modal" data-target="#SchemeSupervision"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SCHEME OF SUPERVISION</a>
-
-                        <a data-toggle="modal" data-target="#addssf-bsnumber"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF AND BS NUMBER</a>
-
-                        <a data-toggle="modal" data-target="#Modal"
-                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
-
-                        <a data-toggle="modal" data-target="#approve-reject-inspectionreport"
-                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT INSPECTION REPORT</a>
+<!--                        <a data-toggle="modal" data-target="#assign-officer"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ASSIGN OFFICER</a>-->
 
 
-                        <a data-toggle="modal" data-target="#add-standards"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ADD APPLICABLE STANDARDS</a>
+<!--                        <a data-toggle="modal" data-target="#myModal"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">FILL STA OFFICIAL DETAILS</a>-->
 
-                        <a data-toggle="modal" data-target="#add-standards"
-                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE APPLICABLE STANDARDS</a>
+<!--                        <a data-toggle="modal" data-target="#new-inspection-report"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE NEW INSPECTION REPORT</a>-->
 
-                        <a data-toggle="modal" data-target="#permitwarding"
-                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT WARDING</a>
+<!--                        <a data-toggle="modal" data-target="#SchemeSupervision"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SCHEME OF SUPERVISION</a>-->
 
-                        <a data-toggle="modal" data-target="#recommendations"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATIONS</a>
+<!--                        <a data-toggle="modal" data-target="#addssf-bsnumber"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF AND BS NUMBER</a>-->
 
-                        <a data-toggle="modal" data-target="#recommendations"
-                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATIONS</a>
+<!--                        <a data-toggle="modal" data-target="#Modal"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#approve-reject-inspectionreport"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT INSPECTION REPORT</a>-->
 
 
-                        <a data-toggle="modal" data-target="#inspection-date"
-                           class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE FACTORY VISIT </a>
+<!--                        <a data-toggle="modal" data-target="#add-standards"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD APPLICABLE STANDARDS</a>-->
 
-                        <a data-toggle="modal" data-target="#permitwarding"
-                           class="btn btn-kebs mat-raised-button mat-button-base">PSC APPROVAL/REJECTION</a>
+<!--                        <a data-toggle="modal" data-target="#add-standards"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE APPLICABLE STANDARDS</a>-->
 
-                        <a data-toggle="modal" data-target="#permitwarding"
-                           class="btn btn-kebs mat-raised-button mat-button-base">PCM APPROVAL/REJECTION</a>
+<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT WARDING</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#recommendations"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATIONS</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#recommendations"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATIONS</a>-->
+
+
+<!--                        <a data-toggle="modal" data-target="#inspection-date"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE FACTORY VISIT </a>-->
+
+<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">PSC APPROVAL/REJECTION</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">PCM APPROVAL/REJECTION</a>-->
 
 
                     </div>
