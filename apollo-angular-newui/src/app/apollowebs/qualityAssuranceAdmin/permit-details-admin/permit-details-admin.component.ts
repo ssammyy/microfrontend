@@ -29,6 +29,8 @@ import {ApiResponseModel} from '../../../core/store/data/ms/ms.model';
 import * as CryptoJS from 'crypto-js';
 import swal from 'sweetalert2';
 import {HttpErrorResponse} from '@angular/common/http';
+import {LoggedInUser, selectUserInfo} from '../../../core/store';
+import {Store} from '@ngrx/store';
 
 @Component({
     selector: 'app-permit-details-admin',
@@ -40,6 +42,9 @@ export class PermitDetailsAdminComponent implements OnInit {
     permitTypeName!: string;
     currDiv!: string;
     currDivLabel!: string;
+    roles: string[];
+    userLoggedInID: number;
+    userProfile: LoggedInUser;
     labResultsStatus!: string;
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
@@ -140,7 +145,12 @@ export class PermitDetailsAdminComponent implements OnInit {
     private permit_id: string;
 
     constructor(private formBuilder: FormBuilder,
-                public router: Router, private route: ActivatedRoute, private qaService: QaService, private SpinnerService: NgxSpinnerService, private internalService: QaInternalService,
+                public router: Router,
+                private route: ActivatedRoute,
+                private store$: Store<any>,
+                private qaService: QaService,
+                private SpinnerService: NgxSpinnerService,
+                private internalService: QaInternalService,
     ) {
     }
 
@@ -152,14 +162,20 @@ export class PermitDetailsAdminComponent implements OnInit {
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
             let key = '11A1764225B11AA1';
-            let encrypted = paramMap.get('id');
+            const encrypted = paramMap.get('id');
             key = CryptoJS.enc.Utf8.parse(key);
-            let decrypted = CryptoJS.AES.decrypt({ciphertext: CryptoJS.enc.Hex.parse(encrypted)}, key, {
+            const decrypted = CryptoJS.AES.decrypt({ciphertext: CryptoJS.enc.Hex.parse(encrypted)}, key, {
                 mode: CryptoJS.mode.ECB,
                 padding: CryptoJS.pad.ZeroPadding,
             });
             this.permitId = decrypted.toString(CryptoJS.enc.Utf8);
 
+        });
+
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.userLoggedInID = u.id;
+            this.userProfile = u;
+            return this.roles = u.roles;
         });
 
         this.steps = 1;
@@ -382,6 +398,22 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
 
+    openModalAddDetails(divVal: string): void {
+
+        const arrHead = [];
+
+        const arrHeadSave = [];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (divVal === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
+
+        this.currDiv = divVal;
+    }
+
+
 
     public getSelectedPermit(permitId: any): void {
 
@@ -517,10 +549,6 @@ export class PermitDetailsAdminComponent implements OnInit {
     reviewForComplemteness(formDirective): void {
 
         if (this.qaMCompleteness.valid) {
-
-            // if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
-            //     this.onClickSaveUploads("568","Marvin")
-            // }
 
             this.SpinnerService.show();
             this.internalService.submitQaMCompleteness(this.permit_id, this.qaMCompleteness.value).subscribe(
