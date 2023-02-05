@@ -235,6 +235,175 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+    fun updatePermitDetailsSaveSSFDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<SSFDetailsApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SSFDetailsApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitAddSSFDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun updatePermitDetailsSaveSelectedLabPDF(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<SaveLabPDFApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SaveLabPDFApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitSaveLabPDFSelectedDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun updatePermitDetailsLabResultsComplianceStatus(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<SaveLabComplianceApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SaveLabComplianceApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitSaveLabSaveComplianceDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun updatePermitDetailsSSFCompliance(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<SaveSSFComplianceApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SaveSSFComplianceApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitSaveSSFSaveComplianceDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsSaveRecommendation(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<SaveRecommendationApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SaveRecommendationApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitSaveRecommendationDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun updatePermitDetailsApproveRejectInspection(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<ApproveInspectionReportApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ApproveInspectionReportApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitApproveRejectInspectionDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+    fun updatePermitDetailsApproveRejectRecommendation(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<RecommendationApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, RecommendationApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitApproveRejectRecommendationDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
 
 

@@ -24,6 +24,50 @@ data class ScheduleInspectionApplyDto(
     var productStandardRemarks: String? = null
 )
 
+data class SaveLabPDFApplyDto(
+    @NotNull(message = "Required fileName Field")
+    var fileName: String,
+    @NotNull(message = "Required bsNumber Field")
+    var bsNumber: String,
+    @NotNull(message = "Required ssfID Field")
+    var ssfID: Long,
+)
+data class SaveLabComplianceApplyDto(
+    @NotNull(message = "Required pdfSavedID Field")
+    var pdfSavedID: Long,
+    @NotNull(message = "Required complianceStatus Field")
+    var complianceStatus: Boolean,
+    @NotNull(message = "Required complianceRemarks Field")
+    var complianceRemarks: String,
+)
+data class SaveSSFComplianceApplyDto(
+    @NotNull(message = "Required ssfID Field")
+    var ssfID: Long,
+    @NotNull(message = "Required complianceStatus Field")
+    var resultsAnalysis: Boolean,
+    @NotNull(message = "Required complianceRemarks Field")
+    var complianceRemarks: String,
+)
+//data class ApproveInspectionReportApplyDto(
+//    var inspectionReportID: Long?= null,
+//    var approvedRejectedStatus: String?= null,
+//    var supervisorComments: String?= null,
+//    var supervisorName: String?= null,
+//    var supervisorDate: Date?= null,
+//)
+data class SaveRecommendationApplyDto(
+    @NotNull(message = "Required recommendationRemarks Field")
+    var recommendationRemarks: String,
+)
+data class SSFDetailsApplyDto(
+    var id: Long? = null,
+    var ssfNo: String? = null,
+    var ssfSubmissionDate: Date? = null,
+    var bsNumber: String? = null,
+    var brandName: String? = null,
+    var productDescription: String? = null,
+)
+
 data class AllInspectionDetailsApplyDto(
     var id: Long? = null,
     var managementSystemsAndStandardsDetailsApply: ManagementSystemsAndStandardsDetailsApplyDto? = null,
@@ -108,9 +152,21 @@ data class StandardizationMarkSchemeDetailsApplyDto(
 )
 
 data class CompletenessApplyDto(
-    @NotNull(message = "Required Completeness Status")
+    @NotNull(message = "Required hofQamCompletenessStatus Status")
     var hofQamCompletenessStatus: Boolean,
     var hofQamCompletenessRemarks: String? = null
+)
+data class RecommendationApplyDto(
+    @NotNull(message = "Required recommendationApprovalStatus Status")
+    var recommendationApprovalStatus: Boolean,
+    var recommendationApprovalRemarks: String? = null
+)
+data class ApproveInspectionReportApplyDto(
+    @NotNull(message = "Required approvedRejectedStatus Status")
+    var approvedRejectedStatus: Boolean,
+    @NotNull(message = "Required inspectionReportID Status")
+    var inspectionReportID: Long,
+    var supervisorComments: String? = null
 )
 
 data class AssignOfficerApplyDto(
@@ -666,6 +722,7 @@ data class AllPermitDetailsDto(
     var schemeOfSuperVision: FilesListDto? = null,
     var batchID: Long? = null,
     var encryptedPermitId: String? = null,
+    var sta1DTO: STA1Dto? = null,
     var sta3DTO: STA3Dto? = null,
     var sta10DTO: AllSTA10DetailsDto? = null
 )

@@ -1626,7 +1626,7 @@ class QualityAssuranceController(
             qaInspectionReportRecommendation
         ) as QaInspectionReportRecommendationEntity
 
-        result = qaDaoServices.inspectionRecommendationUpdate(qaInspectionReportRecommendation, map, loggedInUser)
+        result = qaDaoServices.inspectionRecommendationUpdate(qaInspectionReportRecommendation, map, loggedInUser).first
         val userAssigned: UsersEntity
         when {
             //Todo: Create jasper inspection report

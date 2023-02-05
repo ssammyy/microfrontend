@@ -588,6 +588,352 @@ class QADaoServices(
         }
     }
 
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitAddSSFDetails(
+        permitID: Long,
+        body: SSFDetailsApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            var sampleSubmissionDetails = QaSampleSubmissionEntity()
+            SampleSubmissionRepo.findByIdOrNull(body.id?: -1L)
+                ?.let { fdr->
+                    sampleSubmissionDetails =saveSSFQADetails(body,fdr,permit.id ?: throw Exception("MISSING PERMIT ID"), permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),map,loggedInUser,true)
+                }?: kotlin.run {
+                sampleSubmissionDetails =saveSSFQADetails(body,sampleSubmissionDetails,permit.id ?: throw Exception("MISSING PERMIT ID"), permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),map,loggedInUser,false)
+            }
+
+            sampleSubmissionDetails = SampleSubmissionRepo.save(sampleSubmissionDetails)
+
+            with(permit) {
+                ssfCompletedStatus = 11
+                compliantStatus = null
+                permitStatus = applicationMapProperties.mapQaStatusPLABResults
+            }
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitSaveLabPDFSelectedDetails(
+        permitID: Long,
+        body: SaveLabPDFApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val fileContent = limsServices.mainFunctionLimsGetPDF(body.bsNumber, body.fileName)
+            val results = ssfSavePDFSelectedDetails(fileContent, body.ssfID, map, loggedInUser)
+
+            return when (results.first.status) {
+                map.successStatus -> {
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+                else -> {
+                    commonDaoServices.setErrorResponse(results.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitSaveLabSaveComplianceDetails(
+        permitID: Long,
+        body: SaveLabComplianceApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val permit = findPermitBYID(permitID)
+
+            val complianceDetails = QaSampleSubmittedPdfListDetailsEntity()
+            with(complianceDetails){
+                complianceStatus = when {
+                    body.complianceStatus -> {
+                        1
+                    }
+                    else -> {
+                        0
+                    }
+                }
+                complianceRemarks =body.complianceRemarks
+            }
+            val results = ssfUpdateComplianceDetails(body.pdfSavedID, complianceDetails, loggedInUser, map)
+
+            return when (results.first.status) {
+                map.successStatus -> {
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+                else -> {
+                    commonDaoServices.setErrorResponse(results.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitSaveSSFSaveComplianceDetails(
+        permitID: Long,
+        body: SaveSSFComplianceApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val permit = findPermitBYID(permitID)
+
+            val sampleSubmissionDetails = QaSampleSubmissionEntity()
+            with(sampleSubmissionDetails){
+                resultsAnalysis = when {
+                    body.resultsAnalysis -> {
+                        1
+                    }
+                    else -> {
+                        0
+                    }
+                }
+                complianceRemarks =body.complianceRemarks
+            }
+            val results = ssfUpdateDetails(body.ssfID, sampleSubmissionDetails, loggedInUser, map)
+
+            return when (results.first.status) {
+                map.successStatus -> {
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+                else -> {
+                    commonDaoServices.setErrorResponse(results.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+        @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitSaveRecommendationDetails(
+        permitID: Long,
+        body: SaveRecommendationApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(permit) {
+                when (permitType.id) {
+                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                        permitStatus = applicationMapProperties.mapUserTaskNameQAM
+                    }
+                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                        permitStatus = applicationMapProperties.mapUserTaskNameQAM
+                    }
+                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                        permitStatus = applicationMapProperties.mapUserTaskNameHOD
+                    }
+                }
+                recommendationRemarks = body.recommendationRemarks
+                permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+            }
+
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitApproveRejectRecommendationDetails(
+        permitID: Long,
+        body: RecommendationApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(permit) {
+
+                when {
+                    body.recommendationApprovalStatus -> {
+                        recommendationApprovalStatus = 1
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        permitStatus = applicationMapProperties.mapQaStatusPHodQamApproval
+                    }
+                    else -> {
+                        recommendationApprovalStatus =0
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                        permitStatus = applicationMapProperties.mapQaStatusDeferredRecommendationQAM
+                    }
+                }
+                recommendationApprovalRemarks = body.recommendationApprovalRemarks
+            }
+
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitApproveRejectInspectionDetails(
+        permitID: Long,
+        body: ApproveInspectionReportApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            val inspectionReportRecommendation = findQaInspectionReportRecommendationBYID(body.inspectionReportID)
+            with(inspectionReportRecommendation){
+                approvedRejectedStatus = when {
+                    body.approvedRejectedStatus -> {
+                        1
+                    }
+                    else -> {
+                        0
+                    }
+                }
+                supervisorFilledStatus= 1
+                supervisorComments= body.supervisorComments
+                supervisorName= commonDaoServices.concatenateName(loggedInUser)
+                supervisorDate= commonDaoServices.getCurrentDate()
+            }
+            val recommendationSaved =inspectionRecommendationUpdate(inspectionReportRecommendation, map, loggedInUser)
+
+            when (recommendationSaved.first.status) {
+                map.successStatus -> {
+                    with(permit) {
+
+
+                        when {
+                            body.approvedRejectedStatus -> {
+                                factoryInspectionReportApprovedRejectedStatus = 1
+                                when (permitType.id) {
+                                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                                        permitStatus = applicationMapProperties.mapQaStatusPRecommendationApproval
+                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                    }
+                                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                                        permitStatus = applicationMapProperties.mapQaStatusPRecommendationApproval
+                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                    }
+                                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                                        permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+                                    }
+                                }
+                            }
+                            else -> {
+                                factoryInspectionReportApprovedRejectedStatus =0
+                                when (permitType.id) {
+                                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
+                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                    }
+                                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
+                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                    }
+                                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
+                                    }
+                                }
+                            }
+                        }
+                        factoryInspectionReportApprovedRejectedRemarks = body.supervisorComments
+                    }
+                    //updating of Details in DB
+                    val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+                    return when (updateResults.first.status) {
+                        map.successStatus -> {
+                            permit = updateResults.second
+                            val batchID: Long? = getBatchID(permit, map, permitID)
+                            val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                            commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                        }
+                        else -> {
+                            commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                        }
+                    }
+                }
+                else -> {
+                    return  commonDaoServices.setErrorResponse(recommendationSaved.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
         fun addInspectionCheckListInspectionReportDetailsOPC(
         body: OperationProcessAndControlsDetailsApplyDto,
@@ -761,6 +1107,36 @@ class QADaoServices(
 
         }
         return inspectionTechnical
+    }
+
+    fun saveSSFQADetails(
+        body: SSFDetailsApplyDto,
+        inspection: QaSampleSubmissionEntity,
+        permitID: Long,
+        permitRefNUMBER: String,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        update:Boolean
+    ): QaSampleSubmissionEntity {
+        with(inspection) {
+            bsNumber?.toUpperCase()
+            permitId = permitID
+            permitRefNumber = permitRefNUMBER
+            status = map.activeStatus
+            labResultsStatus = map.inactiveStatus
+            when {
+                update -> {
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+                else -> {
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+            }
+
+        }
+        return inspection
     }
 
     fun saveInspectionCheckListRecommendation(
@@ -3716,6 +4092,7 @@ class QADaoServices(
             permit.sscId?.let { findUploadedFileBYId(it).let { f -> filesDtoDetails(f) } },
             batchID,
             jasyptStringEncryptor.encrypt(permit.id.toString()),
+            mapDtoSTA1View(permit),
             findSTA3WithPermitIDAndRefNumber(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID)?.let { mapDtoSTA3View(it,permitID) },
             findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber?: throw Exception("Missing Permit Ref Number"), permitID)?.let { listSTA10ViewDetails(permitID, it) }
         )
@@ -4180,28 +4557,11 @@ class QADaoServices(
                 }
             }
 
-//            val fileUploaded = findUploadedFileBYId(
-//                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
-//            )
-//            val fileContent = limsServices.mainFunctionLimsGetPDF(
-//                saveSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
-//                saveSSF.pdfSelectedName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
-//            )
-//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-            sendComplianceStatusAndLabReport(
-                permitDetails,
+            sendComplianceStatusAndLabReport(permitDetails,
                 complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
                 saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
                 null
             )
-
-//            sendEmailWithLabResults(
-//                commonDaoServices.findUserByID(
-//                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
-//                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
-//                fileContent.path,
-//                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-//            )
 
 
             sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
@@ -4251,54 +4611,7 @@ class QADaoServices(
 
             saveSSFPdf = SampleSubmissionSavedPdfListRepo.save(saveSSFPdf)
 
-
-            val permitDetails = findPermitWithPermitRefNumberLatest(
-                savedSSF.permitRefNumber ?: throw Exception("MISSING permit Ref Number")
-            )
-//
-////            var complianceValue: String? = null
-//            when (saveSSFPdf.complianceStatus) {
-//                map.activeStatus -> {
-////                    complianceValue = "COMPLIANT"
-//                    if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
-//                        permitInsertStatus(
-//                            permitDetails,
-//                            applicationMapProperties.mapQaStatusPGeneJustCationReport,
-//                            user )
-//                    } else {
-//                        permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
-//                    }
-//                }
-//                map.inactiveStatus -> {
-////                    complianceValue = "NON-COMPLIANT"
-//                    permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
-//                    permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPendingCorrectionManf, user)
-//                }
-//            }
-
-//            val fileUploaded = findUploadedFileBYId(
-//                saveSSFPdf.pdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
-//            )
-//            val fileContent = limsServices.mainFunctionLimsGetPDF(
-//                savedSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
-//                saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
-//            )
-//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-//            sendComplianceStatusAndLabReport(
-//                permitDetails,
-//                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
-//                saveSSFPdf.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
-//                mappedFileClass.document.toString()
-//            )
-//
-//            sendEmailWithLabResults(
-//                commonDaoServices.findUserByID(
-//                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
-//                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
-//                mappedFileClass.document.toString(),
-//                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-//            )
-
+            val permitDetails = findPermitWithPermitRefNumberLatest(savedSSF.permitRefNumber ?: throw Exception("MISSING permit Ref Number"))
 
             sr.payload = "New SSF Saved [BRAND name${savedSSF.brandName} and ${savedSSF.id}]"
             sr.names = "${savedSSF.brandName}"
@@ -7360,16 +7673,17 @@ class QADaoServices(
         qaInspectionReportRecommendation: QaInspectionReportRecommendationEntity,
         s: ServiceMapsEntity,
         user: UsersEntity
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity,QaInspectionReportRecommendationEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        var recomendationInspection = qaInspectionReportRecommendation
         try {
-            with(qaInspectionReportRecommendation) {
+            with(recomendationInspection) {
                 status = s.activeStatus
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }
-            qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
+            recomendationInspection = qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
 
             sr.payload = "qaInspectionReportRecommendation updated details [id= ${qaInspectionReportRecommendation.id}]"
             sr.names =
@@ -7393,7 +7707,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger {}.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr,recomendationInspection)
     }
 
     fun sendComplianceStatusAndLabReport(
