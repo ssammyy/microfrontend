@@ -833,6 +833,7 @@ class ForeignPvocIntegrations(
             rfc.fillDetails(rfcEntity)
             rfcEntity.rfcDocumentType = documentType
             rfcEntity.partner = user.id
+            rfcEntity.reviewStatus = 0
             rfcEntity.status = s.activeStatus.toLong()
 
             rfcEntity.createdBy = auth.name
@@ -850,6 +851,7 @@ class ForeignPvocIntegrations(
                     rfcItem.ownerName = rfc.exporterName
                     rfcItem.ownerPin = rfc.exporterPin
                     rfcItem.createdBy = auth.name
+                    rfcItem.status = s.activeStatus.toLong()
                     rfcItem.createdOn = Timestamp.from(Instant.now())
                     rfcItem.modifiedBy = auth.name
                     rfcItem.modifiedOn = Timestamp.from(Instant.now())
@@ -864,7 +866,7 @@ class ForeignPvocIntegrations(
     fun foreignRfcCor(rfc: RfcCorForm, s: ServiceMapsEntity, user: PvocPartnersEntity): RfcCorEntity? {
         val rfcEntity = RfcCorEntity()
         val auth = this.commonDaoServices.loggedInUserAuthentication()
-        this.rfcCorRepository.findByRfcNumberAndVersion(rfc.rfcNumber!!, rfc.version ?: 1)?.let {
+        return this.rfcCorRepository.findByRfcNumberAndVersion(rfc.rfcNumber!!, rfc.version ?: 1)?.let {
             return null
         } ?: run {
             // Mark Existing as inactive
@@ -877,13 +879,13 @@ class ForeignPvocIntegrations(
             rfc.fillCorRfc(rfcEntity)
             rfcEntity.partner = user.id
             rfcEntity.status = s.activeStatus.toLong()
+            rfcEntity.reviewStatus = 0
             rfcEntity.createdBy = auth.name
             rfcEntity.createdOn = Timestamp.from(Instant.now())
             rfcEntity.modifiedBy = auth.name
             rfcEntity.modifiedOn = Timestamp.from(Instant.now())
-            val saved = this.rfcCorRepository.save(rfcEntity)
+            this.rfcCorRepository.save(rfcEntity)
         }
-        return rfcEntity
     }
 
     fun getIdfData(idfNumber: String, ucrNumber: String): IdfEntityForm {

@@ -1768,7 +1768,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       id: null,
       dataReportValueToClone: null,
       referenceNumber: ['', Validators.required],
-      inspectionDate: ['', Validators.required],
+      // inspectionDate: ['', Validators.required],
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
       department: ['', Validators.required],
@@ -2635,6 +2635,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   updatePreliminaryReportHOFHODIO() {
     if (this.workPlanInspection?.msPreliminaryReportStatus) {
+      // tslint:disable-next-line:max-line-length
       this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport);
       this.investInspectReportForm.patchValue(this.selectedPreliminaryReportDetails);
       this.dataSaveDataInspectorInvestList = [];
