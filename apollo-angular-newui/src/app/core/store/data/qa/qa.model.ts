@@ -382,9 +382,11 @@ export class AllPermitDetailsDto {
     labResultsList: PermitSSFLabResultsDto;
     schemeOfSuperVision: FilesListDto;
     batchID: bigint;
+    sta10DTO: AllSTA10DetailsDto;
 
-    sta10DTO:AllSTA10DetailsDto;
+    sta1DTO: STA1;
 }
+
 
 
 export class AllSTA10DetailsDto {

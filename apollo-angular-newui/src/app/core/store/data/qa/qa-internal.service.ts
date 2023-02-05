@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
-import {FirmTypeEntityDto, MyTasksPermitEntityDto, PermitEntityDto} from "./qa.model";
+import {FirmTypeEntityDto, MyTasksPermitEntityDto, PermitEntityDto, STA1} from "./qa.model";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {formatDate} from "@angular/common";
@@ -49,4 +49,19 @@ export class QaInternalService {
     }
 
 
+
+    public submitQaMCompleteness(permitId: string, data: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.QAM_COMPLETENESS);
+        const params = new HttpParams()
+            .set('permitId', permitId);
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
 }
