@@ -384,13 +384,53 @@ class QADaoServices(
 
             with(permit) {
                 assignOfficerStatus = 1
-                qaoId = body.assignOfficerID
+                qaoId = commonDaoServices.findUserByID(body.assignOfficerID).id
                 permitStatus = applicationMapProperties.mapQaStatusPStandardsAdding
                 userTaskId = applicationMapProperties.mapUserTaskNameQAO
                 factoryVisit = commonDaoServices.getCalculatedDate(
                     permitType.factoryVisitDate
                         ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}")
                 )
+            }
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitAssignAssessorDetails(
+        permitID: Long,
+        body: AssignAssessorApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(permit) {
+                assignAssessorStatus = 1
+                leadAssessorId = commonDaoServices.findUserByID(body.leadAssessorId).id
+                assessorId = commonDaoServices.findUserByID(body.assessorId).id
+                permitStatus = applicationMapProperties.mapQaStatusPFactoryVisitSchedule
+                userTaskId = applicationMapProperties.mapUserTaskNameASSESSORS
+                factoryVisit = commonDaoServices.getCalculatedDate(permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}"))
             }
             //updating of Details in DB
             val updateResults = permitUpdateDetails(permit, map, loggedInUser)
@@ -928,6 +968,212 @@ class QADaoServices(
                 }
                 else -> {
                     return  commonDaoServices.setErrorResponse(recommendationSaved.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitApproveRejectPermitQAMDetails(
+        permitID: Long,
+        body: ApproveRejectPermitApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(permit) {
+                when {
+                    body.approvedRejectedStatus -> {
+                        hodQamApproveRejectStatus = 1
+                        userTaskId = applicationMapProperties.mapUserTaskNamePSC
+                        permitStatus = applicationMapProperties.mapQaStatusPPSCMembersAward
+                    }
+                    else -> {
+                        hodQamApproveRejectStatus = 0
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                        permitStatus = applicationMapProperties.mapQaStatusRejectedByHodQam
+                    }
+                }
+                hodQamApproveRejectRemarks = body.approvedRejectedRemarks
+            }
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitApproveRejectPermitPSCDetails(
+        permitID: Long,
+        body: ApproveRejectPermitApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(permit) {
+                when {
+                    body.approvedRejectedStatus -> {
+                        pscMemberApprovalStatus = 1
+                        userTaskId = applicationMapProperties.mapUserTaskNamePCM
+                        permitStatus = applicationMapProperties.mapQaStatusPPCMAwarding
+                    }
+                    else -> {
+                        pscMemberApprovalStatus = 0
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                        permitStatus = applicationMapProperties.mapQaStatusDeferredPSCMembers
+                    }
+                }
+                pscMemberApprovalRemarks = body.approvedRejectedRemarks
+            }
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitApproveRejectPermitPCMDetails(
+        permitID: Long,
+        body: ApproveRejectPermitApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(permit) {
+                when {
+                    body.approvedRejectedStatus -> {
+                        //TODO: CHANGE THE DATE OF EXPIRY IF RENEWAL
+                        val expiryDate = commonDaoServices.addYearsToCurrentDate(permitType.numberOfYears?: throw Exception("MISSING PERMIT TYPE NUMBER O YEARS TO BE ACTIVE"))
+                        val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
+                        val pcmId = loggedInUser.id
+                        when {
+                            permit.renewalStatus != map.activeStatus -> {
+                                val  a =awardedPermitNumberToBeAwarded?.toString()
+                                val b = permitType.markNumber?.toUpperCase()
+                                awardedPermitNumber =b+a
+                                varField6 = pcmId.toString()
+                                dateOfIssue = commonDaoServices.getCurrentDate()
+                                dateOfExpiry = expiryDate
+                                effectiveDate = commonDaoServices.getCurrentDate()
+                                //save awarded permit number
+                                val awardPermit = QaAwardedPermitTrackerEntity()
+                                awardPermit.awardedPermitNumber= awardedPermitNumberToBeAwarded
+                                awardPermit.createdOn=commonDaoServices.getTimestamp()
+                                iQaAwardedPermitTrackerEntityRepository.save(awardPermit)
+                            }
+                            permit.renewalStatus == map.activeStatus -> {
+                                val previousPermit = findPermitWithPermitRefNumberLatest(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
+                                awardedPermitNumber = previousPermit.awardedPermitNumber
+                                dateOfIssue = commonDaoServices.getCurrentDate()
+                                val date = previousPermit.dateOfExpiry
+                                var effectiveDateVariable: Date? = null
+                                var dateOfExpiryVariable: Date? = null
+                                when (date) {
+                                    null -> {
+                                        when (previousPermit.versionNumber) {
+                                            2L -> {
+
+                                                val migratedPermit = findPermitWithPermitRefNumberMigrated(permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
+                                                effectiveDateVariable = commonDaoServices.addYDayToDate(migratedPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"), 1)
+                                                dateOfExpiryVariable = commonDaoServices.addYearsToDate(effectiveDateVariable ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE MKI"), permitType?.numberOfYears ?: throw Exception("MISSING NUMBER OF YEAR"))
+
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        effectiveDateVariable = commonDaoServices.addYDayToDate(previousPermit.dateOfExpiry ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE KKK"), 1)
+                                        dateOfExpiryVariable = commonDaoServices.addYearsToDate(effectiveDateVariable ?: throw Exception("MISSING PREVIOUS YEAR EXPIRY DATE"), permitType?.numberOfYears ?: throw Exception("MISSING NUMBER OF YEAR"))
+                                    }
+                                }
+
+                                effectiveDate =effectiveDateVariable
+                                dateOfExpiry = dateOfExpiryVariable
+
+                            }
+                        }
+                        userTaskId = null
+                        permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
+                        permitAwardStatus = map.activeStatus
+                        pcmApprovalStatus = 1
+
+                        //Generate FMARK AFTER SMARK IS AWARDED
+                        when {
+                            permit.fmarkGenerateStatus == 1 && permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                                val fmarkGeneratedResults  = permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permit)
+                                when (fmarkGeneratedResults.first.status) {
+                                    map.successStatus -> {
+                                        permit.fmarkGenerated = 1
+                                    }
+                                    else -> {
+                                        return   commonDaoServices.setErrorResponse(fmarkGeneratedResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                                    }
+                                }
+                            }
+                            else -> {
+                                permit.fmarkGenerated = 0
+                            }
+                        }
+                    }
+                    else -> {
+                        pcmApprovalStatus = 0
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                        permitStatus = applicationMapProperties.mapQaStatusDeferredPCM
+                    }
+                }
+                pcmApprovalRemarks = body.approvedRejectedRemarks
+            }
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
                 }
             }
         } catch (error: Exception) {

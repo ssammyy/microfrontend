@@ -163,6 +163,31 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+    fun updatePermitDetailsAssignAssessor(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<AssignAssessorApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, AssignAssessorApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitAssignAssessorDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
     fun updatePermitDetailsStandards(req: ServerRequest): ServerResponse {
         return try {
             val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -390,6 +415,81 @@ class QualityAssuranceInternalUserHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updatePermitApproveRejectRecommendationDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsApproveRejectPermitQAM(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<ApproveRejectPermitApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ApproveRejectPermitApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitApproveRejectPermitQAMDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsApproveRejectPermitPSC(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<ApproveRejectPermitApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ApproveRejectPermitApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitApproveRejectPermitPSCDetails(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsApproveRejectPermitPCM(req: ServerRequest): ServerResponse {
+        return try {
+            val encryptedPermitId = req.paramOrNull("permitID") ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = jasyptStringEncryptor.decrypt(encryptedPermitId).toLong()
+            val body = req.body<ApproveRejectPermitApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ApproveRejectPermitApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitApproveRejectPermitPCMDetails(permitID,body)
                         .let {
                             ok().body(it)
                         }

@@ -161,6 +161,12 @@ data class RecommendationApplyDto(
     var recommendationApprovalStatus: Boolean,
     var recommendationApprovalRemarks: String? = null
 )
+
+data class ApproveRejectPermitApplyDto(
+    @NotNull(message = "Required approvedRejectedStatus Status")
+    var approvedRejectedStatus: Boolean,
+    var approvedRejectedRemarks: String? = null
+)
 data class ApproveInspectionReportApplyDto(
     @NotNull(message = "Required approvedRejectedStatus Status")
     var approvedRejectedStatus: Boolean,
@@ -170,8 +176,16 @@ data class ApproveInspectionReportApplyDto(
 )
 
 data class AssignOfficerApplyDto(
-    var assignOfficerID: Long? = null,
-    var sectionRemarks: String? = null
+    @NotNull(message = "Required assignOfficerID Status")
+    var assignOfficerID: Long,
+    var assignRemarks: String? = null
+)
+data class AssignAssessorApplyDto(
+    @NotNull(message = "Required assignOfficerID Status")
+    var leadAssessorId: Long,
+    @NotNull(message = "Required assignOfficerID Status")
+    var assessorId: Long,
+    var assignRemarks: String? = null
 )
 
 
