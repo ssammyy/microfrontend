@@ -3,9 +3,9 @@ import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
   ApproveDraft, ComJcJustificationDec,
-  COMPreliminaryDraft,
+  COMPreliminaryDraft, ComStdCommitteeRemarks, ComStdRemarks,
   Department, InternationalStandardsComments,
-  ISAdoptionProposal,
+  ISAdoptionProposal, ISCheckRequirements,
   ISJustificationProposal,
   StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
@@ -19,6 +19,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {HttpErrorResponse} from "@angular/common/http";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-com-std-editor',
@@ -27,25 +28,28 @@ import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 })
 export class ComStdEditorComponent implements OnInit {
   @ViewChildren(DataTableDirective)
-  dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
+  dtElements: QueryList<DataTableDirective>;
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger1: Subject<any> = new Subject<any>();
-  tasks: COMPreliminaryDraft[] = [];
-  public actionRequest: COMPreliminaryDraft | undefined;
-  public departments !: Department[] ;
-  stakeholderProposalComments: StakeholderProposalComments[] = [];
+  dtTrigger2: Subject<any> = new Subject<any>();
+  comStdRemarks: ComStdRemarks[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
-  public isAdoption: ISAdoptionProposal | undefined;
+  comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
+  isCheckRequirements:ISCheckRequirements[]=[];
+  public actionRequests: ISCheckRequirements | undefined;
   loadingText: string;
   approve: string;
   reject: string;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
-  isShowProposalTab=true;
+  isShowCommentsTabs= true;
+  isShowMainTab= true;
+  isShowMainTabs= true;
   public uploadDraftStandardFormGroup!: FormGroup;
   documentDTOs: DocumentDTO[] = [];
   blob: Blob;
+  public uploadedFiles:  FileList;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -57,41 +61,43 @@ export class ComStdEditorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getStdDraftForEditing();
+    this.getStdDraftEditing();
 
     this.uploadDraftStandardFormGroup = this.formBuilder.group({
-      id: [],
-      requestId:[],
-      title:[],
-      scope:[],
-      normativeReference:[],
-      symbolsAbbreviatedTerms:[],
-      clause:[],
-      special:[],
-      comStdNumber:[],
-      preparedBy: [],
-      docName:[],
-      requestNumber:[],
-        departmentId:[],
-        subject:[],
-        description:[],
-        contactOneFullName:[],
-        contactOneTelephone:[],
-        contactOneEmail:[],
-        contactTwoFullName:[],
-        contactTwoTelephone:[],
-        contactTwoEmail:[],
-        contactThreeFullName:[],
-        contactThreeTelephone:[],
-        contactThreeEmail:[],
-        companyName:[],
-        companyPhone:[]
+      id:null,
+      requestId:null,
+      draftId:null,
+      title:null,
+      scope:null,
+      normativeReference:null,
+      symbolsAbbreviatedTerms:null,
+      clause:null,
+      special:null,
+      comStdNumber:null,
+      preparedBy:null,
+      docName:null,
+      requestNumber:null,
+      departmentId:null,
+      subject:null,
+      description:null,
+      contactOneFullName:null,
+      contactOneTelephone:null,
+      contactOneEmail:null,
+      contactTwoFullName:null,
+      contactTwoTelephone:null,
+      contactTwoEmail:null,
+      contactThreeFullName:null,
+      contactThreeTelephone:null,
+      contactThreeEmail:null,
+      companyName:null,
+      companyPhone:null
 
     });
   }
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.dtTrigger1.unsubscribe();
   }
 
   showToasterSuccess(title:string,message:string){
@@ -106,20 +112,79 @@ export class ComStdEditorComponent implements OnInit {
     this.notifyService.showWarning(message, title)
 
   }
-  public getStdDraftForEditing(): void{
+  public getStdDraftEditing(): void {
+    this.loadingText = "Retrieving Drafts...";
     this.SpinnerService.show();
-    this.stdComStandardService.getStdDraftForEditing().subscribe(
-        (response: COMPreliminaryDraft[])=> {
-          this.SpinnerService.hide();
+    this.stdComStandardService.getStdDraftEditing().subscribe(
+        (response: ISCheckRequirements[]) => {
+          this.isCheckRequirements = response;
+          console.log(this.isCheckRequirements)
           this.rerender();
-          this.tasks = response;
+          this.SpinnerService.hide();
+
         },
         (error: HttpErrorResponse)=>{
           this.SpinnerService.hide();
-          alert(error.message);
+          console.log(error.message);
         }
     );
   }
+
+  toggleDisplayMainTab(){
+    this.isShowMainTab = !this.isShowMainTab;
+    this.isShowRemarksTab= true;
+    this.isShowCommentsTab= true;
+    this.isShowMainTabs= true;
+  }
+  toggleDisplayMainTabs(){
+    this.isShowMainTabs = !this.isShowMainTabs;
+    this.isShowMainTab= true;
+    this.isShowRemarksTab= true;
+    this.isShowCommentsTab= true;
+  }
+
+
+  toggleDisplayRemarksTab(requestId: number){
+    this.loadingText = "Loading ...."
+    this.SpinnerService.show();
+    this.stdComStandardService.getAllComments(requestId).subscribe(
+        (response: ComStdRemarks[]) => {
+          this.comStdRemarks = response;
+          this.SpinnerService.hide();
+          // console.log(this.comStdRemarks)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+        }
+    );
+    this.isShowCommentsTab = !this.isShowCommentsTab;
+    this.isShowRemarksTab= true;
+    this.isShowMainTab= true;
+    this.isShowMainTabs= true;
+
+  }
+  displayDraftComments(draftID: number){
+    //this.loadingText = "Loading ...."
+    this.SpinnerService.show();
+    this.stdComStandardService.getDraftComments(draftID).subscribe(
+        (response: ComStdCommitteeRemarks[]) => {
+          this.comStdCommitteeRemarks = response;
+          this.SpinnerService.hide();
+          console.log(this.comStdCommitteeRemarks)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+        }
+    );
+    this.isShowRemarksTab = !this.isShowRemarksTab;
+    this.isShowCommentsTab= true;
+    this.isShowMainTab= true;
+    this.isShowMainTabs= true;
+
+  }
+
 
   submitDraftForEditing(): void {
     this.loadingText = "Saving...";
@@ -127,7 +192,9 @@ export class ComStdEditorComponent implements OnInit {
     this.stdComStandardService.submitDraftForEditing(this.uploadDraftStandardFormGroup.value).subscribe(
         (response ) => {
           console.log(response);
-          this.getStdDraftForEditing();
+          this.onClickSaveUploads(response.body.draftId)
+          this.uploadDraftStandardFormGroup.reset();
+          this.getStdDraftEditing();
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Draft Prepared`);
 
@@ -138,10 +205,41 @@ export class ComStdEditorComponent implements OnInit {
           console.log(error.message);
         }
     );
-    this.hideModalDraftEditing();
+    this.hideModalStdEditing();
+
   }
 
-  public onOpenModal(task: COMPreliminaryDraft,mode:string,comStdDraftID: number): void{
+  onClickSaveUploads(comStdDraftID: string) {
+    if (this.uploadedFiles.length > 0) {
+      const file = this.uploadedFiles;
+      const formData = new FormData();
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+      }
+      this.SpinnerService.show();
+      this.stdComStandardService.uploadPDFileDetails(comStdDraftID, formData).subscribe(
+          (data: any) => {
+            this.SpinnerService.hide();
+            this.uploadedFiles = null;
+            console.log(data);
+            swal.fire({
+              title: 'Thank you....',
+              html:'Standard Draft Uploaded',
+              buttonsStyling: false,
+              customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+              },
+              icon: 'success'
+            });
+          },
+      );
+
+    }
+
+  }
+
+  public onOpenModals(iSCheckRequirement: ISCheckRequirements,mode:string,comStdDraftID: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -158,46 +256,48 @@ export class ComStdEditorComponent implements OnInit {
           //console.log(error.message);
         }
     );
-    if (mode==='draftStandardEditing') {
-      this.actionRequest = task;
-      button.setAttribute('data-target', '#draftStandardEditing');
+    if (mode==='draftStandardForEditing') {
+      this.actionRequests = iSCheckRequirement;
+      button.setAttribute('data-target', '#draftStandardForEditing');
       this.uploadDraftStandardFormGroup.patchValue(
           {
-            id: this.actionRequest.id,
-            requestId: this.actionRequest.requestId,
-            requestNumber: this.actionRequest.requestNumber,
-            title: this.actionRequest.title,
-            scope:this.actionRequest.scope,
-            normativeReference: this.actionRequest.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause:this.actionRequest.clause,
-            special:this.actionRequest.special,
-            comStdNumber:this.actionRequest.comStdNumber,
-              departmentId:this.actionRequest.departmentId,
-              subject:this.actionRequest.subject,
-              description:this.actionRequest.description,
-              contactOneFullName:this.actionRequest.contactOneFullName,
-              contactOneTelephone:this.actionRequest.contactOneTelephone,
-              contactOneEmail:this.actionRequest.contactOneEmail,
-              contactTwoFullName:this.actionRequest.contactTwoFullName,
-              contactTwoTelephone:this.actionRequest.contactTwoTelephone,
-              contactTwoEmail:this.actionRequest.contactTwoEmail,
-              contactThreeFullName:this.actionRequest.contactThreeFullName,
-              contactThreeTelephone:this.actionRequest.contactThreeTelephone,
-              contactThreeEmail:this.actionRequest.contactThreeEmail,
-              companyName:this.actionRequest.companyName,
-              companyPhone:this.actionRequest.companyPhone
+            id: this.actionRequests.id,
+            requestId: this.actionRequests.requestId,
+            draftId: this.actionRequests.draftId,
+            requestNumber: this.actionRequests.requestNumber,
+            title: this.actionRequests.title,
+            scope:this.actionRequests.scope,
+            normativeReference: this.actionRequests.normativeReference,
+            symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+            clause:this.actionRequests.clause,
+            special:this.actionRequests.special,
+            comStdNumber:this.actionRequests.comStdNumber,
+            departmentId:this.actionRequests.departmentId,
+            subject:this.actionRequests.subject,
+            description:this.actionRequests.description,
+            contactOneFullName:this.actionRequests.contactOneFullName,
+            contactOneTelephone:this.actionRequests.contactOneTelephone,
+            contactOneEmail:this.actionRequests.contactOneEmail,
+            contactTwoFullName:this.actionRequests.contactTwoFullName,
+            contactTwoTelephone:this.actionRequests.contactTwoTelephone,
+            contactTwoEmail:this.actionRequests.contactTwoEmail,
+            contactThreeFullName:this.actionRequests.contactThreeFullName,
+            contactThreeTelephone:this.actionRequests.contactThreeTelephone,
+            contactThreeEmail:this.actionRequests.contactThreeEmail,
+            companyName:this.actionRequests.companyName,
+            companyPhone:this.actionRequests.companyPhone
           }
       );
 
     }
+
     // @ts-ignore
     container.appendChild(button);
     button.click();
 
   }
 
-  viewPdfFile(pdfId: number, fileName: string, applicationType: string): void {
+  viewDraftFile(pdfId: number, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
     this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
         (dataPdf: any) => {
@@ -216,16 +316,16 @@ export class ComStdEditorComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Request`);
           console.log(error.message);
-          this.getStdDraftForEditing();
+          this.getStdDraftEditing();
           //alert(error.message);
         }
     );
   }
 
-  @ViewChild('closeModalDraftEditing') private closeModalDraftEditing: ElementRef | undefined;
+  @ViewChild('closeModalStdEditing') private closeModalStdEditing: ElementRef | undefined;
 
-  public hideModalDraftEditing() {
-    this.closeModalDraftEditing?.nativeElement.click();
+  public hideModalStdEditing() {
+    this.closeModalStdEditing?.nativeElement.click();
   }
 
 
