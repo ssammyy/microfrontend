@@ -1951,9 +1951,19 @@ class QADaoServices(
                     modifiedOn = Timestamp.from(Instant.now())
                 }
 
+                when {
+                    entity.firmCategory==1L && dto.selectedFirmTypeID>1 -> {
+                        entity.upgradeType = 1
+                    }
+                    entity.firmCategory==2L && dto.selectedFirmTypeID>2 -> {
+                        entity.upgradeType = 1
+                    }
+                }
+
                 //If the upgradeType is 1 means UpGarding while if the UpgradeType is 0 means downgrading
                 if (entity.upgradeType == 1) {
-                    val allPlantDetails =findAllPlantDetailsWithCompanyID(entity.id ?: throw ExpectedDataNotFound("Missing Company ID"))
+                    val allPlantDetails =
+                        findAllPlantDetailsWithCompanyID(entity.id ?: throw ExpectedDataNotFound("Missing Company ID"))
                     val allPermitDetailsNotPaid =
                         permitRepo.findByPermitTypeAndPaidStatusAndCompanyIdAndInvoiceGeneratedAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
                             applicationMapProperties.mapQAPermitTypeIdSmark,
@@ -2022,6 +2032,71 @@ class QADaoServices(
             } ?: throw NullValueNotAllowedException("Record not found")
     }
 
+    fun updateCompanyTurnOverManufactureDetails(
+        dto: CompanyTurnOverApproveDto,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+    ): UserCompanyEntityDto? {
+
+        companyProfileRepo.findByIdOrNull(dto.companyProfileID)
+            ?.let { entity ->
+//                if(entity.updateFirmType==dto.selectedFirmTypeID){
+                entity.apply {
+                    when {
+                        dto.updateDetailsStatus -> {
+                            updateDetailsStatus = 1
+                        }
+                        else -> {
+                            updateDetailsStatus = 0
+                        }
+                    }
+                    updateDetailsComment = dto.updateDetailsComment
+                    modifiedBy = user.userName
+                    modifiedOn = Timestamp.from(Instant.now())
+                }
+                val companyProfileEntity = companyProfileRepo.save(entity)
+
+                return UserCompanyEntityDto(
+                    companyProfileEntity.name,
+                    companyProfileEntity.kraPin,
+                    companyProfileEntity.userId,
+                    null,
+                    companyProfileEntity.registrationNumber,
+                    companyProfileEntity.postalAddress,
+                    companyProfileEntity.physicalAddress,
+                    companyProfileEntity.plotNumber,
+                    companyProfileEntity.companyEmail,
+                    companyProfileEntity.companyTelephone,
+                    companyProfileEntity.yearlyTurnover,
+                    companyProfileEntity.businessLines,
+                    companyProfileEntity.businessNatures,
+                    companyProfileEntity.buildingName,
+                    null,
+                    companyProfileEntity.streetName,
+                    companyProfileEntity.directorIdNumber,
+                    companyProfileEntity.region,
+                    companyProfileEntity.county,
+                    companyProfileEntity.town,
+                    null,
+                    null,
+                    null,
+                    null,
+                    iPermitRatingRepo.findByIdOrNull(companyProfileEntity.firmCategory)?.firmType
+                ).apply {
+                    id = companyProfileEntity.id
+
+                    status = companyProfileEntity.status
+                }
+//                }
+//        else {
+//                    val selectedFirmType = findFirmTypeById(dto.selectedFirmTypeID)
+//                    val requiredFirmType = entity.updateFirmType?.let { findFirmTypeById(it) }
+//                     throw NullValueNotAllowedException("Your are Upgrading/downgrading to ${selectedFirmType.firmType}, While request was to upgrade/downgrade to ${requiredFirmType?.firmType}")
+//                }
+
+            } ?: throw NullValueNotAllowedException("Record not found")
+    }
+
     fun requestUpdateOnCompanyTurnOverDetails(
         dto: CompanyTurnOverUpdateRequestDto,
         user: UsersEntity,
@@ -2041,7 +2116,7 @@ class QADaoServices(
                             upgradeType = 0
                         }
                     }
-                    requesterComment = requesterComment
+                    requesterComment = dto.requesterComment
                     updateFirmType = firmTypeDetails.id
                     requesterId = commonDaoServices.findUserByID(user.id?: throw Exception("MISSING USER ID")).id
                     modifiedBy = user.userName

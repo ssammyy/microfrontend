@@ -33,6 +33,7 @@ export class SampleSubmittedTimelineComponent implements OnInit {
   town$: Observable<Town[]>;
   loading = false;
 
+
   roles: string[];
   searchFormGroup!: FormGroup;
   dtOptions: DataTables.Settings = {};

@@ -177,11 +177,12 @@ export class QaService {
         );
     }
 
-    public qaUpdateSection(data: any): Observable<any> {
+    public qaUpdateSection(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.UPDATE_SECTION);
-        const params = new HttpParams();
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
@@ -193,11 +194,12 @@ export class QaService {
         );
     }
 
-    public qaPermitCompleteness(data: any): Observable<any> {
+    public qaPermitCompleteness(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.QAM_COMPLETENESS);
-        const params = new HttpParams();
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
@@ -209,11 +211,12 @@ export class QaService {
         );
     }
 
-    public qaAssignOfficer(data: any): Observable<any> {
+    public qaAssignOfficer(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ASSIGN_OFFICER);
-        const params = new HttpParams();
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
@@ -225,11 +228,12 @@ export class QaService {
         );
     }
 
-    public qaStandardsAdd(data: any): Observable<any> {
+    public qaStandardsAdd(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_STANDARD);
-        const params = new HttpParams();
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
@@ -241,11 +245,12 @@ export class QaService {
         );
     }
 
-    public qaScheduleInspectionReport(data: any): Observable<any> {
+    public qaScheduleInspectionReport(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SCHEDULE_INSPECTION);
-        const params = new HttpParams();
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;

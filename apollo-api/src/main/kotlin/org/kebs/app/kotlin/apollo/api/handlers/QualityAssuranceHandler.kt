@@ -2261,12 +2261,42 @@ class QualityAssuranceHandler(
         return try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val body = req.body<CompanyTurnOverUpdateRequestDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, CompanyTurnOverUpdateDto::class.java.name)
+            val errors: Errors = BeanPropertyBindingResult(body, CompanyTurnOverUpdateRequestDto::class.java.name)
             validator.validate(body, errors)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.requestUpdateOnCompanyTurnOverDetails(body, loggedInUser, map)
+                        ?.let { ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+    }
+
+
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun handleActionUpdateCompanyTurnOverDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<CompanyTurnOverApproveDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, CompanyTurnOverApproveDto::class.java.name)
+            validator.validate(body, errors)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updateCompanyTurnOverManufactureDetails(body, loggedInUser, map)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 
@@ -3780,6 +3810,29 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun invoiceListNoBatchIDMigrationWithDifference(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+//            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val invoiceList = qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(
+                loggedInUser.id ?: throw Exception("INVALID USER ID"), map.inactiveStatus
+            )
+
+            qaDaoServices.listPermitsInvoices(invoiceList, null, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun invoiceListNoBatchIDByPermitTypeMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -3965,8 +4018,7 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val batchID =
-                req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
+            val batchID =req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
             val batchInvoiceDetails = qaDaoServices.findBatchInvoicesWithID(batchID)
             KotlinLogging.logger { }.info(":::::: BATCH INVOICE :::::::")
             qaDaoServices.mapBatchInvoiceDetailsBalance(batchInvoiceDetails, loggedInUser, map).let {

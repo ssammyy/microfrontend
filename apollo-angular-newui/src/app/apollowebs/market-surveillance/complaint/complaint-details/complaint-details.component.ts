@@ -766,7 +766,7 @@ export class ComplaintDetailsComponent implements OnInit {
               break;
             case 'RejectAmendment':
               const newRejectAmendmentDto = new ComplaintAdviceRejectDto();
-              newRejectAmendmentDto.amendmentRemarks = this.dataSaveAcceptance.advisedWhereToRemarks;
+              newRejectAmendmentDto.amendmentRemarks = this.dataSaveAcceptance.amendmentRemarks;
               newRejectAmendmentDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
               // tslint:disable-next-line:max-line-length
               this.msService.msComplaintUpdateForAmendmentDetails(this.complaintInspection.complaintsDetails.refNumber, newRejectAmendmentDto).subscribe(
