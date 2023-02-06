@@ -34,10 +34,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.kra.StandardsLevyDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvider
-import org.kebs.app.kotlin.apollo.common.dto.CompanyTurnOverUpdateDto
-import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.MPesaMessageDto
-import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootMsg
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -2241,6 +2238,65 @@ class QualityAssuranceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
+                        ?.let { ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+    }
+
+
+  @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun handleRequestUpdateCompanyTurnOverDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<CompanyTurnOverUpdateRequestDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, CompanyTurnOverUpdateRequestDto::class.java.name)
+            validator.validate(body, errors)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.requestUpdateOnCompanyTurnOverDetails(body, loggedInUser, map)
+                        ?.let { ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+    }
+
+
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun handleActionUpdateCompanyTurnOverDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val body = req.body<CompanyTurnOverApproveDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, CompanyTurnOverApproveDto::class.java.name)
+            validator.validate(body, errors)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updateCompanyTurnOverManufactureDetails(body, loggedInUser, map)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 
