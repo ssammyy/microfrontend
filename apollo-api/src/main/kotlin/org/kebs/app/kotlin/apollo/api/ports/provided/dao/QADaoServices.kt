@@ -454,7 +454,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitStandardsDetails(
         permitID: Long,
@@ -492,7 +492,6 @@ class QADaoServices(
                     val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
-
                 else -> {
                     commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
                 }
@@ -3264,6 +3263,11 @@ class QADaoServices(
             return it
         } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
     }
+    fun findPermitBYIDAndAssignedIO(id: Long): PermitApplicationsEntity {
+        permitRepo.findByIdOrNull(id)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
+    }
 
     fun findPermitBYPermitNumber(permitNumber: String): PermitApplicationsEntity {
         permitRepo.findTopByAwardedPermitNumberOrderByIdDesc(permitNumber)?.let {
@@ -4550,7 +4554,9 @@ class QADaoServices(
             oldPermitStatus = permit.oldPermitStatus == 1
             encryptedPermitId = jasyptStringEncryptor.encrypt(permit.id.toString())
             encryptedUserId = jasyptStringEncryptor.encrypt(permit.userId.toString())
-
+            assignOfficerStatus = permit.assignOfficerStatus == 1
+            productStandards = permit.productStandard
+            assignOfficerID = permit.qaoId
 
         }
         return p
@@ -4646,7 +4652,8 @@ class QADaoServices(
                 permitID
             )?.let { mapDtoSTA3View(it, permitID) },
             findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID)?.let { listSTA10ViewDetails(permitID, it) },
-            loadSectionDetails(departmentEntity, map)
+            loadSectionDetails(departmentEntity, map),
+            mapAllStandardsTogether(findALlStandardsDetails(map.activeStatus))
         )
     }
 

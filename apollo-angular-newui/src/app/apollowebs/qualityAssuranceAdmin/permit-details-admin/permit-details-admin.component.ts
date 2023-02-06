@@ -88,6 +88,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     updateSectionForm: FormGroup;
     permitCompletenessForm: FormGroup;
     assignOfficerForm: FormGroup;
+    addStandardsForm: FormGroup;
+    scheduleInspectionForm: FormGroup;
 
 
 
@@ -282,12 +284,12 @@ export class PermitDetailsAdminComponent implements OnInit {
         });
         this.assignOfficerForm = this.formBuilder.group({
             assignOfficerID: ['', Validators.required],
-            assignRemarks: ['', Validators.required],
+            assignRemarks: null,
         });
 
-        this.addStandards = this.formBuilder.group({
+        this.addStandardsForm = this.formBuilder.group({
             productStandardID: ['', Validators.required],
-            productStandardRemarks: ['', Validators.required],
+            productStandardRemarks: null,
         });
 
         this.updateSectionForm = this.formBuilder.group({
@@ -303,6 +305,11 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.factoryVisit = this.formBuilder.group({
             inspectionDate: ['', Validators.required],
             productStandardRemarks: ['', Validators.required],
+        });
+
+        this.scheduleInspectionForm = this.formBuilder.group({
+            inspectionDate: ['', Validators.required],
+            scheduleRemarks: null,
         });
 
 
@@ -416,9 +423,9 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     openModalAddDetails(divVal: string): void {
 
-        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer'];
+        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate'];
 
-        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer'];
+        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -642,6 +649,69 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveAddStandardsForm(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'ADD/UPDATE STANDARDS DETAILS\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveAddStandardsForm(valid);
+            });
+    }
+
+    SaveAddStandardsForm(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaStandardsAdd(this.addStandardsForm.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('STANDARDS ADDED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+
+    onClickSaveScheduleInspectionForm(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'ADD/UPDATE STANDARDS DETAILS\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveScheduleInspectionForm(valid);
+            });
+    }
+
+    SaveScheduleInspectionForm(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaScheduleInspectionReport(this.scheduleInspectionForm.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('INSPECTION DATE ADDED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {

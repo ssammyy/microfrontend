@@ -1,4 +1,4 @@
-import { SectionsEntityDto } from '../master/master.model';
+import {SectionsEntityDto, StandardsDto} from '../master/master.model';
 import {UserEntityDto} from '../users';
 
 export class Qa {
@@ -291,7 +291,9 @@ export class PermitEntityDetails {
     fmarkGeneratedID: number;
     oldPermitStatus: number;
     varField7: string;
+    productStandards: number;
     assignOfficerStatus: boolean;
+    assignOfficerID: number;
 }
 
 
@@ -388,6 +390,7 @@ export class AllPermitDetailsDto {
     sta1DTO: STA1;
     sta3DTO: STA3;
     sectionList: SectionsEntityDto[];
+    standardsList: StandardsDto[];
 }
 
 
