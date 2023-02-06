@@ -579,7 +579,17 @@ data class CompanyTurnOverUpdateDto(
     var selectedFirmTypeID: Long,
     @NotEmpty(message = "is mandatory")
     var upgradeType: Long,
+)
 
+data class CompanyTurnOverUpdateRequestDto(
+    @NotEmpty(message = "is mandatory")
+    var companyProfileID: Long,
+    @NotEmpty(message = "is mandatory")
+    var updateFirmType: Long,
+    @NotEmpty(message = "is mandatory")
+    var requesterComment: Long,
+    @NotEmpty(message = "is mandatory")
+    var upgradeType: Boolean,
 )
 
 data class UserEntityDto(
