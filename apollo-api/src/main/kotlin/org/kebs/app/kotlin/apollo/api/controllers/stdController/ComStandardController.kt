@@ -618,10 +618,11 @@ class ComStandardController (val comStandardService: ComStandardService,
         return ServerResponse(HttpStatus.OK,"Decision",comStandardService.decisionOnComStdDraft(comStdDraft,companyStandardRemarks))
 
     }
+
     @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getStdDraftForEditing")
     @ResponseBody
-    fun getStdDraftForEditing(): MutableList<ComStdDraft>
+    fun getStdDraftForEditing(): MutableList<ComStandard>
     {
         return comStandardService.getStdDraftForEditing()
     }

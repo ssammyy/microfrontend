@@ -554,6 +554,19 @@ export class StdComStandardService {
         })
     );
   }
+  public getStdDraftForEditing(): Observable<COMPreliminaryDraft[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_EDITS_DRAFT);
+    const params = new HttpParams();
+    return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
+  }
+
+
+
+  public getStdDraftEditing(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_EDITS_DRAFT);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
 
   public getComPublishingTasks(): any {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_PB_TASKS);
@@ -594,11 +607,7 @@ export class StdComStandardService {
     );
   }
 
-  public getStdDraftForEditing(): Observable<COMPreliminaryDraft[]> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_EDITS_DRAFT);
-    const params = new HttpParams();
-    return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
-  }
+
 
   public submitDraftForEditing(iStandardUpload: IStandardUpload): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_SUBMIT_DRAFT);

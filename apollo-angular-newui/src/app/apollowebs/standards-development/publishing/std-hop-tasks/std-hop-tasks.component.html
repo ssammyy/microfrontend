@@ -271,7 +271,6 @@
                                     <td>{{isCheckRequirement.standardType}}</td>
                                     <td>{{isCheckRequirement.comStdNumber}}</td>
                                     <td>{{isCheckRequirement.uploadDate}}</td>
-                                    <td *ngIf="isCheckRequirement.status==0"><a  (click)="onOpenModals(isCheckRequirement,'draftStandardForEditing',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Submit Draft Standard For Editing</a></td>
                                     <td *ngIf="isCheckRequirement.status==1"><a  (click)="onOpenModals(isCheckRequirement,'checkRequirementsMet',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Check Requirements</a></td>
                                     <td *ngIf="isCheckRequirement.status==3"><a  (click)="onOpenModals(isCheckRequirement,'draftStandardEditing',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Edit Draft</a></td>
                                     <td *ngIf="isCheckRequirement.status==4"><a  (click)="onOpenModals(isCheckRequirement,'standardDrafting',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Draughting</a></td>
