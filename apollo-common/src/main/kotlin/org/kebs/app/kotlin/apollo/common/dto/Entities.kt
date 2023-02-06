@@ -25,6 +25,7 @@ package org.kebs.app.kotlin.apollo.common.dto
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.google.common.primitives.Booleans
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -578,7 +579,7 @@ data class CompanyTurnOverUpdateDto(
     @NotEmpty(message = "is mandatory")
     var selectedFirmTypeID: Long,
     @NotEmpty(message = "is mandatory")
-    var upgradeType: Long,
+    var upgradeType: Boolean,
 
 )
 

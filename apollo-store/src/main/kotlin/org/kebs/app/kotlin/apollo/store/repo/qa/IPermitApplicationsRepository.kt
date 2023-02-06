@@ -706,6 +706,11 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?
 
+//    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10IsNull(
+//        userId: Long,
+//        paymentStatus: Int
+//    ): List<QaInvoiceMasterDetailsEntity>?
+
     @Query(
         "SELECT a.* FROM  DAT_KEBS_QA_INVOICE_MASTER_DETAILS a\n" +
                 " JOIN DAT_KEBS_PERMIT_TRANSACTION b ON b.ID = a.PERMIT_ID\n" +

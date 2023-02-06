@@ -1954,10 +1954,18 @@ class QADaoServices(
                     modifiedOn = Timestamp.from(Instant.now())
                 }
 
+                when {
+                    entity.firmCategory==1L && dto.selectedFirmTypeID>1 -> {
+                        entity.upgradeType = 1
+                    }
+                    entity.firmCategory==2L && dto.selectedFirmTypeID>2 -> {
+                        entity.upgradeType = 1
+                    }
+                }
+
                 //If the upgradeType is 1 means UpGarding while if the UpgradeType is 0 means downgrading
                 if (entity.upgradeType == 1) {
-                    val allPlantDetails =
-                        findAllPlantDetailsWithCompanyID(entity.id ?: throw ExpectedDataNotFound("Missing Company ID"))
+                    val allPlantDetails = findAllPlantDetailsWithCompanyID(entity.id ?: throw ExpectedDataNotFound("Missing Company ID"))
                     val allPermitDetailsNotPaid =
                         permitRepo.findByPermitTypeAndPaidStatusAndCompanyIdAndInvoiceGeneratedAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
                             applicationMapProperties.mapQAPermitTypeIdSmark,

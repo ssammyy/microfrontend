@@ -582,7 +582,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     saveSectionFormResults(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaUpdateSection(this.updateSectionForm.value).subscribe(
+            this.qaService.qaUpdateSection(this.updateSectionForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
@@ -613,7 +613,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SavePermitCompletenessFormResults(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaPermitCompleteness(this.permitCompletenessForm.value).subscribe(
+            this.qaService.qaPermitCompleteness(this.permitCompletenessForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
@@ -644,7 +644,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SaveAssignOfficerForm(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaAssignOfficer(this.assignOfficerForm.value).subscribe(
+            this.qaService.qaAssignOfficer(this.assignOfficerForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
@@ -675,7 +675,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SaveAddStandardsForm(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaStandardsAdd(this.addStandardsForm.value).subscribe(
+            this.qaService.qaStandardsAdd(this.addStandardsForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
@@ -707,7 +707,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SaveScheduleInspectionForm(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaScheduleInspectionReport(this.scheduleInspectionForm.value).subscribe(
+            this.qaService.qaScheduleInspectionReport(this.scheduleInspectionForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
