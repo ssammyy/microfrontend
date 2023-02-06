@@ -1673,63 +1673,78 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <h4 class="card-title">Actions</h4>
                     </div>
                     <div class="card-body ">
-<!--                        <div *ngFor="let role of roles">-->
+                        <div *ngFor="let role of roles">
+                            <div *ngIf="role == 'QA_MANAGER_MODIFY' || role == 'QA_HOF_MODIFY' || role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'">
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus" data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('updateSection')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-<!--                        </div>-->
-                        <a data-toggle="modal" *ngIf="allPermitDetails?." data-target="#allProcessModel" (click)="openModalAddDetails('updateSection')"
-                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus" data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('permitCompleteness')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.assignOfficerStatus " data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('assignOfficer')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
-                        <a data-toggle="modal" data-target="#reviewcompleteness"
-                           class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS</a>
-
-                        <a data-toggle="modal" data-target="#assign-officer"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ASSIGN OFFICER</a>
-
-
-                        <a data-toggle="modal" data-target="#myModal"
-                           class="btn btn-kebs mat-raised-button mat-button-base">FILL STA OFFICIAL DETAILS</a>
-
-                        <a data-toggle="modal" data-target="#new-inspection-report"
-                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE NEW INSPECTION REPORT</a>
-
-                        <a data-toggle="modal" data-target="#SchemeSupervision"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SCHEME OF SUPERVISION</a>
-
-                        <a data-toggle="modal" data-target="#addssf-bsnumber"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF AND BS NUMBER</a>
-
-                        <a data-toggle="modal" data-target="#Modal"
-                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
-
-                        <a data-toggle="modal" data-target="#approve-reject-inspectionreport"
-                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT INSPECTION REPORT</a>
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus " data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('assignOfficer')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
+                            </div>
+                        </div>
 
 
-                        <a data-toggle="modal" data-target="#add-standards"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ADD APPLICABLE STANDARDS</a>
 
-                        <a data-toggle="modal" data-target="#add-standards"
-                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE APPLICABLE STANDARDS</a>
+<!--                        <a data-toggle="modal" data-target="#reviewcompleteness"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS</a>-->
 
-                        <a data-toggle="modal" data-target="#permitwarding"
-                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT WARDING</a>
-
-                        <a data-toggle="modal" data-target="#recommendations"
-                           class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATIONS</a>
-
-                        <a data-toggle="modal" data-target="#recommendations"
-                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATIONS</a>
+<!--                        <a data-toggle="modal" data-target="#assign-officer"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ASSIGN OFFICER</a>-->
 
 
-                        <a data-toggle="modal" data-target="#inspection-date"
-                           class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE FACTORY VISIT </a>
+<!--                        <a data-toggle="modal" data-target="#myModal"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">FILL STA OFFICIAL DETAILS</a>-->
 
-                        <a data-toggle="modal" data-target="#permitwarding"
-                           class="btn btn-kebs mat-raised-button mat-button-base">PSC APPROVAL/REJECTION</a>
+<!--                        <a data-toggle="modal" data-target="#new-inspection-report"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE NEW INSPECTION REPORT</a>-->
 
-                        <a data-toggle="modal" data-target="#permitwarding"
-                           class="btn btn-kebs mat-raised-button mat-button-base">PCM APPROVAL/REJECTION</a>
+<!--                        <a data-toggle="modal" data-target="#SchemeSupervision"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SCHEME OF SUPERVISION</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#addssf-bsnumber"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF AND BS NUMBER</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#Modal"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#approve-reject-inspectionreport"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT INSPECTION REPORT</a>-->
+
+
+<!--                        <a data-toggle="modal" data-target="#add-standards"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD APPLICABLE STANDARDS</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#add-standards"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE APPLICABLE STANDARDS</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT WARDING</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#recommendations"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATIONS</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#recommendations"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATIONS</a>-->
+
+
+<!--                        <a data-toggle="modal" data-target="#inspection-date"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE FACTORY VISIT </a>-->
+
+<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">PSC APPROVAL/REJECTION</a>-->
+
+<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+<!--                           class="btn btn-kebs mat-raised-button mat-button-base">PCM APPROVAL/REJECTION</a>-->
 
 
                     </div>
@@ -1746,26 +1761,74 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div *ngIf="(currDiv == 'reAssignHOF')">
+                                <div *ngIf="(currDiv == 'updateSection')">
+                                    <form [formGroup]="updateSectionForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Section</b></label>
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Please Select an option"
+                                                                    formControlName="sectionId" id="sectionId" name="sectionId" >
+                                                            <mat-option *ngFor="let app of allPermitDetails?.sectionList" [value]="app.id">{{app.section}}</mat-option>
+
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                    <label><b>Please write, in detail, your feedback for selecting the section:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea id="sectionRemarks" matInput type="text"
+                                                              formControlName="sectionRemarks"
+                                                              name="sectionRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'permitCompleteness')">
+                                    <form [formGroup]="permitCompletenessForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Completeness Status</b></label>
+                                                    <mat-form-field id="hofQamCompletenessStatus">
+                                                        <mat-select formControlName="hofQamCompletenessStatus"
+                                                                    name="hofQamCompletenessStatus"
+                                                                    placeholder="Please Select an option">
+                                                            <mat-option [value]="true">ACCEPT</mat-option>
+                                                            <mat-option [value]="false">DECLINE</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                    <label><b>Please write, in detail, your feedback for selecting the Remarks:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea id="hofQamCompletenessRemarks" matInput type="text"
+                                                              formControlName="hofQamCompletenessRemarks"
+                                                              name="hofQamCompletenessRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'assignOfficer')">
                                     <form [formGroup]="assignOfficerForm" class="form">
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
-                                                    <label for="assignedIo"><b>Select officer</b></label>
+                                                    <label><b>Select Officer</b></label>
                                                     <mat-form-field>
                                                         <mat-select placeholder="Please Select an option"
-                                                                    [class.is-invalid]="formAssignOfficerForm.assignedIo.invalid && formAssignOfficerForm.assignedIo.touched"
-                                                                    formControlName="assignedIo" id="assignedIo" name="assignedIo" >
-                                                            <mat-option *ngFor="let app of workPlanInspection.hofList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
-
+                                                                    formControlName="assignOfficerID"  id="assignOfficerID" name="assignOfficerID" >
+                                                            <mat-option *ngFor="let app of allPermitDetails?.officerList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
-                                                    <label for="assignedRemarks"><b>Please write, in detail, your feedback for assigning the officer:</b></label>
+                                                    <label><b>Please write, in detail, your feedback :</b></label>
                                                     <mat-form-field class="example-full-width">
-                                            <textarea id="assignedRemarks" matInput type="text"
-                                                      formControlName="assignedRemarks"
-                                                      name="assignedRemarks">
-                                            </textarea>
+                                                    <textarea  matInput type="text" formControlName="assignRemarks"
+                                                              name="assignRemarks">
+                                                    </textarea>
                                                     </mat-form-field>
                                                 </div>
                                             </div>
@@ -1777,8 +1840,20 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
                                 </button>
-                                <button *ngIf="(currDiv == 'reAssignOfficer')" mat-raised-button type="button" class="btn btn-success"
-                                        (click)="onClickSaveAssignIO(assignOfficerForm.valid);"
+                                <button *ngIf="(currDiv == 'updateSection')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSaveSectionFormResults(updateSectionForm.valid);"
+                                        [disabled]="!updateSectionForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'permitCompleteness')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSavePermitCompletenessFormResults(permitCompletenessForm.valid);"
+                                        [disabled]="!permitCompletenessForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'assignOfficer')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSavePermitCompletenessFormResults(assignOfficerForm.valid);"
                                         [disabled]="!assignOfficerForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT

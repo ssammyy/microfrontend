@@ -85,6 +85,10 @@ export class PermitDetailsAdminComponent implements OnInit {
     addStandards: FormGroup;
     factoryVisit: FormGroup;
 
+    updateSectionForm: FormGroup;
+    permitCompletenessForm: FormGroup;
+    assignOfficerForm: FormGroup;
+
 
 
 
@@ -276,14 +280,26 @@ export class PermitDetailsAdminComponent implements OnInit {
             hofQamCompletenessStatus: ['', Validators.required],
             hofQamCompletenessRemarks: ['', Validators.required],
         });
-        this.assignOfficer = this.formBuilder.group({
+        this.assignOfficerForm = this.formBuilder.group({
             assignOfficerID: ['', Validators.required],
-            sectionRemarks: ['', Validators.required],
+            assignRemarks: ['', Validators.required],
         });
+
         this.addStandards = this.formBuilder.group({
             productStandardID: ['', Validators.required],
             productStandardRemarks: ['', Validators.required],
         });
+
+        this.updateSectionForm = this.formBuilder.group({
+            sectionId: ['', Validators.required],
+            sectionRemarks: null,
+        });
+
+        this.permitCompletenessForm = this.formBuilder.group({
+            hofQamCompletenessStatus: ['', Validators.required],
+            hofQamCompletenessRemarks: null,
+        });
+
         this.factoryVisit = this.formBuilder.group({
             inspectionDate: ['', Validators.required],
             productStandardRemarks: ['', Validators.required],
@@ -400,9 +416,9 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     openModalAddDetails(divVal: string): void {
 
-        const arrHead = [];
+        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer'];
 
-        const arrHeadSave = [];
+        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -416,134 +432,229 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     public getSelectedPermit(permitId: any): void {
+        this.SpinnerService.show();
+        this.internalService.loadPermitDetail(permitId).subscribe(
+            (data: ApiResponseModel) => {
+                if (data.responseCode === '00') {
+                    this.loadPermitDetails(data);
+                } else {
+                    this.SpinnerService.hide();
+                    this.qaService.showError(data.message);
+                    window.history.back();
+                }
+            },
+        );
+    }
 
+    loadPermitDetails(data: ApiResponseModel) {
         let formattedArraySta10 = [];
         let formattedArrayOrdinaryFiles = [];
         let formattedArrayLabResultsList = [];
         let formattedArrayComplianceResultsList = [];
         let formattedArrayOlderVersionList = [];
         const formattedArrayInvoiceDetailsList = [];
-        this.SpinnerService.show();
-        this.internalService.loadPermitDetail(permitId).subscribe(
-            (data: ApiResponseModel) => {
-                if (data.responseCode === '00') {
-                    // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
-                    this.allPermitDetails = new AllPermitDetailsDto();
-                    this.allPermitDetails = data?.data as AllPermitDetailsDto;
-                    this.batchID = this.allPermitDetails.batchID;
-                    if (this.allPermitDetails.permitDetails.permitTypeID === this.SMarkTypeID) {
-                        this.permitTypeName = 'Standardization';
-                    } else if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
-                        this.permitTypeName = 'Fortification';
-                    }
-                    this.sta1 = this.allPermitDetails.sta1DTO;
-                    this.sta1Form.patchValue(this.sta1);
+        this.allPermitDetails = new AllPermitDetailsDto();
+        this.allPermitDetails = data?.data as AllPermitDetailsDto;
+        this.batchID = this.allPermitDetails.batchID;
+        if (this.allPermitDetails.permitDetails.permitTypeID === this.SMarkTypeID) {
+            this.permitTypeName = 'Standardization';
+        } else if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+            this.permitTypeName = 'Fortification';
+        }
+        this.sta1 = this.allPermitDetails.sta1DTO;
+        this.sta1Form.patchValue(this.sta1);
 
-                    this.allSTA10Details = this.allPermitDetails.sta10DTO;
-                    this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
-                    this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
-                    this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
-                    this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
-                    this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
-                    this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
-                    this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
-                    this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
+        this.allSTA10Details = this.allPermitDetails.sta10DTO;
+        this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
+        this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
+        this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
+        this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
+        this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
+        this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+        this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+        this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
 
 
-                    if (this.allPermitDetails.sta10FilesList !== []) {
-                        this.sta10FileList = this.allPermitDetails.sta10FilesList;
-                        // tslint:disable-next-line:max-line-length
-                        formattedArraySta10 = this.sta10FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id, i.document]);
-                        this.tableData2 = {
-                            headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                            dataRows: formattedArraySta10,
-                        };
-                    }
-                    if (this.allPermitDetails.ordinaryFilesList !== []) {
-                        this.ordinaryFilesList = this.allPermitDetails.ordinaryFilesList;
-                        // tslint:disable-next-line:max-line-length
-                        formattedArrayOrdinaryFiles = this.ordinaryFilesList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id]);
-                        this.tableData3 = {
-                            headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                            dataRows: formattedArrayOrdinaryFiles,
-                        };
-                    }
-                    if (this.allPermitDetails.labResultsList.labResultsList !== []) {
-                        this.labResultsDetailsList = this.allPermitDetails.labResultsList.labResultsList;
-                        // tslint:disable-next-line:max-line-length
-                        formattedArrayLabResultsList = this.labResultsDetailsList.map(i => [i.pdfName, i.complianceStatus, i.sffId, i.complianceRemarks, i.pdfSavedId]);
-                        this.tableData4 = {
-                            headerRow: ['File Name', 'Compliant Status', 'View Remarks', 'View PDF'],
-                            dataRows: formattedArrayLabResultsList,
-                        };
+        if (this.allPermitDetails.sta10FilesList !== []) {
+            this.sta10FileList = this.allPermitDetails.sta10FilesList;
+            // tslint:disable-next-line:max-line-length
+            formattedArraySta10 = this.sta10FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id, i.document]);
+            this.tableData2 = {
+                headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
+                dataRows: formattedArraySta10,
+            };
+        }
+        if (this.allPermitDetails.ordinaryFilesList !== []) {
+            this.ordinaryFilesList = this.allPermitDetails.ordinaryFilesList;
+            // tslint:disable-next-line:max-line-length
+            formattedArrayOrdinaryFiles = this.ordinaryFilesList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id]);
+            this.tableData3 = {
+                headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
+                dataRows: formattedArrayOrdinaryFiles,
+            };
+        }
+        if (this.allPermitDetails.labResultsList.labResultsList !== []) {
+            this.labResultsDetailsList = this.allPermitDetails.labResultsList.labResultsList;
+            // tslint:disable-next-line:max-line-length
+            formattedArrayLabResultsList = this.labResultsDetailsList.map(i => [i.pdfName, i.complianceStatus, i.sffId, i.complianceRemarks, i.pdfSavedId]);
+            this.tableData4 = {
+                headerRow: ['File Name', 'Compliant Status', 'View Remarks', 'View PDF'],
+                dataRows: formattedArrayLabResultsList,
+            };
 
-                        this.complianceResultsDetailsList = this.allPermitDetails.labResultsList.ssfResultsList;
-                        // tslint:disable-next-line:max-line-length
-                        formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
-                        this.tableData6 = {
-                            headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Add Remarks'],
-                            dataRows: formattedArrayComplianceResultsList,
-                        };
-                    }
-                    if (this.allPermitDetails.oldVersionList !== []) {
-                        this.olderVersionDetailsList = this.allPermitDetails.oldVersionList;
-                        // tslint:disable-next-line:max-line-length
-                        formattedArrayOlderVersionList = this.olderVersionDetailsList.map(i => [i.permitRefNumber, i.createdOn, i.permitStatus, i.versionNumber, i.id]);
-                        this.tableData5 = {
-                            headerRow: ['Permit Ref Number', 'Created On', 'Status', 'Version Number', 'Action'],
-                            dataRows: formattedArrayOlderVersionList,
-                        };
-                    }
-                    // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
-                    if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-                        this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                            (dataCertificatePdf: any) => {
-                                this.pdfSources = dataCertificatePdf;
-                            },
-                        );
-                    }
-                    if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
-                        const invoiceDetailsList = this.allPermitDetails.invoiceDetails.invoiceDetailsList;
-                        let inspectionFee = 0;
-                        let permitFee = 0;
-                        let fMarkFee = 0;
+            this.complianceResultsDetailsList = this.allPermitDetails.labResultsList.ssfResultsList;
+            // tslint:disable-next-line:max-line-length
+            formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
+            this.tableData6 = {
+                headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Add Remarks'],
+                dataRows: formattedArrayComplianceResultsList,
+            };
+        }
+        if (this.allPermitDetails.oldVersionList !== []) {
+            this.olderVersionDetailsList = this.allPermitDetails.oldVersionList;
+            // tslint:disable-next-line:max-line-length
+            formattedArrayOlderVersionList = this.olderVersionDetailsList.map(i => [i.permitRefNumber, i.createdOn, i.permitStatus, i.versionNumber, i.id]);
+            this.tableData5 = {
+                headerRow: ['Permit Ref Number', 'Created On', 'Status', 'Version Number', 'Action'],
+                dataRows: formattedArrayOlderVersionList,
+            };
+        }
+        // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
+        if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
+            this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                (dataCertificatePdf: any) => {
+                    this.pdfSources = dataCertificatePdf;
+                },
+            );
+        }
+        if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
+            const invoiceDetailsList = this.allPermitDetails.invoiceDetails.invoiceDetailsList;
+            let inspectionFee = 0;
+            let permitFee = 0;
+            let fMarkFee = 0;
 
-                        for (let h = 0; h < invoiceDetailsList.length; h++) {
-                            if (invoiceDetailsList[h].permitStatus === true) {
-                                permitFee = invoiceDetailsList[h].itemAmount;
-                            }
-                            if (invoiceDetailsList[h].inspectionStatus === true) {
-                                inspectionFee = invoiceDetailsList[h].itemAmount;
-                            }
-                            if (invoiceDetailsList[h].fmarkStatus === true) {
-                                fMarkFee = invoiceDetailsList[h].itemAmount;
-                            }
-                        }
-
-                        this.tableData12 = {
-                            headerRow: ['Item', 'Details/Fee'],
-                            dataRows: [
-                                ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
-                                ['Inspection Fee', `KSH ${inspectionFee}`],
-                                ['FMARK Permit', `KSH ${fMarkFee}`],
-                                ['SMARK Permit', `KSH ${permitFee}`],
-                                // ['Description', this.allPermitDetails.invoiceDetails.description],
-                                ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
-                                ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
-                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
-
-                            ],
-                        };
-                        this.SpinnerService.hide();
-
-                    }
-                } else {
-                    this.SpinnerService.hide();
-                    this.qaService.showError('Unable To View Permit.');
-                    window.history.back();
+            for (let h = 0; h < invoiceDetailsList.length; h++) {
+                if (invoiceDetailsList[h].permitStatus === true) {
+                    permitFee = invoiceDetailsList[h].itemAmount;
                 }
-            },
-        );
+                if (invoiceDetailsList[h].inspectionStatus === true) {
+                    inspectionFee = invoiceDetailsList[h].itemAmount;
+                }
+                if (invoiceDetailsList[h].fmarkStatus === true) {
+                    fMarkFee = invoiceDetailsList[h].itemAmount;
+                }
+            }
+
+            this.tableData12 = {
+                headerRow: ['Item', 'Details/Fee'],
+                dataRows: [
+                    ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
+                    ['Inspection Fee', `KSH ${inspectionFee}`],
+                    ['FMARK Permit', `KSH ${fMarkFee}`],
+                    ['SMARK Permit', `KSH ${permitFee}`],
+                    // ['Description', this.allPermitDetails.invoiceDetails.description],
+                    ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
+                    ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
+                    ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
+
+                ],
+            };
+            this.SpinnerService.hide();
+
+        }
+    }
+
+    onClickSaveSectionFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPDATE SECTION\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveSectionFormResults(valid);
+            });
+    }
+
+    saveSectionFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaUpdateSection(this.updateSectionForm.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SECTION DETAILS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSavePermitCompletenessFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'REVIEW FOR COMPLETENESS\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SavePermitCompletenessFormResults(valid);
+            });
+    }
+
+    SavePermitCompletenessFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaPermitCompleteness(this.permitCompletenessForm.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('PERMIT COMPLETENESS STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveAssignOfficerForm(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'Assign Officer\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveAssignOfficerForm(valid);
+            });
+    }
+
+    SaveAssignOfficerForm(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaAssignOfficer(this.assignOfficerForm.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
     }
 
     reviewForComplemteness(formDirective): void {

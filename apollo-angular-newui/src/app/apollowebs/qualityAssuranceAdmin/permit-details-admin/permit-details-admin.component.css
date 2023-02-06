@@ -239,12 +239,12 @@ h6 {
     border: 1px groove #eee;
 
 }
-@media screen and (min-width: 676px) {
-    .modal-dialog {
-        max-width: 80%;
-        margin-bottom: 150px;/* New width for default modal */
-    }
-}
+/*@media screen and (min-width: 676px) {*/
+/*    .modal-dialog {*/
+/*        max-width: 80%;*/
+/*        margin-bottom: 150px;!* New width for default modal *!*/
+/*    }*/
+/*}*/
 .input-form{
     cursor: not-allowed;
     background-color: #f1f1f1;
