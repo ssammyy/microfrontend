@@ -738,6 +738,9 @@ data class PermitDetailsDto(
     var varField7: String? = null,
     var encryptedPermitId: String? = null,
     var encryptedUserId: String? = null,
+    var productStandards: Long? = null,
+    var assignOfficerStatus: Boolean? = null,
+    var assignOfficerID: Long? = null,
 )
 
 data class AllPermitDetailsDto(
@@ -757,6 +760,7 @@ data class AllPermitDetailsDto(
     var sta3DTO: STA3Dto? = null,
     var sta10DTO: AllSTA10DetailsDto? = null,
     var sectionList: List<SectionsEntityDto>? = null,
+    var standardsList: List<StandardsDto>? = null,
 )
 
 

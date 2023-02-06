@@ -1689,7 +1689,20 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus " data-target="#allProcessModel"
                                    (click)="openModalAddDetails('assignOfficer')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
+                                   class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
+                            </div>
+                            <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null" data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('addStandardsDetails')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD STANDARDS DETAILS</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards != null" data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('addStandardsDetails')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE STANDARDS DETAILS</a>
+
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.inspectionScheduledStatus && allPermitDetails?.permitDetails?.productStandards != null" data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('scheduleInspectionDate')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
                             </div>
                         </div>
 
@@ -1786,6 +1799,31 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+                                <div *ngIf="(currDiv == 'addStandardsDetails')">
+                                    <form [formGroup]="addStandardsForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Standard</b></label>
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="Please Select an option"
+                                                                    formControlName="productStandardID" id="productStandardID" name="productStandardID" >
+                                                            <mat-option *ngFor="let app of allPermitDetails?.standardsList" [value]="app.id">{{app.standardTitle}} {{app.standardNumber}}</mat-option>
+
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                    <label><b>Please write, in detail, your feedback for selecting the section:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea id="productStandardRemarks" matInput type="text"
+                                                              formControlName="productStandardRemarks"
+                                                              name="productStandardRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                                 <div *ngIf="(currDiv == 'permitCompleteness')">
                                     <form [formGroup]="permitCompletenessForm" class="form">
                                         <div class="form-body">
@@ -1835,6 +1873,28 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+                                <div *ngIf="(currDiv == 'scheduleInspectionDate')">
+                                    <form [formGroup]="scheduleInspectionForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>InspectionDate:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="inspectionDate" id="inspectionDate" matInput name="inspectionDate"
+                                                               placeholder="Please enter Inspection Date"
+                                                               type="date">
+                                                    </mat-form-field>
+                                                    <label><b>Please write, in detail, your feedback :</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea  matInput type="text" formControlName="scheduleRemarks"
+                                                              name="scheduleRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                             <div class="modal-footer">
 
@@ -1853,8 +1913,20 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 >SUBMIT
                                 </button>
                                 <button *ngIf="(currDiv == 'assignOfficer')" mat-raised-button type="button" class="btn btn-success"
-                                        (click)="onClickSavePermitCompletenessFormResults(assignOfficerForm.valid);"
+                                        (click)="onClickSaveAssignOfficerForm(assignOfficerForm.valid);"
                                         [disabled]="!assignOfficerForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'addStandardsDetails')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSaveAddStandardsForm(addStandardsForm.valid);"
+                                        [disabled]="!addStandardsForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'scheduleInspectionDate')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSaveScheduleInspectionForm(scheduleInspectionForm.valid);"
+                                        [disabled]="!scheduleInspectionForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>

@@ -802,7 +802,7 @@ export const ROUTES: RouteInfo[] = [
            // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
             {path: 'comStdList', title: 'Company Standard Requests', ab: 'CSR'},
             {path: 'comStdDraft', title: 'Uploaded Drafts', ab: 'UT'},
-           // {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
+            {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
             //{path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
             //{path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
 

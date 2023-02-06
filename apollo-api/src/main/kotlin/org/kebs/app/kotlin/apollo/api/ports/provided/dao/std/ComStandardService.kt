@@ -822,8 +822,8 @@ class ComStandardService(
         }
     }
 
-    fun getStdDraftForEditing(): MutableList<ComStdDraft> {
-        return comStdDraftRepository.getStdDraftForEditing()
+    fun getStdDraftForEditing(): MutableList<ComStandard> {
+        return companyStandardRepository.getComStdForEditing()
     }
 
     fun submitDraftForEditing(companyStandard: CompanyStandard) : CompanyStandard

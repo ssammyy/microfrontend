@@ -19,7 +19,7 @@
                                 <i class="material-icons">assignment</i>
                             </div>
                             <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
-                                Tasks <span class="badge badge-primary">{{tasks.length}}</span>
+                                Tasks <span class="badge badge-primary">{{isCheckRequirements.length}}</span>
                             </button></div>
                         </div>
                         <div class="card-body">
@@ -31,150 +31,116 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th class="knw">Request Number</th>
-                                        <th class="sl">Company Name</th>
-                                        <th class="sl">Phone Number</th>
-                                        <th class="sl">Draft Number</th>
-                                        <th class="requestNumber">Title </th>
-                                        <th class="knw">Company Contact Name</th>
-                                        <th class="sl">Company Contact Telephone</th>
-                                        <th class="sl">Company Contact Email</th>
-                                        <th class="sl">Deadline</th>
+                                        <th class="knw">Title</th>
+                                        <th class="sl">Scope</th>
+                                        <th class="sl">Clause</th>
+                                        <th class="requestNumber">Standard Type </th>
+                                        <th class="knw">Standard Number</th>
+                                        <th>Date</th>
                                         <th class="action">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr  *ngFor="let task of tasks let i=index">
+                                    <tr  *ngFor="let isCheckRequirement of isCheckRequirements let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{task.requestNumber}}</td>
-                                        <td>{{task.companyName}}</td>
-                                        <td>{{task.companyPhone}}</td>
-                                        <td>{{task.draftNumber}}</td>
-                                        <td>{{task.title}}</td>
-                                        <td>{{task.contactOneFullName}}</td>
-                                        <td>{{task.contactOneTelephone}}</td>
-                                        <td>{{task.contactOneEmail}}</td>
-                                        <td>{{task.deadlineDate | date: 'yyyy-MM-dd'}}</td>
-                                        <td *ngIf="task.status==3" ><a  (click)="onOpenModal(task,'draftStandardEditing',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Upload Draft</a></td>
-
+                                        <td>{{isCheckRequirement.title}}</td>
+                                        <td>{{isCheckRequirement.scope}}</td>
+                                        <td>{{isCheckRequirement.clause}}</td>
+                                        <td>{{isCheckRequirement.standardType}}</td>
+                                        <td>{{isCheckRequirement.comStdNumber}}</td>
+                                        <td>{{isCheckRequirement.uploadDate}}</td>
+                                        <td *ngIf="isCheckRequirement.status==0"><a  (click)="onOpenModals(isCheckRequirement,'draftStandardForEditing',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Submit Draft Standard For Editing</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
 
 
-                                <div class="modal fade" id="draftStandardEditing" tabindex="-1" role="dialog" aria-labelledby="draftStandardEditingModalLabel" aria-hidden="true">a
+                                <div class="modal fade" id="draftStandardForEditing" tabindex="-1" role="dialog" aria-labelledby="draftStandardEditingModalLabel" aria-hidden="true">a
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h3 class="modal-title" id="draftStandardEditingModalLabel">Approve Draft</h3>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="close" #closeModalStdEditing data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <<form (ngSubmit)="submitDraftForEditing()" [formGroup]="uploadDraftStandardFormGroup" class="form">
-                                            <div class="modal-body">
-                                                <div class="form-body">
+                                            <form (ngSubmit)="submitDraftForEditing()" [formGroup]="uploadDraftStandardFormGroup" class="form">
+                                                <div class="modal-body">
+                                                    <div class="form-body">
 
 
-                                                    <div class="form-group col-12">
-                                                        <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input"  formControlName="comStdNumber" name="comStdNumber"
-                                                                  placeholder="Standard Number" type="text" >{{actionRequest?.comStdNumber}}</textarea>
-
-                                                    </div>
-
-                                                    <div class="form-group col-12">
-                                                        <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                                  class="form-control one-column-input"  formControlName="title" name="title"
-                                                                  placeholder="Title" type="text" >{{actionRequest?.title}}</textarea>
-
-                                                    </div>
-
-                                                    <input type="hidden" formControlName="departmentId" value="{{actionRequest?.departmentId}}" name="departmentId" >
-                                                    <input type="hidden" formControlName="subject" value="{{actionRequest?.subject}}" name="subject" >
-                                                    <input type="hidden" formControlName="description" value="{{actionRequest?.description}}" name="description" >
-                                                    <input type="hidden" formControlName="contactOneFullName" value="{{actionRequest?.contactOneFullName}}" name="contactOneFullName" >
-                                                    <input type="hidden" formControlName="contactOneTelephone" value="{{actionRequest?.contactOneTelephone}}" name="contactOneTelephone" >
-                                                    <input type="hidden" formControlName="contactOneEmail" value="{{actionRequest?.contactOneEmail}}" name="contactOneEmail" >
-
-                                                    <input type="hidden" formControlName="contactTwoFullName" value="{{actionRequest?.contactTwoFullName}}" name="contactTwoFullName" >
-                                                    <input type="hidden" formControlName="contactTwoTelephone" value="{{actionRequest?.contactTwoTelephone}}" name="contactTwoTelephone" >
-                                                    <input type="hidden" formControlName="contactTwoEmail" value="{{actionRequest?.contactTwoEmail}}" name="contactTwoEmail" >
-                                                    <input type="hidden" formControlName="contactThreeFullName" value="{{actionRequest?.contactThreeFullName}}" name="contactThreeFullName" >
-                                                    <input type="hidden" formControlName="contactThreeTelephone" value="{{actionRequest?.contactThreeTelephone}}" name="contactThreeTelephone" >
-                                                    <input type="hidden" formControlName="contactThreeEmail" value="{{actionRequest?.contactThreeEmail}}" name="contactThreeEmail" >
-
-                                                    <input type="hidden" formControlName="companyName" value="{{actionRequest?.companyName}}" name="companyName" >
-                                                    <input type="hidden" formControlName="companyPhone" value="{{actionRequest?.companyPhone}}" name="companyPhone" >
-
-
-                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                        <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
-                                                            <div>
-                                                                <div class="d-flex w-100 align-items-center" >
-                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts - {{d+1}} </b></h5>
-                                                                </div>
-                                                            </div>
-                                                            <button mat-raised-button type="button" data-toggle="modal"
-                                                                    (click)="viewPdfFile( documentDTO.id,'draft'+documentDTO.id, 'application/octet-stream')" target="_blank" class="btn btn-info btn-sm ">
-                                                                <i class="material-icons">visibility</i>
-
-                                                            </button>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Standard Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                      class="form-control one-column-input"  formControlName="comStdNumber" name="comStdNumber"
+                                                                      placeholder="Standard Number" type="text" >{{actionRequests?.comStdNumber}}</textarea>
 
                                                         </div>
 
+                                                        <div class="form-group col-12">
+                                                            <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                      class="form-control one-column-input"  formControlName="title" name="title"
+                                                                      placeholder="Title" type="text" >{{actionRequests?.title}}</textarea>
 
-                                                    </a>
-
-<!--                                                    <div class="form-group col-12">-->
-<!--                                                        <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                                                                  class="form-control one-column-input"  formControlName="normativeReference" name="normativeReference"-->
-<!--                                                                  placeholder="Normative Reference" type="text" >{{actionRequest?.normativeReference}}</textarea>-->
-
-<!--                                                    </div>-->
-<!--                                                    <div class="form-group col-12">-->
-<!--                                                        <label><b>Symbols Abbreviated Terms</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                                                                  class="form-control one-column-input"  formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms"-->
-<!--                                                                  placeholder="Company Standard Clause" type="text" >{{actionRequest?.symbolsAbbreviatedTerms}}</textarea>-->
-
-<!--                                                    </div>-->
-<!--                                                    <div class="form-group col-12">-->
-<!--                                                        <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                                                                  class="form-control one-column-input"  formControlName="clause" name="clause"-->
-<!--                                                                  placeholder="Company Standard Clause" type="text" >{{actionRequest?.clause}}</textarea>-->
-
-<!--                                                    </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                                                                      class="form-control one-column-input"  formControlName="scope" name="scope"-->
-<!--                                                                      placeholder="Company Standard Scope" type="text" >{{actionRequest?.scope}}</textarea>-->
-
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label><b>Special</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
-<!--                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
-<!--                                                                      class="form-control one-column-input"   formControlName="special" name="special"-->
-<!--                                                                      placeholder="Company Standard Special" type="text" >{{actionRequest?.special}}</textarea>-->
-
-<!--                                                        </div>-->
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Standard Draft</b></label>
+                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
+                                                                    <div>
+                                                                        <div class="d-flex w-100 align-items-center" >
+                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button mat-raised-button type="button" data-toggle="modal"
+                                                                            (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
+                                                                        <i class="fa fa-download"></i> Download Standard Draft</button>
 
 
-                                                    <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequest?.requestId}}" >
-                                                    <input type="hidden" formControlName="id" name="id" value="{{actionRequest?.id}}" >
-                                                    <input type="hidden" formControlName="requestNumber" name="requestNumber" value="{{actionRequest?.requestNumber}}" >
+                                                                </div>
+
+
+                                                            </a>
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-12">
+                                                                <label><b>Attach Draft</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <form #demoForm="ngForm">
+                                                                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".docx" ></file-upload>
+                                                                    <input class="form-control one-column-input" ngModel="Report"  name="DocDescription" type="hidden">
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequests?.draftId}}" >
+                                                        <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.requestId}}" >
+                                                        <input type="hidden" formControlName="id" name="id" value="{{actionRequests?.id}}" >
+                                                        <input type="hidden" formControlName="requestNumber" name="requestNumber" value="{{actionRequests?.requestNumber}}" >
+
+                                                        <input type="hidden" formControlName="departmentId" value="{{actionRequests?.departmentId}}" name="departmentId" >
+                                                        <input type="hidden" formControlName="subject" value="{{actionRequests?.subject}}" name="subject" >
+                                                        <input type="hidden" formControlName="description" value="{{actionRequests?.description}}" name="description" >
+                                                        <input type="hidden" formControlName="contactOneFullName" value="{{actionRequests?.contactOneFullName}}" name="contactOneFullName" >
+                                                        <input type="hidden" formControlName="contactOneTelephone" value="{{actionRequests?.contactOneTelephone}}" name="contactOneTelephone" >
+                                                        <input type="hidden" formControlName="contactOneEmail" value="{{actionRequests?.contactOneEmail}}" name="contactOneEmail" >
+
+                                                        <input type="hidden" formControlName="contactTwoFullName" value="{{actionRequests?.contactTwoFullName}}" name="contactTwoFullName" >
+                                                        <input type="hidden" formControlName="contactTwoTelephone" value="{{actionRequests?.contactTwoTelephone}}" name="contactTwoTelephone" >
+                                                        <input type="hidden" formControlName="contactTwoEmail" value="{{actionRequests?.contactTwoEmail}}" name="contactTwoEmail" >
+                                                        <input type="hidden" formControlName="contactThreeFullName" value="{{actionRequests?.contactThreeFullName}}" name="contactThreeFullName" >
+                                                        <input type="hidden" formControlName="contactThreeTelephone" value="{{actionRequests?.contactThreeTelephone}}" name="contactThreeTelephone" >
+                                                        <input type="hidden" formControlName="contactThreeEmail" value="{{actionRequests?.contactThreeEmail}}" name="contactThreeEmail" >
+
+                                                        <input type="hidden" formControlName="companyName" value="{{actionRequests?.companyName}}" name="companyName" >
+                                                        <input type="hidden" formControlName="companyPhone" value="{{actionRequests?.companyPhone}}" name="companyPhone" >
+
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
-                                            </div>
-                                        </form>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
