@@ -462,6 +462,8 @@ export class PermitDetailsAdminComponent implements OnInit {
         const formattedArrayInvoiceDetailsList = [];
         this.allPermitDetails = new AllPermitDetailsDto();
         this.allPermitDetails = data?.data as AllPermitDetailsDto;
+        this.permitID = String(this.allPermitDetails.permitDetails.id);
+        console.log('Permit ID added'+this.permitID)
         this.batchID = this.allPermitDetails.batchID;
         if (this.allPermitDetails.permitDetails.permitTypeID === this.SMarkTypeID) {
             this.permitTypeName = 'Standardization';
