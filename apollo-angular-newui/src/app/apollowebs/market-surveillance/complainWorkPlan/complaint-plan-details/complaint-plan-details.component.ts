@@ -70,9 +70,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
-  averageCompliance: number;
-  columnValues: any[];
   active: Number = 0;
+  averageCompliance: number = 0;
   selectedFile: File;
   selectedRefNo: string;
   totalComplianceValue: Number = 0;
@@ -85,8 +84,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   addLabParamStatus = true;
   addProductsStatus = true;
   addSeizureProductsStatus = true;
-  isInitialReport: boolean = false;
   disableDivision = true;
+  isInitialReport: boolean = false;
   isImport = 0;
   defaultPageSize = 20;
   standardsArray = [];
@@ -223,6 +222,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadedFiles: FileList;
   uploadedFilesSeizedGoods: FileList;
   uploadedFilesDataReport: FileList;
+  arrayOfUploadedDataReportFiles: File[] = [];
   fileToUpload: File | null = null;
   resetUploadedFiles: FileList;
   selectedCounty = 0;
@@ -480,6 +480,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         title: 'VERSION',
         type: 'number',
         filter: false,
+        sort: true,
+        sortDirection: 'desc'
       },
       createdBy: {
         title: 'CREATED BY',
@@ -922,6 +924,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         title: 'VERSION NUMBER',
         type: 'string',
         filter: false,
+        sort: true,
+        sortDirection: 'desc'
       },
       createdBy: {
         title: 'CREATED BY',
@@ -1665,8 +1669,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.currentDateDetails = new Date();
 
-    console.log('currentdate' + this.currentDateDetails);
+    if(this.workPlanInspection?.dataReportDto?.length!=0){
+        this.calculateAverageCompliance();
+    }
 
+    console.log('currentdate' + this.currentDateDetails);
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       this.userLoggedInID = u.id;
@@ -1829,6 +1836,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureDeclarationForm = this.formBuilder.group({
       id: null,
       docID: null,
+      seizureFormValueToClone: null,
       mainSeizureID: null,
       descriptionProductsSeized: ['', Validators.required],
       product: ['', Validators.required],
@@ -1846,7 +1854,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
-      seizureFormValueToClone: null,
       productField: ['', Validators.required],
       serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
@@ -2579,7 +2586,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   updatePreliminaryReportHOFHODIO() {
     if (this.workPlanInspection?.msPreliminaryReportStatus) {
-      // tslint:disable-next-line:max-line-length
       this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport);
       this.investInspectReportForm.patchValue(this.selectedPreliminaryReportDetails);
       this.dataSaveDataInspectorInvestList = [];
@@ -2636,6 +2642,20 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
+  closeSeizureDeclarationRecord() {
+    window.$('#seizureDeclarationModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+    window.$('#investInspectReportModal').modal('hide');
+    window.$('body').removeClass('modal-open');
+    window.$('.modal-backdrop').remove();
+
+    setTimeout(function() {
+      window.$('#investInspectReportModal').modal('show');
+    }, 500);
+
+  }
+
   updateWorkPlan() {
     if (!this.workPlanInspection?.onsiteStartStatus) {
       this.addNewScheduleForm.patchValue(this.workPlanInspection?.updateWorkPlan);
@@ -2685,6 +2705,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   public onCustomDataReportAction(event: any): void {
+
     switch (event.action) {
       case 'viewRecord':
         this.viewDataReportRecord(event.data);
@@ -2729,20 +2750,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     window.$('#sampleLabResultsModal').modal('hide');
     window.$('body').removeClass('modal-open');
     window.$('.modal-backdrop').remove();
-
-  }
-
-  closeSeizureDeclarationRecord() {
-    window.$('#seizureDeclarationModal').modal('hide');
-    window.$('body').removeClass('modal-open');
-    window.$('.modal-backdrop').remove();
-    window.$('#investInspectReportModal').modal('hide');
-    window.$('body').removeClass('modal-open');
-    window.$('.modal-backdrop').remove();
-
-    setTimeout(function() {
-      window.$('#investInspectReportModal').modal('show');
-    }, 500);
 
   }
 
@@ -4313,7 +4320,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     window.$('#seizureDeclarationModal').modal('show');
   }
 
-    viewSeizedDetails(data: SeizureListDto, initialReportStatus: boolean) {
+  viewSeizedDetails(data: SeizureListDto, initialReportStatus: boolean) {
     this.seizureForm.patchValue(data);
     this.selectedSeizedDetails = data;
     const paramDetails = data.seizureList;
@@ -4462,7 +4469,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
-  checkProductCompliance(permit: string) {
+  checkProductCompliance(permit: string){
     console.log(permit);
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
     const valueSelected = this.dataReportParamForm?.get('localImport')?.value;
@@ -4687,7 +4694,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveDataReport() {
-
+    if (this.uploadedFilesDataReport) {
+      for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {
+        this.arrayOfUploadedDataReportFiles.push(this.uploadedFilesDataReport[i]);
+      }
+    }
     this.submitted = true;
     if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -4703,7 +4714,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   saveDataReport() {
     if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFilesDataReport;
       this.dataSaveDataReport = {...this.dataSaveDataReport, ...this.dataReportForm.value};
       this.dataSaveDataReport.productsList = this.dataSaveDataReportParamList;
       const formData = new FormData();
@@ -4711,10 +4721,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
       formData.append('docTypeName', 'DATA_REPORT_UPLOAD');
       formData.append('data', JSON.stringify(this.dataSaveDataReport));
-      for (let i = 0; i < file.length; i++) {
-        console.log(file[i]);
-        formData.append('docFile', file[i], file[i].name);
+      if (this.uploadedFilesDataReport.length > 0){
+        const file = this.uploadedFilesDataReport;
+        for (let i = 0; i < file.length; i++) {
+          console.log(file[i]);
+          formData.append('docFile', file[i], file[i].name);
+        }
       }
+
 
       this.msService.msWorkPlanScheduleSaveDataReport(formData).subscribe(
           (data: any) => {
@@ -4749,8 +4763,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           'You can click the \'ADD SEIZED GOODS\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.saveSeizureDeclaration();
           });
-    } else {
-      this.msService.showError('Fill in all the fields! (Make sure you\'ve uploaded a file)');
+    }
+    else{
+      this.msService.showError("Fill in all the fields! (Make sure you have uploaded a file)");
     }
   }
 
@@ -5218,8 +5233,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   addStandard() {
-    const standard = this.standardsInput.nativeElement.value;
-    if (standard != ''  && !this.standardsArray.includes(standard)) {
+    let standard = this.standardsInput.nativeElement.value;
+    if(standard != ""  && !this.standardsArray.includes(standard)){
       this.standardsArray.push(standard);
     }
     this.standardsInput.nativeElement.value = '';
@@ -5266,5 +5281,32 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
     this.seizureForm.enable();
     this.addLabParamStatus = true;
+  }
+
+  calculateAverageCompliance(){
+    console.log("Function called");
+    let dataReportData = this.workPlanInspection?.dataReportDto;
+    let sumOfCompliance = 0;
+    for (let i=1; i<dataReportData?.length; i++){
+      sumOfCompliance += dataReportData[i].totalComplianceScore;
+      console.log("Each value of column: " + dataReportData[i].totalComplianceScore);
+      console.log("Data type: "+ typeof dataReportData[i].totalComplianceScore);
+    }
+    this.averageCompliance = sumOfCompliance/dataReportData?.length;
+    if (isNaN(this.averageCompliance)){
+      console.log("The average compliance is nan" + this.averageCompliance);
+    }
+
+  }
+
+  viewFile(fileUploaded: File) {
+    this.SpinnerService.hide();
+    const blob = new Blob([fileUploaded.slice()], {type: fileUploaded.type});
+    // tslint:disable-next-line:prefer-const
+    let downloadURL = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadURL;
+    link.download = fileUploaded.name;
+    link.click();
   }
 }

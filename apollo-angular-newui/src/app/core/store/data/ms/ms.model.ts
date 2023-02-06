@@ -18,6 +18,7 @@ export class ComplaintApproveRejectAdviceWhereDto {
     approved: number;
     mandateForOga: number;
     advisedWhereToRemarks: string;
+    amendmentRemarks: string;
 }
 
 export class ComplaintAdviceRejectDto {
@@ -1177,6 +1178,7 @@ export class DataReportDto {
     function: string;
     department: string;
     regionName: string;
+    county: string;
     town: string;
     marketCenter: string;
     outletName: string;
