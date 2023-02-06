@@ -359,7 +359,6 @@ class QADaoServices(
                     val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
-
                 else -> {
                     commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
                 }
