@@ -1882,17 +1882,19 @@ class QADaoServices(
 
     fun getBatchIDDifference(permit: PermitApplicationsEntity, map: ServiceMapsEntity, permitID: Long): Long? {
         var batchID: Long? = null
-        when (permit.sendApplication) {
-            map.activeStatus -> {
-                batchID =
-                    if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1) {
-                        val findSMarkID = findSmarkWithFmarkId(permitID).smarkId
-                        val findSMark =
-                            findPermitBYID(findSMarkID ?: throw Exception("NO S-MARK ID FOUND WITH F-MARK ID"))
-                        findPermitInvoiceByPermitIDWithVarField10(findSMark.id ?: throw Exception("MISSING ID"), 1.toString()).batchInvoiceNo
-                    } else {
-                        findPermitInvoiceByPermitIDWithVarField10(permitID, 1.toString()).batchInvoiceNo
-                    }
+        if(permit.varField9== 1.toString()){
+            when (permit.sendApplication) {
+                map.activeStatus -> {
+                    batchID =
+                        if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1) {
+                            val findSMarkID = findSmarkWithFmarkId(permitID).smarkId
+                            val findSMark =
+                                findPermitBYID(findSMarkID ?: throw Exception("NO S-MARK ID FOUND WITH F-MARK ID"))
+                            findPermitInvoiceByPermitIDWithVarField10(findSMark.id ?: throw Exception("MISSING ID"), 1.toString()).batchInvoiceNo
+                        } else {
+                            findPermitInvoiceByPermitIDWithVarField10(permitID, 1.toString()).batchInvoiceNo
+                        }
+                }
             }
         }
         return batchID
@@ -4806,6 +4808,7 @@ class QADaoServices(
             productStandards = permit.productStandard
             assignOfficerID = permit.qaoId
             permitGenerateDifference = permit.varField9?.toInt() == 1
+            companyId = companyProfile.id
         }
         return p
     }

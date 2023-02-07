@@ -44,6 +44,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     currDivLabel!: string;
     roles: string[];
     userLoggedInID: number;
+    companyProfileID: bigint;
     userProfile: LoggedInUser;
     labResultsStatus!: string;
     labResultsRemarks!: string;
@@ -495,6 +496,9 @@ export class PermitDetailsAdminComponent implements OnInit {
         } else if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
             this.permitTypeName = 'Fortification';
         }
+
+        this.companyProfileID = this.allPermitDetails?.oldVersionList?.find(pr => pr.id === this.allPermitDetails.permitDetails.id).companyId;
+        console.log(this.companyProfileID)
         this.sta1 = this.allPermitDetails.sta1DTO;
         this.sta1Form.patchValue(this.sta1);
 
@@ -680,17 +684,26 @@ export class PermitDetailsAdminComponent implements OnInit {
     savePermitCompletenessForUpgradeFormResults(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaPermitCompleteness(this.permitCompletenessForm.value, this.permitID).subscribe(
-                (data: ApiResponseModel) => {
-                    if (data.responseCode === '00') {
-                        this.SpinnerService.hide();
-                        this.qaService.showSuccess('PERMIT COMPLETENESS STATUS, SAVED SUCCESSFULLY', () => {
-                            this.loadPermitDetails(data);
-                        });
-                    } else {
-                        this.SpinnerService.hide();
-                        this.qaService.showError(data.message);
-                    }
+            this.qaService.qaPermitCompletenessUpgrade(this.permitCompletenessForm.value, this.permitID).subscribe(
+                (data1: ApiResponseModel) => {
+                    this.qaService.qaUpdateDifferenceStatus(this.permitCompletenessForm.value, this.permitID).subscribe(
+                        (data: ApiResponseModel) => {
+                            if (data.responseCode === '00') {
+                                this.SpinnerService.hide();
+                                this.qaService.showSuccess('PERMIT COMPLETENESS STATUS, SAVED SUCCESSFULLY', () => {
+                                    this.loadPermitDetails(data);
+                                });
+                            } else {
+                                this.SpinnerService.hide();
+                                this.qaService.showError(data.message);
+                            }
+                        },
+                        error => {
+                            this.SpinnerService.hide();
+                            this.qaService.showError('AN ERROR OCCURRED');
+                        },
+                    );
+                    this.SpinnerService.hide();
                 },
                 error => {
                     this.SpinnerService.hide();

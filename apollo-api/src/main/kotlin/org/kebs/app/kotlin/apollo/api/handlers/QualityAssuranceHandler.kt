@@ -2953,7 +2953,7 @@ class QualityAssuranceHandler(
 
             }
 
-            if (permit.sendApplication == map.activeStatus) {
+            if(permit.varField9== 1.toString()) {
                 batchDetailDifference = when {
                     permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1 -> {
                         val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId

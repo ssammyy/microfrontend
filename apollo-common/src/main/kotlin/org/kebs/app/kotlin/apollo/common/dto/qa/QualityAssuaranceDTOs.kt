@@ -742,6 +742,7 @@ data class PermitDetailsDto(
     var assignOfficerStatus: Boolean? = null,
     var assignOfficerID: Long? = null,
     var permitGenerateDifference: Boolean? = null,
+    var companyId: Long? = null,
 )
 
 data class AllPermitDetailsDto(
