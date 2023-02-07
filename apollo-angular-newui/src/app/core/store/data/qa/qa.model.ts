@@ -394,7 +394,6 @@ export class AllPermitDetailsDto {
 }
 
 
-
 export class AllSTA10DetailsDto {
     sta10FirmDetails: Sta10Dto;
     sta10PersonnelDetails: STA10PersonnelDto[];

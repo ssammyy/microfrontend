@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
     AllPermitDetailsDto,
@@ -18,7 +18,7 @@ import {
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto,
 } from '../../../core/store/data/qa/qa.model';
-import {Form, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 import {TableData} from '../../../md/md-table/md-table.component';
@@ -27,15 +27,17 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {QaInternalService} from '../../../core/store/data/qa/qa-internal.service';
 import {ApiResponseModel} from '../../../core/store/data/ms/ms.model';
 import * as CryptoJS from 'crypto-js';
-import swal from 'sweetalert2';
-import {HttpErrorResponse} from '@angular/common/http';
 import {LoggedInUser, selectUserInfo} from '../../../core/store';
 import {Store} from '@ngrx/store';
+
 
 @Component({
     selector: 'app-permit-details-admin',
     templateUrl: './permit-details-admin.component.html',
-    styleUrls: ['./permit-details-admin.component.css'],
+    styleUrls: ['../../../../../node_modules/@ng-select/ng-select/themes/material.theme.css'],
+    encapsulation: ViewEncapsulation.None
+
+
 })
 export class PermitDetailsAdminComponent implements OnInit {
     @ViewChild('editModal') editModal !: TemplateRef<any>;
@@ -68,7 +70,6 @@ export class PermitDetailsAdminComponent implements OnInit {
     loading = false;
 
 
-
     /// FORMS
     sta1Form: FormGroup;
     sta10Form: FormGroup;
@@ -90,9 +91,6 @@ export class PermitDetailsAdminComponent implements OnInit {
     assignOfficerForm: FormGroup;
     addStandardsForm: FormGroup;
     scheduleInspectionForm: FormGroup;
-
-
-
 
 
     // DTOS
@@ -186,6 +184,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         this.steps = 1;
         this.getSelectedPermit(this.permitId);
+
         this.sta1Form = this.formBuilder.group({
             commodityDescription: [{value: '', disabled: true}, Validators.required],
             applicantName: [{value: '', disabled: true}, Validators.required],
@@ -313,8 +312,6 @@ export class PermitDetailsAdminComponent implements OnInit {
         });
 
 
-
-
         this.initForm();
 
         this.dropdownSettings = {
@@ -400,15 +397,19 @@ export class PermitDetailsAdminComponent implements OnInit {
     get formQamCompleteness(): any {
         return this.qaMCompleteness.controls;
     }
+
     get formAssignOfficer(): any {
         return this.assignOfficer.controls;
     }
+
     get formAddStandards(): any {
         return this.addStandards.controls;
     }
+
     get formfactoryVisit(): any {
         return this.factoryVisit.controls;
     }
+
     goToPayment() {
         this.router.navigate(['/invoice/consolidate_invoice']);
     }
@@ -437,7 +438,6 @@ export class PermitDetailsAdminComponent implements OnInit {
     }
 
 
-
     public getSelectedPermit(permitId: any): void {
         this.SpinnerService.show();
         this.internalService.loadPermitDetail(permitId).subscribe(
@@ -460,8 +460,10 @@ export class PermitDetailsAdminComponent implements OnInit {
         let formattedArrayComplianceResultsList = [];
         let formattedArrayOlderVersionList = [];
         const formattedArrayInvoiceDetailsList = [];
-        this.allPermitDetails = new AllPermitDetailsDto();
+
+
         this.allPermitDetails = data?.data as AllPermitDetailsDto;
+
         this.batchID = this.allPermitDetails.batchID;
         if (this.allPermitDetails.permitDetails.permitTypeID === this.SMarkTypeID) {
             this.permitTypeName = 'Standardization';
@@ -737,10 +739,10 @@ export class PermitDetailsAdminComponent implements OnInit {
 
                     // let requestNumber = response.responseText+":"+response.body.body.requestNumber;
                     this.SpinnerService.hide();
-                        formDirective.resetForm();
-                        this.qaMCompleteness.reset();
-                      this.qaService.showSuccess('Review Successfully submitted');
-                    });
+                    formDirective.resetForm();
+                    this.qaMCompleteness.reset();
+                    this.qaService.showSuccess('Review Successfully submitted');
+                });
 
         } else {
             this.qaService.showError('Please Try Again');
