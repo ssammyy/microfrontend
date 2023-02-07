@@ -1718,8 +1718,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.ssfClientEmailNotificationForm = this.formBuilder.group({
       ssfID: null,
       failedParameters: ['', Validators.required],
-      outLetEmail: ['', Validators.required],
-      manufactureEmail: ['', Validators.required],
+      outLetEmail: null,
+      manufactureEmail: null,
       complainantEmail: null,
       remarks: null,
     });
@@ -1908,6 +1908,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.sampleSubmitForm = this.formBuilder.group({
       valueToClone: null,
       id: null,
+      dataReportSelected: null,
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: null,
@@ -5384,5 +5385,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     link.href = downloadURL;
     link.download = fileUploaded.name;
     link.click();
+  }
+
+  onSelectedDataReport(){
+    const selectedDataReport = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.sampleSubmitForm?.get('dataReportSelected')?.value);
   }
 }

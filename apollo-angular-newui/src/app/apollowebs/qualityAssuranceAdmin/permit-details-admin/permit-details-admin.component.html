@@ -1675,97 +1675,108 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     <div class="card-body ">
                         <div *ngFor="let role of roles">
                             <div *ngIf="role == 'QA_MANAGER_MODIFY' || role == 'QA_HOF_MODIFY' || role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'">
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus" data-target="#allProcessModel"
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                   data-target="#allProcessModel"
                                    (click)="openModalAddDetails('updateSection')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus" data-target="#allProcessModel"
+                                <a data-toggle="modal"
+                                   *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus"
+                                   data-target="#allProcessModel"
                                    (click)="openModalAddDetails('permitCompleteness')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.assignOfficerStatus " data-target="#allProcessModel"
+                                <a data-toggle="modal"
+                                   *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.assignOfficerStatus "
+                                   data-target="#allProcessModel"
                                    (click)="openModalAddDetails('assignOfficer')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus " data-target="#allProcessModel"
+                                <a data-toggle="modal"
+                                   *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus "
+                                   data-target="#allProcessModel"
                                    (click)="openModalAddDetails('assignOfficer')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
                             </div>
                             <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null" data-target="#allProcessModel"
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
+                                   data-target="#allProcessModel"
                                    (click)="openModalAddDetails('addStandardsDetails')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">ADD STANDARDS DETAILS</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards != null" data-target="#allProcessModel"
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards != null"
+                                   data-target="#allProcessModel"
                                    (click)="openModalAddDetails('addStandardsDetails')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPDATE STANDARDS DETAILS</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.inspectionScheduledStatus && allPermitDetails?.permitDetails?.productStandards != null" data-target="#allProcessModel"
+                                <a data-toggle="modal"
+                                   *ngIf="!allPermitDetails?.permitDetails?.inspectionScheduledStatus && allPermitDetails?.permitDetails?.productStandards != null"
+                                   data-target="#allProcessModel"
                                    (click)="openModalAddDetails('scheduleInspectionDate')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
                             </div>
                         </div>
 
 
+                        <!--                        <a data-toggle="modal" data-target="#reviewcompleteness"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS</a>-->
 
-<!--                        <a data-toggle="modal" data-target="#reviewcompleteness"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS</a>-->
-
-<!--                        <a data-toggle="modal" data-target="#assign-officer"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ASSIGN OFFICER</a>-->
-
-
-<!--                        <a data-toggle="modal" data-target="#myModal"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">FILL STA OFFICIAL DETAILS</a>-->
-
-<!--                        <a data-toggle="modal" data-target="#new-inspection-report"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE NEW INSPECTION REPORT</a>-->
-
-<!--                        <a data-toggle="modal" data-target="#SchemeSupervision"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SCHEME OF SUPERVISION</a>-->
-
-<!--                        <a data-toggle="modal" data-target="#addssf-bsnumber"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF AND BS NUMBER</a>-->
-
-<!--                        <a data-toggle="modal" data-target="#Modal"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>-->
-
-<!--                        <a data-toggle="modal" data-target="#approve-reject-inspectionreport"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT INSPECTION REPORT</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#assign-officer"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">ASSIGN OFFICER</a>-->
 
 
-<!--                        <a data-toggle="modal" data-target="#add-standards"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD APPLICABLE STANDARDS</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#myModal"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">FILL STA OFFICIAL DETAILS</a>-->
 
-<!--                        <a data-toggle="modal" data-target="#add-standards"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE APPLICABLE STANDARDS</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#new-inspection-report"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">GENERATE NEW INSPECTION REPORT</a>-->
 
-<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT WARDING</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#SchemeSupervision"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SCHEME OF SUPERVISION</a>-->
 
-<!--                        <a data-toggle="modal" data-target="#recommendations"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATIONS</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#addssf-bsnumber"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF AND BS NUMBER</a>-->
 
-<!--                        <a data-toggle="modal" data-target="#recommendations"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATIONS</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#Modal"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>-->
+
+                        <!--                        <a data-toggle="modal" data-target="#approve-reject-inspectionreport"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT INSPECTION REPORT</a>-->
 
 
-<!--                        <a data-toggle="modal" data-target="#inspection-date"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE FACTORY VISIT </a>-->
+                        <!--                        <a data-toggle="modal" data-target="#add-standards"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD APPLICABLE STANDARDS</a>-->
 
-<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">PSC APPROVAL/REJECTION</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#add-standards"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">UPDATE APPLICABLE STANDARDS</a>-->
 
-<!--                        <a data-toggle="modal" data-target="#permitwarding"-->
-<!--                           class="btn btn-kebs mat-raised-button mat-button-base">PCM APPROVAL/REJECTION</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT WARDING</a>-->
+
+                        <!--                        <a data-toggle="modal" data-target="#recommendations"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATIONS</a>-->
+
+                        <!--                        <a data-toggle="modal" data-target="#recommendations"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT RECOMMENDATIONS</a>-->
+
+
+                        <!--                        <a data-toggle="modal" data-target="#inspection-date"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE FACTORY VISIT </a>-->
+
+                        <!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">PSC APPROVAL/REJECTION</a>-->
+
+                        <!--                        <a data-toggle="modal" data-target="#permitwarding"-->
+                        <!--                           class="btn btn-kebs mat-raised-button mat-button-base">PCM APPROVAL/REJECTION</a>-->
 
 
                     </div>
                 </div>
 
                 <!-- Dynamic Modal -->
-                <div class="modal fade" id="allProcessModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                <div class="modal fade" id="allProcessModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">{{currDivLabel}}</h4>
@@ -1782,12 +1793,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <label><b>Select Section</b></label>
                                                     <mat-form-field>
                                                         <mat-select placeholder="Please Select an option"
-                                                                    formControlName="sectionId" id="sectionId" name="sectionId" >
-                                                            <mat-option *ngFor="let app of allPermitDetails?.sectionList" [value]="app.id">{{app.section}}</mat-option>
+                                                                    formControlName="sectionId" id="sectionId"
+                                                                    name="sectionId">
+                                                            <mat-option
+                                                                    *ngFor="let app of allPermitDetails?.sectionList"
+                                                                    [value]="app.id">{{app.section}}</mat-option>
 
                                                         </mat-select>
                                                     </mat-form-field>
-                                                    <label><b>Please write, in detail, your feedback for selecting the section:</b></label>
+                                                    <label><b>Please write, in detail, your feedback for selecting the
+                                                        section:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                     <textarea id="sectionRemarks" matInput type="text"
                                                               formControlName="sectionRemarks"
@@ -1805,14 +1820,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                             <div class="form-group">
                                                 <div>
                                                     <label><b>Select Standard</b></label>
-                                                    <mat-form-field>
-                                                        <mat-select placeholder="Please Select an option"
-                                                                    formControlName="productStandardID" id="productStandardID" name="productStandardID" >
-                                                            <mat-option *ngFor="let app of allPermitDetails?.standardsList" [value]="app.id">{{app.standardTitle}} {{app.standardNumber}}</mat-option>
 
-                                                        </mat-select>
-                                                    </mat-form-field>
-                                                    <label><b>Please write, in detail, your feedback for selecting the section:</b></label>
+                                                    <ng-select style="" placeholder="Please Select an option"
+                                                               formControlName="productStandardID"
+                                                               id="productStandardID" name="productStandardID">
+                                                        <ng-option
+                                                                *ngFor="let app of allPermitDetails?.standardsList"
+                                                                [value]="app.id">{{app.standardTitle}} {{app.standardNumber}} </ng-option>
+                                                    </ng-select>
+                                                    <label><b>Please write, in detail, your feedback for selecting the
+                                                        section:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                     <textarea id="productStandardRemarks" matInput type="text"
                                                               formControlName="productStandardRemarks"
@@ -1878,7 +1895,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                             </mat-form-field>
                                                         </div>
                                                     </div>
-                                                    <label><b>Please write, in detail, your feedback for selecting the Remarks:</b></label>
+                                                    <label><b>Please write, in detail, your feedback for selecting the
+                                                        Remarks:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                     <textarea id="hofQamCompletenessRemarks" matInput type="text"
                                                               formControlName="hofQamCompletenessRemarks"
@@ -1898,13 +1916,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <label><b>Select Officer</b></label>
                                                     <mat-form-field>
                                                         <mat-select placeholder="Please Select an option"
-                                                                    formControlName="assignOfficerID"  id="assignOfficerID" name="assignOfficerID" >
-                                                            <mat-option *ngFor="let app of allPermitDetails?.officerList" [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
+                                                                    formControlName="assignOfficerID"
+                                                                    id="assignOfficerID" name="assignOfficerID">
+                                                            <mat-option
+                                                                    *ngFor="let app of allPermitDetails?.officerList"
+                                                                    [value]="app.id">{{app.firstName}} {{app.lastName}}</mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
                                                     <label><b>Please write, in detail, your feedback :</b></label>
                                                     <mat-form-field class="example-full-width">
-                                                    <textarea  matInput type="text" formControlName="assignRemarks"
+                                                    <textarea matInput type="text" formControlName="assignRemarks"
                                                               name="assignRemarks">
                                                     </textarea>
                                                     </mat-form-field>
@@ -1920,13 +1941,14 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                 <div>
                                                     <label><b>InspectionDate:</b></label>
                                                     <mat-form-field class="example-full-width">
-                                                        <input formControlName="inspectionDate" id="inspectionDate" matInput name="inspectionDate"
+                                                        <input formControlName="inspectionDate" id="inspectionDate"
+                                                               matInput name="inspectionDate"
                                                                placeholder="Please enter Inspection Date"
                                                                type="date">
                                                     </mat-form-field>
                                                     <label><b>Please write, in detail, your feedback :</b></label>
                                                     <mat-form-field class="example-full-width">
-                                                    <textarea  matInput type="text" formControlName="scheduleRemarks"
+                                                    <textarea matInput type="text" formControlName="scheduleRemarks"
                                                               name="scheduleRemarks">
                                                     </textarea>
                                                     </mat-form-field>
@@ -1938,9 +1960,11 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             </div>
                             <div class="modal-footer">
 
-                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
+                                    Close
                                 </button>
-                                <button *ngIf="(currDiv == 'updateSection')" mat-raised-button type="button" class="btn btn-success"
+                                <button *ngIf="(currDiv == 'updateSection')" mat-raised-button type="button"
+                                        class="btn btn-success"
                                         (click)="onClickSaveSectionFormResults(updateSectionForm.valid);"
                                         [disabled]="!updateSectionForm.valid"
                                         data-dismiss="modal"
@@ -1952,7 +1976,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'permitCompleteness' && selectCompletenessStatus == 'Reject' && selectForStatusStatus == 'RejectAmendment')" mat-raised-button type="button" class="btn btn-success"
+                                <button *ngIf="(currDiv == 'permitCompleteness' && selectCompletenessStatus == 'Reject' && selectForStatusStatus == 'RejectAmendment')" mat-raised-button type="button"
+                                        class="btn btn-success"
                                         (click)="onClickSavePermitCompletenessFormResults(permitCompletenessForm.valid);"
                                         [disabled]="!permitCompletenessForm.valid"
                                         data-dismiss="modal"
@@ -1964,19 +1989,22 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'assignOfficer')" mat-raised-button type="button" class="btn btn-success"
+                                <button *ngIf="(currDiv == 'assignOfficer')" mat-raised-button type="button"
+                                        class="btn btn-success"
                                         (click)="onClickSaveAssignOfficerForm(assignOfficerForm.valid);"
                                         [disabled]="!assignOfficerForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'addStandardsDetails')" mat-raised-button type="button" class="btn btn-success"
+                                <button *ngIf="(currDiv == 'addStandardsDetails')" mat-raised-button type="button"
+                                        class="btn btn-success"
                                         (click)="onClickSaveAddStandardsForm(addStandardsForm.valid);"
                                         [disabled]="!addStandardsForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'scheduleInspectionDate')" mat-raised-button type="button" class="btn btn-success"
+                                <button *ngIf="(currDiv == 'scheduleInspectionDate')" mat-raised-button type="button"
+                                        class="btn btn-success"
                                         (click)="onClickSaveScheduleInspectionForm(scheduleInspectionForm.valid);"
                                         [disabled]="!scheduleInspectionForm.valid"
                                         data-dismiss="modal"
