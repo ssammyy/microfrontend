@@ -4542,7 +4542,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                         outletName = body.outletName
                         phoneNumber = body.phoneNumber
                         emailAddress = body.emailAddress
-                        inspectionDate = body.inspectionDate
+                        inspectionDate = commonDaoServices.getCurrentDate()
                         inspectorName = body.inspectorName
                         function = body.function
                         department = body.department
@@ -4570,7 +4570,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                     outletName = body.outletName
                     phoneNumber = body.phoneNumber
                     emailAddress = body.emailAddress
-                    inspectionDate = body.inspectionDate
+                    inspectionDate = commonDaoServices.getCurrentDate()
                     inspectorName = body.inspectorName
                     function = body.function
                     department = body.department
