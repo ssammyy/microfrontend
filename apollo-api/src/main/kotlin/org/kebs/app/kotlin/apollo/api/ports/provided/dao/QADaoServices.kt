@@ -1885,15 +1885,7 @@ class QADaoServices(
         if(permit.varField9== 1.toString()){
             when (permit.sendApplication) {
                 map.activeStatus -> {
-                    batchID =
-                        if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1) {
-                            val findSMarkID = findSmarkWithFmarkId(permitID).smarkId
-                            val findSMark =
-                                findPermitBYID(findSMarkID ?: throw Exception("NO S-MARK ID FOUND WITH F-MARK ID"))
-                            findPermitInvoiceByPermitIDWithVarField10(findSMark.id ?: throw Exception("MISSING ID"), 1.toString()).batchInvoiceNo
-                        } else {
-                            findPermitInvoiceByPermitIDWithVarField10(permitID, 1.toString()).batchInvoiceNo
-                        }
+                    batchID = findPermitInvoiceByPermitIDWithVarField10(permitID, 1.toString()).batchInvoiceNo
                 }
             }
         }
@@ -4808,7 +4800,7 @@ class QADaoServices(
             productStandards = permit.productStandard
             assignOfficerID = permit.qaoId
             permitGenerateDifference = permit.varField9?.toInt() == 1
-            companyId = companyProfile.id
+            companyId = companyProfile?.id
         }
         return p
     }
@@ -4866,13 +4858,7 @@ class QADaoServices(
             permitsRemarksDTO(permit),
             permitsInvoiceDetailsDTO(permit),
             permitsInvoiceDetailsDifferenceDTO(permit),
-            commonDaoServices.userListDto(
-                findOfficersList(
-                    permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"),
-                    permit,
-                    map,
-                    applicationMapProperties.mapQADesignationIDForQAOId
-                )
+            commonDaoServices.userListDto(findOfficersList(permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"), permit, map, applicationMapProperties.mapQAUserOfficerRoleId)
             ),
             findAllOldPermitWithPermitRefNumber(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")

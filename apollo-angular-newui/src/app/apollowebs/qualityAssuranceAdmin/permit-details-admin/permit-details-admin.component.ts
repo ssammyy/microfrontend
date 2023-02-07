@@ -703,7 +703,6 @@ export class PermitDetailsAdminComponent implements OnInit {
                             this.qaService.showError('AN ERROR OCCURRED');
                         },
                     );
-                    this.SpinnerService.hide();
                 },
                 error => {
                     this.SpinnerService.hide();
