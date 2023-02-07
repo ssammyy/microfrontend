@@ -72,6 +72,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   active: Number = 0;
   averageCompliance: number = 0;
+  selectedValueOfDataSheet: string;
   selectedFile: File;
   selectedRefNo: string;
   totalComplianceValue: Number = 0;
@@ -1705,8 +1706,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.ssfClientEmailNotificationForm = this.formBuilder.group({
       ssfID: null,
       failedParameters: ['', Validators.required],
-      outLetEmail: ['', Validators.required],
-      manufactureEmail: ['', Validators.required],
+      outLetEmail: null,
+      manufactureEmail: null,
       complainantEmail: null,
       remarks: null,
     });
@@ -1895,6 +1896,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.sampleSubmitForm = this.formBuilder.group({
       id: null,
       valueToClone: null,
+      dataReportSelected: null,
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: null,

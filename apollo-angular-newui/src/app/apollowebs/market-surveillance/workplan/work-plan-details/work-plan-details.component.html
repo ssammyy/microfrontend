@@ -6027,7 +6027,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <br>
+                            <div class="row" *ngIf="workPlanInspection.dataReportDto.length!=0">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select the Data Report</b></label>
+                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" #standardsInput>
+                                        <datalist id="availableDataReports">
+                                            <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
+                                        </datalist>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button  mat-raised-button
+                                                 class="btn btn-outline-success" type="button" >SELECT DATA REPORT
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <h5 class="mb-3" style="color: #0066B1">Sample Submission Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -7610,23 +7628,24 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="failedParameters"><b>Failed Parameters</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g sugar,salt" formControlName="failedParameters" name="failedParameters"
-                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.failedParameters.invalid
+                                        <div >
+                                            <label for="failedParameters"><b>Failed Parameters</b></label>
+                                            <mat-form-field class="example-full-width">
+                                                <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g moisture, pH etc" formControlName="failedParameters" name="failedParameters"
+                                                       [class.is-invalid]="formSSFClientEmailNotificationForm.failedParameters.invalid
                                                     && formSSFClientEmailNotificationForm.failedParameters.touched">
-                                        </mat-form-field>
+                                            </mat-form-field>
+                                        </div>
+
                                         <label for="outLetEmail"><b>OutLet Email</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="outLetEmail" matInput type="text" placeholder="Please Enter outLet Email" formControlName="outLetEmail" name="outLetEmail"
-                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.outLetEmail.invalid
-                                                    && formSSFClientEmailNotificationForm.outLetEmail.touched">
+                                                   >
                                         </mat-form-field>
-                                        <label for="manufactureEmail"><b>Manufacture Email</b></label>
+                                        <label for="manufactureEmail"><b>Manufacturer's Email</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacture Email" formControlName="manufactureEmail" name="manufactureEmail"
-                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.manufactureEmail.invalid
-                                                    && formSSFClientEmailNotificationForm.manufactureEmail.touched">
+                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacturer's Email" formControlName="manufactureEmail" name="manufactureEmail"
+                                                   >
                                         </mat-form-field>
                                         <label for="complainantEmail"><b>Complainant Email</b></label>
                                         <mat-form-field class="example-full-width">

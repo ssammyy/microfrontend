@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
@@ -42,7 +43,9 @@ import java.sql.Timestamp
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.time.Period
 import java.util.*
+import kotlin.time.days
 
 
 @Service
@@ -3749,7 +3752,13 @@ class MarketSurveillanceWorkPlanDaoServices(
             sendSffStatus = map.activeStatus
             onsiteEndStatus = map.activeStatus
             onsiteEndDate = commonDaoServices.getCurrentDate()
-            onsiteTat = Duration.between(onsiteEndDate!!.toLocalDate(), onsiteEndDateAdded!!.toLocalDate() ).toDays()
+//            onsiteTat = Period.between(onsiteEndDate!!.toLocalDate(), onsiteEndDateAdded!!.toLocalDate() ).toDays()
+            val period = Period.between(onsiteEndDate!!.toLocalDate(), onsiteEndDateAdded!!.toLocalDate())
+            val totalMonths = period.toTotalMonths()
+            val years = totalMonths / 12
+            val remainingMonths = totalMonths % 12
+            val remainingDays = period.days
+            onsiteTat = years * 365 + remainingMonths * 30 + remainingDays
             sendSffDate = commonDaoServices.getCurrentDate()
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionEndOnSiteActivities.let { timeLine ->
