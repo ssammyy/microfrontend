@@ -4675,7 +4675,7 @@ class QADaoServices(
         permitDetails: PermitApplicationsEntity,
     ): InvoiceDetailsDto? {
         return when (permitDetails.varField9?.toInt()) {
-            1 -> {
+            2 -> {
                 val v: QaInvoiceMasterDetailsEntity = findPermitInvoiceByPermitIDWithVarField10(permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), 1.toString())
                 val myList = findALlInvoicesPermitWithMasterInvoiceID(v.id, 1)
                 InvoiceDetailsDto(
