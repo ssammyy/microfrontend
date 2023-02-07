@@ -1882,10 +1882,10 @@ class QADaoServices(
 
     fun getBatchIDDifference(permit: PermitApplicationsEntity, map: ServiceMapsEntity, permitID: Long): Long? {
         var batchID: Long? = null
-        if(permit.varField9== 1.toString()){
+        if(permit.varField9== 2.toString()){
             when (permit.sendApplication) {
                 map.activeStatus -> {
-                    batchID = findPermitInvoiceByPermitIDWithVarField10(permitID, 1.toString()).batchInvoiceNo
+                    batchID =findPermitInvoiceByPermitIDWithVarField10(permitID, 1.toString()).batchInvoiceNo
                 }
             }
         }

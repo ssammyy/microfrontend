@@ -2660,6 +2660,7 @@ class QualityAssuranceHandler(
                     endOfProductionStatus = map.inactiveStatus
                     invoiceGenerated = map.activeStatus
                     varField10 = map.activeStatus.toString()
+                    varField9 = 1.toString()
                     permitStatus = applicationMapProperties.mapQaStatusPPayment
                 }
                 qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
@@ -2953,26 +2954,10 @@ class QualityAssuranceHandler(
 
             }
 
-            if(permit.varField9== 1.toString()) {
-                batchDetailDifference = when {
-                    permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1 -> {
-                        val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
-                        val findSMark = qaDaoServices.findPermitBYCompanyIDAndId(
-                            findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
-                            loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
-                        )
-                        qaDaoServices.findPermitInvoiceByPermitIDWithVarField10(
-                            findSMarkID, 1.toString()
-                        ).batchInvoiceNo
-
-                    }
-
-                    else -> {
-                        qaDaoServices.findPermitInvoiceByPermitIDWithVarField10(
-                            permitID, 1.toString()
-                        ).batchInvoiceNo
-                    }
-                }
+            if(permit.varField9== 2.toString()) {
+                batchDetailDifference = qaDaoServices.findPermitInvoiceByPermitIDWithVarField10(
+                    permitID, 1.toString()
+                ).batchInvoiceNo
 
             }
 
