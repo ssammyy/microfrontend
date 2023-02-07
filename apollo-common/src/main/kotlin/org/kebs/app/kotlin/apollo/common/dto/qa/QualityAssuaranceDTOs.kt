@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
-import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
 import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import java.io.File
@@ -17,7 +16,7 @@ data class SectionApplyDto(
 )
 
 data class StandardsApplyDto(
-    var productStandardID: Long? = null,
+    var productStandardID: String? = null,
     var productStandardRemarks: String? = null
 )
 
@@ -34,6 +33,7 @@ data class SaveLabPDFApplyDto(
     @NotNull(message = "Required ssfID Field")
     var ssfID: Long,
 )
+
 data class SaveLabComplianceApplyDto(
     @NotNull(message = "Required pdfSavedID Field")
     var pdfSavedID: Long,
@@ -42,6 +42,7 @@ data class SaveLabComplianceApplyDto(
     @NotNull(message = "Required complianceRemarks Field")
     var complianceRemarks: String,
 )
+
 data class SaveSSFComplianceApplyDto(
     @NotNull(message = "Required ssfID Field")
     var ssfID: Long,
@@ -50,6 +51,7 @@ data class SaveSSFComplianceApplyDto(
     @NotNull(message = "Required complianceRemarks Field")
     var complianceRemarks: String,
 )
+
 //data class ApproveInspectionReportApplyDto(
 //    var inspectionReportID: Long?= null,
 //    var approvedRejectedStatus: String?= null,
@@ -61,6 +63,7 @@ data class SaveRecommendationApplyDto(
     @NotNull(message = "Required recommendationRemarks Field")
     var recommendationRemarks: String,
 )
+
 data class SSFDetailsApplyDto(
     var id: Long? = null,
     var ssfNo: String? = null,
@@ -116,6 +119,41 @@ data class ManagementSystemsAndStandardsDetailsApplyDto(
     var samplesDrawnRemarks: String? = null,
 )
 
+
+data class TechnicalDetailsDto(
+    var id: Long? = null,
+    var firmImplementedAnyManagementSystem: String? = null,
+    var firmImplementedAnyManagementSystemRemarks: String? = null,
+    var indicateRelevantProductStandardCodes: String? = null,
+    var indicateRelevantProductStandardCodesRemarks: String? = null,
+)
+
+data class InspectionDetailsDto(
+    var id: Long? = null,
+    var complianceApplicableStatutory: String? = null,
+    var complianceApplicableStatutoryRemarks: String? = null,
+    var plantHouseKeeping: String? = null,
+    var plantHouseKeepingRemarks: String? = null,
+    var handlingComplaints: String? = null,
+    var handlingComplaintsRemarks: String? = null,
+    var qualityControlPersonnel: String? = null,
+    var qualityControlPersonnelRemarks: String? = null,
+    var testingFacility: String? = null,
+    var testingFacilityRemarks: String? = null,
+)
+data class InspectionDetailsDtoB(
+    var id: Long? = null,
+    var equipmentCalibration: String? = null,
+    var equipmentCalibrationRemarks: String? = null,
+    var qualityRecords: String? = null,
+    var qualityRecordsRemarks: String? = null,
+    var recordsNonconforming: String? = null,
+    var recordsNonconformingRemarks: String? = null,
+    var productRecallRecords: String? = null,
+    var productRecallRecordsRemarks: String? = null,
+)
+
+
 data class OperationProcessAndControlsDetailsApplyDto(
     var id: Long? = null,
     var processFlow: String? = null,
@@ -158,6 +196,7 @@ data class CompletenessApplyDto(
     var hofQamCompletenessStatus: Boolean,
     var hofQamCompletenessRemarks: String? = null
 )
+
 data class RecommendationApplyDto(
     @NotNull(message = "Required recommendationApprovalStatus Status")
     var recommendationApprovalStatus: Boolean,
@@ -181,6 +220,7 @@ data class ApproveRejectAssessmentReportApplyDto(
     var approvedRejectedStatus: Boolean,
     var approvedRejectedRemarks: String? = null
 )
+
 data class ApproveInspectionReportApplyDto(
     @NotNull(message = "Required approvedRejectedStatus Status")
     var approvedRejectedStatus: Boolean,
@@ -194,6 +234,7 @@ data class AssignOfficerApplyDto(
     var assignOfficerID: Long,
     var assignRemarks: String? = null
 )
+
 data class AssignAssessorApplyDto(
     @NotNull(message = "Required assignOfficerID Status")
     var leadAssessorId: Long,
@@ -201,12 +242,6 @@ data class AssignAssessorApplyDto(
     var assessorId: Long,
     var assignRemarks: String? = null
 )
-
-
-
-
-
-
 
 
 data class ST10Dto(
@@ -330,7 +365,7 @@ data class SSFComplianceStatusDetailsDto(
 data class SageValuesDto(
     var revenueAcc: String? = null,
     var revenueAccDesc: String? = null,
-    var taxable: Long =1,
+    var taxable: Long = 1,
     var totalAmount: BigDecimal? = null,
     var taxAmount: BigDecimal? = null,
 )
@@ -356,7 +391,7 @@ data class NewBatchInvoiceDto(
     var permitInvoicesID: Array<Long>? = null,
     var isWithHolding: Long? = null,
     var differenceInvoices: Int? = null,
-    ) {
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

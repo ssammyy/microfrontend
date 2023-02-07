@@ -517,7 +517,7 @@ class QADaoServices(
                         permitStatus = applicationMapProperties.mapQaStatusPfactoryInsForms
                     }
                 }
-                productStandard = body.productStandardID
+                productStandard = body.productStandardID?.toLong()
             }
             //updating of Details in DB
             val updateResults = permitUpdateDetails(permit, map, loggedInUser)
@@ -634,7 +634,6 @@ class QADaoServices(
             val map = commonDaoServices.serviceMapDetails(appId)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             var permit = findPermitBYID(permitID)
-            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
             var qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
             qaInspectionReportRecommendationRepo.findByIdOrNull(body.id ?: -1L)

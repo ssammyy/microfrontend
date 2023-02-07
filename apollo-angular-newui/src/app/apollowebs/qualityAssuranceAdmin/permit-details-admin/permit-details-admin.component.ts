@@ -3,7 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto,
-    FilesListDto, FirmTypeEntityDto,
+    FilesListDto,
+    FirmTypeEntityDto,
     PermitEntityDetails,
     PermitEntityDto,
     PlantDetailsDto,
@@ -320,7 +321,6 @@ export class PermitDetailsAdminComponent implements OnInit {
         });
 
 
-        this.initForm();
 
         this.dropdownSettings = {
             singleSelection: true,
@@ -333,11 +333,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         };
     }
 
-    initForm() {
-        this.form = this.formBuilder.group({
-            permits: ['', [Validators.required]],
-        });
-    }
+
 
     tabChange(ids: any) {
         this.id = ids;
@@ -470,6 +466,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             (data: ApiResponseModel) => {
                 if (data.responseCode === '00') {
                     this.loadPermitDetails(data);
+                    this.SpinnerService.hide()
                 } else {
                     this.SpinnerService.hide();
                     this.qaService.showError(data.message);
@@ -490,7 +487,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         this.allPermitDetails = data?.data as AllPermitDetailsDto;
         this.permitID = String(this.allPermitDetails.permitDetails.id);
-        console.log('Permit ID added'+this.permitID)
+        // console.log('Permit ID added' + this.permitID)
 
         this.batchID = this.allPermitDetails.batchID;
         if (this.allPermitDetails.permitDetails.permitTypeID === this.SMarkTypeID) {
@@ -500,7 +497,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
 
         this.companyProfileID = this.allPermitDetails?.oldVersionList?.find(pr => pr.id === this.allPermitDetails.permitDetails.id).companyId;
-        console.log(this.companyProfileID)
+        // console.log(this.companyProfileID)
         this.sta1 = this.allPermitDetails.sta1DTO;
         this.sta1Form.patchValue(this.sta1);
 
@@ -808,7 +805,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
-    reviewForComplemteness(formDirective): void {
+    reviewForCompleteness(formDirective): void {
 
         if (this.qaMCompleteness.valid) {
 
