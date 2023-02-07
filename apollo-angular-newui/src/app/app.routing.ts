@@ -459,6 +459,11 @@ export const routes: Routes = [
         children: [{path: '', component: InvoiceComponent}],
     },
     {
+        canActivate: [RouteGuard],
+        path: 'invoice/all_invoice_difference', component: AdminLayoutComponent,
+        children: [{path: '', component: InvoiceConsolidateDmarkComponent}],
+    },
+    {
         path: 'invoiceDetails', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: InvoiceDetailsComponent}],

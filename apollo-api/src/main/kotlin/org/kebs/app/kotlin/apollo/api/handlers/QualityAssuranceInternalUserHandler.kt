@@ -115,6 +115,7 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
     fun updatePermitDetailsCompleteness(req: ServerRequest): ServerResponse {
         return try {
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -124,7 +125,7 @@ class QualityAssuranceInternalUserHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    qaDaoServices.updatePermitCompletenessDetails(permitID.toLong(),body)
+                    qaDaoServices.updatePermitCompletenessDetails(permitID,body)
                         .let {
                             ok().body(it)
                         }
@@ -139,6 +140,21 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+    fun updatePermitDetailsDifferenceStatusActivate(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            qaDaoServices.updatePermitDifferenceStatusDetails(permitID)
+                .let {
+                    ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun updatePermitDetailsAssignOfficer(req: ServerRequest): ServerResponse {
         return try {
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")

@@ -144,7 +144,8 @@ class QualityAssuranceJSONControllers(
                 map.successStatus -> {
                     permit = updateResults.second
                     val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
-                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    val batchIDDifference: Long? = qaDaoServices.getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID,batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
@@ -200,7 +201,8 @@ class QualityAssuranceJSONControllers(
                 map.successStatus -> {
                     permit = updateResults.second
                     val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
-                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    val batchIDDifference: Long? = qaDaoServices.getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID,batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
@@ -259,7 +261,8 @@ class QualityAssuranceJSONControllers(
                 map.successStatus -> {
                     permit = updateResults.second
                     val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
-                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, map)
+                    val batchIDDifference: Long? = qaDaoServices.getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID,batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 

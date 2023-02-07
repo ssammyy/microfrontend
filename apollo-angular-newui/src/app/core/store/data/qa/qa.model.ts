@@ -294,6 +294,7 @@ export class PermitEntityDetails {
     productStandards: number;
     assignOfficerStatus: boolean;
     assignOfficerID: number;
+    permitGenerateDifference: boolean;
 }
 
 
@@ -378,6 +379,7 @@ export class AllPermitDetailsDto {
     permitDetails: PermitEntityDetails;
     remarksDetails: PermitAllRemarksDetailsDto;
     invoiceDetails: InvoiceDetailsDto;
+    invoiceDifferenceDetails: InvoiceDetailsDto;
     officerList: UserEntityDto[];
     oldVersionList: PermitEntityDto[];
     ordinaryFilesList: FilesListDto[];
@@ -386,6 +388,7 @@ export class AllPermitDetailsDto {
     labResultsList: PermitSSFLabResultsDto;
     schemeOfSuperVision: FilesListDto;
     batchID: bigint;
+    batchIDDifference: bigint;
     sta10DTO: AllSTA10DetailsDto;
     sta1DTO: STA1;
     sta3DTO: STA3;

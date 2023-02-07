@@ -317,11 +317,13 @@ export class ApiEndpointService {
 
 
         INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-submit`,
+        INVOICE_CONSOLIDATE_DIFFERENCE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-difference-submit`,
         INVOICE_CONSOLIDATE_ADD: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-add`,
         INVOICE_CONSOLIDATE_REMOVE: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-remove`,
         INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
         INVOICE_DETAILS_BALANCE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-balance-details`,
         INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
+        INVOICE_LIST_NO_DIFFERENCE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-difference`,
         INVOICE_LIST_NO_DETAILS_PERMIT_TYPE: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-permit-type`,
         INVOICE_LIST_ALL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list`,
         INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
@@ -710,6 +712,7 @@ export class ApiEndpointService {
         LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
         LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
+        UPDATE_COMPANY_TURN_OVER_REQUEST_OFFICER: `${ApiEndpointService.QA_CONTEXT}/company/officer-requested-to-upgrade`,
         GENERATE_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/company/generate-inspection-fee`,
         UPLOAD_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/upload/inspection-invoice`,
         VIEW_PDF_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/view/inspection-invoice`,

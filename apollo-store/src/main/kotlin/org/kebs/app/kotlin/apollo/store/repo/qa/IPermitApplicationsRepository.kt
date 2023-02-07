@@ -706,6 +706,12 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?
 
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10(
+        userId: Long,
+        paymentStatus: Int,
+        varField10: String
+    ): List<QaInvoiceMasterDetailsEntity>?
+
 //    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10IsNull(
 //        userId: Long,
 //        paymentStatus: Int
@@ -731,6 +737,7 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
     fun findAllByUserIdAndPaymentStatusAndReceiptNoIsNull(userId: Long,paymentStatus: Int): List<QaInvoiceMasterDetailsEntity>?
 
     fun findAllByUserIdAndVarField1IsNull(userId: Long): List<QaInvoiceMasterDetailsEntity>?
+
     fun findByPermitRefNumberAndUserIdAndPermitId(
         permitRefNumber: String,
         userId: Long,

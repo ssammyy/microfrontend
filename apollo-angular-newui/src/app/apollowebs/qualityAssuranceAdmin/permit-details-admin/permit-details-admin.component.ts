@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto,
-    FilesListDto,
+    FilesListDto, FirmTypeEntityDto,
     PermitEntityDetails,
     PermitEntityDto,
     PlantDetailsDto,
@@ -64,7 +64,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     pdfInvoiceBreakDownSources: any;
     pdfSourcesScheme: any;
     pdfUploadsView: any;
-
+    selectCompletenessStatus!: string;
+    selectForStatusStatus!: string;
     loading = false;
 
 
@@ -96,6 +97,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     // DTOS
+    loadedFirmType: FirmTypeEntityDto[] = [];
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     allPermitDetails: AllPermitDetailsDto;
@@ -299,7 +301,12 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         this.permitCompletenessForm = this.formBuilder.group({
             hofQamCompletenessStatus: ['', Validators.required],
+            rejectedForStatus: null,
             hofQamCompletenessRemarks: null,
+            companyProfileID: null,
+            updateFirmType: null,
+            requesterComment: null,
+            upgradeType: null,
         });
 
         this.factoryVisit = this.formBuilder.group({
@@ -436,6 +443,24 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.currDiv = divVal;
     }
 
+    updateSelectedStatus() {
+        const valueSelected = this.permitCompletenessForm?.get('hofQamCompletenessStatus')?.value;
+        if (valueSelected) {
+            this.selectCompletenessStatus = 'Accept';
+        } else {
+            this.selectCompletenessStatus = 'Reject';
+        }
+    }
+
+    updateSelectedRejectionStatus() {
+        const valueSelected = this.permitCompletenessForm?.get('rejectedForStatus')?.value;
+        if (valueSelected) {
+            this.selectForStatusStatus = 'RejectAmendment';
+        } else {
+            this.selectForStatusStatus = 'RejectForUpgrade';
+        }
+    }
+
 
 
     public getSelectedPermit(permitId: any): void {
@@ -483,6 +508,15 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
 
+        this.qaService.loadFirmPermitList().subscribe(
+            (dataFirmType: FirmTypeEntityDto[]) => {
+                this.loadedFirmType = dataFirmType;
+            },
+            error => {
+                console.log(error);
+                this.qaService.showError('AN ERROR OCCURRED');
+            },
+        );
 
         if (this.allPermitDetails.sta10FilesList !== []) {
             this.sta10FileList = this.allPermitDetails.sta10FilesList;
@@ -613,6 +647,37 @@ export class PermitDetailsAdminComponent implements OnInit {
     }
 
     SavePermitCompletenessFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaPermitCompleteness(this.permitCompletenessForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('PERMIT COMPLETENESS STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSavePermitCompletenessForUpgradeFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'REVIEW FOR COMPLETENESS\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.savePermitCompletenessForUpgradeFormResults(valid);
+            });
+    }
+
+    savePermitCompletenessForUpgradeFormResults(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
             this.qaService.qaPermitCompleteness(this.permitCompletenessForm.value, this.permitID).subscribe(
