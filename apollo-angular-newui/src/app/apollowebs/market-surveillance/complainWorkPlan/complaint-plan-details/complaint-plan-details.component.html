@@ -501,13 +501,6 @@
                                         </ng-template>
                                         <b class="text-primary">SEIZED PRODUCTS DETAILS</b>
                                         <div class="panel" style="max-height: 388px;">
-                                            <div class="row">
-                                                <div class="column">
-                                                    <div class="form-group">
-                                                        <label><b>Total Compliance:</b> </label>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="form-row">
                                                 <div class="col-md-12 mb-3">
                                                     <label style="color: #0082f3">Product List</label>
@@ -618,10 +611,91 @@
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.inspectionInvestigationDto?.methodologyEmployed}}</span></p>
                                                 <br/>
-<!--                                                <b class="text-secondary">Findings</b>-->
-<!--                                                <p class="list-paragraph-accordion"><span>-->
-<!--                                                    {{workPlanInspection?.inspectionInvestigationDto?.findings}}</span></p>-->
-<!--                                                <br/>-->
+                                                <h4 class="mb-3" style="color: #0066B1">Outlets Visited and Summary of Findings</h4>
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Data Collection Form reference</th>
+                                                        <th>Outlet details</th>
+                                                        <th>Summary of findings</th>
+                                                        <th>Remarks</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
+                                                        <td>{{i+1}}</td>
+                                                        <td>{{app.referenceNumber}}</td>
+                                                        <td>{{app.outletName}}</td>
+                                                        <td>{{app.summaryFindingsActionsTaken}}</td>
+                                                        <td>{{app.remarks}}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <br>
+                                                <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>S/NO.</th>
+                                                            <th>Name of outlet</th>
+                                                            <th>PRODUCT NAME</th>
+                                                            <th>PRODUCT BRAND</th>
+                                                            <th>Name & Address of Manufacturer</th>
+                                                            <th>Country of Origin</th>
+                                                            <th>Expiry Date</th>
+                                                            <th>Batch Number</th>
+                                                            <th>Permit No. / UCR Code</th>
+                                                            <th>Sampling Officer</th>
+                                                            <th>Date COLLECTED</th>
+                                                            <th>Date Submitted</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
+                                                            <td>{{app.fileRefNumber}}</td>
+                                                            <td></td>
+                                                            <td>{{app.nameProduct}}</td>
+                                                            <td>{{app.lbIdTradeMark}}</td>
+                                                            <td>{{app.address}}</td>
+                                                            <td></td>
+                                                            <td>{{app.lbIdExpiryDate}}</td>
+                                                            <td>{{app.lbIdBatchNo}}</td>
+                                                            <td></td>
+                                                            <td>{{app.sendersName}}</td>
+                                                            <td>{{app.sampleCollectionDate}}</td>
+                                                            <td>{{app.sendersDate}}</td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <br>
+                                                <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
+                                                <table class="table table-striped table-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>MARKET TOWN CENTER</th>
+                                                        <th>NAME OF OUTLET</th>
+                                                        <th>NAME OF SEIZING OFFICER</th>
+                                                        <th>VIEW ALL RECORDS</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let app of workPlanInspection?.seizureDeclarationDto">
+                                                        <td>{{app.marketTownCenter}}</td>
+                                                        <td>{{app.nameOfOutlet}}</td>
+                                                        <td>{{app.nameSeizingOfficer}}</td>
+                                                        <td><button (click)="viewSeizedDetails(app)"
+                                                                    type="button"
+                                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">VIEW</span>
+                                                        </button></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <br>
                                                 <b class="text-secondary">Conclusion</b>
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.inspectionInvestigationDto?.conclusion}}</span></p>
@@ -695,6 +769,15 @@
                                             DATA REPORT
                                         </ng-template>
 
+                                        <div *ngIf="workPlanInspection?.dataReportDto?.length!=0" class="row d-flex align-items-center justify-content-end flex-row" style="padding-top: 10px;">
+                                            <div style="margin-right: 7%;">
+                                                <label><b>Average compliance: </b></label>
+                                            </div>
+                                            <div style="margin-right: 20%;">
+                                                <label><b>{{averageCompliance}}</b></label>
+                                            </div>
+
+                                        </div>
                                         <div class="form-row">
                                             <div *ngIf="workPlanInspection?.dataReportStatus && workPlanInspection?.onsiteEndStatus" class="table-striped table-condensed table-responsive">
                                                 <ng2-smart-table [settings]="settingsDataReport"
@@ -2732,13 +2815,14 @@
                     <form [formGroup]="dataReportForm">
                         <div>
                             <h4 class="mb-3" style="color: #0066B1">Data Report Details</h4>
-                            <div class="row" *ngIf="workPlanInspection.dataReportDto.length!=0 && addProductsStatus">
+                            <h5 class="mb-3" style="color: black">Fill in the Bio Details</h5>
+                            <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0 && addProductsStatus">
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the Data report to clone</b></label>
                                         <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input" #standardsInput>
                                         <datalist id="dataReportValueToCloneList">
-                                            <option *ngFor="let app of workPlanInspection.dataReportDto" [value]="app.id">{{app.outletName}}</option>
+                                            <option *ngFor="let app of workPlanInspection?.dataReportDto" [value]="app.id">{{app.outletName}}</option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -2751,7 +2835,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <h5 class="mb-3" style="color: black">Fill in the Bio Details</h5>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -2784,7 +2867,7 @@
                                         <input [class.is-invalid]="formDataReportForm.inspectionDate.invalid && formDataReportForm.inspectionDate.errors"
                                                class="form-control two-column-input"
                                                formControlName="inspectionDate"
-                                               name="inspectionDate" required type="date">
+                                               name="inspectionDate" type="date">
                                         <div *ngIf="submitted && formDataReportForm.inspectionDate.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.inspectionDate.errors.required">Date of inspection is
                                                 required
@@ -2850,10 +2933,62 @@
                                                name="marketCenter" required type="text">
                                     </div>
                                 </div>
+
                             </div>
 
                             <h4 class="mb-3" style="color: #0066B1">Outlet Details</h4>
                             <h5 class="mb-3" style="color: black">Fill in below Outlet details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Outlet Details</b> </label>
+                                        <textarea [class.is-invalid]="formDataReportForm.outletDetails.invalid && formDataReportForm.outletDetails.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="outletDetails"
+                                                  name="outletDetails" required type="text"></textarea>
+                                        <div *ngIf="submitted && formDataReportForm.outletDetails.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.outletDetails.errors.required">Outlet Details is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Person met</b> </label>
+                                        <input [class.is-invalid]="formDataReportForm.personMet.invalid && formDataReportForm.personMet.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="personMet"
+                                               name="personMet" required type="text">
+                                        <div *ngIf="submitted && formDataReportForm.personMet.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.personMet.errors.required">Person met is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Most Recurring Non-Compliant</b> </label>
+                                        <input [class.is-invalid]="formDataReportForm.mostRecurringNonCompliant.invalid && formDataReportForm.mostRecurringNonCompliant.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="mostRecurringNonCompliant"
+                                               name="mostRecurringNonCompliant" required type="text">
+                                        <div *ngIf="submitted && formDataReportForm.mostRecurringNonCompliant.errors" class="invalid-feedback">
+                                            <div *ngIf="formDataReportForm.mostRecurringNonCompliant.errors.required">Person met is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -3207,7 +3342,6 @@
                                             <button *ngIf="dataReportParamForm.valid" mat-raised-button
                                                     class="btn btn-success" (click)="onClickAddDataReportParam()" type="button" >SAVE PARAMS
                                             </button>
-
                                         </div>
                                     </div>
                                 </div>
@@ -3259,7 +3393,7 @@
                         </div>
                     </div>
 
-                    <div  *ngIf="addProductsStatus" class="row" >
+                    <div class="row" *ngIf="addProductsStatus">
                         <div class="col">
                             <div  class="form-group">
                                 <label for="files"><b>Upload Documents Here</b></label>
@@ -3269,10 +3403,25 @@
                                 </form>
                             </div>
                         </div>
-
                     </div>
-
-
+                    <div *ngIf="!addProductsStatus && arrayOfUploadedDataReportFiles.length > 0" class="row">
+                        <label for="files"><b>Uploaded Data Report Files</b></label>
+                        <ul class="w-list-unstyled">
+                            <div *ngFor="let dataReportFile of arrayOfUploadedDataReportFiles">
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">{{dataReportFile.name}}</div>
+                                    <div class="list-text-accordion" style="text-align: center">
+                                        <a
+                                                target="_blank"
+                                                class="btn btn-info"
+                                                style="color: white"
+                                                (click)="viewFile(dataReportFile)"
+                                        >VIEW</a>
+                                    </div>
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
                     <div class="modal-footer">
                         <button  mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
@@ -3344,8 +3493,6 @@
         </div>
     </div>
     <!-- End DATA Report Modal -->
-
-
 
     <!-- INSPECTION AND INVESTIGATION REPORT Modal -->
     <div class="modal fade" id="investInspectReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -3687,7 +3834,7 @@
                                 </div>
 
                             </div>
-                            <br>
+
                             <h4 class="mb-3" style="color: #0066B1">Outlets Visited and Summary of Findings</h4>
                             <table class="table table-striped">
                                 <thead>
@@ -3700,7 +3847,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr *ngFor="let app of workPlanInspection.dataReportDto; let i=index">
+                                <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
                                     <td>{{i+1}}</td>
                                     <td>{{app.referenceNumber}}</td>
                                     <td>{{app.outletName}}</td>
@@ -3710,7 +3857,7 @@
                                 </tbody>
                             </table>
 
-                            <br>
+
 
                             <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
                             <div class="table-responsive">
@@ -3732,16 +3879,16 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr *ngFor="let app of workPlanInspection.sampleSubmitted">
+                                    <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
                                         <td>{{app.fileRefNumber}}</td>
-                                        <td>Outlet A</td>
+                                        <td></td>
                                         <td>{{app.nameProduct}}</td>
                                         <td>{{app.lbIdTradeMark}}</td>
                                         <td>{{app.address}}</td>
-                                        <td>USA</td>
+                                        <td></td>
                                         <td>{{app.lbIdExpiryDate}}</td>
                                         <td>{{app.lbIdBatchNo}}</td>
-                                        <td>Permit123</td>
+                                        <td></td>
                                         <td>{{app.sendersName}}</td>
                                         <td>{{app.sampleCollectionDate}}</td>
                                         <td>{{app.sendersDate}}</td>
@@ -3749,10 +3896,9 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <br>
-                            <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Siezed Goods</h4>
 
-                            <table class="table table-striped table-bordered">
+                            <table class="table table-striped">
                                 <thead>
                                 <tr>
                                     <th>MARKET TOWN CENTER</th>
@@ -3762,7 +3908,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr *ngFor="let app of workPlanInspection.seizureDeclarationDto">
+                                <tr *ngFor="let app of workPlanInspection?.seizureDeclarationDto">
                                     <td>{{app.marketTownCenter}}</td>
                                     <td>{{app.nameOfOutlet}}</td>
                                     <td>{{app.nameSeizingOfficer}}</td>
@@ -3775,7 +3921,6 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <br>
 
 <!--                            <div class="row">-->
 <!--                                <div class="col">-->
@@ -3883,22 +4028,19 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Fill in the Details to generate a Seizure Notification</h4>
-                    <button *ngIf="!isInitialReport" mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        <i class="material-icons">clear</i>
-                    </button>
-                    <button *ngIf="isInitialReport" (click)="closeSeizureDeclarationRecord()" mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="seizureForm">
-                        <div class="row" *ngIf="workPlanInspection.seizureDeclarationDto.length!=0 && addSeizureProductsStatus">
+                        <div class="row" *ngIf="workPlanInspection?.seizureDeclarationDto.length!=0 && addSeizureProductsStatus">
                             <div class="col">
                                 <div class="form-group">
                                     <label><b>Select the Seizure Form to clone</b></label>
                                     <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" #standardsInput>
                                     <datalist id="seizureFormValueToCloneList">
-                                        <option *ngFor="let app of workPlanInspection.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
+                                        <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
                                     </datalist>
                                 </div>
                             </div>
@@ -4275,11 +4417,7 @@
                         </div>
                     </form>
                     <div class="modal-footer">
-                        <button *ngIf="!isInitialReport"  mat-raised-button type="button" class="btn btn-danger"
-                                 data-dismiss="modal">
-                            Close
-                        </button>
-                        <button *ngIf="isInitialReport" (click)="closeSeizureDeclarationRecord()" mat-raised-button type="button" class="btn btn-danger"
+                        <button  mat-raised-button type="button" class="btn btn-danger"
                                  data-dismiss="modal">
                             Close
                         </button>
@@ -4312,7 +4450,7 @@
                     <form [formGroup]="fieldReportAdditionalInfortForm">
                         <div >
                             <h4 class="mb-3" style="color: #0066B1">MS INITIAL REPORT DETAILS</h4>
-                            <h5 class="mb-3" style="color: black">Fill in below details</h5>
+                            <h5 class="mb-3" style="color: black">Fill in bellow details</h5>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -4953,12 +5091,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>DCF001</td>
-                                    <td>Outlet A</td>
-                                    <td>Positive feedback from customers</td>
-                                    <td>None</td>
+                                <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{app.referenceNumber}}</td>
+                                    <td>{{app.outletName}}</td>
+                                    <td>{{app.summaryFindingsActionsTaken}}</td>
+                                    <td>{{app.remarks}}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -4983,54 +5121,46 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Outlet A</td>
-                                        <td>Soda</td>
-                                        <td>Coca-Cola</td>
-                                        <td>Coca-Cola Company, Atlanta, GA</td>
-                                        <td>USA</td>
-                                        <td>01/01/2024</td>
-                                        <td>Batch1</td>
-                                        <td>Permit123</td>
-                                        <td>John Doe</td>
-                                        <td>01/01/2023</td>
-                                        <td>01/02/2023</td>
+                                    <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
+                                        <td>{{app.fileRefNumber}}</td>
+                                        <td></td>
+                                        <td>{{app.nameProduct}}</td>
+                                        <td>{{app.lbIdTradeMark}}</td>
+                                        <td>{{app.address}}</td>
+                                        <td></td>
+                                        <td>{{app.lbIdExpiryDate}}</td>
+                                        <td>{{app.lbIdBatchNo}}</td>
+                                        <td></td>
+                                        <td>{{app.sendersName}}</td>
+                                        <td>{{app.sampleCollectionDate}}</td>
+                                        <td>{{app.sendersDate}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
 
-                            <h4 class="mb-3" style="color: #0066B1">Summary of Siezed Goods</h4>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Brand</th>
-                                    <th>Description Products Seized</th>
-                                    <th>Sector</th>
-                                    <th>Reason Seizure</th>
-                                    <th>Seizure Serial</th>
-                                    <th>Quantity</th>
-                                    <th>Unit</th>
-                                    <th>Estimated Cost</th>
-                                    <th>Current Location</th>
-                                    <th>Products Destruction</th>
+                                    <th>MARKET TOWN CENTER</th>
+                                    <th>NAME OF OUTLET</th>
+                                    <th>NAME SEIZING OFFICER</th>
+                                    <th>NAME OF SEIZING OFFICER</th>
+                                    <th>VIEW ALL RECORDS</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>Cigarettes</td>
-                                    <td>Marlboro</td>
-                                    <td>500 packs of Marlboro cigarettes</td>
-                                    <td>Tobacco</td>
-                                    <td>Illegal importation</td>
-                                    <td>SZR001</td>
-                                    <td>500</td>
-                                    <td>packs</td>
-                                    <td>$5000</td>
-                                    <td>Warehouse A</td>
-                                    <td>UNDETERMINED</td>
+                                <tr *ngFor="let app of workPlanInspection.seizureDeclarationDto">
+                                    <td>{{app.marketTownCenter}}</td>
+                                    <td>{{app.nameOfOutlet}}</td>
+                                    <td>{{app.nameSeizingOfficer}}</td>
+                                    <td><button (click)="viewSeizedDetails(app, false)"
+                                                type="button"
+                                                class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">VIEW</span>
+                                    </button></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -5956,12 +6086,10 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the SSF to clone</b></label>
-
-                                        <input type="number" list="valueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" #standardsInput>
-                                        <datalist id="valueToCloneList">
+                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" #standardsInput>
+                                        <datalist id="SSFValueToCloneList">
                                             <option *ngFor="let app of workPlanInspection.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
                                         </datalist>
-
                                     </div>
                                 </div>
 
@@ -6946,7 +7074,7 @@
                                                   (click)="openModalAddDetails('clientAppealed')" mat-raised-button="" data-toggle="modal"
                                                   data-target="#myModal2"
                                                   class="btn btn-sm btn-primary mr-2"><span
-                                                class="mat-button-wrapper">DID CLIENT APPEAL ?</span>
+                                                class="mat-button-wrapper">DID CLIENT APPEAL WITHIN 14 DAYS?</span>
 
                                             <div class="mat-button-focus-overlay"></div>
                                         </button>

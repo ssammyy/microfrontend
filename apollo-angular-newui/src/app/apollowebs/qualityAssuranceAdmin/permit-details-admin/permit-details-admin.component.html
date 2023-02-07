@@ -1846,15 +1846,55 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
+                                                    <input id="companyProfileID" type="hidden" formControlName="companyProfileID"
+                                                           name="companyProfileID" ngModel="{{companyProfileID}}">
                                                     <label><b>Select Completeness Status</b></label>
                                                     <mat-form-field id="hofQamCompletenessStatus">
-                                                        <mat-select formControlName="hofQamCompletenessStatus"
+                                                        <mat-select (selectionChange)="updateSelectedStatus()"
+                                                                formControlName="hofQamCompletenessStatus"
                                                                     name="hofQamCompletenessStatus"
                                                                     placeholder="Please Select an option">
                                                             <mat-option [value]="true">ACCEPT</mat-option>
                                                             <mat-option [value]="false">DECLINE</mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
+                                                    <div *ngIf="(selectCompletenessStatus == 'Reject')">
+                                                        <label><b>Select Decline type</b></label>
+                                                        <mat-form-field>
+                                                            <mat-select (selectionChange)="updateSelectedRejectionStatus()"
+                                                                        formControlName="rejectedForStatus"
+                                                                        name="rejectedForStatus"
+                                                                        placeholder="Please Select an option">
+                                                                <mat-option [value]="true">DECLINE FOR AMENDMENT</mat-option>
+                                                                <mat-option [value]="false">DECLINE FIRM TYPE FOR UPGRADE</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                        <div *ngIf="(selectForStatusStatus == 'RejectForUpgrade')">
+                                                            <label ><b>Select Firm Type To Be</b></label>
+                                                            <mat-form-field >
+                                                                <mat-select placeholder="Please Select an option"
+                                                                            formControlName="updateFirmType"
+                                                                            name="updateFirmType">
+                                                                    <mat-option  *ngFor="let app of loadedFirmType" [value]="app.id">{{app.firmType}}</mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                            <label><b>Select Upgrade type:</b></label>
+                                                            <mat-form-field>
+                                                                <mat-select formControlName="upgradeType"
+                                                                            name="upgradeType"
+                                                                            placeholder="Please Select an option">
+                                                                    <mat-option [value]="true">UP</mat-option>
+<!--                                                                    <mat-option [value]="false">DOWN</mat-option>-->
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                            <label for="requesterComment"><b>Please write, in detail, What should be Amended:</b></label>
+                                                            <mat-form-field class="example-full-width">
+                                                    <textarea  formControlName="requesterComment" id="requesterComment"
+                                                               matInput name="requesterComment" type="text">
+                                                    </textarea>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </div>
                                                     <label><b>Please write, in detail, your feedback for selecting the
                                                         Remarks:</b></label>
                                                     <mat-form-field class="example-full-width">
@@ -1930,9 +1970,21 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
-                                <button *ngIf="(currDiv == 'permitCompleteness')" mat-raised-button type="button"
+                                <button *ngIf="(currDiv == 'permitCompleteness' && selectCompletenessStatus == 'Accept')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSavePermitCompletenessFormResults(permitCompletenessForm.valid);"
+                                        [disabled]="!permitCompletenessForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'permitCompleteness' && selectCompletenessStatus == 'Reject' && selectForStatusStatus == 'RejectAmendment')" mat-raised-button type="button"
                                         class="btn btn-success"
                                         (click)="onClickSavePermitCompletenessFormResults(permitCompletenessForm.valid);"
+                                        [disabled]="!permitCompletenessForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'permitCompleteness' && selectCompletenessStatus == 'Reject' && selectForStatusStatus == 'RejectForUpgrade')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSavePermitCompletenessForUpgradeFormResults(permitCompletenessForm.valid);"
                                         [disabled]="!permitCompletenessForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT

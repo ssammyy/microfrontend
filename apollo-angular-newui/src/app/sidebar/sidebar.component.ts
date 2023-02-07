@@ -133,6 +133,7 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'invoice',
         children: [
             {path: 'consolidate_invoice', title: 'Consolidate All Invoices', ab: 'CAI'},
+            {path: 'consolidate_invoice-difference', title: 'Consolidate All Invoices Difference', ab: 'CAID'},
             // {path: 'consolidate_invoice_fmark', title: 'Consolidate Fmark Invoices', ab: 'CFI',},
             // {path: 'consolidate_invoice_dmark', title: 'Consolidate Dmark Invoices', ab: 'CDI',},
 

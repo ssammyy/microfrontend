@@ -30,12 +30,11 @@ declare const $: any;
   styleUrls: ['./invoice-consolidate-dmark.component.css']
 })
 export class InvoiceConsolidateDmarkComponent implements OnInit {
-
   public dataTable: DataTable;
   public allInvoiceData: PermitInvoiceDto[];
   tasks: PermitInvoiceDto[] = [];
 
-  DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
+  SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
 
   // consolidatedInvoice: GenerateInvoiceDto;
   name: string;
@@ -43,17 +42,16 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
   submittedValue: any;
   final_array = [];
   selected = [];
-  messages = []
+  messages = [];
   isWithHolding = 0;
+  branchID: number;
   // permitInvoicesIDS = [];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective;
-  isDtInitialized: boolean = false
+  isDtInitialized = false;
   loadingText: string;
-
-  branchID: number;
 
   constructor(
       private qaService: QaService,
@@ -73,7 +71,7 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
     this.checkboxGroup = this.fb.group({
     });
     const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
-    this.getSPCTasks()
+    this.getSPCTasks();
 
 
   }
@@ -102,7 +100,7 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
   }
 
   setWithHoldingToTrue(checked) {
-    if(checked) {
+    if (checked) {
       this.isWithHolding = 1;
     }
   }
@@ -114,9 +112,9 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger'
+        cancelButton: 'btn btn-danger',
       },
-      buttonsStyling: false
+      buttonsStyling: false,
     });
 
     swalWithBootstrapButtons.fire({
@@ -126,7 +124,7 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
       showCancelButton: true,
       confirmButtonText: 'Yes!',
       cancelButtonText: 'No!',
-      reverseButtons: true
+      reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
         this.SpinnerService.show();
@@ -137,10 +135,10 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
         consolidatedInvoice.plantID = null;
         consolidatedInvoice.permitRefNumber = permitRefNumber;
         consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
-        consolidatedInvoice.isWithHolding = this.isWithHolding
+        consolidatedInvoice.isWithHolding = this.isWithHolding;
 
-        console.log( consolidatedInvoice.isWithHolding)
-        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+        console.log( consolidatedInvoice.isWithHolding);
+        this.qaService.createInvoiceConsolidatedDifferenceDetails(consolidatedInvoice).subscribe(
             (data) => {
               console.log(data);
               this.SpinnerService.hide();
@@ -150,9 +148,13 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
                 customClass: {
                   confirmButton: 'btn btn-success form-wizard-next-btn ',
                 },
-                icon: 'success'
+                icon: 'success',
               });
               this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
+            },
+            (error: HttpErrorResponse) => {
+              alert(error.message);
+              this.SpinnerService.hide();
             },
         );
       } else if (
@@ -162,7 +164,7 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
         swalWithBootstrapButtons.fire(
             'Cancelled',
             'You can click the \'On the side Check Box for Consolidating\' more than one invoice.',
-            'error'
+            'error',
         );
       }
     });
@@ -172,9 +174,9 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger'
+        cancelButton: 'btn btn-danger',
       },
-      buttonsStyling: false
+      buttonsStyling: false,
     });
 
     swalWithBootstrapButtons.fire({
@@ -184,7 +186,7 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
       showCancelButton: true,
       confirmButtonText: 'Yes!',
       cancelButtonText: 'No!',
-      reverseButtons: true
+      reverseButtons: true,
     }).then((result) => {
           if (result.isConfirmed) {
             this.SpinnerService.show();
@@ -204,13 +206,13 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
             });
             console.log(permitInvoicesIDS);
             const consolidatedInvoice = new GenerateInvoiceWithWithholdingDto;
-            consolidatedInvoice.batchID = null;
+            consolidatedInvoice.batchID = -1;
             consolidatedInvoice.plantID = null;
             consolidatedInvoice.permitRefNumber = null;
             consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
             console.log('TEST CONSOLIDATE' + consolidatedInvoice);
             console.log(consolidatedInvoice.permitInvoicesID);
-            this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+            this.qaService.createInvoiceConsolidatedDifferenceDetails(consolidatedInvoice).subscribe(
                 (data) => {
                   this.SpinnerService.hide();
                   swal.fire({
@@ -219,9 +221,13 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
                     customClass: {
                       confirmButton: 'btn btn-success form-wizard-next-btn ',
                     },
-                    icon: 'success'
+                    icon: 'success',
                   });
                   this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
+                },
+                (error: HttpErrorResponse) => {
+                  alert(error.message);
+                  this.SpinnerService.hide();
                 },
             );
           } else if (
@@ -231,10 +237,10 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
             swalWithBootstrapButtons.fire(
                 'Cancelled',
                 'You can click the \'On the side Check Box for Consolidating\' more than one invoice.',
-                'error'
+                'error',
             );
           }
-        }
+        },
     );
 
 
@@ -242,10 +248,10 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
 
 
   public getSPCTasks(): void {
-    this.loadingText = "Retrieving Invoices Please Wait ...."
+    this.loadingText = 'Retrieving Invoices Please Wait ....';
 
     this.SpinnerService.show();
-    this.qaService.loadInvoiceListWithNoBatchIDPermitType(this.DMarkTypeID, this.branchID).subscribe(
+    this.qaService.loadInvoiceListWithNoBatchIDDifference().subscribe(
         (response: PermitInvoiceDto[]) => {
           this.SpinnerService.hide();
           this.tasks = response;
@@ -256,14 +262,14 @@ export class InvoiceConsolidateDmarkComponent implements OnInit {
               this.dtTrigger.next();
             });
           } else {
-            this.isDtInitialized = true
+            this.isDtInitialized = true;
             this.dtTrigger.next();
           }
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
           this.SpinnerService.hide();
-        }
+        },
     );
   }
 

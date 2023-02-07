@@ -930,6 +930,10 @@ export class SmarkComponent implements OnInit {
         this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
 
+    goToInvoiceGeneratedDifference() {
+        this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchIDDifference)});
+    }
+
     loadCInvoiceRoute() {
         // location.reload();
         this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});

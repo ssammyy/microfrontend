@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto,
-    FilesListDto,
+    FilesListDto, FirmTypeEntityDto,
     PermitEntityDetails,
     PermitEntityDto,
     PlantDetailsDto,
@@ -46,6 +46,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     currDivLabel!: string;
     roles: string[];
     userLoggedInID: number;
+    companyProfileID: bigint;
     userProfile: LoggedInUser;
     labResultsStatus!: string;
     labResultsRemarks!: string;
@@ -66,7 +67,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     pdfInvoiceBreakDownSources: any;
     pdfSourcesScheme: any;
     pdfUploadsView: any;
-
+    selectCompletenessStatus!: string;
+    selectForStatusStatus!: string;
     loading = false;
 
 
@@ -94,6 +96,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     // DTOS
+    loadedFirmType: FirmTypeEntityDto[] = [];
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     allPermitDetails: AllPermitDetailsDto;
@@ -298,7 +301,12 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         this.permitCompletenessForm = this.formBuilder.group({
             hofQamCompletenessStatus: ['', Validators.required],
+            rejectedForStatus: null,
             hofQamCompletenessRemarks: null,
+            companyProfileID: null,
+            updateFirmType: null,
+            requesterComment: null,
+            upgradeType: null,
         });
 
         this.factoryVisit = this.formBuilder.group({
@@ -437,6 +445,24 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.currDiv = divVal;
     }
 
+    updateSelectedStatus() {
+        const valueSelected = this.permitCompletenessForm?.get('hofQamCompletenessStatus')?.value;
+        if (valueSelected) {
+            this.selectCompletenessStatus = 'Accept';
+        } else {
+            this.selectCompletenessStatus = 'Reject';
+        }
+    }
+
+    updateSelectedRejectionStatus() {
+        const valueSelected = this.permitCompletenessForm?.get('rejectedForStatus')?.value;
+        if (valueSelected) {
+            this.selectForStatusStatus = 'RejectAmendment';
+        } else {
+            this.selectForStatusStatus = 'RejectForUpgrade';
+        }
+    }
+
 
     public getSelectedPermit(permitId: any): void {
         this.SpinnerService.show();
@@ -463,6 +489,8 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
         this.allPermitDetails = data?.data as AllPermitDetailsDto;
+        this.permitID = String(this.allPermitDetails.permitDetails.id);
+        console.log('Permit ID added'+this.permitID)
 
         this.batchID = this.allPermitDetails.batchID;
         if (this.allPermitDetails.permitDetails.permitTypeID === this.SMarkTypeID) {
@@ -470,6 +498,9 @@ export class PermitDetailsAdminComponent implements OnInit {
         } else if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
             this.permitTypeName = 'Fortification';
         }
+
+        this.companyProfileID = this.allPermitDetails?.oldVersionList?.find(pr => pr.id === this.allPermitDetails.permitDetails.id).companyId;
+        console.log(this.companyProfileID)
         this.sta1 = this.allPermitDetails.sta1DTO;
         this.sta1Form.patchValue(this.sta1);
 
@@ -483,6 +514,15 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
 
+        this.qaService.loadFirmPermitList().subscribe(
+            (dataFirmType: FirmTypeEntityDto[]) => {
+                this.loadedFirmType = dataFirmType;
+            },
+            error => {
+                console.log(error);
+                this.qaService.showError('AN ERROR OCCURRED');
+            },
+        );
 
         if (this.allPermitDetails.sta10FilesList !== []) {
             this.sta10FileList = this.allPermitDetails.sta10FilesList;
@@ -584,7 +624,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     saveSectionFormResults(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaUpdateSection(this.updateSectionForm.value).subscribe(
+            this.qaService.qaUpdateSection(this.updateSectionForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
@@ -615,7 +655,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SavePermitCompletenessFormResults(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaPermitCompleteness(this.permitCompletenessForm.value).subscribe(
+            this.qaService.qaPermitCompleteness(this.permitCompletenessForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
@@ -626,6 +666,46 @@ export class PermitDetailsAdminComponent implements OnInit {
                         this.SpinnerService.hide();
                         this.qaService.showError(data.message);
                     }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSavePermitCompletenessForUpgradeFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'REVIEW FOR COMPLETENESS\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.savePermitCompletenessForUpgradeFormResults(valid);
+            });
+    }
+
+    savePermitCompletenessForUpgradeFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaPermitCompletenessUpgrade(this.permitCompletenessForm.value, this.permitID).subscribe(
+                (data1: ApiResponseModel) => {
+                    this.qaService.qaUpdateDifferenceStatus(this.permitCompletenessForm.value, this.permitID).subscribe(
+                        (data: ApiResponseModel) => {
+                            if (data.responseCode === '00') {
+                                this.SpinnerService.hide();
+                                this.qaService.showSuccess('PERMIT COMPLETENESS STATUS, SAVED SUCCESSFULLY', () => {
+                                    this.loadPermitDetails(data);
+                                });
+                            } else {
+                                this.SpinnerService.hide();
+                                this.qaService.showError(data.message);
+                            }
+                        },
+                        error => {
+                            this.SpinnerService.hide();
+                            this.qaService.showError('AN ERROR OCCURRED');
+                        },
+                    );
+                    this.SpinnerService.hide();
                 },
                 error => {
                     this.SpinnerService.hide();
@@ -646,7 +726,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SaveAssignOfficerForm(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaAssignOfficer(this.assignOfficerForm.value).subscribe(
+            this.qaService.qaAssignOfficer(this.assignOfficerForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
@@ -677,7 +757,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SaveAddStandardsForm(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaStandardsAdd(this.addStandardsForm.value).subscribe(
+            this.qaService.qaStandardsAdd(this.addStandardsForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
@@ -709,7 +789,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SaveScheduleInspectionForm(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaScheduleInspectionReport(this.scheduleInspectionForm.value).subscribe(
+            this.qaService.qaScheduleInspectionReport(this.scheduleInspectionForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();

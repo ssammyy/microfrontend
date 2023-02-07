@@ -696,97 +696,94 @@ export class ComplaintDetailsComponent implements OnInit {
     if (valid) {
       this.SpinnerService.show();
       this.dataSaveAcceptance = {...this.dataSaveAcceptance, ...this.acceptRejectComplaintForm.value};
-      switch (this.selectComplaintStatus) {
-        case 'Accept':
-          const newAcceptDto = new ComplaintApproveDto();
-          newAcceptDto.department = this.dataSaveAcceptance.department;
-          newAcceptDto.division = this.dataSaveAcceptance.division;
-          newAcceptDto.approvedRemarks = this.dataSaveAcceptance.approvedRemarks;
-          newAcceptDto.approved = this.dataSaveAcceptance.approved;
-          // tslint:disable-next-line:max-line-length
-          this.msService.msComplaintUpdateAcceptanceDetails(this.complaintInspection.complaintsDetails.refNumber, newAcceptDto).subscribe(
-              (data: any) => {
-                this.complaintInspection = data;
-                console.log(data);
-                this.acceptRejectComplaintForm.reset();
-                this.SpinnerService.hide();
-                this.msService.showSuccess('COMPLAINT ACCEPTANCE, SAVED SUCCESSFULLY');
-              },
-              error => {
-                this.SpinnerService.hide();
-                this.acceptRejectComplaintForm.reset();
-                console.log(error);
-                this.msService.showError('AN ERROR OCCURRED');
-              },
-          );
-          break;
-        case 'Reject':
-          switch (this.selectComplaintRejectionStatus) {
-            case 'Accept':
-              const newAdviceWhereToDto = new ComplaintAdviceRejectDto();
-              newAdviceWhereToDto.mandateForOga = this.dataSaveAcceptance.mandateForOga;
-              newAdviceWhereToDto.advisedWhereToRemarks = this.dataSaveAcceptance.advisedWhereToRemarks;
-              newAdviceWhereToDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
-              // tslint:disable-next-line:max-line-length
-              this.msService.msComplaintUpdateMandateOGADetails(this.complaintInspection.complaintsDetails.refNumber, newAdviceWhereToDto).subscribe(
-                  (data: any) => {
-                    this.complaintInspection = data;
-                    console.log(data);
-                    this.acceptRejectComplaintForm.reset();
-                    this.SpinnerService.hide();
-                    this.msService.showSuccess('COMPLAINANT ADVISED WHERE TO TAKE THE COMPLAINT, SAVED SUCCESSFULLY');
-                  },
-                  error => {
-                    this.SpinnerService.hide();
-                    this.acceptRejectComplaintForm.reset();
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              break;
-            case 'Reject':
-              const newRejectDto = new ComplaintRejectDto();
-              newRejectDto.rejected = this.dataSaveAcceptance.approved;
-              newRejectDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
-              this.msService.msComplaintUpdateRejectDetails(this.complaintInspection.complaintsDetails.refNumber, newRejectDto).subscribe(
-                  (data: any) => {
-                    this.complaintInspection = data;
-                    this.acceptRejectComplaintForm.reset();
-                    console.log(data);
-                    this.SpinnerService.hide();
-                    this.msService.showSuccess('COMPLAINT DECLINED, SAVED SUCCESSFULLY');
-                  },
-                  error => {
-                    this.SpinnerService.hide();
-                    this.acceptRejectComplaintForm.reset();
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              break;
-            case 'RejectAmendment':
-              const newRejectAmendmentDto = new ComplaintAdviceRejectDto();
-              newRejectAmendmentDto.amendmentRemarks = this.dataSaveAcceptance.advisedWhereToRemarks;
-              newRejectAmendmentDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
-              // tslint:disable-next-line:max-line-length
-              this.msService.msComplaintUpdateForAmendmentDetails(this.complaintInspection.complaintsDetails.refNumber, newRejectAmendmentDto).subscribe(
-                  (data: any) => {
-                    this.complaintInspection = data;
-                    console.log(data);
-                    this.acceptRejectComplaintForm.reset();
-                    this.SpinnerService.hide();
-                    this.msService.showSuccess('COMPLAINANT TO AMEND, SENT SUCCESSFULLY');
-                  },
-                  error => {
-                    this.SpinnerService.hide();
-                    this.acceptRejectComplaintForm.reset();
-                    console.log(error);
-                    this.msService.showError('AN ERROR OCCURRED');
-                  },
-              );
-              break;
-          }
-          break;
+      if (this.selectComplaintStatus === 'Accept') {
+        const newAcceptDto = new ComplaintApproveDto();
+        newAcceptDto.department = this.dataSaveAcceptance.department;
+        newAcceptDto.division = this.dataSaveAcceptance.division;
+        newAcceptDto.approvedRemarks = this.dataSaveAcceptance.approvedRemarks;
+        newAcceptDto.approved = this.dataSaveAcceptance.approved;
+        // tslint:disable-next-line:max-line-length
+        this.msService.msComplaintUpdateAcceptanceDetails(this.complaintInspection.complaintsDetails.refNumber, newAcceptDto).subscribe(
+            (data: any) => {
+              this.complaintInspection = data;
+              console.log(data);
+              this.acceptRejectComplaintForm.reset();
+              this.SpinnerService.hide();
+              this.msService.showSuccess('COMPLAINT ACCEPTANCE, SAVED SUCCESSFULLY');
+            },
+            error => {
+              this.SpinnerService.hide();
+              this.acceptRejectComplaintForm.reset();
+              console.log(error);
+              this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+      } else if (this.selectComplaintStatus === 'Reject') {
+        switch (this.selectComplaintRejectionStatus) {
+          case 'Accept':
+            const newAdviceWhereToDto = new ComplaintAdviceRejectDto();
+            newAdviceWhereToDto.mandateForOga = this.dataSaveAcceptance.mandateForOga;
+            newAdviceWhereToDto.advisedWhereToRemarks = this.dataSaveAcceptance.advisedWhereToRemarks;
+            newAdviceWhereToDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
+            // tslint:disable-next-line:max-line-length
+            this.msService.msComplaintUpdateMandateOGADetails(this.complaintInspection.complaintsDetails.refNumber, newAdviceWhereToDto).subscribe(
+                (data: any) => {
+                  this.complaintInspection = data;
+                  console.log(data);
+                  this.acceptRejectComplaintForm.reset();
+                  this.SpinnerService.hide();
+                  this.msService.showSuccess('COMPLAINANT ADVISED WHERE TO TAKE THE COMPLAINT, SAVED SUCCESSFULLY');
+                },
+                error => {
+                  this.SpinnerService.hide();
+                  this.acceptRejectComplaintForm.reset();
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            break;
+          case 'Reject':
+            const newRejectDto = new ComplaintRejectDto();
+            newRejectDto.rejected = this.dataSaveAcceptance.approved;
+            newRejectDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
+            this.msService.msComplaintUpdateRejectDetails(this.complaintInspection.complaintsDetails.refNumber, newRejectDto).subscribe(
+                (data: any) => {
+                  this.complaintInspection = data;
+                  this.acceptRejectComplaintForm.reset();
+                  console.log(data);
+                  this.SpinnerService.hide();
+                  this.msService.showSuccess('COMPLAINT DECLINED, SAVED SUCCESSFULLY');
+                },
+                error => {
+                  this.SpinnerService.hide();
+                  this.acceptRejectComplaintForm.reset();
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            break;
+          case 'RejectAmendment':
+            const newRejectAmendmentDto = new ComplaintAdviceRejectDto();
+            newRejectAmendmentDto.amendmentRemarks = this.dataSaveAcceptance.amendmentRemarks;
+            newRejectAmendmentDto.rejectedRemarks = this.dataSaveAcceptance.approvedRemarks;
+            // tslint:disable-next-line:max-line-length
+            this.msService.msComplaintUpdateForAmendmentDetails(this.complaintInspection.complaintsDetails.refNumber, newRejectAmendmentDto).subscribe(
+                (data: any) => {
+                  this.complaintInspection = data;
+                  console.log(data);
+                  this.acceptRejectComplaintForm.reset();
+                  this.SpinnerService.hide();
+                  this.msService.showSuccess('COMPLAINANT TO AMEND, SENT SUCCESSFULLY');
+                },
+                error => {
+                  this.SpinnerService.hide();
+                  this.acceptRejectComplaintForm.reset();
+                  console.log(error);
+                  this.msService.showError('AN ERROR OCCURRED');
+                },
+            );
+            break;
+        }
       }
 
 

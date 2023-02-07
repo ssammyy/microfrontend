@@ -741,12 +741,15 @@ data class PermitDetailsDto(
     var productStandards: Long? = null,
     var assignOfficerStatus: Boolean? = null,
     var assignOfficerID: Long? = null,
+    var permitGenerateDifference: Boolean? = null,
+    var companyId: Long? = null,
 )
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
     var remarksDetails: PermitAllRemarksDetailsDto? = null,
     var invoiceDetails: InvoiceDetailsDto? = null,
+    var invoiceDifferenceDetails: InvoiceDetailsDto? = null,
     var officerList: List<UserEntityDto>? = null,
     var oldVersionList: List<PermitEntityDto>? = null,
     var ordinaryFilesList: List<FilesListDto>? = null,
@@ -755,6 +758,7 @@ data class AllPermitDetailsDto(
     var labResultsList: PermitSSFLabResultsDto? = null,
     var schemeOfSuperVision: FilesListDto? = null,
     var batchID: Long? = null,
+    var batchIDDifference: Long? = null,
     var encryptedPermitId: String? = null,
     var sta1DTO: STA1Dto? = null,
     var sta3DTO: STA3Dto? = null,
