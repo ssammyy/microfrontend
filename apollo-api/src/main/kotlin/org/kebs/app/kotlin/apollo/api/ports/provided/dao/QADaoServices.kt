@@ -5327,6 +5327,7 @@ class QADaoServices(
             productStandards = permit.productStandard
             assignOfficerID = permit.qaoId
             permitGenerateDifference = permit.varField9?.toInt() == 1
+            inspectionReportGenerated = permit.inspectionReportGenerated == 1
             companyId = companyProfile?.id
         }
         return p
