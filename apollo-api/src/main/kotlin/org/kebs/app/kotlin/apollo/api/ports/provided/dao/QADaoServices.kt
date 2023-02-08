@@ -914,7 +914,7 @@ class QADaoServices(
             sampleSubmissionDetails = SampleSubmissionRepo.save(sampleSubmissionDetails)
 
             with(permit) {
-                ssfCompletedStatus = 11
+                ssfCompletedStatus = 1
                 compliantStatus = null
                 permitStatus = applicationMapProperties.mapQaStatusPLABResults
             }
@@ -5328,6 +5328,8 @@ class QADaoServices(
             assignOfficerID = permit.qaoId
             permitGenerateDifference = permit.varField9?.toInt() == 1
             companyId = companyProfile?.id
+            factoryInspectionReportApprovedRejectedStatus = permit.factoryInspectionReportApprovedRejectedStatus == 1
+            ssfCompletedStatus = permit.ssfCompletedStatus == 1
         }
         return p
     }
@@ -5379,6 +5381,12 @@ class QADaoServices(
     ): AllPermitDetailsDto {
         val permitID = permit.id ?: throw Exception("MISSING PERMIT ID")
         val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
+        val ssfListDetails = mutableListOf<SSFDetailsDto>()
+        if(permit.ssfCompletedStatus==1){
+           val ssfList =  ssfDetailsListDto(findSampleSubmittedListBYPermitRefNumberAndPermitID(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus, permitID))
+            ssfListDetails.addAll(ssfList)
+        }
+
 
         return AllPermitDetailsDto(
             permitDetails(permit, map),
@@ -5417,7 +5425,8 @@ class QADaoServices(
             )?.let { mapDtoSTA3View(it, permitID) },
             findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID)?.let { listSTA10ViewDetails(permitID, it) },
             loadSectionDetails(departmentEntity, map),
-            mapAllStandardsTogether(findALlStandardsDetails(map.activeStatus))
+            mapAllStandardsTogether(findALlStandardsDetails(map.activeStatus)),
+            ssfListDetails
         )
     }
 
@@ -5436,6 +5445,21 @@ class QADaoServices(
         }
         return sections
     }
+
+    fun ssfDetailsListDto(ssfList: List<QaSampleSubmissionEntity>): List<SSFDetailsDto> {
+        return ssfList.map { u ->
+            SSFDetailsDto(
+                u.id,
+                u.ssfNo,
+                u.ssfSubmissionDate,
+                u.bsNumber,
+                u.brandName,
+                u.productDescription,
+                u.resultsAnalysis==1,
+            )
+        }
+    }
+
 
     fun listWorkPlan(workPlan: List<QaWorkplanEntity>, map: ServiceMapsEntity): List<WorkPlanDto> {
         val permitsList = mutableListOf<WorkPlanDto>()

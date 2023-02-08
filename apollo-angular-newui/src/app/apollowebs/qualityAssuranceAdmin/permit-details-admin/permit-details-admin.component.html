@@ -1193,66 +1193,37 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                                 <div>
                                                                                     <table class=" table table-bordered table-hover table-striped"
-                                                                                           datatable
+                                                                                           datatable [dtOptions]="dtOptionsSSF" [dtTrigger]="dtTriggerSSF"
                                                                                     >
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
 
-                                                                                            <th>
-                                                                                                <strong>SSF No</strong>
-                                                                                            </th>
-                                                                                            <th>
-                                                                                                <strong>SSF Submission
-                                                                                                    Date</strong></th>
-                                                                                            <th>
-                                                                                                <strong>BS
-                                                                                                    Number</strong></th>
-
-                                                                                            <th>
-                                                                                                <strong>Product
-                                                                                                    Name</strong></th>
-                                                                                            <th>
-                                                                                                <strong>Product
-                                                                                                    Brand</strong></th>
-                                                                                            <th>
-                                                                                                <strong>Results
-                                                                                                    Analysis</strong>
-                                                                                            </th>
-
-
-                                                                                            <th class="text-center">
-                                                                                                <strong>View
-                                                                                                    Details</strong>
-                                                                                            </th>
-
-
+                                                                                            <th><strong>SSF No</strong></th>
+                                                                                            <th><strong>SSF Submission Date</strong></th>
+                                                                                            <th><strong>BS Number</strong></th>
+                                                                                            <th><strong>Product Name</strong></th>
+                                                                                            <th><strong>Product Brand</strong></th>
+                                                                                            <th><strong>Results Analysis</strong></th>
+                                                                                            <th class="text-center"><strong>View Details</strong></th>
                                                                                         </tr>
                                                                                         </thead>
-
                                                                                         <tbody>
-                                                                                        <tr>
-
-                                                                                            <td>SSF88899</td>
-
-                                                                                            <td>11/01/2023</td>
-
-                                                                                            <td>bs202117704</td>
-                                                                                            <td>Best drink</td>
-                                                                                            <td>Bestdrink</td>
-                                                                                            <td>N/A</td>
-
+                                                                                        <tr  *ngFor="let sffDetails of allPermitDetails?.ssfListDetails let i=index ">
+                                                                                            <td >{{i+1}} </td>
+                                                                                            <td>{{sffDetails?.ssfNo}}</td>
+                                                                                            <td>{{sffDetails?.ssfSubmissionDate }}</td>
+                                                                                            <td>{{sffDetails?.bsNumber}}</td>
+                                                                                            <td>{{sffDetails?.brandName}}</td>
+                                                                                            <td>{{sffDetails?.productDescription}}</td>
+                                                                                            <td>{{sffDetails?.resultsAnalysis}}</td>
                                                                                             <td class="text-right">
-
                                                                                                 <a data-toggle="modal"
                                                                                                    data-target="#ssf-bsnumber"
                                                                                                    class="btn btn-info"
-                                                                                                   style="background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
-
-
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
                                                                                             </td>
-
                                                                                         </tr>
-
                                                                                         </tbody>
                                                                                     </table>
                                                                                 </div>
@@ -1261,8 +1232,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                     </div>
                                                                 </div>
-
-
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1697,6 +1666,12 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('assignOfficer')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
+
+<!--                                <a data-toggle="modal"-->
+<!--                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.factoryInspectionReportApprovedRejectedStatus "-->
+<!--                                   data-target="#allProcessModel"-->
+<!--                                   (click)="openModalAddDetails('approveRe')"-->
+<!--                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT GENERATED INSPECTION REPORT</a>-->
                             </div>
                             <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
                                 <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
@@ -1720,6 +1695,19 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('uploadSSC')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
+
+                                <a data-toggle="modal"
+                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('addSSFDetails')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
+
+                                <a data-toggle="modal"
+                                   *ngIf="!allPermitDetails?.permitDetails?.oldPermitStatus && !allPermitDetails?.permitDetails?.permitAwardStatus"
+                                   data-target="#myModalUpload"
+                                   (click)="openModalAddDetails('uploadAttachments')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
                             </div>
                         </div>
 
@@ -1791,12 +1779,18 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             </div>
                             <div class="modal-body">
                                 <div>
-                                    <form  action="" class="form" enctype="multipart/form-data" method="post">
+                                    <form  [formGroup]="docFileNameForm" action="" class="form" enctype="multipart/form-data" method="post">
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
+                                                    <label for="files"><b>Description Of Attachment(s):</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="docFileName" id="docFileName"
+                                                               matInput name="docFileName"
+                                                               placeholder="Please enter Description Of Attachment"
+                                                               type="text">
+                                                    </mat-form-field>
                                                     <label for="files"><b>Upload Documents Here</b></label>
-
                                                     <form #demoForm="ngForm">
                                                         <file-upload [(ngModel)]="uploadedFilesOnly" name="files" id="files" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt"></file-upload>
                                                     </form>
@@ -1810,7 +1804,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                 <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
                                 </button>
-                                <button *ngIf="(currDiv == 'uploadFiles')" mat-raised-button type="button" class="btn btn-success"
+                                <button *ngIf="(currDiv == 'uploadAttachments')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSaveUploadsAttachments()"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
@@ -2004,8 +1999,43 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+                                <div *ngIf="(currDiv == 'addSSFDetails')">
+                                    <form [formGroup]="ssfDetailsForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>InspectionDate:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="ssfNo" id="ssfNo" matInput name="ssfNo" required
+                                                               placeholder="Please enter ssfNo" type="text">
+                                                    </mat-form-field>
+                                                    <label><b>InspectionDate:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="ssfSubmissionDate" id="ssfSubmissionDate" matInput name="ssfSubmissionDate" required
+                                                               placeholder="Please enter ssf Submission Date" type="date">
+                                                    </mat-form-field>
+                                                    <label><b>InspectionDate:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="bsNumber" id="bsNumber" matInput name="bsNumber" required
+                                                               placeholder="Please enter BS Number" type="text">
+                                                    </mat-form-field>
+                                                    <label><b>InspectionDate:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="brandName" id="brandName" matInput name="brandName" required
+                                                               placeholder="Please enter brand Name" type="text">
+                                                    </mat-form-field>
+                                                    <label><b>InspectionDate:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="productDescription" id="productDescription" matInput name="productDescription" required
+                                                               placeholder="Please enter product Description" type="text">
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                                 <div *ngIf="(currDiv == 'uploadSSC')">
-                                    <form [formGroup]="scheduleInspectionForm" action="" class="form" enctype="multipart/form-data" method="post">
+                                    <form action="" class="form" enctype="multipart/form-data" method="post">
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
@@ -2068,6 +2098,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         class="btn btn-success"
                                         (click)="onClickSaveScheduleInspectionForm(scheduleInspectionForm.valid);"
                                         [disabled]="!scheduleInspectionForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'addSSFDetails')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveAddSSFDetails(ssfDetailsForm.valid);"
+                                        [disabled]="!ssfDetailsForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>

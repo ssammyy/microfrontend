@@ -159,6 +159,59 @@ class QualityAssuranceJSONControllers(
 
     }
 
+    @PostMapping("/internal-users/apply/permit/upload-docs")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadDocuments(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("data") data: String,
+        @RequestParam("docFileName") docFileName: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): ApiResponseModel {
+
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            var permit = qaDaoServices.findPermitBYID(permitID)
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            val versionNumber: Long = 1
+            val fileDocList = mutableListOf<Long>()
+            docFile?.forEach { fileDoc ->
+                val uploads = QaUploadsEntity()
+                with(uploads){
+                    ordinaryStatus = 1
+                }
+                val fileDocSaved =   qaDaoServices.saveQaFileUploads(fileDoc, docFileName, loggedInUser, map, uploads, permit.permitRefNumber?: throw Exception("MISSING PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), versionNumber, 0)
+                fileDocSaved.second.id?.let { fileDocList.add(it) }
+            }
+
+            with(permit) {
+                userTaskId = applicationMapProperties.mapUserTaskNameQAO
+            }
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
+                    val batchIDDifference: Long? = qaDaoServices.getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID,batchIDDifference, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
     @PostMapping("/internal-users/apply/permit/upload-justification-report")
     @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
     AllPermitDetailsDto,
@@ -30,6 +30,8 @@ import {ApiResponseModel} from '../../../core/store/data/ms/ms.model';
 import * as CryptoJS from 'crypto-js';
 import {LoggedInUser, selectUserInfo} from '../../../core/store';
 import {Store} from '@ngrx/store';
+import {Subject} from 'rxjs';
+import {DataTableDirective} from 'angular-datatables';
 
 
 @Component({
@@ -64,6 +66,14 @@ export class PermitDetailsAdminComponent implements OnInit {
     uploadedFilesScheme: FileList;
     public actionRequest: PermitEntityDetails | undefined;
 
+    dtOptions: DataTables.Settings = {};
+    dtOptionsSSF: DataTables.Settings = {};
+    dtTriggerSSF: Subject<any> = new Subject<any>();
+    dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+
 
     pdfSources: any;
     SelectedSectionId;
@@ -90,12 +100,14 @@ export class PermitDetailsAdminComponent implements OnInit {
     assignOfficer: FormGroup;
     addStandards: FormGroup;
     factoryVisit: FormGroup;
+    docFileNameForm: FormGroup;
 
     updateSectionForm: FormGroup;
     permitCompletenessForm: FormGroup;
     assignOfficerForm: FormGroup;
     addStandardsForm: FormGroup;
     scheduleInspectionForm: FormGroup;
+    ssfDetailsForm: FormGroup;
 
 
     // DTOS
@@ -322,6 +334,19 @@ export class PermitDetailsAdminComponent implements OnInit {
             scheduleRemarks: null,
         });
 
+        this.ssfDetailsForm = this.formBuilder.group({
+            id: null,
+            ssfNo: ['', Validators.required],
+            ssfSubmissionDate: ['', Validators.required],
+            bsNumber: ['', Validators.required],
+            brandName: ['', Validators.required],
+            productDescription: ['', Validators.required],
+        });
+
+        this.docFileNameForm = this.formBuilder.group({
+            docFileName: null,
+        });
+
 
 
         this.dropdownSettings = {
@@ -430,9 +455,11 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     openModalAddDetails(divVal: string): void {
 
-        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC'];
+        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
+            'addSSFDetails'];
 
-        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision'];
+        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
+            'Add SSF Details Below'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -808,6 +835,37 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+    onClickSaveAddSSFDetails(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'ADD SSF & BS NUMBER\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveAddSSFDetails(valid);
+            });
+    }
+
+    saveAddSSFDetails(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaSSFDetails(this.ssfDetailsForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SSF & BS NUMBER ADDED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
     onClickSaveSSCForm() {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
             // tslint:disable-next-line:max-line-length
@@ -833,6 +891,49 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULL SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
+
+    onClickSaveUploadsAttachments() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPLOAD ATTACHMENTS\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveUploadsAttachments();
+            });
+    }
+
+
+    saveUploadsAttachments() {
+        if (this.uploadedFilesOnly.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedFilesOnly;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitID));
+            formData.append('docFileName', this.docFileNameForm.get('docFileName').value);
+            formData.append('data', 'SCHEME_OF_SUPERVISION');
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveUploadFile(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('UPLOAD(S) SAVED  SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {

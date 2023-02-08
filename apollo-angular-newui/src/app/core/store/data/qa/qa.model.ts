@@ -297,6 +297,8 @@ export class PermitEntityDetails {
     permitGenerateDifference: boolean;
     inspectionReportGenerated : boolean;
     companyId: number;
+    factoryInspectionReportApprovedRejectedStatus: boolean;
+    ssfCompletedStatus: boolean;
 }
 
 
@@ -377,6 +379,16 @@ export class InvoiceDetailsDto {
     invoiceDetailsList: InvoicePerDetailsDto[];
 }
 
+export class SSFDetailsDto {
+    id: bigint;
+    ssfNo: string;
+    ssfSubmissionDate: Date;
+    bsNumber: string;
+    brandName: string;
+    productDescription: string;
+    resultsAnalysis: boolean;
+}
+
 export class AllPermitDetailsDto {
     permitDetails: PermitEntityDetails;
     remarksDetails: PermitAllRemarksDetailsDto;
@@ -396,6 +408,7 @@ export class AllPermitDetailsDto {
     sta3DTO: STA3;
     sectionList: SectionsEntityDto[];
     standardsList: StandardsDto[];
+    ssfListDetails: SSFDetailsDto[];
 }
 
 
