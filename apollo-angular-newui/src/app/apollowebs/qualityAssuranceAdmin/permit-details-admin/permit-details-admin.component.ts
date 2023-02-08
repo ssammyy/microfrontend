@@ -466,7 +466,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             (data: ApiResponseModel) => {
                 if (data.responseCode === '00') {
                     this.loadPermitDetails(data);
-                    this.SpinnerService.hide()
+                    this.SpinnerService.hide();
                 } else {
                     this.SpinnerService.hide();
                     this.qaService.showError(data.message);

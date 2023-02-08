@@ -651,7 +651,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         POST("/assign-assessor", internalUserhandler::updatePermitDetailsAssignAssessor)
                         POST("/add-standards", internalUserhandler::updatePermitDetailsStandards)
                         POST("/schedule-inspection", internalUserhandler::updatePermitDetailsScheduleInspection)
-                        POST("/schedule-assessment-vist", internalUserhandler::updatePermitDetailsScheduleAssessmentVisit)
+                        POST("/schedule-assessment-visit", internalUserhandler::updatePermitDetailsScheduleAssessmentVisit)
                         POST("/inspection-checklist", internalUserhandler::updatePermitDetailsInspectionCheckList)
                         POST("/ssf-details", internalUserhandler::updatePermitDetailsSaveSSFDetails)
                         POST("/lab-save-pdf-selected", internalUserhandler::updatePermitDetailsSaveSelectedLabPDF)
