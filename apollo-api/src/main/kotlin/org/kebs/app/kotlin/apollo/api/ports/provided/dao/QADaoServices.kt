@@ -64,6 +64,8 @@ class QADaoServices(
     private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val qaInspectionOPCRepo: IQaInspectionOpcEntityRepository,
+    private val qaInspectionProductLabelRepo: IQaInspectionProductLabelEntityRepository,
+
     private val qaPersonnelInchargeRepo: IQaPersonnelInchargeEntityRepository,
     private val qaInspectionTechnicalRepo: IQaInspectionTechnicalRepository,
     private val qaInspectionReportRecommendationRepo: IQaInspectionReportRecommendationRepository,
@@ -491,7 +493,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+//    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitStandardsDetails(
         permitID: Long,
@@ -539,7 +541,6 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitScheduleInspectionDetails(
         permitID: Long,
@@ -674,6 +675,148 @@ class QADaoServices(
 
             when (inspectionDetails.first.status) {
                 map.successStatus -> {
+                    var inspectionOPCDetails: Pair<ServiceRequestsEntity, QaInspectionOpcEntity>? = null
+                    body.operationProcessAndControls?.forEach { bodyDetails ->
+                        inspectionOPCDetails = addInspectionCheckListInspectionReportDetailsOPC(
+                            bodyDetails,
+                            qaInspectionReportRecommendation.id
+                                ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID"),
+                            permit.id ?: throw Exception("MISSING PERMIT ID"),
+                            permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                            map,
+                            loggedInUser
+                        )
+
+                    }
+
+                    val inspectionHACCPImplementationDetails = addInspectionCheckListInspectionHACCPImplementation(
+                        body.haccpImplementationDetails ?: throw Exception("MISSING TECHNICAL DETAILS"),
+                        qaInspectionReportRecommendation.id ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID"),
+                        permit.id ?: throw Exception("MISSING PERMIT ID"),
+                        permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                        map,
+                        loggedInUser
+                    )
+
+
+                    with(permit) {
+                        inspectionReportGenerated = 1
+                        permitStatus = applicationMapProperties.mapQaStatusPfactoryInsForms
+                    }
+                    //updating of Details in DB
+                    val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+                    return when (updateResults.first.status) {
+                        map.successStatus -> {
+                            permit = updateResults.second
+                            val batchID: Long? = getBatchID(permit, map, permitID)
+                            val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
+                            val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID,batchIDDifference, map)
+                            commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                        }
+
+                        else -> {
+                            return commonDaoServices.setErrorResponse(
+                                updateResults.first.responseMessage ?: "UNKNOWN_ERROR"
+                            )
+                        }
+                    }
+                }
+
+                else -> {
+                    return commonDaoServices.setErrorResponse(
+                        inspectionDetails.first.responseMessage ?: "UNKNOWN_ERROR"
+                    )
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitInspectionCheckListDetailsNew(
+        permitID: Long,
+        body: AllInspectionDetailsApplyDto
+    ): ApiResponseModel {
+
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+
+            var qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
+            qaInspectionReportRecommendationRepo.findByIdOrNull(body.id ?: -1L)
+                ?.let { fdr ->
+                    qaInspectionReportRecommendation =
+                        saveInspectionCheckListRecommendation(body, fdr, map, loggedInUser, true)
+                } ?: kotlin.run {
+                with(qaInspectionReportRecommendation) {
+                    refNo =
+                        "REF${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                    permitId = permit.id
+                    permitRefNumber = permit.permitRefNumber
+                    filledQpsmsStatus = map.activeStatus
+                    status = map.activeStatus
+                    createdBy = commonDaoServices.concatenateName(loggedInUser)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+                qaInspectionReportRecommendation = saveInspectionCheckListRecommendation(
+                    body,
+                    qaInspectionReportRecommendation,
+                    map,
+                    loggedInUser,
+                    false
+                )
+            }
+
+            qaInspectionReportRecommendation =
+                qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
+
+            val inspectionDetails = addInspectionCheckListAddTechnicalB(
+                body.technicalDetailsDto ?: throw Exception("MISSING TECHNICAL DETAILS"),
+                qaInspectionReportRecommendation.id ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID"),
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                map,
+                loggedInUser
+            )
+
+            when (inspectionDetails.first.status) {
+                map.successStatus -> {
+
+
+                    val inspectionDetailsB = addInspectionCheckListAddTechnicalBB(
+                        body.inspectionDetailsDto ?: throw Exception("MISSING TECHNICAL DETAILS"),
+                        qaInspectionReportRecommendation.id ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID"),
+                        permit.id ?: throw Exception("MISSING PERMIT ID"),
+                        permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                        map,
+                        loggedInUser
+                    )
+
+                    val inspectionDetailsC = addInspectionCheckListAddTechnicalBC(
+                        body.inspectionDetailsDtoB ?: throw Exception("MISSING TECHNICAL DETAILS"),
+                        qaInspectionReportRecommendation.id ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID"),
+                        permit.id ?: throw Exception("MISSING PERMIT ID"),
+                        permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                        map,
+                        loggedInUser
+                    )
+                    var inspectionProductLabelling: Pair<ServiceRequestsEntity, QaInspectionProductLabelEntity>? = null
+                    body.inspectionDetailsDtoB!!.productLabelling?.forEach { bodyDetails ->
+                        inspectionProductLabelling = addInspectionCheckListProductLabelling(
+                            bodyDetails,
+                            qaInspectionReportRecommendation.id
+                                ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID"),
+                            permit.id ?: throw Exception("MISSING PERMIT ID"),
+                            permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                            map,
+                            loggedInUser
+                        )
+
+                    }
 
                     var inspectionOPCDetails: Pair<ServiceRequestsEntity, QaInspectionOpcEntity>? = null
                     body.operationProcessAndControls?.forEach { bodyDetails ->
@@ -1473,6 +1616,67 @@ class QADaoServices(
         }
     }
 
+    fun addInspectionCheckListProductLabelling(
+        body: ProductLabellingDto,
+        inspectionReportRecommendationID: Long,
+        permitID: Long,
+        permitRefNumber: String,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, QaInspectionProductLabelEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var inspection = QaInspectionProductLabelEntity()
+        try {
+            qaInspectionProductLabelRepo.findByIdOrNull(body.id ?: -1L)
+                ?.let { fdr ->
+                    inspection = saveInspectionProductLabelling(
+                        body,
+                        inspectionReportRecommendationID,
+                        permitID,
+                        permitRefNumber,
+                        fdr,
+                        map,
+                        user,
+                        true
+                    )
+                } ?: kotlin.run {
+                inspection = saveInspectionProductLabelling(
+                    body,
+                    inspectionReportRecommendationID,
+                    permitID,
+                    permitRefNumber,
+                    inspection,
+                    map,
+                    user,
+                    false
+                )
+            }
+
+            inspection = qaInspectionProductLabelRepo.save(inspection)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(inspection)} "
+            sr.names = "Inspection Details Save file"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, inspection)
+    }
     fun addInspectionCheckListInspectionReportDetailsOPC(
         body: OperationProcessAndControlsDetailsApplyDto,
         inspectionReportRecommendationID: Long,
@@ -1658,6 +1862,189 @@ class QADaoServices(
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, inspection)
     }
+    fun addInspectionCheckListAddTechnicalB(
+        body: TechnicalDetailsDto,
+        inspectionReportRecommendationID: Long,
+        permitID: Long,
+        permitRefNumber: String,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, QaInspectionTechnicalEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var inspection = QaInspectionTechnicalEntity()
+        try {
+            qaInspectionTechnicalRepo.findByIdOrNull(body.id ?: -1L)
+                ?.let { fdr ->
+                    inspection = saveInspectionCheckListTechnicalDto(
+                        body,
+                        inspectionReportRecommendationID,
+                        permitID,
+                        permitRefNumber,
+                        fdr,
+                        map,
+                        user,
+                        true
+                    )
+                } ?: kotlin.run {
+                inspection = saveInspectionCheckListTechnicalDto(
+                    body,
+                    inspectionReportRecommendationID,
+                    permitID,
+                    permitRefNumber,
+                    inspection,
+                    map,
+                    user,
+                    false
+                )
+            }
+
+            inspection = qaInspectionTechnicalRepo.save(inspection)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(inspection)} "
+            sr.names = "Inspection Details Save file"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, inspection)
+    }
+
+    fun addInspectionCheckListAddTechnicalBB(
+        body: InspectionDetailsDto,
+        inspectionReportRecommendationID: Long,
+        permitID: Long,
+        permitRefNumber: String,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, QaInspectionTechnicalEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var inspection = QaInspectionTechnicalEntity()
+        try {
+            qaInspectionTechnicalRepo.findByIdOrNull(body.id ?: -1L)
+                ?.let { fdr ->
+                    inspection = saveInspectionCheckListInspectionDetailsDto(
+                        body,
+                        inspectionReportRecommendationID,
+                        fdr,
+                        map,
+                        user,
+                        true
+                    )
+                } ?: kotlin.run {
+                inspection = saveInspectionCheckListInspectionDetailsDto(
+                    body,
+                    inspectionReportRecommendationID,
+                    inspection,
+                    map,
+                    user,
+                    false
+                )
+            }
+
+            inspection = qaInspectionTechnicalRepo.save(inspection)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(inspection)} "
+            sr.names = "Inspection Details Save file"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, inspection)
+    }
+
+    fun addInspectionCheckListAddTechnicalBC(
+        body: InspectionDetailsDtoB,
+        inspectionReportRecommendationID: Long,
+        permitID: Long,
+        permitRefNumber: String,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, QaInspectionTechnicalEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var inspection = QaInspectionTechnicalEntity()
+        try {
+            qaInspectionTechnicalRepo.findByIdOrNull(body.id ?: -1L)
+                ?.let { fdr ->
+                    inspection = saveInspectionCheckListInspectionDetailsDtoB(
+                        body,
+                        inspectionReportRecommendationID,
+                        permitID,
+                        permitRefNumber,
+                        fdr,
+                        map,
+                        user,
+                        true
+                    )
+                } ?: kotlin.run {
+                inspection = saveInspectionCheckListInspectionDetailsDtoB(
+                    body,
+                    inspectionReportRecommendationID,
+                    permitID,
+                    permitRefNumber,
+                    inspection,
+                    map,
+                    user,
+                    false
+                )
+            }
+
+            inspection = qaInspectionTechnicalRepo.save(inspection)
+
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(inspection)} "
+            sr.names = "Inspection Details Save file"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.payload = "${commonDaoServices.createJsonBodyFromEntity(body)}"
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, inspection)
+    }
+
+
 
     fun saveInspectionCheckListHaccpImplementation(
         body: HaccpImplementationDetailsApplyDto,
@@ -1803,6 +2190,149 @@ class QADaoServices(
         }
         return inspectionTechnical
     }
+    fun saveInspectionProductLabelling(
+        body: ProductLabellingDto,
+        inspectionReportRecommendationID: Long,
+        permitID: Long,
+        permitRefNUMBER: String,
+        inspectionTechnical: QaInspectionProductLabelEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        update: Boolean
+    ): QaInspectionProductLabelEntity {
+        with(inspectionTechnical) {
+            standardMarking = body.standardMarking
+            findings = body.findings
+            status = map.activeStatus
+            inspectionRecommendationId = inspectionReportRecommendationID
+            permitId = permitID
+            permitRefNumber = permitRefNUMBER
+            when {
+                update -> {
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+
+                else -> {
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+            }
+
+        }
+        return inspectionTechnical
+    }
+
+
+
+    fun saveInspectionCheckListTechnicalDto(
+        body: TechnicalDetailsDto,
+        inspectionReportRecommendationID: Long,
+        permitID: Long,
+        permitRefNUMBER: String,
+        inspectionTechnical: QaInspectionTechnicalEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        update: Boolean
+    ): QaInspectionTechnicalEntity {
+        with(inspectionTechnical) {
+            firmImplementedAnyManagementSystem = body.firmImplementedAnyManagementSystem
+            firmImplementedAnyManagementSystemRemarks = body.firmImplementedAnyManagementSystemRemarks
+            indicateRelevantProductStandardCodes = body.indicateRelevantProductStandardCodes
+            indicateRelevantProductStandardCodesRemarks = body.indicateRelevantProductStandardCodesRemarks
+            status = map.activeStatus
+            inspectionRecommendationId = inspectionReportRecommendationID
+            permitId = permitID
+            permitRefNumber = permitRefNUMBER
+            when {
+                update -> {
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+
+                else -> {
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+            }
+
+        }
+        return inspectionTechnical
+    }
+
+
+    fun saveInspectionCheckListInspectionDetailsDto(
+        body: InspectionDetailsDto,
+        inspectionReportRecommendationID: Long,
+        inspectionTechnical: QaInspectionTechnicalEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        update: Boolean
+    ): QaInspectionTechnicalEntity {
+        with(inspectionTechnical) {
+            complianceApplicableStatutory = body.complianceApplicableStatutory
+            complianceApplicableStatutoryRemarks = body.complianceApplicableStatutoryRemarks
+            plantHouseKeeping = body.plantHouseKeeping
+            plantHouseKeepingRemarks = body.plantHouseKeepingRemarks
+            handlingComplaints = body.handlingComplaints
+            handlingComplaintsRemarks = body.handlingComplaintsRemarks
+            qualityControlPersonnel = body.qualityControlPersonnel
+            qualityControlPersonnelRemarks = body.qualityControlPersonnelRemarks
+            testingFacility = body.testingFacility
+            testingFacilityRemarks = body.testingFacilityRemarks
+
+
+            when {
+                update -> {
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+
+                else -> {
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+            }
+
+        }
+        return inspectionTechnical
+    }
+
+    fun saveInspectionCheckListInspectionDetailsDtoB(
+        body: InspectionDetailsDtoB,
+        inspectionReportRecommendationID: Long,
+        permitID: Long,
+        permitRefNUMBER: String,
+        inspectionTechnical: QaInspectionTechnicalEntity,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        update: Boolean
+    ): QaInspectionTechnicalEntity {
+        with(inspectionTechnical) {
+            equipmentCalibration = body.equipmentCalibration
+            equipmentCalibrationRemarks = body.equipmentCalibrationRemarks
+            qualityRecords = body.qualityRecords
+            qualityRecordsRemarks = body.qualityRecordsRemarks
+            recordsNonconforming = body.recordsNonconforming
+            recordsNonconformingRemarks = body.recordsNonconformingRemarks
+            productRecallRecords = body.productRecallRecords
+            productRecallRecordsRemarks = body.productRecallRecordsRemarks
+            when {
+                update -> {
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+
+                else -> {
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+            }
+
+        }
+        return inspectionTechnical
+    }
+
 
     fun saveInspectionCheckListTechnical(
         body: ManagementSystemsAndStandardsDetailsApplyDto,

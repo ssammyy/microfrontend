@@ -75,6 +75,9 @@ data class SSFDetailsApplyDto(
 
 data class AllInspectionDetailsApplyDto(
     var id: Long? = null,
+    var technicalDetailsDto: TechnicalDetailsDto? = null,
+    var inspectionDetailsDto: InspectionDetailsDto? = null,
+    var inspectionDetailsDtoB: InspectionDetailsDtoB? = null,
     var managementSystemsAndStandardsDetailsApply: ManagementSystemsAndStandardsDetailsApplyDto? = null,
     var operationProcessAndControls: List<OperationProcessAndControlsDetailsApplyDto>? = null,
     var haccpImplementationDetails: HaccpImplementationDetailsApplyDto? = null,
@@ -141,6 +144,7 @@ data class InspectionDetailsDto(
     var testingFacility: String? = null,
     var testingFacilityRemarks: String? = null,
 )
+
 data class InspectionDetailsDtoB(
     var id: Long? = null,
     var equipmentCalibration: String? = null,
@@ -151,6 +155,14 @@ data class InspectionDetailsDtoB(
     var recordsNonconformingRemarks: String? = null,
     var productRecallRecords: String? = null,
     var productRecallRecordsRemarks: String? = null,
+    var productLabelling: List<ProductLabellingDto>? = null,
+
+    )
+
+data class ProductLabellingDto(
+    var id: Long? = null,
+    var standardMarking: String? = null,
+    var findings: String? = null,
 )
 
 
