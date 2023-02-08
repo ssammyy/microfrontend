@@ -295,6 +295,7 @@ export class PermitEntityDetails {
     assignOfficerStatus: boolean;
     assignOfficerID: number;
     permitGenerateDifference: boolean;
+    inspectionReportGenerated : boolean;
     companyId: number;
 }
 

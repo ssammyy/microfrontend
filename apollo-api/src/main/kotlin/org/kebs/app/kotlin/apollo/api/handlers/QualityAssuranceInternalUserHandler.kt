@@ -298,6 +298,7 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
     fun updatePermitDetailsInspectionCheckListNew(req: ServerRequest): ServerResponse {
         return try {
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")

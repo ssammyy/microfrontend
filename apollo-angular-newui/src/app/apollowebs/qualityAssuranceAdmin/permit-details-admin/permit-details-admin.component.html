@@ -1714,6 +1714,12 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('scheduleInspectionDate')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
+
+                                <a data-toggle="modal"
+                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('uploadSSC')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
                             </div>
                         </div>
 
@@ -1772,6 +1778,47 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                     </div>
                 </div>
+
+                <!-- Dynamic UPLOAD Modal -->
+                <div class="modal fade" id="myModalUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{currDivLabel}}</h4>
+                                <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <form  action="" class="form" enctype="multipart/form-data" method="post">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label for="files"><b>Upload Documents Here</b></label>
+
+                                                    <form #demoForm="ngForm">
+                                                        <file-upload [(ngModel)]="uploadedFilesOnly" name="files" id="files" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt"></file-upload>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+
+                                <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                                </button>
+                                <button *ngIf="(currDiv == 'uploadFiles')" mat-raised-button type="button" class="btn btn-success"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--  End Dynamic UPLOADS Modal -->
 
                 <!-- Dynamic Modal -->
                 <div class="modal fade" id="allProcessModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -1957,9 +2004,23 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+                                <div *ngIf="(currDiv == 'uploadSSC')">
+                                    <form [formGroup]="scheduleInspectionForm" action="" class="form" enctype="multipart/form-data" method="post">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label for="files"><b>Upload Document Here</b></label>
+                                                    <form #demoForm="ngForm">
+                                                        <file-upload [(ngModel)]="uploadedFilesScheme" name="files" id="files8"
+                                                                     [fileslimit]="1" accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt,.pptx, .txt"></file-upload>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                             <div class="modal-footer">
-
                                 <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
                                     Close
                                 </button>
@@ -2007,6 +2068,11 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         class="btn btn-success"
                                         (click)="onClickSaveScheduleInspectionForm(scheduleInspectionForm.valid);"
                                         [disabled]="!scheduleInspectionForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'uploadSSC')" mat-raised-button type="button" class="btn btn-success"
+                                        (click)="onClickSaveSSCForm()"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>

@@ -60,6 +60,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     public allPermitData: PermitEntityDto[];
     form: FormGroup;
     memberReturnArray: any[] = [];
+    uploadedFilesOnly: FileList;
+    uploadedFilesScheme: FileList;
     public actionRequest: PermitEntityDetails | undefined;
 
 
@@ -428,9 +430,9 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     openModalAddDetails(divVal: string): void {
 
-        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate'];
+        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC'];
 
-        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection'];
+        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -496,6 +498,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.permitTypeName = 'Fortification';
         }
 
+        // tslint:disable-next-line:max-line-length
         this.companyProfileID = this.allPermitDetails?.oldVersionList?.find(pr => pr.id === this.allPermitDetails.permitDetails.id).companyId;
         // console.log(this.companyProfileID)
         this.sta1 = this.allPermitDetails.sta1DTO;
@@ -804,6 +807,50 @@ export class PermitDetailsAdminComponent implements OnInit {
             );
         }
     }
+
+    onClickSaveSSCForm() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPLOAD SCHEME OF SUPERVISION AND CONTROL\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveSSCForm();
+            });
+    }
+
+
+    saveSSCForm() {
+        if (this.uploadedFilesScheme.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedFilesScheme;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitID));
+            formData.append('data', 'SCHEME_OF_SUPERVISION');
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveSCS(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULL SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
+
+
 
     reviewForCompleteness(formDirective): void {
 

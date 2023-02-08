@@ -749,8 +749,7 @@ class QADaoServices(
             var qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
             qaInspectionReportRecommendationRepo.findByIdOrNull(body.id ?: -1L)
                 ?.let { fdr ->
-                    qaInspectionReportRecommendation =
-                        saveInspectionCheckListRecommendation(body, fdr, map, loggedInUser, true)
+                    qaInspectionReportRecommendation = saveInspectionCheckListRecommendation(body, fdr, map, loggedInUser, true)
                 } ?: kotlin.run {
                 with(qaInspectionReportRecommendation) {
                     refNo =
@@ -771,8 +770,7 @@ class QADaoServices(
                 )
             }
 
-            qaInspectionReportRecommendation =
-                qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
+            qaInspectionReportRecommendation = qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
 
             val inspectionDetails = addInspectionCheckListAddTechnicalB(
                 body.technicalDetailsDto ?: throw Exception("MISSING TECHNICAL DETAILS"),
