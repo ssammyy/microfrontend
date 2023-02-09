@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
+  ComStdCommitteeRemarks, ComStdRemarks,
   InternationalStandardsComments,
   ISCheckRequirements,
   StakeholderProposalComments
@@ -14,6 +15,10 @@ import {StandardDevelopmentService} from "../../../../core/store/data/std/standa
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {PublishingService} from "../../../../core/store/data/std/publishing.service";
+import {CommitteeService} from "../../../../core/store/data/std/committee.service";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 
 @Component({
   selector: 'app-int-std-sac-approval',
@@ -30,27 +35,33 @@ export class IntStdSacApprovalComponent implements OnInit {
   internationalStandardsComments: InternationalStandardsComments[] = [];
   isCheckRequirements:ISCheckRequirements[]=[];
   public actionRequest: ISCheckRequirements | undefined;
+  comStdRemarks: ComStdRemarks[] = [];
   loadingText: string;
   approve: string;
   reject: string;
+    blob: Blob;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
+  isShowMainTab= true;
+  isShowMainTabs= true;
   public approveRequirementsFormGroup!: FormGroup;
   public rejectRequirementsFormGroup!: FormGroup;
-  constructor(
-      private store$: Store<any>,
-      private router: Router,
-      private stdIntStandardService:StdIntStandardService,
-      private standardDevelopmentService : StandardDevelopmentService,
-      private SpinnerService: NgxSpinnerService,
-      private notifyService : NotificationService,
-      private formBuilder: FormBuilder
-  ) { }
+  comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
+  public actionRequests: ISCheckRequirements | undefined;
+  documentDTOs: DocumentDTO[] = [];
+  constructor(private publishingService: PublishingService, private notifyService: NotificationService,
+              private SpinnerService: NgxSpinnerService, private committeeService: CommitteeService,
+              private stdComStandardService:StdComStandardService,
+              private standardDevelopmentService : StandardDevelopmentService,
+              private formBuilder: FormBuilder,
+              private stdIntStandardService: StdIntStandardService
+  ) {
+  }
 
   ngOnInit(): void {
     this.approve='Yes';
     this.reject='No';
-    this.getApprovedEditedDraft();
+    this.getAppStdPublishing();
     this.approveRequirementsFormGroup = this.formBuilder.group({
       comments: ['', Validators.required],
       accentTo: [],
@@ -96,13 +107,13 @@ export class IntStdSacApprovalComponent implements OnInit {
 
   }
 
-  public getApprovedEditedDraft(): void {
-    this.loadingText = "Retrieving Drafts...";
+  public getAppStdPublishing(): void {
+    this.loadingText = "Retrieving Standards...";
     this.SpinnerService.show();
-    this.stdIntStandardService.getApprovedEditedDraft().subscribe(
+    this.stdComStandardService.getAppStdPublishing().subscribe(
         (response: ISCheckRequirements[]) => {
           this.isCheckRequirements = response;
-          console.log(this.isCheckRequirements)
+          //console.log(this.isCheckRequirements)
           this.rerender();
           this.SpinnerService.hide();
 
@@ -113,32 +124,29 @@ export class IntStdSacApprovalComponent implements OnInit {
         }
     );
   }
-  toggleDisplayRemarksTab(proposalId: number){
-    this.loadingText = "Loading ...."
-    this.SpinnerService.show();
-    this.stdIntStandardService.getAllComments(proposalId).subscribe(
-        (response: StakeholderProposalComments[]) => {
-          this.stakeholderProposalComments = response;
-          this.SpinnerService.hide();
-          console.log(this.stakeholderProposalComments)
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          console.log(error.message);
-        }
-    );
-    this.isShowRemarksTab = !this.isShowRemarksTab;
-    this.isShowCommentsTab= true;
 
+  toggleDisplayMainTab(){
+    this.isShowMainTab = !this.isShowMainTab;
+    this.isShowRemarksTab= true;
+    this.isShowCommentsTab= true;
+    this.isShowMainTabs= true;
   }
-  toggleDisplayCommentsTab(id: number){
+  toggleDisplayMainTabs(){
+    this.isShowMainTabs = !this.isShowMainTabs;
+    this.isShowMainTab= true;
+    this.isShowRemarksTab= true;
+    this.isShowCommentsTab= true;
+  }
+
+
+  toggleDisplayRemarksTab(requestId: number){
     this.loadingText = "Loading ...."
     this.SpinnerService.show();
-    this.stdIntStandardService.getUserComments(id).subscribe(
-        (response: InternationalStandardsComments[]) => {
-          this.internationalStandardsComments = response;
+    this.stdComStandardService.getAllComments(requestId).subscribe(
+        (response: ComStdRemarks[]) => {
+          this.comStdRemarks = response;
           this.SpinnerService.hide();
-          console.log(this.internationalStandardsComments)
+          console.log(this.comStdRemarks)
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -147,6 +155,28 @@ export class IntStdSacApprovalComponent implements OnInit {
     );
     this.isShowCommentsTab = !this.isShowCommentsTab;
     this.isShowRemarksTab= true;
+    this.isShowMainTab= true;
+    this.isShowMainTabs= true;
+
+  }
+  displayDraftComments(draftID: number){
+    //this.loadingText = "Loading ...."
+    this.SpinnerService.show();
+    this.stdComStandardService.getDraftComments(draftID).subscribe(
+        (response: ComStdCommitteeRemarks[]) => {
+          this.comStdCommitteeRemarks = response;
+          this.SpinnerService.hide();
+          // console.log(this.comStdCommitteeRemarks)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          console.log(error.message);
+        }
+    );
+    this.isShowRemarksTab = !this.isShowRemarksTab;
+    this.isShowCommentsTab= true;
+    this.isShowMainTab= true;
+    this.isShowMainTabs= true;
 
   }
   public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string): void{
@@ -220,9 +250,9 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.stdIntStandardService.approveInternationalStandard(this.approveRequirementsFormGroup.value).subscribe(
         (response ) => {
           //console.log(response);
-          this.getApprovedEditedDraft();
+          this.getAppStdPublishing();
           this.SpinnerService.hide();
-          this.showToasterSuccess('Success', `Standard Approved and Adopted`);
+          this.showToasterSuccess('Success', `Standard Approved `);
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -239,7 +269,7 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.stdIntStandardService.approveInternationalStandard(this.rejectRequirementsFormGroup.value).subscribe(
         (response ) => {
           //console.log(response);
-          this.getApprovedEditedDraft();
+          this.getAppStdPublishing();
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Standard Rejected`);
         },
@@ -251,5 +281,66 @@ export class IntStdSacApprovalComponent implements OnInit {
     );
     this.hideModalRequirements();
   }
+  public onOpenModals(iSCheckRequirement: ISCheckRequirements,mode:string,comStdDraftID: number): void{
+    const container = document.getElementById('main-container');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.style.display = 'none';
+    button.setAttribute('data-toggle','modal');
+    this.stdComStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+        (response: DocumentDTO[]) => {
+          this.documentDTOs = response;
+          this.SpinnerService.hide();
+          //console.log(this.documentDTOs)
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          //console.log(error.message);
+        }
+    );
+
+    if (mode==='approveStandard'){
+      this.actionRequests=iSCheckRequirement;
+      button.setAttribute('data-target','#approveStandard');
+
+      this.approveRequirementsFormGroup.patchValue(
+          {
+              id: this.actionRequests.id,
+            accentTo: this.reject,
+            requestId: this.actionRequests.requestId,
+            draftId: this.actionRequests.draftId,
+              standardNumber:this.actionRequests.comStdNumber,
+          }
+      );
+    }
+    // @ts-ignore
+    container.appendChild(button);
+    button.click();
+
+  }
+    viewDraftFile(pdfId: number, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.stdComStandardService.viewCompanyDraft(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Processing Request`);
+                console.log(error.message);
+                this.getAppStdPublishing();
+                //alert(error.message);
+            }
+        );
+    }
 
 }

@@ -168,15 +168,13 @@ class ComStandardService(
         if (jointLists != null) {
             for (recipient in jointLists) {
 
-                val user = "JC List"
+                val user = "Joint Committee Member"
                 val cj = ComStandardJointCommittee()
                 cj.name = user
                 cj.email = recipient
                 cj.requestId = comStandardJointCommittee.requestId
                 cj.dateOfCreation=Timestamp(System.currentTimeMillis())
                 cj.telephone="NA"
-                val gson = Gson()
-                KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(recipient) }
 
                 comStdJointCommitteeRepository.save(cj)
 
@@ -641,7 +639,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= comStdDraft.id
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -731,7 +729,7 @@ class ComStandardService(
         val fName = "Company"
         val sName = ""
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= comStdDraft.id
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -826,11 +824,12 @@ class ComStandardService(
         return companyStandardRepository.getComStdForEditing()
     }
 
+
+
     fun submitDraftForEditing(companyStandard: CompanyStandard) : CompanyStandard
     {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
             with(companyStandard) {
@@ -888,6 +887,8 @@ class ComStandardService(
     }
 
 
+
+
     fun checkRequirements(
         companyStandard: CompanyStandard,
         companyStandardRemarks: CompanyStandardRemarks
@@ -899,7 +900,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -955,18 +956,13 @@ class ComStandardService(
                 contactOneFullName = companyStandard.contactOneFullName
                 contactOneTelephone = companyStandard.contactOneTelephone
                 contactOneEmail = companyStandard.contactOneEmail
-                contactTwoFullName = companyStandard.contactTwoFullName
-                contactTwoTelephone = companyStandard.contactTwoTelephone
-                contactTwoEmail = companyStandard.contactTwoEmail
-                contactThreeFullName = companyStandard.contactThreeFullName
-                contactThreeTelephone = companyStandard.contactThreeTelephone
-                contactThreeEmail = companyStandard.contactThreeEmail
                 requestNumber = companyStandard.requestNumber
                 status = companyStandard.status
                 comStdNumber = companyStandard.comStdNumber
                 documentType = companyStandard.documentType
                 draftId = companyStandard.draftId
                 requestId = companyStandard.requestId
+                standardType=companyStandard.standardType
             }
 
             //KotlinLogging.logger { }.info { "Status Check" + gson.toJson(companyStandard) }
@@ -1072,7 +1068,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1108,7 +1104,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1145,6 +1141,14 @@ class ComStandardService(
         return companyStandardRepository.getApprovedCompanyStdDraft()
     }
 
+    fun getAppStdPublishing(): MutableList<ComStandard> {
+        return companyStandardRepository.getAppStdPublishing()
+    }
+
+    fun getAppStd(): MutableList<ComStandard> {
+        return companyStandardRepository.getAppStd()
+    }
+
     fun rejectCompanyStandard(
         companyStandard: CompanyStandard,
         companyStandardRemarks: CompanyStandardRemarks,
@@ -1155,7 +1159,7 @@ class ComStandardService(
         val usersName = "$fName  $sName"
         companyStandard.id=companyStandard.id
 
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1192,7 +1196,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())

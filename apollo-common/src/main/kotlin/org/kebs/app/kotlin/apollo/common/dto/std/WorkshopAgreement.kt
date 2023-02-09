@@ -185,6 +185,16 @@ class ISDraftDecisions(
     @JsonProperty("draftId") val draftId: Long,
     @JsonProperty("comments") val comments: String,
     @JsonProperty("requestId") val requestId: Long,
+    @JsonProperty("standardType") val standardType: String,
+    @JsonProperty("id") val id: Long
+){
+
+}
+class ISDrDecisions(
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("requestId") val requestId: Long,
     @JsonProperty("id") val id: Long
 ){
 
@@ -210,6 +220,23 @@ class ISDraftDecisionsStd(
     @JsonProperty("special") val special: String?,
     @JsonProperty("standardNumber") val standardNumber: String?,
     @JsonProperty("requestId") val requestId: Long?,
+    @JsonProperty("id") val id: Long
+
+){
+
+}
+
+class IStandardUploadDto(
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String?,
+    @JsonProperty("title") val title: String?,
+    @JsonProperty("normativeReference") val normativeReference: String?,
+    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String?,
+    @JsonProperty("clause") val clause: String?,
+    @JsonProperty("scope") val scope: String?,
+    @JsonProperty("special") val special: String?,
+    @JsonProperty("standardNumber") val standardNumber: String?,
     @JsonProperty("id") val id: Long
 
 ){
@@ -374,7 +401,34 @@ data class ISAdoptionProposalComments(
 
 }
 
+data class ISProposalJustification(
+   var  meetingDate: String?=null,
+    var slNumber: String?=null,
+    var edition: String?=null,
+    var department: String?=null,
+    var requestedBy: String?=null,
+    var scope: String?=null,
+    var purposeAndApplication: String?=null,
+    var intendedUsers: String?=null,
+    var circulationDate: Timestamp?=null,
+    var closingDate: Timestamp?=null,
+    var tcAcceptanceDate: String?=null,
+    var proposalId: Long?=null,
+    var draftId: Long?=null,
+    var issuesAddressed: String?
+){
+
+}
+
 data class ISAdoptionJustifications(
+
+    var tc_id: String?=null,
+    var scope: String?=null,
+    var purposeAndApplication: String?=null,
+    var intendedUsers: String?=null,
+    var circulationDate: Timestamp?=null,
+    var closingDate: Timestamp?=null,
+
     var meetingDate:String?=null,
     var tcSec_id:String?=null,
     var slNumber:String?=null,
@@ -468,7 +522,8 @@ data class CSDraftDto(
     var contactThreeTelephone: String?=null,
     var contactThreeEmail: String?=null,
     var companyName: String?=null,
-    var companyPhone: String?=null
+    var companyPhone: String?=null,
+    var standardType: String?=null,
 ){
 
 }

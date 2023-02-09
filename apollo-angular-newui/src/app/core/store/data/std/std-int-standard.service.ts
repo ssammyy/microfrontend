@@ -12,7 +12,7 @@ import {
     ISHopTASKS,
     ISHosSicTASKS,
     ISJustificationDecision,
-    ISJustificationProposal,
+    ISJustificationProposal, ISProposalJustification,
     ISSacSecTASKS,
     ISStandard, IStandardDraftEdit, IStandardUpload,
     ISTcSecTASKS, IstProposalComment,
@@ -488,10 +488,10 @@ export class StdIntStandardService {
         })
     );
   }
-  public prepareJustification(iSAdoptionJustification: ISAdoptionJustification): Observable<any> {
+  public prepareJustification(isProposalJustification: ISProposalJustification): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_PREPARE_JUSTIFICATION);
     const params = new HttpParams();
-    return this.http.post<ISAdoptionJustification>(url, iSAdoptionJustification, {params}).pipe(
+    return this.http.post<ISProposalJustification>(url, isProposalJustification, {params}).pipe(
         map(function (response: any) {
           return response;
         }),

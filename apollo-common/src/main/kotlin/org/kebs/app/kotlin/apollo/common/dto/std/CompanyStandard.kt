@@ -93,6 +93,29 @@ class ComStdDraftDecisionDto(
 
 }
 
+class IntDraftCommentDto(
+    var standardNumber: String?=null,
+    var commentTitle: String?=null,
+    var commentDocumentType: String?=null,
+    var preparedDate: Timestamp?=null,
+    var docName: String?=null,
+    var nameOfRespondent: String?=null,
+    var emailOfRespondent: String?=null,
+    var phoneOfRespondent: String?=null,
+    var nameOfOrganization: String?=null,
+    var scope: String?=null,
+    var clause: String?=null,
+    var paragraph: String?=null,
+    var typeOfComment: String?=null,
+    var comment: String?=null,
+    var proposedChange: String?=null,
+    var requestID: Long?=null,
+    var draftID: Long?=null,
+    var observation: String?=null,
+){
+
+}
+
 
 class ComDraftCommentDto(
     var commentTitle: String?=null,
@@ -107,6 +130,7 @@ class ComDraftCommentDto(
     var typeOfComment: String?=null,
     var comment: String?=null,
     var proposedChange: String?=null,
+    var scope: String?=null,
     var observation: String?=null,
     var requestID: Long?=null,
     var draftID: Long?=null,
