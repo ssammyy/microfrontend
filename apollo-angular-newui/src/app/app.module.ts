@@ -1038,6 +1038,13 @@ import {
 } from './apollowebs/qualityAssuranceAdmin/permit-details-admin/permit-details-admin.component';
 import {RfcFragmentComponent} from './apollowebs/pvoc/documents/rfc-fragment/rfc-fragment.component';
 import { InspectionReport } from './apollowebs/qualityAssuranceAdmin/inspection-report/inspection-report';
+import { NspStatusComponent } from './apollowebs/standards-development/reports/nsp-status/nsp-status.component';
+import { NonePerformingProjectsComponent } from './apollowebs/standards-development/reports/none-preforming-projects/none-performing-projects.component';
+import { DelayedProjectsComponent } from './apollowebs/standards-development/reports/delayed-projects/delayed-projects.component';
+import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-development/reports/standards-approval-committee/standards-approval-committee.component';
+import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/tc-member-application/tc-member-application.component';
+import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/departmental-weekly-report/departmental-weekly-report.component';
+import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/individual-weekly-report/individual-weekly-report.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1566,6 +1573,13 @@ import { InspectionReport } from './apollowebs/qualityAssuranceAdmin/inspection-
         PermitDetailsAdminComponent,
         RfcFragmentComponent,
         InspectionReport,
+        NspStatusComponent,
+        NonePerformingProjectsComponent,
+        DelayedProjectsComponent,
+        StandardsApprovalCommitteeComponent,
+        TcMemberApplicationComponent,
+        DepartmentalWeeklyReportComponent,
+        IndividualWeeklyReportComponent,
 
     ],
     entryComponents: [LoaderComponent],
