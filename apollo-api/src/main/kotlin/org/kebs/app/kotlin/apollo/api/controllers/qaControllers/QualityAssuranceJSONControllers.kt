@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.ms.DataReportDto
@@ -48,6 +49,7 @@ class QualityAssuranceJSONControllers(
     private val resourceLoader: ResourceLoader,
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
+    private val limsServices: LimsServices,
     private val usersSignatureRepository: UserSignatureRepository
 
 ) {
@@ -135,6 +137,59 @@ class QualityAssuranceJSONControllers(
                 approvedRejectedScheme = 1
                 sscId = fileDocList[0]
                 permitStatus = applicationMapProperties.mapQaStatusPSSF
+                userTaskId = applicationMapProperties.mapUserTaskNameQAO
+            }
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = qaDaoServices.getBatchID(permit, map, permitID)
+                    val batchIDDifference: Long? = qaDaoServices.getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails = qaDaoServices.mapAllPermitDetailsTogetherForInternalUsers(permit, batchID,batchIDDifference, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PostMapping("/internal-users/apply/permit/upload-docs")
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadDocuments(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("data") data: String,
+        @RequestParam("docFileName") docFileName: String,
+        @RequestParam("docFile") docFile: List<MultipartFile>?,
+        model: Model
+    ): ApiResponseModel {
+
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            var permit = qaDaoServices.findPermitBYID(permitID)
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            val versionNumber: Long = 1
+            val fileDocList = mutableListOf<Long>()
+            docFile?.forEach { fileDoc ->
+                val uploads = QaUploadsEntity()
+                with(uploads){
+                    ordinaryStatus = 1
+                }
+                val fileDocSaved =   qaDaoServices.saveQaFileUploads(fileDoc, docFileName, loggedInUser, map, uploads, permit.permitRefNumber?: throw Exception("MISSING PERMIT REF NUMBER"), permit.id ?: throw Exception("MISSING PERMIT ID"), versionNumber, 0)
+                fileDocSaved.second.id?.let { fileDocList.add(it) }
+            }
+
+            with(permit) {
                 userTaskId = applicationMapProperties.mapUserTaskNameQAO
             }
             //updating of Details in DB
@@ -273,6 +328,28 @@ class QualityAssuranceJSONControllers(
         } catch (error: Exception) {
             return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
         }
+
+    }
+
+    @GetMapping("/view/attached-lab-pdf")
+    fun downloadFileLabResultsDocument(
+        response: HttpServletResponse,
+        @RequestParam("fileName") fileName: String,
+        @RequestParam("bsNumber") bsNumber: String
+    ) {
+        val file = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
+        //            val targetFile = File(Files.createTempDir(), fileName)
+//            targetFile.deleteOnExit()
+        response.contentType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(file.name)
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${file.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(file.readBytes())
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
     }
 

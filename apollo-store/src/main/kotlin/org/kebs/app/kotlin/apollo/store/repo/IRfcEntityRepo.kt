@@ -8,7 +8,7 @@ import org.springframework.data.hazelcast.repository.HazelcastRepository
 interface IRfcEntityRepo : HazelcastRepository<RfcEntity, Long> {
     fun findByUcrNumber(ucrNumber: String): RfcEntity?
     fun findByCocNumber(cocNumber: String): RfcEntity?
-    fun findByRfcNumberAndStatus(rfcNumber: String, status: Int): RfcEntity?
+    fun findByRfcNumberAndStatus(rfcNumber: String, status: Long): RfcEntity?
     fun findFirstByUcrNumberOrderByVersionDesc(ucrNumber: String): RfcEntity?
     fun findFirstByRfcNumberOrderByVersionDesc(rfcNumber: String): RfcEntity?
     fun findByRfcNumberAndVersion(rfcNumber: String, version: Long): RfcEntity?

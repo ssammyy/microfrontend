@@ -72,9 +72,21 @@ data class SSFDetailsApplyDto(
     var brandName: String? = null,
     var productDescription: String? = null,
 )
+data class SSFDetailsDto(
+    var id: Long? = null,
+    var ssfNo: String? = null,
+    var ssfSubmissionDate: Date? = null,
+    var bsNumber: String? = null,
+    var brandName: String? = null,
+    var productDescription: String? = null,
+    var resultsAnalysis: Boolean? = null,
+)
 
 data class AllInspectionDetailsApplyDto(
     var id: Long? = null,
+    var technicalDetailsDto: TechnicalDetailsDto? = null,
+    var inspectionDetailsDto: InspectionDetailsDto? = null,
+    var inspectionDetailsDtoB: InspectionDetailsDtoB? = null,
     var managementSystemsAndStandardsDetailsApply: ManagementSystemsAndStandardsDetailsApplyDto? = null,
     var operationProcessAndControls: List<OperationProcessAndControlsDetailsApplyDto>? = null,
     var haccpImplementationDetails: HaccpImplementationDetailsApplyDto? = null,
@@ -141,6 +153,7 @@ data class InspectionDetailsDto(
     var testingFacility: String? = null,
     var testingFacilityRemarks: String? = null,
 )
+
 data class InspectionDetailsDtoB(
     var id: Long? = null,
     var equipmentCalibration: String? = null,
@@ -151,6 +164,14 @@ data class InspectionDetailsDtoB(
     var recordsNonconformingRemarks: String? = null,
     var productRecallRecords: String? = null,
     var productRecallRecordsRemarks: String? = null,
+    var productLabelling: List<ProductLabellingDto>? = null,
+
+    )
+
+data class ProductLabellingDto(
+    var id: Long? = null,
+    var standardMarking: String? = null,
+    var findings: String? = null,
 )
 
 
@@ -777,8 +798,13 @@ data class PermitDetailsDto(
     var assignOfficerStatus: Boolean? = null,
     var assignOfficerID: Long? = null,
     var permitGenerateDifference: Boolean? = null,
+    var inspectionReportGenerated: Boolean? = null,
     var companyId: Long? = null,
-)
+    var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
+    var ssfCompletedStatus: Boolean? = null,
+    var compliantStatus: Boolean? = null,
+
+    )
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
@@ -800,6 +826,7 @@ data class AllPermitDetailsDto(
     var sta10DTO: AllSTA10DetailsDto? = null,
     var sectionList: List<SectionsEntityDto>? = null,
     var standardsList: List<StandardsDto>? = null,
+    var ssfListDetails: List<SSFDetailsDto>? = null,
 )
 
 

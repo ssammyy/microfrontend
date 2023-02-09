@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
     AllPermitDetailsDto,
@@ -9,7 +9,7 @@ import {
     PermitEntityDto,
     PlantDetailsDto,
     SectionDto,
-    SSFComplianceStatusDetailsDto,
+    SSFComplianceStatusDetailsDto, SSFDetailsDto,
     SSFPDFListDetailsDto,
     STA1,
     Sta10Dto,
@@ -26,17 +26,25 @@ import {TableData} from '../../../md/md-table/md-table.component';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {QaInternalService} from '../../../core/store/data/qa/qa-internal.service';
-import {ApiResponseModel} from '../../../core/store/data/ms/ms.model';
+import {
+    ApiResponseModel,
+    LIMSFilesFoundDto,
+    MSSSFLabResultsDto,
+    MSSSFPDFListDetailsDto,
+    SampleSubmissionDto
+} from '../../../core/store/data/ms/ms.model';
 import * as CryptoJS from 'crypto-js';
 import {LoggedInUser, selectUserInfo} from '../../../core/store';
 import {Store} from '@ngrx/store';
+import {Subject} from 'rxjs';
+import {DataTableDirective} from 'angular-datatables';
 
 
 @Component({
     selector: 'app-permit-details-admin',
     templateUrl: './permit-details-admin.component.html',
     styleUrls: ['../../../../../node_modules/@ng-select/ng-select/themes/material.theme.css'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 
 
 })
@@ -45,6 +53,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     permitTypeName!: string;
     currDiv!: string;
     currDivLabel!: string;
+    selectedPDFFileName: string;
     roles: string[];
     userLoggedInID: number;
     companyProfileID: bigint;
@@ -60,7 +69,17 @@ export class PermitDetailsAdminComponent implements OnInit {
     public allPermitData: PermitEntityDto[];
     form: FormGroup;
     memberReturnArray: any[] = [];
+    uploadedFilesOnly: FileList;
+    uploadedFilesScheme: FileList;
     public actionRequest: PermitEntityDetails | undefined;
+
+    dtOptions: DataTables.Settings = {};
+    dtOptionsSSF: DataTables.Settings = {};
+    dtTriggerSSF: Subject<any> = new Subject<any>();
+    dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
 
 
     pdfSources: any;
@@ -88,12 +107,16 @@ export class PermitDetailsAdminComponent implements OnInit {
     assignOfficer: FormGroup;
     addStandards: FormGroup;
     factoryVisit: FormGroup;
+    docFileNameForm: FormGroup;
 
     updateSectionForm: FormGroup;
     permitCompletenessForm: FormGroup;
     assignOfficerForm: FormGroup;
     addStandardsForm: FormGroup;
     scheduleInspectionForm: FormGroup;
+    ssfDetailsForm: FormGroup;
+    pdfSaveComplianceStatusForm!: FormGroup;
+    ssfSaveComplianceStatusForm!: FormGroup;
 
 
     // DTOS
@@ -101,6 +124,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     allPermitDetails: AllPermitDetailsDto;
+    selectedLabResults: MSSSFLabResultsDto;
+    selectedSSFDetails: SSFDetailsDto;
     allSTA10Details: AllSTA10DetailsDto;
     permitEntityDetails: PermitEntityDetails;
     sta1: STA1;
@@ -135,6 +160,121 @@ export class PermitDetailsAdminComponent implements OnInit {
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
+
+
+    public settingsLabResultsParam = {
+        selectMode: 'single',  // single|multi
+        hideHeader: false,
+        hideSubHeader: false,
+        actions: {
+            columnTitle: 'Actions',
+            add: false,
+            edit: false,
+            delete: false,
+            custom: [],
+            position: 'right', // left|right
+        },
+        delete: {
+            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+            confirmDelete: true,
+        },
+        noDataMessage: 'No data found',
+        columns: {
+            param: {
+                title: 'PARAM',
+                type: 'string',
+                filter: false,
+            },
+            result: {
+                title: 'RESULT',
+                type: 'string',
+                filter: false,
+            },
+            method: {
+                title: 'METHOD',
+                type: 'string',
+                filter: false,
+            },
+        },
+        pager: {
+            display: true,
+            perPage: 20,
+        },
+    };
+    public settingsLIMSPDFFiles = {
+        selectMode: 'single',  // single|multi
+        hideHeader: false,
+        hideSubHeader: false,
+        actions: {
+            columnTitle: 'Actions',
+            add: false,
+            edit: false,
+            delete: false,
+            custom: [
+                {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
+                {name: 'saveRecord', title: '<i class="btn btn-sm btn-primary">Save PDF</i>'},
+            ],
+            position: 'right', // left|right
+        },
+        delete: {
+            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+            confirmDelete: true,
+        },
+        noDataMessage: 'No data found',
+        columns: {
+            fileName: {
+                title: 'FILE NAME',
+                type: 'string',
+                filter: false,
+            },
+            fileSavedStatus: {
+                title: 'FILE SAVED STATUS',
+                type: 'boolean',
+                filter: false,
+            },
+        },
+        pager: {
+            display: true,
+            perPage: 20,
+        },
+    };
+    public settingsSavedPDFFiles = {
+        selectMode: 'single',  // single|multi
+        hideHeader: false,
+        hideSubHeader: false,
+        actions: {
+            columnTitle: 'Actions',
+            add: false,
+            edit: false,
+            delete: false,
+            custom: [
+                {name: 'viewPDFRemarks', title: '<i class="btn btn-sm btn-primary">View Remarks</i>'},
+                {name: 'viewPDFRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
+            ],
+            position: 'right', // left|right
+        },
+        delete: {
+            deleteButtonContent: '&nbsp;&nbsp;<i class="fa fa-trash-o text-danger"></i>',
+            confirmDelete: true,
+        },
+        noDataMessage: 'No data found',
+        columns: {
+            pdfName: {
+                title: 'PDF NAME',
+                type: 'string',
+                filter: false,
+            },
+            complianceStatus: {
+                title: 'COMPLIANCE STATUS',
+                type: 'boolean',
+                filter: false,
+            },
+        },
+        pager: {
+            display: true,
+            perPage: 20,
+        },
+    };
 
     public tableData1: TableData;
     public tableData2: TableData;
@@ -214,6 +354,21 @@ export class PermitDetailsAdminComponent implements OnInit {
             qualificationInstitution: [],
             dateOfEmployment: [],
 
+        });
+
+        this.ssfSaveComplianceStatusForm = this.formBuilder.group({
+            ssfID: ['', Validators.required],
+            resultsAnalysis: ['', Validators.required],
+            complianceRemarks: ['', Validators.required],
+        });
+
+        this.pdfSaveComplianceStatusForm = this.formBuilder.group({
+            pdfSavedID: null,
+            complianceStatus: null,
+            complianceRemarks: null,
+            fileName: null,
+            bsNumber: null,
+            ssfID: null,
         });
 
         this.sta10FormB = this.formBuilder.group({
@@ -318,6 +473,19 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.scheduleInspectionForm = this.formBuilder.group({
             inspectionDate: ['', Validators.required],
             scheduleRemarks: null,
+        });
+
+        this.ssfDetailsForm = this.formBuilder.group({
+            id: null,
+            ssfNo: ['', Validators.required],
+            ssfSubmissionDate: ['', Validators.required],
+            bsNumber: ['', Validators.required],
+            brandName: ['', Validators.required],
+            productDescription: ['', Validators.required],
+        });
+
+        this.docFileNameForm = this.formBuilder.group({
+            docFileName: null,
         });
 
 
@@ -426,11 +594,149 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
 
+
+    public onCustomLIMSPDFViewAction(event: any): void {
+        switch (event.action) {
+            case 'viewPDFRecord':
+                this.viewLIMSPDFSaved(event.data);
+                break;
+            case 'viewPDFRemarks':
+                this.viewLIMSPDFSavedRemarks(event.data);
+                break;
+        }
+    }
+
+    closeSSFLabResultsRecord() {
+        window.$('#myModal2').modal('hide');
+        window.$('#sampleLabResultsModal').modal('hide');
+        window.$('body').removeClass('modal-open');
+        window.$('.modal-backdrop').remove();
+
+    }
+
+    closePopUpsModal2() {
+        window.$('#myModal2').modal('hide');
+        window.$('body').removeClass('modal-open');
+        window.$('.modal-backdrop').remove();
+        window.$('#sampleLabResultsModal').modal('hide');
+        window.$('body').removeClass('modal-open');
+        window.$('.modal-backdrop').remove();
+
+        setTimeout(function() {
+            window.$('#sampleLabResultsModal').modal('show');
+        }, 500);
+    }
+
+    viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {
+        this.selectedPDFFileName = data.pdfName;
+        this.currDivLabel = `COMPLIANCE STATUS AND REMARKS FOR PDF # ${this.selectedPDFFileName}`;
+        this.currDiv = 'viewPdfSaveCompliance';
+        this.pdfSaveComplianceStatusForm.patchValue(data);
+
+        window.$('#myModal2').modal('show');
+    }
+
+    viewLIMSPDFSaved(data: MSSSFPDFListDetailsDto) {
+        console.log('TEST 101 REF NO VIEW FILE: ' + data.pdfSavedId);
+
+        this.viewPdfFile(String(data.pdfSavedId), data.pdfName, 'application/pdf');
+    }
+
+
+    viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.qaService.loadFileDetailsPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            error => {
+                this.SpinnerService.hide();
+                console.log(error);
+                // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+    }
+
+
+
+    viewSSFLabResultsRecord(data: SSFDetailsDto) {
+        this.selectedSSFDetails = data;
+        this.selectedLabResults = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === data?.bsNumber);
+
+        window.$('#myModal2').modal('hide');
+        // window.$('.modal').remove();
+        window.$('body').removeClass('modal-open');
+        window.$('.modal-backdrop').remove();
+        window.$('#sampleLabResultsModal').modal('show');
+    }
+
+
+    onCustomLIMSPDFAction(event: any, bsNumber: string): void {
+        switch (event.action) {
+            case 'viewRecord':
+                this.viewLIMSPDFRecord(event.data, bsNumber);
+                break;
+            case 'saveRecord':
+                this.saveLIMSPDFRecord(event.data);
+                break;
+        }
+    }
+
+
+    saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
+        console.log('TEST 101 REF NO SAVE: ' + data.fileName);
+        this.selectedPDFFileName = data.fileName;
+        this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
+        this.currDiv = 'pdfSaveCompliance';
+
+        window.$('#myModal2').modal('show');
+    }
+
+
+    viewLIMSPDFRecord(data: LIMSFilesFoundDto, bsNumber: string) {
+        console.log('TEST 101 REF NO VIEW: ' + data.fileName);
+        this.viewLabResultsPdfFile(String(data.fileName), bsNumber, 'application/pdf');
+    }
+
+    viewLabResultsPdfFile(fileName: string, bsNumber: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.qaService.loadFileDetailsLabResultsPDF(fileName, bsNumber).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: applicationType});
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+            error => {
+                this.SpinnerService.hide();
+                console.log(error);
+                this.qaService.showError('AN ERROR OCCURRED');
+            },
+        );
+    }
+
+
     openModalAddDetails(divVal: string): void {
 
-        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate'];
+        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
+            'addSSFDetails', 'ssfAddComplianceStatus'];
 
-        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection'];
+        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
+            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', ];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -466,7 +772,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             (data: ApiResponseModel) => {
                 if (data.responseCode === '00') {
                     this.loadPermitDetails(data);
-                    this.SpinnerService.hide()
+                    this.SpinnerService.hide();
                 } else {
                     this.SpinnerService.hide();
                     this.qaService.showError(data.message);
@@ -496,6 +802,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.permitTypeName = 'Fortification';
         }
 
+        // tslint:disable-next-line:max-line-length
         this.companyProfileID = this.allPermitDetails?.oldVersionList?.find(pr => pr.id === this.allPermitDetails.permitDetails.id).companyId;
         // console.log(this.companyProfileID)
         this.sta1 = this.allPermitDetails.sta1DTO;
@@ -711,6 +1018,56 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+
+    onClickSavePDFSelected(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'Save PDF\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.savePDFSelected(valid);
+            });
+    }
+
+    savePDFSelected(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaPermitSavePDF(this.pdfSaveComplianceStatusForm.value, this.permitID).subscribe(
+                (data1: ApiResponseModel) => {
+                    if (data1.responseCode === '00') {
+                        // tslint:disable-next-line:max-line-length
+                        const pdfSavedDetails = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
+                        const pdfSave = pdfSavedDetails?.savedPDFFiles?.find(dat => dat?.pdfName === this.selectedPDFFileName);
+                        this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.pdfSavedId);
+                        this.qaService.qaPermitSavePDFCompliance(this.pdfSaveComplianceStatusForm.value, this.permitID).subscribe(
+                            (data: ApiResponseModel) => {
+                                if (data.responseCode === '00') {
+                                    this.SpinnerService.hide();
+                                    this.qaService.showSuccess('PDF AND COMPLINACE STATUS, SAVED SUCCESSFULLY', () => {
+                                        this.loadPermitDetails(data);
+                                    });
+                                } else {
+                                    this.SpinnerService.hide();
+                                    this.qaService.showError(data.message);
+                                }
+                            },
+                            error => {
+                                this.SpinnerService.hide();
+                                this.qaService.showError('AN ERROR OCCURRED');
+                            },
+                        );
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data1.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+
     onClickSaveAssignOfficerForm(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
             // tslint:disable-next-line:max-line-length
@@ -805,6 +1162,159 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+    onClickSaveAddSSFDetails(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'ADD SSF & BS NUMBER\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveAddSSFDetails(valid);
+            });
+    }
+
+    saveAddSSFDetails(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaSSFDetails(this.ssfDetailsForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SSF & BS NUMBER ADDED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
+        if (valid) {
+            this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+                // tslint:disable-next-line:max-line-length
+                `You can click \'ADD COMPLIANCE STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+                    this.saveSSFLabResultsComplianceStatus(valid);
+                });
+        }
+    }
+
+
+    saveSSFLabResultsComplianceStatus(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaSSFDetailsCompliance(this.ssfDetailsForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+
+    onClickSaveSSCForm() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPLOAD SCHEME OF SUPERVISION AND CONTROL\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveSSCForm();
+            });
+    }
+
+
+    saveSSCForm() {
+        if (this.uploadedFilesScheme.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedFilesScheme;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitID));
+            formData.append('data', 'SCHEME_OF_SUPERVISION');
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveSCS(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULL SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
+
+    onClickSaveUploadsAttachments() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPLOAD ATTACHMENTS\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveUploadsAttachments();
+            });
+    }
+
+
+    saveUploadsAttachments() {
+        if (this.uploadedFilesOnly.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedFilesOnly;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitID));
+            formData.append('docFileName', this.docFileNameForm.get('docFileName').value);
+            formData.append('data', 'SCHEME_OF_SUPERVISION');
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveUploadFile(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('UPLOAD(S) SAVED  SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
+
+
+
     reviewForCompleteness(formDirective): void {
 
         if (this.qaMCompleteness.valid) {
@@ -824,6 +1334,19 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.qaService.showError('Please Try Again');
 
         }
+
+
+    }
+    generateInspectionReport(permitId:string) {
+
+        var text = permitId;
+        var key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        console.log('encrypted', encrypted);
+        this.router.navigate(['/new-inspection-report',encrypted])
 
 
     }

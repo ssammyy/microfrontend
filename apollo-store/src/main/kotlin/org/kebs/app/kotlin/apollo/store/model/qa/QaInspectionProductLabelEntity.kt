@@ -21,9 +21,9 @@ class QaInspectionProductLabelEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
-    @Column(name = "INSPECTION_PRODUCT_LABELLING")
+    @Column(name = "INSPECTION_RECOMMENDATION_ID")
     @Basic
-    var inspectionProductLabellingId: Long? = null
+    var inspectionRecommendationId: Long? = null
 
     @Column(name = "PERMIT_REF_NUMBER")
     @Basic
@@ -36,6 +36,10 @@ class QaInspectionProductLabelEntity : Serializable {
     @Column(name = "FINDINGS")
     @Basic
     var findings: String? = null
+
+    @Column(name = "STATUS")
+    @Basic
+    var status: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic

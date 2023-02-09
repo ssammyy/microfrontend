@@ -905,6 +905,14 @@ interface IQaInspectionOpcEntityRepository : HazelcastRepository<QaInspectionOpc
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionOpcEntity>?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionOpcEntity>?
 }
+@Repository
+interface IQaInspectionProductLabelEntityRepository : HazelcastRepository<QaInspectionProductLabelEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaInspectionProductLabelEntity?
+    fun findByPermitId(permitId: Long): List<QaInspectionProductLabelEntity>?
+    fun findByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
+    fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionProductLabelEntity>?
+    fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionProductLabelEntity>?
+}
 
 @Repository
 interface IQaInspectionTechnicalRepository : HazelcastRepository<QaInspectionTechnicalEntity, Long> {
