@@ -137,6 +137,26 @@ class ISAdoptionJustification {
     @Basic
     var draftId: Long? = null
 
+    @Column(name = "PURPOSE_AND_APPLICATION")
+    @Basic
+    var purposeAndApplication: String? = null
+
+    @Column(name = "INTENDED_USERS")
+    @Basic
+    var intendedUsers: String? = null
+
+    @Column(name = "CIRCULATION_DATE")
+    @Basic
+    var circulationDate: Timestamp? = null
+
+    @Column(name = "CLOSING_DATE")
+    @Basic
+    var closingDate: Timestamp? = null
+
+
+
+
+
 
 
 

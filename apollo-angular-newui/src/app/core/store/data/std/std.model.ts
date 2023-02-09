@@ -807,6 +807,7 @@ export interface ComStdDraftEdit{
     contactThreeEmail: string;
     companyName: string;
     companyPhone: string;
+    standardType: string;
 }
 
 export interface IStandardDraftEdit {
@@ -837,8 +838,26 @@ export interface ISDecision {
     processId: string;
     proposalId: number;
 }
+export interface ISProposalJustification{
+    meetingDate : string;
+    slNumber : string;
+    edition : string;
+    department : string;
+    requestedBy : string;
+    scope : string;
+    purposeAndApplication : string;
+    intendedUsers : string;
+    circulationDate : Timestamp<any>;
+    closingDate : Timestamp<any>;
+    tcAcceptanceDate : string;
+    proposalId : number;
+    draftId : number;  
+}
 
 export interface ISAdoptionJustification {
+    DocDescription : string;
+    proposalId : number;
+    draftId: number;
     id: number;
     meetingDate: string;
     tc_id: string;
@@ -911,6 +930,7 @@ export interface ISDraftDecision {
     proposalId: number;
     requestId: number;
     draftId: number;
+    standardType: string;
 }
 
 export interface ISDraftDecisionStd {
@@ -1922,6 +1942,8 @@ export interface ComStdCommitteeRemarks {
     recommendations: string;
     nameOfRespondent: string;
     positionOfRespondent: string;
+    scope: string;
+    observation: string;
 }
 
 export interface CommentsOnCompanyStandard{

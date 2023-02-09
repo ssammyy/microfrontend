@@ -75,6 +75,30 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
                 "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
                 "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+                "WHERE  s.STATUS =8 AND s.STANDARD_TYPE='International Standard' ORDER BY s.ID DESC",
+        nativeQuery = true
+    )
+    fun getAppStdPublishing(): MutableList<ComStandard>
+
+    @Query(
+        value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
+                "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
+                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
+                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
+                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
+                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+                "WHERE  s.STATUS =9 AND s.STANDARD_TYPE='International Standard' ORDER BY s.ID DESC",
+        nativeQuery = true
+    )
+    fun getAppStd(): MutableList<ComStandard>
+
+    @Query(
+        value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
+                "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
+                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
+                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,s.CONTACT_ONE_FULL_NAME as contactOneFullName,s.CONTACT_ONE_TELEPHONE as contactOneTelephone,s.CONTACT_ONE_EMAIL as contactOneEmail,\n" +
+                "s.CONTACT_TWO_FULL_NAME as contactTwoFullName,s.CONTACT_TWO_TELEPHONE as contactTwoTelephone,s.CONTACT_TWO_EMAIL as contactTwoEmail,s.CONTACT_THREE_FULL_NAME as contactThreeFullName,s.CONTACT_THREE_TELEPHONE as contactThreeTelephone,s.STANDARD_TYPE as standardType,\n" +
+                "s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
                 "WHERE  s.STATUS=0 AND s.STANDARD_TYPE='Company Standard' ORDER BY s.ID DESC",
         nativeQuery = true
     )
@@ -292,6 +316,10 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, L
 
 
 
+}
+interface IStdStakeHoldersRepository : JpaRepository<IStandardStakeHolders, Long> {
+    @Query(value = "SELECT NAME as name,EMAIL as email FROM SD_IS_STAKE_HOLDERS WHERE DRAFT_ID=:draftId  ", nativeQuery = true)
+    fun getStakeHoldersList(@Param("draftId") draftId: Long?): MutableList<EmailList>
 }
 
 interface ComStdJointCommitteeRepository : JpaRepository<ComStandardJointCommittee, Long> {
@@ -808,10 +836,10 @@ interface ReviewStandardRemarksRepository : JpaRepository<ReviewStandardRemarks,
 }
 
 interface CompanyStandardRemarksRepository : JpaRepository<CompanyStandardRemarks, Long> {
-    @Query("SELECT * FROM DAT_KEBS_COM_STD_REMARKS WHERE REQUEST_ID=:id AND STANDARD_TYPE='Company Standard'", nativeQuery = true)
+    @Query("SELECT * FROM DAT_KEBS_COM_STD_REMARKS WHERE REQUEST_ID=:id ORDER BY ID DESC", nativeQuery = true)
     fun findCommentsOnDraft(id: Long): MutableIterable<CompanyStandardRemarks>?
 
-    @Query("SELECT * FROM DAT_KEBS_COM_STD_REMARKS WHERE REQUEST_ID=:id AND STANDARD_TYPE='International Standard'", nativeQuery = true)
+    @Query("SELECT * FROM DAT_KEBS_COM_STD_REMARKS WHERE REQUEST_ID=:id AND STANDARD_TYPE='International Standard' ORDER BY ID DESC", nativeQuery = true)
     fun getDraftComments(id: Long): MutableIterable<CompanyStandardRemarks>?
 
 

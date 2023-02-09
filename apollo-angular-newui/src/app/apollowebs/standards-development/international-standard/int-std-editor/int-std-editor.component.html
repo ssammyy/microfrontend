@@ -11,6 +11,83 @@
     </div>
     <div class="main-content" >
         <div class="container-fluid">
+            <div class="row" >
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                Prepare Justification
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="isPrepareJustification" style="color: orangered">Go</a>
+
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="isPrepareJustification" style="color: orangered"><span> <i class="fa fa-arrow-right"></i></span></a>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-info card-header-icon">
+                            <div class="card-icon">
+                                Uploaded Drafts
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <span style="color: dodgerblue">Go</span>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <span style="color: dodgerblue"> <i class="fa fa-arrow-right"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                Publishing Tasks
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="hopTasks" style="color: seagreen">Go</a>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="hopTasks" style="color: seagreen"><span> <i class="fa fa-arrow-right"></i></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -71,7 +148,7 @@
                                                                 <div class="nav nav-tabs nav-fill" id="nav-pj-tab" role="tablist">
                                                                     <a class="nav-item nav-link active" id="nav-jProposal-tab" data-toggle="tab" href="#nav-jProposal" role="tab" aria-controls="nav-jProposal" aria-selected="true">Proposal</a>
                                                                     <a class="nav-item nav-link" id="nav-jProposal-comments-tab" (click)=displayDraftComments(actionRequests?.draftId) data-toggle="tab" href="#nav-jProposal-comments" role="tab" aria-controls="nav-jProposal-comments" aria-selected="false">Stakeholders Comments</a>
-                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequests?.id) data-toggle="tab" href="#nav-prepare-justification-list-comments" role="tab" aria-controls="nav-prepare-justification-list-comments" aria-selected="false">Remarks</a>
+                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequests?.draftId) data-toggle="tab" href="#nav-prepare-justification-list-comments" role="tab" aria-controls="nav-prepare-justification-list-comments" aria-selected="false">Remarks</a>
                                                                     <a class="nav-item nav-link" id="nav-prepare-justification-tab" data-toggle="tab" (click)=getISJustification(actionRequests?.draftId) href="#nav-prepare-justification" role="tab" aria-controls="nav-prepare-justification" aria-selected="false">Justification</a>
                                                                     <a class="nav-item nav-link" id="nav-upload-std-tab" data-toggle="tab"  href="#nav-upload-std" role="tab" aria-controls="nav-upload-std" aria-selected="false">Upload Draft For Editing</a>
                                                                 </div>
@@ -160,30 +237,8 @@
 
                                                                                     <p class="text-sm mb-0">{{actionRequests?.closingDate}}.</p>
                                                                                 </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Name of Respondent</b></h5>
-                                                                                            </div>
-                                                                                        </div>
 
-                                                                                    </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequests?.nameOfRespondent}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Name of Organization</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequests?.nameOfOrganization}}.</p>
-                                                                                </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
@@ -196,18 +251,7 @@
 
                                                                                     <p class="text-sm mb-0">{{actionRequests?.scope}}.</p>
                                                                                 </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Remarks</b></h5>
-                                                                                            </div>
-                                                                                        </div>
 
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequests?.remarks}}.</p>
-                                                                                </a>
 
 
 
@@ -235,8 +279,8 @@
                                                                                             <th class="knw">Name Of Organization</th>
                                                                                             <th class="knw">Clause</th>
                                                                                             <th class="knw">Paragraph</th>
-                                                                                            <th class="knw">Reason</th>
-                                                                                            <th class="knw">Recommendations</th>
+                                                                                            <th class="knw">Scope</th>
+                                                                                            <th class="knw">Observation</th>
                                                                                             <th class="knw">Name of Respondent</th>
                                                                                         </tr>
                                                                                         </thead>
@@ -248,8 +292,8 @@
                                                                                             <td>{{comStdCommitteeRemark.nameOfOrganization}}</td>
                                                                                             <td>{{comStdCommitteeRemark.comClause}}</td>
                                                                                             <td>{{comStdCommitteeRemark.comParagraph}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.reason}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.recommendations}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.scope}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.observation}}</td>
                                                                                             <td>{{comStdCommitteeRemark.nameOfRespondent}}</td>
                                                                                         </tr>
                                                                                         </tbody>
@@ -280,6 +324,109 @@
 
                                                                                     </div>
                                                                                 </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="tab-pane fade" id="nav-prepare-justification" role="tabpanel" aria-labelledby="nav-prepare-justification-tab">
+                                                                    <div class="modal-body">
+                                                                        <div class="form-body">
+                                                                            <div  class="row container col-md-12" [hidden]="isShowJustificationTabs">
+                                                                                <div class="list-group list-group-flush" *ngFor="let iSJustificationProposal of iSJustificationProposals">
+                                                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                                            <div>
+                                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Meeting Date</b></h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+
+                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.meetingDate}}.</p>
+                                                                                    </a>
+                                                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                                            <div>
+                                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Number</b></h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+
+                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.slNumber}}.</p>
+                                                                                    </a>
+                                                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                                            <div>
+                                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Edition</b></h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+
+                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.edition}}.</p>
+                                                                                    </a>
+                                                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                                            <div>
+                                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Requested By</b></h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+
+                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.requestedBy}}.</p>
+                                                                                    </a>
+                                                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                                            <div>
+                                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Issues Addressed</b></h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+
+                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.issuesAddressed}}.</p>
+                                                                                    </a>
+                                                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                                            <div>
+                                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>TC Acceptance Date</b></h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+
+                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.tcAcceptanceDate}}.</p>
+                                                                                    </a>
+                                                                                    <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                        <div class="d-flex w-100 justify-content-between">
+                                                                                            <div>
+                                                                                                <div class="d-flex w-100 align-items-center">
+                                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Department</b></h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+
+                                                                                        <p class="text-sm mb-0">{{iSJustificationProposal.departmentName}}.</p>
+                                                                                    </a>
+
+
+                                                                                </div>
+
+
 
                                                                             </div>
                                                                         </div>
@@ -332,6 +479,42 @@
 
                                                                                             </div>
 
+                                                                                            <div class="form-group col-6">
+                                                                                                <label>Department/Sector</label>
+                                                                                                <select class="form-control" formControlName="departmentId" name="departmentId"    >
+                                                                                                    <option disabled>--Select Department--</option>
+                                                                                                    <option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="form-group col-12">
+                                                                                                <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                          class="form-control one-column-input" value="{{actionRequests?.clause}}" formControlName="clause" name="clause"
+                                                                                                          placeholder="International Standard Clause" type="text" ></textarea>
+
+                                                                                            </div>
+                                                                                            <div class="form-group col-12">
+                                                                                                <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                          class="form-control one-column-input" value="{{actionRequests?.scope}}" formControlName="scope" name="scope"
+                                                                                                          placeholder="International Standard Scope" type="text" ></textarea>
+
+                                                                                            </div>
+                                                                                            <div class="form-group col-12">
+                                                                                                <label><b>Special</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                          class="form-control one-column-input" value="{{actionRequests?.special}}" formControlName="special" name="special"
+                                                                                                          placeholder="International Standard Special" type="text" ></textarea>
+
+                                                                                            </div>
+                                                                                            <div class="form-group col-12">
+                                                                                                <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                                <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                          class="form-control one-column-input" value="{{actionRequests?.normativeReference}}" formControlName="normativeReference" name="normativeReference"
+                                                                                                          placeholder="International Standard Normative Reference" type="text" ></textarea>
+
+                                                                                            </div>
+
                                                                                             <div class="row col-12">
                                                                                                 <div class="form-group col-12">
                                                                                                     <label><b>Attach Draft</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -341,23 +524,14 @@
                                                                                                     </form>
                                                                                                 </div>
                                                                                             </div>
-                                                                                            <input type="text" formControlName="draftId" name="draftId" value="{{actionRequests?.draftId}}" >
-                                                                                            <input type="text" formControlName="requestId" name="requestId" value="{{actionRequests?.id}}" >
-                                                                                            <input type="text" formControlName="id" name="id" value="{{actionRequests?.id}}" >
-
-                                                                                            <input type="text" formControlName="departmentId" value="{{actionRequests?.departmentId}}" name="departmentId" >
-                                                                                            <input type="text" formControlName="subject" value="{{actionRequests?.subject}}" name="subject" >
-                                                                                            <input type="text" formControlName="description" value="{{actionRequests?.description}}" name="description" >
-                                                                                            <input type="text" formControlName="contactOneFullName" value="{{actionRequests?.contactOneFullName}}" name="contactOneFullName" >
-                                                                                            <input type="text" formControlName="contactOneTelephone" value="{{actionRequests?.contactOneTelephone}}" name="contactOneTelephone" >
-                                                                                            <input type="text" formControlName="contactOneEmail" value="{{actionRequests?.contactOneEmail}}" name="contactOneEmail" >
-                                                                                            <input type="text" formControlName="clause" value="{{actionRequests?.clause}}" name="clause" >
-                                                                                            <input type="text" formControlName="scope" value="{{actionRequests?.scope}}" name="scope" >
-                                                                                            <input type="text" formControlName="special" value="{{actionRequests?.special}}" name="special" >
-                                                                                            <input type="text" formControlName="normativeReference" value="{{actionRequests?.normativeReference}}" name="normativeReference" >
-
-
-
+                                                                                            <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequests?.draftId}}" >
+                                                                                            <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.id}}" >
+                                                                                            <input type="hidden" formControlName="id" name="id" value="{{actionRequests?.id}}" >
+                                                                                            <input type="hidden" formControlName="subject" value="{{actionRequests?.subject}}" name="subject" >
+                                                                                            <input type="hidden" formControlName="description" value="{{actionRequests?.description}}" name="description" >
+                                                                                            <input type="hidden" formControlName="contactOneFullName" value="{{actionRequests?.contactOneFullName}}" name="contactOneFullName" >
+                                                                                            <input type="hidden" formControlName="contactOneTelephone" value="{{actionRequests?.contactOneTelephone}}" name="contactOneTelephone" >
+                                                                                            <input type="hidden" formControlName="contactOneEmail" value="{{actionRequests?.contactOneEmail}}" name="contactOneEmail" >
 
                                                                                         </div>
                                                                                     </div>

@@ -832,7 +832,7 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'isStdProofReading', title: 'Proof Reading', ab: 'PR'},
             // {path: 'isApproveDraftStd', title: 'Check Standard', ab: 'CS'},
             // {path: 'isApprovedEdits', title: 'View Edited Draft', ab: 'J'},
-            // {path: 'isSacApproval', title: 'SAC Approval', ab: 'SA'},
+             {path: 'isSacApproval', title: 'SAC Tasks', ab: 'ST'},
             // {path: 'isStandardGazette', title: 'Gazette Notice', ab: 'GN'},
 
 

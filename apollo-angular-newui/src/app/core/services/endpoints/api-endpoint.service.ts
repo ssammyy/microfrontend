@@ -511,6 +511,8 @@ export class ApiEndpointService {
         ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getApprovedStdDraft`,
         ICT_COM_STD_EDITS_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdDraftForEditing`,
         ICT_COM_STD_PB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComStdPublishing`,
+        ICT_COM_STD_SPB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAppStdPublishing`,
+        ICT_COM_STD_APB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAppStd`,
         ICT_COM_STD_COMMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAllComments`,
         ICT_COM_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftComments`,
         ICT_COM_DRAFT_COMMENTS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftCommentList`,
