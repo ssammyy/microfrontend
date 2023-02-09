@@ -290,12 +290,12 @@ export class PermitEntityDetails {
     processStatusID: number;
     fmarkGeneratedID: number;
     oldPermitStatus: number;
-    varField7: string;
+    Field7: string;
     productStandards: number;
     assignOfficerStatus: boolean;
     assignOfficerID: number;
     permitGenerateDifference: boolean;
-    inspectionReportGenerated : boolean;
+    inspectionReportGenerated: boolean;
     companyId: number;
 }
 
@@ -606,5 +606,96 @@ export class FilterDto {
     lastDate: Date;
     permitType: number;
     productDescription: string;
+}
+
+export class AllInspectionDetailsApplyDto {
+    id: number;
+    technicalDetailsDto: TechnicalDetailsDto;
+    inspectionDetailsDto: InspectionDetailsDto;
+    inspectionDetailsDtoB: InspectionDetailsDtoB;
+    operationProcessAndControls: OperationProcessAndControlsDetailsApplyDto[];
+    haccpImplementationDetails: HaccpImplementationDetailsApplyDto;
+    followPreviousRecommendationsNonConformities: string;
+    documentsID: FilesListDto[];
+    recommendations: string;
+    inspectorComments: string;
+    inspectorName: string;
+    inspectorDate: Date;
+    supervisorComments: string;
+    supervisorName: string;
+    supervisorDate: Date;
+}
+
+
+export class TechnicalDetailsDto {
+    id: number;
+    firmImplementedAnyManagementSystem: string;
+    firmImplementedAnyManagementSystemRemarks: string;
+    indicateRelevantProductStandardCodes: string;
+    indicateRelevantProductStandardCodesRemarks: string;
+}
+
+export class InspectionDetailsDto {
+    id: number;
+    complianceApplicableStatutory: string;
+    complianceApplicableStatutoryRemarks: string;
+    plantHouseKeeping: string;
+    plantHouseKeepingRemarks: string;
+    handlingComplaints: string;
+    handlingComplaintsRemarks: string;
+    qualityControlPersonnel: string;
+    qualityControlPersonnelRemarks: string;
+    testingFacility: string;
+    testingFacilityRemarks: string;
+}
+
+export class ProductLabellingDto {
+    id: number;
+    standardMarking: string;
+    findings: string;
+}
+
+export class InspectionDetailsDtoB {
+    id: number;
+    equipmentCalibration: string;
+    equipmentCalibrationRemarks: string;
+    qualityRecords: string;
+    qualityRecordsRemarks: string;
+    recordsNonconforming: string;
+    recordsNonconformingRemarks: string;
+    productRecallRecords: string;
+    productRecallRecordsRemarks: string;
+    productLabelling: ProductLabellingDto[];
+}
+
+export class OperationProcessAndControlsDetailsApplyDto {
+    id: number;
+    processFlow: string;
+    operations: string;
+    qualityChecks: string;
+    frequency: string;
+    records: string;
+    findings: string;
+}
+
+export class HaccpImplementationDetailsApplyDto {
+    id: number;
+    designFacilitiesConstructionLayout: string;
+    designFacilitiesConstructionLayoutRemarks: string;
+    maintenanceSanitationCleaningPrograms: string;
+    maintenanceSanitationCleaningProgramsRemarks: string;
+    personnelHygiene: string;
+    personnelHygieneRemarks: string;
+    transportationConveyance: string;
+    transportationConveyanceRemarks: string;
+    determinationCriticalParameters: string;
+    determinationCriticalParametersRemarks: string;
+    evidenceCorrectiveActions: string;
+    evidenceCorrectiveActionsRemarks: string;
+}
+
+export class InspectionReportProcessStepDto {
+    inspectionReportId: number;
+    processStep: number;
 }
 

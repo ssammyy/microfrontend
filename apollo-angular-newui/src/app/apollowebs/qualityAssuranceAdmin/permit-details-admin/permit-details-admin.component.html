@@ -1715,6 +1715,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    (click)="openModalAddDetails('scheduleInspectionDate')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">SCHEDULE INSPECTION</a>
 
+
+                                <a
+                                   *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus && !allPermitDetails?.permitDetails?.inspectionReportGenerated"
+                                   (click)="generateInspectionReport(allPermitDetails.permitDetails.id)"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION REPORT</a>
+
+
                                 <a data-toggle="modal"
                                    *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.generateSchemeStatus"
                                    data-target="#allProcessModel"
