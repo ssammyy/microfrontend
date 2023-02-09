@@ -317,11 +317,13 @@ export class ApiEndpointService {
 
 
         INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-submit`,
+        INVOICE_CONSOLIDATE_DIFFERENCE_SUBMIT: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-difference-submit`,
         INVOICE_CONSOLIDATE_ADD: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-add`,
         INVOICE_CONSOLIDATE_REMOVE: `${ApiEndpointService.QA_CONTEXT_APPLY}/invoice/batch-invoice-remove`,
         INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
         INVOICE_DETAILS_BALANCE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-balance-details`,
         INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
+        INVOICE_LIST_NO_DIFFERENCE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-difference`,
         INVOICE_LIST_NO_DETAILS_PERMIT_TYPE: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-permit-type`,
         INVOICE_LIST_ALL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list`,
         INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
@@ -458,6 +460,7 @@ export class ApiEndpointService {
         IST_VIEW_IS_STANDARD_GZT_DOC: `${ApiEndpointService.SD_IST_CONTEXT}/view/gazettement`,
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
         IST_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitDraftComments`,
+        IST_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftComment`,
 
 
         // SD COMPANY STANDARDS
@@ -693,6 +696,21 @@ export class ApiEndpointService {
     public static QA_INTERNAL_USER_ENDPOINT = {
         LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list`,
         LOAD_PERMIT_DETAIL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permit-detail`,
+        UPDATE_SECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/section`,
+        UPDATE_OFFICER_DIFFERENCE_STATUS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/difference-status-activate`,
+        QAM_COMPLETENESS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/completeness`,
+        ASSIGN_OFFICER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/assign-officer`,
+        ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
+        SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
+        INSPECTION_CHECKLIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection-checklist`,
+        ADD_SSF_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-details`,
+        ADD_SSF_COMPLIANCE_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-compliance-status`,
+        VIEW_PDF_LAB_RESULT: `${ApiEndpointService.QA_CONTEXT}/view/attached-lab-pdf`,
+        SAVE_PDF_LAB_RESULT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-pdf-selected`,
+        SAVE_PDF_LAB_RESULT_COMPLIANCE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-compliance-status`,
+        UPLOAD_SCHEME_OF_SUPERVISION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-scheme-supervision`,
+        UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
+
 
     };
 
@@ -702,6 +720,7 @@ export class ApiEndpointService {
         LOAD_COMPANY_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/company-list/load`,
         LOAD_FIRM_TYPE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/firm-types/load`,
         UPDATE_COMPANY_TURN_OVER: `${ApiEndpointService.QA_CONTEXT}/company/update-turn-over`,
+        UPDATE_COMPANY_TURN_OVER_REQUEST_OFFICER: `${ApiEndpointService.QA_CONTEXT}/company/officer-requested-to-upgrade`,
         GENERATE_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/company/generate-inspection-fee`,
         UPLOAD_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/upload/inspection-invoice`,
         VIEW_PDF_INSPECTION_FEES_INVOICE: `${ApiEndpointService.QA_CONTEXT}/view/inspection-invoice`,

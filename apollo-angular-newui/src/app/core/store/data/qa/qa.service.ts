@@ -162,13 +162,258 @@ export class QaService {
         const url = ApiEndpointService.getEndpoint(
             ApiEndpointService.COMPANY_PROFILE_ENDPOINT.UPLOAD_INSPECTION_FEES_INVOICE,
         );
-        // const params = new HttpParams()
-        //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data',
             }, params: {'refNumber': 'refNumber'},
         }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaSaveSCS(data: FormData): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.UPLOAD_SCHEME_OF_SUPERVISION,
+        );
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaSaveUploadFile(data: FormData): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.UPLOAD_ATTACHMENTS,
+        );
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+
+
+    public qaUpdateSection(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.UPDATE_SECTION);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaUpdateDifferenceStatus(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.UPDATE_OFFICER_DIFFERENCE_STATUS);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaPermitCompleteness(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.QAM_COMPLETENESS);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaPermitCompletenessUpgrade(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.UPDATE_COMPANY_TURN_OVER_REQUEST_OFFICER);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaPermitSavePDF(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SAVE_PDF_LAB_RESULT);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaPermitSavePDFCompliance(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SAVE_PDF_LAB_RESULT_COMPLIANCE);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaAssignOfficer(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ASSIGN_OFFICER);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaStandardsAdd(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_STANDARD);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaScheduleInspectionReport(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SCHEDULE_INSPECTION);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaSSFDetails(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_SSF_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaSSFDetailsCompliance(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_SSF_COMPLIANCE_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadFileDetailsLabResultsPDF(fileName: string, bsNumber: string): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.VIEW_PDF_LAB_RESULT);
+        const params = new HttpParams()
+            .set('fileName', fileName)
+            .set('bsNumber', bsNumber);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -267,6 +512,19 @@ export class QaService {
 
     public loadInvoiceListWithNoBatchID(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_NO_DETAILS);
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadInvoiceListWithNoBatchIDDifference(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_NO_DIFFERENCE_DETAILS);
         return this.http.get<any>(url).pipe(
             map(function (response: any) {
                 return response;
@@ -878,6 +1136,19 @@ export class QaService {
 
     public createInvoiceConsolidatedDetails(data: GenerateInvoiceWithWithholdingDto): Observable<AllBatchInvoiceDetailsDto> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_SUBMIT);
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
+            map(function (response: AllBatchInvoiceDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public createInvoiceConsolidatedDifferenceDetails(data: GenerateInvoiceWithWithholdingDto): Observable<AllBatchInvoiceDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_DIFFERENCE_SUBMIT);
         return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {
                 return response;

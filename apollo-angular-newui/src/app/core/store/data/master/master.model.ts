@@ -121,6 +121,12 @@ export class DirectoratesEntityDto {
     status?: boolean;
 }
 
+export class StandardsDto {
+    id?: number;
+    standardTitle?: string;
+    standardNumber?: string;
+}
+
 export class SectionsEntityDto {
     id?: number;
     section?: string;

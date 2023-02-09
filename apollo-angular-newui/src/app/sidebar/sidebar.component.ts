@@ -133,6 +133,7 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'invoice',
         children: [
             {path: 'consolidate_invoice', title: 'Consolidate All Invoices', ab: 'CAI'},
+            {path: 'consolidate_invoice-difference', title: 'Consolidate All Invoices Difference', ab: 'CAID'},
             // {path: 'consolidate_invoice_fmark', title: 'Consolidate Fmark Invoices', ab: 'CFI',},
             // {path: 'consolidate_invoice_dmark', title: 'Consolidate Dmark Invoices', ab: 'CDI',},
 
@@ -802,7 +803,7 @@ export const ROUTES: RouteInfo[] = [
            // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
             {path: 'comStdList', title: 'Company Standard Requests', ab: 'CSR'},
             {path: 'comStdDraft', title: 'Uploaded Drafts', ab: 'UT'},
-           // {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
+            {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
             //{path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
             //{path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
 
@@ -820,12 +821,12 @@ export const ROUTES: RouteInfo[] = [
         children: [
             //{path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
             {path: 'isProposalForm', title: 'Prepare Proposal', ab: 'C'},
-            {path: 'isProposalComments', title: 'Comment on Proposal', ab: 'VC'},
+           // {path: 'isProposalComments', title: 'Comment on Proposal', ab: 'VC'},
             {path: 'isProposals', title: 'View Proposals ', ab: 'VP'},
             {path: 'isPrepareJustification', title: 'Prepare Justification', ab: 'PJ'},
             {path: 'isJustificationApp', title: 'View Justification', ab: 'VJ'},
             {path: 'isUploadDraft', title: 'Upload Draft', ab: 'UD'},
-            {path: 'isStdPublishingTask', title: 'Publishing Tasks', ab: 'PT'},
+           // {path: 'isStdPublishingTask', title: 'Publishing Tasks', ab: 'PT'},
             // {path: 'isCheckRequirements', title: 'Check Requirements', ab: 'CR'},
             // {path: 'isStdEditDraft', title: 'Edit Draft', ab: 'ER'},
             // {path: 'isStdDraughting', title: 'Draughting', ab: 'DS'},

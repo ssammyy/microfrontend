@@ -265,7 +265,7 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         const valueString=this.committeeFormGroup.get("name").value.split(",")
         this.stdComStandardService.formJCommittee(this.committeeFormGroup.value,valueString).subscribe(
             (response) => {
-                console.log(response);
+                //console.log(response);
                 this.SpinnerService.hide();
                 this.showToasterSuccess(response.httpStatus, `Committed Prepared`);
                 swal.fire({

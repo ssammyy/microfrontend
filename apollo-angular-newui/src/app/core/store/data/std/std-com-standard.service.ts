@@ -21,7 +21,7 @@ import {
   ISCheckRequirements, ISDraftDecision, IStandardDraftEdit, IStandardUpload,
   NWAPreliminaryDraft,
   NWAWDDecision,
-  NWAWorkShopDraft,
+  NWAWorkShopDraft, PredefinedSdIntCommentsFields,
   Product, ProposalComment,
   StakeholderProposalComments, UserEntity,
   UsersEntity
@@ -530,10 +530,10 @@ export class StdComStandardService {
     );
   }
 
-  public submitDraftComment(comDraftComment: ComDraftComment): Observable<any> {
+  public submitDraftComment(comDraftComment: PredefinedSdIntCommentsFields[]): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SUBMIT_DRAFT_COMMENT);
     const params = new HttpParams();
-    return this.http.post<ComDraftComment>(url, comDraftComment, {params}).pipe(
+    return this.http.post<PredefinedSdIntCommentsFields[]>(url, comDraftComment, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -542,10 +542,10 @@ export class StdComStandardService {
         })
     );
   }
-  public submitDraftComments(comDraftComment: ComDraftComment): Observable<any> {
+  public submitDraftComments(comDraftComment: PredefinedSdIntCommentsFields[]): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_SUBMIT_DRAFT_COMMENTS);
     const params = new HttpParams();
-    return this.http.post<ComDraftComment>(url, comDraftComment, {params}).pipe(
+    return this.http.post<PredefinedSdIntCommentsFields[]>(url, comDraftComment, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -553,6 +553,19 @@ export class StdComStandardService {
           return throwError(fault);
         })
     );
+  }
+  public getStdDraftForEditing(): Observable<COMPreliminaryDraft[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_EDITS_DRAFT);
+    const params = new HttpParams();
+    return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
+  }
+
+
+
+  public getStdDraftEditing(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_EDITS_DRAFT);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
   }
 
   public getComPublishingTasks(): any {
@@ -594,11 +607,7 @@ export class StdComStandardService {
     );
   }
 
-  public getStdDraftForEditing(): Observable<COMPreliminaryDraft[]> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_EDITS_DRAFT);
-    const params = new HttpParams();
-    return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
-  }
+
 
   public submitDraftForEditing(iStandardUpload: IStandardUpload): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_SUBMIT_DRAFT);

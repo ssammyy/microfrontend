@@ -93,6 +93,7 @@ class ComStdDraftDecisionDto(
 
 }
 
+
 class ComDraftCommentDto(
     var commentTitle: String?=null,
     var commentDocumentType: String?=null,

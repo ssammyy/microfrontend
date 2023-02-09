@@ -1,0 +1,1048 @@
+<div class="container-fluid" style="margin-top: 5%">
+    <!--    <div class="loading-spinner ">-->
+    <!--        <ngx-spinner-->
+    <!--                bdColor="rgba(51,51,51,0.8)"-->
+    <!--                size="medium"-->
+    <!--                color="#fff"-->
+    <!--                type="ball-scale-multiple"-->
+    <!--        >-->
+    <!--            <p style="font-size: 20px; color: white">Saving Please Wait...</p>-->
+    <!--        </ngx-spinner>-->
+    <!--    </div>-->
+    <div class="main-content">
+        <div class="container-fluid">
+
+
+            <div class="w-100">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-primary card-header-icon">
+                                <div class="card-icon">
+                                    <i class="material-icons">assignment</i>
+                                </div>
+                                <h4 class="card-title">New Inspection Report</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="toolbar">
+
+                                </div>
+                                <div class="material-datatables">
+                                    <section class="wizard-section">
+                                        <div class="row no-gutters">
+                                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                                <div class="form-wizard">
+                                                    <div [ngSwitch]="step">
+                                                        <div *ngSwitchCase="1">
+                                                            <h2 style="text-align: center"><b>Step</b> <b> 1</b><b>
+                                                                of</b>
+                                                                <b> 9</b></h2>
+<!--                                                            <div class="row">-->
+
+<!--                                                                <div class="form-group col-12">-->
+
+<!--                                                                    <h3>Would You Like To Clone This Inspection Report-->
+<!--                                                                        With A Similar Inspection Report?</h3>-->
+
+<!--                                                                    <label>Select Inspection Report</label>-->
+<!--                                                                    &lt;!&ndash;                                                                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"&ndash;&gt;-->
+
+<!--                                                                    &lt;!&ndash;                                                                                [(ngModel)]="selectedPermit"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                id="attachedPlanto"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                class="form-control" (selectionChange)="setClonedMethod()"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                placeholder="Select Permit">&ndash;&gt;-->
+
+<!--                                                                    &lt;!&ndash;                                                                        <mat-option&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                *ngFor="let permit of allPermitData"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                value="{{permit.id}}"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                class="dropdown-item">{{permit.productName}}</mat-option>&ndash;&gt;-->
+
+<!--                                                                    &lt;!&ndash;                                                                    </mat-select>&ndash;&gt;-->
+
+
+<!--                                                                    <mat-select aria-label="Small"-->
+<!--                                                                                aria-describedby="inputGroup-sizing-lg"-->
+
+
+<!--                                                                                class="form-control"-->
+<!--                                                                                placeholder="Select Inspection Report">-->
+
+<!--                                                                        <mat-option class="dropdown-item">Test-->
+<!--                                                                        </mat-option>-->
+
+<!--                                                                    </mat-select>-->
+
+<!--                                                                    &lt;!&ndash;                                                                    <div *ngIf="hideCloneButton === true">&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                        <button class="btn btn-info float-right"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                (click)="clonePermit()">&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                            Clone&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                        </button>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                    </div>&ndash;&gt;-->
+<!--                                                                    <div>-->
+<!--                                                                        <button class="btn btn-info float-right">-->
+<!--                                                                            Clone-->
+<!--                                                                        </button>-->
+<!--                                                                    </div>-->
+
+<!--                                                                </div>-->
+<!--                                                                <div class="form-group col-6">-->
+
+<!--                                                                </div>-->
+
+<!--                                                            </div>-->
+
+                                                            <fieldset class="wizard-fieldset show">
+
+                                                                <form class="form"
+                                                                      (ngSubmit)="onClickSaveInspectionReportTechnicalDetails(technicalForm.valid)"
+                                                                      [formGroup]="technicalForm"
+                                                                      enctype="multipart/form-data">
+                                                                    <h2>Technical: Quality Procedures,Standards And
+                                                                        Management Systems</h2>
+
+                                                                    <div class="form-body">
+                                                                        <div class="form-group">
+                                                                            <h4><b>State whether the firm is
+                                                                                implementing any management system and
+                                                                                Specify the
+                                                                                management system being implemented e.g.
+                                                                                QMS,FSMS,HACCP</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      id="firmImplementedAnyManagementSystem" matInput
+                                                      name="firmImplementedAnyManagementSystem"
+                                                      placeholder="Details Of Findings"
+                                                      [class.is-invalid]="formTechnicalForm.firmImplementedAnyManagementSystem.invalid && formTechnicalForm.firmImplementedAnyManagementSystem.touched"
+                                                      formControlName="firmImplementedAnyManagementSystem"
+
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="firmImplementedAnyManagementSystemRemarks"
+                                                      id="firmImplementedAnyManagementSystemRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      [class.is-invalid]="formTechnicalForm.firmImplementedAnyManagementSystemRemarks.invalid && formTechnicalForm.firmImplementedAnyManagementSystemRemarks.touched"
+                                                      formControlName="firmImplementedAnyManagementSystemRemarks"
+
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Indicate the relevant product
+                                                                                standards and codes of practice in the
+                                                                                firm’s
+                                                                                possession</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="indicateRelevantProductStandardCodes" required="required"
+                                                      id="indicateRelevantProductStandardCodes" matInput
+                                                      placeholder="Details Of Findings"
+                                                      [class.is-invalid]="formTechnicalForm.indicateRelevantProductStandardCodes.invalid && formTechnicalForm.indicateRelevantProductStandardCodes.touched"
+                                                      formControlName="indicateRelevantProductStandardCodes"
+
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="indicateRelevantProductStandardCodesRemarks"
+                                                      id="indicateRelevantProductStandardCodesRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      [class.is-invalid]="formTechnicalForm.indicateRelevantProductStandardCodesRemarks.invalid && formTechnicalForm.indicateRelevantProductStandardCodesRemarks.touched"
+                                                      formControlName="indicateRelevantProductStandardCodesRemarks"
+
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div *ngIf="technicalForm.valid" class="form-group clearfix">
+                                                                        <button type="submit"
+                                                                                class="form-wizard-next-btn btn-sm float-right">
+                                                                            Next
+                                                                        </button>
+                                                                    </div>
+                                                                    <div *ngIf="!technicalForm.valid"
+                                                                         class="form-group clearfix">
+                                                                        <button class="btn btn-sm btn-primary float-right"
+                                                                                (click)="showNotification('top','right')">
+                                                                            Next
+                                                                        </button>
+                                                                    </div>
+
+                                                                </form>
+
+
+                                                            </fieldset>
+                                                        </div>
+                                                        <div *ngSwitchCase="2">
+                                                            <h2 style="text-align: center"><b>Step</b> <b> 2</b><b>
+                                                                of</b>
+                                                                <b> 9</b></h2>
+
+                                                            <fieldset class="wizard-fieldset show">
+                                                                <h2>Inspection And Testing </h2>
+
+                                                                <form class="form"
+                                                                      (ngSubmit)="onClickSaveInspectionReportTechnicalDetails(technicalForm.valid)"
+                                                                      [formGroup]="technicalForm"
+                                                                      enctype="multipart/form-data">
+
+                                                                    <div class="form-body">
+                                                                        <div class="form-group">
+                                                                            <h2><b>Compliance to applicable statutory
+                                                                                requirements</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      id="complianceApplicableStatutory" matInput
+                                                      name="complianceApplicableStatutory"
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="complianceApplicableStatutoryRemarks"
+                                                      id="complianceApplicableStatutoryRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h2><b>Plant housekeeping</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="plantHouseKeeping" required="required"
+                                                      id="plantHouseKeeping" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="plantHouseKeepingRemarks"
+                                                      id="plantHouseKeepingRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h2><b>Handling of complaints</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="handlingComplaints" required="required"
+                                                      id="handlingComplaints" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="handlingComplaintsRemarks"
+                                                      id="handlingComplaintsRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h2><b>Quality control personnel competence
+                                                                                records
+                                                                                (Academic/professional/experience)</b>
+                                                                            </h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="qualityControlPersonnel" required="required"
+                                                      id="qualityControlPersonnel" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="qualityControlPersonnelRemarks"
+                                                      id="qualityControlPersonnelRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h2><b>Testing Facility (In-house or
+                                                                                external laboratory used)</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="testingFacility" required="required"
+                                                      id="testingFacility" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="testingFacilityRemarks"
+                                                      id="testingFacilityRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-group clearfix">
+                                                                        <button (click)="onClickPrevious()"
+                                                                                class="btn btn-sm btn-danger form-wizard-previous-btn">
+                                                                            Previous
+                                                                        </button>
+                                                                        <button (click)="clickNextToTest()"
+                                                                                class="btn btn-info float-right">
+                                                                            Next
+                                                                        </button>
+                                                                    </div>
+
+                                                                </form>
+                                                            </fieldset>
+                                                        </div>
+                                                        <div *ngSwitchCase="3">
+                                                            <h2 style="text-align: center"><b>Step</b> <b> 3</b><b>
+                                                                of</b>
+                                                                <b> 9</b></h2>
+
+                                                            <fieldset class="wizard-fieldset show">
+                                                                <h2>Inspection And Testing </h2>
+
+                                                                <form class="form"
+                                                                      enctype="multipart/form-data">
+
+                                                                    <div class="form-body">
+                                                                        <div class="form-group">
+                                                                            <h2><b>Equipment
+                                                                                calibration/verification</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="equipmentCalibration" required="required"
+                                                      id="equipmentCalibration" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="equipmentCalibrationRemarks"
+                                                      id="equipmentCalibrationRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h2><b>Quality records (Raw materials,
+                                                                                in-process and final product)</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="qualityRecords" required="required"
+                                                      id="qualityRecords" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="qualityRecordsRemarks"
+                                                      id="qualityRecordsRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h2><b>Records of nonconforming products at
+                                                                                raw materials step, in-process step and
+                                                                                final product step</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="recordsNonconforming" required="required"
+                                                      id="recordsNonconforming" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="recordsNonconformingRemarks"
+                                                      id="recordsNonconformingRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h2><b>Product Recall records</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="productRecallRecords" required="required"
+                                                      id="productRecallRecords" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="productRecallRecordsRemarks"
+                                                      id="productRecallRecordsRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="form-group clearfix">
+                                                                        <button (click)="onClickPrevious()"
+                                                                                class="btn btn-sm btn-danger form-wizard-previous-btn">
+                                                                            Previous
+                                                                        </button>
+                                                                        <button (click)="clickNextToTest()"
+                                                                                class="btn btn-info float-right">
+                                                                            Next
+                                                                        </button>
+                                                                    </div>
+
+                                                                </form>
+                                                            </fieldset>
+                                                        </div>
+
+                                                        <div *ngSwitchCase="4">
+                                                            <h2 style="text-align: center"><b>Step</b> <b> 4</b><b>
+                                                                of</b>
+                                                                <b> 9</b></h2>
+
+                                                            <fieldset class="wizard-fieldset show">
+                                                                <h2>STANDARDIZATION MARK SCHEME </h2>
+                                                                <form class="form"
+                                                                      enctype="multipart/form-data">
+
+                                                                    <div class="form-body">
+                                                                        <div class="form-group">
+                                                                            <h4><b>Validity of S-Mark permit(s)</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="validitySmarkPermit" required="required"
+                                                      id="validitySmarkPermit" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="validitySmarkPermitRemarks"
+                                                      id="validitySmarkPermitRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Use of the S-Mark</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="useTheSmark" required="required"
+                                                      id="useTheSmark" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="useTheSmarkRemarks"
+                                                      id="useTheSmarkRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Are there changes affecting product
+                                                                                certification? If yes, give
+                                                                                details?</b>
+                                                                            </h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="changesAffectingProductCertification" required="required"
+                                                      id="changesAffectingProductCertification" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="changesAffectingProductCertificationRemarks"
+                                                      id="changesAffectingProductCertificationRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Have the changes been communicated to
+                                                                                KEBS?)</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="changesBeenCommunicatedKebs" required="required"
+                                                      id="changesBeenCommunicatedKebs" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="changesBeenCommunicatedKebsRemarks"
+                                                      id="changesBeenCommunicatedKebsRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Samples drawn</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="samplesDrawn" required="required"
+                                                      id="samplesDrawn" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="samplesDrawnRemarks"
+                                                      id="samplesDrawnRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-group clearfix">
+                                                                        <button (click)="onClickPrevious()"
+                                                                                class="btn btn-sm btn-danger form-wizard-previous-btn">
+                                                                            Previous
+                                                                        </button>
+                                                                        <button (click)="clickNextToTest()"
+                                                                                class="btn btn-info float-right">
+                                                                            Next
+                                                                        </button>
+                                                                    </div>
+
+                                                                </form>
+                                                            </fieldset>
+                                                        </div>
+                                                        <div *ngSwitchCase="5">
+                                                            <h2 style="text-align: center"><b>Step</b> <b> 5</b><b>
+                                                                of</b>
+                                                                <b> 9</b></h2>
+
+                                                            <fieldset class="wizard-fieldset show">
+                                                                <h2>ANNEX I: OPERATION PROCESS AND CONTROLS </h2>
+
+                                                                <div class="row">
+                                                                    <div class="card-body" style="margin-top: 20px;">
+
+                                                                        <button (click)="openModalAddDetails('addTechnical')"
+                                                                                class="btn btn-info"
+                                                                                data-target="#allProcessModel"
+                                                                                data-toggle="modal"
+                                                                                mat-list-item
+
+                                                                                style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">
+                                                                            ADD DETAILS
+                                                                        </button>
+                                                                        <div class="material-datatables">
+                                                                            <div class="table-responsive">
+
+                                                                                <div>
+                                                                                    <table class=" table table-bordered table-hover table-striped"
+                                                                                           datatable
+                                                                                    >
+                                                                                        <thead style="text-align: left;">
+                                                                                        <tr>
+                                                                                            <th><strong>Process
+                                                                                                Flow</strong></th>
+                                                                                            <th>
+                                                                                                <strong>Operations</strong>
+                                                                                            </th>
+                                                                                            <th><strong>Quality
+                                                                                                Checks</strong></th>
+                                                                                            <th>
+                                                                                                <strong>Frequency</strong>
+                                                                                            </th>
+                                                                                            <th><strong>Records</strong>
+                                                                                            </th>
+                                                                                            <th>
+                                                                                                <strong>Findings</strong>
+                                                                                            </th>
+                                                                                            <th class="text-center">
+                                                                                                <strong>Action</strong>
+                                                                                            </th>
+
+
+                                                                                        </tr>
+                                                                                        </thead>
+
+                                                                                        <tbody>
+                                                                                        <tr>
+                                                                                            <td>SCHEME_OF_SUPERVISION
+                                                                                            </td>
+                                                                                            <td>bsk.pdf</td>
+                                                                                            <td>application</td>
+                                                                                            <td>application</td>
+                                                                                            <td>application</td>
+                                                                                            <td>application</td>
+                                                                                            <td class="text-right">
+
+                                                                                                <a (click)="openModalAddDetails('addTechnical')"
+                                                                                                   class="btn btn-info"
+
+                                                                                                   mat-list-item
+                                                                                                   routerLink=""
+                                                                                                   style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">Edit</a>
+                                                                                            </td>
+
+                                                                                        </tr>
+
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+
+                                                                </div>
+                                                                <div class="form-group clearfix">
+                                                                    <button (click)="onClickPrevious()"
+                                                                            class="btn btn-sm btn-danger form-wizard-previous-btn">
+                                                                        Previous
+                                                                    </button>
+                                                                    <button (click)="clickNextToTest()"
+                                                                            class="btn btn-info float-right">
+                                                                        Next
+                                                                    </button>
+                                                                </div>
+                                                            </fieldset>
+                                                        </div>
+                                                        <div *ngSwitchCase="6">
+                                                            <h2 style="text-align: center"><b>Step</b> <b> 6</b><b>
+                                                                of</b>
+                                                                <b> 9</b></h2>
+
+                                                            <fieldset class="wizard-fieldset show">
+                                                                <form class="form"
+                                                                      enctype="multipart/form-data">
+
+                                                                    <h4><b>Annex II: HACCP IMPLEMENTATION</b></h4>
+                                                                    <div class="form-body">
+                                                                        <div class="form-group">
+                                                                            <h2><b>Design & facilities-construction and
+                                                                                layout of buildings and work
+                                                                                space.</b></h2>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      id="designFacilitiesConstructionLayout" matInput
+                                                      name="designFacilitiesConstructionLayout"
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="designFacilitiesConstructionLayoutRemarks"
+                                                      id="designFacilitiesConstructionLayoutRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Maintenance and sanitation- cleaning
+                                                                                programs, pest control systems
+                                                                                and waste management.</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="maintenanceSanitationCleaningPrograms" required="required"
+                                                      id="maintenanceSanitationCleaningPrograms" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="maintenanceSanitationCleaningProgramsRemarks"
+                                                      id="maintenanceSanitationCleaningProgramsRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Personnel hygiene</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="personnelHygiene" required="required"
+                                                      id="personnelHygiene" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="personnelHygieneRemarks"
+                                                      id="personnelHygieneRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Transportation - conveyance & bulk
+                                                                                container</b>
+                                                                            </h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="transportationConveyance" required="required"
+                                                      id="transportationConveyance" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="transportationConveyanceRemarks"
+                                                      id="transportationConveyanceRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Determination of Critical parameters
+                                                                                to assure food safety and evidence of
+                                                                                monitoring of the critical
+                                                                                parameters.</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="determinationCriticalParameters" required="required"
+                                                      id="determinationCriticalParameters" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="determinationCriticalParametersRemarks"
+                                                      id="determinationCriticalParametersRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <h4><b>Evidence of Corrective Actions for
+                                                                                non-compliance</b></h4>
+
+                                                                            <div>
+                                                                                <label><b>Details Of
+                                                                                    Findings</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="evidenceCorrectiveActions" required="required"
+                                                      id="evidenceCorrectiveActions" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                                <label><b>Remarks</b></label>
+                                                                                <mat-form-field
+                                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="evidenceCorrectiveActionsRemarks"
+                                                      id="evidenceCorrectiveActionsRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                                                                </mat-form-field>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <div class="form-group clearfix">
+                                                                        <button (click)="onClickPrevious()"
+                                                                                class="btn btn-sm btn-danger form-wizard-previous-btn">
+                                                                            Previous
+                                                                        </button>
+                                                                        <button (click)="clickNextToTest()"
+                                                                                class="btn btn-info float-right">
+                                                                            Next
+                                                                        </button>
+                                                                    </div>
+
+                                                                </form>
+                                                            </fieldset>
+                                                        </div>
+                                                        <div *ngSwitchCase="7">
+                                                            <h2 style="text-align: center"><b>Step</b> <b> 7</b><b>
+                                                                of</b>
+                                                                <b> 9</b></h2>
+
+                                                            <fieldset class="wizard-fieldset show">
+                                                                <h4><b>FOLLOW UP ON PREVIOUS
+                                                                    RECOMMENDATIONS/NONCONFORMITIES</b></h4>
+                                                                <div class="form-group">
+                                                                    <div>
+                                                                        <label><b>Follow Up</b></label>
+                                                                        <mat-form-field
+                                                                                class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="followUpRecommendation" required="required"
+                                                      matInput
+                                                      placeholder="Follow Up"
+                                                      type="text"></textarea>
+                                                                        </mat-form-field>
+
+                                                                    </div>
+                                                                </div>
+                                                                <h4><b>RECOMMENDATIONS</b></h4>
+                                                                <div class="form-group">
+                                                                    <div>
+                                                                        <label><b>Recommendations</b></label>
+                                                                        <mat-form-field
+                                                                                class="example-full-width">
+                                            <textarea rows="5" cols="50"
+                                                      name="recommendation" required="required"
+                                                      matInput
+                                                      placeholder="Recommendations"
+                                                      type="text"></textarea>
+                                                                        </mat-form-field>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group clearfix">
+                                                                    <button (click)="onClickPrevious()"
+                                                                            class="btn btn-sm btn-danger form-wizard-previous-btn">
+                                                                        Previous
+                                                                    </button>
+                                                                    <button (click)="clickNextToTest()"
+                                                                            class="btn btn-info float-right">
+                                                                        Next
+                                                                    </button>
+                                                                </div>
+
+                                                            </fieldset>
+                                                        </div>
+
+                                                        <div *ngSwitchCase="8">
+                                                            <h2 style="text-align: center"><b>Step</b> <b> 8</b><b>
+                                                                of</b>
+                                                                <b> 9</b></h2>
+
+                                                            <fieldset class="wizard-fieldset show">
+                                                                <h4><b>Documents Attached</b></h4>
+
+                                                                <div class="material-datatables">
+                                                                    <div class="table-responsive">
+
+                                                                        <div>
+                                                                            <table class=" table table-bordered table-hover table-striped"
+                                                                                   datatable
+                                                                            >
+                                                                                <thead style="text-align: left;">
+                                                                                <tr>
+                                                                                    <th>File Name</th>
+                                                                                    <th>File Type</th>
+                                                                                    <th>Document Description</th>
+                                                                                    <th>Version Number</th>
+                                                                                    <th>View</th>
+                                                                                </tr>
+                                                                                </thead>
+
+                                                                                <tbody>
+                                                                                <tr>
+                                                                                    <td>1</td>
+                                                                                    <td>Done</td>
+                                                                                    <td>Catherine</td>
+                                                                                    <td>12/12/2023</td>
+                                                                                    <td>12/12/2023</td>
+
+                                                                                </tr>
+
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group clearfix">
+                                                                    <button (click)="onClickPrevious()"
+                                                                            class="btn btn-sm btn-danger form-wizard-previous-btn">
+                                                                        Previous
+                                                                    </button>
+                                                                    <button class="btn btn-info float-right">
+                                                                        Finish
+                                                                    </button>
+                                                                </div>
+                                                            </fieldset>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- end of row -->
+            </div>
+
+
+        </div>
+    </div>
+</div>

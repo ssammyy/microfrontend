@@ -631,10 +631,94 @@
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.inspectionInvestigationDto?.methodologyEmployed}}</span></p>
                                                 <br/>
-                                                <b class="text-secondary">Findings</b>
-                                                <p class="list-paragraph-accordion"><span>
-                                                    {{workPlanInspection?.inspectionInvestigationDto?.findings}}</span></p>
-                                                <br/>
+                                                <h4 class="mb-3" style="color: #0066B1">Outlets Visited and Summary of Findings</h4>
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Data Collection Form reference</th>
+                                                        <th>Outlet details</th>
+                                                        <th>Summary of findings</th>
+                                                        <th>Remarks</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
+                                                        <td>{{i+1}}</td>
+                                                        <td>{{app.referenceNumber}}</td>
+                                                        <td>{{app.outletName}}</td>
+                                                        <td>{{app.summaryFindingsActionsTaken}}</td>
+                                                        <td>{{app.remarks}}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <br>
+
+                                                <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>S/NO.</th>
+                                                            <th>Name of outlet</th>
+                                                            <th>PRODUCT NAME</th>
+                                                            <th>PRODUCT BRAND</th>
+                                                            <th>Name & Address of Manufacturer</th>
+                                                            <th>Country of Origin</th>
+                                                            <th>Expiry Date</th>
+                                                            <th>Batch Number</th>
+                                                            <th>Permit No. / UCR Code</th>
+                                                            <th>Sampling Officer</th>
+                                                            <th>Date COLLECTED</th>
+                                                            <th>Date Submitted</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
+                                                            <td>{{app.fileRefNumber}}</td>
+                                                            <td></td>
+                                                            <td>{{app.nameProduct}}</td>
+                                                            <td>{{app.lbIdTradeMark}}</td>
+                                                            <td>{{app.address}}</td>
+                                                            <td></td>
+                                                            <td>{{app.lbIdExpiryDate}}</td>
+                                                            <td>{{app.lbIdBatchNo}}</td>
+                                                            <td></td>
+                                                            <td>{{app.sendersName}}</td>
+                                                            <td>{{app.sampleCollectionDate}}</td>
+                                                            <td>{{app.sendersDate}}</td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <br>
+                                                <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
+
+                                                <table class="table table-striped table-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>MARKET TOWN CENTER</th>
+                                                        <th>NAME OF OUTLET</th>
+                                                        <th>NAME OF SEIZING OFFICER</th>
+                                                        <th>VIEW ALL RECORDS</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let app of workPlanInspection?.seizureDeclarationDto">
+                                                        <td>{{app.marketTownCenter}}</td>
+                                                        <td>{{app.nameOfOutlet}}</td>
+                                                        <td>{{app.nameSeizingOfficer}}</td>
+                                                        <td><button (click)="viewSeizedDetails(app)"
+                                                                    type="button"
+                                                                    class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">VIEW</span>
+                                                        </button></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <br>
                                                 <b class="text-secondary">Conclusion</b>
                                                 <p class="list-paragraph-accordion"><span>
                                                     {{workPlanInspection?.inspectionInvestigationDto?.conclusion}}</span></p>
@@ -707,6 +791,16 @@
                                         <ng-template mat-tab-label>
                                             DATA REPORT
                                         </ng-template>
+                                        <div *ngIf="workPlanInspection?.dataReportDto?.length!=0" class="row d-flex align-items-center justify-content-end flex-row" style="padding-top: 10px;">
+                                            <div style="margin-right: 7%;">
+                                                <label><b>Average compliance: </b></label>
+                                            </div>
+                                            <div style="margin-right: 20%;">
+                                                <label><b>{{averageCompliance}}</b></label>
+                                            </div>
+
+                                        </div>
+
                                         <div class="form-row">
                                             <div *ngIf="workPlanInspection?.dataReportStatus && workPlanInspection?.onsiteEndStatus" class="table-striped table-condensed table-responsive">
                                                 <ng2-smart-table [settings]="settingsDataReport"
@@ -2744,13 +2838,13 @@
                     <form [formGroup]="dataReportForm">
                         <div>
                             <h4 class="mb-3" style="color: #0066B1">Data Report Details</h4>
-                            <div class="row" *ngIf="workPlanInspection.dataReportDto.length!=0">
+                            <div class="row" *ngIf="workPlanInspection?.dataReportDto.length!=0 && addProductsStatus">
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the Data report to clone</b></label>
                                         <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input" #standardsInput>
                                         <datalist id="dataReportValueToCloneList">
-                                            <option *ngFor="let app of workPlanInspection.dataReportDto" [value]="app.id">{{app.outletName}}</option>
+                                            <option *ngFor="let app of workPlanInspection?.dataReportDto" [value]="app.id">{{app.outletName}}</option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -2796,7 +2890,7 @@
                                         <input [class.is-invalid]="formDataReportForm.inspectionDate.invalid && formDataReportForm.inspectionDate.errors"
                                                class="form-control two-column-input"
                                                formControlName="inspectionDate"
-                                               name="inspectionDate" required type="date">
+                                               name="inspectionDate" type="date">
                                         <div *ngIf="submitted && formDataReportForm.inspectionDate.errors" class="invalid-feedback">
                                             <div *ngIf="formDataReportForm.inspectionDate.errors.required">Date of inspection is
                                                 required
@@ -3270,37 +3364,37 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="!addProductsStatus">
-                        <div class="material-datatables">
-                            <div class="table-responsive">
-                                <table id="datatablesUploads"
-                                       class="table table-striped table-bordered table-hover"
-                                >
-                                    <thead>
-                                    <tr>
-                                        <th>File NAME</th>
-                                        <th>DOCUMENT TYPE</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr *ngFor="let r of dataSaveDataReportUploadsList; let i=index">
-                                        <td>{{r.documentType}}</td>
-                                        <td>{{r.fileName}}</td>
-                                        <td>
-                                            <button (click)="viewUploadsFileSaved(r)"
-                                                    type="button"
-                                                    class="btn btn-warning btn-sm">
-                                                <span class=""
-                                                      aria-hidden="true">view</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div *ngIf="!addProductsStatus && dataSaveDataReportUploadsList.length > 0">-->
+<!--                        <div class="material-datatables">-->
+<!--                            <div class="table-responsive">-->
+<!--                                <table id="datatablesUploads"-->
+<!--                                       class="table table-striped table-bordered table-hover"-->
+<!--                                >-->
+<!--                                    <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>File NAME</th>-->
+<!--                                        <th>DOCUMENT TYPE</th>-->
+<!--                                        <th>Action</th>-->
+<!--                                    </tr>-->
+<!--                                    </thead>-->
+<!--                                    <tbody>-->
+<!--                                    <tr *ngFor="let r of dataSaveDataReportUploadsList; let i=index">-->
+<!--                                        <td>{{r.documentType}}</td>-->
+<!--                                        <td>{{r.fileName}}</td>-->
+<!--                                        <td>-->
+<!--                                            <button (click)="viewUploadsFileSaved(r)"-->
+<!--                                                    type="button"-->
+<!--                                                    class="btn btn-warning btn-sm">-->
+<!--                                                <span class=""-->
+<!--                                                      aria-hidden="true">view</span>-->
+<!--                                            </button>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    </tbody>-->
+<!--                                </table>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
                     <div  *ngIf="addProductsStatus" class="row" >
                         <div class="col">
@@ -3312,7 +3406,24 @@
                                 </form>
                             </div>
                         </div>
-
+                    </div>
+                    <div *ngIf="!addProductsStatus && arrayOfUploadedDataReportFiles.length > 0" class="row">
+                        <label for="files"><b>Uploaded Data Report Files</b></label>
+                        <ul class="w-list-unstyled">
+                            <div *ngFor="let dataReportFile of arrayOfUploadedDataReportFiles">
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">{{dataReportFile.name}}</div>
+                                    <div class="list-text-accordion" style="text-align: center">
+                                        <a
+                                                target="_blank"
+                                                class="btn btn-info"
+                                                style="color: white"
+                                                (click)="viewFile(dataReportFile)"
+                                        >VIEW</a>
+                                    </div>
+                                </li>
+                            </div>
+                        </ul>
                     </div>
 
 
@@ -3323,7 +3434,7 @@
                         </button>
                         <div *ngIf="addProductsStatus">
                             <button *ngIf="dataReportForm.valid" mat-raised-button   data-dismiss="modal"
-                                    class="btn btn-success" (click)="onClickSaveDataReport()" type="button" >SUBMIT
+                                    class="b    tn btn-success" (click)="onClickSaveDataReport()" type="button" >SUBMIT
                             </button>
                             <button *ngIf="dataReportForm.invalid" mat-raised-button (click)="onClickSaveDataReport()" class="btn btn-success" type="button" >SUBMIT
                             </button>
@@ -3388,6 +3499,538 @@
     </div>
     <!-- End DATA Report Modal -->
 
+
+
+    <!-- INSPECTION AND INVESTIGATION REPORT Modal -->
+    <div class="modal fade" id="investInspectReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">FILL IN THE MS INITIAL REPORT DETAILS</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="investInspectReportForm">
+                        <div >
+
+                            <h4 class="mb-3" style="color: #0066B1">MS INITIAL REPORT DETAILS</h4>
+                            <h5 class="mb-3" style="color: black">Fill in below details</h5>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Report Classification</b> </label>
+                                        <select [class.is-invalid]="formInvestInspectReportForm.reportClassification.invalid && formInvestInspectReportForm.reportClassification.errors"
+                                                class="form-control two-column-input"
+                                                formControlName="reportClassification"
+                                                name="reportClassification" required type="text">
+                                            <option [value]="" selected>Please select One</option>
+                                            <option  [value]="'Top Secret'">Top secret</option>
+                                            <option  [value]="'Secret'">Secret</option>
+                                            <option  [value]="'Confidential'">Confidential</option>
+                                            <option  [value]="'Restricted'">Restricted</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Report reference</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.reportReference.invalid && formInvestInspectReportForm.reportReference.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportReference"
+                                               name="reportReference" required type="text">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.reportReference.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.reportReference.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>To</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.reportTo.invalid && formInvestInspectReportForm.reportTo.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportTo"
+                                               name="reportTo" required type="text">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.reportTo.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.reportTo.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Through</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.reportThrough.invalid && formInvestInspectReportForm.reportThrough.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportThrough"
+                                               name="reportThrough" required type="text">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.reportThrough.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.reportThrough.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>From</b> </label>
+                                        <input class="form-control two-column-input"
+                                               formControlName="reportFrom" ngModel="{{userProfile.fullName}}" disabled
+                                               name="reportFrom" required type="text">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Subject</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.reportSubject.invalid && formInvestInspectReportForm.reportSubject.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportSubject"
+                                               name="reportSubject" required type="text">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.reportSubject.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.reportSubject.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Title</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.reportTitle.invalid && formInvestInspectReportForm.reportTitle.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportTitle"
+                                               name="reportTitle" required type="text">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.reportTitle.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.reportTitle.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Date</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.reportDate.invalid && formInvestInspectReportForm.reportDate.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="reportDate"
+                                               name="reportDate" required type="date">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.reportDate.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.reportDate.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Region</b> </label>
+                                        <input class="form-control two-column-input"
+                                               formControlName="reportRegion" ngModel="{{workPlanInspection?.region}}" disabled
+                                               name="reportRegion" required type="text">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Department</b> </label>
+                                        <input class="form-control two-column-input"
+                                               formControlName="reportDepartment" ngModel="{{workPlanInspection?.complaintDepartment}}" disabled
+                                               name="reportDepartment" required type="text">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Function</b> </label>
+                                        <input
+                                                class="form-control two-column-input"
+                                                formControlName="reportFunction" ngModel="{{workPlanInspection?.divisionId}}" disabled
+                                                name="reportFunction" required type="text">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Background Information</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.backgroundInformation.invalid && formInvestInspectReportForm.backgroundInformation.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="backgroundInformation"
+                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.backgroundInformation.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.backgroundInformation.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Objective of the Investigation</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.objectiveInvestigation.invalid && formInvestInspectReportForm.objectiveInvestigation.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="objectiveInvestigation"
+                                                  name="objectiveInvestigation" required type="text"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.objectiveInvestigation.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.objectiveInvestigation.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Start Date of Investigation/Inspection</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.startDateInvestigationInspection.invalid && formInvestInspectReportForm.startDateInvestigationInspection.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="startDateInvestigationInspection"
+                                               name="startDateInvestigationInspection" required type="date">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.startDateInvestigationInspection.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.startDateInvestigationInspection.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>End Date of Investigation/Inspection</b> </label>
+                                        <input [class.is-invalid]="formInvestInspectReportForm.endDateInvestigationInspection.invalid && formInvestInspectReportForm.endDateInvestigationInspection.errors"
+                                               class="form-control two-column-input"
+                                               formControlName="endDateInvestigationInspection"
+                                               name="endDateInvestigationInspection" required type="date">
+                                        <div *ngIf="submitted && formInvestInspectReportForm.endDateInvestigationInspection.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.endDateInvestigationInspection.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <form [formGroup]="investInspectReportInspectorsForm">
+                                <div >
+                                    <h5 class="mb-3" style="color: #0066B1">KEBS Inspectors Details</h5>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Officer Name</b> </label>
+                                                <input [class.is-invalid]="formInvestInspectReportInspectorsForm.inspectorName.invalid && formInvestInspectReportInspectorsForm.inspectorName.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="inspectorName"
+                                                       name="inspectorName" required type="text">
+                                                <div *ngIf="submitted && formInvestInspectReportInspectorsForm.inspectorName.errors" class="invalid-feedback">
+                                                    <div *ngIf="formInvestInspectReportInspectorsForm.inspectorName.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label><b>Designation</b> </label>
+                                                <input [class.is-invalid]="formInvestInspectReportInspectorsForm.designation.invalid && formInvestInspectReportInspectorsForm.designation.errors"
+                                                       class="form-control two-column-input"
+                                                       formControlName="designation"
+                                                       name="designation" required type="text">
+                                                <div *ngIf="submitted && formInvestInspectReportInspectorsForm.designation.errors" class="invalid-feedback">
+                                                    <div *ngIf="formInvestInspectReportInspectorsForm.designation.errors.required">This field is
+                                                        required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <button *ngIf="investInspectReportInspectorsForm.valid" mat-raised-button
+                                                        class="btn btn-success" (click)="onClickAddDataInspectorOfficer()" type="button" >SAVE OFFICERS
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </form>
+                            <div>
+                                <div class="material-datatables">
+                                    <div class="table-responsive">
+                                        <table id="datatablesInspectors"
+                                               class="table table-striped table-bordered table-hover"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th>Inspector Name</th>
+                                                <!--                                                <th>Institution</th>-->
+                                                <th>Designation</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let r of dataSaveDataInspectorInvestList; let i=index">
+                                                <td>{{r.inspectorName}}</td>
+                                                <!--                                                <td>{{r.institution}}</td>-->
+                                                <td>{{r.designation}}</td>
+                                                <td>
+                                                    <button (click)="removeDataInvestInspectReportInspectors(i)"
+                                                            type="button"
+                                                            class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">Remove</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Methodology Employed</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.methodologyEmployed.invalid && formInvestInspectReportForm.methodologyEmployed.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="methodologyEmployed"
+                                                  name="methodologyEmployed" required type="text"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.methodologyEmployed.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.methodologyEmployed.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <h4 class="mb-3" style="color: #0066B1">Outlets Visited and Summary of Findings</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Data Collection Form reference</th>
+                                    <th>Outlet details</th>
+                                    <th>Summary of findings</th>
+                                    <th>Remarks</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{app.referenceNumber}}</td>
+                                    <td>{{app.outletName}}</td>
+                                    <td>{{app.summaryFindingsActionsTaken}}</td>
+                                    <td>{{app.remarks}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <br>
+
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>S/NO.</th>
+                                        <th>Name of outlet</th>
+                                        <th>PRODUCT NAME</th>
+                                        <th>PRODUCT BRAND</th>
+                                        <th>Name & Address of Manufacturer</th>
+                                        <th>Country of Origin</th>
+                                        <th>Expiry Date</th>
+                                        <th>Batch Number</th>
+                                        <th>Permit No. / UCR Code</th>
+                                        <th>Sampling Officer</th>
+                                        <th>Date COLLECTED</th>
+                                        <th>Date Submitted</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
+                                        <td>{{app.fileRefNumber}}</td>
+                                        <td></td>
+                                        <td>{{app.nameProduct}}</td>
+                                        <td>{{app.lbIdTradeMark}}</td>
+                                        <td>{{app.address}}</td>
+                                        <td></td>
+                                        <td>{{app.lbIdExpiryDate}}</td>
+                                        <td>{{app.lbIdBatchNo}}</td>
+                                        <td></td>
+                                        <td>{{app.sendersName}}</td>
+                                        <td>{{app.sampleCollectionDate}}</td>
+                                        <td>{{app.sendersDate}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
+
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>MARKET TOWN CENTER</th>
+                                    <th>NAME OF OUTLET</th>
+                                    <th>NAME OF SEIZING OFFICER</th>
+                                    <th>VIEW ALL RECORDS</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let app of workPlanInspection?.seizureDeclarationDto">
+                                    <td>{{app.marketTownCenter}}</td>
+                                    <td>{{app.nameOfOutlet}}</td>
+                                    <td>{{app.nameSeizingOfficer}}</td>
+                                    <td><button (click)="viewSeizedDetails(app)"
+                                                type="button"
+                                                class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">VIEW</span>
+                                    </button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <br>
+
+
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>Findings</b> </label>-->
+<!--                                        <textarea [class.is-invalid]="formInvestInspectReportForm.findings.invalid && formInvestInspectReportForm.findings.errors"-->
+<!--                                                  class="form-control two-column-input"-->
+<!--                                                  formControlName="findings"-->
+<!--                                                  name="findings" required type="text"></textarea>-->
+<!--                                        <div *ngIf="submitted && formInvestInspectReportForm.findings.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formInvestInspectReportForm.findings.errors.required">This field is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Conclusion</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.conclusion.invalid && formInvestInspectReportForm.conclusion.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="conclusion"
+                                                  name="conclusion" required type="text"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.conclusion.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.conclusion.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Recommendations</b> </label>
+                                        <textarea [class.is-invalid]="formInvestInspectReportForm.recommendations.invalid && formInvestInspectReportForm.recommendations.errors"
+                                                  class="form-control two-column-input"
+                                                  formControlName="recommendations"
+                                                  name="recommendations" required type="text"></textarea>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.recommendations.errors" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.recommendations.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Status Activity</b></label>
+                                        <select [class.is-invalid]="formInvestInspectReportForm.statusActivity.invalid && formInvestInspectReportForm.statusActivity.errors"
+                                                class="form-control two-column-input"
+                                                formControlName="statusActivity" name="statusActivity" required type="text">
+                                            <option [value]="" selected>Please select One</option>
+                                            <option  [value]="'Progress report (ongoing activity)'">Progress report (ongoing activity)</option>
+                                            <option  [value]="'Final report (completed activity'">Final report (completed activity</option>
+                                        </select>
+                                        <div *ngIf="submitted && formInvestInspectReportForm.statusActivity.errors && formInvestInspectReportForm.statusActivity.invalid" class="invalid-feedback">
+                                            <div *ngIf="formInvestInspectReportForm.statusActivity.errors.required">This field is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button  mat-raised-button type="button" class="btn btn-danger"
+                                 data-dismiss="modal">
+                            Close
+                        </button>
+                        <button *ngIf="investInspectReportForm.valid" mat-raised-button   data-dismiss="modal"
+                                class="btn btn-success" (click)="onClickSaveInvestInspectReport()" type="button" >SUBMIT
+                        </button>
+                        <button *ngIf="investInspectReportForm.invalid" mat-raised-button (click)="onClickSaveInvestInspectReport()" class="btn btn-success" type="button" >SUBMIT
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End INSPECTION AND INVESTIGATION REPORT Modal -->
+
     <!-- SEIZURE Modal -->
     <div class="modal fade" id="seizureDeclarationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
@@ -3401,13 +4044,13 @@
                 </div>
                 <div class="modal-body">
                     <form [formGroup]="seizureForm">
-                        <div class="row" *ngIf="workPlanInspection.seizureDeclarationDto.length!=0">
+                        <div class="row" *ngIf="workPlanInspection?.seizureDeclarationDto.length!=0 && addSeizureProductsStatus">
                             <div class="col">
                                 <div class="form-group">
                                     <label><b>Select the Seizure Form to clone</b></label>
                                     <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" #standardsInput>
                                     <datalist id="seizureFormValueToCloneList">
-                                        <option *ngFor="let app of workPlanInspection.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
+                                        <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
                                     </datalist>
                                 </div>
                             </div>
@@ -3801,536 +4444,6 @@
         </div>
     </div>
     <!-- End SEIZURE Modal -->
-
-    <!-- INSPECTION AND INVESTIGATION REPORT Modal -->
-    <div class="modal fade" id="investInspectReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">FILL IN THE MS INITIAL REPORT DETAILS</h4>
-                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        <i class="material-icons">clear</i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form [formGroup]="investInspectReportForm">
-                        <div >
-
-                            <h4 class="mb-3" style="color: #0066B1">MS INITIAL REPORT DETAILS</h4>
-                            <h5 class="mb-3" style="color: black">Fill in below details</h5>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Report Classification</b> </label>
-                                        <select [class.is-invalid]="formInvestInspectReportForm.reportClassification.invalid && formInvestInspectReportForm.reportClassification.errors"
-                                                class="form-control two-column-input"
-                                                formControlName="reportClassification"
-                                                name="reportClassification" required type="text">
-                                            <option [value]="" selected>Please select One</option>
-                                            <option  [value]="'Top Secret'">Top secret</option>
-                                            <option  [value]="'Secret'">Secret</option>
-                                            <option  [value]="'Confidential'">Confidential</option>
-                                            <option  [value]="'Restricted'">Restricted</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Report reference</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportReference.invalid && formInvestInspectReportForm.reportReference.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportReference"
-                                               name="reportReference" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportReference.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportReference.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>To</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportTo.invalid && formInvestInspectReportForm.reportTo.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportTo"
-                                               name="reportTo" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportTo.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportTo.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Through</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportThrough.invalid && formInvestInspectReportForm.reportThrough.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportThrough"
-                                               name="reportThrough" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportThrough.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportThrough.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>From</b> </label>
-                                        <input class="form-control two-column-input"
-                                               formControlName="reportFrom" ngModel="{{userProfile.fullName}}" disabled
-                                               name="reportFrom" required type="text">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Subject</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportSubject.invalid && formInvestInspectReportForm.reportSubject.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportSubject"
-                                               name="reportSubject" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportSubject.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportSubject.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Title</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportTitle.invalid && formInvestInspectReportForm.reportTitle.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportTitle"
-                                               name="reportTitle" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportTitle.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportTitle.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Date</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportDate.invalid && formInvestInspectReportForm.reportDate.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportDate"
-                                               name="reportDate" required type="date">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportDate.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportDate.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Region</b> </label>
-                                        <input class="form-control two-column-input"
-                                               formControlName="reportRegion" ngModel="{{workPlanInspection?.region}}" disabled
-                                               name="reportRegion" required type="text">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Department</b> </label>
-                                        <input class="form-control two-column-input"
-                                               formControlName="reportDepartment" ngModel="{{workPlanInspection?.complaintDepartment}}" disabled
-                                               name="reportDepartment" required type="text">
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Function</b> </label>
-                                        <input
-                                                class="form-control two-column-input"
-                                                formControlName="reportFunction" ngModel="{{workPlanInspection?.divisionId}}" disabled
-                                                name="reportFunction" required type="text">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Background Information</b> </label>
-                                        <textarea [class.is-invalid]="formInvestInspectReportForm.backgroundInformation.invalid && formInvestInspectReportForm.backgroundInformation.errors"
-                                                  class="form-control two-column-input"
-                                                  formControlName="backgroundInformation"
-                                                  name="backgroundInformation" required type="text" style="resize: vertical;"></textarea>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.backgroundInformation.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.backgroundInformation.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Objective of the Investigation</b> </label>
-                                        <textarea [class.is-invalid]="formInvestInspectReportForm.objectiveInvestigation.invalid && formInvestInspectReportForm.objectiveInvestigation.errors"
-                                                  class="form-control two-column-input"
-                                                  formControlName="objectiveInvestigation"
-                                                  name="objectiveInvestigation" required type="text"></textarea>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.objectiveInvestigation.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.objectiveInvestigation.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Start Date of Investigation/Inspection</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.startDateInvestigationInspection.invalid && formInvestInspectReportForm.startDateInvestigationInspection.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="startDateInvestigationInspection"
-                                               name="startDateInvestigationInspection" required type="date">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.startDateInvestigationInspection.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.startDateInvestigationInspection.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>End Date of Investigation/Inspection</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.endDateInvestigationInspection.invalid && formInvestInspectReportForm.endDateInvestigationInspection.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="endDateInvestigationInspection"
-                                               name="endDateInvestigationInspection" required type="date">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.endDateInvestigationInspection.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.endDateInvestigationInspection.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <form [formGroup]="investInspectReportInspectorsForm">
-                                <div >
-                                    <h5 class="mb-3" style="color: #0066B1">KEBS Inspectors Details</h5>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Officer Name</b> </label>
-                                                <input [class.is-invalid]="formInvestInspectReportInspectorsForm.inspectorName.invalid && formInvestInspectReportInspectorsForm.inspectorName.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="inspectorName"
-                                                       name="inspectorName" required type="text">
-                                                <div *ngIf="submitted && formInvestInspectReportInspectorsForm.inspectorName.errors" class="invalid-feedback">
-                                                    <div *ngIf="formInvestInspectReportInspectorsForm.inspectorName.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <label><b>Designation</b> </label>
-                                                <input [class.is-invalid]="formInvestInspectReportInspectorsForm.designation.invalid && formInvestInspectReportInspectorsForm.designation.errors"
-                                                       class="form-control two-column-input"
-                                                       formControlName="designation"
-                                                       name="designation" required type="text">
-                                                <div *ngIf="submitted && formInvestInspectReportInspectorsForm.designation.errors" class="invalid-feedback">
-                                                    <div *ngIf="formInvestInspectReportInspectorsForm.designation.errors.required">This field is
-                                                        required
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <button *ngIf="investInspectReportInspectorsForm.valid" mat-raised-button
-                                                        class="btn btn-success" (click)="onClickAddDataInspectorOfficer()" type="button" >SAVE OFFICERS
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            </form>
-                            <div>
-                                <div class="material-datatables">
-                                    <div class="table-responsive">
-                                        <table id="datatablesInspectors"
-                                               class="table table-striped table-bordered table-hover"
-                                        >
-                                            <thead>
-                                            <tr>
-                                                <th>Inspector Name</th>
-                                                <!--                                                <th>Institution</th>-->
-                                                <th>Designation</th>
-                                                <th>Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let r of dataSaveDataInspectorInvestList; let i=index">
-                                                <td>{{r.inspectorName}}</td>
-                                                <!--                                                <td>{{r.institution}}</td>-->
-                                                <td>{{r.designation}}</td>
-                                                <td>
-                                                    <button (click)="removeDataInvestInspectReportInspectors(i)"
-                                                            type="button"
-                                                            class="btn btn-warning btn-sm">
-                                                <span class=""
-                                                      aria-hidden="true">Remove</span>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Methodology Employed</b> </label>
-                                        <textarea [class.is-invalid]="formInvestInspectReportForm.methodologyEmployed.invalid && formInvestInspectReportForm.methodologyEmployed.errors"
-                                                  class="form-control two-column-input"
-                                                  formControlName="methodologyEmployed"
-                                                  name="methodologyEmployed" required type="text"></textarea>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.methodologyEmployed.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.methodologyEmployed.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <h4 class="mb-3" style="color: #0066B1">Outlets Visited and Summary of Findings</h4>
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Data Collection Form reference</th>
-                                    <th>Outlet details</th>
-                                    <th>Summary of findings</th>
-                                    <th>Remarks</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr *ngFor="let app of workPlanInspection.dataReportDto; let i=index">
-                                    <td>{{i+1}}</td>
-                                    <td>{{app.referenceNumber}}</td>
-                                    <td>{{app.outletName}}</td>
-                                    <td>{{app.summaryFindingsActionsTaken}}</td>
-                                    <td>{{app.remarks}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                            <br>
-
-                            <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>S/NO.</th>
-                                        <th>Name of outlet</th>
-                                        <th>PRODUCT NAME</th>
-                                        <th>PRODUCT BRAND</th>
-                                        <th>Name & Address of Manufacturer</th>
-                                        <th>Country of Origin</th>
-                                        <th>Expiry Date</th>
-                                        <th>Batch Number</th>
-                                        <th>Permit No. / UCR Code</th>
-                                        <th>Sampling Officer</th>
-                                        <th>Date COLLECTED</th>
-                                        <th>Date Submitted</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr *ngFor="let app of workPlanInspection.sampleSubmitted">
-                                        <td>{{app.fileRefNumber}}</td>
-                                        <td>Outlet A</td>
-                                        <td>{{app.nameProduct}}</td>
-                                        <td>{{app.lbIdTradeMark}}</td>
-                                        <td>{{app.address}}</td>
-                                        <td>USA</td>
-                                        <td>{{app.lbIdExpiryDate}}</td>
-                                        <td>{{app.lbIdBatchNo}}</td>
-                                        <td>Permit123</td>
-                                        <td>{{app.sendersName}}</td>
-                                        <td>{{app.sampleCollectionDate}}</td>
-                                        <td>{{app.sendersDate}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <br>
-                            <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
-
-                            <table class="table table-striped table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>MARKET TOWN CENTER</th>
-                                    <th>NAME OF OUTLET</th>
-                                    <th>NAME OF SEIZING OFFICER</th>
-                                    <th>VIEW ALL RECORDS</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr *ngFor="let app of workPlanInspection.seizureDeclarationDto">
-                                    <td>{{app.marketTownCenter}}</td>
-                                    <td>{{app.nameOfOutlet}}</td>
-                                    <td>{{app.nameSeizingOfficer}}</td>
-                                    <td><button (click)="viewSeizedDetails(app)"
-                                                type="button"
-                                                class="btn btn-warning btn-sm">
-                                                <span class=""
-                                                      aria-hidden="true">VIEW</span>
-                                    </button></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <br>
-
-
-<!--                            <div class="row">-->
-<!--                                <div class="col">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label><b>Findings</b> </label>-->
-<!--                                        <textarea [class.is-invalid]="formInvestInspectReportForm.findings.invalid && formInvestInspectReportForm.findings.errors"-->
-<!--                                                  class="form-control two-column-input"-->
-<!--                                                  formControlName="findings"-->
-<!--                                                  name="findings" required type="text"></textarea>-->
-<!--                                        <div *ngIf="submitted && formInvestInspectReportForm.findings.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formInvestInspectReportForm.findings.errors.required">This field is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-
-<!--                            </div>-->
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Conclusion</b> </label>
-                                        <textarea [class.is-invalid]="formInvestInspectReportForm.conclusion.invalid && formInvestInspectReportForm.conclusion.errors"
-                                                  class="form-control two-column-input"
-                                                  formControlName="conclusion"
-                                                  name="conclusion" required type="text"></textarea>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.conclusion.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.conclusion.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Recommendations</b> </label>
-                                        <textarea [class.is-invalid]="formInvestInspectReportForm.recommendations.invalid && formInvestInspectReportForm.recommendations.errors"
-                                                  class="form-control two-column-input"
-                                                  formControlName="recommendations"
-                                                  name="recommendations" required type="text"></textarea>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.recommendations.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.recommendations.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Status Activity</b></label>
-                                        <select [class.is-invalid]="formInvestInspectReportForm.statusActivity.invalid && formInvestInspectReportForm.statusActivity.errors"
-                                                class="form-control two-column-input"
-                                                formControlName="statusActivity" name="statusActivity" required type="text">
-                                            <option [value]="" selected>Please select One</option>
-                                            <option  [value]="'Progress report (ongoing activity)'">Progress report (ongoing activity)</option>
-                                            <option  [value]="'Final report (completed activity'">Final report (completed activity</option>
-                                        </select>
-                                        <div *ngIf="submitted && formInvestInspectReportForm.statusActivity.errors && formInvestInspectReportForm.statusActivity.invalid" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.statusActivity.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-
-                        </div>
-                    </form>
-
-                    <div class="modal-footer">
-                        <button  mat-raised-button type="button" class="btn btn-danger"
-                                 data-dismiss="modal">
-                            Close
-                        </button>
-                        <button *ngIf="investInspectReportForm.valid" mat-raised-button   data-dismiss="modal"
-                                class="btn btn-success" (click)="onClickSaveInvestInspectReport()" type="button" >SUBMIT
-                        </button>
-                        <button *ngIf="investInspectReportForm.invalid" mat-raised-button (click)="onClickSaveInvestInspectReport()" class="btn btn-success" type="button" >SUBMIT
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End INSPECTION AND INVESTIGATION REPORT Modal -->
 
     <!-- UPDATE ON DATA AND INITIAL REPORT Modal -->
     <div class="modal fade" id="updateFieldDataReportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -5895,13 +6008,13 @@
                 <div class="modal-body">
                     <form [formGroup]="sampleSubmitForm">
                         <div >
-                            <div class="row" *ngIf="workPlanInspection.sampleSubmitted.length!=0">
+                            <div class="row" *ngIf="workPlanInspection?.sampleSubmitted.length!=0">
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the SSF to clone</b></label>
                                         <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" #standardsInput>
                                         <datalist id="SSFValueToCloneList">
-                                            <option *ngFor="let app of workPlanInspection.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
+                                            <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -5914,7 +6027,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <br>
+                            <div class="row" *ngIf="workPlanInspection.dataReportDto.length!=0">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label><b>Select the Data Report</b></label>
+                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" #standardsInput>
+                                        <datalist id="availableDataReports">
+                                            <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
+                                        </datalist>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <button  mat-raised-button
+                                                 class="btn btn-outline-success" type="button" >SELECT DATA REPORT
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <h5 class="mb-3" style="color: #0066B1">Sample Submission Details</h5>
                             <div class="row">
                                 <div class="col">
@@ -7497,23 +7628,24 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
-                                        <label for="failedParameters"><b>Failed Parameters</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g sugar,salt" formControlName="failedParameters" name="failedParameters"
-                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.failedParameters.invalid
+                                        <div >
+                                            <label for="failedParameters"><b>Failed Parameters</b></label>
+                                            <mat-form-field class="example-full-width">
+                                                <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g moisture, pH etc" formControlName="failedParameters" name="failedParameters"
+                                                       [class.is-invalid]="formSSFClientEmailNotificationForm.failedParameters.invalid
                                                     && formSSFClientEmailNotificationForm.failedParameters.touched">
-                                        </mat-form-field>
+                                            </mat-form-field>
+                                        </div>
+
                                         <label for="outLetEmail"><b>OutLet Email</b></label>
                                         <mat-form-field class="example-full-width">
                                             <input id="outLetEmail" matInput type="text" placeholder="Please Enter outLet Email" formControlName="outLetEmail" name="outLetEmail"
-                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.outLetEmail.invalid
-                                                    && formSSFClientEmailNotificationForm.outLetEmail.touched">
+                                                   >
                                         </mat-form-field>
-                                        <label for="manufactureEmail"><b>Manufacture Email</b></label>
+                                        <label for="manufactureEmail"><b>Manufacturer's Email</b></label>
                                         <mat-form-field class="example-full-width">
-                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacture Email" formControlName="manufactureEmail" name="manufactureEmail"
-                                                   [class.is-invalid]="formSSFClientEmailNotificationForm.manufactureEmail.invalid
-                                                    && formSSFClientEmailNotificationForm.manufactureEmail.touched">
+                                            <input id="manufactureEmail" matInput type="text" placeholder="Please Enter manufacturer's Email" formControlName="manufactureEmail" name="manufactureEmail"
+                                                   >
                                         </mat-form-field>
                                         <label for="complainantEmail"><b>Complainant Email</b></label>
                                         <mat-form-field class="example-full-width">

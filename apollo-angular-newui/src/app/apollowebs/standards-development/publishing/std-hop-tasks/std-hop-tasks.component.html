@@ -271,7 +271,6 @@
                                     <td>{{isCheckRequirement.standardType}}</td>
                                     <td>{{isCheckRequirement.comStdNumber}}</td>
                                     <td>{{isCheckRequirement.uploadDate}}</td>
-                                    <td *ngIf="isCheckRequirement.status==0"><a  (click)="onOpenModals(isCheckRequirement,'draftStandardForEditing',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Submit Draft Standard For Editing</a></td>
                                     <td *ngIf="isCheckRequirement.status==1"><a  (click)="onOpenModals(isCheckRequirement,'checkRequirementsMet',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Check Requirements</a></td>
                                     <td *ngIf="isCheckRequirement.status==3"><a  (click)="onOpenModals(isCheckRequirement,'draftStandardEditing',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Edit Draft</a></td>
                                     <td *ngIf="isCheckRequirement.status==4"><a  (click)="onOpenModals(isCheckRequirement,'standardDrafting',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Draughting</a></td>
@@ -402,12 +401,12 @@
 
                                                                     </div>
                                                                     <div class="form-group col-12">
-                                                                        <label><b>Company Standard Draft</b></label>
+                                                                        <label><b>Standard Draft</b></label>
                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                             <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                                 <div>
                                                                                     <div class="d-flex w-100 align-items-center" >
-                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
                                                                                     </div>
                                                                                 </div>
                                                                                 <button mat-raised-button type="button" data-toggle="modal"
@@ -601,12 +600,12 @@
                                                                 </a>
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label><b>Company Standard Draft</b></label>
+                                                                <label><b>Standard Draft</b></label>
                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                     <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                         <div>
                                                                             <div class="d-flex w-100 align-items-center" >
-                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
                                                                             </div>
                                                                         </div>
                                                                         <button mat-raised-button type="button" data-toggle="modal"
@@ -779,12 +778,12 @@
                                                                 </a>
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label><b>Company Standard Draft</b></label>
+                                                                <label><b>Standard Draft</b></label>
                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                     <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                         <div>
                                                                             <div class="d-flex w-100 align-items-center" >
-                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
                                                                             </div>
                                                                         </div>
                                                                         <button mat-raised-button type="button" data-toggle="modal"
@@ -1008,12 +1007,12 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group col-12">
-                                                                    <label><b>Company Standard Draft</b></label>
+                                                                    <label><b>Standard Draft</b></label>
                                                                     <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                         <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                             <div>
                                                                                 <div class="d-flex w-100 align-items-center" >
-                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                                    <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
                                                                                 </div>
                                                                             </div>
                                                                             <button mat-raised-button type="button" data-toggle="modal"
@@ -1208,12 +1207,12 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group col-12">
-                                                                        <label><b>Company Standard Draft</b></label>
+                                                                        <label><b>Standard Draft</b></label>
                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                             <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                                 <div>
                                                                                     <div class="d-flex w-100 align-items-center" >
-                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                                        <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
                                                                                     </div>
                                                                                 </div>
                                                                                 <button mat-raised-button type="button" data-toggle="modal"
@@ -1402,12 +1401,12 @@
                                                                 </a>
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label><b>Company Standard Draft</b></label>
+                                                                <label><b>Standard Draft</b></label>
                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                     <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                         <div>
                                                                             <div class="d-flex w-100 align-items-center" >
-                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
                                                                             </div>
                                                                         </div>
                                                                         <button mat-raised-button type="button" data-toggle="modal"
@@ -1616,12 +1615,12 @@
                                                                 </div>
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label><b>Company Standard Draft</b></label>
+                                                                <label><b>Standard Draft</b></label>
                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                     <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                         <div>
                                                                             <div class="d-flex w-100 align-items-center" >
-                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
                                                                             </div>
                                                                         </div>
                                                                         <button mat-raised-button type="button" data-toggle="modal"
@@ -1681,12 +1680,12 @@
                                                                 </a>
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label><b>Company Standard Draft</b></label>
+                                                                <label><b>Standard Draft</b></label>
                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                     <div class="d-flex w-100 justify-content-between" *ngFor="let documentDTO of documentDTOs let d=index">
                                                                         <div>
                                                                             <div class="d-flex w-100 align-items-center" >
-                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Company Drafts Version- {{d+1}} </b></h5>
+                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Standard Drafts Version- {{d+1}} </b></h5>
                                                                             </div>
                                                                         </div>
                                                                         <button mat-raised-button type="button" data-toggle="modal"

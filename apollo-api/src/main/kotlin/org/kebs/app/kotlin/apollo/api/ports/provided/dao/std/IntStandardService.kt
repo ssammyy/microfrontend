@@ -227,43 +227,44 @@ class IntStandardService(
     }
 
     //Submit Adoption Proposal comments
-    fun submitDraftComments(comDraftComments: ComDraftComments){
+    fun submitDraftComments(comDraft: List<ComDraftCommentDto>){
         val variables: MutableMap<String, Any> = HashMap()
-        comDraftComments.uploadDate=comDraftComments.uploadDate
-        comDraftComments.emailOfRespondent=comDraftComments.emailOfRespondent
-        comDraftComments.phoneOfRespondent=comDraftComments.phoneOfRespondent
-        comDraftComments.observation=comDraftComments.observation
-        comDraftComments.draftComment=comDraftComments.draftComment
-        comDraftComments.commentTitle=comDraftComments.commentTitle
-        comDraftComments.commentDocumentType=comDraftComments.commentDocumentType
-        comDraftComments.comClause=comDraftComments.comClause
-        comDraftComments.comParagraph=comDraftComments.comParagraph
-        comDraftComments.typeOfComment=comDraftComments.typeOfComment
-        comDraftComments.proposedChange=comDraftComments.proposedChange
-        comDraftComments.requestID=comDraftComments.requestID
-        comDraftComments.draftID=comDraftComments.draftID
-        comDraftComments.recommendations=comDraftComments.recommendations
-        comDraftComments.nameOfRespondent=comDraftComments.nameOfRespondent
-        comDraftComments.positionOfRespondent=comDraftComments.positionOfRespondent
-        comDraftComments.nameOfOrganization=comDraftComments.nameOfOrganization
-        comDraftComments.adoptStandard=comDraftComments.adoptStandard
-        comDraftComments.adoptDraft=comDraftComments.adoptDraft
-        comDraftComments.reason=comDraftComments.reason
-        comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
-        comStandardDraftCommentsRepository.save(comDraftComments)
+        var  comDraftCommentsSaved = ComDraftComments();
+        comDraft.forEach { com->
+           val  comDraftComments = ComDraftComments();
+            comDraftComments.uploadDate=com.uploadDate
+            comDraftComments.emailOfRespondent=com.emailOfRespondent
+            comDraftComments.phoneOfRespondent=com.phoneOfRespondent
+            comDraftComments.observation=com.observation
+            comDraftComments.draftComment=com.draftComment
+            comDraftComments.commentTitle=com.commentTitle
+            comDraftComments.commentDocumentType=com.commentDocumentType
+            comDraftComments.comClause=com.comClause
+            comDraftComments.comParagraph=com.comParagraph
+            comDraftComments.typeOfComment=com.typeOfComment
+            comDraftComments.proposedChange=com.proposedChange
+            comDraftComments.requestID=com.requestID
+            comDraftComments.draftID=com.draftID
+            comDraftComments.recommendations=com.recommendations
+            comDraftComments.nameOfRespondent=com.nameOfRespondent
+            comDraftComments.positionOfRespondent=com.positionOfRespondent
+            comDraftComments.nameOfOrganization=com.nameOfOrganization
+            comDraftComments.adoptStandard=com.adoptStandard
+            comDraftComments.adoptDraft=com.adoptDraft
+            comDraftComments.reason=com.reason
+            comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
+            comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
 
-        val commentNumber=comStdDraftRepository.getISDraftCommentCount(comDraftComments.draftID)
+            val commentNumber=comStdDraftRepository.getISDraftCommentCount(com.draftID)
+            comStdDraftRepository.findByIdOrNull(com.draftID)?.let { comStdDraft ->
+                with(comStdDraft) {
+                    commentCount= commentNumber+1
 
+                }
+                comStdDraftRepository.save(comStdDraft)
+            }?: throw Exception("REQUEST NOT FOUND")
 
-
-        comStdDraftRepository.findByIdOrNull(comDraftComments.draftID)?.let { comStdDraft ->
-            with(comStdDraft) {
-                commentCount= commentNumber+1
-
-            }
-            comStdDraftRepository.save(comStdDraft)
-        }?: throw Exception("REQUEST NOT FOUND")
-
+        }
 
         println("Comment Submitted")
     }

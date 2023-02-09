@@ -212,6 +212,7 @@ class QaInvoiceCalculationDaoServices(
         val totalAmountTaxPayable = totalAmountPayable.multiply(permitType.taxRate)
 
         with(invoiceMaster) {
+            varField10 = 1.toString()
             paymentStatus = 0
             taxAmount = totalAmountTaxPayable
             subTotalBeforeTax = totalAmountPayable

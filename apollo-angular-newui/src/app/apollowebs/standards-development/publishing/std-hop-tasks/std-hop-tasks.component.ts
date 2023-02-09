@@ -824,7 +824,7 @@ export class StdHopTasksComponent implements OnInit {
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Company Standard Draft Uploaded',
+                        html:'Standard Draft Uploaded',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -854,7 +854,7 @@ export class StdHopTasksComponent implements OnInit {
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Company Standard Draft Uploaded',
+                        html:'Standard Draft Uploaded',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -884,7 +884,7 @@ export class StdHopTasksComponent implements OnInit {
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Company Standard Draft Uploaded',
+                        html:'Standard Draft Uploaded',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -914,7 +914,7 @@ export class StdHopTasksComponent implements OnInit {
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Company Standard Draft Uploaded',
+                        html:'Standard Draft Uploaded',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -944,7 +944,7 @@ export class StdHopTasksComponent implements OnInit {
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Company Standard Uploaded',
+                        html:'Standard Uploaded',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -1116,5 +1116,7 @@ export class StdHopTasksComponent implements OnInit {
         );
         this.hideModalEditedDraft();
     }
+
+
 
 }

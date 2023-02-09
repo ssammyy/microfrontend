@@ -706,6 +706,17 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?
 
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10(
+        userId: Long,
+        paymentStatus: Int,
+        varField10: String
+    ): List<QaInvoiceMasterDetailsEntity>?
+
+//    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10IsNull(
+//        userId: Long,
+//        paymentStatus: Int
+//    ): List<QaInvoiceMasterDetailsEntity>?
+
     @Query(
         "SELECT a.* FROM  DAT_KEBS_QA_INVOICE_MASTER_DETAILS a\n" +
                 " JOIN DAT_KEBS_PERMIT_TRANSACTION b ON b.ID = a.PERMIT_ID\n" +
@@ -726,6 +737,7 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
     fun findAllByUserIdAndPaymentStatusAndReceiptNoIsNull(userId: Long,paymentStatus: Int): List<QaInvoiceMasterDetailsEntity>?
 
     fun findAllByUserIdAndVarField1IsNull(userId: Long): List<QaInvoiceMasterDetailsEntity>?
+
     fun findByPermitRefNumberAndUserIdAndPermitId(
         permitRefNumber: String,
         userId: Long,
@@ -892,6 +904,14 @@ interface IQaInspectionOpcEntityRepository : HazelcastRepository<QaInspectionOpc
     fun findByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionOpcEntity>?
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionOpcEntity>?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionOpcEntity>?
+}
+@Repository
+interface IQaInspectionProductLabelEntityRepository : HazelcastRepository<QaInspectionProductLabelEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaInspectionProductLabelEntity?
+    fun findByPermitId(permitId: Long): List<QaInspectionProductLabelEntity>?
+    fun findByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
+    fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionProductLabelEntity>?
+    fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionProductLabelEntity>?
 }
 
 @Repository

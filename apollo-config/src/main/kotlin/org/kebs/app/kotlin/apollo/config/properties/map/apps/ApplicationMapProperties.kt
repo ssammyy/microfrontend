@@ -314,6 +314,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_qao_assigning}")
     val mapQaStatusPQAOAssign: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.difference_generation}")
+    val mapQaStatusPManufactureGenerateDifference: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_scheduling_visit}")
     val mapQaStatusPShedulvisit: Long = 0L
 
