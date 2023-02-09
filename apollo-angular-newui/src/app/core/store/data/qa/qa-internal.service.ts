@@ -67,7 +67,7 @@ export class QaInternalService {
     }
 
     public saveInspectionReportTechnicalDetails(permitId: string, data: TechnicalDetailsDto): Observable<TechnicalDetailsDto> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA1);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.INSPECTION_CHECKLIST);
         const params = new HttpParams()
             .set('permitId', permitId);
         return this.http.post<TechnicalDetailsDto>(url, data, {params}).pipe(
@@ -82,7 +82,7 @@ export class QaInternalService {
     }
 
     public updateInspectionReportTechnicalDetails(inspectionReportId: string, data: TechnicalDetailsDto): Observable<TechnicalDetailsDto> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_UPDATE_STA1);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.INSPECTION_CHECKLIST);
         const params = new HttpParams()
             .set('inspectionReportId', inspectionReportId);
         return this.http.put<TechnicalDetailsDto>(url, data, {params}).pipe(
