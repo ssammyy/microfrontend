@@ -1220,5 +1220,18 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     }
+    generateInspectionReport(permitId:string) {
+
+        var text = permitId;
+        var key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        console.log('encrypted', encrypted);
+        this.router.navigate(['/new-inspection-report',encrypted])
+
+
+    }
 
 }

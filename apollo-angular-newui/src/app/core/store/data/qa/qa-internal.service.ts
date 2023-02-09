@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
-import {FirmTypeEntityDto, MyTasksPermitEntityDto, PermitEntityDto, STA1} from "./qa.model";
+import {InspectionReportProcessStepDto, PermitProcessStepDto, TechnicalDetailsDto} from "./qa.model";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {formatDate} from "@angular/common";
@@ -13,6 +13,7 @@ import {ApiResponseModel} from "../ms/ms.model";
 export class QaInternalService {
     dateFormat = "yyyy-MM-dd";
     language = "en";
+
     constructor(private http: HttpClient) {
     }
 
@@ -34,6 +35,7 @@ export class QaInternalService {
             }),
         );
     }
+
     public loadPermitDetail(permitID: number): Observable<ApiResponseModel> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_PERMIT_DETAIL);
         const params = new HttpParams()
@@ -47,7 +49,6 @@ export class QaInternalService {
             }),
         );
     }
-
 
 
     public submitQaMCompleteness(permitId: string, data: any): Observable<any> {
@@ -64,4 +65,48 @@ export class QaInternalService {
             }),
         );
     }
+
+    public saveInspectionReportTechnicalDetails(permitId: string, data: TechnicalDetailsDto): Observable<TechnicalDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA1);
+        const params = new HttpParams()
+            .set('permitId', permitId);
+        return this.http.post<TechnicalDetailsDto>(url, data, {params}).pipe(
+            map(function (response: TechnicalDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public updateInspectionReportTechnicalDetails(inspectionReportId: string, data: TechnicalDetailsDto): Observable<TechnicalDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_UPDATE_STA1);
+        const params = new HttpParams()
+            .set('inspectionReportId', inspectionReportId);
+        return this.http.put<TechnicalDetailsDto>(url, data, {params}).pipe(
+            map(function (response: TechnicalDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public saveInspectionReportProcessStep(data: InspectionReportProcessStepDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_PROCESS_STEP);
+        return this.http.post<any>(url, data).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
 }

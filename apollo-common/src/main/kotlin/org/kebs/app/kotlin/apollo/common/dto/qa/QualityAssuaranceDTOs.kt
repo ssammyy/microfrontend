@@ -798,6 +798,7 @@ data class PermitDetailsDto(
     var assignOfficerStatus: Boolean? = null,
     var assignOfficerID: Long? = null,
     var permitGenerateDifference: Boolean? = null,
+    var inspectionReportGenerated: Boolean? = null,
     var companyId: Long? = null,
     var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
     var ssfCompletedStatus: Boolean? = null,
