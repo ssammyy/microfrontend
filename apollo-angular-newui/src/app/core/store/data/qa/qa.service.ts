@@ -355,6 +355,24 @@ export class QaService {
         );
     }
 
+    public loadFileDetailsLabResultsPDF(fileName: string, bsNumber: string): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.VIEW_PDF_LAB_RESULT);
+        const params = new HttpParams()
+            .set('fileName', fileName)
+            .set('bsNumber', bsNumber);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
 
     // tslint:disable-next-line:max-line-length
     public qaUpdateFirmType(data: CompanyTurnOverUpdateDto): Observable<any> {

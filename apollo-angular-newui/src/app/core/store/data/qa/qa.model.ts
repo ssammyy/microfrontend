@@ -1,5 +1,6 @@
 import {SectionsEntityDto, StandardsDto} from '../master/master.model';
 import {UserEntityDto} from '../users';
+import {MSSSFLabResultsDto} from '../ms/ms.model';
 
 export class Qa {
 }
@@ -299,6 +300,7 @@ export class PermitEntityDetails {
     companyId: number;
     factoryInspectionReportApprovedRejectedStatus: boolean;
     ssfCompletedStatus: boolean;
+    compliantStatus: boolean;
 }
 
 
@@ -409,6 +411,7 @@ export class AllPermitDetailsDto {
     sectionList: SectionsEntityDto[];
     standardsList: StandardsDto[];
     ssfListDetails: SSFDetailsDto[];
+    sampleLabResults: MSSSFLabResultsDto[];
 }
 
 

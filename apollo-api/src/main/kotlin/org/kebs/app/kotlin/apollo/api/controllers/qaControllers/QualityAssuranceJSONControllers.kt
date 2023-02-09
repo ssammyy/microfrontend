@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.ms.DataReportDto
@@ -48,6 +49,7 @@ class QualityAssuranceJSONControllers(
     private val resourceLoader: ResourceLoader,
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
+    private val limsServices: LimsServices,
     private val usersSignatureRepository: UserSignatureRepository
 
 ) {
@@ -326,6 +328,28 @@ class QualityAssuranceJSONControllers(
         } catch (error: Exception) {
             return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
         }
+
+    }
+
+    @GetMapping("/view/attached-lab-pdf")
+    fun downloadFileLabResultsDocument(
+        response: HttpServletResponse,
+        @RequestParam("fileName") fileName: String,
+        @RequestParam("bsNumber") bsNumber: String
+    ) {
+        val file = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
+        //            val targetFile = File(Files.createTempDir(), fileName)
+//            targetFile.deleteOnExit()
+        response.contentType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(file.name)
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${file.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(file.readBytes())
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
     }
 

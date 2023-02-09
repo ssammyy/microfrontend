@@ -875,7 +875,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitAddSSFDetails(
         permitID: Long,
@@ -5330,6 +5330,7 @@ class QADaoServices(
             companyId = companyProfile?.id
             factoryInspectionReportApprovedRejectedStatus = permit.factoryInspectionReportApprovedRejectedStatus == 1
             ssfCompletedStatus = permit.ssfCompletedStatus == 1
+            compliantStatus = permit.compliantStatus == 1
         }
         return p
     }
