@@ -107,6 +107,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   totalCount = 12;
 
   totalCompliantValue = 0;
+  averageCompliance: number = 0;
 
   addResourceRequiredForm!: FormGroup;
 
@@ -223,6 +224,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   userProfile: LoggedInUser;
   blob: Blob;
   uploadedFilesDataReport: FileList;
+  arrayOfUploadedDataReportFiles: File[] = [];
   uploadedFilesOnly: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
@@ -489,6 +491,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         title: 'VERSION',
         type: 'number',
         filter: false,
+        sort: true,
+        sortDirection: 'desc'
       },
       createdBy: {
         title: 'CREATED BY',
@@ -931,6 +935,8 @@ export class WorkPlanDetailsComponent implements OnInit {
         title: 'VERSION NUMBER',
         type: 'string',
         filter: false,
+        sort: true,
+        sortDirection: 'desc'
       },
       createdBy: {
         title: 'CREATED BY',
@@ -1682,6 +1688,10 @@ export class WorkPlanDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.currentDateDetails = new Date();
 
+    if(this.workPlanInspection?.dataReportDto?.length!=0){
+      this.calculateAverageCompliance();
+    }
+
     console.log('currentdate' + this.currentDateDetails);
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
@@ -1708,8 +1718,8 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.ssfClientEmailNotificationForm = this.formBuilder.group({
       ssfID: null,
       failedParameters: ['', Validators.required],
-      outLetEmail: ['', Validators.required],
-      manufactureEmail: ['', Validators.required],
+      outLetEmail: null,
+      manufactureEmail: null,
       complainantEmail: null,
       remarks: null,
     });
@@ -1768,7 +1778,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       id: null,
       dataReportValueToClone: null,
       referenceNumber: ['', Validators.required],
-      // inspectionDate: ['', Validators.required],
+      inspectionDate: ['', Validators.required],
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
       department: ['', Validators.required],
@@ -1898,6 +1908,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.sampleSubmitForm = this.formBuilder.group({
       valueToClone: null,
       id: null,
+      dataReportSelected: null,
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: null,
@@ -2343,7 +2354,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   get formChargeSheetForm(): any {
-    return this.chargeSheetForm.controls;
+    return this.chargeSheetForm?.controls;
   }
 
   get formInvestInspectReportForm(): any {
@@ -2538,7 +2549,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-
+    this.addProductsStatus = true;
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
@@ -2635,7 +2646,6 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   updatePreliminaryReportHOFHODIO() {
     if (this.workPlanInspection?.msPreliminaryReportStatus) {
-      // tslint:disable-next-line:max-line-length
       this.selectedPreliminaryReportDetails = this.workPlanInspection.preliminaryReportListDto.find(pr => pr.id === this.workPlanInspection.latestPreliminaryReport);
       this.investInspectReportForm.patchValue(this.selectedPreliminaryReportDetails);
       this.dataSaveDataInspectorInvestList = [];
@@ -4751,6 +4761,11 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveDataReport() {
+    if (this.uploadedFilesDataReport) {
+      for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {
+        this.arrayOfUploadedDataReportFiles.push(this.uploadedFilesDataReport[i]);
+      }
+    }
     this.submitted = true;
     if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -4766,7 +4781,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   saveDataReport() {
     if (this.dataReportForm.valid && this.dataSaveDataReportParamList.length !== 0) {
       this.SpinnerService.show();
-      const file = this.uploadedFilesDataReport;
+
       this.dataSaveDataReport = {...this.dataSaveDataReport, ...this.dataReportForm.value};
       this.dataSaveDataReport.productsList = this.dataSaveDataReportParamList;
       const formData = new FormData();
@@ -4774,9 +4789,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
       formData.append('docTypeName', 'DATA_REPORT_UPLOAD');
       formData.append('data', JSON.stringify(this.dataSaveDataReport));
-      for (let i = 0; i < file.length; i++) {
-        console.log(file[i]);
-        formData.append('docFile', file[i], file[i].name);
+      if(this.uploadedFilesDataReport.length > 0 ){
+        const file = this.uploadedFilesDataReport;
+        for (let i = 0; i < file.length; i++) {
+          console.log(file[i]);
+          formData.append('docFile', file[i], file[i].name);
+        }
       }
 
       this.msService.msWorkPlanScheduleSaveDataReport(formData).subscribe(
@@ -5342,5 +5360,34 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
     this.seizureForm.enable();
     this.addLabParamStatus = true;
+  }
+
+  calculateAverageCompliance(){
+    console.log("Function called");
+    let dataReportData = this.workPlanInspection?.dataReportDto;
+    let sumOfCompliance = 0;
+    for (let i=1; i<dataReportData?.length; i++){
+      sumOfCompliance += dataReportData[i].totalComplianceScore;
+    }
+    this.averageCompliance = sumOfCompliance/dataReportData?.length;
+    if (isNaN(this.averageCompliance)){
+      console.log("The average compliance is nan" + this.averageCompliance);
+    }
+  }
+
+  viewFile(fileUploaded: File) {
+    this.SpinnerService.hide();
+    const blob = new Blob([fileUploaded.slice()], {type: fileUploaded.type});
+
+    // tslint:disable-next-line:prefer-const
+    let downloadURL = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadURL;
+    link.download = fileUploaded.name;
+    link.click();
+  }
+
+  onSelectedDataReport(){
+    const selectedDataReport = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.sampleSubmitForm?.get('dataReportSelected')?.value);
   }
 }

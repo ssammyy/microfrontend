@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
 import java.sql.Timestamp
-import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -47,11 +46,11 @@ class QaInspectionTechnicalEntity : Serializable {
     var handlingComplaintsRemarks: String? = null
 
 
-    @Column(name = "QUALITY_CONTROL_PERSONNEL")
+    @Column(name = "QUALITY_CONTROL_PERSONNEL_QUALIFICATIONS")
     @Basic
     var qualityControlPersonnel: String? = null
 
-    @Column(name = "QUALITY_CONTROL_PERSONNEL_REMARKS")
+    @Column(name = "QUALITY_CONTROL_PERSONNEL_QUALIFICATIONS_REMARKS")
     @Basic
     var qualityControlPersonnelRemarks: String? = null
 
@@ -119,13 +118,6 @@ class QaInspectionTechnicalEntity : Serializable {
     @Basic
     var testingFacilityRemarks: String? = null
 
-    @Column(name = "QUALITY_CONTROL_PERSONNEL_QUALIFICATIONS")
-    @Basic
-    var qualityControlPersonnelQualifications: String? = null
-
-    @Column(name = "QUALITY_CONTROL_PERSONNEL_QUALIFICATIONS_REMARKS")
-    @Basic
-    var qualityControlPersonnelQualificationsRemarks: String? = null
 
     @Column(name = "EQUIPMENT_CALIBRATION")
     @Basic
@@ -199,21 +191,21 @@ class QaInspectionTechnicalEntity : Serializable {
     @Basic
     var status: Int? = null
 
-    @Column(name = "VAR_FIELD_1")
+    @Column(name = "RECORDS_OF_NONCOMFORMING")
     @Basic
-    var varField1: String? = null
+    var recordsNonconforming: String? = null
 
-    @Column(name = "VAR_FIELD_2")
+    @Column(name = "RECORDS_NON_CONFORMING_REMARKS")
     @Basic
-    var varField2: String? = null
+    var recordsNonconformingRemarks: String? = null
 
-    @Column(name = "VAR_FIELD_3")
+    @Column(name = "PRODUCT_RECALL")
     @Basic
-    var varField3: String? = null
+    var productRecallRecords: String? = null
 
-    @Column(name = "VAR_FIELD_4")
+    @Column(name = "PRODUCT_RECALL_REMARKS")
     @Basic
-    var varField4: String? = null
+    var productRecallRecordsRemarks: String? = null
 
     @Column(name = "VAR_FIELD_5")
     @Basic

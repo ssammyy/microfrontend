@@ -503,7 +503,9 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/payments", handler::permitInvoiceListPaid)
             "/company".nest {
                 GET("/un-payed-invoices", handler::permitInvoiceListUnPaid)
-                GET("/approval-request-edit", handler::companyGetApprovalRequest)
+                GET("/approval-request-upgrade", handler::handleActionUpdateCompanyTurnOverDetails)
+                POST("/manf-requested-to-upgrade", handler::handleRequestUpdateCompanyTurnOverDetails)
+                POST("/officer-requested-to-upgrade", handler::handleRequestUpdateCompanyTurnOverDetailsOfficer)
                 POST("/update-turn-over", handler::handleUpdateCompanyTurnOverDetails)
                 POST("/generate-inspection-fee", handler::handleGenerateInspectionFeesDetails)
             }
@@ -534,6 +536,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/process-step-add", handler::permitProcessStepMigration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
+                    POST("/generate-difference-invoice", handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
@@ -569,6 +572,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
+                        POST("/batch-invoice-difference-submit", handler::invoiceBatchSubmitDifferenceMigration)
                         POST("/batch-invoice-add", handler::notSupported)
                         PUT("/batch-invoice-remove", handler::notSupported)
                     }
@@ -591,6 +595,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     "/invoice".nest {
                         GET("/list", handler::invoiceListMigration)
                         GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
+                        GET("/list-no-batch-Id-difference", handler::invoiceListNoBatchIDMigrationWithDifference)
                         GET("/batch-invoice-list", handler::invoiceBatchListMigration)
                         GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
                         GET("/batch-invoice-balance-details", handler::invoiceBatchDetailsBalanceMigration)
@@ -641,12 +646,14 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     "/permit".nest {
                         POST("/section", internalUserhandler::updatePermitDetailsSection)
                         POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
+                        POST("/difference-status-activate", internalUserhandler::updatePermitDetailsDifferenceStatusActivate)
                         POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
                         POST("/assign-assessor", internalUserhandler::updatePermitDetailsAssignAssessor)
                         POST("/add-standards", internalUserhandler::updatePermitDetailsStandards)
                         POST("/schedule-inspection", internalUserhandler::updatePermitDetailsScheduleInspection)
-                        POST("/schedule-assessment-vist", internalUserhandler::updatePermitDetailsScheduleAssessmentVisit)
-                        POST("/inspection-checklist", internalUserhandler::updatePermitDetailsInspectionCheckList)
+                        POST("/schedule-assessment-visit", internalUserhandler::updatePermitDetailsScheduleAssessmentVisit)
+                        POST("/inspection-checklist", internalUserhandler::updatePermitDetailsInspectionCheckListNew)
+                        POST("/inspection-checklist-submit", internalUserhandler::updatePermitDetailsInspectionCheckListNewFinal)
                         POST("/ssf-details", internalUserhandler::updatePermitDetailsSaveSSFDetails)
                         POST("/lab-save-pdf-selected", internalUserhandler::updatePermitDetailsSaveSelectedLabPDF)
                         POST("/lab-save-compliance-status", internalUserhandler::updatePermitDetailsLabResultsComplianceStatus)

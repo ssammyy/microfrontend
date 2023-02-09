@@ -1607,8 +1607,23 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <button style="width: -webkit-fill-available"
-                                *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'"
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference && allPermitDetails?.invoiceDifferenceDetails == null"
+                                mat-raised-button=""
+                                (click)="goToPayment()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">Generate Difference Invoice</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference && allPermitDetails?.invoiceDifferenceDetails != null"
+                                mat-raised-button=""
+                                (click)="goToInvoiceGeneratedDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">View Generate Difference Invoice</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'"
                                 mat-raised-button=""
                                 (click)="goToPayment()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">Proceed To Payment</span>

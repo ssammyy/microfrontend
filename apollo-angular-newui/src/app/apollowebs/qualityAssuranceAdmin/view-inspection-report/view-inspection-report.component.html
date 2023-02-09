@@ -1,0 +1,471 @@
+<div class="container-fluid" id="main-container" style="margin-top: 5%">
+    <!--    <div class="loading-spinner ">-->
+    <!--        <ngx-spinner-->
+    <!--                bdColor="rgba(51,51,51,0.8)"-->
+    <!--                size="medium"-->
+    <!--                color="#fff"-->
+    <!--                type="ball-scale-multiple"-->
+    <!--        >-->
+    <!--            <p style="font-size: 20px; color: white">Loading Please Wait...</p>-->
+    <!--        </ngx-spinner>-->
+    <!--    </div>-->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h4 class="card-title">FACTORY INSPECTION REPORT
+                            </h4>
+                        </div>
+                        <div class="card-body ">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-5">
+
+                                    <ul class="nav nav-pills nav-pills-rose nav-pills-icons flex-column" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#link1" role="tablist">
+                                                <i class="material-icons">description</i> General Details
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link2" role="tablist">
+                                                <i class="material-icons">assignment_turned_in</i> Technical: Quality
+                                                Procedures,Standards And Management Systems
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link3" role="tablist">
+                                                <i class="material-icons">assignment_turned_in</i> Inspection And
+                                                Testing
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link4" role="tablist">
+                                                <i class="material-icons">assignment_turned_in</i>Standardization Mark
+                                                Scheme
+
+
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link5" role="tablist">
+                                                <i class="material-icons">assignment_turned_in</i>Annex I:Operation
+                                                Process And Controls
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link6" role="tablist">
+                                                <i class="material-icons">message</i> Annex II:Haccp Implementation
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link7" role="tablist">
+                                                <i class="material-icons">preview</i> Recommendations
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link8" role="tablist">
+                                                <i class="material-icons">summarize</i> Documents Attached
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link9" role="tablist">
+                                                <i class="material-icons">table_view</i> Version Details
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link10" role="tablist">
+                                                <i class="material-icons">person</i> Inspector Details
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
+                                                <i class="material-icons">person</i> Supervisor Details
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-9" style="background-color: #eeeeee8a;">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="link1">
+                                            <h3>General Details</h3>
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                    <br>
+                                                    <table class="table">
+                                                        <tbody>
+
+                                                        <tr>
+                                                            <td>
+                                                                <i class="material-icons">toc</i>
+                                                            </td>
+                                                            <td><strong>Name of firm
+                                                            </strong></td>
+                                                            <td>
+                                                                <!--                                                            <LIMITED></LIMITED>-->
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>
+                                                                <i class="material-icons">mail</i>
+                                                            </td>
+                                                            <td><strong>Postal address
+                                                            </strong></td>
+                                                            <td>
+                                                                <!--                                                                {{allPermitDetails?.permitDetails?.postalAddress}}-->
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <i class="material-icons">contacts</i>
+                                                            </td>
+                                                            <td><strong>Telephone number
+                                                            </strong></td>
+                                                            <td>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>
+                                                                <i class="material-icons">description</i>
+                                                            </td>
+                                                            <td><strong>Products Covered
+                                                            </strong></td>
+                                                            <td>
+                                                                <!--                                                                {{allPermitDetails?.permitDetails?.commodityDescription}}-->
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <i class="material-icons">verified</i>
+                                                            </td>
+                                                            <td><strong>Brand
+                                                            </strong></td>
+                                                            <td>
+                                                                <!--                                                                {{allPermitDetails?.permitDetails?.brandName}}-->
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <i class="material-icons">subtitles</i>
+                                                            </td>
+                                                            <td><strong>Applicable Standards
+                                                            </strong></td>
+                                                            <td>
+                                                                <!--                                                                {{allPermitDetails?.permitDetails?.standardTitle}}-->
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link2">
+                                            <h3>Technical: Quality Procedures,Standards And Management Systems</h3>
+                                            <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
+
+                                                    <button (click)="openModalAddDetails('addTechnical')"
+                                                            class="btn btn-info" data-target="#allProcessModel"
+                                                            data-toggle="modal"
+                                                            mat-list-item
+
+                                                            style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">
+                                                        New
+                                                    </button>
+                                                    <div class="material-datatables">
+                                                        <div class="table-responsive">
+
+                                                            <div>
+                                                                <table class=" table table-bordered table-hover table-striped"
+                                                                       datatable
+                                                                >
+                                                                    <thead style="text-align: left;">
+                                                                    <tr>
+
+                                                                        <th><strong>Id</strong></th>
+                                                                        <th><strong>Name</strong></th>
+                                                                        <th><strong>Status</strong></th>
+                                                                        <th class="text-center"><strong>Action</strong>
+                                                                        </th>
+
+
+                                                                    </tr>
+                                                                    </thead>
+
+                                                                    <tbody>
+                                                                    <tr>
+                                                                        <td>SCHEME_OF_SUPERVISION
+                                                                        </td>
+
+                                                                        <td>bsk.pdf</td>
+                                                                        <td>application</td>
+
+
+                                                                        <td class="text-right">
+
+                                                                            <a (click)="openModalAddDetails('addTechnical')"
+                                                                               class="btn btn-info"
+
+                                                                               mat-list-item
+                                                                               routerLink=""
+                                                                               style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
+                                                                        </td>
+
+                                                                    </tr>
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link3">
+                                            <h3>Inspection And Testing</h3>
+                                            <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
+
+                                                    <button (click)="openModalAddDetails('addTechnical')"
+                                                            class="btn btn-info" data-target="#allProcessModel"
+                                                            data-toggle="modal"
+                                                            mat-list-item
+
+                                                            style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">
+                                                        New
+                                                    </button>
+                                                    <div class="material-datatables">
+                                                        <div class="table-responsive">
+
+                                                            <div>
+                                                                <table class=" table table-bordered table-hover table-striped"
+                                                                       datatable
+                                                                >
+                                                                    <thead style="text-align: left;">
+                                                                    <tr>
+
+                                                                        <th><strong>Id</strong></th>
+                                                                        <th><strong>Name</strong></th>
+                                                                        <th><strong>Status</strong></th>
+                                                                        <th class="text-center"><strong>Action</strong>
+                                                                        </th>
+
+
+                                                                    </tr>
+                                                                    </thead>
+
+                                                                    <tbody>
+                                                                    <tr>
+                                                                        <td>SCHEME_OF_SUPERVISION
+                                                                        </td>
+
+                                                                        <td>bsk.pdf</td>
+                                                                        <td>application</td>
+
+
+                                                                        <td class="text-right">
+
+                                                                            <a (click)="openModalAddDetails('addTechnical')"
+                                                                               class="btn btn-info"
+
+                                                                               mat-list-item
+                                                                               routerLink=""
+                                                                               style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
+                                                                        </td>
+
+                                                                    </tr>
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="tab-pane" id="link4">
+                                            <h3>Standardization Mark
+                                                Scheme</h3>
+                                            <div class="row">
+
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link5">
+                                            <h3>Annex I:Operation
+                                                Process And Controls</h3>
+                                            <div class="row">
+
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link6">
+                                            <h3>Annex II:Haccp Implementation</h3>
+                                            <div class="row">
+
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link7">
+                                            <h3>Recommendations</h3>
+                                            <div class="row">
+
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link8">
+                                            <h3>Documents Attached</h3>
+                                            <div class="row">
+
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link9">
+                                            <h3>Version Details</h3>
+                                            <div class="row">
+
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link10">
+                                            <h3>Inspector Details</h3>
+                                            <div class="row">
+
+
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="link11">
+                                            <h3>Supervisor Details</h3>
+                                            <div class="row">
+
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h4 class="card-title">Actions</h4>
+                        </div>
+                        <div class="card-body ">
+                            <a class="btn btn-kebs mat-raised-button mat-button-base" data-target="#allProcessModel"
+                               data-toggle="modal"
+                               style="width: -webkit-fill-available;">GO BACK TO PERMIT</a>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- Dynamic Modal -->
+    <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="allProcessModel" role="dialog"
+         tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button aria-hidden="true" class="close" data-dismiss="modal" mat-button type="button">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="(currDiv == 'addTechnical')">
+                        <form class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <h4><b>State whether the firm is implementing any management system and Specify the
+                                        management system being implemented e.g. QMS,FSMS,HACCP</b></h4>
+
+                                    <div>
+                                        <label><b>Details Of Findings</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea rows="5" cols="50" wrap="physical"
+                                                      id="firmImplementedAnyManagementSystem" matInput
+                                                      name="firmImplementedAnyManagementSystem"
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                        </mat-form-field>
+                                        <label><b>Remarks</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea rows="5" cols="50" wrap="physical"
+                                                      name="firmImplementedAnyManagementSystemRemarks"
+                                                      id="firmImplementedAnyManagementSystemRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <h4><b>Indicate the relevant product standards and codes of practice in the firm’s
+                                        possession</b></h4>
+
+                                    <div>
+                                        <label><b>Details Of Findings</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea rows="5" cols="50" wrap="physical"
+                                                      name="indicateRelevantProductStandardCodes" required="required"
+                                                      id="indicateRelevantProductStandardCodes" matInput
+                                                      placeholder="Details Of Findings"
+                                                      type="text"></textarea>
+                                        </mat-form-field>
+                                        <label><b>Remarks</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea rows="5" cols="50" wrap="physical"
+                                                      name="indicateRelevantProductStandardCodesRemarks"
+                                                      id="indicateRelevantProductStandardCodesRemarks" matInput
+                                                      placeholder="Remarks"
+                                                      type="text"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-danger" data-dismiss="modal" mat-raised-button type="button">
+                        Close
+                    </button>
+                                        <button *ngIf="(currDiv == 'addTechnical')" mat-raised-button type="button"
+                                                class="btn btn-success"
+                                                (click)="onClickSaveSectionFormResults(updateSectionForm.valid);"
+                                                [disabled]="!updateSectionForm.valid"
+                                                data-dismiss="modal"
+                                        >SUBMIT
+                                        </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  End Dynamic Modal -->
+
+</div>

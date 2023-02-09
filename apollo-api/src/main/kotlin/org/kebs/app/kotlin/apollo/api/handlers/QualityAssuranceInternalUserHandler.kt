@@ -115,6 +115,7 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
     fun updatePermitDetailsCompleteness(req: ServerRequest): ServerResponse {
         return try {
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -124,7 +125,7 @@ class QualityAssuranceInternalUserHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    qaDaoServices.updatePermitCompletenessDetails(permitID.toLong(),body)
+                    qaDaoServices.updatePermitCompletenessDetails(permitID,body)
                         .let {
                             ok().body(it)
                         }
@@ -139,6 +140,21 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+    fun updatePermitDetailsDifferenceStatusActivate(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            qaDaoServices.updatePermitDifferenceStatusDetails(permitID)
+                .let {
+                    ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun updatePermitDetailsAssignOfficer(req: ServerRequest): ServerResponse {
         return try {
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -220,7 +236,7 @@ class QualityAssuranceInternalUserHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    qaDaoServices.updatePermitScheduleInspectionDetails(permitID.toLong(),body)
+                    qaDaoServices.updatePermitScheduleInspectionDetails(permitID,body)
                         .let {
                             ok().body(it)
                         }
@@ -268,6 +284,53 @@ class QualityAssuranceInternalUserHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updatePermitInspectionCheckListDetails(permitID.toLong(),body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsInspectionCheckListNew(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val body = req.body<AllInspectionDetailsApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, AllInspectionDetailsApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitInspectionCheckListDetailsNew(permitID,body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsInspectionCheckListNewFinal(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val errors: Errors = BeanPropertyBindingResult(permitID, AllInspectionDetailsApplyDto::class.java.name)
+            validator.validate(permitID, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.submitFinalInspectionReport(permitID)
                         .let {
                             ok().body(it)
                         }
