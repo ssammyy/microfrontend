@@ -116,6 +116,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     scheduleInspectionForm: FormGroup;
     ssfDetailsForm: FormGroup;
     pdfSaveComplianceStatusForm!: FormGroup;
+    ssfSaveComplianceStatusForm!: FormGroup;
 
 
     // DTOS
@@ -355,9 +356,19 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         });
 
-        this.pdfSaveComplianceStatusForm = this.formBuilder.group({
-            complianceStatus: ['', Validators.required],
+        this.ssfSaveComplianceStatusForm = this.formBuilder.group({
+            ssfID: ['', Validators.required],
+            resultsAnalysis: ['', Validators.required],
             complianceRemarks: ['', Validators.required],
+        });
+
+        this.pdfSaveComplianceStatusForm = this.formBuilder.group({
+            pdfSavedID: null,
+            complianceStatus: null,
+            complianceRemarks: null,
+            fileName: null,
+            bsNumber: null,
+            ssfID: null,
         });
 
         this.sta10FormB = this.formBuilder.group({
@@ -595,6 +606,27 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+    closeSSFLabResultsRecord() {
+        window.$('#myModal2').modal('hide');
+        window.$('#sampleLabResultsModal').modal('hide');
+        window.$('body').removeClass('modal-open');
+        window.$('.modal-backdrop').remove();
+
+    }
+
+    closePopUpsModal2() {
+        window.$('#myModal2').modal('hide');
+        window.$('body').removeClass('modal-open');
+        window.$('.modal-backdrop').remove();
+        window.$('#sampleLabResultsModal').modal('hide');
+        window.$('body').removeClass('modal-open');
+        window.$('.modal-backdrop').remove();
+
+        setTimeout(function() {
+            window.$('#sampleLabResultsModal').modal('show');
+        }, 500);
+    }
+
     viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {
         this.selectedPDFFileName = data.pdfName;
         this.currDivLabel = `COMPLIANCE STATUS AND REMARKS FOR PDF # ${this.selectedPDFFileName}`;
@@ -701,10 +733,10 @@ export class PermitDetailsAdminComponent implements OnInit {
     openModalAddDetails(divVal: string): void {
 
         const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
-            'addSSFDetails'];
+            'addSSFDetails', 'ssfAddComplianceStatus'];
 
         const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
-            'Add SSF Details Below'];
+            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', ];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -986,6 +1018,56 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+
+    onClickSavePDFSelected(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'Save PDF\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.savePDFSelected(valid);
+            });
+    }
+
+    savePDFSelected(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaPermitSavePDF(this.pdfSaveComplianceStatusForm.value, this.permitID).subscribe(
+                (data1: ApiResponseModel) => {
+                    if (data1.responseCode === '00') {
+                        // tslint:disable-next-line:max-line-length
+                        const pdfSavedDetails = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
+                        const pdfSave = pdfSavedDetails?.savedPDFFiles?.find(dat => dat?.pdfName === this.selectedPDFFileName);
+                        this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.pdfSavedId);
+                        this.qaService.qaPermitSavePDFCompliance(this.pdfSaveComplianceStatusForm.value, this.permitID).subscribe(
+                            (data: ApiResponseModel) => {
+                                if (data.responseCode === '00') {
+                                    this.SpinnerService.hide();
+                                    this.qaService.showSuccess('PDF AND COMPLINACE STATUS, SAVED SUCCESSFULLY', () => {
+                                        this.loadPermitDetails(data);
+                                    });
+                                } else {
+                                    this.SpinnerService.hide();
+                                    this.qaService.showError(data.message);
+                                }
+                            },
+                            error => {
+                                this.SpinnerService.hide();
+                                this.qaService.showError('AN ERROR OCCURRED');
+                            },
+                        );
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data1.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+
     onClickSaveAssignOfficerForm(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
             // tslint:disable-next-line:max-line-length
@@ -1110,6 +1192,41 @@ export class PermitDetailsAdminComponent implements OnInit {
             );
         }
     }
+
+    onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
+        if (valid) {
+            this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+                // tslint:disable-next-line:max-line-length
+                `You can click \'ADD COMPLIANCE STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+                    this.saveSSFLabResultsComplianceStatus(valid);
+                });
+        }
+    }
+
+
+    saveSSFLabResultsComplianceStatus(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaSSFDetailsCompliance(this.ssfDetailsForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
 
     onClickSaveSSCForm() {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',

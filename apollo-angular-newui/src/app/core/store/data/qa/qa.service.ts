@@ -287,6 +287,40 @@ export class QaService {
         );
     }
 
+    public qaPermitSavePDF(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SAVE_PDF_LAB_RESULT);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaPermitSavePDFCompliance(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SAVE_PDF_LAB_RESULT_COMPLIANCE);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public qaAssignOfficer(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
@@ -342,6 +376,23 @@ export class QaService {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_SSF_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaSSFDetailsCompliance(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_SSF_COMPLIANCE_DETAILS);
         const params = new HttpParams()
             .set('permitID', String(permitID));
         return this.http.post<any>(url, data, {params}).pipe(

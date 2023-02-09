@@ -802,6 +802,7 @@ data class PermitDetailsDto(
     var companyId: Long? = null,
     var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
     var ssfCompletedStatus: Boolean? = null,
+    var compliantStatus: Boolean? = null,
 )
 
 data class AllPermitDetailsDto(
