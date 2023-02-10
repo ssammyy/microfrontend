@@ -68,6 +68,7 @@ export class IntStdEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.getApprovedJustification();
+      this.getDepartments();
 
       this.uploadDraftStandardFormGroup = this.formBuilder.group({
           id: [],
@@ -89,12 +90,6 @@ export class IntStdEditorComponent implements OnInit {
           contactOneFullName:[],
           contactOneTelephone:[],
           contactOneEmail:[],
-          contactTwoFullName:[],
-          contactTwoTelephone:[],
-          contactTwoEmail:[],
-          contactThreeFullName:[],
-          contactThreeTelephone:[],
-          contactThreeEmail:[],
           companyName:[],
           companyPhone:[]
 
@@ -124,6 +119,16 @@ export class IntStdEditorComponent implements OnInit {
             },
             (error: HttpErrorResponse)=>{
                 this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+    public getDepartments(): void{
+        this.standardDevelopmentService.getDepartments().subscribe(
+            (response: Department[])=> {
+                this.departments = response;
+            },
+            (error: HttpErrorResponse)=>{
                 alert(error.message);
             }
         );
@@ -382,7 +387,7 @@ export class IntStdEditorComponent implements OnInit {
                     console.log(data);
                     swal.fire({
                         title: 'Thank you....',
-                        html:'Company Standard Draft Uploaded',
+                        html:'International Standard Draft Uploaded',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',

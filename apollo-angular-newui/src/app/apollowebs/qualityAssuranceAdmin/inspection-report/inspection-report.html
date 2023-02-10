@@ -38,65 +38,65 @@
                                                             <h2 style="text-align: center"><b>Step</b> <b> 1</b><b>
                                                                 of</b>
                                                                 <b> 9</b></h2>
-                                                            <div class="row">
+<!--                                                            <div class="row">-->
 
-                                                                <div class="form-group col-12">
+<!--                                                                <div class="form-group col-12">-->
 
-                                                                    <h3>Would You Like To Clone This Inspection Report
-                                                                        With A Similar Inspection Report?</h3>
+<!--                                                                    <h3>Would You Like To Clone This Inspection Report-->
+<!--                                                                        With A Similar Inspection Report?</h3>-->
 
-                                                                    <label>Select Inspection Report</label>
-                                                                    <!--                                                                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"-->
+<!--                                                                    <label>Select Inspection Report</label>-->
+<!--                                                                    &lt;!&ndash;                                                                    <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"&ndash;&gt;-->
 
-                                                                    <!--                                                                                [(ngModel)]="selectedPermit"-->
-                                                                    <!--                                                                                id="attachedPlanto"-->
-                                                                    <!--                                                                                class="form-control" (selectionChange)="setClonedMethod()"-->
-                                                                    <!--                                                                                placeholder="Select Permit">-->
+<!--                                                                    &lt;!&ndash;                                                                                [(ngModel)]="selectedPermit"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                id="attachedPlanto"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                class="form-control" (selectionChange)="setClonedMethod()"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                placeholder="Select Permit">&ndash;&gt;-->
 
-                                                                    <!--                                                                        <mat-option-->
-                                                                    <!--                                                                                *ngFor="let permit of allPermitData"-->
-                                                                    <!--                                                                                value="{{permit.id}}"-->
-                                                                    <!--                                                                                class="dropdown-item">{{permit.productName}}</mat-option>-->
+<!--                                                                    &lt;!&ndash;                                                                        <mat-option&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                *ngFor="let permit of allPermitData"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                value="{{permit.id}}"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                class="dropdown-item">{{permit.productName}}</mat-option>&ndash;&gt;-->
 
-                                                                    <!--                                                                    </mat-select>-->
-
-
-                                                                    <mat-select aria-label="Small"
-                                                                                aria-describedby="inputGroup-sizing-lg"
+<!--                                                                    &lt;!&ndash;                                                                    </mat-select>&ndash;&gt;-->
 
 
-                                                                                class="form-control"
-                                                                                placeholder="Select Inspection Report">
+<!--                                                                    <mat-select aria-label="Small"-->
+<!--                                                                                aria-describedby="inputGroup-sizing-lg"-->
 
-                                                                        <mat-option class="dropdown-item">Test
-                                                                        </mat-option>
 
-                                                                    </mat-select>
+<!--                                                                                class="form-control"-->
+<!--                                                                                placeholder="Select Inspection Report">-->
 
-                                                                    <!--                                                                    <div *ngIf="hideCloneButton === true">-->
-                                                                    <!--                                                                        <button class="btn btn-info float-right"-->
-                                                                    <!--                                                                                (click)="clonePermit()">-->
-                                                                    <!--                                                                            Clone-->
-                                                                    <!--                                                                        </button>-->
-                                                                    <!--                                                                    </div>-->
-                                                                    <div>
-                                                                        <button class="btn btn-info float-right">
-                                                                            Clone
-                                                                        </button>
-                                                                    </div>
+<!--                                                                        <mat-option class="dropdown-item">Test-->
+<!--                                                                        </mat-option>-->
 
-                                                                </div>
-                                                                <div class="form-group col-6">
+<!--                                                                    </mat-select>-->
 
-                                                                </div>
+<!--                                                                    &lt;!&ndash;                                                                    <div *ngIf="hideCloneButton === true">&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                        <button class="btn btn-info float-right"&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                                (click)="clonePermit()">&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                            Clone&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                        </button>&ndash;&gt;-->
+<!--                                                                    &lt;!&ndash;                                                                    </div>&ndash;&gt;-->
+<!--                                                                    <div>-->
+<!--                                                                        <button class="btn btn-info float-right">-->
+<!--                                                                            Clone-->
+<!--                                                                        </button>-->
+<!--                                                                    </div>-->
 
-                                                            </div>
+<!--                                                                </div>-->
+<!--                                                                <div class="form-group col-6">-->
+
+<!--                                                                </div>-->
+
+<!--                                                            </div>-->
 
                                                             <fieldset class="wizard-fieldset show">
-                                                                <!--                                                                <form (ngSubmit)="onClickSaveSTA1(sta1Form.valid)"-->
-                                                                <!--                                                                      [formGroup]="sta1Form" class="form"-->
-                                                                <!--                                                                      enctype="multipart/form-data">-->
+
                                                                 <form class="form"
+                                                                      (ngSubmit)="onClickSaveInspectionReportTechnicalDetails(technicalForm.valid)"
+                                                                      [formGroup]="technicalForm"
                                                                       enctype="multipart/form-data">
                                                                     <h2>Technical: Quality Procedures,Standards And
                                                                         Management Systems</h2>
@@ -118,6 +118,9 @@
                                                       id="firmImplementedAnyManagementSystem" matInput
                                                       name="firmImplementedAnyManagementSystem"
                                                       placeholder="Details Of Findings"
+                                                      [class.is-invalid]="formTechnicalForm.firmImplementedAnyManagementSystem.invalid && formTechnicalForm.firmImplementedAnyManagementSystem.touched"
+                                                      formControlName="firmImplementedAnyManagementSystem"
+
                                                       type="text"></textarea>
                                                                                 </mat-form-field>
                                                                                 <label><b>Remarks</b></label>
@@ -127,6 +130,9 @@
                                                       name="firmImplementedAnyManagementSystemRemarks"
                                                       id="firmImplementedAnyManagementSystemRemarks" matInput
                                                       placeholder="Remarks"
+                                                      [class.is-invalid]="formTechnicalForm.firmImplementedAnyManagementSystemRemarks.invalid && formTechnicalForm.firmImplementedAnyManagementSystemRemarks.touched"
+                                                      formControlName="firmImplementedAnyManagementSystemRemarks"
+
                                                       type="text"></textarea>
                                                                                 </mat-form-field>
                                                                             </div>
@@ -146,6 +152,9 @@
                                                       name="indicateRelevantProductStandardCodes" required="required"
                                                       id="indicateRelevantProductStandardCodes" matInput
                                                       placeholder="Details Of Findings"
+                                                      [class.is-invalid]="formTechnicalForm.indicateRelevantProductStandardCodes.invalid && formTechnicalForm.indicateRelevantProductStandardCodes.touched"
+                                                      formControlName="indicateRelevantProductStandardCodes"
+
                                                       type="text"></textarea>
                                                                                 </mat-form-field>
                                                                                 <label><b>Remarks</b></label>
@@ -155,6 +164,9 @@
                                                       name="indicateRelevantProductStandardCodesRemarks"
                                                       id="indicateRelevantProductStandardCodesRemarks" matInput
                                                       placeholder="Remarks"
+                                                      [class.is-invalid]="formTechnicalForm.indicateRelevantProductStandardCodesRemarks.invalid && formTechnicalForm.indicateRelevantProductStandardCodesRemarks.touched"
+                                                      formControlName="indicateRelevantProductStandardCodesRemarks"
+
                                                       type="text"></textarea>
                                                                                 </mat-form-field>
                                                                             </div>
@@ -162,9 +174,16 @@
 
                                                                     </div>
 
-                                                                    <div class="form-group clearfix">
-                                                                        <button (click)="clickNextToTest()"
-                                                                                class="btn btn-info float-right">
+                                                                    <div *ngIf="technicalForm.valid" class="form-group clearfix">
+                                                                        <button type="submit"
+                                                                                class="form-wizard-next-btn btn-sm float-right">
+                                                                            Next
+                                                                        </button>
+                                                                    </div>
+                                                                    <div *ngIf="!technicalForm.valid"
+                                                                         class="form-group clearfix">
+                                                                        <button class="btn btn-sm btn-primary float-right"
+                                                                                (click)="showNotification('top','right')">
                                                                             Next
                                                                         </button>
                                                                     </div>
@@ -183,6 +202,8 @@
                                                                 <h2>Inspection And Testing </h2>
 
                                                                 <form class="form"
+                                                                      (ngSubmit)="onClickSaveInspectionReportTechnicalDetails(technicalForm.valid)"
+                                                                      [formGroup]="technicalForm"
                                                                       enctype="multipart/form-data">
 
                                                                     <div class="form-body">

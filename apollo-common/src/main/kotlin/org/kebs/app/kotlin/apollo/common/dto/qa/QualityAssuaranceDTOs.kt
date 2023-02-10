@@ -72,6 +72,15 @@ data class SSFDetailsApplyDto(
     var brandName: String? = null,
     var productDescription: String? = null,
 )
+data class SSFDetailsDto(
+    var id: Long? = null,
+    var ssfNo: String? = null,
+    var ssfSubmissionDate: Date? = null,
+    var bsNumber: String? = null,
+    var brandName: String? = null,
+    var productDescription: String? = null,
+    var resultsAnalysis: Boolean? = null,
+)
 
 data class AllInspectionDetailsApplyDto(
     var id: Long? = null,
@@ -791,7 +800,11 @@ data class PermitDetailsDto(
     var permitGenerateDifference: Boolean? = null,
     var inspectionReportGenerated: Boolean? = null,
     var companyId: Long? = null,
-)
+    var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
+    var ssfCompletedStatus: Boolean? = null,
+    var compliantStatus: Boolean? = null,
+
+    )
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
@@ -813,6 +826,7 @@ data class AllPermitDetailsDto(
     var sta10DTO: AllSTA10DetailsDto? = null,
     var sectionList: List<SectionsEntityDto>? = null,
     var standardsList: List<StandardsDto>? = null,
+    var ssfListDetails: List<SSFDetailsDto>? = null,
 )
 
 

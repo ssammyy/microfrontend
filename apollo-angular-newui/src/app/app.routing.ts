@@ -704,6 +704,13 @@ import {
 } from "./apollowebs/qualityAssuranceAdmin/permit-details-admin/permit-details-admin.component";
 import {StaDetailsComponent} from "./apollowebs/qualityAssuranceAdmin/sta-details/sta-details.component";
 import {InspectionReport} from "./apollowebs/qualityAssuranceAdmin/inspection-report/inspection-report";
+import { DelayedProjectsComponent } from './apollowebs/standards-development/reports/delayed-projects/delayed-projects.component';
+import { NspStatusComponent } from './apollowebs/standards-development/reports/nsp-status/nsp-status.component';
+import { NonePerformingProjectsComponent } from './apollowebs/standards-development/reports/none-preforming-projects/none-performing-projects.component';
+import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-development/reports/standards-approval-committee/standards-approval-committee.component';
+import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/tc-member-application/tc-member-application.component';
+import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/individual-weekly-report/individual-weekly-report.component';
+import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/departmental-weekly-report/departmental-weekly-report.component';
 
 export const routes: Routes = [
     {
@@ -1133,7 +1140,7 @@ export const routes: Routes = [
 
     },
     {
-        path: 'new-inspection-report', component: AdminLayoutComponent,
+        path: 'new-inspection-report/:id', component: AdminLayoutComponent,
         // canActivate: [RouteGuard]
 
         children: [
@@ -2221,6 +2228,48 @@ export const routes: Routes = [
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - SCHEME MEMBERSHIP
      ***************************************************************/
+
+    // Standard development reports
+    {
+        path: 'nspStatus', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NspStatusComponent}],
+    },
+
+    {
+        path: 'nonePreformingProject', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NonePerformingProjectsComponent}],
+    },
+
+    {
+        path: 'delayedProjects', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: DelayedProjectsComponent}],
+    },
+
+    {
+        path: 'sacReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardsApprovalCommitteeComponent}],
+    },
+
+    {
+        path: 'tcMemberApplication', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: TcMemberApplicationComponent}],
+    },
+    {
+        path: 'individualWeeklyReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IndividualWeeklyReportComponent}],
+    },
+
+    {
+        path: 'deparmentalWeeklyReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: DepartmentalWeeklyReportComponent}],
+    },
 
 
 

@@ -11,6 +11,81 @@
     </div>
     <div class="main-content" >
         <div class="container-fluid">
+            <div class="row" >
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                View Justification
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="isJustificationApp" style="color: orangered">Go</a>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="isJustificationApp" style="color: orangered"><span> <i class="fa fa-arrow-right"></i></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-info card-header-icon">
+                            <div class="card-icon">
+                                Uploaded Drafts
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="isUploadDraft" style="color: dodgerblue">Go</a>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="isUploadDraft" style="color: dodgerblue"><span> <i class="fa fa-arrow-right"></i></span></a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                Publishing Tasks
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats col-12">
+                                <div class="row align-items-center mb-2 d-flex col-12">
+                                    <div class="col-8">
+                                        <h4 class="d-flex align-items-center mb-0">
+                                            <a href="hopTasks" style="color: seagreen">Go</a>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <a href="hopTasks" style="color: seagreen"><span> <i class="fa fa-arrow-right"></i></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -159,30 +234,8 @@
 
                                                                                     <p class="text-sm mb-0">{{actionRequest?.closingDate}}.</p>
                                                                                 </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Name of Respondent</b></h5>
-                                                                                            </div>
-                                                                                        </div>
 
-                                                                                    </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.nameOfRespondent}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Name of Organization</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.nameOfOrganization}}.</p>
-                                                                                </a>
                                                                                 <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
                                                                                     <div class="d-flex w-100 justify-content-between">
                                                                                         <div>
@@ -195,18 +248,7 @@
 
                                                                                     <p class="text-sm mb-0">{{actionRequest?.scope}}.</p>
                                                                                 </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Remarks</b></h5>
-                                                                                            </div>
-                                                                                        </div>
 
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.remarks}}.</p>
-                                                                                </a>
 
 
 
@@ -234,8 +276,8 @@
                                                                                             <th class="knw">Name Of Organization</th>
                                                                                             <th class="knw">Clause</th>
                                                                                             <th class="knw">Paragraph</th>
-                                                                                            <th class="knw">Reason</th>
-                                                                                            <th class="knw">Recommendations</th>
+                                                                                            <th class="knw">Scope</th>
+                                                                                            <th class="knw">Observation</th>
                                                                                             <th class="knw">Name of Respondent</th>
                                                                                         </tr>
                                                                                         </thead>
@@ -247,8 +289,8 @@
                                                                                             <td>{{comStdCommitteeRemark.nameOfOrganization}}</td>
                                                                                             <td>{{comStdCommitteeRemark.comClause}}</td>
                                                                                             <td>{{comStdCommitteeRemark.comParagraph}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.reason}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.recommendations}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.scope}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.observation}}</td>
                                                                                             <td>{{comStdCommitteeRemark.nameOfRespondent}}</td>
                                                                                         </tr>
                                                                                         </tbody>
@@ -330,7 +372,7 @@
                                                                                         <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                                                                                   class="form-control one-column-input" value="{{actionRequest?.scope}}" formControlName="scope" name="scope"
-                                                                                                  placeholder="International Standard Scope" type="text" disabled></textarea>
+                                                                                                  placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
                                                                                     <div class="form-group col-12">

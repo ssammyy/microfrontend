@@ -322,6 +322,29 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+    fun updatePermitDetailsInspectionCheckListNewFinal(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val errors: Errors = BeanPropertyBindingResult(permitID, AllInspectionDetailsApplyDto::class.java.name)
+            validator.validate(permitID, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.submitFinalInspectionReport(permitID)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
     fun updatePermitDetailsSaveSSFDetails(req: ServerRequest): ServerResponse {
         return try {
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")

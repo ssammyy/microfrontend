@@ -197,6 +197,26 @@ export class QaService {
         );
     }
 
+    public qaSaveUploadFile(data: FormData): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.UPLOAD_ATTACHMENTS,
+        );
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
 
 
     public qaUpdateSection(data: any, permitID: string): Observable<any> {
@@ -267,6 +287,40 @@ export class QaService {
         );
     }
 
+    public qaPermitSavePDF(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SAVE_PDF_LAB_RESULT);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaPermitSavePDFCompliance(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.SAVE_PDF_LAB_RESULT_COMPLIANCE);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public qaAssignOfficer(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
@@ -308,6 +362,58 @@ export class QaService {
         const params = new HttpParams()
             .set('permitID', String(permitID));
         return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaSSFDetails(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_SSF_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public qaSSFDetailsCompliance(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.ADD_SSF_COMPLIANCE_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadFileDetailsLabResultsPDF(fileName: string, bsNumber: string): Observable<any> {
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.VIEW_PDF_LAB_RESULT);
+        const params = new HttpParams()
+            .set('fileName', fileName)
+            .set('bsNumber', bsNumber);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
                 return response;
             }),

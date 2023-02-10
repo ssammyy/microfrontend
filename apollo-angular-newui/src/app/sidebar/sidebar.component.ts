@@ -833,7 +833,7 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'isStdProofReading', title: 'Proof Reading', ab: 'PR'},
             // {path: 'isApproveDraftStd', title: 'Check Standard', ab: 'CS'},
             // {path: 'isApprovedEdits', title: 'View Edited Draft', ab: 'J'},
-            // {path: 'isSacApproval', title: 'SAC Approval', ab: 'SA'},
+             {path: 'isSacApproval', title: 'SAC Tasks', ab: 'ST'},
             // {path: 'isStandardGazette', title: 'Gazette Notice', ab: 'GN'},
 
 
@@ -872,6 +872,27 @@ export const ROUTES: RouteInfo[] = [
         children: [
             {path: 'hodReview', title: 'Review Requests', ab: 'RR'},
             {path: 'sicReview', title: 'SIC Review', ab: 'RR'},
+
+
+        ],
+    },
+
+    //SD reports
+    {
+        path: '',
+        title: 'SD Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'nspStatus', title: 'NSP/Status', ab: 'NS'},
+            {path: 'nonePreformingProject', title: 'None Preforming Projects ', ab: 'NPP'},
+            {path: 'delayedProjects', title: 'Delayed Projects ', ab: 'DP'},
+            {path: 'sacReport', title: 'Standards Approval Committee', ab: 'SAC'},
+            {path: 'tcMemberApplication', title: 'TC Member Application', ab: 'PD'},
+            {path: 'deparmentalWeeklyReport', title: 'Departmental Weekly Report', ab: 'DWK'},
+            {path: 'individualWeeklyReport', title: 'Individual Weekly Report ', ab: 'IWK'},
 
 
         ],

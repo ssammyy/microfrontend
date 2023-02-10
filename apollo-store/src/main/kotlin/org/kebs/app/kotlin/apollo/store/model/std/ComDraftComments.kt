@@ -107,6 +107,10 @@ class ComDraftComments {
     @Basic
     var observation:String? =null
 
+    @Column(name="SCOPE")
+    @Basic
+    var scope:String? =null
+
 
 
 

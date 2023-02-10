@@ -513,6 +513,8 @@ export class ApiEndpointService {
         ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getApprovedStdDraft`,
         ICT_COM_STD_EDITS_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdDraftForEditing`,
         ICT_COM_STD_PB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComStdPublishing`,
+        ICT_COM_STD_SPB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAppStdPublishing`,
+        ICT_COM_STD_APB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAppStd`,
         ICT_COM_STD_COMMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAllComments`,
         ICT_COM_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftComments`,
         ICT_COM_DRAFT_COMMENTS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftCommentList`,
@@ -703,7 +705,13 @@ export class ApiEndpointService {
         ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
         SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
         INSPECTION_CHECKLIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection-checklist`,
+        ADD_SSF_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-details`,
+        ADD_SSF_COMPLIANCE_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-compliance-status`,
+        VIEW_PDF_LAB_RESULT: `${ApiEndpointService.QA_CONTEXT}/view/attached-lab-pdf`,
+        SAVE_PDF_LAB_RESULT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-pdf-selected`,
+        SAVE_PDF_LAB_RESULT_COMPLIANCE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-compliance-status`,
         UPLOAD_SCHEME_OF_SUPERVISION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-scheme-supervision`,
+        UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
 
 
     };
