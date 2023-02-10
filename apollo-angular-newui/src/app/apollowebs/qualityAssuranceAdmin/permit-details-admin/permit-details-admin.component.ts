@@ -1338,7 +1338,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     }
 
-    generateInspectionReport(permitId: bigint) {
+    generateInspectionReport(permitId: string) {
 
         var text = permitId;
         var key = '11A1764225B11AA1';

@@ -6180,8 +6180,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val sampleSubmittedParamList = sampleSubmitted.id.let {
                     msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it)
                 }
-                val sampleSubmittedDtoValues =
-                    sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }
+                val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }
                         ?.let { msFuelDaoServices.mapSampleSubmissionDto(sampleSubmitted, it) }
                 if (sampleSubmittedDtoValues != null) {
                     sampleSubmittedDtoList.add(sampleSubmittedDtoValues)
@@ -6198,14 +6197,15 @@ class MarketSurveillanceWorkPlanDaoServices(
                             msFuelDaoServices.findSampleSubmittedListPdfBYSSFid(it)
                                 ?.let { ssfDetails -> msFuelDaoServices.mapLabPDFFilesListDto(ssfDetails) }
                         }
-                        val ssfResultsListCompliance =
-                            ssfDetailsLab?.let { msFuelDaoServices.mapSSFComplianceStatusDetailsDto(it) }
+                        val ssfResultsListCompliance = ssfDetailsLab?.let { msFuelDaoServices.mapSSFComplianceStatusDetailsDto(it) }
+
                         if (ssfDetailsLab?.analysisDone == map.activeStatus) {
                             analysisLabCountDone++
                             if (ssfDetailsLab.resultsSent == map.activeStatus) {
                                 analysisLabCountDoneAndSent++
                             }
                         }
+
                         val limsPDFFiles = ssfDetailsLab?.bsNumber?.let {
                             msFuelDaoServices.mapLIMSSavedFilesDto(
                                 it,

@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.dto.*
+import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -3118,6 +3119,10 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No sample submission pdf found with the following ID number=$ssfPdfID")
     }
 
+    fun findSampleSubmittedListPdfBYSSFidWithNullValues(ssfID: Long): List<QaSampleSubmittedPdfListDetailsEntity>? {
+        return SampleSubmissionSavedPdfListRepo.findBySffId(ssfID)
+    }
+
     fun findSampleSubmittedListBYPermitRefNumberAndPermitID(
         permitRefNumber: String,
         status: Int,
@@ -3235,6 +3240,10 @@ class QADaoServices(
         sampleLabTestResultsRepo.findByOrderId(bsNumber)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Results found with the following [bsNumber=$bsNumber]")
+    }
+
+    fun findSampleLabTestResultsRepoBYBSNumberWithNullvalue(bsNumber: String): List<QaSampleLabTestResultsEntity>? {
+        return  sampleLabTestResultsRepo.findByOrderId(bsNumber)
     }
 
     fun findSampleLabTestParametersRepoBYBSNumber(bsNumber: String): List<QaSampleLabTestParametersEntity> {
@@ -4463,16 +4472,30 @@ class QADaoServices(
         val permitID = permit.id ?: throw Exception("MISSING PERMIT ID")
         val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
         val ssfListDetails = mutableListOf<SSFDetailsDto>()
-        if (permit.ssfCompletedStatus == 1) {
-            val ssfList = ssfDetailsListDto(
-                findSampleSubmittedListBYPermitRefNumberAndPermitID(
-                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
-                    map.activeStatus,
-                    permitID
+
+        val labResultsDtoList = mutableListOf<MSSSFLabResultsDto>()
+        if(permit.ssfCompletedStatus==1){
+           val ssfList =  findSampleSubmittedListBYPermitRefNumberAndPermitID(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus, permitID)
+           val ssfListDTO =  ssfDetailsListDto(ssfList)
+            ssfListDetails.addAll(ssfListDTO)
+            ssfList.forEach { samp->
+                val ssfResultsListCompliance = mapSSFComplianceStatusDetailsDto(samp)
+                val savedPDFFilesLims = samp.id?.let { findSampleSubmittedListPdfBYSSFidWithNullValues(it)?.let { mapLabPDFFilesListDto(it) } }
+                val limsPDFFiles = samp.bsNumber?.let { mapLIMSSavedFilesDto(it, savedPDFFilesLims) }
+                val labResultsParameters = samp.bsNumber?.let { findSampleLabTestResultsRepoBYBSNumberWithNullvalue(it) }
+
+                val labResultsDto = mapLabResultsDetailsDto(
+                    ssfResultsListCompliance,
+                    savedPDFFilesLims,
+                    limsPDFFiles,
+                    labResultsParameters?.let { mapLabResultsParamListDto(it) }
                 )
-            )
-            ssfListDetails.addAll(ssfList)
+                labResultsDtoList.add(labResultsDto)
+            }
         }
+
+
+
 
 
         return AllPermitDetailsDto(
@@ -4523,6 +4546,87 @@ class QADaoServices(
             mapAllStandardsTogether(findALlStandardsDetails(map.activeStatus)),
             ssfListDetails
         )
+    }
+    fun mapSSFComplianceStatusDetailsDto(ssf: QaSampleSubmissionEntity): MSSSFComplianceStatusDetailsDto {
+        return MSSSFComplianceStatusDetailsDto(
+            ssf.id,
+            ssf.bsNumber,
+            ssf.complianceRemarks,
+            ssf.resultsAnalysis == 1,
+            ssf.analysisDone == 1,
+            ssf.resultsSent == 1
+        )
+
+    }
+
+    fun mapLabResultsParamListDto(data: List<QaSampleLabTestResultsEntity>): List<LabResultsParamDto> {
+        return data.map {
+            LabResultsParamDto(
+                it.param,
+                it.result,
+                it.method
+            )
+        }
+    }
+
+    fun mapLabPDFFilesListDto(data: List<QaSampleSubmittedPdfListDetailsEntity>): List<MSSSFPDFListDetailsDto> {
+        return data.map { ssfPdfRemarks ->
+            MSSSFPDFListDetailsDto(
+                ssfPdfRemarks.msPdfSavedId,
+                ssfPdfRemarks.pdfName,
+                ssfPdfRemarks.sffId,
+                ssfPdfRemarks.complianceRemarks,
+                ssfPdfRemarks.complianceStatus == 1,
+            )
+
+        }
+    }
+
+    fun mapLIMSSavedFilesDto(bsNumber: String, savedPDFFiles:List<MSSSFPDFListDetailsDto>? ): List<LIMSFilesFoundDto>? {
+        val result = mutableListOf<LIMSFilesFoundDto>()
+        limsServices.checkPDFFiles(bsNumber)
+            ?.forEach { fpdf ->
+                if (savedPDFFiles?.isNotEmpty() == true) {
+                    savedPDFFiles.firstOrNull { it.pdfName == fpdf }
+                        ?.let {
+                            val limsDto = LIMSFilesFoundDto(
+                                true,
+                                fpdf
+                            )
+                            result.add(limsDto)
+                        }
+                        ?: run {
+                            val limsDto = LIMSFilesFoundDto(
+                                false,
+                                fpdf
+                            )
+                            result.add(limsDto)
+                        }
+                } else {
+                    val limsDto = LIMSFilesFoundDto(
+                        false,
+                        fpdf
+                    )
+                    result.add(limsDto)
+                }
+            }
+        return  result.distinct()
+    }
+
+
+    fun mapLabResultsDetailsDto(
+        ssfResultsList: MSSSFComplianceStatusDetailsDto?,
+        savedPDFFiles:  List<MSSSFPDFListDetailsDto>?,
+        limsPDFFiles: List<LIMSFilesFoundDto>?,
+        parametersListTested: List<LabResultsParamDto>?
+    ): MSSSFLabResultsDto {
+        return MSSSFLabResultsDto(
+            ssfResultsList,
+            savedPDFFiles,
+            limsPDFFiles,
+            parametersListTested,
+        )
+
     }
 
     fun loadSectionDetails(
@@ -8750,8 +8854,7 @@ class QADaoServices(
         loggedInUser: UsersEntity,
         map: ServiceMapsEntity
     ): BatchInvoiceDto {
-        val allInvoicesInBatch =
-            findALlInvoicesPermitWithBatchID(batchInvoiceEntity.id ?: throw Exception("MISSING INVOICE BATCH ID"))
+        val allInvoicesInBatch = findALlInvoicesPermitWithBatchID(batchInvoiceEntity.id ?: throw Exception("MISSING INVOICE BATCH ID"))
         val companyProfile =
             commonDaoServices.findCompanyProfile(loggedInUser.id ?: throw Exception("MISSING USER ID FOUND"))
 
