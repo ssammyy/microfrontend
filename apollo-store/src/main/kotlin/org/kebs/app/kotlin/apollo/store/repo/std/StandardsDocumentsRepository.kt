@@ -22,7 +22,7 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
     fun findBySdDocumentId(id: Long): Collection<DatKebsSdStandardsEntity?>?
 
     @Query(
-        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE STANDARD_DOCUMENT_ID = :id",
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE STANDARD_DOCUMENT_ID = :id AND DOCUMENT_TYPE='COMPANY STANDARD'",
         nativeQuery = true
     )
     fun findStandardUpload(id: Long): DatKebsSdStandardsEntity

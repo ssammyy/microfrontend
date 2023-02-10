@@ -1045,6 +1045,7 @@ import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-deve
 import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/tc-member-application/tc-member-application.component';
 import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/departmental-weekly-report/departmental-weekly-report.component';
 import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/individual-weekly-report/individual-weekly-report.component';
+import { IntStdListComponent } from './apollowebs/standards-development/international-standard/int-std-list/int-std-list.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1580,6 +1581,7 @@ import { IndividualWeeklyReportComponent } from './apollowebs/standards-developm
         TcMemberApplicationComponent,
         DepartmentalWeeklyReportComponent,
         IndividualWeeklyReportComponent,
+        IntStdListComponent,
 
     ],
     entryComponents: [LoaderComponent],

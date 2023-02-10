@@ -800,6 +800,20 @@ export class StdIntStandardService {
         return this.http.get<StandardBody[]>(url, {params}).pipe();
     }
 
+    public viewStandardFile(standardId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_VIEW_STANDARD);
+        const params = new HttpParams()
+            .set('standardId', standardId);
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
 
 
 

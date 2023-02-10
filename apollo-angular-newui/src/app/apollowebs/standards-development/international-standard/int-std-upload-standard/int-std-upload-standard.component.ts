@@ -34,7 +34,6 @@ export class IntStdUploadStandardComponent implements OnInit {
     stakeholderProposalComments: StakeholderProposalComments[] = [];
     internationalStandardsComments: InternationalStandardsComments[] = [];
     isCheckRequirements:ISCheckRequirements[]=[];
-    public actionRequest: ISCheckRequirements | undefined;
     comStdRemarks: ComStdRemarks[] = [];
     loadingText: string;
     approve: string;
@@ -77,6 +76,7 @@ export class IntStdUploadStandardComponent implements OnInit {
             draftId: null,
             requestId: null,
             id: null,
+            standardNumber: null,
 
         });
   }
@@ -167,38 +167,7 @@ export class IntStdUploadStandardComponent implements OnInit {
         this.isShowMainTabs= true;
 
     }
-    public onOpenModal(iSCheckRequirement: ISCheckRequirements,mode:string): void{
-        const container = document.getElementById('main-container');
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.style.display = 'none';
-        button.setAttribute('data-toggle','modal');
-        if (mode==='checkRequirementsMet'){
-            this.actionRequest=iSCheckRequirement;
-            button.setAttribute('data-target','#checkRequirementsMet');
 
-            this.prepareStandardFormGroup.patchValue(
-                {
-                    accentTo: this.approve,
-                    proposalId: this.actionRequest.proposalId,
-                    justificationId: this.actionRequest.justificationNo,
-                    draftId: this.actionRequest.id,
-                    title:this.actionRequest.title,
-                    normativeReference:this.actionRequest.normativeReference,
-                    symbolsAbbreviatedTerms:this.actionRequest.symbolsAbbreviatedTerms,
-                    clause:this.actionRequest.clause,
-                    scope:this.actionRequest.scope,
-                    special:this.actionRequest.special,
-                    standardNumber:this.actionRequest.isNumber
-                }
-            );
-
-        }
-        // @ts-ignore
-        container.appendChild(button);
-        button.click();
-
-    }
 
     @ViewChild('closeModalRequirements') private closeModalRequirements: ElementRef | undefined;
 
@@ -292,19 +261,20 @@ export class IntStdUploadStandardComponent implements OnInit {
             this.actionRequests=iSCheckRequirement;
             button.setAttribute('data-target','#approveStandard');
 
-            this.prepareStandardFormGroup.patchValue(
-                {
-                    id: this.actionRequests.id,
-                    requestId: this.actionRequests.requestId,
-                    draftId: this.actionRequests.draftId,
-                    standardNumber:this.actionRequests.comStdNumber,
-                    title:this.actionRequest.title,
-                    normativeReference:this.actionRequest.normativeReference,
-                    symbolsAbbreviatedTerms:this.actionRequest.symbolsAbbreviatedTerms,
-                    clause:this.actionRequest.clause,
-                    scope:this.actionRequest.scope,
-                    special:this.actionRequest.special,
-                }
+
+                    this.prepareStandardFormGroup.patchValue(
+                        {
+                            proposalId: this.actionRequests.proposalId,
+                            id: this.actionRequests.id,
+                            title: this.actionRequests.title,
+                            normativeReference:this.actionRequests.normativeReference,
+                            symbolsAbbreviatedTerms:this.actionRequests.symbolsAbbreviatedTerms,
+                            clause:this.actionRequests.clause,
+                            scope:this.actionRequests.scope,
+                            special:this.actionRequests.special,
+                            standardNumber:this.actionRequests.comStdNumber
+                        }
+
             );
         }
         // @ts-ignore
