@@ -50,6 +50,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   isShowCommentsTabs= true;
   isShowMainTab= true;
   isShowMainTabs= true;
+    public uploadedFiles:  FileList;
 
   constructor(
       private store$: Store<any>,

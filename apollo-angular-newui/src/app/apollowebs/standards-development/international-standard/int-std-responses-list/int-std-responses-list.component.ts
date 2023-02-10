@@ -5,7 +5,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {
     Department, DiSdtDECISION, InterNationalStdDecision, ISAdoptionJustification,
-    ISAdoptionProposal, ISDecision,
+    ISAdoptionProposal, ISDecision, ISProposalJustification,
     ISTcSecTASKS, NWADiSdtJustification,
     TechnicalCommittee
 } from "../../../../core/store/data/std/std.model";
@@ -182,7 +182,7 @@ export class IntStdResponsesListComponent implements OnInit ,OnDestroy{
         );
     }
   //save justification
-  public uploadJustification(iSAdoptionJustification: ISAdoptionJustification): void{
+  public uploadJustification(iSAdoptionJustification: ISProposalJustification): void{
       this.SpinnerService.show();
     this.stdIntStandardService.prepareJustification(iSAdoptionJustification).subscribe(
         (response) => {

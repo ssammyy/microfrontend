@@ -687,6 +687,22 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getComStdPublishing()
     }
 
+    @PreAuthorize("hasAuthority('SAC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getAppStdPublishing")
+    @ResponseBody
+    fun getAppStdPublishing(): MutableList<ComStandard>
+    {
+        return comStandardService.getAppStdPublishing()
+    }
+
+    @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/company_standard/getAppStd")
+    @ResponseBody
+    fun getAppStd(): MutableList<ComStandard>
+    {
+        return comStandardService.getAppStd()
+    }
+
 
     //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -761,6 +777,7 @@ class ComStandardController (val comStandardService: ComStandardService,
             companyName=isDraftDto.companyName
             companyPhone=isDraftDto.companyPhone
             status=statusNm
+            standardType=isDraftDto.standardType
 
 
         }
