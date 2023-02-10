@@ -63,36 +63,22 @@ export class IntStdSacApprovalComponent implements OnInit {
     this.reject='No';
     this.getAppStdPublishing();
     this.approveRequirementsFormGroup = this.formBuilder.group({
-      comments: ['', Validators.required],
-      accentTo: [],
-      justificationId:[],
-      proposalId:[],
-      draftId:[],
-        title:[],
-        normativeReference:[],
-        symbolsAbbreviatedTerms:[],
-        clause:[],
-        scope:[],
-        special:[],
-      standardNumber:[]
+        docName: null,
+        title: null,
+        scope: null,
+        normativeReference: null,
+        symbolsAbbreviatedTerms: null,
+        clause: null,
+        special: null,
+        standardType: null,
+        comments: null,
+        accentTo: null,
+        draftId: null,
+        requestId: null,
+        id: null,
 
     });
 
-    this.rejectRequirementsFormGroup = this.formBuilder.group({
-      comments: ['', Validators.required],
-      accentTo: [],
-      justificationId:[],
-      proposalId:[],
-      draftId:[],
-        title:[],
-        normativeReference:[],
-        symbolsAbbreviatedTerms:[],
-        clause:[],
-        scope:[],
-        special:[],
-
-
-    });
   }
 
   ngOnDestroy(): void {
@@ -341,6 +327,11 @@ export class IntStdSacApprovalComponent implements OnInit {
                 //alert(error.message);
             }
         );
+    }
+    @ViewChild('closeModalEditedDraft') private closeModalEditedDraft: ElementRef | undefined;
+
+    public hideModalEditedDraft() {
+        this.closeModalEditedDraft?.nativeElement.click();
     }
 
 }

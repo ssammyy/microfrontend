@@ -1159,16 +1159,17 @@ class IntStandardService(
         val timeOfRemark= Timestamp(System.currentTimeMillis())
         val standard= Standard()
 
-        standard.title=standard.title
-        standard.normativeReference=standard.normativeReference
-        standard.symbolsAbbreviatedTerms=standard.symbolsAbbreviatedTerms
-        standard.clause=standard.clause
-        standard.scope=standard.scope
-        standard.special=standard.special
-        standard.standardNumber=standard.standardNumber
+        standard.title=iStandardUploadDto.title
+        standard.normativeReference=iStandardUploadDto.normativeReference
+        standard.symbolsAbbreviatedTerms=iStandardUploadDto.symbolsAbbreviatedTerms
+        standard.clause=iStandardUploadDto.clause
+        standard.scope=iStandardUploadDto.scope
+        standard.special=iStandardUploadDto.special
+        standard.standardNumber=iStandardUploadDto.standardNumber
         standard.standardType="International Standard"
         standard.status=0
         standard.dateFormed=timeOfRemark
+        standard.createdBy=loggedInUser.id
         companyStandardRepository.findByIdOrNull(iStandardUploadDto.id)?.let { companyStandard ->
             with(companyStandard) {
                 status = 10
@@ -1179,6 +1180,18 @@ class IntStandardService(
         }?: throw Exception("DRAFT NOT FOUND")
 
         return standard
+    }
+
+    fun getInternationalStandards(): MutableList<Standard> {
+        return standardRepository.getInternationalStandards()
+    }
+
+    fun getCompanyStandards(): MutableList<Standard> {
+        return standardRepository.getCompanyStandards()
+    }
+
+    fun getStandards(): MutableList<Standard> {
+        return standardRepository.getStandards()
     }
 
     fun getStandardForGazettement(): MutableList<ISUploadedDraft> {

@@ -1974,5 +1974,21 @@ export interface TechnicalCommittee {
     advertisingStatus: number;
 }
 
+export interface StandardBody{
+    id : number;
+    title : string;
+    scope : string;
+    normativeReference : string;
+    symbolsAbbreviatedTerms : string;
+    clause : string;
+    special : string;
+    standardNumber : string;
+    status : string;
+    standardType : string;
+    description : string;
+    dateFormed : Timestamp<any>;
+    createdBy : string;
+}
+
 
 

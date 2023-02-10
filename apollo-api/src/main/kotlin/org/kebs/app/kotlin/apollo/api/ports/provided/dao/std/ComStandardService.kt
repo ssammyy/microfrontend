@@ -1454,5 +1454,8 @@ class ComStandardService(
         return "$startId/$finalValue:$year";
     }
 
+    fun findUploadedStandard(standardId: Long): DatKebsSdStandardsEntity {
+        return sdDocumentsRepository.findStandardUpload(standardId)
+    }
 
 }

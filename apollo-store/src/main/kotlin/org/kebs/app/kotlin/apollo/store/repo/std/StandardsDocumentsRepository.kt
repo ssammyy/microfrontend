@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo.std
 
+import org.kebs.app.kotlin.apollo.store.model.std.ComStandardUploads
 import org.kebs.app.kotlin.apollo.store.model.std.DatKebsSdStandardsEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -19,6 +20,12 @@ interface StandardsDocumentsRepository : JpaRepository<DatKebsSdStandardsEntity,
     @Query(value = "SELECT max(ID)  FROM DAT_KEBS_SD_STANDARDS_UPLOADS", nativeQuery = true)
     fun getMaxUploadedID(): Long
     fun findBySdDocumentId(id: Long): Collection<DatKebsSdStandardsEntity?>?
+
+    @Query(
+        value = "SELECT * FROM DAT_KEBS_SD_STANDARDS_UPLOADS WHERE STANDARD_DOCUMENT_ID = :id",
+        nativeQuery = true
+    )
+    fun findStandardUpload(id: Long): DatKebsSdStandardsEntity
 
 
     fun findBySdDocumentIdAndDocumentType(id:Long, documentType: String) :Collection<DatKebsSdStandardsEntity?>?

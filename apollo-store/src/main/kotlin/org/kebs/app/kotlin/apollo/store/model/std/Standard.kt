@@ -79,6 +79,10 @@ class Standard {
     @Basic
     var comStdId:Long? =null
 
+    @Column(name="CREATED_BY")
+    @Basic
+    var createdBy:Long? =null
+
 
 
 }

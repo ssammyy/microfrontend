@@ -645,6 +645,15 @@ interface StandardRepository : JpaRepository<Standard, Long> {
         nativeQuery = true
     )
     fun getStandardForGazettement(): MutableList<ISUploadedDraft>
+
+    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE STANDARD_TYPE='International Standard' AND STATUS=0", nativeQuery = true)
+    fun getInternationalStandards(): MutableList<Standard>
+
+    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE STANDARD_TYPE='Company Standard' AND STATUS=0", nativeQuery = true)
+    fun getCompanyStandards(): MutableList<Standard>
+
+    @Query(value = "SELECT * FROM SD_STANDARD_TBL WHERE  STATUS=0", nativeQuery = true)
+    fun getStandards(): MutableList<Standard>
 }
 
 interface StandardReviewCommentsRepository : JpaRepository<StandardReviewComments, Long> {
