@@ -4789,7 +4789,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
       formData.append('docTypeName', 'DATA_REPORT_UPLOAD');
       formData.append('data', JSON.stringify(this.dataSaveDataReport));
-      if(this.uploadedFilesDataReport.length > 0 ){
+      if(this.uploadedFilesDataReport?.length > 0 ){
         const file = this.uploadedFilesDataReport;
         for (let i = 0; i < file.length; i++) {
           console.log(file[i]);
