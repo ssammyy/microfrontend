@@ -178,8 +178,7 @@ class QAControllerTest {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = usersRepo.findByUserName("kpaul7747@gmail.com")
 
-        val allUnpaidInvoices =
-            loggedInUser?.let { postInvoiceToSageServices.postInvoiceTransactionToSage(1412, it.userName!!, map) }
+        val allUnpaidInvoices = loggedInUser?.let { postInvoiceToSageServices.postInvoiceTransactionToSage(1412, it.userName!!, map) }
         KotlinLogging.logger { }.info { "DETAILS SAVE   " }
     }
 
