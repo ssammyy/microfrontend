@@ -4517,9 +4517,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   onClickAddDataReportParam() {
     this.dataSaveDataReportParam = this.dataReportParamForm.value;
 
-
-
-
     this.dataSaveDataReportParamList.push(this.dataSaveDataReportParam);
     this.dataReportParamForm?.get('productName')?.reset();
     this.dataReportParamForm?.get('typeBrandName')?.reset();
@@ -4723,7 +4720,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
       formData.append('docTypeName', 'DATA_REPORT_UPLOAD');
       formData.append('data', JSON.stringify(this.dataSaveDataReport));
-      if (this.uploadedFilesDataReport.length > 0){
+      if (this.uploadedFilesDataReport?.length > 0){
         const file = this.uploadedFilesDataReport;
         for (let i = 0; i < file.length; i++) {
           console.log(file[i]);
@@ -5285,20 +5282,27 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.addLabParamStatus = true;
   }
 
-  calculateAverageCompliance(){
-    console.log("Function called");
-    let dataReportData = this.workPlanInspection?.dataReportDto;
+  calculateAverageCompliance() {
+    console.log('Function called');
+    let dataReportDetails = this.workPlanInspection?.dataReportDto;
     let sumOfCompliance = 0;
-    for (let i=1; i<dataReportData?.length; i++){
-      sumOfCompliance += dataReportData[i].totalComplianceScore;
-      console.log("Each value of column: " + dataReportData[i].totalComplianceScore);
-      console.log("Data type: "+ typeof dataReportData[i].totalComplianceScore);
+    for (let i = 0; i < dataReportDetails?.length; i++) {
+      let totalComplianceScore = Number(dataReportDetails[i].totalComplianceScore);
+      if (isNaN(totalComplianceScore)) {
+        console.log(`Value of totalComplianceScore at index ${i} is not a number`);
+        continue;
+      }
+      else{
+        console.log('This is a number: ' + totalComplianceScore);
+      }
+      sumOfCompliance += totalComplianceScore;
     }
-    this.averageCompliance = sumOfCompliance/dataReportData?.length;
-    if (isNaN(this.averageCompliance)){
-      console.log("The average compliance is nan" + this.averageCompliance);
+    console.log("Data report Details: "+ dataReportDetails);
+    console.log("Sum: " + sumOfCompliance);
+    this.averageCompliance = sumOfCompliance / dataReportDetails?.length;
+    if (isNaN(this.averageCompliance)) {
+      console.log(`The average compliance is NaN: ${this.averageCompliance}`);
     }
-
   }
 
   viewFile(fileUploaded: File) {

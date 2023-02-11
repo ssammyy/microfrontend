@@ -1150,4 +1150,24 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getUsers()
     }
 
+    // View Standard
+    @GetMapping("/anonymous/company_standard/viewStandard")
+    fun viewStandard(
+        response: HttpServletResponse,
+        @RequestParam("standardId") standardId: Long
+    ) {
+        val fileUploaded = comStandardService.findUploadedStandard(standardId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
 }

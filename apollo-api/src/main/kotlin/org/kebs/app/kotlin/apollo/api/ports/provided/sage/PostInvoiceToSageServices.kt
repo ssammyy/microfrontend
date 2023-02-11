@@ -684,7 +684,6 @@ class PostInvoiceToSageServices(
                                                 result.statusCode = invoiceStatus.duplicateTransaction
                                                 result.statusDescription = record.statusDescription
                                                 return result
-
                                             }
                                             else -> {
                                                 log.integrationRequest = daoService.mapper().writeValueAsString(value)
@@ -737,7 +736,6 @@ class PostInvoiceToSageServices(
 
                                             }
                                         }
-
                                     }
                                     ?: run {
                                         result.responseDate = Timestamp.from(Instant.now())
