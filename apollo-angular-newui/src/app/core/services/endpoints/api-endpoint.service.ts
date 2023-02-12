@@ -702,6 +702,7 @@ export class ApiEndpointService {
 
     public static QA_MANUFACTURE_ENDPOINT = {
         GENERATE_INVOICE_DIFFERENCE: `${ApiEndpointService.QA_CONTEXT}/permit/apply/generate-difference-invoice`,
+        GET_STANDARD_LIST: `${ApiEndpointService.QA_CONTEXT}/standards-list`,
     };
 
     public static QA_INTERNAL_USER_ENDPOINT = {
