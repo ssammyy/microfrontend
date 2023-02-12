@@ -265,7 +265,7 @@ export class InspectionReport implements OnInit {
                 );
             } else {
                 this.SpinnerService.show();
-                this.internalService.updateInspectionReportTechnicalDetails(String(this.technicalDetails.id), this.technicalForm.value).subscribe(
+                this.internalService.saveInspectionReportTechnicalDetails(String(this.permitId), this.technicalForm.value).subscribe(
                     (data) => {
                         this.technicalDetails = data;
                         this.onClickUpdateStep(this.step);

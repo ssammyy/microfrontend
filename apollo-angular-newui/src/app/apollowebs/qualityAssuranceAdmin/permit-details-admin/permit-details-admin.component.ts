@@ -1409,6 +1409,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     }
+
     generateInspectionReport(permitId: string) {
 
         var text = permitId;

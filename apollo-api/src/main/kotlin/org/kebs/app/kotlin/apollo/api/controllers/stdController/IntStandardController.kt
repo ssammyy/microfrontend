@@ -662,6 +662,27 @@ class IntStandardController(
         return internationalStandardService.getStandardForGazettement()
     }
 
+    @GetMapping("/anonymous/international_standard/getCompanyStandards")
+    @ResponseBody
+    fun getCompanyStandards(): MutableList<Standard>
+    {
+        return internationalStandardService.getCompanyStandards()
+    }
+
+    @GetMapping("/anonymous/international_standard/getInternationalStandards")
+    @ResponseBody
+    fun getInternationalStandards(): MutableList<Standard>
+    {
+        return internationalStandardService.getInternationalStandards()
+    }
+
+    @GetMapping("/anonymous/international_standard/getStandards")
+    @ResponseBody
+    fun getStandards(): MutableList<Standard>
+    {
+        return internationalStandardService.getStandards()
+    }
+
     //********************************************************** process upload Gazette Notice **********************************************************
     @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('HOD_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/uploadGazetteNotice")

@@ -41,13 +41,13 @@ class QaInspectionProductLabelEntity : Serializable {
     @Basic
     var status: Int? = null
 
-    @Column(name = "VAR_FIELD_1")
+    @Column(name = "TECHNICAL_INSPECTION_ID")
     @Basic
-    var varField1: String? = null
+    var technicalInspectionId: String? = null
 
-    @Column(name = "VAR_FIELD_2")
+    @Column(name = "STATUS_OF_COMPLIANCE")
     @Basic
-    var varField2: String? = null
+    var statusOfCompliance: String? = null
 
     @Column(name = "VAR_FIELD_3")
     @Basic

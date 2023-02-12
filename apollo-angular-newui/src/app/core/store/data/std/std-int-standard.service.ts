@@ -20,7 +20,7 @@ import {
     NWAStandard, PredefinedSDCommentsFields,
     ProposalComment,
     ProposalComments,
-    StakeholderProposalComments, UsersEntity
+    StakeholderProposalComments, StandardBody, UsersEntity
 } from "./std.model";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
@@ -275,6 +275,19 @@ export class StdIntStandardService {
             })
         );
     }
+    public uploadInternationalStandard(iStandardDraftEdit: IStandardDraftEdit): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_SUBMIT_STANDARD);
+        const params = new HttpParams();
+        return this.http.post<IStandardDraftEdit>(url, iStandardDraftEdit, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
 
     public getStandardForGazettement(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_STANDARD_GAZETTE);
@@ -760,6 +773,38 @@ export class StdIntStandardService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_STANDARD);
         const params = new HttpParams();
         return this.http.post<ISDraftUpload>(url, iSDraftUpload, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getCompanyStandards(): Observable<StandardBody[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_COM_STANDARDS);
+        const params = new HttpParams();
+        return this.http.get<StandardBody[]>(url, {params}).pipe();
+    }
+
+    public getInternationalStandards(): Observable<StandardBody[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_INT_STANDARDS);
+        const params = new HttpParams();
+        return this.http.get<StandardBody[]>(url, {params}).pipe();
+    }
+
+    public getStandards(): Observable<StandardBody[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_ALL_STANDARDS);
+        const params = new HttpParams();
+        return this.http.get<StandardBody[]>(url, {params}).pipe();
+    }
+
+    public viewStandardFile(standardId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_VIEW_STANDARD);
+        const params = new HttpParams()
+            .set('standardId', standardId);
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
                 return response;
             }),

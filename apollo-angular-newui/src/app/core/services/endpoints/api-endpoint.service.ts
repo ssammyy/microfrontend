@@ -461,7 +461,11 @@ export class ApiEndpointService {
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
         IST_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitDraftComments`,
         IST_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftComment`,
-
+        IST_SUBMIT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadInternationalStandard`,
+        IST_VIEW_COM_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getCompanyStandards`,
+        IST_VIEW_INT_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getInternationalStandards`,
+        IST_VIEW_ALL_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getStandards`,
+        ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/viewStandard`,
 
         // SD COMPANY STANDARDS
         ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,
@@ -501,7 +505,8 @@ export class ApiEndpointService {
         ICT_COM_UPLOAD_SD: `${ApiEndpointService.SD_ICT_CONTEXT}/std-file-upload`,
         ICT_COM_HOP_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHopTasks`,
         ICT_COM_EDIT_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/editCompanyStandard`,
-        ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/std-efile-upload`,
+        ICT_COM_VIEW_STANDARD: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/viewStandard`,
+
 
 
         ICT_COM_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequest`,

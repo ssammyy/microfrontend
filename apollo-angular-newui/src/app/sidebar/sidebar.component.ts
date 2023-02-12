@@ -804,6 +804,8 @@ export const ROUTES: RouteInfo[] = [
             {path: 'comStdList', title: 'Company Standard Requests', ab: 'CSR'},
             {path: 'comStdDraft', title: 'Uploaded Drafts', ab: 'UT'},
             {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
+            {path: 'companyStandardList', title: 'Company Standards', ab: 'CS'},
+            {path: 'comStdListed', title: 'Standards', ab: 'ST'},
             //{path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},
             //{path: 'comStdPublishing', title: 'Publishing Tasks', ab: 'PT'},
 
@@ -834,7 +836,8 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'isApproveDraftStd', title: 'Check Standard', ab: 'CS'},
             // {path: 'isApprovedEdits', title: 'View Edited Draft', ab: 'J'},
              {path: 'isSacApproval', title: 'SAC Tasks', ab: 'ST'},
-            // {path: 'isStandardGazette', title: 'Gazette Notice', ab: 'GN'},
+             {path: 'isUploadStd', title: 'Upload Standard', ab: 'US'},
+             {path: 'intStandardLists', title: 'International Standards', ab: 'IS'},
 
 
         ],
