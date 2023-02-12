@@ -288,6 +288,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     public tableData5: TableData;
     public tableData12: TableData;
     public tableData10: TableData;
+    public tableData11: TableData;
     blob: Blob;
 
 
@@ -903,8 +904,8 @@ export class PermitDetailsAdminComponent implements OnInit {
                 },
             );
         }
-        if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
-            const invoiceDetailsList = this.allPermitDetails.invoiceDetails.invoiceDetailsList;
+        if (this.allPermitDetails?.permitDetails?.invoiceGenerated === true) {
+            const invoiceDetailsList = this.allPermitDetails?.invoiceDetails?.invoiceDetailsList;
             let inspectionFee = 0;
             let permitFee = 0;
             let fMarkFee = 0;
@@ -935,18 +936,32 @@ export class PermitDetailsAdminComponent implements OnInit {
 
                 ],
             };
+
             this.tableData10 = {
                 headerRow: ['Item', 'Details/Fee'],
                 dataRows: [
-                    ['Invoice Ref No', this.allPermitDetails.invoiceDifferenceDetails.invoiceRef],
+                    ['Invoice Ref No', this.allPermitDetails?.invoiceDifferenceDetails?.invoiceRef],
                     ['Inspection Fee', `KSH ${inspectionFee}`],
                     ['FMARK Permit', `KSH ${fMarkFee}`],
                     ['SMARK Permit', `KSH ${permitFee}`],
                     // ['Description', this.allPermitDetails.invoiceDetails.description],
-                    ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDifferenceDetails.subTotalBeforeTax}`],
-                    ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDifferenceDetails.taxAmount}`],
-                    ['Total Amount', `KSH ${this.allPermitDetails.invoiceDifferenceDetails.totalAmount}`],
+                    ['Sub Total Before Tax', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.subTotalBeforeTax}`],
+                    ['Tax Amount', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.taxAmount}`],
+                    ['Total Amount', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.totalAmount}`],
 
+                ],
+            };
+            this.tableData11 = {
+                headerRow: ['Item', 'Details/Fee'],
+                dataRows: [
+                    ['Invoice Ref No', this.allPermitDetails?.inspectionFeeInvoice?.invoiceRef],
+                    ['Inspection Fee', `KSH ${inspectionFee}`],
+                    ['FMARK Permit', `KSH ${fMarkFee}`],
+                    ['SMARK Permit', `KSH ${permitFee}`],
+                    // ['Description', this.allPermitDetails.invoiceDetails.description],
+                    ['Sub Total Before Tax', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.subTotalBeforeTax}`],
+                    ['Tax Amount', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.taxAmount}`],
+                    ['Total Amount', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.totalAmount}`],
                 ],
             };
             this.SpinnerService.hide();

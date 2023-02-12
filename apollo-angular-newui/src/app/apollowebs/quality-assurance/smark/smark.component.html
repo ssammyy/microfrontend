@@ -1607,6 +1607,15 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.branchID !=null
+                         && allPermitDetails?.inspectionFeeInvoice ==null && allPermitDetails?.inspectionNeeded"
+                                mat-raised-button=""
+                                (click)="onClickGenerateInspectionFee(allPermitDetails?.permitDetails?.branchID)" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">Generate Inspection Invoice</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+
                         <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated "
                                 mat-raised-button=""
                                 (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span

@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.common.dto.qa
 import org.kebs.app.kotlin.apollo.common.dto.CompanyUpgradeStatusDto
 import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.ms.MSSSFLabResultsDto
 import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
@@ -795,6 +796,7 @@ data class PermitDetailsDto(
     var permitGenerateDifference: Boolean? = null,
     var inspectionReportGenerated: Boolean? = null,
     var companyId: Long? = null,
+    var branchID: Long? = null,
     var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
     var ssfCompletedStatus: Boolean? = null,
     var compliantStatus: Boolean? = null,
@@ -823,6 +825,9 @@ data class AllPermitDetailsDto(
     var sta10DTO: AllSTA10DetailsDto? = null,
     var sectionList: List<SectionsEntityDto>? = null,
     var ssfListDetails: List<SSFDetailsDto>? = null,
+    var sampleLabResults: List<MSSSFLabResultsDto>? = null,
+    var inspectionNeeded: Boolean? = null,
+    var inspectionFeeInvoice: InvoiceDetailsDto? = null,
 )
 
 

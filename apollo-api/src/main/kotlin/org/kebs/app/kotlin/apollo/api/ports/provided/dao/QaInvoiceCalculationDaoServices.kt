@@ -60,8 +60,8 @@ class QaInvoiceCalculationDaoServices(
 
         KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 
-        if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId== selectedRate.id && plantDetail.inspectionFeeStatus!=1){
-            throw Exception("Kindly Pay the Inspection fees First before submitting current application")
+        if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId== selectedRate.id && plantDetail.invoiceInspectionGenerated!=1){
+            throw Exception("Kindly Pay/Generate the Inspection fees First before submitting current application")
         }
 
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
@@ -525,10 +525,10 @@ class QaInvoiceCalculationDaoServices(
 
         val tokenGenerated = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         when {
-            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null -> {
-                 throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.invoiceInspectionGenerated == null -> {
+                 throw ExpectedDataNotFound("Kindly Pay/Generate the Inspection fees First before submitting current application")
             }
-            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
+            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.invoiceInspectionGenerated == 1 -> {
 
                 val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
                     invoiceMasterId = invoiceMaster.id
@@ -547,7 +547,7 @@ class QaInvoiceCalculationDaoServices(
                 qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
 
             }commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
-                throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+                throw ExpectedDataNotFound("Kindly Pay/Generate this Year Inspection fees First before submitting current application")
             }
             else -> {
                 throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR LARGE FIRM")

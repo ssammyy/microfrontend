@@ -45,6 +45,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaInvoiceMasterDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaProcessStatusRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -91,6 +92,7 @@ class QualityAssuranceHandler(
     private val service: StandardsLevyDaoService,
     private val companyProfileEntity: ICompanyProfileRepository,
     private val invoiceMasterDetailsRepo: IQaInvoiceMasterDetailsRepository,
+    private val qaInvoiceDetailsRepo: IQaInvoiceDetailsRepository,
 
 
 
@@ -1946,15 +1948,48 @@ class QualityAssuranceHandler(
         return try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID =req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
             val permit = qaDaoServices.findPermitBYID(permitID)
+            val plantDetail = qaDaoServices.findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+
 
             invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permitID)?.let { invoice ->
+                qaInvoiceDetailsRepo.findAllByInvoiceMasterId(invoice.id)?.let {inv->
+                    when {
+                        applicationMapProperties.mapQASmarkMediumTurnOverId == permit.permitType -> {
+                            if(plantDetail.tokenGiven == inv.tokenValue && plantDetail.invoiceSharedId == inv.id){
+                                with(plantDetail) {
+                                    tokenGiven = null
+                                    invoiceSharedId = null
+                                    paidDate = null
+                                    endingDate = null
+                                }
+                                qaDaoServices.updatePlantDetails(map, loggedInUser, plantDetail)
+                            }
+                        }
+                        applicationMapProperties.mapQASmarkJuakaliTurnOverId == permit.permitType -> {
+                            if(plantDetail.tokenGiven == inv.tokenValue && plantDetail.invoiceSharedId == inv.id){
+                                with(plantDetail) {
+                                    tokenGiven = null
+                                    invoiceSharedId = null
+                                    paidDate = null
+                                    endingDate = null
+                                }
+                                qaDaoServices.updatePlantDetails(map, loggedInUser, plantDetail)
+                            }
+                        }
+                    }
+                    qaInvoiceDetailsRepo.delete(inv)
+                }
                 qaDaoServices.deleteInvoice(invoice.id)
             }
+
+
+
             permit.id?.let { qaDaoServices.deletePermit(it) }
+
+
 
             return ok().body(permit)
 
@@ -2369,7 +2404,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val branchID = req.paramOrNull("branchID")?.toLong()?: throw ExpectedDataNotFound("Required Branch ID, check config")
             qaDaoServices.updateInspectionFeesDetailsDetails(branchID, loggedInUser, map)
-                .let { ok().body(it)}
+                .let { ok().body(it.first)}
                 ?: onErrors("We could not process your request at the moment")
 
 
@@ -2677,7 +2712,7 @@ class QualityAssuranceHandler(
                     paidStatus = 0
                     sendApplication = map.activeStatus
                     endOfProductionStatus = map.inactiveStatus
-                    invoiceDifferenceGenerated = map.activeStatus
+                    invoiceDifferenceGenerated = 1
                     varField10 = map.activeStatus.toString()
                     varField9 = 2.toString()
                     permitStatus = applicationMapProperties.mapQaStatusPPayment

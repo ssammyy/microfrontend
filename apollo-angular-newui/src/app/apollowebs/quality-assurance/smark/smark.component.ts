@@ -612,6 +612,31 @@ export class SmarkComponent implements OnInit {
         );
     }
 
+    onClickGenerateInspectionFee(branchID: number) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Generate inspection invoice?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            `You can click \'Generate Inspection Invoice\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+                this.generateInspectionFee(branchID);
+            });
+    }
+
+    generateInspectionFee(branchID: number) {
+
+        this.qaService.generateInspectionFees(branchID).subscribe(
+            (data: any) => {
+                this.SpinnerService.hide();
+                this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {
+                });
+            },
+            error => {
+                this.SpinnerService.hide();
+                console.log(error);
+                this.qaService.showError('AN ERROR OCCURRED');
+            },
+        );
+
+    }
+
     submitPermitGenerateDifference(): void {
         const companyStatusDetails = this.allPermitDetails.companyStatusDetails;
         if (companyStatusDetails.updateDetailsStatus) {

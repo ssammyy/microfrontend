@@ -187,7 +187,7 @@ export class BranchList implements OnInit {
 
   generateInspectionFee(record: Branches) {
 
-      this.qaService.generateInspectionFees(record).subscribe(
+      this.qaService.generateInspectionFees(record.id).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
             this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {

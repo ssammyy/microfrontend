@@ -476,11 +476,11 @@ export class QaService {
         );
     }
 
-    public generateInspectionFees(data: Branches): Observable<any> {
+    public generateInspectionFees(branchID: number): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.GENERATE_INSPECTION_FEES_INVOICE);
         const params = new HttpParams()
-            .set('branchID', String(data.id));
-        return this.http.post<any>(url, data, {params}).pipe(
+            .set('branchID', String(branchID));
+        return this.http.post<any>(url, null, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

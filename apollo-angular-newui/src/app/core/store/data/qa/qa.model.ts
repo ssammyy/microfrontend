@@ -298,6 +298,7 @@ export class PermitEntityDetails {
     permitGenerateDifference: boolean;
     inspectionReportGenerated: boolean;
     companyId: number;
+    branchID: number;
     factoryInspectionReportApprovedRejectedStatus: boolean;
     ssfCompletedStatus: boolean;
     compliantStatus: boolean;
@@ -423,6 +424,8 @@ export class AllPermitDetailsDto {
     sectionList: SectionsEntityDto[];
     standardsList: StandardsDto[];
     ssfListDetails: SSFDetailsDto[];
+    inspectionNeeded: boolean;
+    inspectionFeeInvoice: InvoiceDetailsDto;
     sampleLabResults: MSSSFLabResultsDto[];
 }
 
