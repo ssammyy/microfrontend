@@ -15,8 +15,8 @@ import {
   COMPreliminaryDraft,
   ComStandard,
   ComStandardJC,
-  ComStdAction, ComStdCommitteeRemarks, ComStdDraftEdit, ComStdRemarks,
-  ComStdRequest,
+  ComStdAction, ComStdCommitteeRemarks, ComStdContactFields, ComStdDraftEdit, ComStdRemarks,
+  ComStdRequest, ComStdRequestFields,
   Department, InternationalStandardsComments,
   ISCheckRequirements, ISDraftDecision, IStandardDraftEdit, IStandardUpload,
   NWAPreliminaryDraft,
@@ -28,7 +28,8 @@ import {
 } from './std.model';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
-import {DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
+import {CompanyContactDetails, DocumentDTO, JCList, SiteVisitRemarks} from "../levy/levy.model";
+import {FormGroup} from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -93,10 +94,11 @@ export class StdComStandardService {
 //     return this.http.get<any>(url, {params}).pipe();
 //   }
 
-  public addStandardRequest(companyStandardRequest: CompanyStandardRequest): Observable<any> {
+  public addStandardRequest(companyStandardRequest: ComStdRequestFields, comStdContactFields: ComStdContactFields[]): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_ADD_STD_REQUEST);
     const params = new HttpParams();
-    return this.http.post<CompanyStandardRequest>(url, companyStandardRequest, {params}).pipe(
+    companyStandardRequest.contactDetails=comStdContactFields
+    return this.http.post<ComStdRequestFields>(url, companyStandardRequest, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -604,6 +606,17 @@ export class StdComStandardService {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_DRAFT_COMMENTS_LIST);
     const params = new HttpParams().set('draftID', draftID);
     return this.http.get<DocumentDTO[]>(url, {params}).pipe();
+  }
+
+  public getCompanyContactDetails(requestId: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_CONTACT_DETAILS);
+    const params = new HttpParams().set('requestId', requestId);
+    return this.http.get<CompanyContactDetails[]>(url, {params}).pipe();
+  }
+  public getCommitteeList(requestId: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COMMITTEE_LIST);
+    const params = new HttpParams().set('requestId', requestId);
+    return this.http.get<JCList[]>(url, {params}).pipe();
   }
 
   public checkRequirements(isDraftDecision: ISDraftDecision): Observable<any> {

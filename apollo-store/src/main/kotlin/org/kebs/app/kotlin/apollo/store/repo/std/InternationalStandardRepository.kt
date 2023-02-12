@@ -318,12 +318,12 @@ interface ComStandardRequestRepository : JpaRepository<CompanyStandardRequest, L
 
 }
 interface IStdStakeHoldersRepository : JpaRepository<IStandardStakeHolders, Long> {
-    @Query(value = "SELECT NAME as name,EMAIL as email FROM SD_IS_STAKE_HOLDERS WHERE DRAFT_ID=:draftId  ", nativeQuery = true)
+    @Query(value = "SELECT NAME as name,EMAIL as email,TELEPHONE as telephone FROM SD_IS_STAKE_HOLDERS WHERE DRAFT_ID=:draftId  ", nativeQuery = true)
     fun getStakeHoldersList(@Param("draftId") draftId: Long?): MutableList<EmailList>
 }
 
 interface ComStdJointCommitteeRepository : JpaRepository<ComStandardJointCommittee, Long> {
-    @Query(value = "SELECT NAME as name,EMAIL as email FROM DAT_KEBS_COM_JOINT_COMMITTEE WHERE REQUEST_ID=:requestId  ", nativeQuery = true)
+    @Query(value = "SELECT NAME as name,EMAIL as email,TELEPHONE as telephone FROM DAT_KEBS_COM_JOINT_COMMITTEE WHERE REQUEST_ID=:requestId  ", nativeQuery = true)
     fun getCommitteeList(@Param("requestId") requestId: Long?): MutableList<EmailList>
 }
 interface ComStdActionRepository : JpaRepository<ComStdAction, Long> {
@@ -855,6 +855,11 @@ interface CompanyStandardRemarksRepository : JpaRepository<CompanyStandardRemark
 
     fun findByRequestIdOrderByIdDesc(id: Long): MutableIterable<CompanyStandardRemarks>?
 }
+
+interface ComContactDetailsRepository : JpaRepository<ComContactDetails, Long> {
+    fun findByRequestIdOrderByIdDesc(id: Long): MutableList<ComContactDetails>?
+}
+
 
 
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{

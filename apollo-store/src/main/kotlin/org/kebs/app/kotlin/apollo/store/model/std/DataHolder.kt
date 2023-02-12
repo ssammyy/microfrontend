@@ -416,6 +416,7 @@ interface UserEmailListHolder{
 interface EmailList{
    fun getEmail(): String?
    fun getName(): String?
+   fun getTelephone(): String?
 }
 
 interface UserIdHolder{

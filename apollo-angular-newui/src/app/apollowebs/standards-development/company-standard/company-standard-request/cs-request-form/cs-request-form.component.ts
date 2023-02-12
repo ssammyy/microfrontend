@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {
-  CompanyStandardRequest,
-  Department,
-  Product,
-  ProductSubCategory,
-  TechnicalCommittee
+    CompanyStandardRequest, ComStdContactFields, ComStdRequestFields,
+    Department, PredefinedSdIntCommentsFields,
+    Product,
+    ProductSubCategory,
+    TechnicalCommittee
 } from "../../../../../core/store/data/std/std.model";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -15,6 +15,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../../core/store/data/std/notification.service";
 import {StandardDevelopmentService} from "../../../../../core/store/data/std/standard-development.service";
 import swal from "sweetalert2";
+import {DataTableDirective} from "angular-datatables";
+import {Subject} from "rxjs";
 
 declare const $: any;
 
@@ -24,6 +26,11 @@ declare const $: any;
   styleUrls: ['./cs-request-form.component.css']
 })
 export class CsRequestFormComponent implements OnInit {
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
+
   public products !: Product[] ;
   public productsSubCategory !: ProductSubCategory[] ;
   public departments !: Department[] ;
@@ -31,6 +38,10 @@ export class CsRequestFormComponent implements OnInit {
   public stdRequestFormGroup!: FormGroup;
     blob: Blob;
     public uploadedFiles:  FileList;
+    dataSaveResourcesRequired : ComStdContactFields;
+    dataSaveResourcesRequiredList: ComStdContactFields[]=[];
+    predefinedSDCommentsDataAdded: boolean = false;
+    submitted = false;
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -45,24 +56,15 @@ export class CsRequestFormComponent implements OnInit {
       this.getDepartments();
 
     this.stdRequestFormGroup = this.formBuilder.group({
-    companyName:['', Validators.required],
-    companyPhone:['', Validators.required],
-    departmentId:['', Validators.required],
-    // tcId: ['', Validators.required],
-    // productId: ['', Validators.required],
-    // productSubCategoryId:['', Validators.required],
-    companyEmail:['', Validators.required],
-    subject: ['',Validators.required],
-    description: ['',Validators.required],
-    contactOneFullName: ['',Validators.required],
-    contactOneTelephone: ['',Validators.required],
-    contactOneEmail: ['',Validators.required]
-    // contactTwoFullName: [],
-    // contactTwoTelephone: [],
-    // contactTwoEmail: [],
-    // contactThreeFullName: [],
-    // contactThreeTelephone: [],
-    // contactThreeEmail: []
+    companyName:null,
+    companyPhone:null,
+    departmentId:null,
+    companyEmail:null,
+    subject:null,
+    description:null,
+    contactOneFullName:null,
+    contactOneTelephone:null,
+    contactOneEmail:null
     });
   }
   get formStdRequest(): any{
@@ -85,12 +87,13 @@ export class CsRequestFormComponent implements OnInit {
 
     saveStandard(): void {
     this.SpinnerService.show();
-    this.stdComStandardService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
+    this.stdComStandardService.addStandardRequest(this.stdRequestFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
         (response) =>{
 
           this.SpinnerService.hide();
           console.log(response);
             this.onClickSaveUploads(response.body.id)
+            this.ngOnInit();
 
         },
         (error:HttpErrorResponse) =>{
@@ -230,6 +233,39 @@ export class CsRequestFormComponent implements OnInit {
                 '<a href="{3}" target="{4}" data-notify="url"></a>' +
                 '</div>'
         });
+    }
+
+    onClickAddResource() {
+        this.dataSaveResourcesRequired = this.stdRequestFormGroup.value;
+        console.log(this.dataSaveResourcesRequired);
+        // tslint:disable-next-line:max-line-length
+        this.dataSaveResourcesRequiredList.push(this.dataSaveResourcesRequired);
+        console.log(this.dataSaveResourcesRequiredList);
+        this.predefinedSDCommentsDataAdded= true;
+        console.log(this.predefinedSDCommentsDataAdded);
+
+        this.stdRequestFormGroup?.get('contactOneFullName')?.reset();
+        this.stdRequestFormGroup?.get('contactOneTelephone')?.reset();
+        this.stdRequestFormGroup?.get('contactOneEmail')?.reset();
+    }
+
+    // Remove Form repeater values
+    removeDataResource(index) {
+        console.log(index);
+        if (index === 0) {
+            this.dataSaveResourcesRequiredList.splice(index, 1);
+            this.predefinedSDCommentsDataAdded = false
+        } else {
+            this.dataSaveResourcesRequiredList.splice(index, index);
+        }
+    }
+
+    onClickSaveWorkPlanScheduled() {
+        this.submitted = true;
+        console.log(this.dataSaveResourcesRequiredList.length);
+        if (this.dataSaveResourcesRequiredList.length > 0) {
+            this.saveStandard();
+        }
     }
 
 

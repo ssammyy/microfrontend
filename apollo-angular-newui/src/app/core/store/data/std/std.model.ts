@@ -534,6 +534,21 @@ export interface ComDraftComment {
 
 
 }
+export class ComStdContactFields{
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+}
+export class ComStdRequestFields{
+    companyName: string;
+    companyPhone: string;
+    departmentId: number;
+    companyEmail: string;
+    subject: string;
+    description: string;
+    contactDetails: ComStdContactFields[]
+
+}
 export class PredefinedSdIntCommentsFields{
     commentTitle: string;
     commentDocumentType: string;
@@ -1328,18 +1343,10 @@ export interface ApproveDraft {
     response: string;
     companyName: string;
     companyPhone: string;
-    contactOneFullName: string;
-    contactOneTelephone: string;
-    contactOneEmail: string;
     departmentId: number;
     subject: string;
     description: string;
-    contactTwoFullName: string;
-    contactTwoTelephone: string;
-    contactTwoEmail: string;
-    contactThreeFullName: string;
-    contactThreeTelephone: string;
-    contactThreeEmail: string;
+    title: string;
 }
 
 export interface COMPreliminaryDraft {

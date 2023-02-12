@@ -1154,6 +1154,10 @@ class IntStandardService(
         return "Actioned"
     }
 
+    fun getStakeHoldersList(draftId: Long): MutableList<EmailList>? {
+        return iStdStakeHoldersRepository.getStakeHoldersList(draftId)
+    }
+
     fun uploadInternationalStandard(iStandardUploadDto: IStandardUploadDto): Standard{
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val timeOfRemark= Timestamp(System.currentTimeMillis())

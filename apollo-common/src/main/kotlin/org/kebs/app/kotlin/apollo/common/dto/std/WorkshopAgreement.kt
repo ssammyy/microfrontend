@@ -528,6 +528,27 @@ data class CSDraftDto(
 
 }
 
+
+data class ISComStdRequestDto(
+    var companyName: String?=null,
+    var companyPhone: String?=null,
+    var companyEmail: String?=null,
+    var departmentId: String?=null,
+    var subject: String?=null,
+    var description: String?=null,
+    var contactDetails: MutableList<ISComStdContactDto>?=null
+){
+
+}
+
+data class ISComStdContactDto(
+    var contactOneFullName: String?=null,
+    var contactOneTelephone: String?=null,
+    var contactOneEmail: String?=null
+){
+
+}
+
 data class ISCompanyStdRequestDto(
     var companyName: String?=null,
     var tcId: String?=null,

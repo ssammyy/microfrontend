@@ -32,8 +32,6 @@
                                     <tr>
                                         <th>#</th>
                                         <th class="knw">Title</th>
-                                        <th class="sl">Scope</th>
-                                        <th class="sl">Clause</th>
                                         <th class="requestNumber">Standard Type </th>
                                         <th class="knw">Standard Number</th>
                                         <th>Date</th>
@@ -44,8 +42,6 @@
                                     <tr  *ngFor="let isCheckRequirement of isCheckRequirements let i=index">
                                         <td>{{i+1}}</td>
                                         <td>{{isCheckRequirement.title}}</td>
-                                        <td>{{isCheckRequirement.scope}}</td>
-                                        <td>{{isCheckRequirement.clause}}</td>
                                         <td>{{isCheckRequirement.standardType}}</td>
                                         <td>{{isCheckRequirement.comStdNumber}}</td>
                                         <td>{{isCheckRequirement.uploadDate}}</td>
@@ -96,12 +92,43 @@
                                                                     <button mat-raised-button type="button" data-toggle="modal"
                                                                             (click)="viewDraftFile( documentDTO.id,'draft'+documentDTO.id+'.docx', 'application/docx')" target="_blank" class="btn btn-info btn-sm ">
                                                                         <i class="fa fa-download"></i> Download Standard Draft</button>
-
-
                                                                 </div>
-
-
                                                             </a>
+                                                        </div>
+                                                        <div class="form-group col-6">
+                                                            <label>Department/Sector</label>
+                                                            <select class="form-control" formControlName="departmentId" name="departmentId"    >
+                                                                <option disabled>--Select Department--</option>
+                                                                <option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Clause</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                      class="form-control one-column-input" value="{{actionRequests?.clause}}" formControlName="clause" name="clause"
+                                                                      placeholder="International Standard Clause" type="text" ></textarea>
+
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                      class="form-control one-column-input" value="{{actionRequests?.scope}}" formControlName="scope" name="scope"
+                                                                      placeholder="International Standard Scope" type="text" ></textarea>
+
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Special</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                      class="form-control one-column-input" value="{{actionRequests?.special}}" formControlName="special" name="special"
+                                                                      placeholder="International Standard Special" type="text" ></textarea>
+
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                      class="form-control one-column-input" value="{{actionRequests?.normativeReference}}" formControlName="normativeReference" name="normativeReference"
+                                                                      placeholder="International Standard Normative Reference" type="text" ></textarea>
+
                                                         </div>
                                                         <div class="row col-12">
                                                             <div class="form-group col-12">
@@ -116,21 +143,9 @@
                                                         <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.requestId}}" >
                                                         <input type="hidden" formControlName="id" name="id" value="{{actionRequests?.id}}" >
                                                         <input type="hidden" formControlName="requestNumber" name="requestNumber" value="{{actionRequests?.requestNumber}}" >
-
                                                         <input type="hidden" formControlName="departmentId" value="{{actionRequests?.departmentId}}" name="departmentId" >
                                                         <input type="hidden" formControlName="subject" value="{{actionRequests?.subject}}" name="subject" >
                                                         <input type="hidden" formControlName="description" value="{{actionRequests?.description}}" name="description" >
-                                                        <input type="hidden" formControlName="contactOneFullName" value="{{actionRequests?.contactOneFullName}}" name="contactOneFullName" >
-                                                        <input type="hidden" formControlName="contactOneTelephone" value="{{actionRequests?.contactOneTelephone}}" name="contactOneTelephone" >
-                                                        <input type="hidden" formControlName="contactOneEmail" value="{{actionRequests?.contactOneEmail}}" name="contactOneEmail" >
-
-                                                        <input type="hidden" formControlName="contactTwoFullName" value="{{actionRequests?.contactTwoFullName}}" name="contactTwoFullName" >
-                                                        <input type="hidden" formControlName="contactTwoTelephone" value="{{actionRequests?.contactTwoTelephone}}" name="contactTwoTelephone" >
-                                                        <input type="hidden" formControlName="contactTwoEmail" value="{{actionRequests?.contactTwoEmail}}" name="contactTwoEmail" >
-                                                        <input type="hidden" formControlName="contactThreeFullName" value="{{actionRequests?.contactThreeFullName}}" name="contactThreeFullName" >
-                                                        <input type="hidden" formControlName="contactThreeTelephone" value="{{actionRequests?.contactThreeTelephone}}" name="contactThreeTelephone" >
-                                                        <input type="hidden" formControlName="contactThreeEmail" value="{{actionRequests?.contactThreeEmail}}" name="contactThreeEmail" >
-
                                                         <input type="hidden" formControlName="companyName" value="{{actionRequests?.companyName}}" name="companyName" >
                                                         <input type="hidden" formControlName="companyPhone" value="{{actionRequests?.companyPhone}}" name="companyPhone" >
 

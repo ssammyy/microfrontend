@@ -33,9 +33,6 @@
                                         <th class="sl">Phone Number</th>
                                         <th class="sl">Draft Number</th>
                                         <th class="requestNumber">Title </th>
-                                        <th class="knw">Company Contact Name</th>
-                                        <th class="sl">Company Contact Telephone</th>
-                                        <th class="sl">Company Contact Email</th>
                                         <th class="knw">Deadline</th>
                                         <th class="action">Action</th>
                                     </tr>
@@ -48,9 +45,6 @@
                                         <td>{{task.companyPhone}}</td>
                                         <td>{{task.draftNumber}}</td>
                                         <td>{{task.title}}</td>
-                                        <td>{{task.contactOneFullName}}</td>
-                                        <td>{{task.contactOneTelephone}}</td>
-                                        <td>{{task.contactOneEmail}}</td>
                                         <td>{{task.deadlineDate | date: 'yyyy-MM-dd'}}</td>
                                         <td *ngIf="task.status==1" ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Approve Draft</a></td>
 
@@ -60,7 +54,7 @@
 
 
                                 <div class="modal fade" id="approveDraft" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
-                                    <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-dialog modal-xl" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <button type="button" class="close" #closeModalUploadDraft data-dismiss="modal" aria-label="Close">
@@ -148,20 +142,12 @@
                                                                     <input type="hidden" name="id" ngModel="{{actionRequest?.id}}" >
                                                                     <input type="hidden" name="companyName" ngModel="{{actionRequest?.companyName}}" >
                                                                     <input type="hidden" name="companyPhone" ngModel="{{actionRequest?.companyPhone}}" >
-                                                                    <input type="hidden" name="contactOneFullName" ngModel="{{actionRequest?.contactOneFullName}}" >
-                                                                    <input type="hidden" name="contactOneTelephone" ngModel="{{actionRequest?.contactOneTelephone}}" >
-                                                                    <input type="hidden" name="contactOneEmail" ngModel="{{actionRequest?.contactOneEmail}}" >
 
                                                                     <input type="hidden"  ngModel="{{actionRequest?.departmentId}}" name="departmentId" >
                                                                     <input type="hidden"  ngModel="{{actionRequest?.subject}}" name="subject" >
                                                                     <input type="hidden"  ngModel="{{actionRequest?.description}}" name="description" >
+                                                                    <input type="hidden"  ngModel="{{actionRequest?.title}}" name="description" >
 
-                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactTwoFullName}}" name="contactTwoFullName" >
-                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactTwoTelephone}}" name="contactTwoTelephone" >
-                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactTwoEmail}}" name="contactTwoEmail" >
-                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactThreeFullName}}" name="contactThreeFullName" >
-                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactThreeTelephone}}" name="contactThreeTelephone" >
-                                                                    <input type="hidden"  ngModel="{{actionRequest?.contactThreeEmail}}" name="contactThreeEmail" >
 
 
                                                                     <!--<input type="hidden" name="accentTo" ngModel="Yes" >-->
@@ -189,13 +175,12 @@
                                                                                 <th class="knw">Time</th>
                                                                                 <th class="knw">Title</th>
                                                                                 <th class="knw">Name Of Organization</th>
+                                                                                <th class="knw">Comment</th>
                                                                                 <th class="knw">Clause</th>
                                                                                 <th class="knw">Paragraph</th>
-                                                                                <th class="knw">Adopt Draft?</th>
-                                                                                <th class="knw">Reason</th>
-                                                                                <th class="knw">Recommendations</th>
+                                                                                <th class="knw">Proposed Change</th>
+                                                                                <th class="knw">Type of Comment</th>
                                                                                 <th class="knw">Name of Respondent</th>
-                                                                                <th class="knw">Position of Respondent</th>
                                                                             </tr>
                                                                             </thead>
                                                                             <tbody>
@@ -204,13 +189,12 @@
                                                                                 <td>{{comStdCommitteeRemark.commentTime | date: 'yyyy-MM-dd'}}</td>
                                                                                 <td>{{comStdCommitteeRemark.commentTitle}}</td>
                                                                                 <td>{{comStdCommitteeRemark.nameOfOrganization}}</td>
+                                                                                <td>{{comStdCommitteeRemark.draftComment}}</td>
                                                                                 <td>{{comStdCommitteeRemark.comClause}}</td>
                                                                                 <td>{{comStdCommitteeRemark.comParagraph}}</td>
-                                                                                <td>{{comStdCommitteeRemark.adoptDraft}}</td>
-                                                                                <td>{{comStdCommitteeRemark.reason}}</td>
-                                                                                <td>{{comStdCommitteeRemark.recommendations}}</td>
+                                                                                <td>{{comStdCommitteeRemark.proposedChange}}</td>
+                                                                                <td>{{comStdCommitteeRemark.typeOfComment}}</td>
                                                                                 <td>{{comStdCommitteeRemark.nameOfRespondent}}</td>
-                                                                                <td>{{comStdCommitteeRemark.positionOfRespondent}}</td>
                                                                             </tr>
                                                                             </tbody>
                                                                         </table>

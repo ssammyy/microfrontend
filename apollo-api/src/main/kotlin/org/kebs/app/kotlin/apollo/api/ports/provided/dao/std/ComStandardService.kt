@@ -3,15 +3,14 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import mu.KotlinLogging
+import okhttp3.internal.notifyAll
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.common.dto.std.ComDraftCommentDto
-import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
-import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMsg
+import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -55,45 +54,46 @@ class ComStandardService(
     private val comStdJointCommitteeRepository: ComStdJointCommitteeRepository,
     private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
+    private val comContactDetailsRepository: ComContactDetailsRepository
 ) {
-
     //request for company standard
-    fun requestForStandard(companyStandardRequest: CompanyStandardRequest): CompanyStandardRequest {
-
+    fun requestForStandard(isComStdRequestDto: ISComStdRequestDto): CompanyStandardRequest{
         val variables: MutableMap<String, Any> = HashMap()
-        companyStandardRequest.companyName = companyStandardRequest.companyName
-//        companyStandardRequest.tcId = companyStandardRequest.tcId
-//        companyStandardRequest.productId = companyStandardRequest.productId
-//        companyStandardRequest.productSubCategoryId = companyStandardRequest.productSubCategoryId
-        //companyStandardRequest.submissionDate?.let{ variables.put("submissionDate", it)}
-        companyStandardRequest.companyPhone = companyStandardRequest.companyPhone
-        companyStandardRequest.companyEmail = companyStandardRequest.companyEmail
+        var  companyStandardRequest = CompanyStandardRequest();
+        companyStandardRequest.companyName = isComStdRequestDto.companyName
+        companyStandardRequest.companyPhone = isComStdRequestDto.companyPhone
+        companyStandardRequest.companyEmail = isComStdRequestDto.companyEmail
         companyStandardRequest.submissionDate = Timestamp(System.currentTimeMillis())
         companyStandardRequest.requestNumber = getRQNumber()
         companyStandardRequest.status = 0
 
-        companyStandardRequest.departmentId = companyStandardRequest.departmentId
-        companyStandardRequest.subject=companyStandardRequest.subject
-        companyStandardRequest.description=companyStandardRequest.description
-        companyStandardRequest.contactOneFullName=companyStandardRequest.contactOneFullName
-        companyStandardRequest.contactOneTelephone=companyStandardRequest.contactOneTelephone
-        companyStandardRequest.contactOneEmail=companyStandardRequest.contactOneEmail
-        companyStandardRequest.contactTwoFullName=companyStandardRequest.contactTwoFullName
-        companyStandardRequest.contactTwoTelephone=companyStandardRequest.contactTwoTelephone
-        companyStandardRequest.contactTwoEmail=companyStandardRequest.contactTwoEmail
-        companyStandardRequest.contactThreeFullName=companyStandardRequest.contactThreeFullName
-        companyStandardRequest.contactThreeTelephone=companyStandardRequest.contactThreeTelephone
-        companyStandardRequest.contactThreeEmail=companyStandardRequest.contactThreeEmail
+        companyStandardRequest.departmentId = isComStdRequestDto.departmentId
+        companyStandardRequest.subject=isComStdRequestDto.subject
+        companyStandardRequest.description=isComStdRequestDto.description
+        companyStandardRequest.departmentName = departmentRepository.findNameById(isComStdRequestDto.departmentId?.toLong())
 
-        //companyStandardRequest.tcName = technicalCommitteeRepository.findNameById(companyStandardRequest.tcId?.toLong())
-        companyStandardRequest.departmentName = departmentRepository.findNameById(companyStandardRequest.departmentId?.toLong())
+        val request= comStandardRequestRepository.save(companyStandardRequest)
 
-        //companyStandardRequest.productName = productRepository.findNameById(companyStandardRequest.productId?.toLong())
+        val detailBody = isComStdRequestDto.contactDetails
 
-        //companyStandardRequest.productSubCategoryName = productSubCategoryRepository.findNameById(companyStandardRequest.productSubCategoryId?.toLong())
+        detailBody?.forEach { com ->
+            val  comContactDetails = ComContactDetails()
+            comContactDetails.requestId = request.id
+            comContactDetails.fullName = com.contactOneFullName
+            comContactDetails.email = com.contactOneEmail
+            comContactDetails.telephone = com.contactOneTelephone
+            comContactDetails.dateOfCreation = Timestamp(System.currentTimeMillis())
 
-        return comStandardRequestRepository.save(companyStandardRequest)
+            comContactDetailsRepository.save(comContactDetails)
+        }
+
+       return request
     }
+
+    fun getCompanyContactDetails(requestId: Long): MutableList<ComContactDetails>? {
+        return comContactDetailsRepository.findByRequestIdOrderByIdDesc(requestId)
+    }
+
 
     fun uploadCommitmentLetter(
         uploads: ComStandardRequestUploads,
@@ -206,7 +206,7 @@ class ComStandardService(
         }
 
 
-        KotlinLogging.logger { }.info { "JOINT COMMITTEE EMAIL" + gson.toJson(detailBody) }
+
 
         comStandardRequestRepository.findByIdOrNull(comStandardJointCommittee.requestId)?.let { companyStandardRequest ->
             with(companyStandardRequest) {
@@ -216,6 +216,10 @@ class ComStandardService(
              comStandardRequestRepository.save(companyStandardRequest)
         }?: throw Exception("REQUEST NOT FOUND")
         return "Saved"
+    }
+
+    fun getCommitteeList(requestId: Long): MutableList<EmailList>? {
+        return comStdJointCommitteeRepository.getCommitteeList(requestId)
     }
 
     fun submitJustificationForFormationOfTC(justificationForTC: JustificationForTC): JustificationForTC
@@ -566,11 +570,11 @@ class ComStandardService(
             comDraftComments.emailOfRespondent = com.emailOfRespondent
             comDraftComments.phoneOfRespondent = com.phoneOfRespondent
             comDraftComments.observation = com.observation
-            comDraftComments.draftComment = com.draftComment
+            comDraftComments.draftComment = com.comment
             comDraftComments.commentTitle = com.commentTitle
             comDraftComments.commentDocumentType = com.commentDocumentType
-            comDraftComments.comClause = com.comClause
-            comDraftComments.comParagraph = com.comParagraph
+            comDraftComments.comClause = com.clause
+            comDraftComments.comParagraph = com.paragraph
             comDraftComments.typeOfComment = com.typeOfComment
             comDraftComments.proposedChange = com.proposedChange
             comDraftComments.requestID = com.requestID
@@ -749,24 +753,16 @@ class ComStandardService(
                val cs=CompanyStandard()
                 cs.companyName=comStdDraft.companyName
                 cs.companyPhone=comStdDraft.companyPhone
-                cs.contactOneFullName=comStdDraft.contactOneFullName
-                cs.contactOneEmail=comStdDraft.contactOneEmail
-                cs.contactOneTelephone=comStdDraft.contactOneTelephone
                 cs.departmentId=comStdDraft.departmentId
                 cs.subject=comStdDraft.subject
                 cs.description=comStdDraft.description
-                cs.contactTwoFullName=comStdDraft.contactTwoFullName
-                cs.contactTwoTelephone=comStdDraft.contactTwoTelephone
-                cs.contactTwoEmail=comStdDraft.contactTwoEmail
-                cs.contactThreeFullName=comStdDraft.contactThreeFullName
-                cs.contactThreeTelephone=comStdDraft.contactThreeTelephone
-                cs.contactThreeEmail=comStdDraft.contactThreeEmail
                 cs.requestNumber=comStdDraft.requestNumber
                 cs.status=0
                 cs.uploadDate = Timestamp(System.currentTimeMillis())
                 cs.comStdNumber = comStandard
                 cs.draftId=comStdDraft.id
                 cs.requestId=comStdDraft.requestId
+                cs.title=comStdDraft.title
                 cs.standardType="Company Standard"
 
                 val draftStandard= companyStandardRepository.save(cs)
@@ -837,21 +833,19 @@ class ComStandardService(
                 departmentId = companyStandard.departmentId
                 subject=companyStandard.subject
                 description=companyStandard.description
-                contactOneFullName=companyStandard.contactOneFullName
-                contactOneTelephone=companyStandard.contactOneTelephone
-                contactOneEmail=companyStandard.contactOneEmail
-                contactTwoFullName=companyStandard.contactTwoFullName
-                contactTwoTelephone=companyStandard.contactTwoTelephone
-                contactTwoEmail=companyStandard.contactTwoEmail
-                contactThreeFullName=companyStandard.contactThreeFullName
-                contactThreeTelephone=companyStandard.contactThreeTelephone
-                contactThreeEmail=companyStandard.contactThreeEmail
                 requestNumber=companyStandard.requestNumber
                 status=companyStandard.status
                 comStdNumber = companyStandard.comStdNumber
                 documentType=companyStandard.documentType
                 draftId=companyStandard.draftId
                 requestId=companyStandard.requestId
+                scope=companyStandard.scope
+                normativeReference=companyStandard.normativeReference
+                symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
+                clause=companyStandard.clause
+                documentType=companyStandard.documentType
+                documentType=companyStandard.documentType
+                special=companyStandard.special
                 standardType="Company Standard"
 
             }

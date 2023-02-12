@@ -653,6 +653,13 @@ class IntStandardController(
 
     }
 
+    @GetMapping("/international_standard/getCommitteeList")
+    @ResponseBody
+    fun getStakeHoldersList(@RequestParam("draftId") draftId: Long): MutableList<EmailList>?
+    {
+
+        return internationalStandardService.getStakeHoldersList(draftId)
+    }
 
     @PreAuthorize("hasAuthority('HO_SIC_SD_READ') or hasAuthority('HOD_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getStandardForGazettement")

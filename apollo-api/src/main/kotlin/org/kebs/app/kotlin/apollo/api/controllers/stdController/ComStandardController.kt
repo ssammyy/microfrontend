@@ -36,28 +36,21 @@ class ComStandardController (val comStandardService: ComStandardService,
     //********************************************************** process upload standard request **********************************************************
     @PostMapping("/anonymous/company_standard/request")
     @ResponseBody
-    fun requestForStandard(@RequestBody isCompanyStdRequestDto: ISCompanyStdRequestDto): ServerResponse{
-        val companyStandardRequest= CompanyStandardRequest().apply {
-            companyName=isCompanyStdRequestDto.companyName
-            tcId=isCompanyStdRequestDto.tcId
-            productId=isCompanyStdRequestDto.productId
-            productSubCategoryId=isCompanyStdRequestDto.productSubCategoryId
-            companyPhone=isCompanyStdRequestDto.companyPhone
-            companyEmail=isCompanyStdRequestDto.companyEmail
-            departmentId=isCompanyStdRequestDto.departmentId
-            subject=isCompanyStdRequestDto.subject
-            description=isCompanyStdRequestDto.description
-            contactOneFullName=isCompanyStdRequestDto.contactOneFullName
-            contactOneTelephone=isCompanyStdRequestDto.contactOneTelephone
-            contactOneEmail=isCompanyStdRequestDto.contactOneEmail
-            contactTwoFullName=isCompanyStdRequestDto.contactTwoFullName
-            contactTwoTelephone=isCompanyStdRequestDto.contactTwoTelephone
-            contactTwoEmail=isCompanyStdRequestDto.contactTwoEmail
-            contactThreeFullName=isCompanyStdRequestDto.contactThreeFullName
-            contactThreeTelephone=isCompanyStdRequestDto.contactThreeTelephone
-            contactThreeEmail=isCompanyStdRequestDto.contactThreeEmail
-        }
-        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.requestForStandard(companyStandardRequest))
+    fun requestForStandard(@RequestBody isComStdRequestDto: ISComStdRequestDto
+    ) : ServerResponse
+    {
+
+
+        return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.requestForStandard(isComStdRequestDto))
+
+    }
+
+    @GetMapping("/company_standard/getCompanyContactDetails")
+    @ResponseBody
+    fun getCompanyContactDetails(@RequestParam("requestId") requestId: Long): MutableList<ComContactDetails>?
+    {
+
+        return comStandardService.getCompanyContactDetails(requestId)
     }
 
     @PostMapping("/anonymous/company_standard/commitmentLetter")
@@ -173,6 +166,14 @@ class ComStandardController (val comStandardService: ComStandardService,
 
 
         return ServerResponse(HttpStatus.OK,"Successfully Submitted",comStandardService.formJointCommittee(comStandardJointCommittee,detailBody))
+    }
+
+    @GetMapping("/company_standard/getCommitteeList")
+    @ResponseBody
+    fun getCommitteeList(@RequestParam("requestId") requestId: Long): MutableList<EmailList>?
+    {
+
+        return comStandardService.getCommitteeList(requestId)
     }
 
     //********************************************************** process Assign Standard Request **********************************************************
@@ -597,18 +598,10 @@ class ComStandardController (val comStandardService: ComStandardService,
             requestNumber=comStdDraftDecisionDto.requestNumber
             companyName=comStdDraftDecisionDto.companyName
             companyPhone=comStdDraftDecisionDto.companyPhone
-            contactOneFullName=comStdDraftDecisionDto.contactOneFullName
-            contactOneEmail=comStdDraftDecisionDto.contactOneEmail
-            contactOneTelephone=comStdDraftDecisionDto.contactOneTelephone
             departmentId=comStdDraftDecisionDto.departmentId
             subject=comStdDraftDecisionDto.subject
             description=comStdDraftDecisionDto.description
-            contactTwoFullName=comStdDraftDecisionDto.contactTwoFullName
-            contactTwoTelephone=comStdDraftDecisionDto.contactTwoTelephone
-            contactTwoEmail=comStdDraftDecisionDto.contactTwoEmail
-            contactThreeFullName=comStdDraftDecisionDto.contactThreeFullName
-            contactThreeTelephone=comStdDraftDecisionDto.contactThreeTelephone
-            contactThreeEmail=comStdDraftDecisionDto.contactThreeEmail
+
         }
         val companyStandardRemarks= CompanyStandardRemarks().apply {
             requestId=comStdDraftDecisionDto.requestId
@@ -650,15 +643,6 @@ class ComStandardController (val comStandardService: ComStandardService,
             departmentId=isDraftDto.departmentId
             subject=isDraftDto.subject
             description=isDraftDto.description
-            contactOneFullName=isDraftDto.contactOneFullName
-            contactOneTelephone=isDraftDto.contactOneTelephone
-            contactOneEmail=isDraftDto.contactOneEmail
-            contactTwoFullName=isDraftDto.contactTwoFullName
-            contactTwoTelephone=isDraftDto.contactTwoTelephone
-            contactTwoEmail=isDraftDto.contactTwoEmail
-            contactThreeFullName=isDraftDto.contactThreeFullName
-            contactThreeTelephone=isDraftDto.contactThreeTelephone
-            contactThreeEmail=isDraftDto.contactThreeEmail
             companyName=isDraftDto.companyName
             companyPhone=isDraftDto.companyPhone
             status=1

@@ -112,9 +112,6 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <th class="requestNumber">Department </th>
 <th class="requestNumber">Submission Date </th>
 <th class="sl">Phone Number</th>
-    <th class="knw">Company Contact Name</th>
-    <th class="sl">Company Contact Telephone</th>
-    <th class="sl">Company Contact Email</th>
 <th class="sl">Commitment Letter</th>
 <th class="action">Action</th>
 </tr>
@@ -127,14 +124,11 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 <td>{{task.departmentName}}</td>
 <td>{{task.submissionDate | date: 'dd/MM/yyyy'}}</td>
 <td>{{task.companyPhone}}</td>
- <td>{{task.contactOneFullName}}</td>
-    <td>{{task.contactOneTelephone}}</td>
-    <td>{{task.contactOneEmail}}</td>
     <td><button mat-raised-button type="button" (click)="viewCommitmentLetter( task.id,'Letter'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
       <i class="material-icons">visibility</i> </button></td>
-<td *ngIf="task.status==0"><a  (click)="onOpenModal(task,'assignProjectLeader')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Assign To Project Leader</a></td>
-<td *ngIf="task.status==1"><a  (click)="onOpenModal(task,'formJointCommittee')" class="btn btn-warning btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Form Joint Committee</a></td>
-<td *ngIf="task.status==2"><a  (click)="onOpenModal(task,'uploadDraft')" class="btn btn-success btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Upload Draft</a></td>
+<td *ngIf="task.status==0"><a  (click)="onOpenModal(task,'assignProjectLeader',task.id)" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Assign To Project Leader</a></td>
+<td *ngIf="task.status==1"><a  (click)="onOpenModal(task,'formJointCommittee',task.id)" class="btn btn-warning btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Form Joint Committee</a></td>
+<td *ngIf="task.status==2"><a  (click)="onOpenModal(task,'uploadDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 190px">Upload Draft</a></td>
 </tr>
 </tbody>
 </table>
@@ -149,30 +143,63 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form #assignForm="ngForm" >
-                    <div class="modal-body">
-                        <div class="form-body">
-                            <div class="row col-12">
-                                <div class="form-group col-12">
-                                    <label>Assign To one</label>
-                                    <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo"  >
-                                        <ng-option *ngFor="let user of users" [value]="user.id" >{{user.name}} </ng-option>
-                                    </ng-select>
+                <div  class="nav nav-tabs nav-fill" id="nav-edit-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-form-view-tab"  data-toggle="tab" href="#nav-form-view" role="tab" aria-controls="nav-form-view" aria-selected="false">Assign Project Leader</a>
+                    <a class="nav-item nav-link " id="nav-cot-view-tab"  data-toggle="tab" href="#nav-cot-view" role="tab" aria-controls="nav-cot-view" aria-selected="false">Contact Persons</a>
+                </div>
+                <div  class="tab-content py-3 px-3 px-sm-0" id="nav-edit-justification-content">
+                    <div class="tab-pane fade show active" id="nav-form-view" role="tabpanel" aria-labelledby="nav-form-view-tab">
+                        <div class="container col-md-12" >
+                            <form #assignForm="ngForm" >
+                                <div class="modal-body">
+                                    <div class="form-body">
+                                        <div class="row col-12">
+                                            <div class="form-group col-12">
+                                                <label>Assign To one</label>
+                                                <ng-select [(ngModel)]="selectedUser"  class="form-control" ngModel name="assignedTo"  >
+                                                    <ng-option *ngFor="let user of users" [value]="user.id" >{{user.name}} </ng-option>
+                                                </ng-select>
 
+                                            </div>
+                                            <input type="hidden" ngModel="{{actionRequest?.id}}" name="requestId" >
+                                        </div>
+                                    </div>
                                 </div>
-                                <input type="hidden" ngModel="{{actionRequest?.id}}" name="requestId" >
-                            </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary btn-sm" (click)="onAssign(assignForm.value)" data-dismiss="modal">Assign</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-sm" (click)="onAssign(assignForm.value)" data-dismiss="modal">Assign</button>
+                    <div class="tab-pane fade" id="nav-cot-view" role="tabpanel" aria-labelledby="nav-cot-view-tab">
+                        <div  class="material-datatables table-responsive">
+                            <table class="table table-striped table-bordered table-hover" datatable
+                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th class="knw">Name</th>
+                                    <th class="sl">Email</th>
+                                    <th class="requestNumber">Phone Number </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr  *ngFor="let contactPersonDetail of contactPersonDetails let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{contactPersonDetail.fullName}}</td>
+                                    <td>{{contactPersonDetail.email}}</td>
+                                    <td>{{contactPersonDetail.telephone}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="formJointCommittee" tabindex="-1" role="dialog" aria-labelledby="formJointCommitteeModalLabel" aria-hidden="true">a
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -182,51 +209,86 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form (ngSubmit)="formJointCommittee()" [formGroup]="committeeFormGroup" class="form">
-                    <hr>
-                    <div class="form-body">
-                        <div class="form-group col-12">
-                            <label><b>Select Members to add to Joint Committee</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                            <ng-multiselect-dropdown
-                                    [placeholder]="'Select Joint Committee Members'"
-                                    [settings]="dropdownSettings"
-                                    [data]="dropdownList"
-                                    (onSelect)="onItemSelect($event)"
-                                    (onSelectAll)="onSelectAll($event)"
-                                    formControlName="names"
-                                    name="names">
-                            </ng-multiselect-dropdown>
-<!--                            <mat-form-field>-->
-<!--                                <mat-select [formControl]="websiteCtrl" formControlName="names" name="names" placeholder="Members"  multiple >-->
-<!--                                    <mat-option>-->
-<!--                                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"></ngx-mat-select-search>-->
-<!--                                    </mat-option>-->
-<!--                                    <mat-option *ngFor="let user of users " [value]="user.email">-->
-<!--                                        {{user.name}} -->
-<!--                                    </mat-option>-->
-<!--                                </mat-select>-->
-<!--                            </mat-form-field>-->
-                        </div>
-                        <div class="form-group col-12">
-                            <label><b>Enter Emails of Committee members(Comma Separated)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                      class="form-control one-column-input" formControlName="name" name="name"
-                                      placeholder="Type Emails of Committee Members" type="text"></textarea>
+                <div  class="nav nav-tabs nav-fill" id="nav-joint-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-joint-form-tab"  data-toggle="tab" href="#nav-joint-form" role="tab" aria-controls="nav-joint-form" aria-selected="false">Form Joint Committee</a>
+                    <a class="nav-item nav-link " id="nav-joint-view-tab"  data-toggle="tab" href="#nav-joint-view" role="tab" aria-controls="nav-joint-view" aria-selected="false">Contact Persons</a>
+                </div>
+                <div  class="tab-content py-3 px-3 px-sm-0" id="nav-joint-content">
+                    <div class="tab-pane fade show active" id="nav-joint-form" role="tabpanel" aria-labelledby="nav-joint-form-tab">
+                        <div class="container col-md-12" >
+                            <form (ngSubmit)="formJointCommittee()" [formGroup]="committeeFormGroup" class="form">
+                                <hr>
+                                <div class="form-body">
+                                    <div class="form-group col-12">
+                                        <label><b>Select Members to add to Joint Committee</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <ng-multiselect-dropdown
+                                                [placeholder]="'Select Joint Committee Members'"
+                                                [settings]="dropdownSettings"
+                                                [data]="dropdownList"
+                                                (onSelect)="onItemSelect($event)"
+                                                (onSelectAll)="onSelectAll($event)"
+                                                formControlName="names"
+                                                name="names">
+                                        </ng-multiselect-dropdown>
+                                        <!--                            <mat-form-field>-->
+                                        <!--                                <mat-select [formControl]="websiteCtrl" formControlName="names" name="names" placeholder="Members"  multiple >-->
+                                        <!--                                    <mat-option>-->
+                                        <!--                                        <ngx-mat-select-search [formControl]="websiteFilterCtrl"></ngx-mat-select-search>-->
+                                        <!--                                    </mat-option>-->
+                                        <!--                                    <mat-option *ngFor="let user of users " [value]="user.email">-->
+                                        <!--                                        {{user.name}} -->
+                                        <!--                                    </mat-option>-->
+                                        <!--                                </mat-select>-->
+                                        <!--                            </mat-form-field>-->
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label><b>Enter Emails of Committee members(Comma Separated)</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                  class="form-control one-column-input" formControlName="name" name="name"
+                                                  placeholder="Type Emails of Committee Members" type="text"></textarea>
 
+                                    </div>
+                                    <input type="hidden" formControlName="requestId"  ngModel="{{actionRequest?.id}}" name="requestId" >
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
+                                </div>
+
+
+
+
+
+                            </form>
                         </div>
-                        <input type="hidden" formControlName="requestId"  ngModel="{{actionRequest?.id}}" name="requestId" >
+                    </div>
+                    <div class="tab-pane fade" id="nav-joint-view" role="tabpanel" aria-labelledby="nav-joint-view-tab">
+                        <div  class="material-datatables table-responsive">
+                            <table class="table table-striped table-bordered table-hover" datatable
+                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th class="knw">Name</th>
+                                    <th class="sl">Email</th>
+                                    <th class="requestNumber">Phone Number </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr  *ngFor="let contactPersonDetail of contactPersonDetails let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{contactPersonDetail.fullName}}</td>
+                                    <td>{{contactPersonDetail.email}}</td>
+                                    <td>{{contactPersonDetail.telephone}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
-                    </div>
+                </div>
 
-
-
-
-
-                </form>
             </div>
         </div>
     </div>
@@ -234,12 +296,19 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="uploadDraftModalLabel">Form Joint Committee</h3>
+                    <h3 class="modal-title" id="uploadDraftModalLabel">Upload Draft</h3>
                     <button type="button" class="close" #closeModalUploadDraft data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form (ngSubmit)="uploadDraft()" [formGroup]="uploadDraftFormGroup" class="form">
+                <div  class="nav nav-tabs nav-fill" id="nav-draft-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-draft-form-tab"  data-toggle="tab" href="#nav-draft-form" role="tab" aria-controls="nav-draft-form" aria-selected="false">Upload Draft</a>
+                    <a class="nav-item nav-link " id="nav-draft-view-tab"  data-toggle="tab" href="#nav-draft-view" role="tab" aria-controls="nav-draft-view" aria-selected="false">Contact Persons</a>
+                    <a class="nav-item nav-link " id="nav-draft-jc-tab"  data-toggle="tab" href="#nav-draft-jc" role="tab" aria-controls="nav-draft-jc" aria-selected="false">Joint Committee</a>
+                </div>
+                <div  class="tab-content py-3 px-3 px-sm-0" id="nav-draft-content">
+                    <div class="tab-pane fade show active" id="nav-draft-form" role="tabpanel" aria-labelledby="nav-draft-form-tab">
+                    <form (ngSubmit)="uploadDraft()" [formGroup]="uploadDraftFormGroup" class="form">
                     <div class="modal-body">
                         <div class="form-body">
                             <div class="row col-12">
@@ -329,6 +398,55 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
                         <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
                     </div>
                 </form>
+                    </div>
+                    <div class="tab-pane fade" id="nav-draft-view" role="tabpanel" aria-labelledby="nav-draft-view-tab">
+                        <div  class="material-datatables table-responsive">
+                            <table class="table table-striped table-bordered table-hover" datatable
+                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th class="knw">Name</th>
+                                    <th class="sl">Email</th>
+                                    <th class="requestNumber">Phone Number </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr  *ngFor="let contactPersonDetail of contactPersonDetails let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{contactPersonDetail.fullName}}</td>
+                                    <td>{{contactPersonDetail.email}}</td>
+                                    <td>{{contactPersonDetail.telephone}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="nav-draft-jc" role="tabpanel" aria-labelledby="nav-draft-jc-tab">
+                        <div  class="material-datatables table-responsive">
+                            <table class="table table-striped table-bordered table-hover" datatable
+                                   [dtOptions]="dtOptions" [dtTrigger]="dtTrigger4">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th class="knw">Name</th>
+                                    <th class="sl">Email</th>
+                                    <th class="requestNumber">Phone Number </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr  *ngFor="let jointCommitteeList of jointCommitteeLists let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{jointCommitteeList.name}}</td>
+                                    <td>{{jointCommitteeList.email}}</td>
+                                    <td>{{jointCommitteeList.telephone}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
             </div>
         </div>
     </div>
@@ -340,3 +458,4 @@ Tasks <span class="badge badge-primary">{{tasks.length}}</span>
 </div>
 </div>
 
+</div>

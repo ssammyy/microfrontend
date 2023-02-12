@@ -536,6 +536,8 @@ export class ApiEndpointService {
         ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftDocumentList`,
         ICT_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/submitDraftComments`,
         ICT_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftComment`,
+        ICT_CONTACT_DETAILS: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyContactDetails`,
+        ICT_COMMITTEE_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCommitteeList`,
 
 
         // SD SYSTEMIC REVIEW
