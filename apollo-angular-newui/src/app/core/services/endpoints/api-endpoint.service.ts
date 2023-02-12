@@ -461,7 +461,11 @@ export class ApiEndpointService {
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
         IST_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitDraftComments`,
         IST_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftComment`,
-
+        IST_SUBMIT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadInternationalStandard`,
+        IST_VIEW_COM_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getCompanyStandards`,
+        IST_VIEW_INT_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getInternationalStandards`,
+        IST_VIEW_ALL_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getStandards`,
+        ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/viewStandard`,
 
         // SD COMPANY STANDARDS
         ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,
@@ -501,7 +505,8 @@ export class ApiEndpointService {
         ICT_COM_UPLOAD_SD: `${ApiEndpointService.SD_ICT_CONTEXT}/std-file-upload`,
         ICT_COM_HOP_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHopTasks`,
         ICT_COM_EDIT_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/editCompanyStandard`,
-        ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/std-efile-upload`,
+        ICT_COM_VIEW_STANDARD: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/viewStandard`,
+
 
 
         ICT_COM_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequest`,
@@ -706,7 +711,9 @@ export class ApiEndpointService {
         UPDATE_OFFICER_DIFFERENCE_STATUS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/difference-status-activate`,
         QAM_COMPLETENESS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/completeness`,
         ASSIGN_OFFICER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/assign-officer`,
+        RECOMMENDATION_APPROVAL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-recommendation`,
         ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
+        ADD_RECOMMENDATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/save-recommendation`,
         SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
         INSPECTION_CHECKLIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection-checklist`,
         ADD_SSF_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-details`,

@@ -1,23 +1,21 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {ComJcJustificationDec, ISCheckRequirements, StandardBody} from "../../../../core/store/data/std/std.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {StandardBody} from "../../../../core/store/data/std/std.model";
 import {Router} from "@angular/router";
 import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
+import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {FormBuilder} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
-import swal from "sweetalert2";
-import {DataTableDirective} from "angular-datatables";
-import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
-import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 declare const $: any;
 @Component({
-  selector: 'app-com-std-confirm',
-  templateUrl: './com-std-confirm.component.html',
-  styleUrls: ['./com-std-confirm.component.css']
+  selector: 'app-int-std-list',
+  templateUrl: './int-std-list.component.html',
+  styleUrls: ['./int-std-list.component.css']
 })
-export class ComStdConfirmComponent implements OnInit {
+export class IntStdListComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
@@ -37,8 +35,7 @@ export class ComStdConfirmComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getCompanyStandards();
-
+    this.getInternationalStandards();
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -52,11 +49,10 @@ export class ComStdConfirmComponent implements OnInit {
 
   }
 
-
-  public getCompanyStandards(): void {
+  public getInternationalStandards(): void {
     this.loadingText = "Retrieving Standards...";
     this.SpinnerService.show();
-    this.stdIntStandardService.getCompanyStandards().subscribe(
+    this.stdIntStandardService.getInternationalStandards().subscribe(
         (response: StandardBody[]) => {
           this.standardBodys = response;
           this.rerender();
@@ -129,7 +125,7 @@ export class ComStdConfirmComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Request`);
           console.log(error.message);
-          this.getCompanyStandards();
+          this.getInternationalStandards();
           //alert(error.message);
         }
     );

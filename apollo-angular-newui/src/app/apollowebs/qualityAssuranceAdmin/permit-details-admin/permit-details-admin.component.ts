@@ -115,6 +115,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     addStandardsForm: FormGroup;
     scheduleInspectionForm: FormGroup;
     ssfDetailsForm: FormGroup;
+    recommendationForm: FormGroup;
+    recommendationApprovalForm: FormGroup;
     pdfSaveComplianceStatusForm!: FormGroup;
     ssfSaveComplianceStatusForm!: FormGroup;
 
@@ -488,6 +490,14 @@ export class PermitDetailsAdminComponent implements OnInit {
             docFileName: null,
         });
 
+        this.recommendationForm = this.formBuilder.group({
+            recommendationRemarks: ['', Validators.required],
+        });
+
+        this.recommendationApprovalForm = this.formBuilder.group({
+            recommendationApprovalStatus: ['', Validators.required],
+            recommendationApprovalRemarks: null,
+        });
 
 
         this.dropdownSettings = {
@@ -733,10 +743,10 @@ export class PermitDetailsAdminComponent implements OnInit {
     openModalAddDetails(divVal: string): void {
 
         const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
-            'addSSFDetails', 'ssfAddComplianceStatus'];
+            'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'addRecommendationApproval'];
 
         const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
-            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS' ];
+            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'ADD APPROVAL'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -1076,6 +1086,14 @@ export class PermitDetailsAdminComponent implements OnInit {
             });
     }
 
+    onClickSaveRecommendationApprovalForm(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'ADD APPROVAL\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveRecommendationApprovalForm(valid);
+            });
+    }
+
     SaveAssignOfficerForm(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
@@ -1084,6 +1102,29 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('OFFICER ASSIGNED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    SaveRecommendationApprovalForm(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaRecommendationApprovalForm(this.recommendationApprovalForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('RECOMMENDATION APPROVAL STATUS SAVED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
@@ -1115,6 +1156,37 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('STANDARDS ADDED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveAddRecommendationForm(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'ADD RECOMMENDATION\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveAddRecommendationForm(valid);
+            });
+    }
+
+    saveAddRecommendationForm(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaAddRecommendation(this.recommendationForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('RECOMMENDATION ADDED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
@@ -1338,16 +1410,16 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     }
 
-    generateInspectionReport(permitId: bigint) {
+    generateInspectionReport(permitId: string) {
 
-        let text = String(permitId);
-        let key = '11A1764225B11AA1';
+        var text = permitId;
+        var key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
-        let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
         console.log('encrypted', encrypted);
-        this.router.navigate(['/new-inspection-report', encrypted]);
+        this.router.navigate(['/new-inspection-report',encrypted])
 
 
     }

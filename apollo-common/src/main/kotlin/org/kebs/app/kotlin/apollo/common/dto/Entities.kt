@@ -583,13 +583,13 @@ data class CompanyTurnOverApproveDto(
 )
 
 data class CompanyUpgradeStatusDto(
-    var companyProfileID: Long,
-    var requesterComment: String,
-    var updateFirmType: String,
-    var updateFirmTypeID: Long,
-    var upgradeType: Boolean,
-    var updateDetailsStatus: Boolean,
-    var inspectionFeeRequerd: Boolean,
+    var companyProfileID: Long? = null,
+    var requesterComment: String? = null,
+    var updateFirmType: String? = null,
+    var updateFirmTypeID: Long? = null,
+    var upgradeType: Boolean? = null,
+    var updateDetailsStatus: Boolean? = null,
+    var inspectionFeeRequerd: Boolean? = null,
 )
 
 data class CompanyTurnOverUpdateDto(

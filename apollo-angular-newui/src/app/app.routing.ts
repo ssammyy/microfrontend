@@ -711,6 +711,8 @@ import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-deve
 import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/tc-member-application/tc-member-application.component';
 import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/individual-weekly-report/individual-weekly-report.component';
 import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/departmental-weekly-report/departmental-weekly-report.component';
+import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
+import {IntStdListComponent} from "./apollowebs/standards-development/international-standard/int-std-list/int-std-list.component";
 
 export const routes: Routes = [
     {
@@ -1696,6 +1698,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdPublishingComponent}],
     },
+    {
+        path: 'intStandardLists', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdListComponent}],
+    },
+
 
     // SD SYSTEMIC REVIEW
     {
@@ -1845,6 +1853,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdPublishingComponent}],
     },
+    {
+        path: 'companyStandardList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdConfirmComponent}],
+    },
+
 
     {
         path: 'nep_information_received', component: AdminLayoutComponent,

@@ -115,7 +115,7 @@ export class ReportsPermitEntityDto {
     permitType: bigint;
     processStatusID: number;
     versionNumber: number;
-    firmTypeID: number
+    firmTypeID: number;
     firmTypeName: string;
     invoiceAmount: number;
     standardNumber: number;
@@ -391,7 +391,18 @@ export class SSFDetailsDto {
     resultsAnalysis: boolean;
 }
 
+export class CompanyUpgradeStatusDto {
+    companyProfileID: bigint;
+    requesterComment: string;
+    updateFirmType: string;
+    updateFirmTypeID: bigint;
+    upgradeType: boolean;
+    updateDetailsStatus: boolean;
+    inspectionFeeRequerd: boolean;
+}
+
 export class AllPermitDetailsDto {
+    companyStatusDetails: CompanyUpgradeStatusDto;
     permitDetails: PermitEntityDetails;
     remarksDetails: PermitAllRemarksDetailsDto;
     invoiceDetails: InvoiceDetailsDto;
@@ -603,7 +614,7 @@ export interface SamplesSubmittedDto {
     results_DATE: string;
     region: string;
     section: string;
-    product: string
+    product: string;
 }
 
 export class StatusesDto {
