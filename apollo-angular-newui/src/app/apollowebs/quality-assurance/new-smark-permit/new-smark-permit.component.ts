@@ -1,13 +1,16 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {
-    AllSTA10DetailsDto, FilesListDto,
-    PermitEntityDetails, PermitEntityDto, PermitProcessStepDto,
+    AllSTA10DetailsDto,
+    FilesListDto,
+    PermitEntityDto,
+    PermitProcessStepDto,
     PlantDetailsDto,
-    SectionDto, STA1,
+    SectionDto,
+    STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
     STA10ManufacturingProcessDto,
@@ -17,16 +20,13 @@ import {
 } from '../../../core/store/data/qa/qa.model';
 // permits
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
-import {loadBranchId, loadCompanyId, selectCompanyInfoDtoStateData, selectUserInfo} from '../../../core/store';
+import {selectUserInfo, UserEntityService} from '../../../core/store';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
-import {UserEntityDto, UserEntityService} from "../../../core/store";
-import {Observable, Subject} from "rxjs";
-import {Titles, TitlesService} from "../../../core/store/data/title";
-import {HttpErrorResponse} from "@angular/common/http";
-import {DataTableDirective} from "angular-datatables";
+import {TitlesService} from "../../../core/store/data/title";
 import swal from "sweetalert2";
+import {NotificationService} from "../../../core/store/data/std/notification.service";
 
 declare const $: any;
 
@@ -92,9 +92,8 @@ export class NewSmarkPermitComponent implements OnInit {
 
     selectedPermit: string;
 
-    cloned:boolean;
+    cloned: boolean;
 
-    
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -103,17 +102,14 @@ export class NewSmarkPermitComponent implements OnInit {
                 private _loading: LoadingService,
                 private SpinnerService: NgxSpinnerService,
                 private route: ActivatedRoute,
-
                 private service: UserEntityService,
                 private titleService: TitlesService,
-             
-
-
-                ) {
+                private notifyService: NotificationService,
+    ) {
     }
 
     ngOnInit(): void {
-        this.cloned=false;
+        this.cloned = false;
         this.sta1Form = this.formBuilder.group({
             commodityDescription: ['', Validators.required],
             applicantName: [],
@@ -262,46 +258,41 @@ export class NewSmarkPermitComponent implements OnInit {
         //             else{
 
 
-                        this.qaService.loadSectionList().subscribe(
-                            (data: any) => {
-                                this.sections = data;
-                               //(data);
-                            }
-                        );
+        this.qaService.loadSectionList().subscribe(
+            (data: any) => {
+                this.sections = data;
+                //(data);
+            }
+        );
 
-                        this.qaService.loadPlantList().subscribe(
-                            (data: any) => {
-                                this.plants = data;
-                               //(data);
-                            }
-                        );
+        this.qaService.loadPlantList().subscribe(
+            (data: any) => {
+                this.plants = data;
+                //(data);
+            }
+        );
 
-                        this.getSelectedPermit();
+        this.getSelectedPermit();
 
-                        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-                            return this.fullname = u.fullName;
-                        });
-                  //  }
-
-
-
-                  //  }
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            return this.fullname = u.fullName;
+        });
+        //  }
 
 
-                
+        //  }
+
 
         // permits
 
-    
 
+    }
 
-                }
-   
 
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
             this.permitID = params;
-           //(this.permitID);
+            //(this.permitID);
             if (this.permitID) {
                 this.SpinnerService.show();
                 this.qaService.viewSTA1Details(this.permitID).subscribe(
@@ -313,7 +304,7 @@ export class NewSmarkPermitComponent implements OnInit {
                             (data1) => {
                                 this.allSta10Details = data1;
 
-                               //('TEST ALL STA10' + this.allSta10Details);
+                                //('TEST ALL STA10' + this.allSta10Details);
                                 this.sta10Details = this.allSta10Details.sta10FirmDetails;
                                 this.sta10Form.patchValue(this.sta10Details);
                                 this.sta10PersonnelDetails = this.allSta10Details.sta10PersonnelDetails;
@@ -368,7 +359,6 @@ export class NewSmarkPermitComponent implements OnInit {
                                 this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
                                 this.sta10FilesList = this.allSta10Details.sta10FilesList;
                                 this.sta10FormF.patchValue(this.allSta10Details.sta10FirmDetails);
-
 
 
                                 // if(this.sta10FilesList.map())
@@ -444,7 +434,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     break;
             }
             this.step += 1;
-           //(`Clicked and step = ${this.step}`);
+            //(`Clicked and step = ${this.step}`);
         }
     }
 
@@ -483,6 +473,8 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
+            this.loading = true
+
             if (this.sta1 == null || this.setCloned == true) {
                 this.SpinnerService.show();
                 this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
@@ -490,7 +482,8 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                       //(data);
+                        this.loading = false;
+                        //(data);
                         this.step += 1;
                         this.currBtn = 'B';
                         swal.fire({
@@ -509,9 +502,10 @@ export class NewSmarkPermitComponent implements OnInit {
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
+                        this.loading = false;
                         this.step += 1;
                         this.SpinnerService.hide();
-                       //(data);
+                        //(data);
                         swal.fire({
                             title: 'STA1 Form updated!',
                             buttonsStyling: false,
@@ -528,15 +522,19 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10(valid: boolean) {
         if (valid) {
+            this.loading = true
+
             this.SpinnerService.show();
-           //(this.sta1.id.toString());
-            if (this.sta10Details == null|| this.setCloned == true) {
+            //(this.sta1.id.toString());
+            if (this.sta10Details == null || this.setCloned == true) {
                 this.qaService.saveFirmDetailsSta10(this.sta1.id.toString(), this.sta10Form.value).subscribe(
                     (data) => {
                         this.sta10Details = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                       //(data);
+                        this.loading = false
+
+                        //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Firm Details Saved!',
@@ -550,14 +548,18 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
+                this.loading = true
+
                 this.SpinnerService.show();
                 this.qaService.updateFirmDetailsSta10(`${this.sta1.id}`, this.sta10Form.value).subscribe(
                     (data) => {
                         this.sta10Details = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                       //(data);
+                        //(data);
                         this.step += 1;
+                        this.loading = false
+
                         swal.fire({
                             title: 'Firm Details Updated!',
                             buttonsStyling: false,
@@ -574,15 +576,19 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10F(valid: boolean) {
         if (valid) {
+            this.loading = true
+
             this.SpinnerService.show();
-           //(this.sta1.id.toString());
+            //(this.sta1.id.toString());
 
             this.qaService.updateFirmDetailsSta10(this.sta1.id.toString(), this.sta10FormF.value).subscribe(
                 (data) => {
                     this.sta10Details = data;
                     this.onClickUpdateStep(this.step);
                     this.SpinnerService.hide();
-                   //(data);
+                    this.loading = false
+
+                    //(data);
                     this.step += 1;
                     swal.fire({
                         title: 'Non-Conforming Products Manufacturing Process saved!.',
@@ -616,16 +622,19 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAPersonnel(valid: boolean) {
         if (valid) {
+            this.loading = true
 
             if (this.sta10PersonnelDetails.length > 0) {
                 this.SpinnerService.show();
-               //(this.sta10Details.id.toString());
+                //(this.sta10Details.id.toString());
                 this.qaService.savePersonnelDetailsSta10(this.sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
                     (data) => {
                         this.sta10PersonnelDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                       //(data);
+                        this.loading = false
+
+                        //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Key Personnel Details Saved!',
@@ -638,13 +647,15 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
+                this.loading = false
+
                 swal.fire({
                     title: 'Key Personnel Details missing!',
                     buttonsStyling: false,
                     customClass: {
                         confirmButton: 'btn btn-success form-wizard-next-btn ',
                     },
-                    icon: 'success'
+                    icon: 'error'
                 });
             }
         }
@@ -652,7 +663,9 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAProductsManufactured(valid: boolean) {
         if (valid) {
-           //(this.sta10Details.id.toString());
+            //(this.sta10Details.id.toString());
+            this.loading = true
+
             if (this.sta10ProductsManufactureDetails.length === 0) {
                 this.SpinnerService.show();
                 this.sta10ProductsManufactureDetail = this.sta10FormB.value;
@@ -663,7 +676,9 @@ export class NewSmarkPermitComponent implements OnInit {
                         this.sta10ProductsManufactureDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                       //(data);
+                        this.loading = false
+
+                        //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Products being Manufactured Saved!',
@@ -671,11 +686,13 @@ export class NewSmarkPermitComponent implements OnInit {
                             customClass: {
                                 confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
-                            icon: 'warning'
+                            icon: 'success'
                         });
                     },
                 );
             } else {
+                this.loading = false
+
                 this.step += 1;
             }
 
@@ -684,15 +701,19 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTARawMaterials(valid: boolean) {
         if (valid) {
+            this.loading = true
+
             if (this.sta10RawMaterialsDetails.length > 0) {
                 this.SpinnerService.show();
-               //(this.sta10Details.id.toString());
+                //(this.sta10Details.id.toString());
                 this.qaService.saveRawMaterialsDetailsSta10(this.sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
                     (data) => {
                         this.sta10RawMaterialsDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                       //(data);
+                        this.loading = false
+
+                        //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Raw Materials Details saved!',
@@ -705,6 +726,8 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
+                this.loading = false
+
                 swal.fire({
                     title: 'Raw Materials Details missing!',
                     buttonsStyling: false,
@@ -713,22 +736,28 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                     icon: 'error'
                 });
+
+
             }
         }
     }
 
     onClickSaveSTAMachineryPlant(valid: boolean) {
         if (valid) {
+            this.loading = true
+
             if (this.sta10MachineryAndPlantDetails.length > 0) {
                 this.SpinnerService.show();
-               //(this.sta10Details.id.toString());
+                //(this.sta10Details.id.toString());
                 this.qaService.saveMachineryPlantDetailsSta10(this.sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
                     (data) => {
                         this.sta10MachineryAndPlantDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                       //(data);
+                        //(data);
                         this.step += 1;
+                        this.loading = false
+
                         swal.fire({
                             title: 'Machinery And Plant Details saved!',
                             buttonsStyling: false,
@@ -740,6 +769,8 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
+                this.loading = false
+
                 swal.fire({
                     title: 'Machinery And Plant Details missing!',
                     buttonsStyling: false,
@@ -754,16 +785,20 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAManufacturingProcess(valid: boolean) {
         if (valid) {
+            this.loading = true
+
             if (this.sta10ManufacturingProcessDetails.length > 0) {
                 this.SpinnerService.show();
-               //(this.sta10Details.id.toString());
+                //(this.sta10Details.id.toString());
                 // tslint:disable-next-line:max-line-length
                 this.qaService.saveManufacturingProcessDetailsSta10(this.sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
                     (data) => {
                         this.sta10ManufacturingProcessDetails = data;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
-                       //(data);
+                        this.loading = false
+
+                        //(data);
                         this.step += 1;
                         swal.fire({
                             title: 'Manufacturing Process Details saved!',
@@ -776,6 +811,8 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
+                this.loading = true
+
                 swal.fire({
                     title: 'Manufacturing Process Details missing!',
                     buttonsStyling: false,
@@ -790,51 +827,105 @@ export class NewSmarkPermitComponent implements OnInit {
 
 
     onClickAddPersonnel() {
-        this.sta10PersonnelDetail = this.sta10FormA.value;
-        this.sta10PersonnelDetails.push(this.sta10PersonnelDetail);
-        this.sta10FormA?.get('personnelName')?.reset();
-        this.sta10FormA?.get('qualificationInstitution')?.reset();
-        this.sta10FormA?.get('dateOfEmployment')?.reset();
+        if (this.sta10FormA?.get('personnelName')?.value == null) {
+            this.showToasterError("Error", "Please Enter Personnel Name")
+        } else if (this.sta10FormA?.get('qualificationInstitution')?.value == null) {
+            this.showToasterError("Error", "Please Enter Qualification Institution Name")
+        } else if (this.sta10FormA?.get('dateOfEmployment')?.value == null) {
+            this.showToasterError("Error", "Please Enter Date Of Employment")
+        } else {
+
+
+            this.sta10PersonnelDetail = this.sta10FormA.value;
+            this.sta10PersonnelDetails.push(this.sta10PersonnelDetail);
+            this.sta10FormA?.get('personnelName')?.reset();
+            this.sta10FormA?.get('qualificationInstitution')?.reset();
+            this.sta10FormA?.get('dateOfEmployment')?.reset();
+        }
         // this.sta10FormA.reset();
     }
 
     onClickAddProductsManufacture() {
-        this.sta10ProductsManufactureDetail = this.sta10FormB.value;
-        this.sta10ProductsManufactureDetails.push(this.sta10ProductsManufactureDetail);
-        this.sta10FormB?.get('productName')?.reset();
-        this.sta10FormB?.get('productBrand')?.reset();
-        this.sta10FormB?.get('productStandardNumber')?.reset();
-        this.sta10FormB?.get('available')?.reset();
-        this.sta10FormB?.get('permitNo')?.reset();
+        if (this.sta10FormB?.get('productName')?.value == null) {
+            this.showToasterError("Error", "Please Enter Product Name")
+        } else if (this.sta10FormB?.get('productBrand')?.value == null) {
+            this.showToasterError("Error", "Please Enter Product Brand")
+        } else if (this.sta10FormB?.get('productStandardNumber')?.value == null) {
+            this.showToasterError("Error", "Please Enter Product Standard Number")
+        } else if (this.sta10FormB?.get('available')?.value == null) {
+            this.showToasterError("Error", "Please Enter Availability")
+        } else if (this.sta10FormB?.get('permitNo')?.value == null) {
+            this.showToasterError("Error", "Please Enter Permit Number")
+        } else {
+
+
+            this.sta10ProductsManufactureDetail = this.sta10FormB.value;
+            this.sta10ProductsManufactureDetails.push(this.sta10ProductsManufactureDetail);
+            this.sta10FormB?.get('productName')?.reset();
+            this.sta10FormB?.get('productBrand')?.reset();
+            this.sta10FormB?.get('productStandardNumber')?.reset();
+            this.sta10FormB?.get('available')?.reset();
+            this.sta10FormB?.get('permitNo')?.reset();
+        }
     }
 
 
     onClickAddRawMaterials() {
-        this.sta10RawMaterialsDetail = this.sta10FormC.value;
-        this.sta10RawMaterialsDetails.push(this.sta10RawMaterialsDetail);
-        this.sta10FormC?.get('name')?.reset();
-        this.sta10FormC?.get('origin')?.reset();
-        this.sta10FormC?.get('specifications')?.reset();
-        this.sta10FormC?.get('qualityChecksTestingRecords')?.reset();
+        if (this.sta10FormC?.get('name')?.value == null) {
+            this.showToasterError("Error", "Please Enter Raw Material Name")
+        } else if (this.sta10FormC?.get('origin')?.value == null) {
+            this.showToasterError("Error", "Please Enter Origin")
+        } else if (this.sta10FormC?.get('specifications')?.value == null) {
+            this.showToasterError("Error", "Please Enter Specification")
+        } else if (this.sta10FormC?.get('qualityChecksTestingRecords')?.value == null) {
+            this.showToasterError("Error", "Please Enter Quality Checks Testing Records")
+        } else {
+            this.sta10RawMaterialsDetail = this.sta10FormC.value;
+            this.sta10RawMaterialsDetails.push(this.sta10RawMaterialsDetail);
+            this.sta10FormC?.get('name')?.reset();
+            this.sta10FormC?.get('origin')?.reset();
+            this.sta10FormC?.get('specifications')?.reset();
+            this.sta10FormC?.get('qualityChecksTestingRecords')?.reset();
+        }
     }
 
     onClickAddMachineryAndPlant() {
-        this.sta10MachineryAndPlantDetail = this.sta10FormD.value;
-        this.sta10MachineryAndPlantDetails.push(this.sta10MachineryAndPlantDetail);
-        this.sta10FormD?.get('typeModel')?.reset();
-        this.sta10FormD?.get('machineName')?.reset();
-        this.sta10FormD?.get('countryOfOrigin')?.reset();
+        if (this.sta10FormD?.get('typeModel')?.value == null) {
+            this.showToasterError("Error", "Please Enter Type Model")
+        } else if (this.sta10FormD?.get('machineName')?.value == null) {
+            this.showToasterError("Error", "Please Enter Machine Name")
+        } else if (this.sta10FormD?.get('countryOfOrigin')?.value == null) {
+            this.showToasterError("Error", "Please Enter Country Of Origin")
+        } else {
+            this.sta10MachineryAndPlantDetail = this.sta10FormD.value;
+            this.sta10MachineryAndPlantDetails.push(this.sta10MachineryAndPlantDetail);
+            this.sta10FormD?.get('typeModel')?.reset();
+            this.sta10FormD?.get('machineName')?.reset();
+            this.sta10FormD?.get('countryOfOrigin')?.reset();
+        }
     }
 
 
     onClickAddManufacturingProcess() {
-        this.sta10ManufacturingProcessDetail = this.sta10FormE.value;
-        this.sta10ManufacturingProcessDetails.push(this.sta10ManufacturingProcessDetail);
-        this.sta10FormE?.get('processFlowOfProduction')?.reset();
-        this.sta10FormE?.get('operations')?.reset();
-        this.sta10FormE?.get('criticalProcessParametersMonitored')?.reset();
-        this.sta10FormE?.get('frequency')?.reset();
-        this.sta10FormE?.get('processMonitoringRecords')?.reset();
+        if (this.sta10FormE?.get('processFlowOfProduction')?.value == null) {
+            this.showToasterError("Error", "Please Enter Process Flow Of Production")
+        } else if (this.sta10FormE?.get('operations')?.value == null) {
+            this.showToasterError("Error", "Please Enter Operations")
+        } else if (this.sta10FormE?.get('criticalProcessParametersMonitored')?.value == null) {
+            this.showToasterError("Error", "Please Enter Critical Processes")
+        } else if (this.sta10FormE?.get('frequency')?.value == null) {
+            this.showToasterError("Error", "Please Enter Frequency")
+        } else if (this.sta10FormE?.get('processMonitoringRecords')?.value == null) {
+            this.showToasterError("Error", "Please Enter Process Monitoring Records")
+        } else {
+            this.sta10ManufacturingProcessDetail = this.sta10FormE.value;
+            this.sta10ManufacturingProcessDetails.push(this.sta10ManufacturingProcessDetail);
+            this.sta10FormE?.get('processFlowOfProduction')?.reset();
+            this.sta10FormE?.get('operations')?.reset();
+            this.sta10FormE?.get('criticalProcessParametersMonitored')?.reset();
+            this.sta10FormE?.get('frequency')?.reset();
+            this.sta10FormE?.get('processMonitoringRecords')?.reset();
+        }
     }
 
     onClickSaveSTA10G() {
@@ -863,15 +954,19 @@ export class NewSmarkPermitComponent implements OnInit {
         const file = this.uploadedFiles;
         const formData = new FormData();
         for (let i = 0; i < file.length; i++) {
-           //(file[i]);
+            //(file[i]);
             formData.append('docFile', file[i], file[i].name);
         }
+        this.loading = true
+
 
         this.SpinnerService.show();
         this.qaService.uploadSTA10File(this.sta1.id.toString(), formData).subscribe(
             (data: any) => {
                 this.SpinnerService.hide();
-               //(data);
+                this.loading = false
+
+                //(data);
                 this.onClickUpdateStep(this.step);
                 this.step += 1;
                 swal.fire({
@@ -930,7 +1025,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
 // Remove Form repeater values
     removePersonnelDetails(index) {
-       //(index);
+        //(index);
         if (index === 0) {
             this.sta10PersonnelDetails.splice(index, 1);
         } else {
@@ -972,22 +1067,26 @@ export class NewSmarkPermitComponent implements OnInit {
 
 
     onselectSection() {
-       //(this.SelectedSectionId);
+        //(this.SelectedSectionId);
         // this.SelectedSectionId=sselect;
         // this.SelectedSectionId = Selectedfood;
     }
 
     // Renewal
-    id:any ="New Applications";
-    tabChange(ids:any){
-      this.id=ids;
-      console.log(this.id);
+    id: any = "New Applications";
+
+    tabChange(ids: any) {
+        this.id = ids;
+        console.log(this.id);
     }
 
     setClonedMethod() {
         this.hideCloneButton = true;
     }
 
- 
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
+
+    }
 
 }
