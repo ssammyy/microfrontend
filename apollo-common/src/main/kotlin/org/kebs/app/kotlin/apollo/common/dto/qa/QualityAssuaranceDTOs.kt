@@ -87,11 +87,12 @@ data class AllInspectionDetailsApplyDto(
     var technicalDetailsDto: TechnicalDetailsDto? = null,
     var inspectionDetailsDto: InspectionDetailsDto? = null,
     var inspectionDetailsDtoB: InspectionDetailsDtoB? = null,
-    var managementSystemsAndStandardsDetailsApply: ManagementSystemsAndStandardsDetailsApplyDto? = null,
+    var productLabelling: List<ProductLabellingDto>? = null,
+    var standardizationMarkScheme: StandardizationMarkScheme? = null,
     var operationProcessAndControls: List<OperationProcessAndControlsDetailsApplyDto>? = null,
     var haccpImplementationDetails: HaccpImplementationDetailsApplyDto? = null,
     var followPreviousRecommendationsNonConformities: String? = null,
-    var documentsID: List<Long>? = null,
+//    var documentsID: List<Long>? = null,
     var recommendations: String? = null,
     var inspectorComments: String? = null,
     var inspectorName: String? = null,
@@ -101,24 +102,9 @@ data class AllInspectionDetailsApplyDto(
     var supervisorDate: Date? = null,
 )
 
-data class ManagementSystemsAndStandardsDetailsApplyDto(
+data class StandardizationMarkScheme(
     var id: Long? = null,
-    var firmImplementedAnyManagementSystem: String? = null,
-    var firmImplementedAnyManagementSystemRemarks: String? = null,
-    var indicateRelevantProductStandardCodes: String? = null,
-    var indicateRelevantProductStandardCodesRemarks: String? = null,
-    var complianceApplicableStatutory: String? = null,
-    var complianceApplicableStatutoryRemarks: String? = null,
-    var plantHouseKeeping: String? = null,
-    var plantHouseKeepingRemarks: String? = null,
-    var handlingComplaints: String? = null,
-    var handlingComplaintsRemarks: String? = null,
-    var qualityControlPersonnel: String? = null,
-    var qualityControlPersonnelRemarks: String? = null,
-    var testingFacility: String? = null,
-    var testingFacilityRemarks: String? = null,
-    var equipmentCalibration: String? = null,
-    var equipmentCalibrationRemarks: String? = null,
+    var inspectionRecommendationId:Long? = null,
     var validitySmarkPermit: String? = null,
     var validitySmarkPermitRemarks: String? = null,
     var useTheSmark: String? = null,
@@ -134,6 +120,7 @@ data class ManagementSystemsAndStandardsDetailsApplyDto(
 
 data class TechnicalDetailsDto(
     var id: Long? = null,
+    var inspectionRecommendationId: Long? = null,
     var firmImplementedAnyManagementSystem: String? = null,
     var firmImplementedAnyManagementSystemRemarks: String? = null,
     var indicateRelevantProductStandardCodes: String? = null,
@@ -142,6 +129,7 @@ data class TechnicalDetailsDto(
 
 data class InspectionDetailsDto(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var complianceApplicableStatutory: String? = null,
     var complianceApplicableStatutoryRemarks: String? = null,
     var plantHouseKeeping: String? = null,
@@ -156,6 +144,7 @@ data class InspectionDetailsDto(
 
 data class InspectionDetailsDtoB(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var equipmentCalibration: String? = null,
     var equipmentCalibrationRemarks: String? = null,
     var qualityRecords: String? = null,
@@ -164,19 +153,23 @@ data class InspectionDetailsDtoB(
     var recordsNonconformingRemarks: String? = null,
     var productRecallRecords: String? = null,
     var productRecallRecordsRemarks: String? = null,
-    var productLabelling: List<ProductLabellingDto>? = null,
 
     )
 
 data class ProductLabellingDto(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
+    var technicalReportId:Long? = null,
     var standardMarking: String? = null,
     var findings: String? = null,
-)
+    var statusOfCompliance: String? = null,
+
+    )
 
 
 data class OperationProcessAndControlsDetailsApplyDto(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var processFlow: String? = null,
     var operations: String? = null,
     var qualityChecks: String? = null,
@@ -187,6 +180,7 @@ data class OperationProcessAndControlsDetailsApplyDto(
 
 data class HaccpImplementationDetailsApplyDto(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var designFacilitiesConstructionLayout: String? = null,
     var designFacilitiesConstructionLayoutRemarks: String? = null,
     var maintenanceSanitationCleaningPrograms: String? = null,

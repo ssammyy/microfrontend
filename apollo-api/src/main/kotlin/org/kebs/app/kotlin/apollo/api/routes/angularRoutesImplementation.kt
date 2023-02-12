@@ -536,7 +536,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/process-step-add", handler::permitProcessStepMigration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
-                    POST("/generate-difference-invoice", handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration)
+                    POST(
+                        "/generate-difference-invoice",
+                        handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration
+                    )
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
@@ -646,27 +649,85 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     "/permit".nest {
                         POST("/section", internalUserhandler::updatePermitDetailsSection)
                         POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
-                        POST("/difference-status-activate", internalUserhandler::updatePermitDetailsDifferenceStatusActivate)
+                        POST(
+                            "/difference-status-activate",
+                            internalUserhandler::updatePermitDetailsDifferenceStatusActivate
+                        )
                         POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
                         POST("/assign-assessor", internalUserhandler::updatePermitDetailsAssignAssessor)
                         POST("/add-standards", internalUserhandler::updatePermitDetailsStandards)
                         POST("/schedule-inspection", internalUserhandler::updatePermitDetailsScheduleInspection)
-                        POST("/schedule-assessment-visit", internalUserhandler::updatePermitDetailsScheduleAssessmentVisit)
-                        POST("/inspection-checklist", internalUserhandler::updatePermitDetailsInspectionCheckListNew)
-                        POST("/inspection-checklist-submit", internalUserhandler::updatePermitDetailsInspectionCheckListNewFinal)
+                        POST(
+                            "/schedule-assessment-visit",
+                            internalUserhandler::updatePermitDetailsScheduleAssessmentVisit
+                        )
+                        "/inspection".nest {
+                            POST("/check_if_inspection_report_exists", internalUserhandler::checkIfInspectionReportExists)
+                            POST(
+                                "/new-technical-report",
+                                internalUserhandler::updatePermitDetailsInspectionCheckListNew
+                            )
+                            POST("/inspection-details", internalUserhandler::updateInspectionReportDetailSave)
+                            POST("/inspection-detailsB", internalUserhandler::updateInspectionReportDetailBSave)
+                            POST("/product-labelling", internalUserhandler::updateProductLabellingSave)
+                            POST(
+                                "/standardization-mark-scheme",
+                                internalUserhandler::updateInspectionReportStandardizationMarkSchemeSave
+                            )
+                            POST(
+                                "/operationProcessAndControls",
+                                internalUserhandler::updateInspectionCheckListInspectionReportDetailsOPCSave
+                            )
+                            POST(
+                                "/haccpImplementationDetails",
+                                internalUserhandler::updateInspectionCheckListInspectionHACCPImplementationSave
+                            )
+                            POST(
+                                "/inspection-checklist-submit",
+                                internalUserhandler::updatePermitDetailsInspectionCheckListNewFinal
+                            )
+
+                        }
                         POST("/ssf-details", internalUserhandler::updatePermitDetailsSaveSSFDetails)
                         POST("/lab-save-pdf-selected", internalUserhandler::updatePermitDetailsSaveSelectedLabPDF)
-                        POST("/lab-save-compliance-status", internalUserhandler::updatePermitDetailsLabResultsComplianceStatus)
+                        POST(
+                            "/lab-save-compliance-status",
+                            internalUserhandler::updatePermitDetailsLabResultsComplianceStatus
+                        )
                         POST("/ssf-compliance-status", internalUserhandler::updatePermitDetailsSSFCompliance)
                         POST("/save-recommendation", internalUserhandler::updatePermitDetailsSaveRecommendation)
-                        POST("/approve-reject-inspection-report", internalUserhandler::updatePermitDetailsApproveRejectInspection)
-                        POST("/approve-reject-justification-report", internalUserhandler::updatePermitDetailsApproveRejectJustification)
-                        POST("/approve-reject-assessment-report", internalUserhandler::updatePermitDetailsApproveRejectAssessmentReport)
-                        POST("/approve-reject-recommendation", internalUserhandler::updatePermitDetailsApproveRejectRecommendation)
-                        POST("/qam-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitQAM)
-                        POST("/psc-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitPSC)
-                        POST("/pac-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitPAC)
-                        POST("/pcm-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitPCM)
+                        POST(
+                            "/approve-reject-inspection-report",
+                            internalUserhandler::updatePermitDetailsApproveRejectInspection
+                        )
+                        POST(
+                            "/approve-reject-justification-report",
+                            internalUserhandler::updatePermitDetailsApproveRejectJustification
+                        )
+                        POST(
+                            "/approve-reject-assessment-report",
+                            internalUserhandler::updatePermitDetailsApproveRejectAssessmentReport
+                        )
+                        POST(
+                            "/approve-reject-recommendation",
+                            internalUserhandler::updatePermitDetailsApproveRejectRecommendation
+                        )
+                        POST(
+                            "/qam-approve-reject-permit",
+                            internalUserhandler::updatePermitDetailsApproveRejectPermitQAM
+                        )
+                        POST(
+                            "/psc-approve-reject-permit",
+                            internalUserhandler::updatePermitDetailsApproveRejectPermitPSC
+                        )
+                        POST(
+                            "/pac-approve-reject-permit",
+                            internalUserhandler::updatePermitDetailsApproveRejectPermitPAC
+                        )
+                        POST(
+                            "/pcm-approve-reject-permit",
+                            internalUserhandler::updatePermitDetailsApproveRejectPermitPCM
+                        )
 
                     }
 //                    GET("/permit-detail", internalUserhandler::getPermitDetails)

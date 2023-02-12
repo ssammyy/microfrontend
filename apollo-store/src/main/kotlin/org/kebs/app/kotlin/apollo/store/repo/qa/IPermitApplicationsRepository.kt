@@ -889,7 +889,10 @@ interface IQaInspectionHaccpImplementationRepository :
 interface IQaInspectionReportRecommendationRepository :
     HazelcastRepository<QaInspectionReportRecommendationEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaInspectionReportRecommendationEntity?
-    fun findByPermitId(permitId: Long): List<QaInspectionReportRecommendationEntity>?
+    fun findByPermitId(permitId: Long): QaInspectionReportRecommendationEntity?
+
+    fun findByIdAndPermitId(inspectionRecommendationId: Long, permitID: Long): QaInspectionReportRecommendationEntity?
+
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): QaInspectionReportRecommendationEntity?
     fun findByPermitRefNumberAndPermitId(
         permitRefNumber: String,
@@ -909,7 +912,9 @@ interface IQaInspectionOpcEntityRepository : HazelcastRepository<QaInspectionOpc
 interface IQaInspectionProductLabelEntityRepository : HazelcastRepository<QaInspectionProductLabelEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaInspectionProductLabelEntity?
     fun findByPermitId(permitId: Long): List<QaInspectionProductLabelEntity>?
+    fun findByInspectionRecommendationIdAndPermitId(inspectionRecommendationId: Long, permitID: Long): QaInspectionProductLabelEntity?
     fun findByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
+
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionProductLabelEntity>?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionProductLabelEntity>?
 }

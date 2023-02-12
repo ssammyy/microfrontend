@@ -9,15 +9,17 @@ import {QaInternalService} from "../../../core/store/data/qa/qa-internal.service
 import * as CryptoJS from 'crypto-js';
 import swal from "sweetalert2";
 import {
+    AllInspectionDetailsApplyDto,
     HaccpImplementationDetailsApplyDto,
     InspectionDetailsDto,
     InspectionDetailsDtoB,
     InspectionReportProcessStepDto,
     OperationProcessAndControlsDetailsApplyDto,
-    PermitProcessStepDto,
     ProductLabellingDto,
     TechnicalDetailsDto
 } from "../../../core/store/data/qa/qa.model";
+import {ApiResponseModel} from "../../../core/store/data/ms/ms.model";
+
 declare const $: any;
 
 @Component({
@@ -62,6 +64,7 @@ export class InspectionReport implements OnInit {
     inspectionReportProcessStep: InspectionReportProcessStepDto | undefined;
 
     currBtn = 'A';
+    allInspectionReportDetails: AllInspectionDetailsApplyDto;
 
 
     constructor(private formBuilder: FormBuilder,
@@ -88,7 +91,10 @@ export class InspectionReport implements OnInit {
 
         });
 
+        this.checkIfInspectionReportExists(this.permitId);
+
         this.technicalForm = this.formBuilder.group({
+            id: [''],
             firmImplementedAnyManagementSystem: ['', Validators.required],
             firmImplementedAnyManagementSystemRemarks: ['', Validators.required],
             indicateRelevantProductStandardCodes: ['', Validators.required],
@@ -170,16 +176,10 @@ export class InspectionReport implements OnInit {
 
     onClickUpdateStep(stepNumber: number) {
         if (this.technicalDetails) {
-            this.inspectionReportProcessStep = new InspectionReportProcessStepDto();
-            this.inspectionReportProcessStep.inspectionReportId = this.technicalDetails.id;
-            this.inspectionReportProcessStep.processStep = stepNumber;
-            this.internalService.saveInspectionReportProcessStep(this.inspectionReportProcessStep).subscribe(
-                (data) => {
-                    // this.sta1 = data;
-                },
-            );
+            this.clickNextToTest();
         }
     }
+
     onClickNext(valid: boolean) {
         if (valid) {
             switch (this.step) {
@@ -246,29 +246,37 @@ export class InspectionReport implements OnInit {
             if (this.technicalDetails == null || this.setCloned == true) {
                 this.SpinnerService.show();
                 this.internalService.saveInspectionReportTechnicalDetails(this.permitId, this.technicalForm.value).subscribe(
-                    (data) => {
-                        this.technicalDetails = data;
-                        this.onClickUpdateStep(this.step);
-                        this.SpinnerService.hide();
-                        //(data);
-                        this.step += 1;
-                        this.currBtn = 'B';
-                        swal.fire({
-                            title: 'Technical Report Saved!',
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'success'
-                        });
+                    (data: ApiResponseModel) => {
+                        if (data.responseCode === '00') {
+                            this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+
+                            this.technicalDetails = this.allInspectionReportDetails.technicalDetailsDto;
+                            this.SpinnerService.hide();
+                            //(data);
+                            this.step += 1;
+                            this.currBtn = 'B';
+                            swal.fire({
+                                title: 'Technical Report Saved!',
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                                },
+                                icon: 'success'
+                            });
+                        } else {
+                            this.SpinnerService.hide();
+                            this.qaService.showError(data.message);
+                        }
                     },
                 );
             } else {
+
+
                 this.SpinnerService.show();
-                this.internalService.updateInspectionReportTechnicalDetails(String(this.technicalDetails.id), this.technicalForm.value).subscribe(
+                this.technicalForm.controls['id'].setValue(this.technicalDetails.id);
+                this.internalService.saveInspectionReportTechnicalDetails(String(this.permitId), this.technicalForm.value).subscribe(
                     (data) => {
                         this.technicalDetails = data;
-                        this.onClickUpdateStep(this.step);
                         this.step += 1;
                         this.SpinnerService.hide();
                         //(data);
@@ -316,4 +324,11 @@ export class InspectionReport implements OnInit {
     }
 
 
+    private checkIfInspectionReportExists(permitId: string) {
+        if(permitId)
+        {
+
+        }
+
+    }
 }
