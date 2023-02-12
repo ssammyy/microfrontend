@@ -125,6 +125,10 @@ class QaInvoiceCalculationDaoServices(
         KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
+        with(invoiceMaster){
+            varField10 = 1.toString()
+        }
+        invoiceMaster =qaInvoiceMasterDetailsRepo.save(invoiceMaster)
 
         when {
             applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == selectedRate.id -> {
@@ -204,7 +208,7 @@ class QaInvoiceCalculationDaoServices(
                 invoiceDetailsList.forEach { invoice ->
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
-                            totalAmountPayable = masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount ?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                            totalAmountPayable = invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
                     }
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")

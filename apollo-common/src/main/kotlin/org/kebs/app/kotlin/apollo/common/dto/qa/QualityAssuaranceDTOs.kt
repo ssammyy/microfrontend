@@ -798,6 +798,7 @@ data class PermitDetailsDto(
     var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
     var ssfCompletedStatus: Boolean? = null,
     var compliantStatus: Boolean? = null,
+    var invoiceDifferenceGenerated: Boolean? = null,
 
     )
 
@@ -821,7 +822,6 @@ data class AllPermitDetailsDto(
     var sta3DTO: STA3Dto? = null,
     var sta10DTO: AllSTA10DetailsDto? = null,
     var sectionList: List<SectionsEntityDto>? = null,
-    var standardsList: List<StandardsDto>? = null,
     var ssfListDetails: List<SSFDetailsDto>? = null,
 )
 

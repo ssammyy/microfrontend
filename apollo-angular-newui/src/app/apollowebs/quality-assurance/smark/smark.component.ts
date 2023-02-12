@@ -17,7 +17,7 @@ import {
     STA10ManufacturingProcessDto,
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
-    STA10RawMaterialsDto
+    STA10RawMaterialsDto,
 } from '../../../core/store/data/qa/qa.model';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -28,7 +28,7 @@ import {LoadingService} from '../../../core/services/loader/loadingservice.servi
 import {NgxSpinnerService} from 'ngx-spinner';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {TableData} from '../../../md/md-table/md-table.component';
-import {HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse} from '@angular/common/http';
 import {Branches, BranchesService} from '../../../core/store';
 import {Observable} from 'rxjs';
 
@@ -40,7 +40,7 @@ interface Permit {
 @Component({
     selector: 'app-smark',
     templateUrl: './smark.component.html',
-    styleUrls: ['./smark.component.css']
+    styleUrls: ['./smark.component.css'],
 })
 export class SmarkComponent implements OnInit {
     @ViewChild('editModal') editModal !: TemplateRef<any>;
@@ -140,7 +140,7 @@ export class SmarkComponent implements OnInit {
         private service: BranchesService,
         private formBuilder: FormBuilder,
         private _loading: LoadingService,
-        private SpinnerService: NgxSpinnerService
+        private SpinnerService: NgxSpinnerService,
     ) {
         this.branches$ = service.entities$;
         service.getAll().subscribe();
@@ -178,7 +178,7 @@ export class SmarkComponent implements OnInit {
             totalNumberMale: [{value: '', disabled: true}, Validators.required],
             totalNumberPermanentEmployees: [{value: '', disabled: true}, Validators.required],
             totalNumberCasualEmployees: [{value: '', disabled: true}, Validators.required],
-            averageVolumeProductionMonth: [{value: '', disabled: true}, Validators.required]
+            averageVolumeProductionMonth: [{value: '', disabled: true}, Validators.required],
 
         });
 
@@ -186,7 +186,7 @@ export class SmarkComponent implements OnInit {
         this.sta10FormA = this.formBuilder.group({
             personnelName: [],
             qualificationInstitution: [],
-            dateOfEmployment: []
+            dateOfEmployment: [],
 
         });
 
@@ -195,14 +195,14 @@ export class SmarkComponent implements OnInit {
             productBrand: [],
             productStandardNumber: [],
             available: [],
-            permitNo: []
+            permitNo: [],
         });
 
         this.sta10FormC = this.formBuilder.group({
             name: [],
             origin: [],
             specifications: [],
-            qualityChecksTestingRecords: []
+            qualityChecksTestingRecords: [],
         });
 
         this.sta10FormD = this.formBuilder.group({
@@ -216,7 +216,7 @@ export class SmarkComponent implements OnInit {
             operations: [],
             criticalProcessParametersMonitored: [],
             frequency: [],
-            processMonitoringRecords: []
+            processMonitoringRecords: [],
         });
         this.sta10FormG = this.formBuilder.group({});
 
@@ -233,7 +233,7 @@ export class SmarkComponent implements OnInit {
             calibrationEquipmentLastCalibrated: [{value: '', disabled: true}, Validators.required],
             handlingConsumerComplaints: [{value: '', disabled: true}, Validators.required],
             companyRepresentative: [{value: '', disabled: true}, Validators.required],
-            applicationDate: [{value: '', disabled: true}, Validators.required]
+            applicationDate: [{value: '', disabled: true}, Validators.required],
         });
 
         this.approveRejectSSCForm = this.formBuilder.group({
@@ -251,7 +251,7 @@ export class SmarkComponent implements OnInit {
 
         this.uploadForm = this.formBuilder.group({
             upLoadDescription: ['', Validators.required],
-            uploadedFile: this.filesControl
+            uploadedFile: this.filesControl,
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
 
@@ -260,14 +260,14 @@ export class SmarkComponent implements OnInit {
             (data: any) => {
                 this.sections = data;
                 // console.log(data);
-            }
+            },
         );
 
         this.qaService.loadPlantList().subscribe(
             (data: any) => {
                 this.plants = data;
                 // console.log(data);
-            }
+            },
         );
 
 
@@ -284,16 +284,16 @@ export class SmarkComponent implements OnInit {
                 this.allPermitData = data;
                 for (let i = 0; i < data.length; i++) {
                     const obj = data[i];
-                    let mem_id = obj.id
-                    let names = obj.permitRefNumber;
+                    const mem_id = obj.id;
+                    const names = obj.permitRefNumber;
 
-                    let newArray = {'id': mem_id, 'name': names};
-                    this.memberReturnArray.push(newArray)
+                    const newArray = {'id': mem_id, 'name': names};
+                    this.memberReturnArray.push(newArray);
                 }
                 this.dropdownList = this.memberReturnArray;
 
 
-            })
+            });
 
         this.initForm();
 
@@ -304,14 +304,14 @@ export class SmarkComponent implements OnInit {
             selectAllText: 'Select All',
             unSelectAllText: 'UnSelect All',
             itemsShowLimit: 3,
-            allowSearchFilter: true
+            allowSearchFilter: true,
         };
     }
 
     initForm() {
         this.form = this.formBuilder.group({
-            permits: ['', [Validators.required]]
-        })
+            permits: ['', [Validators.required]],
+        });
     }
 
     remarksDetails() {
@@ -336,7 +336,7 @@ export class SmarkComponent implements OnInit {
 
         this.tableData1 = {
             headerRow: ['Remark Details', 'Action'],
-            dataRows: formattedArrayRemarks
+            dataRows: formattedArrayRemarks,
         };
     }
 
@@ -437,7 +437,7 @@ export class SmarkComponent implements OnInit {
                         formattedArraySta10 = this.sta10FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id, i.document]);
                         this.tableData2 = {
                             headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                            dataRows: formattedArraySta10
+                            dataRows: formattedArraySta10,
                         };
                     }
                     if (this.allPermitDetails.ordinaryFilesList !== []) {
@@ -446,7 +446,7 @@ export class SmarkComponent implements OnInit {
                         formattedArrayOrdinaryFiles = this.ordinaryFilesList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id]);
                         this.tableData3 = {
                             headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                            dataRows: formattedArrayOrdinaryFiles
+                            dataRows: formattedArrayOrdinaryFiles,
                         };
                     }
                     if (this.allPermitDetails.labResultsList.labResultsList !== []) {
@@ -455,7 +455,7 @@ export class SmarkComponent implements OnInit {
                         formattedArrayLabResultsList = this.labResultsDetailsList.map(i => [i.pdfName, i.complianceStatus, i.sffId, i.complianceRemarks, i.pdfSavedId]);
                         this.tableData4 = {
                             headerRow: ['File Name', 'Compliant Status', 'View Remarks', 'View PDF'],
-                            dataRows: formattedArrayLabResultsList
+                            dataRows: formattedArrayLabResultsList,
                         };
 
                         this.complianceResultsDetailsList = this.allPermitDetails.labResultsList.ssfResultsList;
@@ -463,7 +463,7 @@ export class SmarkComponent implements OnInit {
                         formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
                         this.tableData6 = {
                             headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Add Remarks'],
-                            dataRows: formattedArrayComplianceResultsList
+                            dataRows: formattedArrayComplianceResultsList,
                         };
                     }
                     if (this.allPermitDetails.oldVersionList !== []) {
@@ -472,7 +472,7 @@ export class SmarkComponent implements OnInit {
                         formattedArrayOlderVersionList = this.olderVersionDetailsList.map(i => [i.permitRefNumber, i.createdOn, i.permitStatus, i.versionNumber, i.id]);
                         this.tableData5 = {
                             headerRow: ['Permit Ref Number', 'Created On', 'Status', 'Version Number', 'Action'],
-                            dataRows: formattedArrayOlderVersionList
+                            dataRows: formattedArrayOlderVersionList,
                         };
                     }
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
@@ -511,9 +511,9 @@ export class SmarkComponent implements OnInit {
                                 // ['Description', this.allPermitDetails.invoiceDetails.description],
                                 ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
                                 ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
-                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]
+                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
 
-                            ]
+                            ],
                         };
                     }
                 },
@@ -603,7 +603,7 @@ export class SmarkComponent implements OnInit {
                     customClass: {
                         confirmButton: 'btn btn-success form-wizard-next-btn ',
                     },
-                    icon: 'success'
+                    icon: 'success',
                 });
                 // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
@@ -613,22 +613,25 @@ export class SmarkComponent implements OnInit {
     }
 
     submitPermitGenerateDifference(): void {
-        this.SpinnerService.show();
-        // tslint:disable-next-line:max-line-length
-        this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
-            (data: PermitEntityDetails) => {
-                this.allPermitDetails.permitDetails = data;
-                this.SpinnerService.hide();
-                swal.fire({
-                    title: 'INVOICE DIFFERENCE GENERATED SUCCESSFULLY!',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
-            },
-        );
+        const companyStatusDetails = this.allPermitDetails.companyStatusDetails;
+        if (companyStatusDetails.updateDetailsStatus) {
+            this.qaService.showWarning(`YOU ARE  REQUIERD TO UPGRADE FIRM TYPE TO ${companyStatusDetails.updateFirmType} BEFORE YOU GENERATE THE DIFFERENCE`, () => {this.loadCompanyDetails(); });
+        } else {
+            this.SpinnerService.show();
+            // tslint:disable-next-line:max-line-length
+            this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                (data: PermitEntityDetails) => {
+                    this.allPermitDetails.permitDetails = data;
+                    this.SpinnerService.hide();
+                    this.qaService.showSuccess(`INVOICE DIFFERENCE GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                },
+            );
+        }
+
+    }
+
+    loadCompanyDetails(): void {
+        this.router.navigate(['/company/companies'], {});
     }
 
     reSubmitWithRemarks(): void {
@@ -645,7 +648,7 @@ export class SmarkComponent implements OnInit {
                     customClass: {
                         confirmButton: 'btn btn-success form-wizard-next-btn ',
                     },
-                    icon: 'success'
+                    icon: 'success',
                 });
             },
         );
@@ -719,11 +722,11 @@ export class SmarkComponent implements OnInit {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
+                cancelButton: 'btn btn-danger',
             },
-            buttonsStyling: false
+            buttonsStyling: false,
         });
-        var productID = 'productID';
+        const productID = 'productID';
 
         swalWithBootstrapButtons.fire({
             title: 'Are you sure your application is complete?',
@@ -732,7 +735,7 @@ export class SmarkComponent implements OnInit {
             showCancelButton: true,
             confirmButtonText: 'Yes!',
             cancelButtonText: 'No!',
-            reverseButtons: true
+            reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
                 this.SpinnerService.show();
@@ -744,18 +747,18 @@ export class SmarkComponent implements OnInit {
                             swalWithBootstrapButtons.fire(
                                 'Submitted!',
                                 'FMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                                'success'
+                                'success',
                             );
                         } else {
                             swalWithBootstrapButtons.fire(
                                 'Submitted!',
                                 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                                'success'
-                            )
+                                'success',
+                            );
                         }
                     },
                 );
-                //this.loadCInvoiceRoute();
+                // this.loadCInvoiceRoute();
 
             } else if (
                 /* Read more about handling dismissals below */
@@ -764,7 +767,7 @@ export class SmarkComponent implements OnInit {
                 swalWithBootstrapButtons.fire(
                     'Cancelled',
                     'You can click the \'UPDATE APPLICATION DETAILS\' button to complete.',
-                    'error'
+                    'error',
                 );
             }
         });
@@ -794,7 +797,7 @@ export class SmarkComponent implements OnInit {
                             customClass: {
                                 confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
-                            icon: 'success'
+                            icon: 'success',
                         });
                     } else {
                         swal.fire({
@@ -803,7 +806,7 @@ export class SmarkComponent implements OnInit {
                             customClass: {
                                 confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
-                            icon: 'success'
+                            icon: 'success',
                         });
                     }
 
@@ -829,7 +832,7 @@ export class SmarkComponent implements OnInit {
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
-                        icon: 'success'
+                        icon: 'success',
                     });
 
                 } else {
@@ -839,7 +842,7 @@ export class SmarkComponent implements OnInit {
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
-                        icon: 'success'
+                        icon: 'success',
                     });
 
                 }
@@ -858,7 +861,7 @@ export class SmarkComponent implements OnInit {
             customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
             },
-            icon: 'success'
+            icon: 'success',
         });
         this.router.navigate(['/smarkpermitdetails'], {fragment: permitID});
 
@@ -928,7 +931,7 @@ export class SmarkComponent implements OnInit {
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
-                        icon: 'success'
+                        icon: 'success',
                     });
                     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
@@ -939,6 +942,10 @@ export class SmarkComponent implements OnInit {
 
     goToPayment() {
         this.router.navigate(['/invoice/consolidate_invoice']);
+    }
+
+    goToPaymentDifference() {
+        this.router.navigate(['/invoice/consolidate_invoice-difference']);
     }
 
     goToNewApplication() {
@@ -978,7 +985,7 @@ export class SmarkComponent implements OnInit {
     }
 
     getObjectListFromData(ids) {
-        return this.memberReturnArray.filter(item => ids.includes(item.id))
+        return this.memberReturnArray.filter(item => ids.includes(item.id));
     }
 
 
@@ -990,15 +997,15 @@ export class SmarkComponent implements OnInit {
                 customClass: {
                     confirmButton: 'btn btn-danger form-wizard-next-btn ',
                 },
-                icon: 'error'
+                icon: 'error',
             });
         } else {
             this.SpinnerService.show();
 
-            let data = this.form.value.permits;
+            const data = this.form.value.permits;
             for (let i = 0; i < data.length; i++) {
                 const obj = data[i];
-                this.permit_id = obj.id
+                this.permit_id = obj.id;
             }
 
             const bar: PermitDto = {permitId: this.permit_id, permitIdBeingMigrated: id};
@@ -1017,7 +1024,7 @@ export class SmarkComponent implements OnInit {
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
-                        icon: 'success'
+                        icon: 'success',
                     }).then(function() {
                         location.reload(); // this is your location reload.
                     });
@@ -1029,7 +1036,7 @@ export class SmarkComponent implements OnInit {
                 (error: HttpErrorResponse) => {
                     this.SpinnerService.hide();
                     console.log(error.message);
-                }
+                },
             );
 
 

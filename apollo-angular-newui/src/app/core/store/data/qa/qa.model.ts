@@ -301,6 +301,7 @@ export class PermitEntityDetails {
     factoryInspectionReportApprovedRejectedStatus: boolean;
     ssfCompletedStatus: boolean;
     compliantStatus: boolean;
+    invoiceDifferenceGenerated: boolean;
 }
 
 

@@ -1659,13 +1659,14 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    (click)="openModalAddDetails('updateSection')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.permitGenerateDifference"
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                && !allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('permitCompleteness')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
                                 <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus
-                                && allPermitDetails?.permitDetails?.permitGenerateDifference && allPermitDetails?.invoiceDifferenceDetails != null"
+                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('permitCompleteness')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
@@ -1901,6 +1902,9 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                 <mat-option [value]="false">DECLINE FIRM TYPE FOR
                                                                     UPGRADE
                                                                 </mat-option>
+<!--                                                                <mat-option [value]="3">DECLINE TO GENERATE DIFFERENCE DUE FIRM TYPE FOR-->
+<!--                                                                    UPGRADE-->
+<!--                                                                </mat-option>-->
                                                             </mat-select>
                                                         </mat-form-field>
                                                         <div *ngIf="(selectForStatusStatus == 'RejectForUpgrade')">

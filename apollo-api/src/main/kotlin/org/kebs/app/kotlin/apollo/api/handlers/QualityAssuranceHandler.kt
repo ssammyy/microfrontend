@@ -2342,24 +2342,24 @@ class QualityAssuranceHandler(
         }
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun handleGetCompanyStatusUpgradeDetails(req: ServerRequest): ServerResponse {
-        return try {
-            val map = commonDaoServices.serviceMapDetails(appId)
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
-            qaDaoServices.getCompanyUpgardeStatusDetails(loggedInUser, map)
-                .let { ok().body(it)
-                }
-                ?: onErrors("We could not process your request at the moment")
-
-
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.debug(e.message, e)
-            KotlinLogging.logger { }.error(e.message)
-            onErrors(e.message)
-        }
-    }
+//    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun handleGetCompanyStatusUpgradeDetails(req: ServerRequest): ServerResponse {
+//        return try {
+//            val map = commonDaoServices.serviceMapDetails(appId)
+//            val loggedInUser = commonDaoServices.loggedInUserDetails()
+//            qaDaoServices.getCompanyUpgardeStatusDetails(loggedInUser, map)
+//                .let { ok().body(it)
+//                }
+//                ?: onErrors("We could not process your request at the moment")
+//
+//
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            KotlinLogging.logger { }.error(e.message)
+//            onErrors(e.message)
+//        }
+//    }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -2677,12 +2677,12 @@ class QualityAssuranceHandler(
                     paidStatus = 0
                     sendApplication = map.activeStatus
                     endOfProductionStatus = map.inactiveStatus
-                    invoiceGenerated = map.activeStatus
+                    invoiceDifferenceGenerated = map.activeStatus
                     varField10 = map.activeStatus.toString()
-                    varField9 = 1.toString()
+                    varField9 = 2.toString()
                     permitStatus = applicationMapProperties.mapQaStatusPPayment
                 }
-                qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
+                permit= qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
                 qaDaoServices.mapAllPermitDetailsTogether(
                     permit,
