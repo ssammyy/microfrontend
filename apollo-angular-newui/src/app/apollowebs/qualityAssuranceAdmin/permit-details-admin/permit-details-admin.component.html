@@ -1710,6 +1710,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
 
                                 <a data-toggle="modal"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('addRecommendationRemarks')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATION</a>
+
+                                <a data-toggle="modal"
+                                   data-target="#allProcessModel"
+                                       (click)="openModalAddDetails('addRecommendationApproval')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD APPROVAL</a>
+
+                                <a data-toggle="modal"
                                    *ngIf="!allPermitDetails?.permitDetails?.oldPermitStatus && !allPermitDetails?.permitDetails?.permitAwardStatus"
                                    data-target="#myModalUpload"
                                    (click)="openModalAddDetails('uploadAttachments')"
@@ -1987,6 +1997,51 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
                                     </form>
                                 </div>
+                                <div *ngIf="(currDiv == 'addRecommendationRemarks')">
+                                    <form [formGroup]="recommendationForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Add Recommendation details:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text" formControlName="recommendationRemarks"
+                                                              name="recommendationRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'addRecommendationApproval')">
+                                    <form [formGroup]="recommendationApprovalForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Select Completeness Status</b></label>
+                                                    <mat-form-field id="recommendationApprovalStatus">
+                                                        <mat-select formControlName="recommendationApprovalStatus"
+                                                                    name="recommendationApprovalStatus"
+                                                                    placeholder="Please Select an option">
+                                                            <mat-option [value]="true">ACCEPT</mat-option>
+                                                            <mat-option [value]="false">DECLINE</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+
+                                                    <label><b>Add Approval details:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea matInput type="text" formControlName="recommendationApprovalRemarks"
+                                                              name="recommendationApprovalRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
                                 <div *ngIf="(currDiv == 'uploadSSC')">
                                     <form action="" class="form" enctype="multipart/form-data" method="post">
                                         <div class="form-body">
@@ -2040,10 +2095,24 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
+                                <button *ngIf="(currDiv == 'addRecommendationApproval')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveRecommendationApprovalForm(recommendationApprovalForm.valid);"
+                                        [disabled]="!recommendationApprovalForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
                                 <button *ngIf="(currDiv == 'addStandardsDetails')" mat-raised-button type="button"
                                         class="btn btn-success"
                                         (click)="onClickSaveAddStandardsForm(addStandardsForm.valid);"
                                         [disabled]="!addStandardsForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'addRecommendationRemarks')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveAddRecommendationForm(recommendationForm.valid);"
+                                        [disabled]="!recommendationForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
