@@ -6,7 +6,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
-import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
@@ -68,6 +67,19 @@ class InspectionReportDaoServices(
         } ?: throw ExpectedDataNotFound("No Inspection Report found with the following [ID=$id]")
     }
 
+    fun checkIfInspectionReportExists(permitID: Long): ApiResponseModel {
+        val qaInspectionReportRecommendation = qaInspectionReportRecommendationRepo.findByPermitId(permitID)
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return if(qaInspectionReportRecommendation!=null) {
+            val inspectionReportAllDetails=mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
+            commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
+
+        } else {
+            commonDaoServices.setErrorResponse( "Does Not Exist")
+        }
+
+    }
+
 
     fun inspectionReportNewSave(
         permitID: Long,
@@ -79,6 +91,7 @@ class InspectionReportDaoServices(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val permit = qaDaoServices.findPermitBYID(permitID)
             var qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
+
             var inspectionTechnicalDetails = QaInspectionTechnicalEntity()
 
             //generate new technical report
@@ -87,7 +100,12 @@ class InspectionReportDaoServices(
                     inspectionTechnicalDetails =
                         saveNewInspectionCheckListRecommendation(body, iTDetails, map, loggedInUser, true)
                     inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
-
+                    with(qaInspectionReportRecommendation) {
+                        modifiedBy = commonDaoServices.concatenateName(loggedInUser)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    qaInspectionReportRecommendation =
+                        qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
                 }
                 ?: kotlin.run {
                     with(qaInspectionReportRecommendation) {
@@ -129,6 +147,7 @@ class InspectionReportDaoServices(
                     inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
 
                 }
+            println("############" + qaInspectionReportRecommendation.id)
             val inspectionReportAllDetails =
                 mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
             return commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
@@ -176,7 +195,9 @@ class InspectionReportDaoServices(
             val map = commonDaoServices.serviceMapDetails(appId)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             qaDaoServices.findPermitBYID(permitID)
-            val qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
+            val qaInspectionReportRecommendation = findInspectionReportByID(
+                body.inspectionRecommendationId ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID")
+            )
             var inspectionTechnicalDetails: QaInspectionTechnicalEntity
 
             //update technical report
@@ -229,7 +250,9 @@ class InspectionReportDaoServices(
             val map = commonDaoServices.serviceMapDetails(appId)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             qaDaoServices.findPermitBYID(permitID)
-            val qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
+            val qaInspectionReportRecommendation = findInspectionReportByID(
+                body.inspectionRecommendationId ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID")
+            )
             var inspectionTechnicalDetails: QaInspectionTechnicalEntity
 
             //update technical report
@@ -410,7 +433,11 @@ class InspectionReportDaoServices(
             val map = commonDaoServices.serviceMapDetails(appId)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             qaDaoServices.findPermitBYID(permitID)
-            val qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
+
+            val qaInspectionReportRecommendation = findInspectionReportByID(
+                body.inspectionRecommendationId ?: throw Exception("MISSING INSPECTION RECOMMENDATION ID")
+            )
+
             var inspectionTechnicalDetails: QaInspectionTechnicalEntity
 
             //update technical report
@@ -436,6 +463,7 @@ class InspectionReportDaoServices(
         user: UsersEntity
     ): QaInspectionTechnicalEntity {
         with(inspection) {
+            inspectionRecommendationId = body.inspectionRecommendationId
             validitySmarkPermit = body.validitySmarkPermit
             validitySmarkPermitRemarks = body.validitySmarkPermitRemarks
             useTheSmark = body.useTheSmark
@@ -745,7 +773,6 @@ class InspectionReportDaoServices(
         return inspection
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun submitFinalInspectionReport(
         permitID: Long,
@@ -795,19 +822,21 @@ class InspectionReportDaoServices(
         map: ServiceMapsEntity,
     ): AllInspectionDetailsApplyDto {
         val inspectionReportId = inspectionReport.id ?: throw Exception("MISSING INSPECTION REPORT ID")
-
-
-
+        println("$$$$$$$$$$$$$" + inspectionReportId)
         return AllInspectionDetailsApplyDto(
             inspectionReportId,
             inspectionReportTechnicalDetails(inspectionReportId, map),
             inspectionReportInspectionDetails(inspectionReportId, map),
             inspectionReportInspectionDetailsB(inspectionReportId, map),
-            productLabellingListDto(findAllProductLabellingByInspectionId(inspectionReportId)),
+            findAllProductLabellingByInspectionId(inspectionReportId)?.let { productLabellingListDto(it) },
             inspectionReportStandardizationMarkScheme(inspectionReportId, map),
-            findAllOperationProcessAndControlsListId(
-                inspectionReportId ?: throw Exception("INVALID PERMIT REF NUMBER")
-            ).let { operationProcessAndControlsListDto(it) },
+            findAllOperationProcessAndControlsListId(inspectionReportId).let {
+                it?.let { it1 ->
+                    operationProcessAndControlsListDto(
+                        it1
+                    )
+                }
+            },
             inspectionHaccpImplementationEntity(inspectionReportId, map),
             inspectionReport.followPreviousRecommendationsNonConformities,
             inspectionReport.recommendations,
@@ -825,103 +854,110 @@ class InspectionReportDaoServices(
     fun inspectionReportTechnicalDetails(
         inspectionReportTechnicalId: Long,
         map: ServiceMapsEntity
-    ): TechnicalDetailsDto {
-
+    ): TechnicalDetailsDto? {
         val inspectionReportTechnical =
             qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
-                ?: throw ServiceMapNotFoundException("Inspection Report not found")
-        val it = TechnicalDetailsDto()
-        with(it)
-        {
-            id = inspectionReportTechnical.id
-            inspectionRecommendationId = inspectionReportTechnical.inspectionRecommendationId
-            firmImplementedAnyManagementSystem = inspectionReportTechnical.firmImplementedAnyManagementSystem
-            firmImplementedAnyManagementSystemRemarks =
-                inspectionReportTechnical.firmImplementedAnyManagementSystemRemarks
-            indicateRelevantProductStandardCodes = inspectionReportTechnical.indicateRelevantProductStandardCodes
-            indicateRelevantProductStandardCodesRemarks =
-                inspectionReportTechnical.indicateRelevantProductStandardCodesRemarks
-
+        if (inspectionReportTechnical != null) {
+            val it = TechnicalDetailsDto()
+            with(it)
+            {
+                id = inspectionReportTechnical.id
+                inspectionRecommendationId = inspectionReportTechnical.inspectionRecommendationId
+                firmImplementedAnyManagementSystem = inspectionReportTechnical.firmImplementedAnyManagementSystem
+                firmImplementedAnyManagementSystemRemarks =
+                    inspectionReportTechnical.firmImplementedAnyManagementSystemRemarks
+                indicateRelevantProductStandardCodes = inspectionReportTechnical.indicateRelevantProductStandardCodes
+                indicateRelevantProductStandardCodesRemarks =
+                    inspectionReportTechnical.indicateRelevantProductStandardCodesRemarks
+            }
+            return it
+        } else {
+            return null
         }
-        return it
     }
 
 
     fun inspectionReportInspectionDetails(
         inspectionReportTechnicalId: Long,
         map: ServiceMapsEntity
-    ): InspectionDetailsDto {
-
+    ): InspectionDetailsDto? {
         val inspectionReportTechnical =
             qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
-                ?: throw ServiceMapNotFoundException("Inspection Report not found")
-        val it = InspectionDetailsDto()
-        with(it)
-        {
-            id = inspectionReportTechnical.id
-            inspectionRecommendationId = inspectionReportTechnical.inspectionRecommendationId
-            complianceApplicableStatutory = inspectionReportTechnical.complianceApplicableStatutory
-            complianceApplicableStatutoryRemarks =
-                inspectionReportTechnical.complianceApplicableStatutoryRemarks
-            plantHouseKeeping = inspectionReportTechnical.plantHouseKeeping
-            plantHouseKeepingRemarks =
-                inspectionReportTechnical.plantHouseKeepingRemarks
-            handlingComplaints =
-                inspectionReportTechnical.handlingComplaints
-            handlingComplaintsRemarks =
-                inspectionReportTechnical.handlingComplaintsRemarks
-            qualityControlPersonnel =
-                inspectionReportTechnical.qualityControlPersonnel
-            qualityControlPersonnelRemarks =
-                inspectionReportTechnical.qualityControlPersonnelRemarks
-            testingFacility =
-                inspectionReportTechnical.testingFacility
-            testingFacilityRemarks =
-                inspectionReportTechnical.testingFacilityRemarks
-
+        if (inspectionReportTechnical != null) {
+            val it = InspectionDetailsDto()
+            with(it)
+            {
+                id = inspectionReportTechnical.id
+                inspectionRecommendationId = inspectionReportTechnical.inspectionRecommendationId
+                complianceApplicableStatutory = inspectionReportTechnical.complianceApplicableStatutory
+                complianceApplicableStatutoryRemarks =
+                    inspectionReportTechnical.complianceApplicableStatutoryRemarks
+                plantHouseKeeping = inspectionReportTechnical.plantHouseKeeping
+                plantHouseKeepingRemarks =
+                    inspectionReportTechnical.plantHouseKeepingRemarks
+                handlingComplaints =
+                    inspectionReportTechnical.handlingComplaints
+                handlingComplaintsRemarks =
+                    inspectionReportTechnical.handlingComplaintsRemarks
+                qualityControlPersonnel =
+                    inspectionReportTechnical.qualityControlPersonnel
+                qualityControlPersonnelRemarks =
+                    inspectionReportTechnical.qualityControlPersonnelRemarks
+                testingFacility =
+                    inspectionReportTechnical.testingFacility
+                testingFacilityRemarks =
+                    inspectionReportTechnical.testingFacilityRemarks
+            }
+            return it
+        } else {
+            return null
         }
-        return it
     }
 
     fun inspectionReportInspectionDetailsB(
         inspectionReportTechnicalId: Long,
         map: ServiceMapsEntity
-    ): InspectionDetailsDtoB {
+    ): InspectionDetailsDtoB? {
+
 
         val inspectionReportTechnical =
             qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
-                ?: throw ServiceMapNotFoundException("Inspection Report not found")
-        val it = InspectionDetailsDtoB()
-        with(it)
-        {
-            id = inspectionReportTechnical.id
-            inspectionRecommendationId = inspectionReportTechnical.inspectionRecommendationId
-            equipmentCalibration = inspectionReportTechnical.equipmentCalibration
-            equipmentCalibrationRemarks =
-                inspectionReportTechnical.equipmentCalibrationRemarks
-            qualityRecords = inspectionReportTechnical.qualityRecords
-            qualityRecordsRemarks =
-                inspectionReportTechnical.qualityRecordsRemarks
-            recordsNonconforming =
-                inspectionReportTechnical.recordsNonconforming
-            recordsNonconformingRemarks =
-                inspectionReportTechnical.recordsNonconformingRemarks
-            productRecallRecords =
-                inspectionReportTechnical.productRecallRecords
-            productRecallRecordsRemarks =
-                inspectionReportTechnical.productRecallRecordsRemarks
+        if (inspectionReportTechnical != null) {
+            val it = InspectionDetailsDtoB()
+            with(it)
+            {
+                id = inspectionReportTechnical.id
+                inspectionRecommendationId = inspectionReportTechnical.inspectionRecommendationId
+                equipmentCalibration = inspectionReportTechnical.equipmentCalibration
+                equipmentCalibrationRemarks =
+                    inspectionReportTechnical.equipmentCalibrationRemarks
+                qualityRecords = inspectionReportTechnical.qualityRecords
+                qualityRecordsRemarks =
+                    inspectionReportTechnical.qualityRecordsRemarks
+                recordsNonconforming =
+                    inspectionReportTechnical.recordsNonconforming
+                recordsNonconformingRemarks =
+                    inspectionReportTechnical.recordsNonconformingRemarks
+                productRecallRecords =
+                    inspectionReportTechnical.productRecallRecords
+                productRecallRecordsRemarks =
+                    inspectionReportTechnical.productRecallRecordsRemarks
+            }
+            return it
+        } else {
+            return null
         }
-        return it
     }
 
 
     fun findAllProductLabellingByInspectionId(
         inspectionId: Long,
-    ): List<QaInspectionProductLabelEntity> {
+    ): List<QaInspectionProductLabelEntity>? {
+
         qaInspectionProductLabelRepo.findByInspectionRecommendationId(inspectionId)
             ?.let {
                 return it
-            } ?: throw ExpectedDataNotFound("No File found with the following [ INSPECTION ID =$inspectionId]")
+            } ?: return null
     }
 
 
@@ -943,44 +979,47 @@ class InspectionReportDaoServices(
     fun inspectionReportStandardizationMarkScheme(
         inspectionReportTechnicalId: Long,
         map: ServiceMapsEntity
-    ): StandardizationMarkScheme {
+    ): StandardizationMarkScheme? {
 
         val standardizationMarkScheme =
             qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
-                ?: throw ServiceMapNotFoundException("Inspection Report not found")
-        val it = StandardizationMarkScheme()
-        with(it)
-        {
-            id = standardizationMarkScheme.id
-            validitySmarkPermit = standardizationMarkScheme.validitySmarkPermit
-            validitySmarkPermitRemarks = standardizationMarkScheme.validitySmarkPermitRemarks
-            useTheSmark =
-                standardizationMarkScheme.useTheSmark
-            useTheSmarkRemarks = standardizationMarkScheme.useTheSmarkRemarks
-            changesAffectingProductCertification =
-                standardizationMarkScheme.changesAffectingProductCertification
-            changesAffectingProductCertificationRemarks =
-                standardizationMarkScheme.changesAffectingProductCertificationRemarks
-            changesBeenCommunicatedKebs =
-                standardizationMarkScheme.changesBeenCommunicatedKebs
-            changesBeenCommunicatedKebsRemarks =
-                standardizationMarkScheme.changesBeenCommunicatedKebsRemarks
-            samplesDrawn =
-                standardizationMarkScheme.samplesDrawn
-            samplesDrawnRemarks =
-                standardizationMarkScheme.samplesDrawnRemarks
+        if (standardizationMarkScheme != null) {
+            val it = StandardizationMarkScheme()
+            with(it)
+            {
+                id = standardizationMarkScheme.id
+                validitySmarkPermit = standardizationMarkScheme.validitySmarkPermit
+                validitySmarkPermitRemarks = standardizationMarkScheme.validitySmarkPermitRemarks
+                useTheSmark =
+                    standardizationMarkScheme.useTheSmark
+                useTheSmarkRemarks = standardizationMarkScheme.useTheSmarkRemarks
+                changesAffectingProductCertification =
+                    standardizationMarkScheme.changesAffectingProductCertification
+                changesAffectingProductCertificationRemarks =
+                    standardizationMarkScheme.changesAffectingProductCertificationRemarks
+                changesBeenCommunicatedKebs =
+                    standardizationMarkScheme.changesBeenCommunicatedKebs
+                changesBeenCommunicatedKebsRemarks =
+                    standardizationMarkScheme.changesBeenCommunicatedKebsRemarks
+                samplesDrawn =
+                    standardizationMarkScheme.samplesDrawn
+                samplesDrawnRemarks =
+                    standardizationMarkScheme.samplesDrawnRemarks
+            }
+            return it
+        } else {
+            return null
         }
-        return it
     }
 
 
     fun findAllOperationProcessAndControlsListId(
         inspectionId: Long
-    ): List<QaInspectionOpcEntity> {
+    ): List<QaInspectionOpcEntity>? {
         qaInspectionOPCRepo.findByInspectionRecommendationId(inspectionId)
             ?.let {
                 return it
-            } ?: throw ExpectedDataNotFound("No File found with the following [ INSPECTION ID =$inspectionId]")
+            } ?: return null
     }
 
     fun operationProcessAndControlsListDto(userList: List<QaInspectionOpcEntity>): List<OperationProcessAndControlsDetailsApplyDto> {
@@ -1002,35 +1041,38 @@ class InspectionReportDaoServices(
     fun inspectionHaccpImplementationEntity(
         inspectionReportTechnicalId: Long,
         map: ServiceMapsEntity
-    ): HaccpImplementationDetailsApplyDto {
+    ): HaccpImplementationDetailsApplyDto? {
 
         val inspectionHaccpImplementation =
             qaInspectionHaccpImplementationRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
-                ?: throw ServiceMapNotFoundException("Inspection Report not found")
-        val it = HaccpImplementationDetailsApplyDto()
-        with(it)
-        {
-            id = inspectionHaccpImplementation.id
-            inspectionRecommendationId = inspectionHaccpImplementation.inspectionRecommendationId
-            designFacilitiesConstructionLayout = inspectionHaccpImplementation.designFacilitiesConstructionLayout
-            designFacilitiesConstructionLayoutRemarks =
-                inspectionHaccpImplementation.designFacilitiesConstructionLayoutRemarks
-            maintenanceSanitationCleaningPrograms = inspectionHaccpImplementation.maintenanceSanitationCleaningPrograms
-            maintenanceSanitationCleaningProgramsRemarks =
-                inspectionHaccpImplementation.maintenanceSanitationCleaningProgramsRemarks
-            personnelHygiene = inspectionHaccpImplementation.personnelHygiene
-            personnelHygieneRemarks = inspectionHaccpImplementation.personnelHygieneRemarks
-            transportationConveyance = inspectionHaccpImplementation.transportationConveyance
-            transportationConveyanceRemarks = inspectionHaccpImplementation.transportationConveyanceRemarks
-            determinationCriticalParameters = inspectionHaccpImplementation.determinationCriticalParameters
-            determinationCriticalParametersRemarks =
-                inspectionHaccpImplementation.determinationCriticalParametersRemarks
-            evidenceCorrectiveActions = inspectionHaccpImplementation.evidenceCorrectiveActions
-            evidenceCorrectiveActionsRemarks = inspectionHaccpImplementation.evidenceCorrectiveActionsRemarks
-
-
+        if (inspectionHaccpImplementation != null) {
+            val it = HaccpImplementationDetailsApplyDto()
+            with(it)
+            {
+                id = inspectionHaccpImplementation.id
+                inspectionRecommendationId = inspectionHaccpImplementation.inspectionRecommendationId
+                designFacilitiesConstructionLayout =
+                    inspectionHaccpImplementation.designFacilitiesConstructionLayout
+                designFacilitiesConstructionLayoutRemarks =
+                    inspectionHaccpImplementation.designFacilitiesConstructionLayoutRemarks
+                maintenanceSanitationCleaningPrograms =
+                    inspectionHaccpImplementation.maintenanceSanitationCleaningPrograms
+                maintenanceSanitationCleaningProgramsRemarks =
+                    inspectionHaccpImplementation.maintenanceSanitationCleaningProgramsRemarks
+                personnelHygiene = inspectionHaccpImplementation.personnelHygiene
+                personnelHygieneRemarks = inspectionHaccpImplementation.personnelHygieneRemarks
+                transportationConveyance = inspectionHaccpImplementation.transportationConveyance
+                transportationConveyanceRemarks = inspectionHaccpImplementation.transportationConveyanceRemarks
+                determinationCriticalParameters = inspectionHaccpImplementation.determinationCriticalParameters
+                determinationCriticalParametersRemarks =
+                    inspectionHaccpImplementation.determinationCriticalParametersRemarks
+                evidenceCorrectiveActions = inspectionHaccpImplementation.evidenceCorrectiveActions
+                evidenceCorrectiveActionsRemarks = inspectionHaccpImplementation.evidenceCorrectiveActionsRemarks
+            }
+            return it
+        } else {
+            return null
         }
-        return it
     }
 
 
