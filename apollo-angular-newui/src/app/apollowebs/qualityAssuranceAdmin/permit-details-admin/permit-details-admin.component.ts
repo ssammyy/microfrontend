@@ -31,7 +31,7 @@ import {
     LIMSFilesFoundDto,
     MSSSFLabResultsDto,
     MSSSFPDFListDetailsDto,
-    SampleSubmissionDto
+    SampleSubmissionDto,
 } from '../../../core/store/data/ms/ms.model';
 import * as CryptoJS from 'crypto-js';
 import {LoggedInUser, selectUserInfo} from '../../../core/store';
@@ -736,7 +736,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             'addSSFDetails', 'ssfAddComplianceStatus'];
 
         const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
-            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', ];
+            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS' ];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -1337,16 +1337,17 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     }
-    generateInspectionReport(permitId: string) {
 
-        var text = permitId;
-        var key = '11A1764225B11AA1';
+    generateInspectionReport(permitId: bigint) {
+
+        let text = String(permitId);
+        let key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
-        var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
+        let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
         console.log('encrypted', encrypted);
-        this.router.navigate(['/new-inspection-report',encrypted])
+        this.router.navigate(['/new-inspection-report', encrypted]);
 
 
     }

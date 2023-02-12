@@ -1056,7 +1056,6 @@ export const routes: Routes = [
     {
         path: 'payments', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: PaymentsComponent}],
     },
     {

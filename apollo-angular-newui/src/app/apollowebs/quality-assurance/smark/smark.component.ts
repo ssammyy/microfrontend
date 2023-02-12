@@ -612,6 +612,25 @@ export class SmarkComponent implements OnInit {
         );
     }
 
+    submitPermitGenerateDifference(): void {
+        this.SpinnerService.show();
+        // tslint:disable-next-line:max-line-length
+        this.qaService.submitPermitGenerateDifference(String(this.allPermitDetails.permitDetails.id)).subscribe(
+            (data: PermitEntityDetails) => {
+                this.allPermitDetails.permitDetails = data;
+                this.SpinnerService.hide();
+                swal.fire({
+                    title: 'INVOICE DIFFERENCE GENERATED SUCCESSFULLY!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+            },
+        );
+    }
+
     reSubmitWithRemarks(): void {
         console.log(this.resubmitForm.value);
         this.SpinnerService.show();

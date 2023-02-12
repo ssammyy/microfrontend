@@ -390,6 +390,7 @@ class QADaoServices(
             var permit = findPermitBYID(permitID)
 
             with(permit) {
+                sendApplication = 1
                 varField9 = 1.toString()
                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 permitStatus = applicationMapProperties.mapQaStatusPManufactureGenerateDifference
@@ -2941,8 +2942,7 @@ class QADaoServices(
                 }
 
                 //submit to staging invoices
-                val batchInvoice =
-                    permitMultipleInvoiceSubmitInvoice(map, user, newBatchInvoiceDto, sageValuesDtoList).second
+                val batchInvoice = permitMultipleInvoiceSubmitInvoice(map, user, newBatchInvoiceDto, sageValuesDtoList).second
 
                 with(branchDetails) {
                     varField10 = batchInvoiceInspection.id.toString()
@@ -2952,6 +2952,7 @@ class QADaoServices(
                 return mapBatchInvoiceDetails(batchInvoice, user, map)
             } ?: throw NullValueNotAllowedException("No Company Record not found")
     }
+
 
 
 //    fun findPermitIdByPermitRefNumber(permitRefNumber: String): PermitApplicationsEntity

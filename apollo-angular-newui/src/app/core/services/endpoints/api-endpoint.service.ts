@@ -695,6 +695,10 @@ export class ApiEndpointService {
 
     };
 
+    public static QA_MANUFACTURE_ENDPOINT = {
+        GENERATE_INVOICE_DIFFERENCE: `${ApiEndpointService.QA_CONTEXT}/permit/apply/generate-difference-invoice`,
+    };
+
     public static QA_INTERNAL_USER_ENDPOINT = {
         LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list`,
         LOAD_PERMIT_DETAIL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permit-detail`,

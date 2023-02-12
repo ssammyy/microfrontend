@@ -1719,6 +1719,21 @@ export class QaService {
         );
     }
 
+    public submitPermitGenerateDifference(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_MANUFACTURE_ENDPOINT.GENERATE_INVOICE_DIFFERENCE);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, null, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public resubmitApplicationBack(permitID: string, data: ResubmitApplicationDto): Observable<PermitEntityDetails> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_RE_SUBMIT_APPLICATION);
         const params = new HttpParams()
