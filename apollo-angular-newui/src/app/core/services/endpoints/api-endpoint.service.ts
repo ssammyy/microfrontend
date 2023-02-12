@@ -715,7 +715,23 @@ export class ApiEndpointService {
         ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
         ADD_RECOMMENDATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/save-recommendation`,
         SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
-        INSPECTION_CHECKLIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection-checklist`,
+
+        CHECK_IF_INSPECTION_REPORT_EXISTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/check_if_inspection_report_exists`,
+        NEW_INSPECTION_TECHNICAL_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/new-technical-report`,
+        TECHNICAL_REPORT_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-details`,
+        TECHNICAL_REPORT_DETAILS_B: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-detailsB`,
+        PRODUCT_LABELLING: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/product-labelling`,
+        STANDARDIZATION_MARK: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/standardization-mark-scheme`,
+        OPERATION_PROCESS_CONTROLS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/operationProcessAndControls`,
+        HACCP_IMPLEMENTATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/haccpImplementationDetails`,
+        FINAL_INSPECTION_REPORT_SUBMISSION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-checklist-submit`,
+
+
+
+
+
+
+
         ADD_SSF_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-details`,
         ADD_SSF_COMPLIANCE_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-compliance-status`,
         VIEW_PDF_LAB_RESULT: `${ApiEndpointService.QA_CONTEXT}/view/attached-lab-pdf`,

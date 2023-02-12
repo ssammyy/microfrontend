@@ -298,6 +298,25 @@ class QualityAssuranceInternalUserHandler(
         }
     }
 
+    fun checkIfInspectionReportExists(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+
+            inspectionReportDaoServices.checkIfInspectionReportExists(permitID)
+                .let {
+                    ok().body(it)
+                }
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+
     fun updatePermitDetailsInspectionCheckListNew(req: ServerRequest): ServerResponse {
         return try {
             val permitID =
@@ -323,6 +342,7 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
 
     fun updateInspectionReportDetailSave(req: ServerRequest): ServerResponse {
         return try {
@@ -404,6 +424,7 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
     fun updateInspectionReportStandardizationMarkSchemeSave(req: ServerRequest): ServerResponse {
         return try {
             val permitID =

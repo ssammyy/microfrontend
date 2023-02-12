@@ -105,6 +105,7 @@ data class AllInspectionDetailsApplyDto(
 
 data class StandardizationMarkScheme(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var validitySmarkPermit: String? = null,
     var validitySmarkPermitRemarks: String? = null,
     var useTheSmark: String? = null,

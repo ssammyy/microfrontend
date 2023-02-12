@@ -640,6 +640,7 @@ export class AllInspectionDetailsApplyDto {
     technicalDetailsDto: TechnicalDetailsDto;
     inspectionDetailsDto: InspectionDetailsDto;
     inspectionDetailsDtoB: InspectionDetailsDtoB;
+    productLabelling: ProductLabellingDto[];
     operationProcessAndControls: OperationProcessAndControlsDetailsApplyDto[];
     haccpImplementationDetails: HaccpImplementationDetailsApplyDto;
     followPreviousRecommendationsNonConformities: string;
@@ -676,11 +677,6 @@ export class InspectionDetailsDto {
     testingFacilityRemarks: string;
 }
 
-export class ProductLabellingDto {
-    id: number;
-    standardMarking: string;
-    findings: string;
-}
 
 export class InspectionDetailsDtoB {
     id: number;
@@ -692,7 +688,31 @@ export class InspectionDetailsDtoB {
     recordsNonconformingRemarks: string;
     productRecallRecords: string;
     productRecallRecordsRemarks: string;
-    productLabelling: ProductLabellingDto[];
+
+}
+
+export class ProductLabellingDto {
+    id: number;
+    standardMarking: string;
+    findings: string;
+}
+
+export class StandardizationMarkSchemeDto {
+    id: number;
+    validitySmarkPermit: string;
+    validitySmarkPermitRemarks: string;
+    useTheSmark: string;
+    useTheSmarkRemarks: string;
+    changesAffectingProductCertification: string;
+    changesAffectingProductCertificationRemarks: string;
+    changesBeenCommunicatedKebs: string;
+    changesBeenCommunicatedKebsRemarks: string;
+
+    samplesDrawn: string;
+
+    samplesDrawnRemarks: string;
+
+
 }
 
 export class OperationProcessAndControlsDetailsApplyDto {
