@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
+import org.kebs.app.kotlin.apollo.common.dto.CompanyUpgradeStatusDto
 import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import java.io.File
@@ -797,10 +798,12 @@ data class PermitDetailsDto(
     var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
     var ssfCompletedStatus: Boolean? = null,
     var compliantStatus: Boolean? = null,
+    var invoiceDifferenceGenerated: Boolean? = null,
 
     )
 
 data class AllPermitDetailsDto(
+    var companyStatusDetails: CompanyUpgradeStatusDto? = null,
     var permitDetails: PermitDetailsDto? = null,
     var remarksDetails: PermitAllRemarksDetailsDto? = null,
     var invoiceDetails: InvoiceDetailsDto? = null,
@@ -819,7 +822,6 @@ data class AllPermitDetailsDto(
     var sta3DTO: STA3Dto? = null,
     var sta10DTO: AllSTA10DetailsDto? = null,
     var sectionList: List<SectionsEntityDto>? = null,
-    var standardsList: List<StandardsDto>? = null,
     var ssfListDetails: List<SSFDetailsDto>? = null,
 )
 

@@ -31,13 +31,14 @@ import {
     LIMSFilesFoundDto,
     MSSSFLabResultsDto,
     MSSSFPDFListDetailsDto,
-    SampleSubmissionDto
+    SampleSubmissionDto,
 } from '../../../core/store/data/ms/ms.model';
 import * as CryptoJS from 'crypto-js';
 import {LoggedInUser, selectUserInfo} from '../../../core/store';
 import {Store} from '@ngrx/store';
 import {Subject} from 'rxjs';
 import {DataTableDirective} from 'angular-datatables';
+import {StandardsDto} from '../../../core/store/data/master/master.model';
 
 
 @Component({
@@ -123,6 +124,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     // DTOS
     loadedFirmType: FirmTypeEntityDto[] = [];
+    loadedStandards: StandardsDto[] = [];
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     allPermitDetails: AllPermitDetailsDto;
@@ -285,6 +287,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     public tableData6: TableData;
     public tableData5: TableData;
     public tableData12: TableData;
+    public tableData10: TableData;
     blob: Blob;
 
 
@@ -838,6 +841,16 @@ export class PermitDetailsAdminComponent implements OnInit {
             },
         );
 
+        this.qaService.loadStandardListList().subscribe(
+            (standardsList: StandardsDto[]) => {
+                this.loadedStandards = standardsList;
+            },
+            error => {
+                console.log(error);
+                this.qaService.showError('AN ERROR OCCURRED');
+            },
+        );
+
         if (this.allPermitDetails.sta10FilesList !== []) {
             this.sta10FileList = this.allPermitDetails.sta10FilesList;
             // tslint:disable-next-line:max-line-length
@@ -919,6 +932,20 @@ export class PermitDetailsAdminComponent implements OnInit {
                     ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
                     ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
                     ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
+
+                ],
+            };
+            this.tableData10 = {
+                headerRow: ['Item', 'Details/Fee'],
+                dataRows: [
+                    ['Invoice Ref No', this.allPermitDetails.invoiceDifferenceDetails.invoiceRef],
+                    ['Inspection Fee', `KSH ${inspectionFee}`],
+                    ['FMARK Permit', `KSH ${fMarkFee}`],
+                    ['SMARK Permit', `KSH ${permitFee}`],
+                    // ['Description', this.allPermitDetails.invoiceDetails.description],
+                    ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDifferenceDetails.subTotalBeforeTax}`],
+                    ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDifferenceDetails.taxAmount}`],
+                    ['Total Amount', `KSH ${this.allPermitDetails.invoiceDifferenceDetails.totalAmount}`],
 
                 ],
             };

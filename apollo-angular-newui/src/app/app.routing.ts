@@ -1021,7 +1021,7 @@ export const routes: Routes = [
         children: [{path: '', component: InvoiceConsolidateFmarkComponent}],
     },
     {
-        path: 'invoice/consolidate_invoice_dmark', component: AdminLayoutComponent,
+        path: 'invoice/consolidate_invoice-difference', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: InvoiceConsolidateDmarkComponent}],
     },
@@ -1058,7 +1058,6 @@ export const routes: Routes = [
     {
         path: 'payments', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: PaymentsComponent}],
     },
     {

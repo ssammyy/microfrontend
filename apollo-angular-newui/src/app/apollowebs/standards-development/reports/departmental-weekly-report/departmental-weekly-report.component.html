@@ -224,9 +224,11 @@
                                         <div class="mat-elevation-z8">
                                             <mat-form-field appearance="standard" style="width:20%; float: right">
                                                 <mat-label>Search</mat-label>
-                                                <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
+<!--                                                <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>-->
+                                                <input matInput  placeholder="Search" #input>
                                             </mat-form-field>
-                                            <table class="table table-striped table-bordered table-hover" mat-table [dataSource]="" matSort style="width: 100%">
+<!--                                            <table class="table table-striped table-bordered table-hover" mat-table [dataSource]="dataSource" matSort style="width: 100%">-->
+                                            <table class="table table-striped table-bordered table-hover" mat-table  matSort style="width: 100%">
 
                                                 <!-- ID Column -->
 

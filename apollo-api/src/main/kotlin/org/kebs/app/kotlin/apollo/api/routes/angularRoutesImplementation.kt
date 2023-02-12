@@ -503,6 +503,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             GET("/payments", handler::permitInvoiceListPaid)
             "/company".nest {
                 GET("/un-payed-invoices", handler::permitInvoiceListUnPaid)
+//                GET("/status-upgrade", handler::handleGetCompanyStatusUpgradeDetails)
                 GET("/approval-request-upgrade", handler::handleActionUpdateCompanyTurnOverDetails)
                 POST("/manf-requested-to-upgrade", handler::handleRequestUpdateCompanyTurnOverDetails)
                 POST("/officer-requested-to-upgrade", handler::handleRequestUpdateCompanyTurnOverDetailsOfficer)
@@ -643,7 +644,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
                     GET("/permit-detail", internalUserhandler::getPermitDetails)
-//                    GET("/section-list", internalUserhandler::getPermitDetails)
+//                    GET("/standards-list", internalUserhandler::getStandardsList)
                 }
                 "/apply".nest {
                     "/permit".nest {

@@ -97,6 +97,7 @@ class QualityAssuranceInternalUserHandler(
         }
     }
 
+
     fun updatePermitDetailsSection(req: ServerRequest): ServerResponse {
         return try {
             val permitID =

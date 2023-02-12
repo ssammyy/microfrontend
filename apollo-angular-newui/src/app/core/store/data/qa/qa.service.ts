@@ -35,6 +35,7 @@ import Swal from 'sweetalert2';
 import swal from 'sweetalert2';
 import {SSFSendingComplianceStatus, WorkPlanInspectionDto} from '../ms/ms.model';
 import {BusinessLines, BusinessNatures} from '../business';
+import {StandardsDto} from '../master/master.model';
 
 @Injectable({
     providedIn: 'root',
@@ -508,6 +509,19 @@ export class QaService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.LOAD_FIRM_TYPE_LIST);
         return this.http.get<FirmTypeEntityDto[]>(url).pipe(
             map(function (response: FirmTypeEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadStandardListList(): Observable<StandardsDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_MANUFACTURE_ENDPOINT.GET_STANDARD_LIST);
+        return this.http.get<StandardsDto[]>(url).pipe(
+            map(function (response: StandardsDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -1742,6 +1756,21 @@ export class QaService {
         const params = new HttpParams()
             .set('permitID', permitID);
         return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public submitPermitGenerateDifference(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_MANUFACTURE_ENDPOINT.GENERATE_INVOICE_DIFFERENCE);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, null, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

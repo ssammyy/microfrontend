@@ -380,6 +380,7 @@ class QADaoServices(
             var permit = findPermitBYID(permitID)
 
             with(permit) {
+                sendApplication = 1
                 varField9 = 1.toString()
                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 permitStatus = applicationMapProperties.mapQaStatusPManufactureGenerateDifference
@@ -1624,35 +1625,6 @@ class QADaoServices(
                     }
                 }
 
-                //If the upgradeType is 1 means UpGarding while if the UpgradeType is 0 means downgrading
-                if (entity.upgradeType == 1) {
-                    val allPlantDetails =
-                        findAllPlantDetailsWithCompanyID(entity.id ?: throw ExpectedDataNotFound("Missing Company ID"))
-                    val allPermitDetailsNotPaid =
-                        permitRepo.findByPermitTypeAndPaidStatusAndCompanyIdAndInvoiceGeneratedAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
-                            applicationMapProperties.mapQAPermitTypeIdSmark,
-                            map.initStatus,
-                            entity.id!!,
-                            map.activeStatus
-                        )
-                    allPermitDetailsNotPaid?.forEach { permit ->
-                        //Calculate Invoice Details
-                        val invoiceCreated = permitInvoiceCalculationSmartFirmUpGrade(map, user, permit, null).second
-
-                        //Update Permit Details
-                        with(permit) {
-                            paidStatus = 0
-                            sendApplication = map.activeStatus
-                            endOfProductionStatus = map.inactiveStatus
-                            invoiceGenerated = map.activeStatus
-                            varField10 = map.activeStatus.toString()
-                            permitStatus = applicationMapProperties.mapQaStatusPPayment
-                        }
-                        permitUpdateDetails(permit, map, user).second
-                    }
-
-                }
-
                 val companyProfileEntity = companyProfileRepo.save(entity)
 
                 return UserCompanyEntityDto(
@@ -1894,8 +1866,7 @@ class QADaoServices(
                 }
 
                 //submit to staging invoices
-                val batchInvoice =
-                    permitMultipleInvoiceSubmitInvoice(map, user, newBatchInvoiceDto, sageValuesDtoList).second
+                val batchInvoice = permitMultipleInvoiceSubmitInvoice(map, user, newBatchInvoiceDto, sageValuesDtoList).second
 
                 with(branchDetails) {
                     varField10 = batchInvoiceInspection.id.toString()
@@ -1905,6 +1876,7 @@ class QADaoServices(
                 return mapBatchInvoiceDetails(batchInvoice, user, map)
             } ?: throw NullValueNotAllowedException("No Company Record not found")
     }
+
 
 
 //    fun findPermitIdByPermitRefNumber(permitRefNumber: String): PermitApplicationsEntity
@@ -4415,6 +4387,7 @@ class QADaoServices(
             factoryInspectionReportApprovedRejectedStatus = permit.factoryInspectionReportApprovedRejectedStatus == 1
             ssfCompletedStatus = permit.ssfCompletedStatus == 1
             compliantStatus = permit.compliantStatus == 1
+            invoiceDifferenceGenerated = permit.invoiceDifferenceGenerated == 1
         }
         return p
     }
@@ -4425,7 +4398,22 @@ class QADaoServices(
         batchIDDifference: Long?,
         map: ServiceMapsEntity,
     ): AllPermitDetailsDto {
+        var plantDetails = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+        var companyDetails = commonDaoServices.findCompanyProfileWithID(plantDetails.companyProfileId?: throw Exception("MISSING COMPANY ID ON PLANT DETAILS"))
+        val firmTypeDetails = companyDetails.updateFirmType?.let { findFirmTypeById(it) }
+
+        var companyStatus = CompanyUpgradeStatusDto(
+            companyProfileID= companyDetails.id,
+            requesterComment= companyDetails.requesterComment,
+            updateFirmType= firmTypeDetails?.firmType,
+            updateFirmTypeID= companyDetails.updateFirmType,
+            upgradeType= companyDetails.upgradeType == 1,
+            updateDetailsStatus= companyDetails.updateDetailsStatus == 1,
+            inspectionFeeRequerd= plantDetails.inspectionFeeStatus == 1
+        )
+
         return AllPermitDetailsDto(
+            companyStatus,
             permitDetails(permit, map),
             permitsRemarksDTO(permit),
             permitsInvoiceDetailsDTO(permit),
@@ -4494,11 +4482,24 @@ class QADaoServices(
             }
         }
 
+        var plantDetails = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+        var companyDetails = commonDaoServices.findCompanyProfileWithID(plantDetails.companyProfileId?: throw Exception("MISSING COMPANY ID ON PLANT DETAILS"))
+        val firmTypeDetails = companyDetails.updateFirmType?.let { findFirmTypeById(it) }
 
 
+        var companyStatus = CompanyUpgradeStatusDto(
+            companyProfileID= companyDetails.id,
+            requesterComment= companyDetails.requesterComment,
+            updateFirmType= firmTypeDetails?.firmType,
+            updateFirmTypeID= companyDetails.updateFirmType,
+            upgradeType= companyDetails.upgradeType == 1,
+            updateDetailsStatus= companyDetails.updateDetailsStatus == 1,
+            inspectionFeeRequerd= plantDetails.inspectionFeeStatus == 1
+        )
 
 
         return AllPermitDetailsDto(
+            companyStatus,
             permitDetails(permit, map),
             permitsRemarksDTO(permit),
             permitsInvoiceDetailsDTO(permit),
@@ -4543,7 +4544,6 @@ class QADaoServices(
                 permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID
             )?.let { listSTA10ViewDetails(permitID, it) },
             loadSectionDetails(departmentEntity, map),
-            mapAllStandardsTogether(findALlStandardsDetails(map.activeStatus)),
             ssfListDetails
         )
     }
@@ -7755,8 +7755,7 @@ class QADaoServices(
         var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
         try {
 
-            val userDetails =
-                commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+            val userDetails =commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
             val companyDetails = commonDaoServices.findCompanyProfileWithID(
                 userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")

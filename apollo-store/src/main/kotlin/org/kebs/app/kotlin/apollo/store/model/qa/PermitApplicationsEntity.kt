@@ -379,6 +379,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var invoiceGenerated: Int? = null
 
+    @Column(name = "INVOICE_DIFFERENCE_GENERATED")
+    @Basic
+    var invoiceDifferenceGenerated: Int? = null
+
 
     @Column(name = "SME_FORM_FILLED_STATUS")
     @Basic

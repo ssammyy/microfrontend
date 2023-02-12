@@ -1607,15 +1607,15 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference && allPermitDetails?.invoiceDifferenceDetails == null"
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated "
                                 mat-raised-button=""
-                                (click)="goToPayment()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">Generate Difference Invoice</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference && allPermitDetails?.invoiceDifferenceDetails != null"
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"
                                 mat-raised-button=""
                                 (click)="goToInvoiceGeneratedDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">View Generate Difference Invoice</span>
@@ -1623,10 +1623,20 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'"
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'
+                        && allPermitDetails?.permitDetails?.invoiceGenerated && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
                                 mat-raised-button=""
                                 (click)="goToPayment()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">Proceed To Payment</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'
+                        && allPermitDetails?.permitDetails?.invoiceGenerated && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
+                                mat-raised-button=""
+                                (click)="goToPaymentDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">Proceed To Payment Difference</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </button>
@@ -1640,7 +1650,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </a>
 
-                        <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
+                        <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && !allPermitDetails?.permitDetails?.permitGenerateDifference
+                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
                             <a style="width: -webkit-fill-available" href="/smark/newSmarkPermit#{{sta1?.id}}"
                                mat-raised-button=""
                                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
@@ -1719,7 +1730,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             </a>
 
                             <button style="width: -webkit-fill-available" (click)="submitApplication()"
-                                    mat-raised-button=""
+                                    mat-raised-button="" *ngIf="allPermitDetails?.permitDetails?.sendApplication == false"
                                     class="btn btn-kebs mat-raised-button mat-button-base"><span
                                     class="mat-button-wrapper">SUBMIT APPLICATION</span>
                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>

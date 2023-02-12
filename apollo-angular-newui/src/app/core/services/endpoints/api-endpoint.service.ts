@@ -323,7 +323,7 @@ export class ApiEndpointService {
         INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
         INVOICE_DETAILS_BALANCE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-balance-details`,
         INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
-        INVOICE_LIST_NO_DIFFERENCE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-difference`,
+        INVOICE_LIST_NO_DIFFERENCE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/list-no-batch-Id-difference`,
         INVOICE_LIST_NO_DETAILS_PERMIT_TYPE: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-permit-type`,
         INVOICE_LIST_ALL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list`,
         INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
@@ -700,6 +700,11 @@ export class ApiEndpointService {
         STD_LEVY_REGION_LIST: `${ApiEndpointService.STL_CONTEXT}/getRegionList`,
 
 
+    };
+
+    public static QA_MANUFACTURE_ENDPOINT = {
+        GENERATE_INVOICE_DIFFERENCE: `${ApiEndpointService.QA_CONTEXT}/permit/apply/generate-difference-invoice`,
+        GET_STANDARD_LIST: `${ApiEndpointService.QA_CONTEXT}/standards-list`,
     };
 
     public static QA_INTERNAL_USER_ENDPOINT = {
