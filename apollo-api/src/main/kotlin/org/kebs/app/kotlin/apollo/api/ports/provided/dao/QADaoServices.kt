@@ -340,6 +340,7 @@ class QADaoServices(
                     }
 
                     else -> {
+                        resubmitApplicationStatus = 1
                         hofQamCompletenessStatus = 0
                         permitStatus = applicationMapProperties.mapQaStatusIncompleteAppl
                     }
@@ -1619,7 +1620,6 @@ class QADaoServices(
                     entity.firmCategory == 1L && dto.selectedFirmTypeID > 1 -> {
                         entity.upgradeType = 1
                     }
-
                     entity.firmCategory == 2L && dto.selectedFirmTypeID > 2 -> {
                         entity.upgradeType = 1
                     }
@@ -4439,8 +4439,12 @@ class QADaoServices(
         val firmTypeDetails = companyDetails.updateFirmType?.let { findFirmTypeById(it) }
 
         var inspectionNeeded = false
+        var inspectionFeeInvoice: InvoiceDetailsDto?= null
         if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == companyDetails.firmCategory){
             inspectionNeeded = true
+            if(plantDetails.invoiceInspectionGenerated==1){
+                inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
+            }
         }
 
         var companyStatus = CompanyUpgradeStatusDto(
@@ -4490,7 +4494,8 @@ class QADaoServices(
             batchID,
             batchIDDifference,
             inspectionNeeded = inspectionNeeded,
-            inspectionFeeInvoice = findInspectionInvoiceDetailsDTO(permit,plantDetails),
+            inspectionFeeInvoice = inspectionFeeInvoice,
+
         )
     }
 
@@ -4530,8 +4535,12 @@ class QADaoServices(
         val firmTypeDetails = companyDetails.updateFirmType?.let { findFirmTypeById(it) }
 
         var inspectionNeeded = false
+        var inspectionFeeInvoice: InvoiceDetailsDto?= null
         if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == companyDetails.firmCategory){
             inspectionNeeded = true
+            if(plantDetails.invoiceInspectionGenerated==1){
+                inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
+            }
         }
 
 
@@ -4595,7 +4604,7 @@ class QADaoServices(
             ssfListDetails,
             labResultsDtoList,
             inspectionNeeded,
-            findInspectionInvoiceDetailsDTO(permit,plantDetails),
+            inspectionFeeInvoice,
         )
     }
     fun mapSSFComplianceStatusDetailsDto(ssf: QaSampleSubmissionEntity): MSSSFComplianceStatusDetailsDto {
@@ -7744,8 +7753,7 @@ class QADaoServices(
 
         when (permitType.id) {
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                val manufactureTurnOver =
-                    companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
+                val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
                 val productsManufacture = findAllProductManufactureInPlantWithPlantID(
                     s.activeStatus,
                     s.activeStatus,
