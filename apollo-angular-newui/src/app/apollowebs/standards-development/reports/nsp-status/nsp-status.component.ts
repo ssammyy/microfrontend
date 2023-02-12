@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {DataTableDirective} from 'angular-datatables';
 import { NgxSpinnerService } from 'ngx-spinner';
 import {Store} from '@ngrx/store';
+import {OverlayService} from "../../../../shared/loader/overlay.service";
 
 @Component({
   selector: 'app-nsp-status',
@@ -20,7 +21,8 @@ export class NspStatusComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private SpinnerService: NgxSpinnerService,) {
+    private SpinnerService: NgxSpinnerService,
+              private spinnerService: OverlayService) {
    }
 
   ngOnInit(): void {
@@ -33,6 +35,9 @@ export class NspStatusComponent implements OnInit {
     });
 
 
+  }
+  applyFilter(formDirective): void {
+    this.spinnerService.show("Filtering Data")
   }
 
 }

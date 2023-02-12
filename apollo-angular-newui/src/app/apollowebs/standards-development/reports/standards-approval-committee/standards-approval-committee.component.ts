@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { NgxSpinnerService } from 'ngx-spinner';
+import {OverlayService} from "../../../../shared/loader/overlay.service";
 
 @Component({
   selector: 'app-standards-approval-committee',
@@ -19,7 +20,8 @@ export class StandardsApprovalCommitteeComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private SpinnerService: NgxSpinnerService,) {
+    private SpinnerService: NgxSpinnerService,
+              private spinnerService: OverlayService) {
    }
 
   ngOnInit(): void {
@@ -32,6 +34,9 @@ export class StandardsApprovalCommitteeComponent implements OnInit {
     });
 
 
+  }
+  applyFilter(formDirective): void {
+    this.spinnerService.show("Filtering Data")
   }
 
 }

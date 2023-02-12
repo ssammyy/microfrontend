@@ -96,7 +96,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   selectedSeizedDetails: SeizureListDto;
   selectedPreliminaryReportDetails: InspectionInvestigationReportDto;
   selectedDataReportDetails: DataReportDto;
-
   defaultPage = 0;
   currentPage = 0;
   currentPageInternal = 0;
