@@ -1778,7 +1778,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       id: null,
       dataReportValueToClone: null,
       referenceNumber: ['', Validators.required],
-      inspectionDate: ['', Validators.required],
+      inspectionDate: null,
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
       department: ['', Validators.required],

@@ -71,8 +71,12 @@ class MsFieldReportView : Serializable {
     var objectiveInvestigation: String? = null
 
     @Basic
-    @Column(name = "DATE_INVESTIGATION_INSPECTION")
-    var dateInvestigationInspection: String? = null
+    @Column(name = "START_DATE_INVESTIGATION_INSPECTION")
+    var startDateInvestigationInspection: String? = null
+
+    @Basic
+    @Column(name = "END_DATE_INVESTIGATION_INSPECTION")
+    var endDateInvestigationInspection: String? = null
 
     @Basic
     @Column(name = "METHODOLOGY_EMPLOYED")

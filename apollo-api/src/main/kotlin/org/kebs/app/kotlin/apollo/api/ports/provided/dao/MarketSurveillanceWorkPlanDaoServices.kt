@@ -4983,7 +4983,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             reportFunction = body.reportFunction
             backgroundInformation = body.backgroundInformation
             objectiveInvestigation = body.objectiveInvestigation
-            dateInvestigationInspection = body.dateInvestigationInspection
+            startDateInvestigationInspection = body.startDateInvestigationInspection
+            endDateInvestigationInspection = body.endDateInvestigationInspection
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
@@ -5033,7 +5034,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             reportFunction = body.reportFunction
             backgroundInformation = body.backgroundInformation
             objectiveInvestigation = body.objectiveInvestigation
-            dateInvestigationInspection = body.dateInvestigationInspection
+            startDateInvestigationInspection = body.startDateInvestigationInspection
+            endDateInvestigationInspection = body.endDateInvestigationInspection
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
@@ -5921,7 +5923,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             inspectionInvestigation.reportFunction,
             inspectionInvestigation.backgroundInformation,
             inspectionInvestigation.objectiveInvestigation,
-            inspectionInvestigation.dateInvestigationInspection,
+            inspectionInvestigation.startDateInvestigationInspection,
+            inspectionInvestigation.endDateInvestigationInspection,
             inspectionInvestigation.kebsInspectors?.let { mapKEBSOfficersNameListDto(it) },
             inspectionInvestigation.methodologyEmployed,
             inspectionInvestigation.findings,
@@ -5954,7 +5957,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.reportFunction,
                 it.backgroundInformation,
                 it.objectiveInvestigation,
-                it.dateInvestigationInspection,
+                it.startDateInvestigationInspection,
+                it.endDateInvestigationInspection,
                 it.kebsInspectors?.let { it2 -> mapKEBSOfficersNameListDto(it2) },
                 it.methodologyEmployed,
                 it.findings,
