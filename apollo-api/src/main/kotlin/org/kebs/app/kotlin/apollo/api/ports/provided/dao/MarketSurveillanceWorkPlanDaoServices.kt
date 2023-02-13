@@ -4553,6 +4553,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                         mostRecurringNonCompliant = body.mostRecurringNonCompliant
                         personMet = body.personMet
                         summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
+                        samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
+                        sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                         finalActionSeizedGoods = body.finalActionSeizedGoods
                         totalComplianceScore = body.totalComplianceScore
                         workPlanGeneratedID = workPlanScheduled.id
@@ -4581,6 +4583,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     mostRecurringNonCompliant = body.mostRecurringNonCompliant
                     personMet = body.personMet
                     summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
+                    samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
+                    sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                     finalActionSeizedGoods = body.finalActionSeizedGoods
                     totalComplianceScore = body.totalComplianceScore
                     workPlanGeneratedID = workPlanScheduled.id
@@ -5889,6 +5893,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReport.mostRecurringNonCompliant,
             dataReport.personMet,
             dataReport.summaryFindingsActionsTaken,
+            dataReport.samplesDrawnAndSubmitted,
+            dataReport.sourceOfProductAndEvidence,
             dataReport.finalActionSeizedGoods,
             dataReport.totalComplianceScore,
             null,
