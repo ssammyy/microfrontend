@@ -96,8 +96,11 @@ class QualityAssuranceJSONControllers(
                 with(branchDetails){
                     varField9 = fileDoc.id.toString()
                     inspectionFeeStatus = 1
+                    invoiceInspectionGenerated = 1
                     paidDate = commonDaoServices.getCurrentDate()
-                    endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+                    endingDate = commonDaoServices.getCalculatedDate(30)
+//                    paidDate = commonDaoServices.getCurrentDate()
+//                    endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
                 }
                 manufacturePlantRepository.save(branchDetails)
 //                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")

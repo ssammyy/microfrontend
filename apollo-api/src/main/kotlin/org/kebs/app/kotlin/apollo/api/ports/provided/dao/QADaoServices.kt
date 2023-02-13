@@ -1885,6 +1885,8 @@ class QADaoServices(
                 with(branchDetails) {
                     varField10 = batchInvoiceInspection.id.toString()
                     invoiceInspectionGenerated = 1
+                    paidDate = commonDaoServices.getCurrentDate()
+                    endingDate = commonDaoServices.getCalculatedDate(30)
                 }
                 branchDetails = manufacturePlantRepository.save(branchDetails)
 
