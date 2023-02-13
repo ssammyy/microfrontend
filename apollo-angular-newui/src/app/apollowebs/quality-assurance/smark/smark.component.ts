@@ -625,7 +625,7 @@ export class SmarkComponent implements OnInit {
         this.qaService.generateInspectionFees(branchID).subscribe(
             (data: any) => {
                 this.SpinnerService.hide();
-                this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {
+                this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {this.getSelectedPermit();
                 });
             },
             error => {

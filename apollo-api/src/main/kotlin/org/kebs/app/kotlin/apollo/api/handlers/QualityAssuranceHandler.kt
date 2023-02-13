@@ -2705,7 +2705,7 @@ class QualityAssuranceHandler(
             val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found"))
 
             if(permitType.id == applicationMapProperties.mapQAPermitTypeIdSmark){
-                val invoiceCreated = qaDaoServices.permitInvoiceCalculationSmartFirmUpGrade(map, loggedInUser, permit, null).second
+                val invoiceCreated = qaDaoServices.permitInvoiceCalculationSmartFirmUpGrade(map, loggedInUser, permit, null)
 
                 //Update Permit Details
                 with(permit) {
