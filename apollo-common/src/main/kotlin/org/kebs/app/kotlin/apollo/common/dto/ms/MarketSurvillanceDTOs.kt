@@ -560,6 +560,8 @@ data class DataReportDto(
         var mostRecurringNonCompliant: String? = null,
         var personMet: String? = null,
         var summaryFindingsActionsTaken: String? = null,
+        var samplesDrawnAndSubmitted: String? = null,
+        var sourceOfProductAndEvidence: String? = null,
         var finalActionSeizedGoods: String? = null,
         var totalComplianceScore: String? = null,
         var remarks: String? = null,

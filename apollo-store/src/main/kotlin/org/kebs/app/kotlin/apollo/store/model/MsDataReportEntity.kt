@@ -87,6 +87,14 @@ class MsDataReportEntity  : Serializable {
     @Basic
     var summaryFindingsActionsTaken: String? = null
 
+    @Column(name = "SAMPLES_DRAWN_AND_SUBMITTED")
+    @Basic
+    var samplesDrawnAndSubmitted: String? = null
+
+    @Column(name = "SOURCE_OF_PRODUCT_AND_EVIDENCE")
+    @Basic
+    var sourceOfProductAndEvidence: String? = null
+
     @Column(name = "FINAL_ACTION_SEIZED_GOODS")
     @Basic
     var finalActionSeizedGoods: String? = null
