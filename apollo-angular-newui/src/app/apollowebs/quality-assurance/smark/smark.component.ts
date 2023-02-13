@@ -53,8 +53,10 @@ export class SmarkComponent implements OnInit {
     approveRejectSSCForm!: FormGroup;
     resubmitForm!: FormGroup;
     uploadForm!: FormGroup;
+    selectedBranchID: number;
     uploadedFile: File;
     uploadedFiles: FileList;
+    uploadedFilesOnly: FileList;
     upLoadDescription: string;
     public allPermitData: PermitEntityDto[];
     form: FormGroup;
@@ -620,6 +622,52 @@ export class SmarkComponent implements OnInit {
             });
     }
 
+    uploadInspectionReport(branchID: number) {
+        this.currDivLabel = `BRANCH INSPECTION INVOICE DETAILS UPLOAD`;
+        this.currDiv = 'uploadInspectionReport';
+        this.selectedBranchID = branchID;
+        window.$('#myModalUpload').modal('show');
+    }
+
+    onClickUploadInspectionFee(branchID: number) {
+        if (this.uploadedFilesOnly.length > 0) {
+            this.qaService.showSuccessWith2Message('Are you sure your want to Upload the selected inspection invoice?', 'You won\'t be able to revert back after submission!',
+                // tslint:disable-next-line:max-line-length
+                `You can click \'Upload Inspection Invoice\' button to updated the Details before saving`, 'PDF SAVED SUCCESSFUL', () => {
+                    this.saveFilesResults(branchID);
+                });
+        } else {
+            this.qaService.showError('NO FILE SELECTED FOR UPLOADED');
+        }
+    }
+
+    saveFilesResults(branchID: number) {
+        if (this.uploadedFilesOnly.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedFilesOnly;
+            const formData = new FormData();
+            formData.append('branchID', String(branchID));
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.qaService.saveUploadFile(formData).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    // this.loadStandards();
+                    this.SpinnerService.hide();
+                    this.qaService.showSuccess('FILE UPLOADED SAVED SUCCESSFULLY', () => {this.getSelectedPermit();
+                    });
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    console.log(error);
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
     generateInspectionFee(branchID: number) {
 
         this.qaService.generateInspectionFees(branchID).subscribe(
@@ -649,6 +697,24 @@ export class SmarkComponent implements OnInit {
                     this.allPermitDetails.permitDetails = data;
                     this.SpinnerService.hide();
                     this.qaService.showSuccess(`INVOICE DIFFERENCE GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
+                },
+            );
+        }
+
+    }
+
+    submitPermitReGenerateInvoice(): void {
+        const companyStatusDetails = this.allPermitDetails.companyStatusDetails;
+        if (companyStatusDetails.updateDetailsStatus) {
+            this.qaService.showWarning(`YOU ARE  REQUIERD TO UPGRADE FIRM TYPE TO ${companyStatusDetails.updateFirmType} BEFORE YOU GENERATE THE DIFFERENCE`, () => {this.loadCompanyDetails(); });
+        } else {
+            this.SpinnerService.show();
+            // tslint:disable-next-line:max-line-length
+            this.qaService.submitPermitReGenerateInvoice(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                (data: PermitEntityDetails) => {
+                    this.allPermitDetails.permitDetails = data;
+                    this.SpinnerService.hide();
+                    this.qaService.showSuccess(`INVOICE  RE-GENERATED SUCCESSFULLY!`, () => {this.getSelectedPermit(); });
                 },
             );
         }

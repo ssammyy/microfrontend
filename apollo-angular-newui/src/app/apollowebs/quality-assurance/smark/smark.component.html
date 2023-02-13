@@ -1616,10 +1616,28 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated "
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.branchID !=null
+                         && allPermitDetails?.inspectionInvoiceUploaded ==null && allPermitDetails?.inspectionNeeded"
+                                mat-raised-button="" data-target="#myModalUpload" data-toggle="modal"
+                                (click)="uploadInspectionReport(allPermitDetails?.permitDetails?.branchID)" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">Upload Paid Inspection Invoice</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated
+                        && !allPermitDetails?.permitDetails?.permitReGenerateInvoice "
                                 mat-raised-button=""
                                 (click)="submitPermitGenerateDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">Generate Difference Invoice</span>
+                            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                            <div class="mat-button-focus-overlay"></div>
+                        </button>
+                        <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.permitReGenerateInvoice
+                        && !allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated "
+                                mat-raised-button=""
+                                (click)="submitPermitReGenerateInvoice()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                class="mat-button-wrapper">Re-Generate Invoice</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </button>
@@ -1644,7 +1662,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <button style="width: -webkit-fill-available" *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'
                         && allPermitDetails?.permitDetails?.invoiceGenerated && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
                                 mat-raised-button=""
-                                (click)="goToPaymentDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                (click)="goToPayment()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">Proceed To Payment Difference</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
@@ -2203,6 +2221,47 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                 </div>
             </div>
 
+        </div></div>
+    <!-- Dynamic UPLOAD Modal -->
+    <div class="modal fade" id="myModalUpload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="files"><b>Upload Documents Here</b></label>
+
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFilesOnly" name="files" id="files"
+                                                         fileslimit="1" accept=".pdf"></file-upload>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadInspectionReport')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="onClickUploadInspectionFee(selectedBranchID);"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                </div>
+            </div>
         </div>
-        </div>
+    </div>
+    <!--  End Dynamic UPLOADS Modal -->
     </div>

@@ -743,7 +743,27 @@ Content-Type: application/json
 }
 
 
-  
+###
+
+POST  https://localhost:8006/api/v1/migration/qa/internal-users/apply/permit/inspection/inspection-details?permitID=3530
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxYW9nYXJpc3NhQG1haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY3NjI4NzkzMywiZXhwIjoxNjc2MjkzOTMzLCJhZGRyZXNzIjoiMDowOjA6MDowOjA6MDoxIiwidXNlckFnZW50IjoiW01vemlsbGEvNS4wIChNYWNpbnRvc2g7IEludGVsIE1hYyBPUyBYIDEwXzE1XzcpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xMTAuMC4wLjAgU2FmYXJpLzUzNy4zNl0iLCJmdWxsTmFtZSI6IlFBTyBHYXJpc3NhIiwicm9sZXMiOiJVU0VSLEVNUExPWUVFLFFBX09GRklDRVJfUkVBRCxRQV9PRkZJQ0VSX01PRElGWSJ9.UiggKJVla57UeOUI1TRzH_rQwFTO0bOvRTphS0hki5EZLlRlM4bM3qzxy5pVHM02SZF1Gk81PCzMx-HxToQJnA
+Content-Type: application/json
+
+{
+  "id": 1012,
+  "inspectionRecommendationId": 1041,
+  "complianceApplicableStatutory": "test",
+  "complianceApplicableStatutoryRemarks": "test",
+  "plantHouseKeeping": "test",
+  "plantHouseKeepingRemarks": "test",
+  "handlingComplaints": "test",
+  "handlingComplaintsRemarks": "test",
+  "qualityControlPersonnel": "test",
+  "qualityControlPersonnelRemarks": "test",
+  "testingFacility": "test ",
+  "testingFacilityRemarks": "test "
+}
+
 
 
 

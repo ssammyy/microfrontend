@@ -538,6 +538,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
                     POST("/generate-difference-invoice", handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration)
+                    POST("/re-generate-invoice", handler::permitSubmitApplicationInvoiceReGenerationMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
@@ -595,7 +596,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/invoice".nest {
                         GET("/list", handler::invoiceListMigration)
-                        GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
+                        GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMasterMigration)
                         GET("/list-no-batch-Id-difference", handler::invoiceListNoBatchIDMigrationWithDifference)
                         GET("/batch-invoice-list", handler::invoiceBatchListMigration)
                         GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
@@ -606,7 +607,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 }
                 "/invoice".nest {
                     GET("/list", handler::invoiceListMigration)
-                    GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
+                    GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMasterMigration)
+//                    GET("/list-no-batchId", handler::invoiceListNoBatchIDMigration)
                     GET("/list-no-batch-Id-permit-type", handler::invoiceListNoBatchIDByPermitTypeMigration)
                     GET("/batch-invoice-list", handler::invoiceBatchListMigration)
 

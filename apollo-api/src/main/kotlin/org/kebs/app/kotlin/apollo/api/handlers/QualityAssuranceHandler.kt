@@ -2739,6 +2739,86 @@ class QualityAssuranceHandler(
 
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitSubmitApplicationInvoiceReGenerationMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            var permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
+
+            val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found"))
+//            val companyDetails = commonDaoServices.findCompanyProfileWithID(loggedInUser.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS"))
+            val plantDetail = qaDaoServices.findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+
+
+            if(permitType.id == applicationMapProperties.mapQAPermitTypeIdSmark){
+                invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permitID)?.let { invoice ->
+                    qaInvoiceDetailsRepo.findAllByInvoiceMasterId(invoice.id)?.let {inv->
+                        when {
+                            applicationMapProperties.mapQASmarkMediumTurnOverId == permit.permitType -> {
+                                if(plantDetail.tokenGiven == inv.tokenValue && plantDetail.invoiceSharedId == inv.id){
+                                    with(plantDetail) {
+                                        tokenGiven = null
+                                        invoiceSharedId = null
+                                        paidDate = null
+                                        endingDate = null
+                                    }
+                                    qaDaoServices.updatePlantDetails(map, loggedInUser, plantDetail)
+                                }
+                            }
+                            applicationMapProperties.mapQASmarkJuakaliTurnOverId == permit.permitType -> {
+                                if(plantDetail.tokenGiven == inv.tokenValue && plantDetail.invoiceSharedId == inv.id){
+                                    with(plantDetail) {
+                                        tokenGiven = null
+                                        invoiceSharedId = null
+                                        paidDate = null
+                                        endingDate = null
+                                    }
+                                    qaDaoServices.updatePlantDetails(map, loggedInUser, plantDetail)
+                                }
+                            }
+                        }
+                        qaInvoiceDetailsRepo.delete(inv)
+                    }
+                    invoiceMasterDetailsRepo.delete(invoice)
+                }
+
+                //Calculate Invoice Details
+                val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null)
+
+                //Update Permit Details
+                with(permit) {
+                    paidStatus = 0
+                    sendApplication = map.activeStatus
+                    endOfProductionStatus = map.inactiveStatus
+                    invoiceGenerated = map.activeStatus
+                    varField8 = null
+                    permitStatus = applicationMapProperties.mapQaStatusPPayment
+                }
+                permit= qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
+
+                qaDaoServices.mapAllPermitDetailsTogether(
+                    permit,
+                    null,
+                    null,
+                    map
+                ).let {
+                    return ok().body(it)
+                }
+            }else{
+                throw Exception("YOUR CANNOT GENERATE ANOTHER INVOICE  FROM PERMIT TYPE ${permitType.descriptions}")
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -3930,7 +4010,30 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
 //            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
-            val invoiceList = qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(
+            val invoiceList = qaDaoServices.findALlPermitInvoicesMasterCreatedByUserWithNoPaymentStatus(
+                loggedInUser.id ?: throw Exception("INVALID USER ID"), map.inactiveStatus
+            )
+
+            qaDaoServices.listPermitsInvoices(invoiceList, null, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun invoiceListNoBatchIDMasterMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+//            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val invoiceList = qaDaoServices.findALlPermitInvoicesMasterCreatedByUserWithNoPaymentStatus(
                 loggedInUser.id ?: throw Exception("INVALID USER ID"), map.inactiveStatus
             )
 

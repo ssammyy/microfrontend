@@ -361,7 +361,8 @@ data class PermitInvoiceDto(
     var totalAmount: BigDecimal? = null,
     var paidStatus: Int? = null,
     var permitRefNumber: String? = null,
-    var batchID: Long? = null
+    var batchID: Long? = null,
+    var invoiceMasterID: Long? = null
 )
 
 data class SSFPDFListDetailsDto(
@@ -794,6 +795,7 @@ data class PermitDetailsDto(
     var assignOfficerStatus: Boolean? = null,
     var assignOfficerID: Long? = null,
     var permitGenerateDifference: Boolean? = null,
+    var permitReGenerateInvoice: Boolean? = null,
     var inspectionReportGenerated: Boolean? = null,
     var companyId: Long? = null,
     var branchID: Long? = null,
@@ -828,6 +830,7 @@ data class AllPermitDetailsDto(
     var sampleLabResults: List<MSSSFLabResultsDto>? = null,
     var inspectionNeeded: Boolean? = null,
     var inspectionFeeInvoice: InvoiceDetailsDto? = null,
+    var inspectionInvoiceUploaded: Long? = null,
 )
 
 

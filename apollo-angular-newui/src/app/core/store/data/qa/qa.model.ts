@@ -296,6 +296,7 @@ export class PermitEntityDetails {
     assignOfficerStatus: boolean;
     assignOfficerID: number;
     permitGenerateDifference: boolean;
+    permitReGenerateInvoice: boolean;
     inspectionReportGenerated: boolean;
     companyId: number;
     branchID: number;
@@ -425,6 +426,7 @@ export class AllPermitDetailsDto {
     standardsList: StandardsDto[];
     ssfListDetails: SSFDetailsDto[];
     inspectionNeeded: boolean;
+    inspectionInvoiceUploaded: number;
     inspectionFeeInvoice: InvoiceDetailsDto;
     sampleLabResults: MSSSFLabResultsDto[];
 }
@@ -495,6 +497,7 @@ export class PermitInvoiceDto {
     permitRefNumber: string;
     batchID: bigint;
     sageInvoiceNumber: string;
+    invoiceMasterID: string;
 
 }
 
