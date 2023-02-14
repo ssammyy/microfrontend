@@ -84,9 +84,13 @@ class MsInspectionInvestigationReportEntity: Serializable {
     @Basic
     var objectiveInvestigation: String? = null
 
-    @Column(name = "DATE_INVESTIGATION_INSPECTION")
+    @Column(name = "START_DATE_INVESTIGATION_INSPECTION")
     @Basic
-    var dateInvestigationInspection: Date? = null
+    var startDateInvestigationInspection: Date? = null
+
+    @Column(name = "END_DATE_INVESTIGATION_INSPECTION")
+    @Basic
+    var endDateInvestigationInspection: Date? = null
 
     @Column(name = "KEBS_INSPECTORS")
     @Basic

@@ -176,7 +176,6 @@ class InspectionReportDaoServices(
                     modifiedBy = commonDaoServices.concatenateName(user)
                     modifiedOn = commonDaoServices.getTimestamp()
                 }
-
                 else -> {
                     createdBy = commonDaoServices.concatenateName(user)
                     createdOn = commonDaoServices.getTimestamp()
@@ -204,12 +203,10 @@ class InspectionReportDaoServices(
             //update technical report
             qaInspectionTechnicalRepo.findByIdOrNull(body.id ?: -1L)
                 ?.let { iTDetails ->
-                    inspectionTechnicalDetails =
-                        updateNewInspectionCheckListRecommendation(body, iTDetails, map, loggedInUser)
+                    inspectionTechnicalDetails = updateNewInspectionCheckListRecommendation(body, iTDetails, map, loggedInUser)
                     inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
                 }
-            val inspectionReportAllDetails =
-                mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
+            val inspectionReportAllDetails = mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
             return commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
 
         } catch (error: Exception) {
