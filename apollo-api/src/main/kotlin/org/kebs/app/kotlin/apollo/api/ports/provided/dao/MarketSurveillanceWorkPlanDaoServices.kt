@@ -3532,7 +3532,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 with(dataValue) {
                     sourceProductEvidence = sampleFound?.sourceProductEvidence
                     failedResults = body.failedParameters
-                    standardName = sampleFound?.referencesStandards
+                    standardName = sampleFound?.standardsArray
                     baseUrl = applicationMapProperties.baseUrlValue
                     refNumber = savedSSfComplianceStatus.bsNumber
                     compliantDetails = mapCompliantStatusDto(savedSSfComplianceStatus, map)

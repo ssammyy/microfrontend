@@ -1038,14 +1038,36 @@ import {
 } from './apollowebs/qualityAssuranceAdmin/permit-details-admin/permit-details-admin.component';
 import {RfcFragmentComponent} from './apollowebs/pvoc/documents/rfc-fragment/rfc-fragment.component';
 import { InspectionReport } from './apollowebs/qualityAssuranceAdmin/inspection-report/inspection-report';
-import { NspStatusComponent } from './apollowebs/standards-development/reports/nsp-status/nsp-status.component';
-import { NonePerformingProjectsComponent } from './apollowebs/standards-development/reports/none-preforming-projects/none-performing-projects.component';
-import { DelayedProjectsComponent } from './apollowebs/standards-development/reports/delayed-projects/delayed-projects.component';
-import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-development/reports/standards-approval-committee/standards-approval-committee.component';
-import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/tc-member-application/tc-member-application.component';
-import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/departmental-weekly-report/departmental-weekly-report.component';
-import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/individual-weekly-report/individual-weekly-report.component';
 import { IntStdListComponent } from './apollowebs/standards-development/international-standard/int-std-list/int-std-list.component';
+import { NspStatusComponent } from './apollowebs/standards-development/reports/SD REPORTS/nsp-status/nsp-status.component';
+import { NonePerformingProjectsComponent } from './apollowebs/standards-development/reports/SD REPORTS/none-preforming-projects/none-performing-projects.component';
+import { DelayedProjectsComponent } from './apollowebs/standards-development/reports/SD REPORTS/delayed-projects/delayed-projects.component';
+import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-development/reports/SD REPORTS/standards-approval-committee/standards-approval-committee.component';
+import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/SD REPORTS/tc-member-application/tc-member-application.component';
+import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/SD REPORTS/departmental-weekly-report/departmental-weekly-report.component';
+import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/SD REPORTS/individual-weekly-report/individual-weekly-report.component';
+import { StandardsReceivedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-received/standards-received.component';
+import { StandardsEditedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-edited/standards-edited.component';
+import { StandardsProofreadComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-proofread/standards-proofread.component';
+import { StandardsTypesetComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-typeset/standards-typeset.component';
+import { WeeklyReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/weekly-report/weekly-report.component';
+import { DraughsmanReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/draughsman-report/draughsman-report.component';
+import { SpcReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/spc-report/spc-report.component';
+import { PublishingEnquiriestComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/publishing-enquiriest/publishing-enquiriest.component';
+import { StandardsPrintedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-printed/standards-printed.component';
+import { InformationRequestRegisterComponent } from './apollowebs/standards-development/reports/SIRC/information-request-register/information-request-register.component';
+import { PublicationOrderingRegisterComponent } from './apollowebs/standards-development/reports/SIRC/publication-ordering-register/publication-ordering-register.component';
+import { SalesStandardRegisterComponent } from './apollowebs/standards-development/reports/SIRC/sale-kenya-standard-register/sales-standard-register.component';
+import { SaleForeignStandardRegisterComponent } from './apollowebs/standards-development/reports/SIRC/sale-foreign-standard-register/sale-foreign-standard-register.component';
+import { KenyaStandardRequsitionFormComponent } from './apollowebs/standards-development/reports/SIRC/kenya-standard-requsition-form/kenya-standard-requsition-form.component';
+import { MembershipSubcriptionSchemeComponent } from './apollowebs/standards-development/reports/SIRC/membership-subcription-scheme/membership-subcription-scheme.component';
+import { CatalogueReportComponent } from './apollowebs/standards-development/reports/SIRC/catalogue-report/catalogue-report.component';
+import { DisseminationPublicationComponent } from './apollowebs/standards-development/reports/SIRC/dissemination-publication/dissemination-publication.component';
+import { IcsAllocationComponent } from './apollowebs/standards-development/reports/SIRC/ics-allocation/ics-allocation.component';
+import { SdPaymentsComponent } from './apollowebs/standards-development/schemeMembership/sd-payments/sd-payments.component';
+import { DomesticNotificationComponent } from './apollowebs/standards-development/reports/WTO REPORTS/domestic-notification/domestic-notification.component';
+import { EnquariesHandledReportComponent } from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
+import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1582,6 +1604,30 @@ import { IntStdListComponent } from './apollowebs/standards-development/internat
         DepartmentalWeeklyReportComponent,
         IndividualWeeklyReportComponent,
         IntStdListComponent,
+        StandardsReceivedComponent,
+        StandardsEditedComponent,
+        StandardsProofreadComponent,
+        StandardsTypesetComponent,
+        WeeklyReportComponent,
+        DraughsmanReportComponent,
+        SpcReportComponent,
+        PublishingEnquiriestComponent,
+        StandardsPrintedComponent,
+        InformationRequestRegisterComponent,
+        PublicationOrderingRegisterComponent,
+        SalesStandardRegisterComponent,
+        SaleForeignStandardRegisterComponent,
+        KenyaStandardRequsitionFormComponent,
+        MembershipSubcriptionSchemeComponent,
+        CatalogueReportComponent,
+        DisseminationPublicationComponent,
+        IcsAllocationComponent,
+        SdPaymentsComponent,
+        DomesticNotificationComponent,
+        EnquariesHandledReportComponent,
+        StandardWorkProgrammeBulletinComponent,
+    
+      
 
     ],
     entryComponents: [LoaderComponent],

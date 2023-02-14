@@ -2842,7 +2842,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the Data report to clone</b></label>
-                                        <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input">
                                         <datalist id="dataReportValueToCloneList">
                                             <option *ngFor="let app of workPlanInspection?.dataReportDto" [value]="app.id">{{app.outletName}}</option>
                                         </datalist>
@@ -4031,7 +4031,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label><b>Select the Seizure Form to clone</b></label>
-                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" #standardsInput>
+                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" >
                                     <datalist id="seizureFormValueToCloneList">
                                         <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
                                     </datalist>
@@ -5995,7 +5995,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the SSF to clone</b></label>
-                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
                                         <datalist id="SSFValueToCloneList">
                                             <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
                                         </datalist>
@@ -6014,7 +6014,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the Data Report</b></label>
-                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
                                         <datalist id="availableDataReports">
                                             <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
                                         </datalist>
