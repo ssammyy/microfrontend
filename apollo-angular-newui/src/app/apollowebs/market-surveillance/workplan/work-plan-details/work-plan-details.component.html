@@ -677,11 +677,11 @@
                                                         <tbody>
                                                         <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
                                                             <td>{{app.fileRefNumber}}</td>
-                                                            <td>{{selectedDataSheet.outletName}}</td>
+                                                            <td></td>
                                                             <td>{{app.nameProduct}}</td>
                                                             <td>{{app.lbIdTradeMark}}</td>
                                                             <td>{{app.address}}</td>
-                                                            <td>{{selectedDataSheet.physicalLocation}}</td>
+                                                            <td></td>
                                                             <td>{{app.lbIdExpiryDate}}</td>
                                                             <td>{{app.lbIdBatchNo}}</td>
                                                             <td></td>
@@ -4031,7 +4031,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label><b>Select the Seizure Form to clone</b></label>
-                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input">
+                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" >
                                     <datalist id="seizureFormValueToCloneList">
                                         <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
                                     </datalist>
@@ -5995,7 +5995,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the SSF to clone</b></label>
-                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input">
+                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
                                         <datalist id="SSFValueToCloneList">
                                             <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
                                         </datalist>
@@ -6024,7 +6024,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <button  mat-raised-button
-                                                 class="btn btn-outline-success" (click)="onSelectedDataReport()" type="button" >SELECT DATA REPORT
+                                                 class="btn btn-outline-success" type="button" >SELECT DATA REPORT
                                         </button>
                                     </div>
                                 </div>
