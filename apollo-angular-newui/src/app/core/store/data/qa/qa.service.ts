@@ -15,7 +15,7 @@ import {
     PermitEntityDto,
     PermitProcessStepDto,
     PlantDetailsDto,
-    QRCodeScannedQADto,
+    QRCodeScannedQADto, ReportsPermitEntityDto,
     ResubmitApplicationDto,
     SamplesSubmittedDto,
     SSCApprovalRejectionDto,
@@ -715,12 +715,12 @@ export class QaService {
     }
 
 
-    public loadPermitReports(permitTypeID: string): Observable<PermitEntityDto[]> {
+    public loadPermitReports(permitTypeID: string): Observable<ReportsPermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
-        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
-            map(function (response: PermitEntityDto[]) {
+        return this.http.get<ReportsPermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: ReportsPermitEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
