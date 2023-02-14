@@ -1,14 +1,13 @@
 <div class="container-fluid" id="main-container" style="margin-top: 5%">
-    <!--    <div class="loading-spinner ">-->
-    <!--        <ngx-spinner-->
-    <!--                bdColor="rgba(51,51,51,0.8)"-->
-    <!--                size="medium"-->
-    <!--                color="#fff"-->
-    <!--                type="ball-scale-multiple"-->
-    <!--        >-->
-    <!--            <p style="font-size: 20px; color: white">Loading Please Wait...</p>-->
-    <!--        </ngx-spinner>-->
-    <!--    </div>-->
+    <div class="loading-spinner " *ngIf="loading">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                color="#fff"
+                size="medium"
+                type="ball-scale-multiple">
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
     <div class="main-content">
         <div class="container-fluid">
 
@@ -41,13 +40,17 @@
                                                 Testing
                                             </a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">
+                                                <i class="material-icons">assignment_turned_in</i>Product Labelling
+                                                And Identification
+                                            </a>
+                                        </li>
 
                                         <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#link4" role="tablist">
                                                 <i class="material-icons">assignment_turned_in</i>Standardization Mark
                                                 Scheme
-
-
                                             </a>
                                         </li>
                                         <li class="nav-item">
@@ -66,16 +69,16 @@
                                                 <i class="material-icons">preview</i> Recommendations
                                             </a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#link8" role="tablist">
-                                                <i class="material-icons">summarize</i> Documents Attached
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" data-toggle="tab" href="#link9" role="tablist">
-                                                <i class="material-icons">table_view</i> Version Details
-                                            </a>
-                                        </li>
+                                        <!--                                        <li class="nav-item">-->
+                                        <!--                                            <a class="nav-link" data-toggle="tab" href="#link8" role="tablist">-->
+                                        <!--                                                <i class="material-icons">summarize</i> Documents Attached-->
+                                        <!--                                            </a>-->
+                                        <!--                                        </li>-->
+                                        <!--                                        <li class="nav-item">-->
+                                        <!--                                            <a class="nav-link" data-toggle="tab" href="#link9" role="tablist">-->
+                                        <!--                                                <i class="material-icons">table_view</i> Version Details-->
+                                        <!--                                            </a>-->
+                                        <!--                                        </li>-->
                                         <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#link10" role="tablist">
                                                 <i class="material-icons">person</i> Inspector Details
@@ -105,7 +108,7 @@
                                                             <td><strong>Name of firm
                                                             </strong></td>
                                                             <td>
-                                                                <!--                                                            <LIMITED></LIMITED>-->
+                                                                {{permitEntityDto?.firmName}}
                                                             </td>
                                                         </tr>
 
@@ -116,7 +119,7 @@
                                                             <td><strong>Postal address
                                                             </strong></td>
                                                             <td>
-                                                                <!--                                                                {{allPermitDetails?.permitDetails?.postalAddress}}-->
+                                                                {{permitEntityDto?.postalAddress}}
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -126,6 +129,8 @@
                                                             <td><strong>Telephone number
                                                             </strong></td>
                                                             <td>
+                                                                {{permitEntityDto?.telephoneNo}}
+
                                                             </td>
                                                         </tr>
 
@@ -136,7 +141,7 @@
                                                             <td><strong>Products Covered
                                                             </strong></td>
                                                             <td>
-                                                                <!--                                                                {{allPermitDetails?.permitDetails?.commodityDescription}}-->
+                                                                {{permitEntityDto?.commodityDescription}}
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -146,7 +151,7 @@
                                                             <td><strong>Brand
                                                             </strong></td>
                                                             <td>
-                                                                <!--                                                                {{allPermitDetails?.permitDetails?.brandName}}-->
+                                                                {{permitEntityDto?.brandName}}
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -156,7 +161,7 @@
                                                             <td><strong>Applicable Standards
                                                             </strong></td>
                                                             <td>
-                                                                <!--                                                                {{allPermitDetails?.permitDetails?.standardTitle}}-->
+                                                                {{permitEntityDto?.standardNumber}}
                                                             </td>
                                                         </tr>
                                                         </tbody>
@@ -170,64 +175,42 @@
                                             <div class="row">
                                                 <div class="card-body" style="margin-top: 20px;">
 
-                                                    <button (click)="openModalAddDetails('addTechnical')"
-                                                            class="btn btn-info" data-target="#allProcessModel"
-                                                            data-toggle="modal"
-                                                            mat-list-item
+                                                    <div class="material-datatables" style="width: 100%">
+                                                        <table class=" table table-bordered table-hover table-striped">
+                                                            <thead style="text-align: left;">
+                                                            <tr>
 
-                                                            style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">
-                                                        New
-                                                    </button>
-                                                    <div class="material-datatables">
-                                                        <div class="table-responsive">
+                                                                <th style="width: 40%"><strong>Aspects Checked</strong>
+                                                                </th>
+                                                                <th><strong>Details of Findings</strong></th>
+                                                                <th><strong>Remarks</strong></th>
+                                                            </tr>
+                                                            </thead>
 
-                                                            <div>
-                                                                <table class=" table table-bordered table-hover table-striped"
-                                                                       datatable
-                                                                >
-                                                                    <thead style="text-align: left;">
-                                                                    <tr>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td><strong>State whether the firm is implementing any
+                                                                    management system and Specify the management system
+                                                                    being implemented e.g. QMS,FSMS,HACCP</strong>
+                                                                </td>
+                                                                <td>{{technicalDetails?.firmImplementedAnyManagementSystem}}</td>
+                                                                <td>{{technicalDetails?.firmImplementedAnyManagementSystemRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Indicate the relevant product
+                                                                    standards and codes of practice in the
+                                                                    firm’s
+                                                                    possession</strong>
+                                                                </td>
+                                                                <td>{{technicalDetails?.indicateRelevantProductStandardCodes}}</td>
+                                                                <td>{{technicalDetails?.indicateRelevantProductStandardCodesRemarks}}</td>
+                                                            </tr>
 
-                                                                        <th><strong>Id</strong></th>
-                                                                        <th><strong>Name</strong></th>
-                                                                        <th><strong>Status</strong></th>
-                                                                        <th class="text-center"><strong>Action</strong>
-                                                                        </th>
-
-
-                                                                    </tr>
-                                                                    </thead>
-
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td>SCHEME_OF_SUPERVISION
-                                                                        </td>
-
-                                                                        <td>bsk.pdf</td>
-                                                                        <td>application</td>
-
-
-                                                                        <td class="text-right">
-
-                                                                            <a (click)="openModalAddDetails('addTechnical')"
-                                                                               class="btn btn-info"
-
-                                                                               mat-list-item
-                                                                               routerLink=""
-                                                                               style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
-                                                                        </td>
-
-                                                                    </tr>
-
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
 
                                                 </div>
-
-
                                             </div>
                                         </div>
                                         <div class="tab-pane" id="link3">
@@ -235,59 +218,85 @@
                                             <div class="row">
                                                 <div class="card-body" style="margin-top: 20px;">
 
-                                                    <button (click)="openModalAddDetails('addTechnical')"
-                                                            class="btn btn-info" data-target="#allProcessModel"
-                                                            data-toggle="modal"
-                                                            mat-list-item
 
-                                                            style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">
-                                                        New
-                                                    </button>
-                                                    <div class="material-datatables">
-                                                        <div class="table-responsive">
+                                                    <div class="material-datatables" style="width: 100%">
+                                                        <table class=" table table-bordered table-hover table-striped">
+                                                            <thead style="text-align: left;">
+                                                            <tr>
 
-                                                            <div>
-                                                                <table class=" table table-bordered table-hover table-striped"
-                                                                       datatable
-                                                                >
-                                                                    <thead style="text-align: left;">
-                                                                    <tr>
+                                                                <th style="width: 40%"><strong>Describe the status of
+                                                                    the following</strong>
+                                                                </th>
+                                                                <th><strong>Details of Findings</strong></th>
+                                                                <th><strong>Status of compliance</strong></th>
+                                                            </tr>
+                                                            </thead>
 
-                                                                        <th><strong>Id</strong></th>
-                                                                        <th><strong>Name</strong></th>
-                                                                        <th><strong>Status</strong></th>
-                                                                        <th class="text-center"><strong>Action</strong>
-                                                                        </th>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td><strong>Compliance to applicable statutory
+                                                                    requirements</strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDto?.complianceApplicableStatutory}}</td>
+                                                                <td>{{inspectionDetailsDto?.complianceApplicableStatutoryRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Plant housekeeping</strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDto?.plantHouseKeeping}}</td>
+                                                                <td>{{inspectionDetailsDto?.plantHouseKeepingRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Handling of complaints</strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDto?.handlingComplaints}}</td>
+                                                                <td>{{inspectionDetailsDto?.handlingComplaintsRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Quality control personnel competence records
+                                                                    (Academic/professional/experience)
+                                                                </strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDto?.qualityControlPersonnel}}</td>
+                                                                <td>{{inspectionDetailsDto?.qualityControlPersonnelRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Testing Facility (In-house or external
+                                                                    laboratory used)</strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDto?.testingFacility}}</td>
+                                                                <td>{{inspectionDetailsDto?.testingFacilityRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Equipment calibration/verification</strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDtoB?.equipmentCalibration}}</td>
+                                                                <td>{{inspectionDetailsDtoB?.equipmentCalibrationRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Quality records (Raw materials, in-process
+                                                                    and final product)</strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDtoB?.qualityRecords}}</td>
+                                                                <td>{{inspectionDetailsDtoB?.qualityRecordsRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Records of nonconforming products at raw
+                                                                    materials step, in-process step and final product
+                                                                    step</strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDtoB?.recordsNonconforming}}</td>
+                                                                <td>{{inspectionDetailsDtoB?.recordsNonconformingRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Product Recall records</strong>
+                                                                </td>
+                                                                <td>{{inspectionDetailsDtoB?.productRecallRecords}}</td>
+                                                                <td>{{inspectionDetailsDtoB?.productRecallRecordsRemarks}}</td>
+                                                            </tr>
 
-
-                                                                    </tr>
-                                                                    </thead>
-
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td>SCHEME_OF_SUPERVISION
-                                                                        </td>
-
-                                                                        <td>bsk.pdf</td>
-                                                                        <td>application</td>
-
-
-                                                                        <td class="text-right">
-
-                                                                            <a (click)="openModalAddDetails('addTechnical')"
-                                                                               class="btn btn-info"
-
-                                                                               mat-list-item
-                                                                               routerLink=""
-                                                                               style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
-                                                                        </td>
-
-                                                                    </tr>
-
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
 
                                                 </div>
@@ -297,10 +306,105 @@
 
 
                                         </div>
+
+                                        <div class="tab-pane" id="link12">
+                                            <h3>Product Labelling
+                                                And Identification</h3>
+
+                                            <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
+
+
+                                                    <div class="material-datatables" style="width: 100%">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped table-bordered table-hover">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th><strong>Standard Marking/labelling
+                                                                        requirements</strong>
+                                                                    </th>
+                                                                    <th><strong>Details of Findings</strong></th>
+                                                                    <th><strong>Status of compliance</strong></th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr *ngFor="let r of productLabellingDtos; let i=index">
+                                                                    <td>{{r.standardMarking}}</td>
+                                                                    <td>{{r.findings}}</td>
+                                                                    <td>{{r.statusOfCompliance}}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
                                         <div class="tab-pane" id="link4">
                                             <h3>Standardization Mark
                                                 Scheme</h3>
                                             <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
+
+
+                                                    <div class="material-datatables" style="width: 100%">
+                                                        <table class=" table table-bordered table-hover table-striped">
+                                                            <thead style="text-align: left;">
+                                                            <tr>
+
+                                                                <th style="width: 40%"><strong>Describe the status of
+                                                                    the following</strong>
+                                                                </th>
+                                                                <th><strong>Details of Findings</strong></th>
+                                                                <th><strong>Status of compliance</strong></th>
+                                                            </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                            <tr>
+                                                                <td><strong>Validity of S-Mark permit(s)</strong>
+                                                                </td>
+                                                                <td>{{standardizationMarkSchemeDto?.validitySmarkPermit}}</td>
+                                                                <td>{{standardizationMarkSchemeDto?.validitySmarkPermitRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Indicate how Standardization Mark(s) and
+                                                                    permit number(s) is used in line with the policy for
+                                                                    use of certification marks</strong>
+                                                                </td>
+                                                                <td>{{standardizationMarkSchemeDto?.useTheSmark}}</td>
+                                                                <td>{{standardizationMarkSchemeDto?.useTheSmarkRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Are there changes affecting product
+                                                                    certification? If yes, give details</strong>
+                                                                </td>
+                                                                <td>{{standardizationMarkSchemeDto?.changesAffectingProductCertification}}</td>
+                                                                <td>{{standardizationMarkSchemeDto?.changesAffectingProductCertificationRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Have the changes been communicated to KEBS?
+                                                                </strong>
+                                                                </td>
+                                                                <td>{{standardizationMarkSchemeDto?.changesBeenCommunicatedKebs}}</td>
+                                                                <td>{{standardizationMarkSchemeDto?.changesBeenCommunicatedKebsRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Samples drawn</strong>
+                                                                </td>
+                                                                <td>{{standardizationMarkSchemeDto?.samplesDrawn}}</td>
+                                                                <td>{{standardizationMarkSchemeDto?.samplesDrawnRemarks}}</td>
+                                                            </tr>
+
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
 
 
                                             </div>
@@ -309,51 +413,234 @@
                                             <h3>Annex I:Operation
                                                 Process And Controls</h3>
                                             <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
 
 
+                                                    <div class="material-datatables" style="width: 100%">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped table-bordered table-hover">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th><strong>Process Flow/Operations</strong>
+                                                                    </th>
+                                                                    <th><strong>Quality Checks</strong></th>
+                                                                    <th><strong>Frequency</strong></th>
+                                                                    <th><strong>Quality Checks Records</strong></th>
+                                                                    <th><strong>Details Of Findings</strong></th>
+
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr *ngFor="let r of operationProcessAndControlsDetailsDtos; let i=index">
+                                                                    <td>{{r.processFlow}}</td>
+                                                                    <td>{{r.qualityChecks}}</td>
+                                                                    <td>{{r.frequency}}</td>
+                                                                    <td>{{r.qualityChecks}}</td>
+                                                                    <td>{{r.findings}}</td>
+
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                             </div>
+
                                         </div>
                                         <div class="tab-pane" id="link6">
                                             <h3>Annex II:Haccp Implementation</h3>
                                             <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
 
 
+                                                    <div class="material-datatables" style="width: 100%">
+                                                        <table class=" table table-bordered table-hover table-striped">
+                                                            <thead style="text-align: left;">
+                                                            <tr>
+
+                                                                <th style="width: 40%"><strong>Aspects</strong>
+                                                                </th>
+                                                                <th><strong>Details of Findings</strong></th>
+                                                                <th><strong>Status of compliance</strong></th>
+                                                            </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                            <tr>
+                                                                <td><strong>Design & facilities-construction and layout
+                                                                    of buildings and work space.</strong>
+                                                                </td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.designFacilitiesConstructionLayout}}</td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.designFacilitiesConstructionLayoutRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Maintenance and sanitation- cleaning
+                                                                    programs, pest control systems and waste
+                                                                    management.</strong>
+                                                                </td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.maintenanceSanitationCleaningPrograms}}</td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.maintenanceSanitationCleaningProgramsRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Personnel hygiene</strong>
+                                                                </td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.personnelHygiene}}</td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.personnelHygieneRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Transportation - conveyance & bulk container
+                                                                </strong>
+                                                                </td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.transportationConveyance}}</td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.transportationConveyanceRemarks}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Determination of Critical parameters to
+                                                                    assure food safety and evidence of monitoring of the
+                                                                    critical parameters</strong>
+                                                                </td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.determinationCriticalParameters}}</td>
+                                                                <td>{{haccpImplementationDetailsApplyDto?.determinationCriticalParametersRemarks}}</td>
+                                                            </tr>
+
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="tab-pane" id="link7">
                                             <h3>Recommendations</h3>
                                             <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
+                                                    <div class="form-body">
+                                                        <div class="form-group">
+                                                            <h4><b>FOLLOW UP ON PREVIOUS
+                                                                RECOMMENDATIONS/NONCONFORMITIES</b></h4>
+                                                            <div>
+                                                                <mat-form-field
+                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50" readonly
+                                                      matInput
+                                                      value="{{allInspectionReportDetails?.followPreviousRecommendationsNonConformities}}"
+                                                      type="text"></textarea>
+                                                                </mat-form-field>
+                                                                <h4><b>RECOMMENDATIONS</b></h4>
+                                                                <mat-form-field
+                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50" readonly
+                                                      matInput
+                                                      value="{{allInspectionReportDetails?.recommendations}}"
+                                                      type="text"></textarea>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
 
 
+                                                    </div>
+                                                </div>
                                             </div>
+
+
                                         </div>
-                                        <div class="tab-pane" id="link8">
-                                            <h3>Documents Attached</h3>
-                                            <div class="row">
+                                        <!--                                        <div class="tab-pane" id="link8">-->
+                                        <!--                                            <h3>Documents Attached</h3>-->
+                                        <!--                                            <div class="row">-->
 
 
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane" id="link9">
-                                            <h3>Version Details</h3>
-                                            <div class="row">
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
+                                        <!--                                        <div class="tab-pane" id="link9">-->
+                                        <!--                                            <h3>Version Details</h3>-->
+                                        <!--                                            <div class="row">-->
 
 
-                                            </div>
-                                        </div>
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                         <div class="tab-pane" id="link10">
                                             <h3>Inspector Details</h3>
                                             <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
+                                                    <div class="form-body">
+                                                        <div class="form-group">
+                                                            <h4><b>Inspector Name</b></h4>
+                                                            <div>
+                                                                <mat-form-field
+                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50" readonly
+                                                      matInput
+                                                      value="{{allInspectionReportDetails?.inspectorName}}"
+                                                      type="text"></textarea>
+                                                                </mat-form-field>
+                                                                <h4><b>Date</b></h4>
+                                                                <mat-form-field
+                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50" readonly
+                                                      matInput
+                                                      value="{{allInspectionReportDetails?.inspectorDate}}"
+                                                      type="text"></textarea>
+                                                                </mat-form-field>
+
+                                                                <h4><b>Comments</b></h4>
+                                                                <mat-form-field
+                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50" readonly
+                                                      matInput
+                                                      value="{{allInspectionReportDetails?.inspectorComments}}"
+                                                      type="text"></textarea>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
 
 
+                                                    </div>
+                                                </div>
                                             </div>
+
                                         </div>
                                         <div class="tab-pane" id="link11">
                                             <h3>Supervisor Details</h3>
                                             <div class="row">
+                                                <div class="card-body" style="margin-top: 20px;">
+                                                    <div class="form-body">
+                                                        <div class="form-group">
+                                                            <h4><b>Supervisor Name</b></h4>
+                                                            <div>
+                                                                <mat-form-field
+                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50" readonly
+                                                      matInput
+                                                      value="{{allInspectionReportDetails?.supervisorName}}"
+                                                      type="text"></textarea>
+                                                                </mat-form-field>
+                                                                <h4><b>Date</b></h4>
+                                                                <mat-form-field
+                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50" readonly
+                                                      matInput
+                                                      value="{{allInspectionReportDetails?.supervisorDate}}"
+                                                      type="text"></textarea>
+                                                                </mat-form-field>
+
+                                                                <h4><b>Comments</b></h4>
+                                                                <mat-form-field
+                                                                        class="example-full-width">
+                                            <textarea rows="5" cols="50" readonly
+                                                      matInput
+                                                      value="{{allInspectionReportDetails?.supervisorComments}}"
+                                                      type="text"></textarea>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
 
 
+                                                    </div>
+                                                </div>
                                             </div>
+
                                         </div>
 
 
@@ -371,7 +658,13 @@
                         <div class="card-body ">
                             <a class="btn btn-kebs mat-raised-button mat-button-base" data-target="#allProcessModel"
                                data-toggle="modal"
-                               style="width: -webkit-fill-available;">GO BACK TO PERMIT</a>
+                               style=" white-space:normal; width: -webkit-fill-available;">GO BACK TO PERMIT</a>
+                            <a class="btn btn-kebs mat-raised-button mat-button-base" data-target="#allProcessModel"
+                               data-toggle="modal"
+                               style=" white-space:normal; width: -webkit-fill-available;">EDIT INSPECTION REPORT</a>
+                            <a class="btn btn-kebs mat-raised-button mat-button-base" data-target="#allProcessModel"
+                               data-toggle="modal"
+                               style=" white-space:normal; width: -webkit-fill-available;">SUBMIT INSPECTION REPORT</a>
                         </div>
                     </div>
 
@@ -382,90 +675,5 @@
 
         </div>
     </div>
-    <!-- Dynamic Modal -->
-    <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="allProcessModel" role="dialog"
-         tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">{{currDivLabel}}</h4>
-                    <button aria-hidden="true" class="close" data-dismiss="modal" mat-button type="button">
-                        <i class="material-icons">clear</i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div *ngIf="(currDiv == 'addTechnical')">
-                        <form class="form">
-                            <div class="form-body">
-                                <div class="form-group">
-                                    <h4><b>State whether the firm is implementing any management system and Specify the
-                                        management system being implemented e.g. QMS,FSMS,HACCP</b></h4>
-
-                                    <div>
-                                        <label><b>Details Of Findings</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea rows="5" cols="50" wrap="physical"
-                                                      id="firmImplementedAnyManagementSystem" matInput
-                                                      name="firmImplementedAnyManagementSystem"
-                                                      placeholder="Details Of Findings"
-                                                      type="text"></textarea>
-                                        </mat-form-field>
-                                        <label><b>Remarks</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea rows="5" cols="50" wrap="physical"
-                                                      name="firmImplementedAnyManagementSystemRemarks"
-                                                      id="firmImplementedAnyManagementSystemRemarks" matInput
-                                                      placeholder="Remarks"
-                                                      type="text"></textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <h4><b>Indicate the relevant product standards and codes of practice in the firm’s
-                                        possession</b></h4>
-
-                                    <div>
-                                        <label><b>Details Of Findings</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea rows="5" cols="50" wrap="physical"
-                                                      name="indicateRelevantProductStandardCodes" required="required"
-                                                      id="indicateRelevantProductStandardCodes" matInput
-                                                      placeholder="Details Of Findings"
-                                                      type="text"></textarea>
-                                        </mat-form-field>
-                                        <label><b>Remarks</b></label>
-                                        <mat-form-field class="example-full-width">
-                                            <textarea rows="5" cols="50" wrap="physical"
-                                                      name="indicateRelevantProductStandardCodesRemarks"
-                                                      id="indicateRelevantProductStandardCodesRemarks" matInput
-                                                      placeholder="Remarks"
-                                                      type="text"></textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-
-                    <button class="btn btn-danger" data-dismiss="modal" mat-raised-button type="button">
-                        Close
-                    </button>
-                                        <button *ngIf="(currDiv == 'addTechnical')" mat-raised-button type="button"
-                                                class="btn btn-success"
-                                                (click)="onClickSaveSectionFormResults(updateSectionForm.valid);"
-                                                [disabled]="!updateSectionForm.valid"
-                                                data-dismiss="modal"
-                                        >SUBMIT
-                                        </button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--  End Dynamic Modal -->
 
 </div>

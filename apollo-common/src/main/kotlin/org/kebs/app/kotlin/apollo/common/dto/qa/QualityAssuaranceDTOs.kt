@@ -102,7 +102,9 @@ data class AllInspectionDetailsApplyDto(
     var supervisorComments: String? = null,
     var supervisorName: String? = null,
     var supervisorDate: Date? = null,
-)
+    var permitDetails: PermitDetailsDto? = null,
+
+    )
 
 data class StandardizationMarkScheme(
     var id: Long? = null,

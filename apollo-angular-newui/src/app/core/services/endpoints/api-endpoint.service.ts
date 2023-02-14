@@ -731,6 +731,7 @@ export class ApiEndpointService {
         RECOMMENDATION_SAVE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/recommendation_save`,
 
         FINAL_INSPECTION_REPORT_SUBMISSION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-checklist-submit`,
+        GET_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/getInspectionReport`,
 
 
 

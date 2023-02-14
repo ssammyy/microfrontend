@@ -74,7 +74,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('standardsInput') standardsInput: ElementRef;
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
-
+  selectedDataSheet: DataReportDto;
   active: Number = 0;
   selectedFile: File;
   selectedRefNo: string;
@@ -4002,7 +4002,18 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.sampleSubmitForm.get('id').value !== null) {
       valuesToShow = '\'UPDATE SSF DETAILS\'';
     }
-    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
+    if(this.standardsInput.nativeElement.value !== ""){
+      this.addStandard();
+    }
+    const standardsArrayControl = this.sampleSubmitForm.get('standardsArray');
+    for (let selectedStandard of this.standardsArray) {
+      const updatedValue = standardsArrayControl.value.concat(selectedStandard);
+      standardsArrayControl.patchValue(updatedValue);
+      console.log("Selected Standard: " + selectedStandard);
+    }
+    console.log("Standards Array: "+ this.standardsArray);
+    console.log("Values in the form group: "+ standardsArrayControl.value);
+    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
@@ -5388,6 +5399,6 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onSelectedDataReport(){
-    const selectedDataReport = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.sampleSubmitForm?.get('dataReportSelected')?.value);
+     this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.sampleSubmitForm?.get('dataReportSelected')?.value);
   }
 }

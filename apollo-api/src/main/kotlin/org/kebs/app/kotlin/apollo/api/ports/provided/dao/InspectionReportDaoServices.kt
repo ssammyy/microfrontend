@@ -12,12 +12,11 @@ import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
-import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -69,6 +68,20 @@ class InspectionReportDaoServices(
 
     fun checkIfInspectionReportExists(permitID: Long): ApiResponseModel {
         val qaInspectionReportRecommendation = qaInspectionReportRecommendationRepo.findByPermitId(permitID)
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return if (qaInspectionReportRecommendation != null) {
+            val inspectionReportAllDetails =
+                mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
+            commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
+
+        } else {
+            commonDaoServices.setErrorResponse("Does Not Exist")
+        }
+
+    }
+
+    fun getInspectionReport(inspectionReportId: Long): ApiResponseModel {
+        val qaInspectionReportRecommendation = qaInspectionReportRecommendationRepo.findByIdOrNull(inspectionReportId)
         val map = commonDaoServices.serviceMapDetails(appId)
         return if (qaInspectionReportRecommendation != null) {
             val inspectionReportAllDetails =
@@ -176,6 +189,7 @@ class InspectionReportDaoServices(
                     modifiedBy = commonDaoServices.concatenateName(user)
                     modifiedOn = commonDaoServices.getTimestamp()
                 }
+
                 else -> {
                     createdBy = commonDaoServices.concatenateName(user)
                     createdOn = commonDaoServices.getTimestamp()
@@ -203,10 +217,12 @@ class InspectionReportDaoServices(
             //update technical report
             qaInspectionTechnicalRepo.findByIdOrNull(body.id ?: -1L)
                 ?.let { iTDetails ->
-                    inspectionTechnicalDetails = updateNewInspectionCheckListRecommendation(body, iTDetails, map, loggedInUser)
+                    inspectionTechnicalDetails =
+                        updateNewInspectionCheckListRecommendation(body, iTDetails, map, loggedInUser)
                     inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
                 }
-            val inspectionReportAllDetails = mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
+            val inspectionReportAllDetails =
+                mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
             return commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
 
         } catch (error: Exception) {
@@ -776,7 +792,6 @@ class InspectionReportDaoServices(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitInspectionCheckListDetails(
-        permitID: Long,
         body: AllInspectionDetailsApplyDto
     ): ApiResponseModel {
 
@@ -814,8 +829,8 @@ class InspectionReportDaoServices(
         with(inspection) {
             followPreviousRecommendationsNonConformities = body.followPreviousRecommendationsNonConformities
             recommendations = body.recommendations
-            inspectorComments =body.inspectorComments
-            inspectorName = user.firstName +" "+ user.lastName
+            inspectorComments = body.inspectorComments
+            inspectorName = user.firstName + " " + user.lastName
             inspectorDate = commonDaoServices.getCurrentDate()
 
 //            varField1 = body.documentsID?.let { commonDaoServices.convertClassToJson(it) }
@@ -908,8 +923,11 @@ class InspectionReportDaoServices(
             inspectionReport.supervisorComments,
             inspectionReport.supervisorName,
             inspectionReport.supervisorDate,
+            inspectionReport.permitId?.let { qaDaoServices.findPermitBYID(it) }
+                ?.let { qaDaoServices.permitDetails(it, map) }
 
-            )
+
+        )
     }
 
 
@@ -1073,7 +1091,6 @@ class InspectionReportDaoServices(
             return null
         }
     }
-
 
     fun findAllOperationProcessAndControlsListId(
         inspectionId: Long

@@ -1774,7 +1774,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
 
                                 <a
-                                        *ngIf="allPermitDetails?.permitDetails?.inspectionScheduledStatus && !allPermitDetails?.permitDetails?.inspectionReportGenerated"
+
                                         (click)="generateInspectionReport(allPermitDetails.permitDetails.id)"
                                         class="btn btn-kebs mat-raised-button mat-button-base">GENERATE INSPECTION
                                     REPORT</a>
