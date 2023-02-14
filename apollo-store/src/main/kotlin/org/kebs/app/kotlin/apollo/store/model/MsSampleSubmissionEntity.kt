@@ -126,9 +126,10 @@ class MsSampleSubmissionEntity : Serializable{
     @Basic
     var condition: String? = null
 
-    @Column(name = "REFERENCES_STANDARDS")
-    @Basic
-    var referencesStandards: String? = null
+    @ElementCollection
+    @CollectionTable(name = "REFERENCE_STANDARDS_ARRAY_TABLE", joinColumns = [JoinColumn(name = "ID")])
+    @Column(name = "REFERENCE_STANDARDS_ARRAY")
+    var standardsArray: List<String>? = null
 
     @Column(name = "SENDERS_NAME")
     @Basic

@@ -2820,7 +2820,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the Data report to clone</b></label>
-                                        <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input">
                                         <datalist id="dataReportValueToCloneList">
                                             <option *ngFor="let app of workPlanInspection?.dataReportDto" [value]="app.id">{{app.outletName}}</option>
                                         </datalist>
@@ -3895,11 +3895,11 @@
                                     <tbody>
                                     <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
                                         <td>{{app.fileRefNumber}}</td>
-                                        <td></td>
+                                        <td>{{selectedDataSheet?.outletName}}</td>
                                         <td>{{app.nameProduct}}</td>
                                         <td>{{app.lbIdTradeMark}}</td>
                                         <td>{{app.address}}</td>
-                                        <td></td>
+                                        <td>{{selectedDataSheet?.physicalLocation}}</td>
                                         <td>{{app.lbIdExpiryDate}}</td>
                                         <td>{{app.lbIdBatchNo}}</td>
                                         <td></td>
@@ -3910,7 +3910,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <h4 class="mb-3" style="color: #0066B1">Summary of Siezed Goods</h4>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
 
                             <table class="table table-striped">
                                 <thead>
@@ -4052,7 +4052,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label><b>Select the Seizure Form to clone</b></label>
-                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" #standardsInput>
+                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input">
                                     <datalist id="seizureFormValueToCloneList">
                                         <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
                                     </datalist>
@@ -6099,7 +6099,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the SSF to clone</b></label>
-                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input">
                                         <datalist id="SSFValueToCloneList">
                                             <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
                                         </datalist>
@@ -6118,7 +6118,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the Data Report</b></label>
-                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input">
                                         <datalist id="availableDataReports">
                                             <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
                                         </datalist>
@@ -6128,7 +6128,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <button  mat-raised-button
-                                                 class="btn btn-outline-success"  type="button" >SELECT DATA REPORT
+                                                 class="btn btn-outline-success" (click)="onSelectedDataReport()" type="button" >SELECT DATA REPORT
                                         </button>
                                     </div>
                                 </div>
@@ -6303,7 +6303,7 @@
                                                 <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
                                             </datalist>
                                         </div>
-                                        <button *ngIf="addLabParamStatus" class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
+                                        <button class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
 
 
                                         <!--                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
@@ -6343,7 +6343,7 @@
                                 <div class="w-100" style="border: 1px ridge #ddd">
                                     <ul class="w-100">
                                         <li class="d-flex justify-content-between align-items-center" style="width:70%;" *ngFor="let selectedStandard of standardsArray; let i = index">{{selectedStandard}}
-                                            <button *ngIf="addLabParamStatus" (click)="deleteItem(i)" class="btn btn-sm btn-outline-danger">Remove standard</button>
+                                            <button (click)="deleteItem(i)" class="btn btn-sm btn-outline-danger">Remove standard</button>
                                         </li>
                                     </ul>
                                 </div>
