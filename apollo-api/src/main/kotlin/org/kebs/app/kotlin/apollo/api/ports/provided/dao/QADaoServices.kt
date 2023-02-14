@@ -7248,14 +7248,26 @@ class QADaoServices(
                 ?.forEach { masterInvoiceID ->
                     val userID = user.id ?: throw Exception("INVALID USER ID")
                     var permitMasterInvoiceFound = findPermitMasterInvoiceByID(masterInvoiceID)
-                    val permitDetails = findPermitBYID(permitMasterInvoiceFound.permitId?: throw Exception("MISSING PERMIT ID"))
-                    val permitType = findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
-                    val attachedPermitPlantDetails =
-                        findPlantDetails(permitDetails.attachedPlantId ?: throw Exception("MISSING PLANT DETAILS (ID)"))
-                    val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(
-                        attachedPermitPlantDetails.region ?: throw Exception("MISSING REGION ID"),
-                        permitType.id ?: throw Exception("MISSING REGION ID")
-                    )
+                    var paymentRevenueCode: PaymentRevenueCodesEntity
+                    paymentRevenueCode = when {
+                        permitMasterInvoiceFound.varField10?.toInt()==1 -> {
+                            val plantDetails = findPlantDetails(permitMasterInvoiceFound.varField8?.toLong()?: throw Exception("MISSING PLANT DETAILS (ID)"))
+                            val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdSmark)
+                            findPaymentRevenueWithRegionIDAndPermitType(
+                                plantDetails.region ?: throw Exception("MISSING REGION ID"),
+                                permitType.id ?: throw Exception("MISSING REGION ID")
+                            )
+                        }
+                        else -> {
+                            val permitDetails = findPermitBYID(permitMasterInvoiceFound.permitId?: throw Exception("MISSING PERMIT ID"))
+                            val permitType = findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+                            val attachedPermitPlantDetails = findPlantDetails(permitDetails.attachedPlantId ?: throw Exception("MISSING PLANT DETAILS (ID)"))
+                            findPaymentRevenueWithRegionIDAndPermitType(
+                                attachedPermitPlantDetails.region ?: throw Exception("MISSING REGION ID"),
+                                permitType.id ?: throw Exception("MISSING REGION ID")
+                            )
+                        }
+                    }
 
                     invoiceQaBatchRepo.findByIdOrNull(batchID)
                         ?.let { invoiceDetails ->
@@ -7349,6 +7361,7 @@ class QADaoServices(
 
                             //Create details to batch invoice for all transactions at kebs main Staging table
                         }
+
 
                     batchID = invoiceBatchDetails?.id!!
 

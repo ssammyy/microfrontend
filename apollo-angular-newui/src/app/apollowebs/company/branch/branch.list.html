@@ -132,12 +132,18 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <form  action="" class="form" enctype="multipart/form-data" method="post">
+                        <form [formGroup]="uploadInspection" action="" class="form" enctype="multipart/form-data" method="post">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
+                                        <label><b>Paid Date:</b></label>
+                                        <mat-form-field class="example-full-width">
+                                            <input formControlName="userPaidDate" id="userPaidDate"
+                                                   matInput name="userPaidDate"
+                                                   placeholder="Please enter paid Date"
+                                                   type="date">
+                                        </mat-form-field>
                                         <label for="files"><b>Upload Documents Here</b></label>
-
                                         <form #demoForm="ngForm">
                                             <file-upload [(ngModel)]="uploadedFilesOnly" name="files" id="files"
                                                          fileslimit="1" accept=".pdf"></file-upload>
@@ -154,6 +160,7 @@
                     </button>
                     <button *ngIf="(currDiv == 'uploadInspectionReport')" mat-raised-button type="button" class="btn btn-success"
                             (click)="onClickUploadInspectionFee(selectedBranch);"
+                            [disabled]="!uploadInspection.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

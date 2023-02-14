@@ -159,10 +159,13 @@ class QaInvoiceCalculationDaoServices(
             }
         }
 
-        if(upgardeType){
-            invoiceMaster = calculateTotalInvoiceAmountToPayAfterUpGarde(invoiceMaster, permitType, user)
-        }else{
-            invoiceMaster = calculateTotalInvoiceAmountToPayAfterDownGarde(invoiceMaster, permitType, user)
+        invoiceMaster = when {
+            upgardeType -> {
+                calculateTotalInvoiceAmountToPayAfterUpGarde(invoiceMaster, permitType, user)
+            }
+            else -> {
+                calculateTotalInvoiceAmountToPayAfterDownGarde(invoiceMaster, permitType, user)
+            }
         }
 
 
@@ -214,7 +217,14 @@ class QaInvoiceCalculationDaoServices(
                 invoiceDetailsList.forEach { invoice ->
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
-                            totalAmountPayable = invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                            totalAmountPayable = when (invoice.itemAmount) {
+                                BigDecimal.ZERO -> {
+                                    masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                }
+                                else -> {
+                                    invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                                }
+                            }
                     }
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
@@ -245,7 +255,14 @@ class QaInvoiceCalculationDaoServices(
                 invoiceDetailsList.forEach { invoice ->
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
-                            totalAmountPayable = masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                            totalAmountPayable = when (masterInvoicePrevious.subTotalBeforeTax) {
+                                BigDecimal.ZERO -> {
+                                    invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                }
+                                else -> {
+                                    masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                                }
+                            }
                     }
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
@@ -413,6 +430,7 @@ class QaInvoiceCalculationDaoServices(
         with(invoiceMaster) {
             description = invoiceDetailsInspectionFee.itemDescName
             varField9 = "${invoiceDetailsInspectionFee.itemDescName} :${plantDetail.branchName}"
+            varField8 = plantDetail.id.toString()
             modifiedOn = Timestamp.from(Instant.now())
             modifiedBy = commonDaoServices.concatenateName(user)
         }

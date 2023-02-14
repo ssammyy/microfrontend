@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerResponse
 import java.io.ByteArrayInputStream
 import java.math.BigDecimal
+import java.sql.Date
 import javax.servlet.http.HttpServletResponse
 
 
@@ -75,6 +76,7 @@ class QualityAssuranceJSONControllers(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateWorkPlanDestructionReportUpload(
         @RequestParam("branchID") branchID: Long,
+        @RequestParam("userPaidDate") userPaidDate: Date,
         @RequestParam("docFile") docFile: MultipartFile,
         model: Model
     ) {
@@ -97,10 +99,10 @@ class QualityAssuranceJSONControllers(
                     varField9 = fileDoc.id.toString()
                     inspectionFeeStatus = 1
                     invoiceInspectionGenerated = 1
-                    paidDate = commonDaoServices.getCurrentDate()
-                    endingDate = commonDaoServices.getCalculatedDate(30)
-//                    paidDate = commonDaoServices.getCurrentDate()
-//                    endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+                    paidDate = userPaidDate
+//                    endingDate = commonDaoServices.getCalculatedDate(30)
+////                    paidDate = commonDaoServices.getCurrentDate()
+                    endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
                 }
                 manufacturePlantRepository.save(branchDetails)
 //                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")

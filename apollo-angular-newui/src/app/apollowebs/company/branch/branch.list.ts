@@ -28,6 +28,7 @@ export class BranchList implements OnInit {
   branches$: Observable<Branches[]>;
   filterName = '';
   stepTwoForm!: FormGroup;
+  uploadInspection: FormGroup;
   stepThreeForm!: FormGroup;
   // @ts-ignore
   branch: Branches;
@@ -142,6 +143,7 @@ export class BranchList implements OnInit {
       const file = this.uploadedFilesOnly;
       const formData = new FormData();
       formData.append('branchID', String(record.id));
+      formData.append('userPaidDate', String(this.uploadInspection.get('userPaidDate').value));
       for (let i = 0; i < file.length; i++) {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
