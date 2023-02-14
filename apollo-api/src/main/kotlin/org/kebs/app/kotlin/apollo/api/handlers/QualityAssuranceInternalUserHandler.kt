@@ -316,6 +316,23 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+    fun getInspectionReport(req: ServerRequest): ServerResponse {
+        return try {
+            val inspectionReportId =
+                req.paramOrNull("inspectionReportId")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+
+            inspectionReportDaoServices.getInspectionReport(inspectionReportId)
+                .let {
+                    ok().body(it)
+                }
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
 
     fun updatePermitDetailsInspectionCheckListNew(req: ServerRequest): ServerResponse {
@@ -552,17 +569,12 @@ class QualityAssuranceInternalUserHandler(
 
     fun updatePermitInspectionCheckListDetails(req: ServerRequest): ServerResponse {
         return try {
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val inspectionReportRecommendationID = req.paramOrNull("inspectionReportRecommendationID")?.toLong()
-                ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-
-            val body = req.body<AllInspectionDetailsApplyDto>()
+             val body = req.body<AllInspectionDetailsApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, AllInspectionDetailsApplyDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    inspectionReportDaoServices.updatePermitInspectionCheckListDetails(permitID, body)
+                    inspectionReportDaoServices.updatePermitInspectionCheckListDetails( body)
                         .let {
                             ok().body(it)
                         }

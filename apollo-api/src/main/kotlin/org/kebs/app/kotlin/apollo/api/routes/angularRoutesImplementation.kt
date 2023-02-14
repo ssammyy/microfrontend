@@ -667,6 +667,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                                 "/check_if_inspection_report_exists",
                                 internalUserhandler::checkIfInspectionReportExists
                             )
+                            GET("/getInspectionReport", internalUserhandler::getInspectionReport)
                             POST(
                                 "/new-technical-report",
                                 internalUserhandler::updatePermitDetailsInspectionCheckListNew

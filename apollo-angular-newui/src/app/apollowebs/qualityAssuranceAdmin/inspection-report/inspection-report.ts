@@ -641,7 +641,7 @@ export class InspectionReport implements OnInit {
             this.loading = true
             this.loadingText = "Saving Recommendations"
             this.SpinnerService.show();
-            this.internalService.updateInspectionReportHaccp(this.permitId, String(this.allInspectionReportDetails.id), this.haccpImplementationDetailsApplyFormGroup.value).subscribe(
+            this.internalService.recommendationsSave(this.permitId, String(this.allInspectionReportDetails.id), this.recommendationsFormGroup.value).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
@@ -744,8 +744,8 @@ export class InspectionReport implements OnInit {
 
     }
 
-    goToInspectionReportPage() {
-        var text = this.allInspectionReportDetails.id;
+    goToInspectionReportPage(inspectionReportId: string) {
+        var text = inspectionReportId;
         var key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);

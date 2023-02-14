@@ -55,6 +55,16 @@ export class PermitEntityDto {
     divisionValue: string;
     sectionValue: string;
     permitAwardStatus: boolean;
+
+    postalAddress:string;
+    telephoneNo:string;
+
+    commodityDescription:string;
+
+    brandName:string;
+
+    standardNumber:string;
+
     permitExpiredStatus: boolean;
     taskID: bigint;
     companyId: bigint;
@@ -643,13 +653,13 @@ export class FilterDto {
 }
 
 export class AllInspectionDetailsApplyDto {
-    id: number;
+    id: bigint;
     technicalDetailsDto: TechnicalDetailsDto;
     inspectionDetailsDto: InspectionDetailsDto;
     inspectionDetailsDtoB: InspectionDetailsDtoB;
     productLabelling: ProductLabellingDto[];
 
-    standardizationMarkScheme:StandardizationMarkSchemeDto
+    standardizationMarkScheme: StandardizationMarkSchemeDto
     operationProcessAndControls: OperationProcessAndControlsDetailsApplyDto[];
     haccpImplementationDetails: HaccpImplementationDetailsApplyDto;
     followPreviousRecommendationsNonConformities: string;
@@ -661,6 +671,8 @@ export class AllInspectionDetailsApplyDto {
     supervisorComments: string;
     supervisorName: string;
     supervisorDate: Date;
+
+    permitDetails:PermitEntityDto;
 }
 
 
