@@ -112,7 +112,8 @@ class QaInvoiceCalculationDaoServices(
         user: UsersEntity,
         manufactureTurnOver: BigDecimal,
         productNumber: Long,
-        plantDetail: ManufacturePlantDetailsEntity
+        plantDetail: ManufacturePlantDetailsEntity,
+        upgardeType: Boolean
     ): QaInvoiceMasterDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("INVALID PERMIT TYPE ID"))
@@ -158,8 +159,13 @@ class QaInvoiceCalculationDaoServices(
             }
         }
 
+        if(upgardeType){
+            invoiceMaster = calculateTotalInvoiceAmountToPayAfterUpGarde(invoiceMaster, permitType, user)
+        }else{
+            invoiceMaster = calculateTotalInvoiceAmountToPayAfterDownGarde(invoiceMaster, permitType, user)
+        }
 
-        invoiceMaster = calculateTotalInvoiceAmountToPayAfterUpGarde(invoiceMaster, permitType, user)
+
 
 
         KotlinLogging.logger { }.info { "invoice Master total Amount = ${invoiceMaster.totalAmount}" }
@@ -209,6 +215,37 @@ class QaInvoiceCalculationDaoServices(
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
                             totalAmountPayable = invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                    }
+                }
+            } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
+
+        val totalAmountTaxPayable = totalAmountPayable.multiply(permitType.taxRate)
+
+        with(invoiceMaster) {
+            varField10 = 1.toString()
+            paymentStatus = 0
+            taxAmount = totalAmountTaxPayable
+            subTotalBeforeTax = totalAmountPayable
+            totalAmount = totalAmountPayable.plus(totalAmountTaxPayable)
+            modifiedOn = Timestamp.from(Instant.now())
+            modifiedBy = commonDaoServices.concatenateName(user)
+        }
+
+        return qaInvoiceMasterDetailsRepo.save(invoiceMaster)
+    }
+
+    fun calculateTotalInvoiceAmountToPayAfterDownGarde(
+        invoiceMaster: QaInvoiceMasterDetailsEntity,
+        permitType: PermitTypesEntity,
+        user: UsersEntity
+    ): QaInvoiceMasterDetailsEntity {
+        var totalAmountPayable: BigDecimal = BigDecimal.ZERO
+        qaInvoiceDetailsRepo.findByInvoiceMasterId(invoiceMaster.id)
+            ?.let { invoiceDetailsList ->
+                invoiceDetailsList.forEach { invoice ->
+                    qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
+                        ?.let {masterInvoicePrevious->
+                            totalAmountPayable = masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
                     }
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
@@ -350,6 +387,7 @@ class QaInvoiceCalculationDaoServices(
             invoiceRef = "KIMSREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             generatedDate = Timestamp.from(Instant.now())
             itemCount = 1
+            varField10 = 1.toString()
             status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)
@@ -374,6 +412,7 @@ class QaInvoiceCalculationDaoServices(
 
         with(invoiceMaster) {
             description = invoiceDetailsInspectionFee.itemDescName
+            varField9 = "${invoiceDetailsInspectionFee.itemDescName} :${plantDetail.branchName}"
             modifiedOn = Timestamp.from(Instant.now())
             modifiedBy = commonDaoServices.concatenateName(user)
         }
@@ -386,6 +425,9 @@ class QaInvoiceCalculationDaoServices(
             tokenGiven = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             invoiceSharedId = invoiceDetailsInspectionFee.id
             inspectionFeeStatus = 0
+            invoiceInspectionGenerated = 1
+            paidDate = commonDaoServices.getCurrentDate()
+            endingDate = commonDaoServices.getCalculatedDate(30)
 //            paidDate = commonDaoServices.getCurrentDate()
 //            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
         }

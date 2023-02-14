@@ -16,9 +16,11 @@ import {
     InspectionReportProcessStepDto,
     OperationProcessAndControlsDetailsApplyDto,
     ProductLabellingDto,
+    StandardizationMarkSchemeDto,
     TechnicalDetailsDto
 } from "../../../core/store/data/qa/qa.model";
 import {ApiResponseModel} from "../../../core/store/data/ms/ms.model";
+import {NotificationService} from "../../../core/store/data/std/notification.service";
 
 declare const $: any;
 
@@ -49,16 +51,31 @@ export class InspectionReport implements OnInit {
     technicalForm: FormGroup;
     inspectionDetails: FormGroup;
     inspectionDetailsB: FormGroup;
+
+    standardizationMarkSchemeFormGroup: FormGroup;
+
     productLabelling: FormGroup;
     operationProcessAndControlsDetailsApply: FormGroup;
-    haccpImplementationDetailsApply: FormGroup;
+    haccpImplementationDetailsApplyFormGroup: FormGroup;
+
+    recommendationsFormGroup: FormGroup;
+
 
     technicalDetails: TechnicalDetailsDto;
     inspectionDetailsDto: InspectionDetailsDto
 
     inspectionDetailsDtoB: InspectionDetailsDtoB
     productLabellingDto: ProductLabellingDto
+
+    productLabellingDtos: ProductLabellingDto[] = [];
+
+    standardizationMarkSchemeDto: StandardizationMarkSchemeDto
+
     operationProcessAndControlsDetailsApplyDto: OperationProcessAndControlsDetailsApplyDto
+
+    operationProcessAndControlsDetailsDtos: OperationProcessAndControlsDetailsApplyDto[] = [];
+
+
     haccpImplementationDetailsApplyDto: HaccpImplementationDetailsApplyDto
 
     inspectionReportProcessStep: InspectionReportProcessStepDto | undefined;
@@ -72,6 +89,7 @@ export class InspectionReport implements OnInit {
                 private route: ActivatedRoute,
                 private store$: Store<any>,
                 private qaService: QaService,
+                private notifyService: NotificationService,
                 private SpinnerService: NgxSpinnerService,
                 private internalService: QaInternalService,
     ) {
@@ -102,6 +120,8 @@ export class InspectionReport implements OnInit {
 
         });
         this.inspectionDetails = this.formBuilder.group({
+            id: [''],
+            inspectionRecommendationId: [''],
             complianceApplicableStatutory: ['', Validators.required],
             complianceApplicableStatutoryRemarks: ['', Validators.required],
             plantHouseKeeping: ['', Validators.required],
@@ -115,6 +135,8 @@ export class InspectionReport implements OnInit {
         });
 
         this.inspectionDetailsB = this.formBuilder.group({
+            id: [''],
+            inspectionRecommendationId: [''],
             equipmentCalibration: ['', Validators.required],
             equipmentCalibrationRemarks: ['', Validators.required],
             qualityRecords: ['', Validators.required],
@@ -123,25 +145,42 @@ export class InspectionReport implements OnInit {
             recordsNonconformingRemarks: ['', Validators.required],
             productRecallRecords: ['', Validators.required],
             productRecallRecordsRemarks: ['', Validators.required],
-            productLabelling: ['', Validators.required],
 
         });
 
         this.productLabelling = this.formBuilder.group({
-            standardMarking: ['', Validators.required],
-            findings: ['', Validators.required],
+            standardMarking: [''],
+            findings: [''],
+            statusOfCompliance: ['']
+        });
+
+        this.standardizationMarkSchemeFormGroup = this.formBuilder.group({
+            id: [''],
+            inspectionRecommendationId: [''],
+            validitySmarkPermit: ['', Validators.required],
+            validitySmarkPermitRemarks: ['', Validators.required],
+            useTheSmark: ['', Validators.required],
+            useTheSmarkRemarks: ['', Validators.required],
+            changesAffectingProductCertification: ['', Validators.required],
+            changesAffectingProductCertificationRemarks: ['', Validators.required],
+            changesBeenCommunicatedKebs: ['', Validators.required],
+            changesBeenCommunicatedKebsRemarks: ['', Validators.required],
+            samplesDrawn: ['', Validators.required],
+            samplesDrawnRemarks: ['', Validators.required],
+
         });
 
         this.operationProcessAndControlsDetailsApply = this.formBuilder.group({
-            processFlow: ['', Validators.required],
-            operations: ['', Validators.required],
-            qualityChecks: ['', Validators.required],
-            frequency: ['', Validators.required],
-            records: ['', Validators.required],
-            findings: ['', Validators.required],
+            processFlow: [''],
+            qualityChecks: [''],
+            frequency: [''],
+            records: [''],
+            findings: [''],
         });
 
-        this.haccpImplementationDetailsApply = this.formBuilder.group({
+        this.haccpImplementationDetailsApplyFormGroup = this.formBuilder.group({
+            id: [''],
+            inspectionRecommendationId: [''],
             designFacilitiesConstructionLayout: ['', Validators.required],
             designFacilitiesConstructionLayoutRemarks: ['', Validators.required],
             maintenanceSanitationCleaningPrograms: ['', Validators.required],
@@ -158,6 +197,15 @@ export class InspectionReport implements OnInit {
 
         });
 
+        this.recommendationsFormGroup = this.formBuilder.group((
+            {
+                id: [''],
+                followPreviousRecommendationsNonConformities: ['', Validators.required],
+                recommendations: ['', Validators.required],
+                inspectorComments: ['', Validators.required],
+
+            }
+        ))
 
     }
 
@@ -237,13 +285,15 @@ export class InspectionReport implements OnInit {
     }
 
     get formHaccpImplementationDetailsApply(): any {
-        return this.haccpImplementationDetailsApply.controls;
+        return this.haccpImplementationDetailsApplyFormGroup.controls;
     }
 
 
     onClickSaveInspectionReportTechnicalDetails(valid: boolean) {
         if (valid) {
             if (this.technicalDetails == null || this.setCloned == true) {
+                this.loading = true
+                this.loadingText = "Saving Technical Report"
                 this.SpinnerService.show();
                 this.internalService.saveInspectionReportTechnicalDetails(this.permitId, this.technicalForm.value).subscribe(
                     (data: ApiResponseModel) => {
@@ -252,6 +302,7 @@ export class InspectionReport implements OnInit {
 
                             this.technicalDetails = this.allInspectionReportDetails.technicalDetailsDto;
                             this.SpinnerService.hide();
+                            this.loading = false
                             //(data);
                             this.step += 1;
                             this.currBtn = 'B';
@@ -265,19 +316,23 @@ export class InspectionReport implements OnInit {
                             });
                         } else {
                             this.SpinnerService.hide();
+                            this.loading = false
                             this.qaService.showError(data.message);
                         }
                     },
                 );
             } else {
 
-
+                this.loading = true
+                this.loadingText = "Updating Technical Report"
                 this.SpinnerService.show();
                 this.technicalForm.controls['id'].setValue(this.technicalDetails.id);
                 this.internalService.saveInspectionReportTechnicalDetails(String(this.permitId), this.technicalForm.value).subscribe(
                     (data) => {
                         this.technicalDetails = data;
                         this.step += 1;
+                        this.loading = false
+
                         this.SpinnerService.hide();
                         //(data);
                         swal.fire({
@@ -292,6 +347,325 @@ export class InspectionReport implements OnInit {
                 );
             }
         }
+    }
+
+    onClickUpdateInspectionReportTechnicalDetails(valid: boolean) {
+        if (valid) {
+            this.loading = true
+            this.loadingText = "Updating Technical Report"
+            this.SpinnerService.show();
+            this.inspectionDetails.controls['id'].setValue(this.allInspectionReportDetails.technicalDetailsDto.id)
+            this.inspectionDetails.controls['inspectionRecommendationId'].setValue(this.allInspectionReportDetails.id)
+            this.internalService.updateInspectionReportTechnicalDetails(this.permitId, this.inspectionDetails.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+
+                        this.inspectionDetailsDto = this.allInspectionReportDetails.inspectionDetailsDto;
+                        this.SpinnerService.hide();
+                        this.loading = false
+                        //(data);
+                        this.step += 1;
+                        this.currBtn = 'B';
+                        swal.fire({
+                            title: 'Technical Report Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+            );
+        }
+
+    }
+
+    onClickUpdateInspectionReportTechnicalDetailsB(valid: boolean) {
+        if (valid) {
+            this.loading = true
+            this.loadingText = "Updating Technical Report"
+            this.SpinnerService.show();
+            this.inspectionDetailsB.controls['id'].setValue(this.allInspectionReportDetails.technicalDetailsDto.id)
+            this.inspectionDetailsB.controls['inspectionRecommendationId'].setValue(this.allInspectionReportDetails.id)
+            this.internalService.updateInspectionReportTechnicalDetailsB(this.permitId, this.inspectionDetailsB.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+
+                        this.inspectionDetailsDtoB = this.allInspectionReportDetails.inspectionDetailsDtoB;
+                        this.SpinnerService.hide();
+                        this.loading = false
+                        //(data);
+                        this.step += 1;
+                        this.currBtn = 'B';
+                        swal.fire({
+                            title: 'Technical Report Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+            );
+        }
+
+    }
+
+    onClickSaveProductLabelling(valid: boolean) {
+        if (valid) {
+            this.loading = true
+
+            if (this.productLabellingDtos.length > 0) {
+                this.SpinnerService.show();
+                //(this.sta10Details.id.toString());
+                this.internalService.updateInspectionReportProductLabelling(this.permitId, this.allInspectionReportDetails.id.toString(), this.productLabellingDtos).subscribe(
+                    (data) => {
+                        this.productLabellingDtos = data;
+                        this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
+                        this.loading = false
+                        swal.fire({
+                            title: 'Product Labelling Details Saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                this.loading = false
+
+                swal.fire({
+                    title: 'Product Labelling Details missing!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'error'
+                });
+            }
+        }
+    }
+
+    onClickAddProductLabelling() {
+        if (this.productLabelling?.get('standardMarking')?.value == null) {
+            this.showToasterError("Error", "Please Enter Standard Marking")
+        } else if (this.productLabelling?.get('findings')?.value == null) {
+            this.showToasterError("Error", "Please Enter Findings")
+        } else if (this.productLabelling?.get('statusOfCompliance')?.value == null) {
+            this.showToasterError("Error", "Please Enter Compliance Status")
+        } else {
+
+
+            this.productLabellingDto = this.productLabelling.value;
+            this.productLabellingDtos.push(this.productLabellingDto);
+            this.productLabelling?.get('standardMarking')?.reset();
+            this.productLabelling?.get('findings')?.reset();
+            this.productLabelling?.get('statusOfCompliance')?.reset();
+            console.log(this.productLabellingDtos.length)
+        }
+        // this.sta10FormA.reset();
+    }
+
+    removeProductLabelling(index) {
+        //(index);
+        if (index === 0) {
+            this.productLabellingDtos.splice(index, 1);
+        } else {
+            this.productLabellingDtos.splice(index, index);
+        }
+    }
+
+
+    onClickUpdateStandardizationMarkScheme(valid: boolean) {
+        if (valid) {
+            this.loading = true
+            this.loadingText = "Updating Standardization Mark Scheme"
+            this.SpinnerService.show();
+            this.standardizationMarkSchemeFormGroup.controls['inspectionRecommendationId'].setValue(this.allInspectionReportDetails.id)
+            this.internalService.updateInspectionReportStandardization(this.permitId, this.standardizationMarkSchemeFormGroup.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+
+                        this.standardizationMarkSchemeDto = this.allInspectionReportDetails.standardizationMarkScheme;
+                        this.SpinnerService.hide();
+                        this.loading = false
+                        //(data);
+                        this.step += 1;
+                        this.currBtn = 'B';
+                        swal.fire({
+                            title: 'Standardization Mark Scheme Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+            );
+        }
+
+    }
+
+
+    onClickSaveOperationProcess(valid: boolean) {
+        if (valid) {
+            this.loading = true
+
+            if (this.operationProcessAndControlsDetailsDtos.length > 0) {
+                this.SpinnerService.show();
+                //(this.sta10Details.id.toString());
+                this.internalService.updateInspectionReportOperation(this.permitId, this.allInspectionReportDetails.id.toString(), this.operationProcessAndControlsDetailsDtos).subscribe(
+                    (data) => {
+                        this.operationProcessAndControlsDetailsDtos = data;
+                        this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
+                        this.loading = false
+                        swal.fire({
+                            title: 'Operations Process And Control Details Saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                this.loading = false
+
+                swal.fire({
+                    title: 'Operations Process And Control Details missing!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'error'
+                });
+            }
+        }
+    }
+
+    onClickAddOperationProcess() {
+        if (this.operationProcessAndControlsDetailsApply?.get('processFlow')?.value == null) {
+            this.showToasterError("Error", "Please Enter Process Flow")
+        } else if (this.operationProcessAndControlsDetailsApply?.get('qualityChecks')?.value == null) {
+            this.showToasterError("Error", "Please Enter Quality Checks")
+        } else if (this.operationProcessAndControlsDetailsApply?.get('frequency')?.value == null) {
+            this.showToasterError("Error", "Please Enter Frequency")
+        } else if (this.operationProcessAndControlsDetailsApply?.get('records')?.value == null) {
+            this.showToasterError("Error", "Please Enter Records")
+        } else if (this.operationProcessAndControlsDetailsApply?.get('findings')?.value == null) {
+            this.showToasterError("Error", "Please Enter Findings")
+        } else {
+
+
+            this.operationProcessAndControlsDetailsApplyDto = this.operationProcessAndControlsDetailsApply.value;
+            this.operationProcessAndControlsDetailsDtos.push(this.operationProcessAndControlsDetailsApplyDto);
+            this.operationProcessAndControlsDetailsApply?.get('processFlow')?.reset();
+            this.operationProcessAndControlsDetailsApply?.get('qualityChecks')?.reset();
+            this.operationProcessAndControlsDetailsApply?.get('frequency')?.reset();
+            this.operationProcessAndControlsDetailsApply?.get('records')?.reset();
+            this.operationProcessAndControlsDetailsApply?.get('findings')?.reset();
+
+            console.log(this.productLabellingDtos.length)
+        }
+        // this.sta10FormA.reset();
+    }
+
+    removeOperationProcess(index) {
+        //(index);
+        if (index === 0) {
+            this.operationProcessAndControlsDetailsDtos.splice(index, 1);
+        } else {
+            this.operationProcessAndControlsDetailsDtos.splice(index, index);
+        }
+    }
+
+
+    onClickHaccpImplementation(valid: boolean) {
+        if (valid) {
+            this.loading = true
+            this.loadingText = "Updating Haccp Implementation"
+            this.SpinnerService.show();
+            this.haccpImplementationDetailsApplyFormGroup.controls['inspectionRecommendationId'].setValue(this.allInspectionReportDetails.id)
+            this.internalService.updateInspectionReportHaccp(this.permitId, String(this.allInspectionReportDetails.id), this.haccpImplementationDetailsApplyFormGroup.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+
+                        this.standardizationMarkSchemeDto = this.allInspectionReportDetails.standardizationMarkScheme;
+                        this.SpinnerService.hide();
+                        this.loading = false
+                        //(data);
+                        this.step += 1;
+                        this.currBtn = 'B';
+                        swal.fire({
+                            title: 'Haccp Implementation Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+            );
+        }
+
+    }
+
+
+    onClickRecommendationSave(valid: boolean) {
+        if (valid) {
+            this.loading = true
+            this.loadingText = "Saving Recommendations"
+            this.SpinnerService.show();
+            this.internalService.updateInspectionReportHaccp(this.permitId, String(this.allInspectionReportDetails.id), this.haccpImplementationDetailsApplyFormGroup.value).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+                        this.SpinnerService.hide();
+                        this.loading = false
+                        //(data);
+                        this.step += 1;
+                        this.currBtn = 'B';
+                        swal.fire({
+                            title: 'Recommendations Saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+            );
+        }
+
     }
 
 
@@ -325,10 +699,60 @@ export class InspectionReport implements OnInit {
 
 
     private checkIfInspectionReportExists(permitId: string) {
-        if(permitId)
-        {
+        if (permitId) {
 
+            this.internalService.checkIfInspectionReportExists(this.permitId).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+                        this.technicalDetails = this.allInspectionReportDetails.technicalDetailsDto;
+                        this.technicalForm.patchValue(this.technicalDetails);
+
+                        this.inspectionDetailsDto = this.allInspectionReportDetails.inspectionDetailsDto
+                        this.inspectionDetails.patchValue(this.inspectionDetailsDto);
+
+                        this.inspectionDetailsDtoB = this.allInspectionReportDetails.inspectionDetailsDtoB
+                        this.inspectionDetailsB.patchValue(this.inspectionDetailsDtoB);
+
+
+                        this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
+
+                        this.standardizationMarkSchemeDto = this.allInspectionReportDetails.standardizationMarkScheme
+                        this.standardizationMarkSchemeFormGroup.patchValue(this.standardizationMarkSchemeDto);
+
+                        this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
+
+                        this.haccpImplementationDetailsApplyDto = this.allInspectionReportDetails.haccpImplementationDetails
+                        this.haccpImplementationDetailsApplyFormGroup.patchValue(this.haccpImplementationDetailsApplyDto);
+
+                        this.recommendationsFormGroup.patchValue(this.allInspectionReportDetails);
+
+
+
+
+                        console.log(this.allInspectionReportDetails)
+
+                    }
+                },
+            );
         }
+
+    }
+
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
+
+    }
+
+    goToInspectionReportPage() {
+        var text = this.allInspectionReportDetails.id;
+        var key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        console.log('encrypted', encrypted);
+        this.router.navigate(['/inspection-report',encrypted])
 
     }
 }

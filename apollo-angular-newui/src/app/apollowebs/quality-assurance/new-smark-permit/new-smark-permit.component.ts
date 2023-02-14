@@ -1072,14 +1072,6 @@ export class NewSmarkPermitComponent implements OnInit {
         // this.SelectedSectionId = Selectedfood;
     }
 
-    // Renewal
-    id: any = "New Applications";
-
-    tabChange(ids: any) {
-        this.id = ids;
-        console.log(this.id);
-    }
-
     setClonedMethod() {
         this.hideCloneButton = true;
     }

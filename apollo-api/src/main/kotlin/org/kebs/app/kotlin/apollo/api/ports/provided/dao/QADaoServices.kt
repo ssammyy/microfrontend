@@ -1428,6 +1428,7 @@ class QADaoServices(
             return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
         }
     }
+
     fun saveSSFQADetails(
         body: SSFDetailsApplyDto,
         inspection: QaSampleSubmissionEntity,
@@ -1458,6 +1459,8 @@ class QADaoServices(
         }
         return inspection
     }
+
+
     fun getBatchID(permit: PermitApplicationsEntity, map: ServiceMapsEntity, permitID: Long): Long? {
         var batchID: Long? = null
         when (permit.sendApplication) {
@@ -1623,20 +1626,55 @@ class QADaoServices(
                     entity.firmCategory == 2L && dto.selectedFirmTypeID > 2 -> {
                         entity.upgradeType = 1
                     }
+                    entity.firmCategory == 3L && dto.selectedFirmTypeID < 3 -> {
+                        entity.upgradeType = 0
+                    }
+                    entity.firmCategory == 2L && dto.selectedFirmTypeID < 2 -> {
+                        entity.upgradeType = 0
+                    }
                 }
 
-                if(entity.upgradeType == 1){
-                  val allPermitdetails =  permitRepo.findByPermitTypeAndCompanyIdAndInvoiceGeneratedAndInvoiceDifferenceGeneratedIsNullAndPermitAwardStatusIsNullAndVarField9IsNullAndOldPermitStatusIsNull(
-                        applicationMapProperties.mapQAPermitTypeIdSmark,entity.id?: throw Exception("MISSING COMAPANY ID"),1)
-                    allPermitdetails?.forEach { pm->
-                        with(pm) {
-                            sendApplication = 1
-                            varField9 = 1.toString()
-                            userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
-                            permitStatus = applicationMapProperties.mapQaStatusPManufactureGenerateDifference
+                when (entity.upgradeType) {
+                    1 -> {
+                        val allPermitDetailsSage =  permitRepo.findAllPermitsSentToSageDetails(
+                            applicationMapProperties.mapQAPermitTypeIdSmark,entity.id?: throw Exception("MISSING COMAPANY ID"),1)
+                        allPermitDetailsSage?.forEach { pm->
+                            with(pm) {
+                                sendApplication = 1
+                                varField9 = 1.toString()
+                                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                                permitStatus = applicationMapProperties.mapQaStatusPManufactureGenerateDifference
+                            }
+                            //updating of Details in DB
+                            val updateResults = permitUpdateDetails(pm, map, user)
                         }
-                        //updating of Details in DB
-                        val updateResults = permitUpdateDetails(pm, map, user)
+
+                        val allPermitDetailsNotSage =  permitRepo.findAllPermitsNotSentToSageDetails(
+                            applicationMapProperties.mapQAPermitTypeIdSmark,entity.id?: throw Exception("MISSING COMAPANY ID"),1)
+                        allPermitDetailsNotSage?.forEach { pm->
+                            with(pm) {
+                                sendApplication = 1
+                                varField8 = 1.toString()
+                                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                                permitStatus = applicationMapProperties.mapQaStatusPManufactureReGenerateInvoice
+                            }
+                            //updating of Details in DB
+                            val updateResults = permitUpdateDetails(pm, map, user)
+                        }
+                    }
+                    0 -> {
+                        val allPermitDetails =  permitRepo.findAllPermitsNotSentToSageDetails(
+                            applicationMapProperties.mapQAPermitTypeIdSmark,entity.id?: throw Exception("MISSING COMAPANY ID"),1)
+                        allPermitDetails?.forEach { pm->
+                            with(pm) {
+                                sendApplication = 1
+                                varField8 = 1.toString()
+                                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                                permitStatus = applicationMapProperties.mapQaStatusPManufactureReGenerateInvoice
+                            }
+                            //updating of Details in DB
+                            val updateResults = permitUpdateDetails(pm, map, user)
+                        }
                     }
                 }
 
@@ -1763,7 +1801,6 @@ class QADaoServices(
                         dto.upgradeType -> {
                             1
                         }
-
                         else -> {
                             0
                         }
@@ -1817,7 +1854,7 @@ class QADaoServices(
         branchID: Long,
         user: UsersEntity,
         map: ServiceMapsEntity,
-    ): Pair<BatchInvoiceDto,ManufacturePlantDetailsEntity> {
+    ): Pair<String,ManufacturePlantDetailsEntity> {
 
         companyProfileRepo.findByIdOrNull(user.companyId)
             ?.let { entity ->
@@ -1836,61 +1873,61 @@ class QADaoServices(
                     permitType.id ?: throw Exception("MISSING REGION ID")
                 )
 
-                var batchInvoiceInspection = QaBatchInvoiceEntity()
-                with(batchInvoiceInspection) {
-                    invoiceNumber = applicationMapProperties.mapInvoicesPrefix + generateRandomText(
-                        5,
-                        map.secureRandom,
-                        map.messageDigestAlgorithm,
-                        true
-                    ).toUpperCase()
-                    userId = user.id
-                    plantId = branchID
-                    status = map.activeStatus
-                    description = "${inspectionInvoiceFound.invoiceRef}"
-                    totalAmount = inspectionInvoiceFound.totalAmount
-                    totalTaxAmount = inspectionInvoiceFound.taxAmount
-                    createdBy = commonDaoServices.concatenateName(user)
-                    createdOn = commonDaoServices.getTimestamp()
-                }
-                batchInvoiceInspection = invoiceQaBatchRepo.save(batchInvoiceInspection)
+//                var batchInvoiceInspection = QaBatchInvoiceEntity()
+//                with(batchInvoiceInspection) {
+//                    invoiceNumber = applicationMapProperties.mapInvoicesPrefix + generateRandomText(
+//                        5,
+//                        map.secureRandom,
+//                        map.messageDigestAlgorithm,
+//                        true
+//                    ).toUpperCase()
+//                    userId = user.id
+//                    plantId = branchID
+//                    status = map.activeStatus
+//                    description = "${inspectionInvoiceFound.invoiceRef}"
+//                    totalAmount = inspectionInvoiceFound.totalAmount
+//                    totalTaxAmount = inspectionInvoiceFound.taxAmount
+//                    createdBy = commonDaoServices.concatenateName(user)
+//                    createdOn = commonDaoServices.getTimestamp()
+//                }
+//                batchInvoiceInspection = invoiceQaBatchRepo.save(batchInvoiceInspection)
+//
+//                with(inspectionInvoiceFound) {
+//                    batchInvoiceNo = batchInvoiceInspection.id
+//                    modifiedBy = commonDaoServices.concatenateName(user)
+//                    modifiedOn = commonDaoServices.getTimestamp()
+//                }
 
-                with(inspectionInvoiceFound) {
-                    batchInvoiceNo = batchInvoiceInspection.id
-                    modifiedBy = commonDaoServices.concatenateName(user)
-                    modifiedOn = commonDaoServices.getTimestamp()
-                }
+//                inspectionInvoiceFound = invoiceMasterDetailsRepo.save(inspectionInvoiceFound)
 
-                inspectionInvoiceFound = invoiceMasterDetailsRepo.save(inspectionInvoiceFound)
+//                val sageValuesDtoList = mutableListOf<SageValuesDto>()
+//
+//                val detailBody = SageValuesDto().apply {
+//                    revenueAcc = paymentRevenueCode.revenueCode
+//                    revenueAccDesc = paymentRevenueCode.revenueDescription
+//                    taxable = 1
+//                    totalAmount = batchInvoiceInspection.totalAmount
+//                    taxAmount = batchInvoiceInspection.totalTaxAmount
+//                }
+//                sageValuesDtoList.add(detailBody)
+//
+//                val newBatchInvoiceDto = NewBatchInvoiceDto().apply {
+//                    batchID = batchInvoiceInspection.id!!
+//                    plantID = branchID
+//                }
+//
+//                //submit to staging invoices
+//                val batchInvoice = permitMultipleInvoiceSubmitInvoice(map, user, newBatchInvoiceDto, sageValuesDtoList).second
 
-                val sageValuesDtoList = mutableListOf<SageValuesDto>()
+//                with(branchDetails) {
+////                    varField10 = batchInvoiceInspection.id.toString()
+//                    invoiceInspectionGenerated = 1
+//                    paidDate = commonDaoServices.getCurrentDate()
+//                    endingDate = commonDaoServices.getCalculatedDate(30)
+//                }
+//                branchDetails = manufacturePlantRepository.save(branchDetails)
 
-                val detailBody = SageValuesDto().apply {
-                    revenueAcc = paymentRevenueCode.revenueCode
-                    revenueAccDesc = paymentRevenueCode.revenueDescription
-                    taxable = 1
-                    totalAmount = batchInvoiceInspection.totalAmount
-                    taxAmount = batchInvoiceInspection.totalTaxAmount
-                }
-                sageValuesDtoList.add(detailBody)
-
-                val newBatchInvoiceDto = NewBatchInvoiceDto().apply {
-                    batchID = batchInvoiceInspection.id!!
-                    plantID = branchID
-                }
-
-                //submit to staging invoices
-                val batchInvoice = permitMultipleInvoiceSubmitInvoice(map, user, newBatchInvoiceDto, sageValuesDtoList).second
-
-                with(branchDetails) {
-                    varField10 = batchInvoiceInspection.id.toString()
-                    invoiceInspectionGenerated = 1
-                    paidDate = commonDaoServices.getCurrentDate()
-                    endingDate = commonDaoServices.getCalculatedDate(30)
-                }
-                branchDetails = manufacturePlantRepository.save(branchDetails)
-
-                return Pair(mapBatchInvoiceDetails(batchInvoice, user, map),branchDetails)
+                return Pair("Inspection Invoice Generated Successfull",branchDetails)
             } ?: throw NullValueNotAllowedException("No Company Record not found")
     }
 
@@ -1925,6 +1962,20 @@ class QADaoServices(
         status: Int
     ): List<QaInvoiceMasterDetailsEntity> {
         invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10IsNull(
+            userID,
+            status
+        )
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userID}] and [status = ${status}], does not Exist")
+    }
+
+    fun findALlPermitInvoicesMasterCreatedByUserWithNoPaymentStatus(
+        userID: Long,
+        status: Int
+    ): List<QaInvoiceMasterDetailsEntity> {
+        invoiceMasterDetailsRepo.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(
             userID,
             status
         )
@@ -3551,6 +3602,14 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
     }
 
+    fun findPermitMasterInvoiceByID(
+        masterInvoiceID: Long
+    ): QaInvoiceMasterDetailsEntity {
+        invoiceMasterDetailsRepo.findByIdOrNull(masterInvoiceID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Invoice found with the following Master Invoice ID =${masterInvoiceID}")
+    }
+
     fun findPermitInvoiceByPermitIDWithVarField10(
         permitID: Long,
         varField10: String
@@ -4099,51 +4158,7 @@ class QADaoServices(
         }
     }
 
-    fun listPermitsInvoices(
-        permitInvoices: List<QaInvoiceMasterDetailsEntity>,
-        plantID: Long?,
-        map: ServiceMapsEntity
-    ): List<PermitInvoiceDto> {
-        val permitsInvoiceList = mutableListOf<PermitInvoiceDto>()
-        permitInvoices.map { pi ->
-            val permitDetails = pi.permitId?.let { findPermitBYID(it) }
-            if (plantID != null) {
-                if (permitDetails?.attachedPlantId == plantID) {
-                    permitsInvoiceList.add(
-                        PermitInvoiceDto(
-                            pi.permitId,
-                            pi.invoiceRef,
-                            permitDetails.commodityDescription,
-                            permitDetails.tradeMark,
-                            pi.totalAmount,
-                            pi.paymentStatus,
-                            pi.permitRefNumber,
-                            pi.batchInvoiceNo
 
-                        )
-                    )
-                } else {
-                    KotlinLogging.logger { }
-                        .info { "::::::::::::::::::::;NO PERMIT FOUND WITH PLANT ID  = $plantID:::::::::::::::::::::::::::" }
-                }
-            } else {
-                permitsInvoiceList.add(
-                    PermitInvoiceDto(
-                        pi.permitId,
-                        pi.invoiceRef,
-                        permitDetails?.commodityDescription,
-                        permitDetails?.tradeMark,
-                        pi.totalAmount,
-                        pi.paymentStatus,
-                        pi.permitRefNumber,
-                        pi.batchInvoiceNo
-                    )
-                )
-            }
-
-        }
-        return permitsInvoiceList.sortedBy { it.permitID }
-    }
 
 
     fun permitsInvoiceDTO(
@@ -4302,7 +4317,7 @@ class QADaoServices(
         val v =  invoiceMasterDetailsRepo.findByIdOrNull(invoiceDetails?.invoiceMasterId)
 
         val myList = v?.let { findALlInvoicesPermitWithMasterInvoiceID(it.id, 1) }
-       return InvoiceDetailsDto(
+        return InvoiceDetailsDto(
             v?.id,
             v?.invoiceRef,
             v?.description,
@@ -4419,6 +4434,7 @@ class QADaoServices(
             productStandards = permit.productStandard
             assignOfficerID = permit.qaoId
             permitGenerateDifference = permit.varField9?.toInt() == 1
+            permitReGenerateInvoice = permit.varField8?.toInt() == 1
             inspectionReportGenerated = permit.inspectionReportGenerated == 1
             companyId = companyProfile?.id
             branchID = plantAttached?.id
@@ -4436,20 +4452,22 @@ class QADaoServices(
         batchIDDifference: Long?,
         map: ServiceMapsEntity,
     ): AllPermitDetailsDto {
-        var plantDetails = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
-        var companyDetails = commonDaoServices.findCompanyProfileWithID(plantDetails.companyProfileId?: throw Exception("MISSING COMPANY ID ON PLANT DETAILS"))
+        val plantDetails = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+        val companyDetails = commonDaoServices.findCompanyProfileWithID(plantDetails.companyProfileId?: throw Exception("MISSING COMPANY ID ON PLANT DETAILS"))
         val firmTypeDetails = companyDetails.updateFirmType?.let { findFirmTypeById(it) }
 
         var inspectionNeeded = false
+        var inspectionInvoiceUploaded: Long? = null
         var inspectionFeeInvoice: InvoiceDetailsDto?= null
         if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == companyDetails.firmCategory){
             inspectionNeeded = true
             if(plantDetails.invoiceInspectionGenerated==1){
                 inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
+                inspectionInvoiceUploaded= plantDetails?.varField9?.toLong()
             }
         }
 
-        var companyStatus = CompanyUpgradeStatusDto(
+        val companyStatus = CompanyUpgradeStatusDto(
             companyProfileID= companyDetails.id,
             requesterComment= companyDetails.requesterComment,
             updateFirmType= firmTypeDetails?.firmType,
@@ -4497,8 +4515,9 @@ class QADaoServices(
             batchIDDifference,
             inspectionNeeded = inspectionNeeded,
             inspectionFeeInvoice = inspectionFeeInvoice,
+            inspectionInvoiceUploaded = inspectionInvoiceUploaded,
 
-        )
+            )
     }
 
     fun mapAllPermitDetailsTogetherForInternalUsers(
@@ -4513,8 +4532,8 @@ class QADaoServices(
 
         val labResultsDtoList = mutableListOf<MSSSFLabResultsDto>()
         if(permit.ssfCompletedStatus==1){
-           val ssfList =  findSampleSubmittedListBYPermitRefNumberAndPermitID(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus, permitID)
-           val ssfListDTO =  ssfDetailsListDto(ssfList)
+            val ssfList =  findSampleSubmittedListBYPermitRefNumberAndPermitID(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus, permitID)
+            val ssfListDTO =  ssfDetailsListDto(ssfList)
             ssfListDetails.addAll(ssfListDTO)
             ssfList.forEach { samp->
                 val ssfResultsListCompliance = mapSSFComplianceStatusDetailsDto(samp)
@@ -4537,11 +4556,13 @@ class QADaoServices(
         val firmTypeDetails = companyDetails.updateFirmType?.let { findFirmTypeById(it) }
 
         var inspectionNeeded = false
+        var inspectionInvoiceUploaded: Long? = null
         var inspectionFeeInvoice: InvoiceDetailsDto?= null
         if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == companyDetails.firmCategory){
             inspectionNeeded = true
             if(plantDetails.invoiceInspectionGenerated==1){
                 inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
+                inspectionInvoiceUploaded= plantDetails?.varField9?.toLong()
             }
         }
 
@@ -4607,6 +4628,7 @@ class QADaoServices(
             labResultsDtoList,
             inspectionNeeded,
             inspectionFeeInvoice,
+            inspectionInvoiceUploaded
         )
     }
     fun mapSSFComplianceStatusDetailsDto(ssf: QaSampleSubmissionEntity): MSSSFComplianceStatusDetailsDto {
@@ -7223,12 +7245,11 @@ class QADaoServices(
         try {
             var batchID = batchInvoiceDto.batchID
             batchInvoiceDto.permitInvoicesID
-                ?.forEach { permitId ->
+                ?.forEach { masterInvoiceID ->
                     val userID = user.id ?: throw Exception("INVALID USER ID")
-                    var permitInvoiceFound = findPermitInvoiceByPermitID(permitId)
-                    val permitDetails = findPermitBYID(permitId)
-                    val permitType =
-                        findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+                    var permitMasterInvoiceFound = findPermitMasterInvoiceByID(masterInvoiceID)
+                    val permitDetails = findPermitBYID(permitMasterInvoiceFound.permitId?: throw Exception("MISSING PERMIT ID"))
+                    val permitType = findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
                     val attachedPermitPlantDetails =
                         findPlantDetails(permitDetails.attachedPlantId ?: throw Exception("MISSING PLANT DETAILS (ID)"))
                     val paymentRevenueCode = findPaymentRevenueWithRegionIDAndPermitType(
@@ -7239,20 +7260,20 @@ class QADaoServices(
                     invoiceQaBatchRepo.findByIdOrNull(batchID)
                         ?.let { invoiceDetails ->
 
-                            with(permitInvoiceFound) {
+                            with(permitMasterInvoiceFound) {
                                 batchInvoiceNo = invoiceDetails.id
                                 modifiedBy = commonDaoServices.concatenateName(user)
                                 modifiedOn = commonDaoServices.getTimestamp()
                             }
-                            permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
+                            permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
 
                             with(invoiceDetails) {
-                                description = "${permitInvoiceFound.invoiceRef},$description"
+                                description = "${permitMasterInvoiceFound.invoiceRef},$description"
                                 totalAmount = totalAmount?.plus(
-                                    permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
+                                    permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
                                 )
                                 totalTaxAmount = totalTaxAmount?.plus(
-                                    permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
+                                    permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
                                 )
 
                             }
@@ -7262,8 +7283,8 @@ class QADaoServices(
                                 revenueAcc = paymentRevenueCode.revenueCode
                                 revenueAccDesc = paymentRevenueCode.revenueDescription
                                 taxable = 1
-                                totalAmount = permitInvoiceFound.totalAmount
-                                taxAmount = permitInvoiceFound.taxAmount
+                                totalAmount = permitMasterInvoiceFound.totalAmount
+                                taxAmount = permitMasterInvoiceFound.taxAmount
                             }
                             sageValuesDtoList.add(detailBody)
                         }
@@ -7280,27 +7301,27 @@ class QADaoServices(
                                 plantId = batchInvoiceDto.plantID
                                 varField1 = batchInvoiceDto.isWithHolding.toString() // withholding field
                                 if (batchInvoiceDto.isWithHolding == 1L) {
-                                    var foundTotalAmount = permitInvoiceFound.totalAmount
-                                    foundTotalAmount = foundTotalAmount?.minus(permitInvoiceFound.taxAmount!!)
+                                    var foundTotalAmount = permitMasterInvoiceFound.totalAmount
+                                    foundTotalAmount = foundTotalAmount?.minus(permitMasterInvoiceFound.taxAmount!!)
                                     val taxFoundAmount =
                                         foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
                                     foundTotalAmount = taxFoundAmount?.let { foundTotalAmount?.plus(it) }
-                                    with(permitInvoiceFound) {
+                                    with(permitMasterInvoiceFound) {
                                         totalAmount = foundTotalAmount
                                         taxAmount = taxFoundAmount
                                         varField2 = "WITH HELD TRUE"
                                         modifiedBy = commonDaoServices.concatenateName(user)
                                         modifiedOn = commonDaoServices.getTimestamp()
                                     }
-                                    permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
+                                    permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
                                 }
                                 status = s.activeStatus
-                                description = "${permitInvoiceFound.invoiceRef},$description"
+                                description = "${permitMasterInvoiceFound.invoiceRef},$description"
                                 totalAmount = totalAmount?.plus(
-                                    permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
+                                    permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
                                 )
                                 totalTaxAmount = totalTaxAmount?.plus(
-                                    permitInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
+                                    permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
                                 )
                                 createdBy = commonDaoServices.concatenateName(user)
                                 createdOn = commonDaoServices.getTimestamp()
@@ -7308,12 +7329,12 @@ class QADaoServices(
 
                             batchInvoicePermit = invoiceQaBatchRepo.save(batchInvoicePermit)
 
-                            with(permitInvoiceFound) {
+                            with(permitMasterInvoiceFound) {
                                 batchInvoiceNo = batchInvoicePermit.id
                                 modifiedBy = commonDaoServices.concatenateName(user)
                                 modifiedOn = commonDaoServices.getTimestamp()
                             }
-                            permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
+                            permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
 
                             invoiceBatchDetails = batchInvoicePermit
 
@@ -7321,8 +7342,8 @@ class QADaoServices(
                                 revenueAcc = paymentRevenueCode.revenueCode
                                 revenueAccDesc = paymentRevenueCode.revenueDescription
                                 taxable = 1
-                                totalAmount = permitInvoiceFound.totalAmount
-                                taxAmount = permitInvoiceFound.taxAmount
+                                totalAmount = permitMasterInvoiceFound.totalAmount
+                                taxAmount = permitMasterInvoiceFound.taxAmount
                             }
                             sageValuesDtoList.add(detailBody)
 
@@ -7333,9 +7354,9 @@ class QADaoServices(
 
                     KotlinLogging.logger { }.info("batch ID = ${invoiceBatchDetails?.id}")
 
-                    sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.createdBy}]"
+                    sr.payload = "permitInvoiceFound[id= ${permitMasterInvoiceFound.createdBy}]"
                     sr.names =
-                        "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}${permitInvoiceFound.taxAmount}"
+                        "${permitMasterInvoiceFound.invoiceRef} ${permitMasterInvoiceFound.totalAmount}${permitMasterInvoiceFound.taxAmount}"
                     sr.varField1 = invoiceBatchDetails?.id.toString()
 
                     sr.responseStatus = sr.serviceMapsId?.successStatusCode
@@ -7818,45 +7839,31 @@ class QADaoServices(
 
             val userDetails =commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
-            val companyDetails = commonDaoServices.findCompanyProfileWithID(
-                userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
-            )
+            val companyDetails = commonDaoServices.findCompanyProfileWithID(userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS"))
             val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
-            when {
-                plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null && plantDetail.tokenGiven == null && plantDetail.invoiceSharedId == null -> {
-                    throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
-                }
+            KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
+            val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
+            //Todo ask ken why list coming back does not have the product that is being generated for.
+            val productsManufacture = findAllProductManufactureInPlantWithPlantID(
+                s.activeStatus,
+                s.activeStatus,
+                s.inactiveStatus,
+                permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
+                plantDetail.id
+            )
 
-                commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
-                    KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
-                    val manufactureTurnOver =
-                        companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
-                    //Todo ask ken why list coming back does not have the product that is being generated for.
-                    val productsManufacture = findAllProductManufactureInPlantWithPlantID(
-                        s.activeStatus,
-                        s.activeStatus,
-                        s.inactiveStatus,
-                        permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
-                        plantDetail.id
+            KotlinLogging.logger { }.info { "PRODUCT SIZE BEFORE ADDING ONE = ${productsManufacture.size}" }
+            //            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
+            when (permitType.id) {
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMarkAfterFirmUpgrade(
+                        permit,
+                        user,
+                        manufactureTurnOver,
+                        productsManufacture.size.toLong(),
+                        plantDetail,
+                        companyDetails.upgradeType==1
                     )
-
-                    KotlinLogging.logger { }.info { "PRODUCT SIZE BEFORE ADDING ONE = ${productsManufacture.size}" }
-                    //            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size.plus(1)}" }
-                    when (permitType.id) {
-                        applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                            invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMarkAfterFirmUpgrade(
-                                permit,
-                                user,
-                                manufactureTurnOver,
-                                productsManufacture.size.toLong(),
-                                plantDetail
-                            )
-                        }
-                    }
-                }
-
-                commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 && plantDetail.tokenGiven != null && plantDetail.invoiceSharedId != null -> {
-                    throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
                 }
             }
 
@@ -8915,14 +8922,78 @@ class QADaoServices(
         map: ServiceMapsEntity
     ): BatchInvoiceDto {
         val allInvoicesInBatch = findALlInvoicesPermitWithBatchID(batchInvoiceEntity.id ?: throw Exception("MISSING INVOICE BATCH ID"))
-        val companyProfile =
-            commonDaoServices.findCompanyProfile(loggedInUser.id ?: throw Exception("MISSING USER ID FOUND"))
+        val companyProfile =commonDaoServices.findCompanyProfile(loggedInUser.id ?: throw Exception("MISSING USER ID FOUND"))
 
         return BatchInvoiceDto(
             batchInvoiceEntity.sageInvoiceNumber,
             populateInvoiceDetails(companyProfile, batchInvoiceEntity, map),
             listPermitsInvoices(allInvoicesInBatch, null, map)
         )
+    }
+
+    fun listPermitsInvoices(
+        permitInvoices: List<QaInvoiceMasterDetailsEntity>,
+        plantID: Long?,
+        map: ServiceMapsEntity
+    ): List<PermitInvoiceDto> {
+        val permitsInvoiceList = mutableListOf<PermitInvoiceDto>()
+        permitInvoices.map { pi ->
+            if (pi.varField10?.toInt()== 1){
+                permitsInvoiceList.add(
+                    PermitInvoiceDto(
+                        pi.permitId,
+                        pi.invoiceRef,
+                        pi.description,
+                        pi.varField9,
+                        pi.totalAmount,
+                        pi.paymentStatus,
+                        pi.permitRefNumber,
+                        pi.batchInvoiceNo,
+                        pi.id
+                    )
+                )
+            }else{
+                val permitDetails = pi.permitId?.let { findPermitBYID(it) }
+                if (plantID != null) {
+                    if (permitDetails?.attachedPlantId == plantID) {
+                        permitsInvoiceList.add(
+                            PermitInvoiceDto(
+                                pi.permitId,
+                                pi.invoiceRef,
+                                permitDetails.commodityDescription,
+                                permitDetails.tradeMark,
+                                pi.totalAmount,
+                                pi.paymentStatus,
+                                pi.permitRefNumber,
+                                pi.batchInvoiceNo,
+                                pi.id
+
+                            )
+                        )
+                    }
+                    else {
+                        KotlinLogging.logger { }.info { "::::::::::::::::::::;NO PERMIT FOUND WITH PLANT ID  = $plantID:::::::::::::::::::::::::::" }
+                    }
+                }
+                else {
+                    permitsInvoiceList.add(
+                        PermitInvoiceDto(
+                            pi.permitId,
+                            pi.invoiceRef,
+                            permitDetails?.commodityDescription,
+                            permitDetails?.tradeMark,
+                            pi.totalAmount,
+                            pi.paymentStatus,
+                            pi.permitRefNumber,
+                            pi.batchInvoiceNo,
+                            pi.id
+                        )
+                    )
+                }
+            }
+
+        }
+        return permitsInvoiceList.sortedBy { it.permitID }
     }
 
     fun mapBatchInvoiceDetailsBalance(
@@ -9049,10 +9120,7 @@ class QADaoServices(
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
-
         }
-
-
 
         try {
             val updateMachinery = machinePlantsSTA10Repo.updateMachinery(sta10Id, sta10IdToBeUpdated)

@@ -288,6 +288,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long, companyId: Long, invoiceGenerated: Int
     ): List<PermitApplicationsEntity>?
 
+
     fun findByCompanyIdAndOldPermitStatusIsNullAndUserTaskId(
         companyId: Long, userTaskId: Long
     ): List<PermitApplicationsEntity>?
@@ -577,6 +578,39 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun deletePermit(@Param("permitID") permitID: Long)
 
     @Query(
+        value = "SELECT DISTINCT a.* FROM DAT_KEBS_PERMIT_TRANSACTION a\n" +
+                "JOIN DAT_KEBS_QA_INVOICE_MASTER_DETAILS b ON b.PERMIT_ID = a.ID\n" +
+                "JOIN DAT_KEBS_QA_INVOICE_DETAILS c ON c.INVOICE_MASTER_ID = b.ID\n" +
+                "WHERE a.PERMIT_TYPE =:permitType AND a.COMPANY_ID=:companyId\n" +
+                "AND b.BATCH_INVOICE_NO IS NULL AND a.INVOICE_DIFFERENCE_GENERATED IS NULL\n" +
+                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.PERMIT_AWARD_STATUS IS NULL\n" +
+                "AND a.VAR_FIELD_9 IS NULL AND a.OLD_PERMIT_STATUS IS NULL",
+        nativeQuery = true
+    )
+    fun findAllPermitsNotSentToSageDetails(
+        @Param("permitType") permitType: Long,
+        @Param("companyId") companyId: Long,
+        @Param("invoiceGenerated") invoiceGenerated: Int,
+    ): List<PermitApplicationsEntity>?
+
+    @Query(
+        value = "SELECT DISTINCT a.* FROM DAT_KEBS_PERMIT_TRANSACTION a\n" +
+                "JOIN DAT_KEBS_QA_INVOICE_MASTER_DETAILS b ON b.PERMIT_ID = a.ID\n" +
+                "JOIN DAT_KEBS_QA_INVOICE_DETAILS c ON c.INVOICE_MASTER_ID = b.ID\n" +
+                "JOIN DAT_KEBS_QA_BATCH_INVOICE d ON d.ID = b.BATCH_INVOICE_NO\n" +
+                "WHERE a.PERMIT_TYPE =:permitType AND a.COMPANY_ID=:companyId\n" +
+                "AND b.BATCH_INVOICE_NO IS NOT NULL AND a.INVOICE_DIFFERENCE_GENERATED IS NULL\n" +
+                "AND a.INVOICE_GENERATED=:invoiceGenerated AND a.PERMIT_AWARD_STATUS IS NULL\n" +
+                "AND a.VAR_FIELD_9 IS NULL AND a.OLD_PERMIT_STATUS IS NULL",
+        nativeQuery = true
+    )
+    fun findAllPermitsSentToSageDetails(
+        @Param("permitType") permitType: Long,
+        @Param("companyId") companyId: Long,
+        @Param("invoiceGenerated") invoiceGenerated: Int,
+    ): List<PermitApplicationsEntity>?
+
+    @Query(
         value = "SELECT a.* from APOLLO.DAT_KEBS_PERMIT_TRANSACTION a  inner join DAT_KEBS_COMPANY_PROFILE b on a.COMPANY_ID = b.ID where (:startDate is null or a.CREATED_ON >=TO_DATE(:startDate)) and (:endDate is null or a.CREATED_ON <=TO_DATE(:endDate)) and (:regionId is null or b.REGION =TO_NUMBER(:regionId)) and (:sectionId is null or a.SECTION_ID =TO_NUMBER(:sectionId)) and (:permitStatus is null or a.PERMIT_STATUS =TO_NUMBER(:permitStatus)) and(:officerId is null or a.HOF_ID=TO_NUMBER(:officerId)) and(:firmCategory is null or b.FIRM_CATEGORY =TO_NUMBER(:firmCategory)) and(:permitType is null or PERMIT_TYPE =TO_NUMBER(:permitType)) and(:productDescription is null or PRODUCT_NAME like '%'||:productDescription||'%') and PAID_STATUS is not null",
         nativeQuery = true
     )
@@ -707,6 +741,11 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
     ): QaInvoiceMasterDetailsEntity?
 
     fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNullAndVarField10IsNull(
+        userId: Long,
+        paymentStatus: Int
+    ): List<QaInvoiceMasterDetailsEntity>?
+
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(
         userId: Long,
         paymentStatus: Int
     ): List<QaInvoiceMasterDetailsEntity>?

@@ -2887,15 +2887,16 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Date of inspection</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.inspectionDate.invalid && formDataReportForm.inspectionDate.errors"
+<!--                                        <input [class.is-invalid]="formDataReportForm.inspectionDate.invalid && formDataReportForm.inspectionDate.errors"-->
+                                               <input
                                                class="form-control two-column-input"
                                                formControlName="inspectionDate"
                                                name="inspectionDate" type="date">
-                                        <!-- <div *ngIf="submitted && formDataReportForm.inspectionDate.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.inspectionDate.errors.required">Date of inspection is
-                                                required
-                                            </div>
-                                        </div> -->
+<!--                                        <div *ngIf="submitted && formDataReportForm.inspectionDate.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formDataReportForm.inspectionDate.errors.required">Date of inspection is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
                                 <div class="col">
@@ -6197,7 +6198,7 @@
                                                 <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
                                             </datalist>
                                         </div>
-                                        <button class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
+                                        <button *ngIf="addLabParamStatus" class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
                                         <!--                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
                                         <!--                                                   class="form-control" formControlName="referencesStandards" name="referencesStandards">-->
                                         <!--                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>-->
@@ -6235,7 +6236,7 @@
                                 <div class="w-100" style="border: 1px ridge #ddd">
                                     <ul class="w-100">
                                         <li class="d-flex justify-content-between align-items-center" style="width:80%;" *ngFor="let selectedStandard of standardsArray; let i = index">{{selectedStandard}}
-                                            <button (click)="deleteItem(i)" class="btn btn-sm btn-outline-danger">Remove standard</button>
+                                            <button *ngIf="addLabParamStatus" (click)="deleteItem(i)" class="btn btn-sm btn-outline-danger">Remove standard</button>
                                         </li>
                                     </ul>
                                 </div>

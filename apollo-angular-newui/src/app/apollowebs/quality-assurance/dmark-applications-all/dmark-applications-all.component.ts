@@ -26,6 +26,10 @@ declare const $: any;
 })
 export class DmarkApplicationsAllComponent implements OnInit {
     public dataTable: DataTable;
+    public isLoading = false;
+    loading = false;
+    loadingText: string;
+
     public allPermitData: PermitEntityDto[];
     dmarkID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
     dtOptions: DataTables.Settings = {};
@@ -132,7 +136,13 @@ export class DmarkApplicationsAllComponent implements OnInit {
         });
 
     }
-
+    id: any = "Ongoing Applications";
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "Ongoing Applications") {
+            location.reload()
+        }
+    }
 
     ngOnDestroy(): void {
         // Do not forget to unsubscribe the event

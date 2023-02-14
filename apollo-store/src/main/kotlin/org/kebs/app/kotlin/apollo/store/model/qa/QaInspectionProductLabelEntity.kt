@@ -15,7 +15,7 @@ class QaInspectionProductLabelEntity : Serializable {
     )
     @GeneratedValue(generator = "DAT_KEBS_QA_INSPECTION_PRODUCT_LABELLING_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long? = null
+    var id: Long? = 0
 
     @Column(name = "PERMIT_ID")
     @Basic

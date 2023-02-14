@@ -661,6 +661,7 @@ Content-Type: application/json
 ###
 GET https://localhost:8006/api/v1/migration/system/admin/masters/company-list/tivetListing
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ2bXVyaXVraSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2NzUwMDUxNzksImV4cCI6MTY3NTAxMTE3OSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTMgKEphdmEvMTcuMC41KV0iLCJmdWxsTmFtZSI6IlZpbmNlbnQgTXVyaXVraSIsInJvbGVzIjoiVVNFUl9NQU5BR0VNRU5UX1JFQUQsVVNFUl9NQU5BR0VNRU5UX01PRElGWSxVU0VSX01BTkFHRU1FTlRfREVMRVRFLEFVVEhPUklUSUVTX1JFQUQsQVVUSE9SSVRJRVNfV1JJVEUsQ09VTlRJRVNfTElTVCxDT1VOVElFU19WSUVXLENPVU5USUVTX1dSSVRFLERFUEFSVE1FTlRTX0xJU1QsREVQQVJUTUVOVFNfVklFVyxERVBBUlRNRU5UU19XUklURSxERVNJR05BVElPTlNfTElTVCxERVNJR05BVElPTlNfVklFVyxERVNJR05BVElPTlNfV1JJVEUsRElSRUNUT1JBVEVTX0xJU1QsRElSRUNUT1JBVEVTX1ZJRVcsRElSRUNUT1JBVEVTX1dSSVRFLERJVklTSU9OU19MSVNULERJVklTSU9OU19WSUVXLERJVklTSU9OU19XUklURSxSRUdJT05TX0xJU1QsUkVHSU9OU19WSUVXLFJFR0lPTlNfV1JJVEUsU0VDVElPTlNfTElTVCxTRUNUSU9OU19WSUVXLFNFQ1RJT05TX1dSSVRFLFNVQlNFQ1RJT05TX0wxX0xJU1QsU1VCU0VDVElPTlNfTDFfVklFVyxTVUJTRUNUSU9OU19MMV9XUklURSxTVUJTRUNUSU9OU19MMl9MSVNULFNVQlNFQ1RJT05TX0wyX1ZJRVcsU1VCU0VDVElPTlNfTDJfV1JJVEUsVE9XTlNfTElTVCxUT1dOU19WSUVXLFRPV05TX1dSSVRFLEFVVEhPUklUSUVTX1ZJRVcsQVVUSE9SSVRZX0xJU1QsQVVUSE9SSVRZX1dSSVRFLFJCQUNfQVNTSUdOX0FVVEhPUklaQVRJT04sUkJBQ19BU1NJR05fUk9MRSxSQkFDX1JFVk9LRV9BVVRIT1JJWkFUSU9OLFJCQUNfUkVWT0tFX1JPTEUsUkJBQ19ST0xFX0FVVEhPUklUSUVTX0xJU1QsUkJBQ19ST0xFX0FVVEhPUklUSUVTX1ZJRVcsUkJBQ19VU0VSX1JPTEVTX1ZJRVcsUk9MRVNfTElTVCxST0xFU19WSUVXLFJPTEVTX1dSSVRFLFRJVExFU19MSVNULFRJVExFU19WSUVXLFRJVExFU19XUklURSxVU0VSU19MSVNULFVTRVJTX1ZJRVcsVVNFUlNfV1JJVEUsU1lTQURNSU5fVklFVyxVU0VSX1RZUEVTX0xJU1QsVVNFUl9UWVBFU19WSUVXLFVTRVJfVFlQRVNfV1JJVEUsU1VCX1JFR0lPTlNfTElTVCxTVUJfUkVHSU9OU19WSUVXLFNVQl9SRUdJT05TX1dSSVRFLFJCQUNfUkVWT0tFX0NGUyxSQkFDX0FTU0lHTl9DRlMsUkJBQ19SRVZPS0VfU0VDVElPTixSQkFDX0FTU0lHTl9TRUNUSU9OLERJX0FETUlOX1dSSVRFLERJX0FETUlOLERJX0FETUlOX1JFQUQsUFZPQ19BRE1JTl9SRUFELFBWT0NfQURNSU5fV1JJVEUsUFZPQ19BRE1JTiJ9.3o7Gapq-jH8oO0di1L9V4P2_72Rxwh1axq6U3iFBYWiPrLaAAo2TuPIB4z7bYqH9Zi5NylvykYU6BL_1Wk4-Ww
+
 ###
 GET https://localhost:8006/api/v1/migration/stdLevy/getPenaltyDetails
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaGVnZWphbWVzNjBAZ21haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY2MjYyMjA4MiwiZXhwIjoxNjYyNjI4MDgyLCJhZGRyZXNzIjoiMTI3LjAuMC4xIiwidXNlckFnZW50IjoiW0FwYWNoZS1IdHRwQ2xpZW50LzQuNS4xMyAoSmF2YS8xNy4wLjMpXSIsImZ1bGxOYW1lIjoiSmFtZXMgTXVnYW5kYSIsInJvbGVzIjoiU1RBTkRBUkRTX0RFVkVMT1BNRU5UX0ZVTExfQURNSU4ifQ.ugecxGMb0Tiicpde6OjoDp55MPyRbw2LDMvQ8Dncfy0h6uagUjPzX4CmptkCMGTDGFLFM5mRXt1baB6fG-x9rQ
@@ -705,7 +706,8 @@ GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllCompanie
 GET https://kims.kebs.org:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=9154
 
 ###
-GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByCompanyName?companyName=MAISHA MABATI MILLS LTD
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByCompanyName?
+    companyName=MAISHA MABATI MILLS LTD
 
 
 ###
@@ -724,27 +726,63 @@ Content-Type: application/json
     "message": "SM#60122"
   }
 }
+
 ###
 
 POST https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByPermitNumberSmsRequest
 Content-Type: application/json
 
 {
-"uid": "eb782ae143ef47e28c261b72db58d303",
-"actor_type": "user",
-"event_type": "sms_mo_inbound",
-"created_at": "1672569176.589193",
-"data": {
-"profile_code": "2206151",
-"mobile_number": "254702882256",
-"link_id": "00006110183004132121106409",
-"message": "sm#9314"
+  "uid": "eb782ae143ef47e28c261b72db58d303",
+  "actor_type": "user",
+  "event_type": "sms_mo_inbound",
+  "created_at": "1672569176.589193",
+  "data": {
+    "profile_code": "2206151",
+    "mobile_number": "254702882256",
+    "link_id": "00006110183004132121106409",
+    "message": "sm#9314"
+  }
 }
+
+###
+
+POST  https://localhost:8006/api/v1/migration/qa/internal-users/apply/permit/inspection/inspection-details?permitID=3530
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxYW9nYXJpc3NhQG1haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY3NjI4NzkzMywiZXhwIjoxNjc2MjkzOTMzLCJhZGRyZXNzIjoiMDowOjA6MDowOjA6MDoxIiwidXNlckFnZW50IjoiW01vemlsbGEvNS4wIChNYWNpbnRvc2g7IEludGVsIE1hYyBPUyBYIDEwXzE1XzcpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xMTAuMC4wLjAgU2FmYXJpLzUzNy4zNl0iLCJmdWxsTmFtZSI6IlFBTyBHYXJpc3NhIiwicm9sZXMiOiJVU0VSLEVNUExPWUVFLFFBX09GRklDRVJfUkVBRCxRQV9PRkZJQ0VSX01PRElGWSJ9.UiggKJVla57UeOUI1TRzH_rQwFTO0bOvRTphS0hki5EZLlRlM4bM3qzxy5pVHM02SZF1Gk81PCzMx-HxToQJnA
+Content-Type: application/json
+
+
+{
+  "id": 1012,
+  "inspectionRecommendationId": 1041,
+  "complianceApplicableStatutory": "test",
+  "complianceApplicableStatutoryRemarks": "test",
+  "plantHouseKeeping": "test",
+  "plantHouseKeepingRemarks": "test",
+  "handlingComplaints": "test",
+  "handlingComplaintsRemarks": "test",
+  "qualityControlPersonnel": "test",
+  "qualityControlPersonnelRemarks": "test",
+  "testingFacility": "test ",
+  "testingFacilityRemarks": "test "
 }
 
 
-  
+
+###
 
 
 
+POST https://localhost:8006/api/v1/migration/qa/internal-users/apply/permit/inspection/product-labelling?permitID=3530&inspectionReportRecommendationID=1041
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxYW9nYXJpc3NhQG1haWwuY29tIiwiaXNzIjoia2ltcy5rZWJzLm9yZyIsImlhdCI6MTY3NjMxNTcyNSwiZXhwIjoxNjc2MzIxNzI1LCJhZGRyZXNzIjoiMDowOjA6MDowOjA6MDoxIiwidXNlckFnZW50IjoiW01vemlsbGEvNS4wIChNYWNpbnRvc2g7IEludGVsIE1hYyBPUyBYIDEwXzE1XzcpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xMTAuMC4wLjAgU2FmYXJpLzUzNy4zNl0iLCJmdWxsTmFtZSI6IlFBTyBHYXJpc3NhIiwicm9sZXMiOiJVU0VSLEVNUExPWUVFLFFBX09GRklDRVJfUkVBRCxRQV9PRkZJQ0VSX01PRElGWSJ9.VhsZEFJ2veUEtkCnNXxI1V41GiJ70CqeRxKTpFVkoKjQyyvgjsRvUJe0ZKiYcPm5JmQg1MZd3rd9VAAPB5Fd2Q
+Content-Type: application/json
+
+
+[
+  {
+    "standardMarking": "sad",
+    "findings": "asd",
+    "statusOfCompliance": "asda"
+  }
+]
 
