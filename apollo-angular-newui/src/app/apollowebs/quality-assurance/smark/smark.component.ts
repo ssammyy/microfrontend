@@ -77,6 +77,7 @@ export class SmarkComponent implements OnInit {
     sta10FormB: FormGroup;
     sta10FormC: FormGroup;
     sta10FormD: FormGroup;
+    uploadInspection: FormGroup;
     sta10FormE: FormGroup;
     sta10FormF: FormGroup;
     sta10FormG: FormGroup;
@@ -211,6 +212,10 @@ export class SmarkComponent implements OnInit {
             typeModel: [],
             machineName: [],
             countryOfOrigin: [],
+        });
+
+        this.uploadInspection = this.formBuilder.group({
+            userPaidDate: ['', Validators.required],
         });
 
         this.sta10FormE = this.formBuilder.group({
@@ -647,6 +652,7 @@ export class SmarkComponent implements OnInit {
             const file = this.uploadedFilesOnly;
             const formData = new FormData();
             formData.append('branchID', String(branchID));
+            formData.append('userPaidDate', String(this.uploadInspection.get('userPaidDate').value));
             for (let i = 0; i < file.length; i++) {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
