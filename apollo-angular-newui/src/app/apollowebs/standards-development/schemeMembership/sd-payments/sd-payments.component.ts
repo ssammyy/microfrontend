@@ -15,7 +15,8 @@ export class SdPaymentsComponent implements OnInit {
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
-  
+
+    loadingText = null
 
   constructor(
                 private formBuilder: FormBuilder,) {
