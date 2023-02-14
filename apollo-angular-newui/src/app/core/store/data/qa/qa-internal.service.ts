@@ -76,7 +76,7 @@ export class QaInternalService {
     public checkIfInspectionReportExists(permitId: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.CHECK_IF_INSPECTION_REPORT_EXISTS);
         const params = new HttpParams().set('permitID', permitId);
-        return this.http.post<any>(url, {params}).pipe(
+        return this.http.get<any>(url, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -130,12 +130,12 @@ export class QaInternalService {
             }),
         );
     }
-    public updateInspectionReportProductLabelling(permitId: string,inspectionReportId: string, data: ProductLabellingDto): Observable<any> {
+    public updateInspectionReportProductLabelling(permitId: string, inspectionReportId: string, data: ProductLabellingDto[]): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.PRODUCT_LABELLING);
         const params = new HttpParams()
             .set('permitID', permitId)
-            .set('inspectionReportId', inspectionReportId);
-        return this.http.post<ProductLabellingDto>(url, data, {params}).pipe(
+            .set('inspectionReportRecommendationID', inspectionReportId);
+        return this.http.post<ProductLabellingDto[]>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -161,12 +161,12 @@ export class QaInternalService {
     }
 
 
-    public updateInspectionReportOperation(permitId: string,inspectionReportId: string, data: OperationProcessAndControlsDetailsApplyDto): Observable<any> {
+    public updateInspectionReportOperation(permitId: string,inspectionReportId: string, data: OperationProcessAndControlsDetailsApplyDto[]): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.OPERATION_PROCESS_CONTROLS);
         const params = new HttpParams()
             .set('permitID', permitId)
             .set('inspectionReportId', inspectionReportId);
-        return this.http.post<OperationProcessAndControlsDetailsApplyDto>(url, data, {params}).pipe(
+        return this.http.post<OperationProcessAndControlsDetailsApplyDto[]>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -185,6 +185,21 @@ export class QaInternalService {
         return this.http.post<HaccpImplementationDetailsApplyDto>(url, data, {params}).pipe(
             map(function (response: any
             ) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public recommendationsSave(permitId: string,inspectionReportId: string, data: AllInspectionDetailsApplyDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.FINAL_INSPECTION_REPORT_SUBMISSION);
+        const params = new HttpParams()
+            .set('permitID', permitId)
+        return this.http.post<AllInspectionDetailsApplyDto>(url, data, {params}).pipe(
+            map(function (response: any) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

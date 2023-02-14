@@ -537,7 +537,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/process-step-add", handler::permitProcessStepMigration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
-                    POST("/generate-difference-invoice", handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration)
+                    POST(
+                        "/generate-difference-invoice",
+                        handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration
+                    )
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
@@ -658,7 +661,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                             internalUserhandler::updatePermitDetailsScheduleAssessmentVisit
                         )
                         "/inspection".nest {
-                            POST("/check_if_inspection_report_exists", internalUserhandler::checkIfInspectionReportExists)
+                            GET(
+                                "/check_if_inspection_report_exists",
+                                internalUserhandler::checkIfInspectionReportExists
+                            )
                             POST(
                                 "/new-technical-report",
                                 internalUserhandler::updatePermitDetailsInspectionCheckListNew
@@ -677,6 +683,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                             POST(
                                 "/haccpImplementationDetails",
                                 internalUserhandler::updateInspectionCheckListInspectionHACCPImplementationSave
+                            )
+                            POST(
+                                "/recommendation_save",
+                                internalUserhandler::updatePermitInspectionCheckListDetails
                             )
                             POST(
                                 "/inspection-checklist-submit",

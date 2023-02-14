@@ -645,6 +645,8 @@ export class AllInspectionDetailsApplyDto {
     inspectionDetailsDto: InspectionDetailsDto;
     inspectionDetailsDtoB: InspectionDetailsDtoB;
     productLabelling: ProductLabellingDto[];
+
+    standardizationMarkScheme:StandardizationMarkSchemeDto
     operationProcessAndControls: OperationProcessAndControlsDetailsApplyDto[];
     haccpImplementationDetails: HaccpImplementationDetailsApplyDto;
     followPreviousRecommendationsNonConformities: string;
@@ -669,6 +671,8 @@ export class TechnicalDetailsDto {
 
 export class InspectionDetailsDto {
     id: number;
+
+    inspectionRecommendationId: number;
     complianceApplicableStatutory: string;
     complianceApplicableStatutoryRemarks: string;
     plantHouseKeeping: string;
@@ -684,6 +688,9 @@ export class InspectionDetailsDto {
 
 export class InspectionDetailsDtoB {
     id: number;
+
+    inspectionRecommendationId: number;
+
     equipmentCalibration: string;
     equipmentCalibrationRemarks: string;
     qualityRecords: string;
@@ -697,12 +704,17 @@ export class InspectionDetailsDtoB {
 
 export class ProductLabellingDto {
     id: number;
+    inspectionRecommendationId: number;
+
     standardMarking: string;
     findings: string;
+
+    statusOfCompliance: string;
 }
 
 export class StandardizationMarkSchemeDto {
     id: number;
+    inspectionRecommendationId: number;
     validitySmarkPermit: string;
     validitySmarkPermitRemarks: string;
     useTheSmark: string;
@@ -721,6 +733,8 @@ export class StandardizationMarkSchemeDto {
 
 export class OperationProcessAndControlsDetailsApplyDto {
     id: number;
+    inspectionRecommendationId: number;
+
     processFlow: string;
     operations: string;
     qualityChecks: string;
@@ -731,6 +745,8 @@ export class OperationProcessAndControlsDetailsApplyDto {
 
 export class HaccpImplementationDetailsApplyDto {
     id: number;
+    inspectionRecommendationId: number;
+
     designFacilitiesConstructionLayout: string;
     designFacilitiesConstructionLayoutRemarks: string;
     maintenanceSanitationCleaningPrograms: string;

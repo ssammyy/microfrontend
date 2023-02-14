@@ -89,7 +89,7 @@ export const ROUTES: RouteInfo[] = [
     },
 
     {
-        path: '/dmark/newDmarkPermit',
+        path: '/dmark/all_dmark',
         title: 'Diamond Mark',
         type: 'link',
         icontype: 'verified',
@@ -101,7 +101,7 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'all_dmark_awarded', title: 'Awarded Applications', ab: 'AA'},
         ],
     }, {
-        path: '/smark/newSmarkPermit',
+        path: '/smark/all_smark',
         title: 'Standardization Mark',
         type: 'link',
         icontype: 'class',

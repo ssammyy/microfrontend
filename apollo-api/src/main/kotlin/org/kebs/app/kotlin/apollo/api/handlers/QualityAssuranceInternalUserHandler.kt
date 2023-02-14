@@ -396,7 +396,6 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
-
     fun updateProductLabellingSave(req: ServerRequest): ServerResponse {
         return try {
             val permitID =
@@ -410,6 +409,37 @@ class QualityAssuranceInternalUserHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     inspectionReportDaoServices.productLabellingSave(permitID, inspectionReportRecommendationID, body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updateProductLabellingSaveB(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val inspectionReportRecommendationID = req.paramOrNull("inspectionReportRecommendationID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required inspectionReportRecommendationID ID, check config")
+
+            val body = req.body<List<ProductLabellingDto>>()
+            val productLabel = inspectionReportDaoServices.mapDto(body)
+
+            val errors: Errors = BeanPropertyBindingResult(body, ProductLabellingDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    inspectionReportDaoServices.productLabellingSaveB(permitID, inspectionReportRecommendationID, productLabel)
                         .let {
                             ok().body(it)
                         }

@@ -1150,7 +1150,7 @@ export const routes: Routes = [
 
     },
     {
-        path: 'inspection-report', component: AdminLayoutComponent,
+        path: 'inspection-report/:id', component: AdminLayoutComponent,
         // canActivate: [RouteGuard]
 
         children: [
