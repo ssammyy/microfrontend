@@ -1,0 +1,250 @@
+<div class="main-content">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">summarize</i>
+                        </div>
+                        <p class="card-category"></p>
+                        <ng-template #totals class="loaderHolder">
+                            <h3 class="card-title"></h3>
+                        </ng-template>
+                        <div>
+                            <h3 class="card-title"></h3>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">summarize</i> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-rose card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">verified</i>
+                        </div>
+                        <p class="card-category"></p>
+                        <ng-template #amounts class="loaderHolder">
+                            <h3 class="card-title"></h3>
+                        </ng-template>
+                        <div>
+                            <h3 class="card-title">
+                                </h3>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">verified</i> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category"></p>
+                        <ng-template #approved class="loaderHolder">
+                            <h3 class="card-title"></h3>
+                        </ng-template>
+                        <div>
+                            <h3 class="card-title">
+                                </h3>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">store</i>
+                        </div>
+                        <p class="card-category"></p>
+                        <ng-template #rejected class="loaderHolder">
+                            <h3 class="card-title"></h3>
+                        </ng-template>
+                        <div>
+                            <h3 class="card-title">
+                               </h3>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">store</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end of row -->
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title"> None Preforming Projects Report
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div widget class="card border-0 box-shadow">
+                            <div class="card-body pt-0 widget-body">
+                                <h6 class="card-title">Search Details</h6>
+                                <br>
+                                <form  [formGroup]="searchFormGroup">
+
+                                    <div class="form-body">
+
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label><b>Current Stage:</b></label>
+                                                <mat-select aria-label="Small"
+                                                            aria-describedby="inputGroup-sizing-lg"
+                                                            class="form-control"
+                                                            name="currentStage"
+                                                            formControlName="currentStage"
+                                                            placeholder="currentStage">
+                                                    <mat-option
+                                                            
+                                                            value=""></mat-option>
+                                                </mat-select>
+                                            </div>
+                                            
+                                           
+                                            <div class="col-6 col-md-3">
+                                                <div class="form-group">
+                                                    <label><b>Projected Stage:</b></label>
+                                                    <mat-select aria-label="Small"
+                                                                aria-describedby="inputGroup-sizing-lg"
+                                                                class="form-control"
+                                                                name="projectedStage"
+                                                                formControlName="projectedStage"
+                                                                placeholder="projectedStage">
+                                                        <mat-option
+                                                                
+                                                                value=""></mat-option>
+                                                    </mat-select>
+                                                </div>
+                                               
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6 col-md-3">
+                                            <button [disabled]="!searchFormGroup.valid"  class="btn btn-success" type="button" >APPLY FILTER</button>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <button  class="btn btn-default" type="button" >CLEAR FILTER</button>
+                                        </div>
+                                      
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="material-datatables">
+                                <div class="table-responsive" >
+                                    <ng-template #loading class="loaderHolder">
+                                        <!-- <ngx-spinner  type="ball-clip-rotate-multiple" size="medium">
+                                            <p class="loading">Loading...</p>
+                                        </ngx-spinner> -->
+                                    </ng-template>
+                                    <div >
+
+                                        <div class="mat-elevation-z8">
+                                            <mat-form-field appearance="standard" style="width:20%; float: right">
+                                                <mat-label>Search</mat-label>
+                                                <input matInput  placeholder="Search" #input>
+                                                <!-- <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>-->
+                                                 </mat-form-field>
+                                                <!-- <table class="table table-striped table-bordered table-hover" mat-table [dataSource]="dataSource" matSort style="width: 100%">-->
+                                                 <table class="table table-striped table-bordered table-hover" mat-table  matSort style="width: 100%">
+                  
+                                                <ng-container matColumnDef="projectId">
+                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Project ID</th>
+                                                    <td mat-cell *matCellDef="let row">  </td>
+                                                </ng-container>
+
+                                                <!-- Progress Column -->
+                                                <ng-container matColumnDef="currentStage">
+                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Current Stage</th>
+                                                    <td mat-cell *matCellDef="let row"> </td>
+                                                </ng-container>
+
+                                                <!-- Name Column -->
+                                                <ng-container matColumnDef="projectedStage">
+                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Projected Stage in Work Plan </th>
+                                                    <td mat-cell *matCellDef="let row"> </td>
+                                                </ng-container>
+
+                                                <!-- Fruit Column -->
+                                                <ng-container matColumnDef="noOfWeeksDelayed">
+                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> No of Weeks Delayed at Current Stage</th>
+                                                    <td mat-cell *matCellDef="let row"> </td>
+                                                </ng-container>
+
+                                                <ng-container matColumnDef="delayJustification">
+                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Justification for Delay</th>
+                                                    <td mat-cell *matCellDef="let row"> </td>
+                                                </ng-container>
+                                               
+                                                <ng-container matColumnDef="comments">
+                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Comments</th>
+                                                    <td mat-cell *matCellDef="let row">  </td>
+                                                </ng-container>
+
+
+                                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                                                <!-- Row shown when there is no matching data. -->
+                                                <tr class="mat-row" *matNoDataRow>
+                                                    <td class="mat-cell" colspan="4">No data matching the filter
+                                                      
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
+                                                           aria-label="Select page of users"></mat-paginator>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    
+                   
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+
+            
+        </div>
+
+        
+        </div>
+        </div>
