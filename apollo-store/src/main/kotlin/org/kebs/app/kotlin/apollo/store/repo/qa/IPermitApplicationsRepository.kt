@@ -934,6 +934,8 @@ interface IQaInspectionReportRecommendationRepository :
     HazelcastRepository<QaInspectionReportRecommendationEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaInspectionReportRecommendationEntity?
     fun findByPermitId(permitId: Long): QaInspectionReportRecommendationEntity?
+    fun findByPermitIdAndSubmittedInspectionReportStatus(permitId: Long,submittedInspectionReportStatus:Int): QaInspectionReportRecommendationEntity?
+
 
     fun findByIdAndPermitId(inspectionRecommendationId: Long, permitID: Long): QaInspectionReportRecommendationEntity?
 

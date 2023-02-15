@@ -656,15 +656,19 @@
                             <h4 class="card-title">Actions</h4>
                         </div>
                         <div class="card-body ">
-                            <a class="btn btn-kebs mat-raised-button mat-button-base" data-target="#allProcessModel"
-                               data-toggle="modal"
-                               style=" white-space:normal; width: -webkit-fill-available;">GO BACK TO PERMIT</a>
-                            <a class="btn btn-kebs mat-raised-button mat-button-base" data-target="#allProcessModel"
-                               data-toggle="modal"
-                               style=" white-space:normal; width: -webkit-fill-available;">EDIT INSPECTION REPORT</a>
-                            <a class="btn btn-kebs mat-raised-button mat-button-base" data-target="#allProcessModel"
-                               data-toggle="modal"
-                               style=" white-space:normal; width: -webkit-fill-available;">SUBMIT INSPECTION REPORT</a>
+                            <a class="btn btn-kebs mat-raised-button mat-button-base"
+                               (click)="gotoPermitDetails(allInspectionReportDetails.permitDetails.id.toString())"
+                               style=" width: -moz-available; white-space:normal; width: -webkit-fill-available;">GO
+                                BACK TO PERMIT</a>
+                            <a class="btn btn-kebs mat-raised-button mat-button-base"
+                               (click)="gotoInspectionReport(allInspectionReportDetails.permitDetails.id.toString())"
+
+                               style=" width: -moz-available; white-space:normal; width: -webkit-fill-available;">EDIT
+                                INSPECTION REPORT</a>
+                            <a class="btn btn-kebs mat-raised-button mat-button-base"
+                               (click)="submitInspectionReport(allInspectionReportDetails.id)"
+                               style=" width: -moz-available; white-space:normal; width: -webkit-fill-available;">SUBMIT
+                                INSPECTION REPORT</a>
                         </div>
                     </div>
 

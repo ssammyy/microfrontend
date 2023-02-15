@@ -4,7 +4,7 @@ import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto,
     FilesListDto,
-    FirmTypeEntityDto,
+    FirmTypeEntityDto, InspectionReportDetailsDto,
     PermitEntityDetails,
     PermitEntityDto,
     PlantDetailsDto,
@@ -164,6 +164,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
+
+    inspectionReportDetailsDto: InspectionReportDetailsDto
 
 
     public settingsLabResultsParam = {
@@ -831,6 +833,8 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
+        this.inspectionReportDetailsDto = this.allPermitDetails.inspectionReportDetails
+
 
         this.qaService.loadFirmPermitList().subscribe(
             (dataFirmType: FirmTypeEntityDto[]) => {
@@ -1463,6 +1467,17 @@ export class PermitDetailsAdminComponent implements OnInit {
         console.log('encrypted', encrypted);
         this.router.navigate(['/new-inspection-report',encrypted])
 
+
+    }
+    goToInspectionReportPage(inspectionReportId: string) {
+        var text = inspectionReportId;
+        var key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        var encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        console.log('encrypted', encrypted);
+        this.router.navigate(['/inspection-report', encrypted])
 
     }
 
