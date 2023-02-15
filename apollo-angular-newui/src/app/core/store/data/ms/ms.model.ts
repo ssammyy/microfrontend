@@ -1573,6 +1573,7 @@ export class SampleSubmissionDto {
     labellingIdentification: string;
     fileRefNumber: string;
     referencesStandards: string;
+    standardsArray: string[];
     sizeTestSample: string;
     sizeRefSample: string;
     condition: string;

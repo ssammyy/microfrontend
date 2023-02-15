@@ -3532,7 +3532,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 with(dataValue) {
                     sourceProductEvidence = sampleFound?.sourceProductEvidence
                     failedResults = body.failedParameters
-                    standardName = sampleFound?.referencesStandards
+                    standardName = sampleFound?.standardsArray.toString()
                     baseUrl = applicationMapProperties.baseUrlValue
                     refNumber = savedSSfComplianceStatus.bsNumber
                     compliantDetails = mapCompliantStatusDto(savedSSfComplianceStatus, map)
@@ -4553,6 +4553,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                         mostRecurringNonCompliant = body.mostRecurringNonCompliant
                         personMet = body.personMet
                         summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
+                        samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
+                        sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                         finalActionSeizedGoods = body.finalActionSeizedGoods
                         totalComplianceScore = body.totalComplianceScore
                         workPlanGeneratedID = workPlanScheduled.id
@@ -4581,6 +4583,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     mostRecurringNonCompliant = body.mostRecurringNonCompliant
                     personMet = body.personMet
                     summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
+                    samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
+                    sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                     finalActionSeizedGoods = body.finalActionSeizedGoods
                     totalComplianceScore = body.totalComplianceScore
                     workPlanGeneratedID = workPlanScheduled.id
@@ -4979,7 +4983,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             reportFunction = body.reportFunction
             backgroundInformation = body.backgroundInformation
             objectiveInvestigation = body.objectiveInvestigation
-            dateInvestigationInspection = body.dateInvestigationInspection
+            startDateInvestigationInspection = body.startDateInvestigationInspection
+            endDateInvestigationInspection = body.endDateInvestigationInspection
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
@@ -5029,7 +5034,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             reportFunction = body.reportFunction
             backgroundInformation = body.backgroundInformation
             objectiveInvestigation = body.objectiveInvestigation
-            dateInvestigationInspection = body.dateInvestigationInspection
+            startDateInvestigationInspection = body.startDateInvestigationInspection
+            endDateInvestigationInspection = body.endDateInvestigationInspection
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
@@ -5889,6 +5895,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReport.mostRecurringNonCompliant,
             dataReport.personMet,
             dataReport.summaryFindingsActionsTaken,
+            dataReport.samplesDrawnAndSubmitted,
+            dataReport.sourceOfProductAndEvidence,
             dataReport.finalActionSeizedGoods,
             dataReport.totalComplianceScore,
             null,
@@ -5915,7 +5923,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             inspectionInvestigation.reportFunction,
             inspectionInvestigation.backgroundInformation,
             inspectionInvestigation.objectiveInvestigation,
-            inspectionInvestigation.dateInvestigationInspection,
+            inspectionInvestigation.startDateInvestigationInspection,
+            inspectionInvestigation.endDateInvestigationInspection,
             inspectionInvestigation.kebsInspectors?.let { mapKEBSOfficersNameListDto(it) },
             inspectionInvestigation.methodologyEmployed,
             inspectionInvestigation.findings,
@@ -5948,7 +5957,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.reportFunction,
                 it.backgroundInformation,
                 it.objectiveInvestigation,
-                it.dateInvestigationInspection,
+                it.startDateInvestigationInspection,
+                it.endDateInvestigationInspection,
                 it.kebsInspectors?.let { it2 -> mapKEBSOfficersNameListDto(it2) },
                 it.methodologyEmployed,
                 it.findings,

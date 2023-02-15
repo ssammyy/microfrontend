@@ -35,6 +35,10 @@ class ManufacturePlantDetailsEntity : Serializable {
     @Basic
     var inspectionFeeStatus: Int? = null
 
+    @Column(name = "INVOICE_INSPECTION_GENERATED")
+    @Basic
+    var invoiceInspectionGenerated: Int? = null
+
     @Column(name = "PAID_DATE")
     @Basic
     var paidDate: Date? = null

@@ -60,8 +60,8 @@ class QaInvoiceCalculationDaoServices(
 
         KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 
-        if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId== selectedRate.id && plantDetail.inspectionFeeStatus!=1){
-            throw Exception("Kindly Pay the Inspection fees First before submitting current application")
+        if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId== selectedRate.id && plantDetail.invoiceInspectionGenerated!=1){
+            throw Exception("Kindly Pay/Generate the Inspection fees First before submitting current application")
         }
 
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
@@ -112,7 +112,8 @@ class QaInvoiceCalculationDaoServices(
         user: UsersEntity,
         manufactureTurnOver: BigDecimal,
         productNumber: Long,
-        plantDetail: ManufacturePlantDetailsEntity
+        plantDetail: ManufacturePlantDetailsEntity,
+        upgardeType: Boolean
     ): QaInvoiceMasterDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("INVALID PERMIT TYPE ID"))
@@ -158,8 +159,16 @@ class QaInvoiceCalculationDaoServices(
             }
         }
 
+        invoiceMaster = when {
+            upgardeType -> {
+                calculateTotalInvoiceAmountToPayAfterUpGarde(invoiceMaster, permitType, user)
+            }
+            else -> {
+                calculateTotalInvoiceAmountToPayAfterDownGarde(invoiceMaster, permitType, user)
+            }
+        }
 
-        invoiceMaster = calculateTotalInvoiceAmountToPayAfterUpGarde(invoiceMaster, permitType, user)
+
 
 
         KotlinLogging.logger { }.info { "invoice Master total Amount = ${invoiceMaster.totalAmount}" }
@@ -208,7 +217,52 @@ class QaInvoiceCalculationDaoServices(
                 invoiceDetailsList.forEach { invoice ->
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
-                            totalAmountPayable = invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                            totalAmountPayable = when (invoice.itemAmount) {
+                                BigDecimal.ZERO -> {
+                                    masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                }
+                                else -> {
+                                    invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                                }
+                            }
+                    }
+                }
+            } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
+
+        val totalAmountTaxPayable = totalAmountPayable.multiply(permitType.taxRate)
+
+        with(invoiceMaster) {
+            varField10 = 1.toString()
+            paymentStatus = 0
+            taxAmount = totalAmountTaxPayable
+            subTotalBeforeTax = totalAmountPayable
+            totalAmount = totalAmountPayable.plus(totalAmountTaxPayable)
+            modifiedOn = Timestamp.from(Instant.now())
+            modifiedBy = commonDaoServices.concatenateName(user)
+        }
+
+        return qaInvoiceMasterDetailsRepo.save(invoiceMaster)
+    }
+
+    fun calculateTotalInvoiceAmountToPayAfterDownGarde(
+        invoiceMaster: QaInvoiceMasterDetailsEntity,
+        permitType: PermitTypesEntity,
+        user: UsersEntity
+    ): QaInvoiceMasterDetailsEntity {
+        var totalAmountPayable: BigDecimal = BigDecimal.ZERO
+        qaInvoiceDetailsRepo.findByInvoiceMasterId(invoiceMaster.id)
+            ?.let { invoiceDetailsList ->
+                invoiceDetailsList.forEach { invoice ->
+                    qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
+                        ?.let {masterInvoicePrevious->
+                            totalAmountPayable = when (masterInvoicePrevious.subTotalBeforeTax) {
+                                BigDecimal.ZERO -> {
+                                    invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                }
+                                else -> {
+                                    masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                                }
+                            }
                     }
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
@@ -350,6 +404,7 @@ class QaInvoiceCalculationDaoServices(
             invoiceRef = "KIMSREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             generatedDate = Timestamp.from(Instant.now())
             itemCount = 1
+            varField10 = 1.toString()
             status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)
@@ -374,6 +429,8 @@ class QaInvoiceCalculationDaoServices(
 
         with(invoiceMaster) {
             description = invoiceDetailsInspectionFee.itemDescName
+            varField9 = "${invoiceDetailsInspectionFee.itemDescName} :${plantDetail.branchName}"
+            varField8 = plantDetail.id.toString()
             modifiedOn = Timestamp.from(Instant.now())
             modifiedBy = commonDaoServices.concatenateName(user)
         }
@@ -386,6 +443,9 @@ class QaInvoiceCalculationDaoServices(
             tokenGiven = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             invoiceSharedId = invoiceDetailsInspectionFee.id
             inspectionFeeStatus = 0
+            invoiceInspectionGenerated = 1
+            paidDate = commonDaoServices.getCurrentDate()
+            endingDate = commonDaoServices.getCalculatedDate(30)
 //            paidDate = commonDaoServices.getCurrentDate()
 //            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
         }
@@ -525,10 +585,10 @@ class QaInvoiceCalculationDaoServices(
 
         val tokenGenerated = "TOKEN${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         when {
-            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null -> {
-                 throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.invoiceInspectionGenerated == null -> {
+                 throw ExpectedDataNotFound("Kindly Pay/Generate the Inspection fees First before submitting current application")
             }
-            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
+            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.invoiceInspectionGenerated == 1 -> {
 
                 val invoiceDetailsPermitFee = QaInvoiceDetailsEntity().apply {
                     invoiceMasterId = invoiceMaster.id
@@ -547,7 +607,7 @@ class QaInvoiceCalculationDaoServices(
                 qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
 
             }commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
-                throw ExpectedDataNotFound("Kindly Pay the Inspection fees First before submitting current application")
+                throw ExpectedDataNotFound("Kindly Pay/Generate this Year Inspection fees First before submitting current application")
             }
             else -> {
                 throw ExpectedDataNotFound("INVALID INVOICE CALCULATION DETAILS FOR LARGE FIRM")

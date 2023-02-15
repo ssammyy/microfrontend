@@ -2842,7 +2842,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the Data report to clone</b></label>
-                                        <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="dataReportValueToCloneList" formControlName="dataReportValueToClone" name="dataReportValueToClone" class="form-control two-column-input">
                                         <datalist id="dataReportValueToCloneList">
                                             <option *ngFor="let app of workPlanInspection?.dataReportDto" [value]="app.id">{{app.outletName}}</option>
                                         </datalist>
@@ -2887,15 +2887,16 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Date of inspection</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.inspectionDate.invalid && formDataReportForm.inspectionDate.errors"
+<!--                                        <input [class.is-invalid]="formDataReportForm.inspectionDate.invalid && formDataReportForm.inspectionDate.errors"-->
+                                               <input
                                                class="form-control two-column-input"
                                                formControlName="inspectionDate"
                                                name="inspectionDate" type="date">
-                                        <div *ngIf="submitted && formDataReportForm.inspectionDate.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.inspectionDate.errors.required">Date of inspection is
-                                                required
-                                            </div>
-                                        </div>
+<!--                                        <div *ngIf="submitted && formDataReportForm.inspectionDate.errors" class="invalid-feedback">-->
+<!--                                            <div *ngIf="formDataReportForm.inspectionDate.errors.required">Date of inspection is-->
+<!--                                                required-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
                                 <div class="col">
@@ -4030,7 +4031,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label><b>Select the Seizure Form to clone</b></label>
-                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" #standardsInput>
+                                    <input type="number" list="seizureFormValueToCloneList" formControlName="seizureFormValueToClone" name="seizureFormValueToClone" class="form-control two-column-input" >
                                     <datalist id="seizureFormValueToCloneList">
                                         <option *ngFor="let app of workPlanInspection?.seizureDeclarationDto" [value]="app.id">{{app.productField}}</option>
                                     </datalist>
@@ -5994,7 +5995,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the SSF to clone</b></label>
-                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="SSFValueToCloneList" formControlName="valueToClone" name="valueToClone" class="form-control two-column-input" >
                                         <datalist id="SSFValueToCloneList">
                                             <option *ngFor="let app of workPlanInspection?.sampleSubmitted" [value]="app.id">{{app.nameProduct}}</option>
                                         </datalist>
@@ -6013,7 +6014,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Select the Data Report</b></label>
-                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" #standardsInput>
+                                        <input type="number" list="availableDataReports" formControlName="dataReportSelected" name="dataReportSelected" class="form-control two-column-input" >
                                         <datalist id="availableDataReports">
                                             <option *ngFor="let dataSheet of workPlanInspection?.dataReportDto" (click)="onSelectedDataReport()" [value]="dataSheet.id">{{dataSheet.outletName}}</option>
                                         </datalist>
@@ -6197,7 +6198,7 @@
                                                 <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>
                                             </datalist>
                                         </div>
-                                        <button class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
+                                        <button *ngIf="addLabParamStatus" class="btn btn-sm btn-primary" (click)="addStandard()">Add Standard</button>
                                         <!--                                        <select aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
                                         <!--                                                   class="form-control" formControlName="referencesStandards" name="referencesStandards">-->
                                         <!--                                            <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>-->
@@ -6235,7 +6236,7 @@
                                 <div class="w-100" style="border: 1px ridge #ddd">
                                     <ul class="w-100">
                                         <li class="d-flex justify-content-between align-items-center" style="width:80%;" *ngFor="let selectedStandard of standardsArray; let i = index">{{selectedStandard}}
-                                            <button (click)="deleteItem(i)" class="btn btn-sm btn-outline-danger">Remove standard</button>
+                                            <button *ngIf="addLabParamStatus" (click)="deleteItem(i)" class="btn btn-sm btn-outline-danger">Remove standard</button>
                                         </li>
                                     </ul>
                                 </div>

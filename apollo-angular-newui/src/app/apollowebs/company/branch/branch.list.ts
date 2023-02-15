@@ -28,6 +28,7 @@ export class BranchList implements OnInit {
   branches$: Observable<Branches[]>;
   filterName = '';
   stepTwoForm!: FormGroup;
+  uploadInspection: FormGroup;
   stepThreeForm!: FormGroup;
   // @ts-ignore
   branch: Branches;
@@ -71,6 +72,13 @@ export class BranchList implements OnInit {
     });
 
   }
+
+
+  onClickPlantDetails(record: Company) {
+    this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/branches'}));
+  }
+
 
   editRecord(record: Branches) {
 
@@ -142,6 +150,7 @@ export class BranchList implements OnInit {
       const file = this.uploadedFilesOnly;
       const formData = new FormData();
       formData.append('branchID', String(record.id));
+      formData.append('userPaidDate', String(this.uploadInspection.get('userPaidDate').value));
       for (let i = 0; i < file.length; i++) {
         console.log(file[i]);
         formData.append('docFile', file[i], file[i].name);
@@ -151,7 +160,9 @@ export class BranchList implements OnInit {
             console.log(data);
             // this.loadStandards();
             this.SpinnerService.hide();
-            this.qaService.showSuccess('FILE UPLOADED SAVED SUCCESSFULLY');
+            this.qaService.showSuccess('FILE UPLOADED SAVED SUCCESSFULLY', () => {
+              this.onClickPlantDetails(this.company$);
+            });
           },
           error => {
             this.SpinnerService.hide();
@@ -187,10 +198,11 @@ export class BranchList implements OnInit {
 
   generateInspectionFee(record: Branches) {
 
-      this.qaService.generateInspectionFees(record).subscribe(
+      this.qaService.generateInspectionFees(record.id).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
             this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {
+              this.onClickPlantDetails(this.company$);
             });
           },
           error => {

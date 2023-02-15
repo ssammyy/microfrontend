@@ -15,7 +15,7 @@ import {
     PermitEntityDto,
     PermitProcessStepDto,
     PlantDetailsDto,
-    QRCodeScannedQADto,
+    QRCodeScannedQADto, ReportsPermitEntityDto,
     ResubmitApplicationDto,
     SamplesSubmittedDto,
     SSCApprovalRejectionDto,
@@ -476,11 +476,11 @@ export class QaService {
         );
     }
 
-    public generateInspectionFees(data: Branches): Observable<any> {
+    public generateInspectionFees(branchID: number): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.COMPANY_PROFILE_ENDPOINT.GENERATE_INSPECTION_FEES_INVOICE);
         const params = new HttpParams()
-            .set('branchID', String(data.id));
-        return this.http.post<any>(url, data, {params}).pipe(
+            .set('branchID', String(branchID));
+        return this.http.post<any>(url, null, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -715,12 +715,12 @@ export class QaService {
     }
 
 
-    public loadPermitReports(permitTypeID: string): Observable<PermitEntityDto[]> {
+    public loadPermitReports(permitTypeID: string): Observable<ReportsPermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
-        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
-            map(function (response: PermitEntityDto[]) {
+        return this.http.get<ReportsPermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: ReportsPermitEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -730,12 +730,12 @@ export class QaService {
         );
     }
 
-    public loadPermitGrantedReports(permitTypeID: string): Observable<PermitEntityDto[]> {
+    public loadPermitGrantedReports(permitTypeID: string): Observable<ReportsPermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
-        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
-            map(function (response: PermitEntityDto[]) {
+        return this.http.get<ReportsPermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: ReportsPermitEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -745,12 +745,12 @@ export class QaService {
         );
     }
 
-    public loadPermitRenewedReports(permitTypeID: string): Observable<PermitEntityDto[]> {
+    public loadPermitRenewedReports(permitTypeID: string): Observable<ReportsPermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_RENEWED);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
-        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
-            map(function (response: PermitEntityDto[]) {
+        return this.http.get<ReportsPermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: ReportsPermitEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -775,12 +775,12 @@ export class QaService {
         );
     }
 
-    public loadPermitDejectedReports(permitTypeID: string): Observable<PermitEntityDto[]> {
+    public loadPermitDejectedReports(permitTypeID: string): Observable<ReportsPermitEntityDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_DEJECTED);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
-        return this.http.get<PermitEntityDto[]>(url, {params}).pipe(
-            map(function (response: PermitEntityDto[]) {
+        return this.http.get<ReportsPermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: ReportsPermitEntityDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -1768,6 +1768,21 @@ export class QaService {
 
     public submitPermitGenerateDifference(permitID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_MANUFACTURE_ENDPOINT.GENERATE_INVOICE_DIFFERENCE);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, null, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public submitPermitReGenerateInvoice(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_MANUFACTURE_ENDPOINT.RE_GENERATE_INVOICE);
         const params = new HttpParams()
             .set('permitID', permitID);
         return this.http.post<any>(url, null, {params}).pipe(

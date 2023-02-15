@@ -10,7 +10,6 @@
 
     input {
         border-radius: 0 !important;
-        font-size: 14px;
         width: 60%;
     }
 
@@ -134,9 +133,9 @@
         top: 27px;
     }
 
-    ::ng-deep .mat-select-value{
-        color: white!important;  }
-
+    ::ng-deep .mat-select-value {
+        color: white !important;
+    }
 
 
 </style>
@@ -189,7 +188,7 @@
                 <div class="form-group">
                     <mat-form-field class="example-full-width has-label"
                                     [ngClass]="displayFieldCss(stepZeroForm, 'institutionName')">
-                        <input style="color: white;font-size: 14px;" type="text"
+                        <input type="text"
                                matInput
                                id="institutionName"
                                placeholder="Institution Name *"
@@ -230,7 +229,7 @@
                             <div class="form-group">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepOneForm, 'registrationNumber')">
-                                    <input style="color: white;font-size: 14px;" type="text"
+                                    <input type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="registrationNumber"
@@ -249,7 +248,7 @@
                             <div class="form-group">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepOneForm, 'directorIdNumber')">
-                                    <input style="color: white;font-size: 14px;" type="text"
+                                    <input type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="directorIdNumber"
@@ -273,7 +272,7 @@
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepOneForm, 'kraPin')">
                                     <input #kra (input)="kra.value = kra.value.toUpperCase()"
-                                            style="color: white;font-size: 14px;" type="text"
+                                           style="color: white;font-size: 14px;" type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="kraPin"
@@ -416,7 +415,7 @@
                             <div class="form-group">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepTwoForm, 'postalAddress')">
-                                    <input style="color: white;font-size: 14px;" type="text"
+                                    <input type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="postalAddress"
@@ -436,7 +435,7 @@
                             <div class="form-group">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepTwoForm, 'physicalAddress')">
-                                    <input style="color: white;font-size: 14px;" type="text"
+                                    <input type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="physicalAddress"
@@ -460,7 +459,7 @@
                             <div class="form-group">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepTwoForm, 'plotNumber')">
-                                    <input style="color: white;font-size: 14px;" type="text"
+                                    <input type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="plotNumber"
@@ -480,14 +479,14 @@
                             <div class="form-group">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="{'has-success':validEmailRegister===true}">
-                                    <input style="color: white;font-size: 14px;"
-                                           type="email"
-                                           class="form-control two-column-input"
-                                           matInput
-                                           placeholder="Institution Official Email Address *"
-                                           [errorStateMatcher]="matcher"
-                                           formControlName="companyEmail"
-                                           (ngModelChange)="emailValidationRegister($event)">
+                                    <input
+                                            type="email"
+                                            class="form-control two-column-input"
+                                            matInput
+                                            placeholder="Institution Official Email Address *"
+                                            [errorStateMatcher]="matcher"
+                                            formControlName="companyEmail"
+                                            (ngModelChange)="emailValidationRegister($event)">
                                     <mat-error
                                             *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
                                         Please enter a valid email address
@@ -508,18 +507,29 @@
                             <div class="form-group" style="margin-top: 3%">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepTwoForm, 'companyTelephone')">
-                                    <input style="color: white;font-size: 14px;" type="number"
+                                    <input type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="companyTelephone"
+                                           ng-minlength="10"
+                                           ng-maxlength="10"
                                            placeholder="Institution Phone Number *"
-                                           (ngModelChange)="numberValidationType($event)"
                                            formControlName="companyTelephone">
                                     <app-field-error-display
                                             [displayError]="isFieldValid(stepTwoForm, 'companyTelephone')"
-                                            errorMsg="The Institution phone number is required">
+                                            errorMsg="The Institution proper phone number is required">
                                     </app-field-error-display>
+
                                 </mat-form-field>
+<!--                                <div *ngIf="formStepTwoForm.companyTelephone.touched && formStepTwoForm.companyTelephone.invalid"-->
+<!--                                     class="alert alert-danger">-->
+<!--                                    <div *ngIf="formStepTwoForm.companyTelephone.errors?.required">Please enter-->
+<!--                                        mobile number-->
+<!--                                    </div>-->
+<!--                                    <div *ngIf="formStepTwoForm.companyTelephone.errors?.pattern">Mobile number is-->
+<!--                                        not 10 digit-->
+<!--                                    </div>-->
+<!--                                </div>-->
 
 
                             </div>
@@ -557,7 +567,7 @@
                         <div class="form-group">
                             <mat-form-field class="example-full-width has-label"
                                             [ngClass]="displayFieldCss(stepThreeForm, 'buildingName')">
-                                <input style="color: white;font-size: 14px;" type="text"
+                                <input type="text"
                                        matInput
                                        class="form-control two-column-input"
                                        id="buildingName"
@@ -577,7 +587,7 @@
                         <div class="form-group">
                             <mat-form-field class="example-full-width has-label"
                                             [ngClass]="displayFieldCss(stepThreeForm, 'streetName')">
-                                <input style="color: white;font-size: 14px;" type="text"
+                                <input type="text"
                                        matInput
                                        class="form-control two-column-input"
                                        id="streetName"
@@ -665,7 +675,7 @@
                         <div class="form-group">
                             <mat-form-field class="example-full-width has-label"
                                             [ngClass]="displayFieldCss(stepThreeForm, 'branchName')">
-                                <input style="color: white;font-size: 14px;" type="text"
+                                <input type="text"
                                        matInput
                                        class="form-control two-column-input"
                                        id="branchName"
@@ -713,7 +723,7 @@
                         <div class="form-group">
                             <mat-form-field class="example-full-width has-label"
                                             [ngClass]="displayFieldCss(stepFourForm, 'firstName')">
-                                <input style="color: white;font-size: 14px;" type="text"
+                                <input type="text"
                                        matInput
                                        class="form-control two-column-input"
                                        id="firstName"
@@ -732,7 +742,7 @@
                         <div class="form-group">
                             <mat-form-field class="example-full-width has-label"
                                             [ngClass]="displayFieldCss(stepFourForm, 'lastName')">
-                                <input style="color: white;font-size: 14px;" type="text"
+                                <input type="text"
                                        matInput
                                        class="form-control two-column-input"
                                        id="lastName"
@@ -754,14 +764,14 @@
                         <div class="form-group">
                             <mat-form-field class="example-full-width has-label"
                                             [ngClass]="{'has-success':validEmailRegister===true}">
-                                <input style="color: white;font-size: 14px;"
-                                       type="email"
-                                       class="form-control two-column-input"
-                                       matInput
-                                       placeholder="Email Address *"
-                                       [errorStateMatcher]="matcher"
-                                       formControlName="email"
-                                       (ngModelChange)="emailValidationRegister($event)">
+                                <input
+                                        type="email"
+                                        class="form-control two-column-input"
+                                        matInput
+                                        placeholder="Email Address *"
+                                        [errorStateMatcher]="matcher"
+                                        formControlName="email"
+                                        (ngModelChange)="emailValidationRegister($event)">
                                 <mat-error
                                         *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
                                     Please enter a valid email address
@@ -859,12 +869,12 @@
                                     <input class="form-control" style="color: white;font-size: 14px; width: 35px;"
                                            value="+254" required="required" disabled>
                                 </td>
-                                <td><input style="color: white;font-size: 14px;"
-                                           [ngClass]="{ 'is-invalid': submitted && formStepFiveForm.cellphone.errors }"
-                                           class="form-control two-column-input" formControlName="cellphone"
-                                           id="cellphone"
-                                           name="cellphone"
-                                           placeholder="xxxxxxxxx" required="required" type="tel">
+                                <td><input
+                                        [ngClass]="{ 'is-invalid': submitted && formStepFiveForm.cellphone.errors }"
+                                        class="form-control two-column-input" formControlName="cellphone"
+                                        id="cellphone"
+                                        name="cellphone"
+                                        placeholder="xxxxxxxxx" required="required" type="tel">
 
                                 </td>
                             </tr>
@@ -894,7 +904,7 @@
                             OTP
                         </label>
                         <br>
-                        <input style="color: white;font-size: 14px;" class="form-control two-column-input"
+                        <input class="form-control two-column-input"
                                formControlName="otp" id="otp"
                                name="otp"
                                placeholder="The OTP" required="required" type="text">
@@ -908,6 +918,7 @@
                     <div class="col">
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                     </div>
+                    x
                     <div class="col">
                         <button (click)="onClickValidateOtp()" [hidden]="stepFiveForm.get('otp')?.invalid"
                                 class="login-button mt-2" type="button">

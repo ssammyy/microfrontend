@@ -541,16 +541,15 @@
                             <div class="form-group" style="margin-top: 3%">
                                 <mat-form-field class="example-full-width has-label"
                                                 [ngClass]="displayFieldCss(stepTwoForm, 'companyTelephone')">
-                                    <input style="color: white;font-size: 14px;" type="number"
+                                    <input style="color: white;font-size: 14px;" type="text"
                                            matInput
                                            class="form-control two-column-input"
                                            id="companyTelephone"
                                            placeholder="Company Phone Number *"
-                                           (ngModelChange)="numberValidationType($event)"
                                            formControlName="companyTelephone">
                                     <app-field-error-display
                                             [displayError]="isFieldValid(stepTwoForm, 'companyTelephone')"
-                                            errorMsg="The Company phone number is required">
+                                            errorMsg="The Company proper phone number is required">
                                     </app-field-error-display>
                                 </mat-form-field>
 

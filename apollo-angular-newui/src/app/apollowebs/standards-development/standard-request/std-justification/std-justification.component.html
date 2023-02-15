@@ -111,7 +111,7 @@
                                             <mat-label>Search</mat-label>
                                             <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
                                         </mat-form-field>
-                                        <table mat-table [dataSource]="dataSource" matSort>
+                                        <table  class="table table-striped table-bordered table-hover"  mat-table [dataSource]="dataSource" matSort>
 
                                             <!-- ID Column -->
                                             <ng-container matColumnDef="sl">

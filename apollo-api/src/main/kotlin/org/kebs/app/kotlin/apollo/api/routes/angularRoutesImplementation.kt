@@ -541,6 +541,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         "/generate-difference-invoice",
                         handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration
                     )
+                    POST("/re-generate-invoice", handler::permitSubmitApplicationInvoiceReGenerationMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
                     POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
@@ -598,7 +599,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     }
                     "/invoice".nest {
                         GET("/list", handler::invoiceListMigration)
-                        GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
+                        GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMasterMigration)
                         GET("/list-no-batch-Id-difference", handler::invoiceListNoBatchIDMigrationWithDifference)
                         GET("/batch-invoice-list", handler::invoiceBatchListMigration)
                         GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
@@ -609,7 +610,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 }
                 "/invoice".nest {
                     GET("/list", handler::invoiceListMigration)
-                    GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
+                    GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMasterMigration)
+//                    GET("/list-no-batchId", handler::invoiceListNoBatchIDMigration)
                     GET("/list-no-batch-Id-permit-type", handler::invoiceListNoBatchIDByPermitTypeMigration)
                     GET("/batch-invoice-list", handler::invoiceBatchListMigration)
 
@@ -634,8 +636,6 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/filterAwarded", handler::filterAllAAwardedPermitsReports)
                     POST("/filterRenewed", handler::filterAllRenewedApplicationsReports)
                     POST("/filterDejected", handler::filterAllDejectedApplicationsReports)
-
-
                 }
 
             }
@@ -663,7 +663,11 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                             internalUserhandler::updatePermitDetailsScheduleAssessmentVisit
                         )
                         "/inspection".nest {
-                            POST("/check_if_inspection_report_exists", internalUserhandler::checkIfInspectionReportExists)
+                            GET(
+                                "/check_if_inspection_report_exists",
+                                internalUserhandler::checkIfInspectionReportExists
+                            )
+                            GET("/getInspectionReport", internalUserhandler::getInspectionReport)
                             POST(
                                 "/new-technical-report",
                                 internalUserhandler::updatePermitDetailsInspectionCheckListNew
@@ -682,6 +686,10 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                             POST(
                                 "/haccpImplementationDetails",
                                 internalUserhandler::updateInspectionCheckListInspectionHACCPImplementationSave
+                            )
+                            POST(
+                                "/recommendation_save",
+                                internalUserhandler::updatePermitInspectionCheckListDetails
                             )
                             POST(
                                 "/inspection-checklist-submit",

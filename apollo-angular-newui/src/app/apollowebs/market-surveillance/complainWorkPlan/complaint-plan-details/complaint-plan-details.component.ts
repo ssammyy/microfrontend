@@ -73,6 +73,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   active: Number = 0;
   averageCompliance: number = 0;
   selectedValueOfDataSheet: string;
+  selectedDataSheet: DataReportDto;
   selectedFile: File;
   selectedRefNo: string;
   totalComplianceValue: Number = 0;
@@ -1765,7 +1766,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       id: null,
       dataReportValueToClone: null,
       referenceNumber: ['', Validators.required],
-      inspectionDate: ['', Validators.required],
+      inspectionDate: null,
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
       department: ['', Validators.required],
@@ -3938,7 +3939,19 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (this.sampleSubmitForm.get('id').value !== null) {
       valuesToShow = '\'UPDATE SSF DETAILS\'';
     }
-    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
+    if(this.standardsInput.nativeElement.value !== ""){
+      this.addStandard();
+    }
+    const standardsArrayControl = this.sampleSubmitForm.get('standardsArray');
+    for (let selectedStandard of this.standardsArray) {
+      const updatedValue = standardsArrayControl.value.concat(selectedStandard);
+      standardsArrayControl.patchValue(updatedValue);
+      console.log("Selected Standard: " + selectedStandard);
+    }
+      console.log("Standards Array: "+ this.standardsArray);
+      console.log("Values in the form group: "+ standardsArrayControl.value);
+
+    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
@@ -3948,6 +3961,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   saveSampleSubmitted() {
+
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
@@ -5240,6 +5254,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   deleteItem(index: number) {
     this.standardsArray.splice(index, 1);
+  }
+
+  onSelectedDataReport(){
+    this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.dataReportForm?.get('dataReportSelected')?.value);
   }
 
   onClickCloneDataSSF() {

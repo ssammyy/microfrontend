@@ -12,12 +12,11 @@ import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
-import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -70,12 +69,27 @@ class InspectionReportDaoServices(
     fun checkIfInspectionReportExists(permitID: Long): ApiResponseModel {
         val qaInspectionReportRecommendation = qaInspectionReportRecommendationRepo.findByPermitId(permitID)
         val map = commonDaoServices.serviceMapDetails(appId)
-        return if(qaInspectionReportRecommendation!=null) {
-            val inspectionReportAllDetails=mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
+        return if (qaInspectionReportRecommendation != null) {
+            val inspectionReportAllDetails =
+                mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
             commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
 
         } else {
-            commonDaoServices.setErrorResponse( "Does Not Exist")
+            commonDaoServices.setErrorResponse("Does Not Exist")
+        }
+
+    }
+
+    fun getInspectionReport(inspectionReportId: Long): ApiResponseModel {
+        val qaInspectionReportRecommendation = qaInspectionReportRecommendationRepo.findByIdOrNull(inspectionReportId)
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return if (qaInspectionReportRecommendation != null) {
+            val inspectionReportAllDetails =
+                mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
+            commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
+
+        } else {
+            commonDaoServices.setErrorResponse("Does Not Exist")
         }
 
     }
@@ -294,7 +308,6 @@ class InspectionReportDaoServices(
         return inspection
     }
 
-
     fun productLabellingSave(
         permitID: Long,
         inspectionReportRecommendationID: Long,
@@ -327,6 +340,65 @@ class InspectionReportDaoServices(
         }
     }
 
+    fun productLabellingSaveB(
+        permitID: Long,
+        inspectionReportRecommendationID: Long,
+        body: List<QaInspectionProductLabelEntity>
+    ): ApiResponseModel {
+
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val permit = qaDaoServices.findPermitBYID(permitID)
+            val qaInspectionReportRecommendation = findInspectionReportByID(inspectionReportRecommendationID)
+
+            val qaInspectionTechnical =
+                qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportRecommendationID)
+            body.forEach { productLabelling ->
+                var productLabellingDetails = productLabelling
+                qaInspectionProductLabelRepo.findByIdOrNull(productLabelling.id ?: -1L)
+                    ?.let { foundProductsManufactured ->
+
+                        productLabellingDetails = commonDaoServices.updateDetails(
+                            productLabellingDetails,
+                            foundProductsManufactured
+                        ) as QaInspectionProductLabelEntity
+
+                        with(productLabellingDetails) {
+                            modifiedBy = commonDaoServices.concatenateName(loggedInUser)
+                            modifiedOn = commonDaoServices.getTimestamp()
+                        }
+
+                        productLabellingDetails = qaInspectionProductLabelRepo.save(productLabellingDetails)
+                    }
+                    ?: kotlin.run {
+
+                        with(productLabellingDetails) {
+                            permitId = permitID
+                            permitRefNumber = permit.permitRefNumber
+                            if (qaInspectionTechnical != null) {
+                                technicalInspectionId = qaInspectionTechnical.id.toString()
+                            }
+                            inspectionRecommendationId = inspectionReportRecommendationID
+                            status = map.activeStatus
+                            createdBy = commonDaoServices.concatenateName(loggedInUser)
+                            createdOn = commonDaoServices.getTimestamp()
+                        }
+                        productLabellingDetails = qaInspectionProductLabelRepo.save(productLabellingDetails)
+
+                    }
+            }
+
+
+            val inspectionReportAllDetails =
+                mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
+            return commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
+
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun addInspectionCheckListProductLabelling(
         body: ProductLabellingDto,
         inspectionReportRecommendationID: Long,
@@ -336,8 +408,12 @@ class InspectionReportDaoServices(
         user: UsersEntity
     ): Pair<ServiceRequestsEntity, QaInspectionProductLabelEntity> {
 
+
         var sr = commonDaoServices.createServiceRequest(map)
         var inspection = QaInspectionProductLabelEntity()
+        val qaInspectionTechnical =
+            qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportRecommendationID)
+
         try {
             qaInspectionProductLabelRepo.findByIdOrNull(body.id ?: -1L)
                 ?.let { fdr ->
@@ -349,7 +425,9 @@ class InspectionReportDaoServices(
                         fdr,
                         map,
                         user,
-                        true
+
+                        true,
+                        qaInspectionTechnical?.id
                     )
                 } ?: kotlin.run {
                 inspection = saveInspectionProductLabelling(
@@ -360,7 +438,9 @@ class InspectionReportDaoServices(
                     inspection,
                     map,
                     user,
-                    false
+                    false,
+                    qaInspectionTechnical?.id
+
                 )
             }
 
@@ -397,7 +477,8 @@ class InspectionReportDaoServices(
         inspectionTechnical: QaInspectionProductLabelEntity,
         map: ServiceMapsEntity,
         user: UsersEntity,
-        update: Boolean
+        update: Boolean,
+        technicalReferenceId: Long?
     ): QaInspectionProductLabelEntity {
         with(inspectionTechnical) {
             standardMarking = body.standardMarking
@@ -407,6 +488,7 @@ class InspectionReportDaoServices(
             inspectionRecommendationId = inspectionReportRecommendationID
             permitId = permitID
             permitRefNumber = permitRefNUMBER
+            technicalInspectionId = technicalReferenceId.toString()
             when {
                 update -> {
                     modifiedBy = commonDaoServices.concatenateName(user)
@@ -708,10 +790,8 @@ class InspectionReportDaoServices(
     }
 
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitInspectionCheckListDetails(
-        permitID: Long,
         body: AllInspectionDetailsApplyDto
     ): ApiResponseModel {
 
@@ -750,11 +830,9 @@ class InspectionReportDaoServices(
             followPreviousRecommendationsNonConformities = body.followPreviousRecommendationsNonConformities
             recommendations = body.recommendations
             inspectorComments = body.inspectorComments
-            inspectorName = body.inspectorName
-            inspectorDate = body.inspectorDate
-            supervisorComments = body.supervisorComments
-            supervisorName = body.supervisorName
-            supervisorDate = body.supervisorDate
+            inspectorName = user.firstName + " " + user.lastName
+            inspectorDate = commonDaoServices.getCurrentDate()
+
 //            varField1 = body.documentsID?.let { commonDaoServices.convertClassToJson(it) }
             status = map.activeStatus
             when {
@@ -822,7 +900,6 @@ class InspectionReportDaoServices(
         map: ServiceMapsEntity,
     ): AllInspectionDetailsApplyDto {
         val inspectionReportId = inspectionReport.id ?: throw Exception("MISSING INSPECTION REPORT ID")
-        println("$$$$$$$$$$$$$" + inspectionReportId)
         return AllInspectionDetailsApplyDto(
             inspectionReportId,
             inspectionReportTechnicalDetails(inspectionReportId, map),
@@ -846,8 +923,11 @@ class InspectionReportDaoServices(
             inspectionReport.supervisorComments,
             inspectionReport.supervisorName,
             inspectionReport.supervisorDate,
+            inspectionReport.permitId?.let { qaDaoServices.findPermitBYID(it) }
+                ?.let { qaDaoServices.permitDetails(it, map) }
 
-            )
+
+        )
     }
 
 
@@ -1012,7 +1092,6 @@ class InspectionReportDaoServices(
         }
     }
 
-
     fun findAllOperationProcessAndControlsListId(
         inspectionId: Long
     ): List<QaInspectionOpcEntity>? {
@@ -1072,6 +1151,21 @@ class InspectionReportDaoServices(
             return it
         } else {
             return null
+        }
+    }
+
+
+    fun mapDto(productLabellingDto: List<ProductLabellingDto>): List<QaInspectionProductLabelEntity> {
+        return productLabellingDto.map { p ->
+            QaInspectionProductLabelEntity().apply {
+                id = p.id
+                inspectionRecommendationId = p.inspectionRecommendationId
+                technicalInspectionId = p.technicalReportId.toString()
+                standardMarking = p.standardMarking
+                findings = p.findings
+                statusOfCompliance = p.statusOfCompliance
+
+            }
         }
     }
 

@@ -197,7 +197,7 @@ export class SignUpComponent implements OnInit {
             physicalAddress: ['', Validators.required],
             plotNumber: ['', Validators.required],
             companyEmail: [null, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
-            companyTelephone: ['', Validators.required],
+            companyTelephone: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
         });
         this.stepThreeForm = new FormGroup({
             buildingName: new FormControl(),

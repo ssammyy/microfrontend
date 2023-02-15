@@ -10,6 +10,7 @@ import {Subject} from "rxjs";
 import {PublicReviewDraftWithName} from "../../../core/store/data/std/commitee-model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgxSpinnerService} from "ngx-spinner";
+import {Subscription} from "rxjs/Subscription";
 
 declare interface DataTable {
     headerRow: string[];
@@ -28,6 +29,10 @@ export class SmarkApplicationsAllComponent implements OnInit {
     public dataTable: DataTable;
     public allPermitData: PermitEntityDto[];
     public publicReviewDrafts !: PublicReviewDraftWithName[];
+
+    loading = false;
+
+    private sidebarColorUpdated$: Subscription;
 
     draftID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID);
     smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
@@ -53,10 +58,8 @@ export class SmarkApplicationsAllComponent implements OnInit {
 
     public getAllPermitData(): void {
         this.SpinnerService.show();
-
-        this.qaService.loadPermitList(this.smarkID).subscribe(
+        this.sidebarColorUpdated$ = this.qaService.loadPermitList(this.smarkID).subscribe(
             (response: PermitEntityDto[]) => {
-                console.log(response);
                 this.allPermitData = response;
                 this.rerender()
                 this.SpinnerService.hide();
@@ -103,7 +106,7 @@ export class SmarkApplicationsAllComponent implements OnInit {
                             'Successfully Deleted!',
                             'success'
                         );
-                        this.displayUsers= false
+                        this.displayUsers = false
                         this.SpinnerService.hide();
                         this.getAllPermitData();
                     },
@@ -141,7 +144,19 @@ export class SmarkApplicationsAllComponent implements OnInit {
     ngOnDestroy(): void {
         // Do not forget to unsubscribe the event
         this.dtTrigger1.unsubscribe();
+        if (this.sidebarColorUpdated$) {
+            this.sidebarColorUpdated$.unsubscribe();
+        }
 
+    }
+
+    id: any = "Ongoing Applications";
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "Ongoing Applications") {
+            location.reload()
+        }
 
     }
 }

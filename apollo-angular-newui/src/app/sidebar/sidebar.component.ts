@@ -89,7 +89,7 @@ export const ROUTES: RouteInfo[] = [
     },
 
     {
-        path: '/dmark/newDmarkPermit',
+        path: '/dmark/all_dmark',
         title: 'Diamond Mark',
         type: 'link',
         icontype: 'verified',
@@ -101,7 +101,7 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'all_dmark_awarded', title: 'Awarded Applications', ab: 'AA'},
         ],
     }, {
-        path: '/smark/newSmarkPermit',
+        path: '/smark/all_smark',
         title: 'Standardization Mark',
         type: 'link',
         icontype: 'class',
@@ -875,6 +875,7 @@ export const ROUTES: RouteInfo[] = [
         children: [
             {path: 'hodReview', title: 'Review Requests', ab: 'RR'},
             {path: 'sicReview', title: 'SIC Review', ab: 'RR'},
+            {path: 'sdpayments', title: 'Payments', ab: 'P'},
 
 
         ],
@@ -900,6 +901,77 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
+
+    
+    //Publishing reports
+    {
+        path: '',
+        title: 'Publishing Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'standardsReceived', title: 'Standards Received ', ab: 'SR'},
+            {path: 'standardsEdited', title: 'Standards Edited ', ab: 'SE'},
+            {path: 'standardsProofread', title: 'Standards Proofread ', ab: 'SP'},
+            {path: 'standardsTypeset', title: 'Standards Typeset', ab: 'ST'},
+            {path: 'spcReport', title: 'SPC Report', ab: 'SPC '},
+            {path: 'weeklyReport', title: 'Weekly Report', ab: 'WK'},
+            {path: 'draughtsmans', title: 'Draughtsman’s Report  ', ab: 'WR'},
+            {path: 'publishingEnquiriest', title: 'Publishing Enquiriest', ab: 'PE'},
+            {path: 'standardsPrinted', title: 'Standards Printed on Demand', ab: 'SPD'},
+
+
+        ],
+    },
+
+    // SIRC Reports
+    {
+        path: '',
+        title: 'SIRC Reports',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'informationRequestRegister', title: 'Information Request Register ', ab: 'IRR'},
+            {path: 'publicationOrderingRegister', title: 'Publication Ordering Register', ab: 'POR'},
+            {path: 'saleKenyastandard', title: 'Kenya Standard Sale Register ', ab: 'KSSR'},
+            {path: 'saleForeignstandard', title: 'Foreign Standard Sale Register', ab: 'FSSR'},
+            {path: 'standardRequsitionForm', title: 'Kenya Standard Requsition Form', ab: 'KSRF '},
+            {path: 'membershipSubscriptionScheme', title: 'Membership Subscription Scheme', ab: 'MSS'},
+            {path: 'catalogueReport', title: 'Catalogue Report  ', ab: 'CR'},
+            {path: 'disseminationReport', title: 'Dissemination of Publications', ab: 'DP'},
+            {path: 'icsAllocation', title: 'ICS Allocation Report', ab: 'IAR'},
+           
+
+
+        ],
+    },
+
+      // SIRC Reports
+      {
+        path: '',
+        title: ' WTO TBT NEP KIMS Reports ',
+        type: 'sub',
+        icontype: 'receipt',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],
+        collapse: 'reports',
+        children: [
+            {path: 'domesticNotification', title: 'Domestic Notifications ', ab: 'DN'},
+            {path: 'enquiriesHandled', title: 'Enquiries Handled Report', ab: 'IHR'},
+            {path: 'standardworkProgramme', title: 'Standard Work Programme Bulletin ', ab: 'SWPB'},
+           
+            
+           
+
+
+        ],
+    },
+
+
+
 
 
 ];

@@ -705,6 +705,7 @@ export class ApiEndpointService {
 
     public static QA_MANUFACTURE_ENDPOINT = {
         GENERATE_INVOICE_DIFFERENCE: `${ApiEndpointService.QA_CONTEXT}/permit/apply/generate-difference-invoice`,
+        RE_GENERATE_INVOICE: `${ApiEndpointService.QA_CONTEXT}/permit/apply/re-generate-invoice`,
         GET_STANDARD_LIST: `${ApiEndpointService.QA_CONTEXT}/standards-list`,
     };
 
@@ -728,7 +729,10 @@ export class ApiEndpointService {
         STANDARDIZATION_MARK: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/standardization-mark-scheme`,
         OPERATION_PROCESS_CONTROLS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/operationProcessAndControls`,
         HACCP_IMPLEMENTATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/haccpImplementationDetails`,
+        RECOMMENDATION_SAVE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/recommendation_save`,
+
         FINAL_INSPECTION_REPORT_SUBMISSION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-checklist-submit`,
+        GET_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/getInspectionReport`,
 
 
 

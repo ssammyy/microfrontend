@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.common.dto.qa
 import org.kebs.app.kotlin.apollo.common.dto.CompanyUpgradeStatusDto
 import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.ms.MSSSFLabResultsDto
 import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
@@ -101,7 +102,9 @@ data class AllInspectionDetailsApplyDto(
     var supervisorComments: String? = null,
     var supervisorName: String? = null,
     var supervisorDate: Date? = null,
-)
+    var permitDetails: PermitDetailsDto? = null,
+
+    )
 
 data class StandardizationMarkScheme(
     var id: Long? = null,
@@ -360,7 +363,8 @@ data class PermitInvoiceDto(
     var totalAmount: BigDecimal? = null,
     var paidStatus: Int? = null,
     var permitRefNumber: String? = null,
-    var batchID: Long? = null
+    var batchID: Long? = null,
+    var invoiceMasterID: Long? = null
 )
 
 data class SSFPDFListDetailsDto(
@@ -793,8 +797,10 @@ data class PermitDetailsDto(
     var assignOfficerStatus: Boolean? = null,
     var assignOfficerID: Long? = null,
     var permitGenerateDifference: Boolean? = null,
+    var permitReGenerateInvoice: Boolean? = null,
     var inspectionReportGenerated: Boolean? = null,
     var companyId: Long? = null,
+    var branchID: Long? = null,
     var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
     var ssfCompletedStatus: Boolean? = null,
     var compliantStatus: Boolean? = null,
@@ -823,6 +829,10 @@ data class AllPermitDetailsDto(
     var sta10DTO: AllSTA10DetailsDto? = null,
     var sectionList: List<SectionsEntityDto>? = null,
     var ssfListDetails: List<SSFDetailsDto>? = null,
+    var sampleLabResults: List<MSSSFLabResultsDto>? = null,
+    var inspectionNeeded: Boolean? = null,
+    var inspectionFeeInvoice: InvoiceDetailsDto? = null,
+    var inspectionInvoiceUploaded: Long? = null,
 )
 
 

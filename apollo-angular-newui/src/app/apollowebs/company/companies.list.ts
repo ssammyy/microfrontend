@@ -109,6 +109,14 @@ export class CompaniesList implements OnInit {
         });
     }
 
+    reloadCompanyDetails() {
+        this.store$.dispatch(Go({
+            payload: null,
+            link: 'dashboard/companies',
+            redirectUrl: 'dashboard/companies',
+        }));
+    }
+
     get formCompanyDetailsForm(): any {
         return this.companyDetailsForm.controls;
     }
@@ -262,6 +270,7 @@ export class CompaniesList implements OnInit {
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.qaService.showSuccess('COMPANY FIRM TYPE UPDATED SUCCESSFULLY', () => {
+                        this.reloadCompanyDetails();
                     });
                 },
                 error => {
