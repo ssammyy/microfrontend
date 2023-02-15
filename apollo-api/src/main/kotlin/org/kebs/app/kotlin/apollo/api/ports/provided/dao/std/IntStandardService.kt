@@ -166,14 +166,14 @@ class IntStandardService(
         if (listTwo != null) {
             for (recipient in listTwo) {
                 val user = "Stake Holder"
-                val shs = IStandardStakeHolders()
-                shs.name = user
-                shs.email = recipient
-                shs.draftId = draftNumber
-                shs.dateOfCreation=Timestamp(System.currentTimeMillis())
-                shs.telephone="NA"
+                val sh = IStandardStakeHolders()
+                sh.name = user
+                sh.email = recipient
+                sh.draftId = draftNumber
+                sh.dateOfCreation=Timestamp(System.currentTimeMillis())
+                sh.telephone="NA"
 
-                iStdStakeHoldersRepository.save(shs)
+                iStdStakeHoldersRepository.save(sh)
 
                 val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
                 val messageBody= "Hope You are Well,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "

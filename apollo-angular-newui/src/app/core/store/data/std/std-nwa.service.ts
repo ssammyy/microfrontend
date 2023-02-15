@@ -9,7 +9,7 @@ import {
     HoSicTasks,
     KNWCommittee, KNWDepartment,
     KnwSecTasks, NWADiSdtJustification,
-    NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft,
+    NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft, NwaRequestList,
     NWAStandard, NwaTasks, NWAWDDecision, NWAWorkShopDraft, PreliminaryDraftTasks, SacSecTasks, SPCSECTasks,
     UpdateNwaGazette, UploadNwaGazette, UsersEntity
 } from "./std.model";
@@ -46,6 +46,12 @@ export class StdNwaService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_TASKS);
         const params = new HttpParams();
         return this.http.get<NwaTasks[]>(url, {params}).pipe();
+    }
+
+    public getWorkshopStandards(): Observable<NwaRequestList[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_VIEW_STANDARD_REQUEST);
+        const params = new HttpParams();
+        return this.http.get<NwaRequestList[]>(url, {params}).pipe();
     }
 
   public prepareJustification(nwaJustification: NWAJustification): Observable<any> {

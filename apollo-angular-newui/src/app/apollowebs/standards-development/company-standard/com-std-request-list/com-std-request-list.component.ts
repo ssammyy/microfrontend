@@ -173,7 +173,6 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         this.stdComStandardService.getCompanyContactDetails(requestId).subscribe(
             (response: CompanyContactDetails[])=> {
                 this.SpinnerService.hide();
-                this.rerender();
                 this.contactPersonDetails = response;
             },
             (error: HttpErrorResponse)=>{
@@ -187,7 +186,6 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         this.stdComStandardService.getCommitteeList(requestId).subscribe(
             (response: JCList[])=> {
                 this.SpinnerService.hide();
-                this.rerender();
                 this.jointCommitteeLists = response;
             },
             (error: HttpErrorResponse)=>{
