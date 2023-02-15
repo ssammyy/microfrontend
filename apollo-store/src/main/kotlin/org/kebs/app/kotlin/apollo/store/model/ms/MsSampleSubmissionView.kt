@@ -31,10 +31,9 @@ class MsSampleSubmissionView : Serializable {
     @Column(name = "FILE_REF_NUMBER")
     var fileRefNumber: String? = null
 
-    @ElementCollection
-    @CollectionTable(name = "REFERENCE_STANDARDS_ARRAY_TABLE", joinColumns = [JoinColumn(name = "ID")])
-    @Column(name = "REFERENCE_STANDARDS_ARRAY")
-    var standardsArray: List<String>? = null
+    @Column(name = "REFERENCES_STANDARDS")
+    @Basic
+    var referencesStandards: String? = null
 
     @Basic
     @Column(name = "SIZE_TEST_SAMPLE")

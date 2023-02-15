@@ -128,6 +128,8 @@ class QaInvoiceCalculationDaoServices(
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
         with(invoiceMaster){
             varField10 = 1.toString()
+            description = permit.commodityDescription
+            varField9 = permit.tradeMark
         }
         invoiceMaster =qaInvoiceMasterDetailsRepo.save(invoiceMaster)
 
