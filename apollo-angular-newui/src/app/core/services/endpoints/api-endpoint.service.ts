@@ -73,7 +73,7 @@ export class ApiEndpointService {
     public static QA_INTERNAL_USER_CONTEXT = `${ApiEndpointService.QA_CONTEXT}/internal-users`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
-    public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/sd/wa`;
+    public static SD_NWA_CONTEXT = '/api/v1/migration/wa';
     public static SD_NEP_NATIONAL_ENQUIRY = `${ApiEndpointService.MASTERS_CONTEXT}/National_enquiry_point`;
     public static SD_SCHEME_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Scheme_membership`;
     public static SD_IST_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/international_standard`;
@@ -361,6 +361,7 @@ export class ApiEndpointService {
 
         /*::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // SD Kenya National Workshop Agreement
+        NWA_VIEW_STANDARD_REQUEST: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopStandards`,
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
         NWA_KNW_COMMITTEE: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWCommittee`,

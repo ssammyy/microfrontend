@@ -55,7 +55,8 @@ class NWAService(private val runtimeService: RuntimeService,
                  private val userListRepository: UserListRepository,
                  private val standardNwaRemarksRepository: StandardNwaRemarksRepository,
                  private val companyStandardRepository: CompanyStandardRepository,
-                 private val standardRepository: StandardRepository
+                 private val standardRepository: StandardRepository,
+                 private val standardRequestRepository: StandardRequestRepository,
 
 
                  ) {
@@ -76,6 +77,10 @@ class NWAService(private val runtimeService: RuntimeService,
         return ProcessInstanceResponse( processInstance.id, processInstance.isEnded)
     }
 
+    fun getWorkshopStandards(): MutableList<StandardRequest>
+    {
+        return standardRequestRepository.getWorkshopStandards()
+    }
 
 
     fun getKNWDepartments(): MutableList<Department>
@@ -1509,7 +1514,7 @@ class NWAService(private val runtimeService: RuntimeService,
 
         var lastId:String?="0"
         var finalValue =1
-        var startId="KS"
+        var startId="NWA"
 
 
         for(item in allRequests){

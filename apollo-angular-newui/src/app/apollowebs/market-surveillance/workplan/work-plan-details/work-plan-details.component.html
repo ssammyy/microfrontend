@@ -6192,7 +6192,7 @@
                                     <div class="form-group">
                                         <label><b>REFERENCES STANDARDS</b></label>
                                         <div class="refStandardsDesign">
-                                            <input type="text" list="refStandards" formControlName="standardsArray"
+                                            <input type="text" list="refStandards" formControlName="referencesStandards"
                                                    name="referencesStandards" class="form-control two-column-input" #standardsInput>
                                             <datalist id="refStandards">
                                                 <option *ngFor="let app of standards| filterPipe: {status: true}" [value]="app.standardTitle">{{app.standardNumber+"   " +app.standardTitle}}</option>

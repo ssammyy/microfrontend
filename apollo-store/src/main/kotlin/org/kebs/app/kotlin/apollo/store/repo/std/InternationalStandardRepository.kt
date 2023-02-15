@@ -858,6 +858,8 @@ interface CompanyStandardRemarksRepository : JpaRepository<CompanyStandardRemark
 
 interface ComContactDetailsRepository : JpaRepository<ComContactDetails, Long> {
     fun findByRequestIdOrderByIdDesc(id: Long): MutableList<ComContactDetails>?
+    @Query(value = "SELECT FULL_NAME as name,EMAIL as email,TELEPHONE as telephone FROM SD_COM_STD_CONTACT_DETAILS WHERE REQUEST_ID=:requestId  ", nativeQuery = true)
+    fun getComContactList(@Param("requestId") requestId: Long?): MutableList<EmailList>
 }
 
 

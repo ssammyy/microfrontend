@@ -27,6 +27,7 @@ export class ComStdDraftComponent implements OnInit {
     dtTrigger: Subject<any> = new Subject<any>();
     dtTrigger1: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
     tasks: COMPreliminaryDraft[] = [];
     jointCommitteeLists: JCList[] = [];
     contactPersonDetails: CompanyContactDetails[] = [];
@@ -52,6 +53,7 @@ export class ComStdDraftComponent implements OnInit {
         this.dtTrigger.unsubscribe();
         this.dtTrigger1.unsubscribe();
         this.dtTrigger2.unsubscribe();
+        this.dtTrigger3.unsubscribe();
     }
 
     showToasterSuccess(title:string,message:string){
@@ -290,6 +292,7 @@ export class ComStdDraftComponent implements OnInit {
             this.dtTrigger.next();
             this.dtTrigger1.next();
             this.dtTrigger2.next();
+            this.dtTrigger3.next();
         });
     }
 

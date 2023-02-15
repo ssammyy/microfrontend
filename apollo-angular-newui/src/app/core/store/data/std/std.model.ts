@@ -118,7 +118,7 @@ export interface NWAJustification {
     departmentName: string;
     comments: string;
     assignedTo: number;
-
+    requestId: number;
 
 }
 
@@ -131,6 +131,7 @@ export interface KNWDepartment {
 export interface KNWCommittee {
     id: number;
     technical_committee_no: string;
+    title: string;
 
 }
 
@@ -1995,6 +1996,32 @@ export interface StandardBody{
     description : string;
     dateFormed : Timestamp<any>;
     createdBy : string;
+}
+
+export interface NwaRequestList{
+    id: number;
+    requestNumber: string;
+    rank: string;
+    name: string;
+    phone: string;
+    email: string;
+    submissionDate: Timestamp<any>;
+    departmentId: string;
+    productSubCategoryId: string;
+    tcId: string;
+    productId: string;
+    organisationName: string;
+    subject: string;
+    description: string;
+    economicEfficiency: string;
+    healthSafety: string;
+    environment: string;
+    integration: string;
+    exportMarkets: string;
+    levelOfStandard: string;
+    status: string;
+    departmentName: string;
+    tcSecAssigned: string;
 }
 
 

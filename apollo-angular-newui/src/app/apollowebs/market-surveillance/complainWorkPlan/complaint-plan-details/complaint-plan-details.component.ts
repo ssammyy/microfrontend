@@ -1901,7 +1901,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       packaging: ['', Validators.required],
       labellingIdentification: null,
       fileRefNumber: null,
-      standardsArray: [[], Validators.required],
+      referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
       condition: ['', Validators.required],
@@ -3939,24 +3939,31 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (this.sampleSubmitForm.get('id').value !== null) {
       valuesToShow = '\'UPDATE SSF DETAILS\'';
     }
-    if(this.standardsInput.nativeElement.value !== ""){
-      this.addStandard();
-    }
-    const standardsArrayControl = this.sampleSubmitForm.get('standardsArray');
+    const standardsArrayControl = this.sampleSubmitForm.get('referencesStandards');
+    console.log("Data in the form control before: "+standardsArrayControl.value);
+    const newValues = [];
     for (let selectedStandard of this.standardsArray) {
-      const updatedValue = standardsArrayControl.value.concat(selectedStandard);
-      standardsArrayControl.patchValue(updatedValue);
-      console.log("Selected Standard: " + selectedStandard);
+      const valueInControl = standardsArrayControl.value;
+      if (!valueInControl.includes(selectedStandard)) {
+        newValues.push(selectedStandard);
+      }
     }
-      console.log("Standards Array: "+ this.standardsArray);
-      console.log("Values in the form group: "+ standardsArrayControl.value);
 
+    if (newValues.length > 0) {
+      const updatedValue = standardsArrayControl.value.concat(newValues);
+      standardsArrayControl.patchValue(updatedValue);
+    }
+
+    console.log("Data in the form control after: "+standardsArrayControl.value);
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
+    }
+    else{
+      this.msService.showError("Please Fill in all the fields!");
     }
   }
 

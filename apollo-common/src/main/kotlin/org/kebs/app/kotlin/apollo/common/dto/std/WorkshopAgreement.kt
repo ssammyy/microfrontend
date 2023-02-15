@@ -76,6 +76,7 @@ class NWAJustificationDecision(
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("processId") val processId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
+    @JsonProperty("decision") val decision: String,
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
     @JsonProperty("assignedTo") var assignedTo: Long
@@ -296,6 +297,9 @@ class NwaJustificationDto(
     @JsonProperty("department") var department: String,
     @JsonProperty("remarks") var remarks: String,
     @JsonProperty("requestNumber") var requestNumber: String,
+    @JsonProperty("meetingDate") var meetingDate: String,
+    @JsonProperty("knwAcceptanceDate") var knwAcceptanceDate: String,
+    @JsonProperty("requestId") var requestId: Long,
 ){
 
 }
@@ -614,3 +618,5 @@ class ComJustificationDecisions(
 ){
 
 }
+
+

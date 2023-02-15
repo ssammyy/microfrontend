@@ -1,7 +1,13 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NgxSpinnerService} from "ngx-spinner";
-import {KNWCommittee, KNWDepartment, KnwSecTasks, UsersEntity} from "../../../../core/store/data/std/std.model";
+import {
+    KNWCommittee,
+    KNWDepartment,
+    KnwSecTasks,
+    NwaRequestList,
+    UsersEntity
+} from "../../../../core/store/data/std/std.model";
 import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
@@ -9,6 +15,8 @@ import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {selectUserInfo} from "../../../../core/store";
 import {Store} from "@ngrx/store";
+import {DataTableDirective} from "angular-datatables";
+import {Subject} from "rxjs";
 
 declare const $: any;
 
@@ -21,8 +29,11 @@ declare const $: any;
 
 
 export class NwaJustificationFormComponent implements OnInit {
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
     fullname = '';
-
   public itemId :string="1";
   public justification: string="Justification";
   public nwaDepartments !: KNWDepartment[];
@@ -31,6 +42,9 @@ export class NwaJustificationFormComponent implements OnInit {
   public knwsectasks !: KnwSecTasks[];
     public uploadedFiles: FileList;
     public knwSecretary !: UsersEntity[] ;
+    nwaRequestLists: NwaRequestList[]=[];
+    public actionRequests: NwaRequestList | undefined;
+    loadingText: string;
 
   title = 'toaster-not';
 
@@ -44,14 +58,16 @@ export class NwaJustificationFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getKNWDepartments();
+    //this.getKNWDepartments();
     this.getKNWCommittee();
-    this.getKnwSecretary();
-    //this.knwtasks();
+    //this.getKnwSecretary();
+    this.getWorkshopStandards();
 
       this.store$.select(selectUserInfo).pipe().subscribe((u) => {
           return this.fullname = u.fullName;
       });
+
+
 
     this.prepareJustificationFormGroup = this.formBuilder.group({
         dateOfMeeting: ['', Validators.required],
@@ -64,11 +80,16 @@ export class NwaJustificationFormComponent implements OnInit {
       issuesAddressed: ['', Validators.required],
         acceptanceDate: ['', Validators.required],
         uploadedFiles: [],
+        requestId: [],
         DocDescription: []
       // postalAddress: ['', [Validators.required, Validators.pattern('P.O.BOX [0-9]{5}')]]
     });
 
   }
+
+    ngOnDestroy(): void {
+        this.dtTrigger.unsubscribe();
+    }
 
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
@@ -79,7 +100,21 @@ export class NwaJustificationFormComponent implements OnInit {
     return this.prepareJustificationFormGroup.controls;
   }
 
-
+    public getWorkshopStandards(): void {
+        this.loadingText = "Retrieving Requests...";
+        this.SpinnerService.show();
+        this.stdNwaService.getWorkshopStandards().subscribe(
+            (response: NwaRequestList[]) => {
+                this.nwaRequestLists = response;
+                this.rerender();
+                this.SpinnerService.hide();
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                console.log(error.message);
+            }
+        );
+    }
 
   public getKNWDepartments(): void {
     this.stdNwaService.getKNWDepartments().subscribe(
@@ -120,33 +155,6 @@ export class NwaJustificationFormComponent implements OnInit {
         }
     );
   }
-  //   saveJustification() {
-  //       const file = this.uploadedFiles;
-  //       const formData = new FormData();
-  //       for (let i = 0; i < file.length; i++) {
-  //           console.log(file[i]);
-  //           formData.append('docFile', file[i], file[i].name);
-  //       }
-  //       this.SpinnerService.show();
-  //       this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value, formData).subscribe(
-  //           (data: any) => {
-  //               this.SpinnerService.hide();
-  //               this.showToasterSuccess(data.httpStatus, `Request Number is ${data.body.requestNumber}`);
-  //               //console.log(data);
-  //               this.prepareJustificationFormGroup.reset();
-  //               swal.fire({
-  //                   title: 'Justification Prepared.',
-  //                   buttonsStyling: false,
-  //                   icon: 'success'
-  //               });
-  //           },
-  //           (error: HttpErrorResponse) => {
-  //               this.SpinnerService.hide();
-  //               console.log(error.message);
-  //           }
-  //       );
-  //
-  //   }
 
   public knwtasks(): void {
     this.stdNwaService.knwtasks().subscribe(
@@ -203,16 +211,6 @@ export class NwaJustificationFormComponent implements OnInit {
     }
 
 
-  // public saveJustification(saveJustification: NgForm): void{
-  //   this.stdDevelopmentNwaService.prepareJustification(saveJustification.value).subscribe(
-  //     (response:StandardTasks) =>{
-  //       console.log(response);
-  //     },
-  //     (error:HttpErrorResponse) =>{
-  //       alert(error.message);
-  //     }
-  //   )
-  // }
     showNotification(from: any, align: any) {
         const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 
@@ -239,6 +237,48 @@ export class NwaJustificationFormComponent implements OnInit {
                 '<a href="{3}" target="{4}" data-notify="url"></a>' +
                 '</div>'
         });
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+        });
+    }
+
+    public onOpenModal(nwaRequestList: NwaRequestList,mode:string): void{
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle','modal');
+        if (mode==='prepareJustification'){
+            this.actionRequests=nwaRequestList;
+            button.setAttribute('data-target','#prepareJustification');
+            this.prepareJustificationFormGroup.patchValue(
+                {
+                    requestId: this.actionRequests.id,
+                    department: this.actionRequests.departmentId,
+                    requestedBy: this.actionRequests.name
+                }
+            );
+        }
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
+
+    }
+
+    @ViewChild('closeModalUploadJustification') private closeModalUploadJustification: ElementRef | undefined;
+
+    public hideModalUploadDraft() {
+        this.closeModalUploadJustification?.nativeElement.click();
     }
 
 }
