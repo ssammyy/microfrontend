@@ -670,19 +670,21 @@ class ComStandardService(
                     companyStandardRemarksRepository.save(companyStandardRemarks)
                     response="Draft Approved"
                 }?: throw Exception("DRAFT NOT FOUND")
+                val contactLists = comContactDetailsRepository.getComContactList(companyStandardRemarks.requestId)
 
-                val recipient=comStdDraft.contactOneEmail
-                val contactName=comStdDraft.contactOneFullName
                 val companyName=comStdDraft.companyName
                 val companyPhone= comStdDraft.companyPhone
-                val contactTel=comStdDraft.contactOneTelephone
                 val draftId=comStdDraft.id
-                val targetUrl = "https://kimsint.kebs.org/comStdApproved/$draftId";
-                val subject = "Company Standard Draft"
-                val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to make Decision. $targetUrl  "
+//
 
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
+                val targetUrl = "https://kimsint.kebs.org/comStdApproved/$draftId";
+                contactLists.forEach { c ->
+                    val contactName= c.getName()
+                    val subject = "Company Standard Draft"
+                    val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to make a Decision. $targetUrl"
+                    if (c.getEmail() != null) {
+                        notifications.sendEmail(c.getEmail()!!, subject, messageBody)
+                    }
                 }
 
 
@@ -844,9 +846,7 @@ class ComStandardService(
                 symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
                 clause=companyStandard.clause
                 documentType=companyStandard.documentType
-                documentType=companyStandard.documentType
                 special=companyStandard.special
-                standardType="Company Standard"
 
             }
 
