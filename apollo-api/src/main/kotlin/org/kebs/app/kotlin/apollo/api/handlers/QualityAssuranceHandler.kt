@@ -2404,7 +2404,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val branchID = req.paramOrNull("branchID")?.toLong()?: throw ExpectedDataNotFound("Required Branch ID, check config")
             qaDaoServices.updateInspectionFeesDetailsDetails(branchID, loggedInUser, map)
-                .let { ok().body(it.first)}
+                .let { ok().body(it.second)}
                 ?: onErrors("We could not process your request at the moment")
 
 
