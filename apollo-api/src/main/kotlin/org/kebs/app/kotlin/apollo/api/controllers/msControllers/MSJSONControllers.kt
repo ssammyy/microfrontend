@@ -756,7 +756,7 @@ class MSJSONControllers(
             data.packaging,
             data.labellingIdentification,
             data.fileRefNumber,
-            data.standardsArray,
+            data.referencesStandards,
             data.sizeTestSample,
             data.sizeRefSample,
             data.condition,
