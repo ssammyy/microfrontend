@@ -699,8 +699,6 @@ class QADaoServices(
     }
 
 
-
-
     @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveLabPDFSelectedDetails(
@@ -1623,9 +1621,11 @@ class QADaoServices(
                     entity.firmCategory == 1L && dto.selectedFirmTypeID > 1 -> {
                         entity.upgradeType = 1
                     }
+
                     entity.firmCategory == 2L && dto.selectedFirmTypeID > 2 -> {
                         entity.upgradeType = 1
                     }
+
                     entity.firmCategory == 3L && dto.selectedFirmTypeID < 3 -> {
                         entity.upgradeType = 0
                     }
@@ -1927,7 +1927,7 @@ class QADaoServices(
                 }
                 branchDetails = manufacturePlantRepository.save(branchDetails)
 
-                return Pair("Inspection Invoice Generated Successfull",branchDetails)
+                return Pair("Inspection Invoice Generated Successfully",branchDetails)
             } ?: throw NullValueNotAllowedException("No Company Record not found")
     }
 
@@ -4466,15 +4466,28 @@ class QADaoServices(
                 inspectionInvoiceUploaded= plantDetails.varField9?.toLong()
             }
         }
+        val inspectionReport =
+            permit.id?.let {
+                qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(
+                    it,
+                    1
+                )
+            }
+        val inspectionReportDetails = InspectionReportDtoPermit(
+            id = inspectionReport?.id,
+            refNo = inspectionReport?.refNo,
+            submittedInspectionReportStatus = inspectionReport?.submittedInspectionReportStatus,
+            createdOn = inspectionReport?.createdOn
+        )
 
         val companyStatus = CompanyUpgradeStatusDto(
-            companyProfileID= companyDetails.id,
-            requesterComment= companyDetails.requesterComment,
-            updateFirmType= firmTypeDetails?.firmType,
-            updateFirmTypeID= companyDetails.updateFirmType,
-            upgradeType= companyDetails.upgradeType == 1,
-            updateDetailsStatus= companyDetails.updateDetailsStatus == 1,
-            inspectionFeeRequerd= plantDetails.inspectionFeeStatus == 1
+            companyProfileID = companyDetails.id,
+            requesterComment = companyDetails.requesterComment,
+            updateFirmType = firmTypeDetails?.firmType,
+            updateFirmTypeID = companyDetails.updateFirmType,
+            upgradeType = companyDetails.upgradeType == 1,
+            updateDetailsStatus = companyDetails.updateDetailsStatus == 1,
+            inspectionFeeRequerd = plantDetails.inspectionFeeStatus == 1
         )
 
         return AllPermitDetailsDto(
@@ -4516,6 +4529,7 @@ class QADaoServices(
             inspectionNeeded = inspectionNeeded,
             inspectionFeeInvoice = inspectionFeeInvoice,
             inspectionInvoiceUploaded = inspectionInvoiceUploaded,
+            inspectionReportDetails = inspectionReportDetails,
 
             )
     }
@@ -4565,16 +4579,23 @@ class QADaoServices(
                 inspectionInvoiceUploaded= plantDetails?.varField9?.toLong()
             }
         }
-
+        val inspectionReport =
+            qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(permitID, 1)
+        val inspectionReportDetails = InspectionReportDtoPermit(
+            id = inspectionReport?.id,
+            refNo = inspectionReport?.refNo,
+            submittedInspectionReportStatus = inspectionReport?.submittedInspectionReportStatus,
+            createdOn = inspectionReport?.createdOn
+        )
 
         var companyStatus = CompanyUpgradeStatusDto(
-            companyProfileID= companyDetails.id,
-            requesterComment= companyDetails.requesterComment,
-            updateFirmType= firmTypeDetails?.firmType,
-            updateFirmTypeID= companyDetails.updateFirmType,
-            upgradeType= companyDetails.upgradeType == 1,
-            updateDetailsStatus= companyDetails.updateDetailsStatus == 1,
-            inspectionFeeRequerd= plantDetails.inspectionFeeStatus == 1
+            companyProfileID = companyDetails.id,
+            requesterComment = companyDetails.requesterComment,
+            updateFirmType = firmTypeDetails?.firmType,
+            updateFirmTypeID = companyDetails.updateFirmType,
+            upgradeType = companyDetails.upgradeType == 1,
+            updateDetailsStatus = companyDetails.updateDetailsStatus == 1,
+            inspectionFeeRequerd = plantDetails.inspectionFeeStatus == 1
         )
 
 
@@ -4628,9 +4649,11 @@ class QADaoServices(
             labResultsDtoList,
             inspectionNeeded,
             inspectionFeeInvoice,
-            inspectionInvoiceUploaded
+            inspectionInvoiceUploaded,
+            inspectionReportDetails
         )
     }
+
     fun mapSSFComplianceStatusDetailsDto(ssf: QaSampleSubmissionEntity): MSSSFComplianceStatusDetailsDto {
         return MSSSFComplianceStatusDetailsDto(
             ssf.id,

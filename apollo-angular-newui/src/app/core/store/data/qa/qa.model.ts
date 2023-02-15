@@ -439,6 +439,9 @@ export class AllPermitDetailsDto {
     inspectionInvoiceUploaded: number;
     inspectionFeeInvoice: InvoiceDetailsDto;
     sampleLabResults: MSSSFLabResultsDto[];
+
+    inspectionReportDetails: InspectionReportDetailsDto;
+
 }
 
 
@@ -470,6 +473,12 @@ export class PlantDetailsDto {
     plotNo: string;
     designation: string;
     contactPerson: string;
+}
+export class InspectionReportDetailsDto {
+    id: bigint;
+    refNo: string;
+    submittedInspectionReportStatus: string;
+    createdOn: Date;
 }
 
 export class StgInvoiceBalanceDto {

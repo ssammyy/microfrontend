@@ -19,6 +19,7 @@ import {NotificationService} from "../../../core/store/data/std/notification.ser
 import {NgxSpinnerService} from "ngx-spinner";
 import {QaInternalService} from "../../../core/store/data/qa/qa-internal.service";
 import * as CryptoJS from 'crypto-js';
+import swal from "sweetalert2";
 
 declare const $: any;
 
@@ -100,8 +101,8 @@ export class ViewInspectionReportComponent implements OnInit {
 
 
     private checkIfInspectionReportExists(inspectionReportId: string) {
-        this.loading =true
-        this.loadingText="Retrieving Inspection Report"
+        this.loading = true
+        this.loadingText = "Retrieving Inspection Report"
         this.SpinnerService.show();
 
         this.internalService.getInspectionReport(inspectionReportId).subscribe(
@@ -130,4 +131,57 @@ export class ViewInspectionReportComponent implements OnInit {
     }
 
 
+    gotoPermitDetails(permitId: string) {
+        let text = permitId;
+        let key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        this.router.navigate(['/permit-details-admin', encrypted])
+
+
+    }
+
+    gotoInspectionReport(permitId: string) {
+        let text = permitId;
+        let key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        this.router.navigate(['/new-inspection-report', encrypted])
+
+    }
+
+    submitInspectionReport(inspectionReportId: bigint) {
+
+        this.loading = true
+        this.loadingText = "Submitting Inspection Report"
+        this.SpinnerService.show();
+        this.internalService.inspectionReportFinalSave(String(this.allInspectionReportDetails.permitDetails.id), String(this.allInspectionReportDetails.id), this.allInspectionReportDetails).subscribe(
+            (data: ApiResponseModel) => {
+                if (data.responseCode === '00') {
+
+                    this.SpinnerService.hide();
+                    this.loading = false
+                    //(data);
+                    this.gotoPermitDetails(this.allInspectionReportDetails.permitDetails.id.toString())
+
+                    swal.fire({
+                        title: 'Inspection Report Submitted!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                } else {
+                    this.SpinnerService.hide();
+                    this.qaService.showError(data.message);
+                }
+            },
+        );
+
+    }
 }

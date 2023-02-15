@@ -276,6 +276,8 @@ class InspectionReportDaoServices(
                         updateNewInspectionCheckListRecommendationB(body, iTDetails, map, loggedInUser)
                     inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
                 }
+
+
             val inspectionReportAllDetails =
                 mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
             return commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
@@ -300,6 +302,7 @@ class InspectionReportDaoServices(
             recordsNonconformingRemarks = body.recordsNonconformingRemarks
             productRecallRecords = body.productRecallRecords
             productRecallRecordsRemarks = body.productRecallRecordsRemarks
+
             modifiedBy = commonDaoServices.concatenateName(user)
             modifiedOn = commonDaoServices.getTimestamp()
 
@@ -832,6 +835,12 @@ class InspectionReportDaoServices(
             inspectorComments = body.inspectorComments
             inspectorName = user.firstName + " " + user.lastName
             inspectorDate = commonDaoServices.getCurrentDate()
+            filledInspectionTestingStatus = 1
+            filledOpcStatus = 1
+            filledQpsmsStatus = 1
+            filledHaccpImplementationStatus = 1
+            filledStandardizationMarkSchemeStatus = 1
+
 
 //            varField1 = body.documentsID?.let { commonDaoServices.convertClassToJson(it) }
             status = map.activeStatus
@@ -858,10 +867,19 @@ class InspectionReportDaoServices(
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+            val qaInspectionReportRecommendation = qaInspectionReportRecommendationRepo.findByPermitId(permitID)
+            if (qaInspectionReportRecommendation != null) {
+                qaInspectionReportRecommendation.submittedInspectionReportStatus=1
+                qaInspectionReportRecommendation.modifiedBy = commonDaoServices.concatenateName(loggedInUser)
+                qaInspectionReportRecommendation.modifiedOn = commonDaoServices.getTimestamp()
+                qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
+
+            }
             var permit = qaDaoServices.findPermitBYID(permitID)
             with(permit) {
                 inspectionReportGenerated = 1
-                permitStatus = applicationMapProperties.mapQaStatusPfactoryInsForms
+                permitStatus = applicationMapProperties.mapQaStatusPGenSSC
             }
             val updateResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
 

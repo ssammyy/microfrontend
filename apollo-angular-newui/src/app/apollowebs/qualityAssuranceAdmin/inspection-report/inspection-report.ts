@@ -641,6 +641,7 @@ export class InspectionReport implements OnInit {
             this.loading = true
             this.loadingText = "Saving Recommendations"
             this.SpinnerService.show();
+            this.recommendationsFormGroup.controls['id'].setValue(this.allInspectionReportDetails.id)
             this.internalService.recommendationsSave(this.permitId, String(this.allInspectionReportDetails.id), this.recommendationsFormGroup.value).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
@@ -700,6 +701,9 @@ export class InspectionReport implements OnInit {
 
     private checkIfInspectionReportExists(permitId: string) {
         if (permitId) {
+            this.loading = true
+            this.loadingText = "Loading"
+            this.SpinnerService.show();
 
             this.internalService.checkIfInspectionReportExists(this.permitId).subscribe(
                 (data: ApiResponseModel) => {
@@ -728,10 +732,8 @@ export class InspectionReport implements OnInit {
                         this.recommendationsFormGroup.patchValue(this.allInspectionReportDetails);
 
 
-
-
-                        console.log(this.allInspectionReportDetails)
-
+                        this.SpinnerService.hide()
+                        this.loading = false
                     }
                 },
             );
@@ -749,10 +751,10 @@ export class InspectionReport implements OnInit {
         var key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
-        var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
+        var encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
         console.log('encrypted', encrypted);
-        this.router.navigate(['/inspection-report',encrypted])
+        this.router.navigate(['/inspection-report', encrypted])
 
     }
 }
