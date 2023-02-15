@@ -73,6 +73,13 @@ export class BranchList implements OnInit {
 
   }
 
+
+  onClickPlantDetails(record: Company) {
+    this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/branches'}));
+  }
+
+
   editRecord(record: Branches) {
 
     this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
@@ -153,7 +160,9 @@ export class BranchList implements OnInit {
             console.log(data);
             // this.loadStandards();
             this.SpinnerService.hide();
-            this.qaService.showSuccess('FILE UPLOADED SAVED SUCCESSFULLY');
+            this.qaService.showSuccess('FILE UPLOADED SAVED SUCCESSFULLY', () => {
+              this.onClickPlantDetails(this.company$);
+            });
           },
           error => {
             this.SpinnerService.hide();
@@ -192,7 +201,9 @@ export class BranchList implements OnInit {
       this.qaService.generateInspectionFees(record.id).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
-            this.qaService.showSuccess('Inspection Fee Invoice Generated Successful');
+            this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {
+              this.onClickPlantDetails(this.company$);
+            });
           },
           error => {
             this.SpinnerService.hide();
