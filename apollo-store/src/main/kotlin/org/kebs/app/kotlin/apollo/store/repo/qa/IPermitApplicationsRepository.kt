@@ -710,6 +710,8 @@ interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEnti
     fun findByStatusAndInvoiceMasterIdAndInspectionStatus(status: Int, invoiceMasterId: Long, inspectionStatus: Int): List<QaInvoiceDetailsEntity>?
     fun findByInvoiceMasterId(invoiceMasterId: Long): List<QaInvoiceDetailsEntity>?
     fun findAllByInvoiceMasterId(invoiceMasterId: Long): QaInvoiceDetailsEntity?
+    fun findAllByInvoiceMasterIdAndFmarkStatus(invoiceMasterId: Long, fmarkStatus: Int): QaInvoiceDetailsEntity?
+    fun findAllByInvoiceMasterIdAndFmarkStatusIsNull(invoiceMasterId: Long): QaInvoiceDetailsEntity?
 //    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
 }

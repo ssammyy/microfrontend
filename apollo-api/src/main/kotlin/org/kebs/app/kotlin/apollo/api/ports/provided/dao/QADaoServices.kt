@@ -4463,7 +4463,7 @@ class QADaoServices(
             inspectionNeeded = true
             if(plantDetails.invoiceInspectionGenerated==1){
                 inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
-                inspectionInvoiceUploaded= plantDetails?.varField9?.toLong()
+                inspectionInvoiceUploaded= plantDetails.varField9?.toLong()
             }
         }
 

@@ -2755,32 +2755,34 @@ class QualityAssuranceHandler(
 
             if(permitType.id == applicationMapProperties.mapQAPermitTypeIdSmark){
                 invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permitID)?.let { invoice ->
-                    qaInvoiceDetailsRepo.findAllByInvoiceMasterId(invoice.id)?.let {inv->
-                        when {
-                            applicationMapProperties.mapQASmarkMediumTurnOverId == permit.permitType -> {
-                                if(plantDetail.tokenGiven == inv.tokenValue && plantDetail.invoiceSharedId == inv.id){
-                                    with(plantDetail) {
-                                        tokenGiven = null
-                                        invoiceSharedId = null
-                                        paidDate = null
-                                        endingDate = null
+                    qaInvoiceDetailsRepo.findByInvoiceMasterId(invoice.id)?.let {invFound->
+                        invFound.forEach {inv->
+                            when {
+                                applicationMapProperties.mapQASmarkMediumTurnOverId == permit.permitType -> {
+                                    if(plantDetail.tokenGiven == inv.tokenValue && plantDetail.invoiceSharedId == inv.id){
+                                        with(plantDetail) {
+                                            tokenGiven = null
+                                            invoiceSharedId = null
+                                            paidDate = null
+                                            endingDate = null
+                                        }
+                                        qaDaoServices.updatePlantDetails(map, loggedInUser, plantDetail)
                                     }
-                                    qaDaoServices.updatePlantDetails(map, loggedInUser, plantDetail)
+                                }
+                                applicationMapProperties.mapQASmarkJuakaliTurnOverId == permit.permitType -> {
+                                    if(plantDetail.tokenGiven == inv.tokenValue && plantDetail.invoiceSharedId == inv.id){
+                                        with(plantDetail) {
+                                            tokenGiven = null
+                                            invoiceSharedId = null
+                                            paidDate = null
+                                            endingDate = null
+                                        }
+                                        qaDaoServices.updatePlantDetails(map, loggedInUser, plantDetail)
+                                    }
                                 }
                             }
-                            applicationMapProperties.mapQASmarkJuakaliTurnOverId == permit.permitType -> {
-                                if(plantDetail.tokenGiven == inv.tokenValue && plantDetail.invoiceSharedId == inv.id){
-                                    with(plantDetail) {
-                                        tokenGiven = null
-                                        invoiceSharedId = null
-                                        paidDate = null
-                                        endingDate = null
-                                    }
-                                    qaDaoServices.updatePlantDetails(map, loggedInUser, plantDetail)
-                                }
-                            }
+                            qaInvoiceDetailsRepo.delete(inv)
                         }
-                        qaInvoiceDetailsRepo.delete(inv)
                     }
                     invoiceMasterDetailsRepo.delete(invoice)
                 }
