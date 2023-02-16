@@ -735,6 +735,8 @@ export class InspectionReport implements OnInit {
                         this.SpinnerService.hide()
                         this.loading = false
                     }
+                    this.SpinnerService.hide()
+                    this.loading = false
                 },
             );
         }
