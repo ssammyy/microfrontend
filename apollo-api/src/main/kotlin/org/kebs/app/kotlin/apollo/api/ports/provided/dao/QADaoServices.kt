@@ -648,8 +648,14 @@ class QADaoServices(
             var sampleSubmissionDetails = QaSampleSubmissionEntity()
             SampleSubmissionRepo.findByIdOrNull(body.id ?: -1L)
                 ?.let { fdr ->
+                    with(fdr){
+                        ssfNo = body.ssfNo
+                        ssfSubmissionDate = body.ssfSubmissionDate
+                        bsNumber = body.bsNumber
+                        brandName = body.brandName
+                        productDescription = body.productDescription
+                    }
                     sampleSubmissionDetails = saveSSFQADetails(
-                        body,
                         fdr,
                         permit.id ?: throw Exception("MISSING PERMIT ID"),
                         permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
@@ -658,8 +664,14 @@ class QADaoServices(
                         true
                     )
                 } ?: kotlin.run {
+                with(sampleSubmissionDetails){
+                    ssfNo = body.ssfNo
+                    ssfSubmissionDate = body.ssfSubmissionDate
+                    bsNumber = body.bsNumber
+                    brandName = body.brandName
+                    productDescription = body.productDescription
+                }
                 sampleSubmissionDetails = saveSSFQADetails(
-                    body,
                     sampleSubmissionDetails,
                     permit.id ?: throw Exception("MISSING PERMIT ID"),
                     permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
@@ -1428,7 +1440,6 @@ class QADaoServices(
     }
 
     fun saveSSFQADetails(
-        body: SSFDetailsApplyDto,
         inspection: QaSampleSubmissionEntity,
         permitID: Long,
         permitRefNUMBER: String,
@@ -7278,8 +7289,7 @@ class QADaoServices(
                 ?.forEach { masterInvoiceID ->
                     val userID = user.id ?: throw Exception("INVALID USER ID")
                     var permitMasterInvoiceFound = findPermitMasterInvoiceByID(masterInvoiceID)
-                    var paymentRevenueCode: PaymentRevenueCodesEntity
-                    paymentRevenueCode = when {
+                    val paymentRevenueCode: PaymentRevenueCodesEntity = when {
                         permitMasterInvoiceFound.varField10?.toInt()==1 -> {
                             val plantDetails = findPlantDetails(permitMasterInvoiceFound.varField8?.toLong()?: throw Exception("MISSING PLANT DETAILS (ID)"))
                             val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdSmark)
@@ -7401,7 +7411,7 @@ class QADaoServices(
                     sr.names =
                         "${permitMasterInvoiceFound.invoiceRef} ${permitMasterInvoiceFound.totalAmount}${permitMasterInvoiceFound.taxAmount}"
                     sr.varField1 = invoiceBatchDetails?.id.toString()
-
+                    sr.varField10 = "true"
                     sr.responseStatus = sr.serviceMapsId?.successStatusCode
                     sr.responseMessage = "Success ${sr.payload}"
                     sr.status = s.successStatus
@@ -7412,6 +7422,7 @@ class QADaoServices(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
 //            KotlinLogging.logger { }.trace(e.message, e)
+            sr.varField10 = "false"
             sr.status = sr.serviceMapsId?.exceptionStatus
             sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
             sr.responseMessage = e.message

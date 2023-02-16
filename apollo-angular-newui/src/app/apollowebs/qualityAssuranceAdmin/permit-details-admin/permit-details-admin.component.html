@@ -1244,17 +1244,19 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     <div class="card-body" style="margin-top: 20px;">
 
 
-                                                                        <div class="search">
+<!--                                                                        <div class="search">-->
 
-                                                                            <input type="text"
-                                                                                   style="border: none; margin-left: 2px;"
-                                                                                   placeholder="Search...">
-                                                                            <i class="fa fa-search" aria-hidden="true"
-                                                                               style="margin-right: 5px;"></i>
+<!--                                                                            <input type="text"-->
+<!--                                                                                   style="border: none; margin-left: 2px;"-->
+<!--                                                                                   placeholder="Search...">-->
+<!--                                                                            <i class="fa fa-search" aria-hidden="true"-->
+<!--                                                                               style="margin-right: 5px;"></i>-->
 
-                                                                        </div>
+<!--                                                                        </div>-->
 
-
+                                                                        <a data-toggle="modal" data-target="#allProcessModel"
+                                                                           (click)="openModalAddDetails('addSSFDetails')"
+                                                                           class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
                                                                         <div class="material-datatables">
                                                                             <div class="table-responsive">
 
@@ -1267,21 +1269,15 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
 
-                                                                                            <th><strong>SSF No</strong>
-                                                                                            </th>
-                                                                                            <th><strong>SSF Submission
-                                                                                                Date</strong></th>
-                                                                                            <th><strong>BS
-                                                                                                Number</strong></th>
-                                                                                            <th><strong>Product
-                                                                                                Name</strong></th>
-                                                                                            <th><strong>Product
-                                                                                                Brand</strong></th>
-                                                                                            <th><strong>Results
-                                                                                                Analysis</strong></th>
+                                                                                            <th><strong>No</strong></th>
+                                                                                            <th><strong>SSF No</strong></th>
+                                                                                            <th><strong>SSF Submission Date</strong></th>
+                                                                                            <th><strong>BS Number</strong></th>
+                                                                                            <th><strong>Product Name</strong></th>
+                                                                                            <th><strong>Product Brand</strong></th>
+                                                                                            <th><strong>Results Analysis</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View
-                                                                                                    Details</strong>
+                                                                                                <strong>View Details</strong>
                                                                                             </th>
                                                                                         </tr>
                                                                                         </thead>
@@ -2069,13 +2065,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
-                                                    <label><b>InspectionDate:</b></label>
+                                                    <label><b>SSF No:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="ssfNo" id="ssfNo" matInput name="ssfNo"
                                                                required
                                                                placeholder="Please enter ssfNo" type="text">
                                                     </mat-form-field>
-                                                    <label><b>InspectionDate:</b></label>
+                                                    <label><b>Submission Date:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="ssfSubmissionDate"
                                                                id="ssfSubmissionDate" matInput name="ssfSubmissionDate"
@@ -2083,19 +2079,19 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                placeholder="Please enter ssf Submission Date"
                                                                type="date">
                                                     </mat-form-field>
-                                                    <label><b>InspectionDate:</b></label>
+                                                    <label><b>BS Number:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="bsNumber" id="bsNumber" matInput
                                                                name="bsNumber" required
                                                                placeholder="Please enter BS Number" type="text">
                                                     </mat-form-field>
-                                                    <label><b>InspectionDate:</b></label>
+                                                    <label><b>Brand Name:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="brandName" id="brandName" matInput
                                                                name="brandName" required
                                                                placeholder="Please enter brand Name" type="text">
                                                     </mat-form-field>
-                                                    <label><b>InspectionDate:</b></label>
+                                                    <label><b>Product Description:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="productDescription"
                                                                id="productDescription" matInput

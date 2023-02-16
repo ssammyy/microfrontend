@@ -1776,6 +1776,12 @@ class CommonDaoServices(
         return (differenceInTime / (1000L * 60 * 60 * 24 * 365))
     }
 
+    fun getCalculatedDaysInLong(d1: Date,d2: Date): Long {
+        val differenceInTime: Long = d2.time - d1.time
+        return ((differenceInTime / (1000 * 60 * 60 * 24)) % 365)
+//        return (differenceInTime / (1000L * 60 * 60 * 24 * 365))
+    }
+
 
     fun findUserByID(id: Long): UsersEntity {
         usersRepo.findByIdOrNull(id)
