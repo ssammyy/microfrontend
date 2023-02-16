@@ -1846,11 +1846,11 @@ class MarketSurveillanceFuelDaoServices(
             packaging = body.packaging
             labellingIdentification = body.labellingIdentification
             createdUserId = user.id
-            referencesStandards = body.referencesStandards
+            standardsArray = body.standardsArray
             productDescription = body.productDescription
             sourceProductEvidence = body.sourceProductEvidence
             sizeTestSample = body.sizeTestSample
-            sizeRefSample = body.sizeRefSample
+            sizeRefSample = body.sizeRefSample  
             condition = body.condition
             sampleReferences = body.sampleReferences
             sendersName = body.sendersName
@@ -3619,7 +3619,7 @@ class MarketSurveillanceFuelDaoServices(
             data.packaging,
             data.labellingIdentification,
             data.fileRefNumber,
-            data.referencesStandards,
+            data.standardsArray,
             data.sizeTestSample,
             data.sizeRefSample,
             data.condition,

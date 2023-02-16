@@ -4634,36 +4634,68 @@
                     </button>
                 </div>
                 <div class="modal-body">
+<!--                    <form [formGroup]="finalRecommendationDetailsForm">-->
+<!--                        <div>-->
+<!--                            <h5 class="mb-3" style="color: #0066B1">Recommendation Details</h5>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label><b>SELECT RECOMMENDATION NAME</b> </label>-->
+<!--                                        <select (change)="updateSelectedRecommendation()"-->
+<!--                                                [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formFinalRecommendationDetailsForm.recommendationId.errors"-->
+<!--                                                aria-describedby="inputGroup-sizing-lg" aria-label="Small"-->
+<!--                                                class="form-control" formControlName="recommendationId" name="recommendationId" required>-->
+<!--                                            <option [value]="" selected>Please select</option>-->
+<!--                                            <option  *ngFor="let app of recommendationList| filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>-->
+<!--                                        </select>-->
+<!--                                        <input class="form-control two-column-input" type="hidden" ngModel="{{selectedRecommendationName}}"-->
+<!--                                               formControlName="recommendationName" name="recommendationName">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                                <div class="col">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <button *ngIf="finalRecommendationDetailsForm.valid" mat-raised-button-->
+<!--                                                class="btn btn-success" (click)="onClickAddDataRecommendationDetails()" type="button" >SAVE PARAMETERS-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </form>-->
+
                     <form [formGroup]="finalRecommendationDetailsForm">
                         <div>
                             <h5 class="mb-3" style="color: #0066B1">Recommendation Details</h5>
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label><b>SELECT RECOMMENDATION NAME</b> </label>
+                                        <label><b>SELECT RECOMMENDATION NAME</b></label>
                                         <select (change)="updateSelectedRecommendation()"
                                                 [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formFinalRecommendationDetailsForm.recommendationId.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="recommendationId" name="recommendationId" required>
                                             <option [value]="" selected>Please select</option>
-                                            <option  *ngFor="let app of recommendationList| filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
+                                            <option *ngFor="let app of recommendationList | filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
+                                            <option value="other">Other</option>
                                         </select>
-                                        <input class="form-control two-column-input" type="hidden" ngModel="{{selectedRecommendationName}}"
-                                               formControlName="recommendationName" name="recommendationName">
+                                        <input *ngIf="finalRecommendationDetailsForm.get('recommendationId').value === 'OTHER'" class="form-control two-column-input" type="text"
+                                               formControlName="recommendationName" name="recommendationName" placeholder="Enter other recommendation name">
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <button *ngIf="finalRecommendationDetailsForm.valid" mat-raised-button
-                                                class="btn btn-success" (click)="onClickAddDataRecommendationDetails()" type="button" >SAVE PARAMETERS
+                                                class="btn btn-success" (click)="onClickAddDataRecommendationDetails()" type="button">SAVE PARAMETERS
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </form>
+
                     <div class="material-datatables">
                         <div class="table-responsive">
                             <table id="datatablesSampleSubmit4Param"
@@ -7414,6 +7446,7 @@
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
+
                                     <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
                                     && selectedLabResults?.ssfResultsList?.analysisDone
                                     && selectedLabResults?.ssfResultsList?.resultsSent == false
@@ -7560,6 +7593,16 @@
                                                 <mat-option [value]="false">Non-Compliant</mat-option>
                                             </mat-select>
                                         </mat-form-field>
+                                        <!-- Failed Parameters field will only be shown if compliance status is non-compliant -->
+                                        <div *ngIf="!ssfSaveComplianceStatusForm.get('complianceStatus').value">
+                                            <label for="failedParametersSSF"><b>Failed Parameters</b></label>
+                                            <mat-form-field class="example-full-width">
+                                                <textarea id="failedParametersSSF4" matInput type="text"
+                                                          formControlName="failedParameters"
+                                                          name="failedParameters">
+                                                </textarea>
+                                            </mat-form-field>
+                                        </div>
                                         <label for="complianceRemarksSSF"><b>Please write, in detail, your feedback for the whole Lab results:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="complianceRemarksSSF4" matInput type="text"
@@ -7609,16 +7652,16 @@
                     <div *ngIf="(currDiv == 'ssfSendResultsStatus')">
                         <form  [formGroup]="ssfClientEmailNotificationForm" action="" class="form" enctype="multipart/form-data" method="post">
                             <div class="form-body">
+                                <h3>Choose who to send email notifications to:</h3>
                                 <div class="form-group">
                                     <div>
-                                        <div >
-                                            <label for="failedParameters"><b>Failed Parameters</b></label>
-                                            <mat-form-field class="example-full-width">
-                                                <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g moisture, pH etc" formControlName="failedParameters" name="failedParameters"
-                                                       [class.is-invalid]="formSSFClientEmailNotificationForm.failedParameters.invalid
-                                                    && formSSFClientEmailNotificationForm.failedParameters.touched">
-                                            </mat-form-field>
-                                        </div>
+<!--                                        <div >-->
+<!--                                            <label for="failedParameters"><b>Failed Parameters</b></label>-->
+<!--                                            <mat-form-field class="example-full-width">-->
+<!--                                                <input id="failedParameters" matInput type="text" placeholder="Please Enter failed Parameters e.g moisture, pH etc" formControlName="failedParameters" name="failedParameters"-->
+<!--                                                      >-->
+<!--                                            </mat-form-field>-->
+<!--                                        </div>-->
 
                                         <label for="outLetEmail"><b>OutLet Email</b></label>
                                         <mat-form-field class="example-full-width">

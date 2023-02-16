@@ -71,6 +71,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     form: FormGroup;
     memberReturnArray: any[] = [];
     uploadedFilesOnly: FileList;
+    uploadedSsfFilesOnly: FileList;
     uploadedFilesScheme: FileList;
     public actionRequest: PermitEntityDetails | undefined;
 
@@ -109,6 +110,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     addStandards: FormGroup;
     factoryVisit: FormGroup;
     docFileNameForm: FormGroup;
+    docSSFUpload: FormGroup;
 
     updateSectionForm: FormGroup;
     permitCompletenessForm: FormGroup;
@@ -495,7 +497,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.docFileNameForm = this.formBuilder.group({
             docFileName: null,
         });
-
+        
         this.recommendationForm = this.formBuilder.group({
             recommendationRemarks: ['', Validators.required],
         });
@@ -749,10 +751,10 @@ export class PermitDetailsAdminComponent implements OnInit {
     openModalAddDetails(divVal: string): void {
 
         const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
-            'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'addRecommendationApproval'];
+            'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'addRecommendationApproval','uploadSSF'];
 
         const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
-            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'ADD APPROVAL'];
+            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'ADD APPROVAL','UPLOAD SSF'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -1457,6 +1459,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             });
     }
 
+    
 
     saveUploadsAttachments() {
         if (this.uploadedFilesOnly.length > 0) {
@@ -1491,6 +1494,47 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
         }
     }
+
+    onClickSaveUploadsSSF() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+
+            'You can click the \'UPLOAD SSF\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveUploadsSSF();
+            });
+    }
+
+    SaveUploadsSSF() {
+        if (this.uploadedSsfFilesOnly.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedSsfFilesOnly;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitID));
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('SSFdocFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveUploadFile(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('UPLOAD(S) SAVED  SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
+
 
 
 

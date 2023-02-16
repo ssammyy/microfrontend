@@ -1717,10 +1717,10 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.ssfClientEmailNotificationForm = this.formBuilder.group({
       ssfID: null,
-      failedParameters: ['', Validators.required],
-      outLetEmail: null,
-      manufactureEmail: null,
-      complainantEmail: null,
+      failedParameters: null,
+      outLetEmail: [''],
+      manufactureEmail: [''],
+      complainantEmail: [''],
       remarks: null,
     });
 
@@ -1960,7 +1960,9 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.pdfSaveComplianceStatusForm = this.formBuilder.group({
       complianceStatus: ['', Validators.required],
+      failedParameters: [''],
       complianceRemarks: ['', Validators.required],
+
     });
 
     this.ssfSaveComplianceStatusForm = this.formBuilder.group({

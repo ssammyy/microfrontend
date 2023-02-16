@@ -1806,6 +1806,14 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    data-target="#myModalUpload"
                                    (click)="openModalAddDetails('uploadAttachments')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD ATTACHMENTS</a>
+
+
+                                   <a data-toggle="modal"
+                                 
+                                   data-target="#uploadSSFModal"
+                                   (click)="openModalAddDetails('uploadSSF')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SSF</a>
+                                   
                             </div>
                         </div>
 
@@ -1865,6 +1873,55 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     </div>
                 </div>
                 <!--  End Dynamic UPLOADS Modal -->
+
+                  <!-- SSF UPLOAD Modal -->
+                  <div class="modal fade" id="uploadSSFModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                  aria-hidden="true">
+                 <div class="modal-dialog">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <h4 class="modal-title">{{currDivLabel}}</h4>
+                             <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                 <i class="material-icons">clear</i>
+                             </button>
+                         </div>
+                         <div class="modal-body">
+                             <div>
+                                 <form  action="" class="form"
+                                       enctype="multipart/form-data" method="post">
+                                     <div class="form-body">
+                                         <div class="form-group">
+                                             <div>
+                                                
+                                                 <label for="files"><b>Upload SSF Here</b></label>
+                                                 <form #demoForm="ngForm">
+                                                     <file-upload [(ngModel)]="uploadedSsfFilesOnly" name="files"
+                                                                  id="files"
+                                                                  accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt"></file-upload>
+                                                 </form>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </form>
+                             </div>
+                         </div>
+                         <div class="modal-footer">
+
+                             <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">
+                                 Close
+                             </button>
+                             <button *ngIf="(currDiv == 'uploadSSF')" mat-raised-button type="button"
+                                     class="btn btn-success"
+                                     (click)="onClickSaveUploadsSSF()"
+                                     data-dismiss="modal"
+                             >SUBMIT
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <!--  End SSF UPLOADS Modal -->
+
 
                 <!-- Dynamic Modal -->
                 <div class="modal fade" id="allProcessModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -2250,6 +2307,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
+                                
                             </div>
                         </div>
                     </div>

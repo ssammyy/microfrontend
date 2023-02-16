@@ -71,7 +71,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
   active: Number = 0;
-  averageCompliance: number = 0;
+  averageCompliance: number =0;
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
   selectedFile: File;
@@ -1705,10 +1705,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.ssfClientEmailNotificationForm = this.formBuilder.group({
       ssfID: null,
-      failedParameters: ['', Validators.required],
-      outLetEmail: null,
-      manufactureEmail: null,
-      complainantEmail: null,
+      failedParameters: null,
+      outLetEmail: [''],
+      manufactureEmail: [''],
+      complainantEmail: [''],
       remarks: null,
     });
 
@@ -1855,6 +1855,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
+      seizureFormValueToClone: null,
       productField: ['', Validators.required],
       serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
@@ -1954,6 +1955,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.ssfSaveComplianceStatusForm = this.formBuilder.group({
       complianceStatus: ['', Validators.required],
       complianceRemarks: ['', Validators.required],
+      failedParameters: [''],
       totalCompliance: null,
       totalComplianceTest: null,
     });
@@ -2504,7 +2506,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
       'ADD BS NUMBER', 'APPROVE/DECLINE PRELIMINARY REPORT', 'APPROVE/DECLINE PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/DECLINE FINAL REPORT', 'APPROVE/DECLINE FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
-      , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
+      , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
       'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD START AND END DATE YOU WISH TO END ON-SITE ACTIVITIES'];
@@ -4522,6 +4524,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             (data: any) => {
               this.SpinnerService.hide();
               // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+              this.verificationPermitForm.patchValue(data);
+              this.currDivLabel = `UCR FOUND WITH FOLLOWING DETAILS`;
+              this.currDiv = 'verificationPermitDetails';
+              this.verificationPermitForm.disabled;
+
+              window.$('#myModal3').modal('show');
+
             },
             error => {
               this.SpinnerService.hide();
@@ -4702,7 +4711,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
-  // Remove Form repeater values
+
   removeDataSampleCollectItems(index) {
     console.log(index);
     if (index === 0) {
