@@ -720,6 +720,10 @@ export class ApiEndpointService {
         ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
         ADD_RECOMMENDATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/save-recommendation`,
         SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
+        APPROVE_REJECT_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-inspection-report`,
+        APPROVE_REJECT_PERMIT_QAM_HOD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/qam-approve-reject-permit`,
+        APPROVE_REJECT_PERMIT_PSC_MEMBER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/psc-approve-reject-permit`,
+        APPROVE_REJECT_PERMIT_PCM: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/pcm-approve-reject-permit`,
 
         CHECK_IF_INSPECTION_REPORT_EXISTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/check_if_inspection_report_exists`,
         NEW_INSPECTION_TECHNICAL_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/new-technical-report`,

@@ -806,6 +806,10 @@ data class PermitDetailsDto(
     var ssfCompletedStatus: Boolean? = null,
     var compliantStatus: Boolean? = null,
     var invoiceDifferenceGenerated: Boolean? = null,
+    var recommendationApprovalStatus: Boolean? = null,
+    var hodQamApproveRejectStatus: Boolean? = null,
+    var pscMemberApprovalStatus: Boolean? = null,
+    var pcmApprovalStatus: Boolean? = null,
 
     )
 

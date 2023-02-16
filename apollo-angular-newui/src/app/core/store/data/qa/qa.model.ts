@@ -314,6 +314,10 @@ export class PermitEntityDetails {
     ssfCompletedStatus: boolean;
     compliantStatus: boolean;
     invoiceDifferenceGenerated: boolean;
+    recommendationApprovalStatus: boolean;
+    hodQamApproveRejectStatus: boolean;
+    pscMemberApprovalStatus: boolean;
+    pcmApprovalStatus: boolean;
 }
 
 

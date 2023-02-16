@@ -1196,7 +1196,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_PSC_MEMBERS_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitApproveRejectPermitPSCDetails(
         permitID: Long,
@@ -1296,7 +1296,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_PCM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitApproveRejectPermitPCMDetails(
         permitID: Long,
@@ -4457,6 +4457,10 @@ class QADaoServices(
             ssfCompletedStatus = permit.ssfCompletedStatus == 1
             compliantStatus = permit.compliantStatus == 1
             invoiceDifferenceGenerated = permit.invoiceDifferenceGenerated == 1
+            recommendationApprovalStatus = permit.recommendationApprovalStatus == 1
+            hodQamApproveRejectStatus = permit.hodQamApproveRejectStatus == 1
+            pscMemberApprovalStatus  = permit.pscMemberApprovalStatus  == 1
+            pcmApprovalStatus  = permit.pcmApprovalStatus == 1
         }
         return p
     }
@@ -4584,8 +4588,8 @@ class QADaoServices(
             }
         }
 
-        var plantDetails = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
-        var companyDetails = commonDaoServices.findCompanyProfileWithID(plantDetails.companyProfileId?: throw Exception("MISSING COMPANY ID ON PLANT DETAILS"))
+        val plantDetails = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+        val companyDetails = commonDaoServices.findCompanyProfileWithID(plantDetails.companyProfileId?: throw Exception("MISSING COMPANY ID ON PLANT DETAILS"))
         val firmTypeDetails = companyDetails.updateFirmType?.let { findFirmTypeById(it) }
 
         var inspectionNeeded = false
@@ -4601,8 +4605,7 @@ class QADaoServices(
                 }
             }
         }
-        val inspectionReport =
-            qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(permitID, 1)
+        val inspectionReport = qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(permitID, 1)
         val inspectionReportDetails = InspectionReportDtoPermit(
             id = inspectionReport?.id,
             refNo = inspectionReport?.refNo,
@@ -4610,7 +4613,7 @@ class QADaoServices(
             createdOn = inspectionReport?.createdOn
         )
 
-        var companyStatus = CompanyUpgradeStatusDto(
+        val companyStatus = CompanyUpgradeStatusDto(
             companyProfileID = companyDetails.id,
             requesterComment = companyDetails.requesterComment,
             updateFirmType = firmTypeDetails?.firmType,
