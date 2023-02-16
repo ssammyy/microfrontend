@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {
   Back,
@@ -28,7 +28,7 @@ export class BranchList implements OnInit {
   branches$: Observable<Branches[]>;
   filterName = '';
   stepTwoForm!: FormGroup;
-  uploadInspection: FormGroup;
+  uploadInspection!: FormGroup;
   stepThreeForm!: FormGroup;
   // @ts-ignore
   branch: Branches;
@@ -51,6 +51,7 @@ export class BranchList implements OnInit {
       private qaService: QaService,
       private SpinnerService: NgxSpinnerService,
       private store$: Store<any>,
+      private formBuilder: FormBuilder,
       private router: Router
   ) {
     this.branches$ = service.entities$;
@@ -62,6 +63,9 @@ export class BranchList implements OnInit {
       return this.selectedCompany = d;
     });
 
+    this.uploadInspection = this.formBuilder.group({
+      userPaidDate: ['', Validators.required],
+    });
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
       return this.roles = u.roles;
