@@ -4462,10 +4462,14 @@ class QADaoServices(
         if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == companyDetails.firmCategory){
             inspectionNeeded = true
             if(plantDetails.invoiceInspectionGenerated==1){
-                inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
-                inspectionInvoiceUploaded= plantDetails.varField9?.toLong()
+                if(plantDetails.varField9!=null){
+                    inspectionInvoiceUploaded= plantDetails.varField9?.toLong()
+                }else{
+                    inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
+                }
             }
         }
+
         val inspectionReport =
             permit.id?.let {
                 qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(
@@ -4575,8 +4579,11 @@ class QADaoServices(
         if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == companyDetails.firmCategory){
             inspectionNeeded = true
             if(plantDetails.invoiceInspectionGenerated==1){
-                inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
-                inspectionInvoiceUploaded= plantDetails?.varField9?.toLong()
+                if(plantDetails.varField9!=null){
+                    inspectionInvoiceUploaded= plantDetails.varField9?.toLong()
+                }else{
+                    inspectionFeeInvoice= findInspectionInvoiceDetailsDTO(permit,plantDetails)
+                }
             }
         }
         val inspectionReport =
