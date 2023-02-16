@@ -7289,8 +7289,7 @@ class QADaoServices(
                 ?.forEach { masterInvoiceID ->
                     val userID = user.id ?: throw Exception("INVALID USER ID")
                     var permitMasterInvoiceFound = findPermitMasterInvoiceByID(masterInvoiceID)
-                    var paymentRevenueCode: PaymentRevenueCodesEntity
-                    paymentRevenueCode = when {
+                    val paymentRevenueCode: PaymentRevenueCodesEntity = when {
                         permitMasterInvoiceFound.varField10?.toInt()==1 -> {
                             val plantDetails = findPlantDetails(permitMasterInvoiceFound.varField8?.toLong()?: throw Exception("MISSING PLANT DETAILS (ID)"))
                             val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdSmark)
@@ -7412,7 +7411,7 @@ class QADaoServices(
                     sr.names =
                         "${permitMasterInvoiceFound.invoiceRef} ${permitMasterInvoiceFound.totalAmount}${permitMasterInvoiceFound.taxAmount}"
                     sr.varField1 = invoiceBatchDetails?.id.toString()
-
+                    sr.varField10 = "true"
                     sr.responseStatus = sr.serviceMapsId?.successStatusCode
                     sr.responseMessage = "Success ${sr.payload}"
                     sr.status = s.successStatus
@@ -7423,6 +7422,7 @@ class QADaoServices(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
 //            KotlinLogging.logger { }.trace(e.message, e)
+            sr.varField10 = "false"
             sr.status = sr.serviceMapsId?.exceptionStatus
             sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
             sr.responseMessage = e.message
