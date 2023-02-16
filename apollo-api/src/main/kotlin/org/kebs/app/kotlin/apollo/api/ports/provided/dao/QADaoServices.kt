@@ -648,8 +648,14 @@ class QADaoServices(
             var sampleSubmissionDetails = QaSampleSubmissionEntity()
             SampleSubmissionRepo.findByIdOrNull(body.id ?: -1L)
                 ?.let { fdr ->
+                    with(fdr){
+                        ssfNo = body.ssfNo
+                        ssfSubmissionDate = body.ssfSubmissionDate
+                        bsNumber = body.bsNumber
+                        brandName = body.brandName
+                        productDescription = body.productDescription
+                    }
                     sampleSubmissionDetails = saveSSFQADetails(
-                        body,
                         fdr,
                         permit.id ?: throw Exception("MISSING PERMIT ID"),
                         permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
@@ -658,8 +664,14 @@ class QADaoServices(
                         true
                     )
                 } ?: kotlin.run {
+                with(sampleSubmissionDetails){
+                    ssfNo = body.ssfNo
+                    ssfSubmissionDate = body.ssfSubmissionDate
+                    bsNumber = body.bsNumber
+                    brandName = body.brandName
+                    productDescription = body.productDescription
+                }
                 sampleSubmissionDetails = saveSSFQADetails(
-                    body,
                     sampleSubmissionDetails,
                     permit.id ?: throw Exception("MISSING PERMIT ID"),
                     permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
@@ -699,7 +711,7 @@ class QADaoServices(
     }
 
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveLabPDFSelectedDetails(
         permitID: Long,
@@ -730,7 +742,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveLabSaveComplianceDetails(
         permitID: Long,
@@ -774,7 +786,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveSSFSaveComplianceDetails(
         permitID: Long,
@@ -818,7 +830,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveRecommendationDetails(
         permitID: Long,
@@ -1428,7 +1440,6 @@ class QADaoServices(
     }
 
     fun saveSSFQADetails(
-        body: SSFDetailsApplyDto,
         inspection: QaSampleSubmissionEntity,
         permitID: Long,
         permitRefNUMBER: String,
@@ -7807,63 +7818,63 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(s)
         var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
+        try {
 
-
-        val userDetails =
-            commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
-        val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
-        val companyDetails = commonDaoServices.findCompanyProfileWithID(
-            userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
-        )
-        val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
-
-        when (permitType.id) {
-            applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
-                val productsManufacture = findAllProductManufactureInPlantWithPlantID(
-                    s.activeStatus,
-                    s.activeStatus,
-                    s.inactiveStatus,
-                    permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
-                    plantDetail.id
+                val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+                val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+                val companyDetails = commonDaoServices.findCompanyProfileWithID(
+                    userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
                 )
-                invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
-                    permit,
-                    user,
-                    manufactureTurnOver,
-                    productsManufacture.size.toLong(),
-                    plantDetail
-                )
-            }
+                val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
 
-            applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
-            }
+                when (permitType.id) {
+                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                        val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
+                        val productsManufacture = findAllProductManufactureInPlantWithPlantID(
+                            s.activeStatus,
+                            s.activeStatus,
+                            s.inactiveStatus,
+                            permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
+                            plantDetail.id
+                        )
+                        invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
+                            permit,
+                            user,
+                            manufactureTurnOver,
+                            productsManufacture.size.toLong(),
+                            plantDetail
+                        )
+                    }
 
-            applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
-            }
+                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                        invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
+                    }
+
+                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                        invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
+                    }
+                }
+
+
+                sr.payload = "User[id= ${companyDetails.userId}]"
+                sr.names = "${companyDetails.name} ${companyDetails.kraPin}"
+                sr.varField10 = "true"
+                sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                sr.responseMessage = "Success ${sr.payload}"
+                sr.status = s.successStatus
+                sr = serviceRequestsRepository.save(sr)
+                sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            sr.varField10 = "false"
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+            throw ExpectedDataNotFound(sr.responseMessage)
         }
-
-
-        sr.payload = "User[id= ${companyDetails.userId}]"
-        sr.names = "${companyDetails.name} ${companyDetails.kraPin}"
-
-        sr.responseStatus = sr.serviceMapsId?.successStatusCode
-        sr.responseMessage = "Success ${sr.payload}"
-        sr.status = s.successStatus
-        sr = serviceRequestsRepository.save(sr)
-        sr.processingEndDate = Timestamp.from(Instant.now())
-
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message, e)
-////            KotlinLogging.logger { }.trace(e.message, e)
-//            sr.status = sr.serviceMapsId?.exceptionStatus
-//            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
-//            sr.responseMessage = e.message
-//            sr = serviceRequestsRepository.save(sr)
-//            throw ExpectedDataNotFound(sr.responseMessage)
-//        }
 //
 //        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, invoiceGenerated)
