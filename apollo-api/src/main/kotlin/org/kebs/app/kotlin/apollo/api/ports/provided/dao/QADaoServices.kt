@@ -734,8 +734,7 @@ class QADaoServices(
                 map.successStatus -> {
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                    val permitAllDetails =
-                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
@@ -822,8 +821,7 @@ class QADaoServices(
                 map.successStatus -> {
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                    val permitAllDetails =
-                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    val permitAllDetails =mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
@@ -4703,7 +4701,7 @@ class QADaoServices(
     fun mapLabPDFFilesListDto(data: List<QaSampleSubmittedPdfListDetailsEntity>): List<MSSSFPDFListDetailsDto> {
         return data.map { ssfPdfRemarks ->
             MSSSFPDFListDetailsDto(
-                ssfPdfRemarks.msPdfSavedId,
+                ssfPdfRemarks.id,
                 ssfPdfRemarks.pdfName,
                 ssfPdfRemarks.sffId,
                 ssfPdfRemarks.complianceRemarks,

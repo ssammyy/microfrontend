@@ -761,6 +761,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
 
         this.currDiv = divVal;
+
     }
 
     updateSelectedStatus() {
@@ -1090,6 +1091,8 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data1: ApiResponseModel) => {
                     if (data1.responseCode === '00') {
                         // tslint:disable-next-line:max-line-length
+                        this.allPermitDetails = data1?.data as AllPermitDetailsDto;
+                        // tslint:disable-next-line:max-line-length
                         const pdfSavedDetails = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
                         const pdfSave = pdfSavedDetails?.savedPDFFiles?.find(dat => dat?.pdfName === this.selectedPDFFileName);
                         this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.pdfSavedId);
@@ -1097,7 +1100,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                             (data: ApiResponseModel) => {
                                 if (data.responseCode === '00') {
                                     this.SpinnerService.hide();
-                                    this.qaService.showSuccess('PDF AND COMPLINACE STATUS, SAVED SUCCESSFULLY', () => {
+                                    this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {
                                         this.loadPermitDetails(data);
                                     });
                                 } else {
@@ -1122,6 +1125,30 @@ export class PermitDetailsAdminComponent implements OnInit {
             );
         }
     }
+
+    // savePDFComplianceRemarksSelected() {
+    //     if (valid) {
+    //         this.SpinnerService.show();
+    //         this.qaService.qaPermitSavePDF(this.pdfSaveComplianceStatusForm.value, this.permitID).subscribe(
+    //             (data1: ApiResponseModel) => {
+    //                 if (data1.responseCode === '00') {
+    //                     // tslint:disable-next-line:max-line-length
+    //                     const pdfSavedDetails = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
+    //                     const pdfSave = pdfSavedDetails?.savedPDFFiles?.find(dat => dat?.pdfName === this.selectedPDFFileName);
+    //                     this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.pdfSavedId);
+    //
+    //                 } else {
+    //                     this.SpinnerService.hide();
+    //                     this.qaService.showError(data1.message);
+    //                 }
+    //             },
+    //             error => {
+    //                 this.SpinnerService.hide();
+    //                 this.qaService.showError('AN ERROR OCCURRED');
+    //             },
+    //         );
+    //     }
+    // }
 
 
     onClickSaveAssignOfficerForm(valid: boolean) {
@@ -1326,6 +1353,40 @@ export class PermitDetailsAdminComponent implements OnInit {
         if (valid) {
             this.SpinnerService.show();
             this.qaService.qaSSFDetailsCompliance(this.ssfDetailsForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveSSFComplianceStatus(valid: boolean) {
+        if (valid) {
+            this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+                // tslint:disable-next-line:max-line-length
+                `You can click \'ADD COMPLIANCE STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+                    this.saveSSFComplianceStatus(valid);
+                });
+        }
+    }
+
+
+    saveSSFComplianceStatus(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaSSFDetailsCompliance(this.ssfSaveComplianceStatusForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();

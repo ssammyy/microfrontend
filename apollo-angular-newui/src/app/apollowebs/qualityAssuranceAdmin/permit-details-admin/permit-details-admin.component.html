@@ -5499,21 +5499,22 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Compliance Status</div>
 
-                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus && selectedLabResults?.ssfResultsList?.analysisDone"
+                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus"
                                                          class="list-text-accordion">COMPLIANT
                                                     </div>
-                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone"
+                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false"
                                                          class="list-text-accordion">NON-COMPLIANT
                                                     </div>
-                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone==false"
-                                                         class="list-text-accordion"></div>
+<!--                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone==false"-->
+<!--                                                         class="list-text-accordion"></div>-->
                                                 </li>
                                             </ul>
                                         </div>
                                         <div class="col-md-3 p-0">
                                             <b>Action:</b>
                                             <div *ngFor="let role of roles">
-                                                <button *ngIf="role == 'QA_OFFICER_MODIFY' && allPermitDetails?.permitDetails?.ssfCompletedStatus && allPermitDetails?.permitDetails?.compliantStatus && selectedLabResults?.ssfResultsList?.analysisDone == false
+                                                <button *ngIf="role == 'QA_OFFICER_MODIFY' && allPermitDetails?.permitDetails?.ssfCompletedStatus
+                                                && !selectedLabResults?.ssfResultsList?.complianceStatus && !selectedLabResults?.ssfResultsList?.analysisDone
                                                 && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID && selectedLabResults?.savedPDFFiles?.length != 0"
                                                         (click)="openModalAddDetails('ssfAddComplianceStatus')"
                                                         mat-raised-button="" data-toggle="modal"
@@ -5699,7 +5700,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 </button>
                                 <button *ngIf="(currDiv == 'ssfAddComplianceStatus')" mat-raised-button type="button"
                                         class="btn btn-success"
-                                        (click)="onClickSaveSSFLabResultsComplianceStatus(ssfSaveComplianceStatusForm.valid);"
+                                        (click)="onClickSaveSSFComplianceStatus(ssfSaveComplianceStatusForm.valid);"
                                         [disabled]="!ssfSaveComplianceStatusForm.valid"
                                         data-dismiss="modal" data-toggle="modal"
                                 >SUBMIT
