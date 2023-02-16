@@ -653,6 +653,7 @@ data class SeizureDto(
         var nameOfOutlet: String?=null,
         var descriptionProductsSeized: String?=null,
         var brand: String?=null,
+        var product: String?=null,
         var sector: String?=null,
         var reasonSeizure: String?=null,
         var nameSeizingOfficer: String?=null,

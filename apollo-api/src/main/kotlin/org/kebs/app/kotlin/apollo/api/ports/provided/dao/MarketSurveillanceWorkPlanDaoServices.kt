@@ -4881,6 +4881,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             nameOfOutlet = body.nameOfOutlet
             descriptionProductsSeized = body.descriptionProductsSeized
             brand = body.brand
+            product = body.product
             sector = body.sector
             docId = body.docID
             mainSeizureId = body.mainSeizureID
@@ -5852,6 +5853,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 seizureDeclaration.nameOfOutlet,
                 seizureDeclaration.descriptionProductsSeized,
                 seizureDeclaration.brand,
+                seizureDeclaration.product,
                 seizureDeclaration.sector,
                 seizureDeclaration.reasonSeizure,
                 seizureDeclaration.nameSeizingOfficer,

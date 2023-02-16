@@ -34,6 +34,10 @@ class MsSeizedGoodsReportViewEntity : Serializable {
     var brand: String? = null
 
     @Basic
+    @Column(name = "PRODUCT")
+    var product: String? = null
+
+    @Basic
     @Column(name = "SECTOR")
     var sector: String? = null
 
