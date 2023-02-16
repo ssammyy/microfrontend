@@ -3619,7 +3619,7 @@ class MarketSurveillanceFuelDaoServices(
             data.packaging,
             data.labellingIdentification,
             data.fileRefNumber,
-            data.standardsArray,
+            null,
             data.sizeTestSample,
             data.sizeRefSample,
             data.condition,
