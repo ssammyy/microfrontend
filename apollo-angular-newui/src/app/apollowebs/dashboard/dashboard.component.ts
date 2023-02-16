@@ -16,7 +16,6 @@ import {MsService} from '../../core/store/data/ms/ms.service';
 import {ApiResponseModel, ComplaintsListDto, MsDashBoardALLDto, WorkPlanListDto} from '../../core/store/data/ms/ms.model';
 import {LocalDataSource} from 'ng2-smart-table';
 import { QaInternalService } from 'src/app/core/store/data/qa/qa-internal.service';
-
 declare const $: any;
 
 @Component({
@@ -205,6 +204,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 private SpinnerService: NgxSpinnerService,
                 private msService: MsService,
                 private QaInternalService: QaInternalService,
+               
     ) {
     }
 
@@ -249,8 +249,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.loadFmarkData();
         this.loadDmarkData();
 
-    }
-
+    }       
 
     }
 
@@ -313,8 +312,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             },
         );
     }
-    
-    
 
 
     ngAfterViewInit() {
@@ -400,6 +397,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.router.navigate(['']);
 
     }
+
 
 
     openModalAddDetails(divVal: string, headerVal: string): void {
