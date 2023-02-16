@@ -644,67 +644,73 @@ class QADaoServices(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             var permit = findPermitBYID(permitID)
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
-
-            var sampleSubmissionDetails = QaSampleSubmissionEntity()
-            SampleSubmissionRepo.findByIdOrNull(body.id ?: -1L)
-                ?.let { fdr ->
-                    with(fdr){
-                        ssfNo = body.ssfNo
-                        ssfSubmissionDate = body.ssfSubmissionDate
-                        bsNumber = body.bsNumber
-                        brandName = body.brandName
-                        productDescription = body.productDescription
-                    }
-                    sampleSubmissionDetails = saveSSFQADetails(
-                        fdr,
-                        permit.id ?: throw Exception("MISSING PERMIT ID"),
-                        permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
-                        map,
-                        loggedInUser,
-                        true
-                    )
+            SampleSubmissionRepo.findByBsNumber(body.bsNumber?.uppercase()?: throw Exception("MISSING BS NUMBER"))
+                ?.let {
+                    throw ExpectedDataNotFound("BS NUMBER ALREADY EXIST")
                 } ?: kotlin.run {
-                with(sampleSubmissionDetails){
-                    ssfNo = body.ssfNo
-                    ssfSubmissionDate = body.ssfSubmissionDate
-                    bsNumber = body.bsNumber
-                    brandName = body.brandName
-                    productDescription = body.productDescription
+
+                    var sampleSubmissionDetails = QaSampleSubmissionEntity()
+                    SampleSubmissionRepo.findByIdOrNull(body.id ?: -1L)
+                        ?.let { fdr ->
+                            with(fdr){
+                                ssfNo = body.ssfNo
+                                ssfSubmissionDate = body.ssfSubmissionDate
+                                bsNumber = body.bsNumber?.uppercase()
+                                brandName = body.brandName
+                                productDescription = body.productDescription
+                            }
+                            sampleSubmissionDetails = saveSSFQADetails(
+                                fdr,
+                                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                                permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                                map,
+                                loggedInUser,
+                                true
+                            )
+                        } ?: kotlin.run {
+                        with(sampleSubmissionDetails){
+                            ssfNo = body.ssfNo
+                            ssfSubmissionDate = body.ssfSubmissionDate
+                            bsNumber = body.bsNumber?.uppercase()
+                            brandName = body.brandName
+                            productDescription = body.productDescription
+                        }
+                        sampleSubmissionDetails = saveSSFQADetails(
+                            sampleSubmissionDetails,
+                            permit.id ?: throw Exception("MISSING PERMIT ID"),
+                            permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                            map,
+                            loggedInUser,
+                            false
+                        )
+                    }
+
+                    sampleSubmissionDetails = SampleSubmissionRepo.save(sampleSubmissionDetails)
+
+                    with(permit) {
+                        ssfCompletedStatus = 1
+                        compliantStatus = null
+                        permitStatus = applicationMapProperties.mapQaStatusPLABResults
+                    }
+
+                    //updating of Details in DB
+                    val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+                    return when (updateResults.first.status) {
+                        map.successStatus -> {
+                            permit = updateResults.second
+                            val batchID: Long? = getBatchID(permit, map, permitID)
+                            val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
+                            val permitAllDetails =
+                                mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                            commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                        }
+
+                        else -> {
+                            commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                        }
+                    }
                 }
-                sampleSubmissionDetails = saveSSFQADetails(
-                    sampleSubmissionDetails,
-                    permit.id ?: throw Exception("MISSING PERMIT ID"),
-                    permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
-                    map,
-                    loggedInUser,
-                    false
-                )
-            }
-
-            sampleSubmissionDetails = SampleSubmissionRepo.save(sampleSubmissionDetails)
-
-            with(permit) {
-                ssfCompletedStatus = 1
-                compliantStatus = null
-                permitStatus = applicationMapProperties.mapQaStatusPLABResults
-            }
-            //updating of Details in DB
-            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
-
-            return when (updateResults.first.status) {
-                map.successStatus -> {
-                    permit = updateResults.second
-                    val batchID: Long? = getBatchID(permit, map, permitID)
-                    val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                    val permitAllDetails =
-                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
-                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
-                }
-
-                else -> {
-                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
-                }
-            }
         } catch (error: Exception) {
             return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
         }
