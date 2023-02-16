@@ -115,7 +115,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-scheme-supervision")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadSchemeOfSupervisionDataReport(
         @RequestParam("permitID") permitID: Long,
@@ -172,7 +172,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-docs")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDocuments(
         @RequestParam("permitID") permitID: Long,
@@ -225,7 +225,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-justification-report")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadJustificationReport(
         @RequestParam("permitID") permitID: Long,
@@ -282,7 +282,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-assessment-report")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadAssessmentReport(
         @RequestParam("permitID") permitID: Long,
