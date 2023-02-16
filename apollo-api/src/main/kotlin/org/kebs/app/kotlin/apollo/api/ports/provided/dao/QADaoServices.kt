@@ -648,8 +648,14 @@ class QADaoServices(
             var sampleSubmissionDetails = QaSampleSubmissionEntity()
             SampleSubmissionRepo.findByIdOrNull(body.id ?: -1L)
                 ?.let { fdr ->
+                    with(fdr){
+                        ssfNo = body.ssfNo
+                        ssfSubmissionDate = body.ssfSubmissionDate
+                        bsNumber = body.bsNumber
+                        brandName = body.brandName
+                        productDescription = body.productDescription
+                    }
                     sampleSubmissionDetails = saveSSFQADetails(
-                        body,
                         fdr,
                         permit.id ?: throw Exception("MISSING PERMIT ID"),
                         permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
@@ -658,8 +664,14 @@ class QADaoServices(
                         true
                     )
                 } ?: kotlin.run {
+                with(sampleSubmissionDetails){
+                    ssfNo = body.ssfNo
+                    ssfSubmissionDate = body.ssfSubmissionDate
+                    bsNumber = body.bsNumber
+                    brandName = body.brandName
+                    productDescription = body.productDescription
+                }
                 sampleSubmissionDetails = saveSSFQADetails(
-                    body,
                     sampleSubmissionDetails,
                     permit.id ?: throw Exception("MISSING PERMIT ID"),
                     permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
@@ -1428,7 +1440,6 @@ class QADaoServices(
     }
 
     fun saveSSFQADetails(
-        body: SSFDetailsApplyDto,
         inspection: QaSampleSubmissionEntity,
         permitID: Long,
         permitRefNUMBER: String,
