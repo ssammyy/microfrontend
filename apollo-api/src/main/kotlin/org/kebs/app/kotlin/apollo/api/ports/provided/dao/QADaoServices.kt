@@ -699,7 +699,7 @@ class QADaoServices(
     }
 
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveLabPDFSelectedDetails(
         permitID: Long,
@@ -730,7 +730,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveLabSaveComplianceDetails(
         permitID: Long,
@@ -774,7 +774,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveSSFSaveComplianceDetails(
         permitID: Long,
@@ -818,7 +818,7 @@ class QADaoServices(
         }
     }
 
-    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitSaveRecommendationDetails(
         permitID: Long,
