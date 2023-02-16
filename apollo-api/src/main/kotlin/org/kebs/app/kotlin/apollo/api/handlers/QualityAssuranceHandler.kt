@@ -2657,32 +2657,40 @@ class QualityAssuranceHandler(
             //Calculate Invoice Details
             val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null)
 
-            //Update Permit Details
-            with(permit) {
-                sendApplication = map.activeStatus
-                endOfProductionStatus = map.inactiveStatus
-                invoiceGenerated = map.activeStatus
-                permitStatus = applicationMapProperties.mapQaStatusPPayment
-            }
-            permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
+            if (invoiceCreated.first.varField10 == "true"){
+
+                //Update Permit Details
+                with(permit) {
+                    sendApplication = map.activeStatus
+                    endOfProductionStatus = map.inactiveStatus
+                    invoiceGenerated = map.activeStatus
+                    permitStatus = applicationMapProperties.mapQaStatusPPayment
+                }
+                permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
 
-            // Create FMARK From SMark
-            if (permit.fmarkGenerateStatus == 1) {
-                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
-            }
+                // Create FMARK From SMark
+                if (permit.fmarkGenerateStatus == 1) {
+                    var fmarkGenerated =  qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).second
+                    with(fmarkGenerated) {
+                        sendApplication = map.activeStatus
+                        endOfProductionStatus = map.inactiveStatus
+                        invoiceGenerated = map.activeStatus
+                        permitStatus = applicationMapProperties.mapQaStatusPPayment
+                    }
+                    fmarkGenerated = qaDaoServices.permitUpdateDetails(fmarkGenerated, map, loggedInUser).second
+                }
 
-//            //Complete Submit Application
-//            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
-//                permit.permitForeignStatus == 1)
-
-            qaDaoServices.mapAllPermitDetailsTogether(
-                permit,
-                null,
-                null,
-                map
-            ).let {
-                return ok().body(it)
+                qaDaoServices.mapAllPermitDetailsTogether(
+                    permit,
+                    null,
+                    null,
+                    map
+                ).let {
+                    return ok().body(it)
+                }
+            }else{
+                return badRequest().body(invoiceCreated.first.responseMessage ?: "UNKNOWN_ERROR")
             }
 
         } catch (e: Exception) {

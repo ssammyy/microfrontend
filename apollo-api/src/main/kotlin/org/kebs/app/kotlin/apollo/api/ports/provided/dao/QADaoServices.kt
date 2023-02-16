@@ -7807,63 +7807,63 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(s)
         var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
+        try {
 
-
-        val userDetails =
-            commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
-        val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
-        val companyDetails = commonDaoServices.findCompanyProfileWithID(
-            userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
-        )
-        val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
-
-        when (permitType.id) {
-            applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
-                val productsManufacture = findAllProductManufactureInPlantWithPlantID(
-                    s.activeStatus,
-                    s.activeStatus,
-                    s.inactiveStatus,
-                    permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
-                    plantDetail.id
+                val userDetails = commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+                val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+                val companyDetails = commonDaoServices.findCompanyProfileWithID(
+                    userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
                 )
-                invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
-                    permit,
-                    user,
-                    manufactureTurnOver,
-                    productsManufacture.size.toLong(),
-                    plantDetail
-                )
-            }
+                val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
 
-            applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
-            }
+                when (permitType.id) {
+                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                        val manufactureTurnOver = companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
+                        val productsManufacture = findAllProductManufactureInPlantWithPlantID(
+                            s.activeStatus,
+                            s.activeStatus,
+                            s.inactiveStatus,
+                            permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
+                            plantDetail.id
+                        )
+                        invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
+                            permit,
+                            user,
+                            manufactureTurnOver,
+                            productsManufacture.size.toLong(),
+                            plantDetail
+                        )
+                    }
 
-            applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
-            }
+                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                        invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
+                    }
+
+                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                        invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
+                    }
+                }
+
+
+                sr.payload = "User[id= ${companyDetails.userId}]"
+                sr.names = "${companyDetails.name} ${companyDetails.kraPin}"
+                sr.varField10 = "true"
+                sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                sr.responseMessage = "Success ${sr.payload}"
+                sr.status = s.successStatus
+                sr = serviceRequestsRepository.save(sr)
+                sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            sr.varField10 = "false"
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+            throw ExpectedDataNotFound(sr.responseMessage)
         }
-
-
-        sr.payload = "User[id= ${companyDetails.userId}]"
-        sr.names = "${companyDetails.name} ${companyDetails.kraPin}"
-
-        sr.responseStatus = sr.serviceMapsId?.successStatusCode
-        sr.responseMessage = "Success ${sr.payload}"
-        sr.status = s.successStatus
-        sr = serviceRequestsRepository.save(sr)
-        sr.processingEndDate = Timestamp.from(Instant.now())
-
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message, e)
-////            KotlinLogging.logger { }.trace(e.message, e)
-//            sr.status = sr.serviceMapsId?.exceptionStatus
-//            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
-//            sr.responseMessage = e.message
-//            sr = serviceRequestsRepository.save(sr)
-//            throw ExpectedDataNotFound(sr.responseMessage)
-//        }
 //
 //        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, invoiceGenerated)
