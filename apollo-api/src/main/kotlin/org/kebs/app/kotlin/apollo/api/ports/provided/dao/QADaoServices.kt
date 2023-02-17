@@ -849,15 +849,15 @@ class QADaoServices(
             with(permit) {
                 when (permitType.id) {
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                        permitStatus = applicationMapProperties.mapUserTaskNameQAM
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
                     }
 
                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                        permitStatus = applicationMapProperties.mapUserTaskNameQAM
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
                     }
 
                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                        permitStatus = applicationMapProperties.mapUserTaskNameHOD
+                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
                     }
                 }
                 recommendationRemarks = body.recommendationRemarks
@@ -1312,10 +1312,7 @@ class QADaoServices(
                 when {
                     body.approvedRejectedStatus -> {
                         //TODO: CHANGE THE DATE OF EXPIRY IF RENEWAL
-                        val expiryDate = commonDaoServices.addYearsToCurrentDate(
-                            permitType.numberOfYears
-                                ?: throw Exception("MISSING PERMIT TYPE NUMBER O YEARS TO BE ACTIVE")
-                        )
+                        val expiryDate = commonDaoServices.addYearsToCurrentDate(permitType.numberOfYears ?: throw Exception("MISSING PERMIT TYPE NUMBER O YEARS TO BE ACTIVE"))
                         val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
                         val pcmId = loggedInUser.id
                         when {
@@ -1347,7 +1344,6 @@ class QADaoServices(
                                     null -> {
                                         when (previousPermit.versionNumber) {
                                             2L -> {
-
                                                 val migratedPermit = findPermitWithPermitRefNumberMigrated(
                                                     permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
                                                 )
@@ -1392,8 +1388,7 @@ class QADaoServices(
                         //Generate FMARK AFTER SMARK IS AWARDED
                         when {
                             permit.fmarkGenerateStatus == 1 && permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                                val fmarkGeneratedResults =
-                                    permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permit)
+                                val fmarkGeneratedResults =permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permit)
                                 when (fmarkGeneratedResults.first.status) {
                                     map.successStatus -> {
                                         permit.fmarkGenerated = 1
@@ -1412,7 +1407,6 @@ class QADaoServices(
                             }
                         }
                     }
-
                     else -> {
                         pcmApprovalStatus = 0
                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
@@ -1429,8 +1423,7 @@ class QADaoServices(
                     permit = updateResults.second
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                    val permitAllDetails =
-                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
