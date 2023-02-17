@@ -1722,13 +1722,25 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    (click)="openModalAddDetails('updateSection')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                 && !allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('permitCompleteness')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                && !allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('permitCompleteness')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('permitCompleteness')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                 && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('permitCompleteness')"

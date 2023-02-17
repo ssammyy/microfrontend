@@ -342,6 +342,7 @@ class QADaoServices(
                     else -> {
                         resubmitApplicationStatus = 1
                         hofQamCompletenessStatus = 0
+                        userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                         permitStatus = applicationMapProperties.mapQaStatusIncompleteAppl
                     }
                 }
