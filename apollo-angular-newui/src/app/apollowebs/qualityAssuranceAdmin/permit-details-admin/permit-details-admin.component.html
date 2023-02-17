@@ -27,6 +27,11 @@
                                             <i class="material-icons">description</i> Application Details
                                         </a>
                                     </li>
+                                    <li *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
+                                            <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link2" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i> Application Information
@@ -1021,6 +1026,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
 
                                     </div>
+                                    <div class="tab-pane" id="link14">
+                                        <ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
+                                                                 [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
+                                    </div>
 
                                     <div class="tab-pane" id="link4">
                                         <h3>Inspection Report</h3>
@@ -1717,6 +1726,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     <div class="card-body ">
                         <div *ngFor="let role of roles">
                             <div *ngIf="role == 'QA_MANAGER_MODIFY' || role == 'QA_HOF_MODIFY' || role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'">
+
                                 <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('updateSection')"
@@ -1753,7 +1763,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
                                 <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus "
+                                   *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus && allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus "
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('assignOfficer')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
