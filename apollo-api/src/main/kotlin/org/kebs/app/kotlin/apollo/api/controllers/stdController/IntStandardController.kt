@@ -248,20 +248,20 @@ class IntStandardController(
     }
 
     @PostMapping("/anonymous/international_standard/submitDraftComments")
-    fun submitDraftComments(@RequestBody comDraftCommentDto: List<ComDraftCommentDto>
+    fun submitDraftComments(@RequestBody intDraftCommentDto: List<IntDraftCommentDto>
     ) : ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComments(comDraftCommentDto))
+        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComments(intDraftCommentDto))
 
     }
 
     @PostMapping("/international_standard/submitDraftComments")
-    fun submitDraftComment(@RequestBody comDraftCommentDto: List<ComDraftCommentDto>
+    fun submitDraftComment(@RequestBody intDraftCommentDto: List<IntDraftCommentDto>
     ) : ServerResponse
     {
 
-        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComments(comDraftCommentDto))
+        return ServerResponse(HttpStatus.OK,"Comment Updated",internationalStandardService.submitDraftComments(intDraftCommentDto))
 
     }
 
@@ -338,27 +338,8 @@ class IntStandardController(
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/prepareJustification")
     @ResponseBody
-    fun prepareJustification(@RequestBody iSAdoptionJustifications: ISAdoptionJustifications): ServerResponse{
-        val iSAdoptionJustification=ISAdoptionJustification().apply {
-            meetingDate=iSAdoptionJustifications.meetingDate
-            tcSec_id=iSAdoptionJustifications.tcSec_id
-            slNumber=iSAdoptionJustifications.slNumber
-            edition=iSAdoptionJustifications.edition
-            requestedBy=iSAdoptionJustifications.requestedBy
-            issuesAddressed=iSAdoptionJustifications.issuesAddressed
-            tcAcceptanceDate=iSAdoptionJustifications.tcAcceptanceDate
-            referenceMaterial=iSAdoptionJustifications.referenceMaterial
-            department=iSAdoptionJustifications.department
-            status=iSAdoptionJustifications.status
-            positiveVotes=iSAdoptionJustifications.positiveVotes
-            negativeVotes=iSAdoptionJustifications.negativeVotes
-            remarks=iSAdoptionJustifications.remarks
-            proposalId=iSAdoptionJustifications.proposalId
-            draftId=iSAdoptionJustifications.draftId
-        }
-
-
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.prepareJustification(iSAdoptionJustification))
+    fun prepareJustification(@RequestBody isProposalJustification: ISProposalJustification): ServerResponse{
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",internationalStandardService.prepareJustification(isProposalJustification))
     }
 
     @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -413,30 +394,8 @@ class IntStandardController(
     @ResponseBody
     fun submitDraftForEditing(@RequestBody isDraftDto: CSDraftDto): ServerResponse
     {
-        val companyStandard= CompanyStandard().apply {
-            comStdNumber=isDraftDto.comStdNumber
-            title=isDraftDto.title
-            scope=isDraftDto.scope
-            normativeReference=isDraftDto.normativeReference
-            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-            clause=isDraftDto.clause
-            documentType=isDraftDto.documentType
-            preparedBy=isDraftDto.preparedBy
-            documentType=isDraftDto.docName
-            special=isDraftDto.special
-            requestId=isDraftDto.requestId
-            draftId=isDraftDto.draftId
-            departmentId=isDraftDto.departmentId
-            subject=isDraftDto.subject
-            description=isDraftDto.description
-            status=1
 
-        }
-
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
-
-        return ServerResponse(HttpStatus.OK,"Successfully Edited Draft",internationalStandardService.submitDraftForEditing(companyStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Draft",internationalStandardService.submitDraftForEditing(isDraftDto))
     }
 
 
@@ -564,17 +523,8 @@ class IntStandardController(
     fun checkRequirements(@RequestBody iSDraftDecisions: ISDraftDecisions
     ) : ServerResponse
     {
-        val iSUploadStandard= ISUploadStandard().apply {
-            accentTo=iSDraftDecisions.accentTo
-            justificationNo=iSDraftDecisions.justificationId
-            id=iSDraftDecisions.draftId
-        }
-        val internationalStandardRemarks= InternationalStandardRemarks().apply {
-            proposalId=iSDraftDecisions.proposalId
-            remarks=iSDraftDecisions.comments
-        }
 
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.checkRequirements(iSUploadStandard,internationalStandardRemarks))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.checkRequirements(iSDraftDecisions))
 
     }
 
@@ -594,25 +544,7 @@ class IntStandardController(
     fun editStandardDraft(@RequestBody isDraftDto: ISDraftDto): ServerResponse
     {
 
-        val iSUploadStandard= ISUploadStandard().apply {
-            proposalId=isDraftDto.proposalId
-            justificationNo=isDraftDto.justificationNo
-            id=isDraftDto.id
-            title=isDraftDto.title
-            scope=isDraftDto.scope
-            normativeReference=isDraftDto.normativeReference
-            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-            clause=isDraftDto.clause
-            documentType=isDraftDto.docName
-            iSNumber=isDraftDto.standardNumber
-            special=isDraftDto.special
-            draughting=isDraftDto.draughting
-        }
-
-//              val gson = Gson()
-//        KotlinLogging.logger { }.info { "Editing" + gson.toJson(isDraftDto) }
-//        return "Response"
-        return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.editStandardDraft(iSUploadStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.editStandardDraft(isDraftDto))
     }
 
     @PreAuthorize("hasAuthority('DRAUGHTSMAN_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -630,20 +562,7 @@ class IntStandardController(
     fun draughtStandard(@RequestBody isDraftDto: ISDraftDto): ServerResponse
     {
 
-        val iSUploadStandard= ISUploadStandard().apply {
-            proposalId=isDraftDto.proposalId
-            justificationNo=isDraftDto.justificationNo
-            id=isDraftDto.id
-            title=isDraftDto.title
-            scope=isDraftDto.scope
-            normativeReference=isDraftDto.normativeReference
-            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-            clause=isDraftDto.clause
-            documentType=isDraftDto.docName
-            iSNumber=isDraftDto.standardNumber
-            special=isDraftDto.special
-        }
-        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandard(iSUploadStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.draughtStandard(isDraftDto))
     }
 
     @PreAuthorize("hasAuthority('PROOFREADER_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -660,21 +579,9 @@ class IntStandardController(
     fun proofReadStandard(@RequestBody isDraftDto: ISDraftDto): ServerResponse
     {
 
-        val iSUploadStandard= ISUploadStandard().apply {
-            proposalId=isDraftDto.proposalId
-            justificationNo=isDraftDto.justificationNo
-            id=isDraftDto.id
-            title=isDraftDto.title
-            scope=isDraftDto.scope
-            normativeReference=isDraftDto.normativeReference
-            symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
-            clause=isDraftDto.clause
-            documentType=isDraftDto.docName
-            iSNumber=isDraftDto.standardNumber
-            special=isDraftDto.special
-        }
-        return ServerResponse(HttpStatus.OK,"Successfully Proof Read Workshop Draft",internationalStandardService.proofReadStandard(iSUploadStandard))
+        return ServerResponse(HttpStatus.OK,"Successfully Draughted Workshop Draft",internationalStandardService.proofReadStandard(isDraftDto))
     }
+
 
     @PreAuthorize("hasAuthority('HOP_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getProofReadDraft")
@@ -684,24 +591,17 @@ class IntStandardController(
         return internationalStandardService.getProofReadDraft()
     }
 
+    //decision on Adoption Proposal
     @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/approveProofReadStandard")
-    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
+    fun approveProofReadStandard(@RequestBody iSDraftDecisions: ISDrDecisions
     ) : ServerResponse
     {
-        val iSUploadStandard= ISUploadStandard().apply {
-            accentTo=iSDraftDecisions.accentTo
-            justificationNo=iSDraftDecisions.justificationId
-            id=iSDraftDecisions.draftId
-        }
-        val internationalStandardRemarks= InternationalStandardRemarks().apply {
-            proposalId=iSDraftDecisions.proposalId
-            remarks=iSDraftDecisions.comments
-        }
 
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveProofReadStandard(iSUploadStandard,internationalStandardRemarks))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveProofReadStandard(iSDraftDecisions))
 
     }
+
 
     @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedProofReadDraft")
@@ -717,19 +617,11 @@ class IntStandardController(
     fun approveEditedStandard(@RequestBody iSDraftDecisions: ISDraftDecisions
     ) : ServerResponse
     {
-        val iSUploadStandard= ISUploadStandard().apply {
-            accentTo=iSDraftDecisions.accentTo
-            justificationNo=iSDraftDecisions.justificationId
-            id=iSDraftDecisions.draftId
-        }
-        val internationalStandardRemarks= InternationalStandardRemarks().apply {
-            proposalId=iSDraftDecisions.proposalId
-            remarks=iSDraftDecisions.comments
-        }
 
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveEditedStandard(iSUploadStandard,internationalStandardRemarks))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveEditedStandard(iSDraftDecisions))
 
     }
+
 
     @PreAuthorize("hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getApprovedEditedDraft")
@@ -745,33 +637,29 @@ class IntStandardController(
     fun approveInternationalStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
     ) : ServerResponse
     {
-        val iSUploadStandard= ISUploadStandard().apply {
-            accentTo=iSDraftDecisions.accentTo
-            justificationNo=iSDraftDecisions.justificationId
-            id=iSDraftDecisions.draftId
 
-        }
-        val internationalStandardRemarks= InternationalStandardRemarks().apply {
-            proposalId=iSDraftDecisions.proposalId
-            remarks=iSDraftDecisions.comments
-        }
-
-        val standard= Standard().apply {
-            title=iSDraftDecisions.title
-            normativeReference=iSDraftDecisions.normativeReference
-            symbolsAbbreviatedTerms=iSDraftDecisions.symbolsAbbreviatedTerms
-            clause=iSDraftDecisions.clause
-            scope=iSDraftDecisions.scope
-            special=iSDraftDecisions.special
-            standardNumber=iSDraftDecisions.standardNumber
-        }
-
-
-
-        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandard(iSUploadStandard,internationalStandardRemarks,standard))
+        return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandard(iSDraftDecisions))
 
     }
 
+    //decision on Adoption Proposal
+    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/international_standard/uploadInternationalStandard")
+    fun uploadInternationalStandard(@RequestBody iStandardUploadDto: IStandardUploadDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Standard Uploaded",internationalStandardService.uploadInternationalStandard(iStandardUploadDto))
+
+    }
+
+    @GetMapping("/international_standard/getCommitteeList")
+    @ResponseBody
+    fun getStakeHoldersList(@RequestParam("draftId") draftId: Long): MutableList<EmailList>?
+    {
+
+        return internationalStandardService.getStakeHoldersList(draftId)
+    }
 
     @PreAuthorize("hasAuthority('HO_SIC_SD_READ') or hasAuthority('HOD_SIC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/international_standard/getStandardForGazettement")
@@ -779,6 +667,27 @@ class IntStandardController(
     fun getStandardForGazettement(): MutableList<ISUploadedDraft>
     {
         return internationalStandardService.getStandardForGazettement()
+    }
+
+    @GetMapping("/anonymous/international_standard/getCompanyStandards")
+    @ResponseBody
+    fun getCompanyStandards(): MutableList<Standard>
+    {
+        return internationalStandardService.getCompanyStandards()
+    }
+
+    @GetMapping("/anonymous/international_standard/getInternationalStandards")
+    @ResponseBody
+    fun getInternationalStandards(): MutableList<Standard>
+    {
+        return internationalStandardService.getInternationalStandards()
+    }
+
+    @GetMapping("/anonymous/international_standard/getStandards")
+    @ResponseBody
+    fun getStandards(): MutableList<Standard>
+    {
+        return internationalStandardService.getStandards()
     }
 
     //********************************************************** process upload Gazette Notice **********************************************************
@@ -795,118 +704,6 @@ class IntStandardController(
     }
 
 
-
-
-
-//    //********************************************************** process upload Standard **********************************************************
-//    @PreAuthorize("hasAuthority('HOP_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-//    @PostMapping("/uploadISStandard")
-//    @ResponseBody
-//    fun uploadISStandard(@RequestBody iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,
-//                         internationalStandardRemarks: InternationalStandardRemarks,standard: Standard): ServerResponse
-//    {
-//        return ServerResponse(HttpStatus.OK,"Successfully uploaded Standard",internationalStandardService.uploadISStandard(iSUploadStandard,isJustificationDecision,internationalStandardRemarks,standard))
-//    }
-//
-//    @PostMapping("/std-file-upload")
-//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-//    fun uploadISFiles(
-//        @RequestParam("isStandardID") isStandardID: Long,
-//        @RequestParam("docFile") docFile: List<MultipartFile>,
-//        model: Model
-//    ): CommonDaoServices.MessageSuccessFailDTO {
-//
-//        val loggedInUser = commonDaoServices.loggedInUserDetails()
-//        val isStandard = isUploadStandardRepository.findByIdOrNull(isStandardID)?: throw Exception("IS STANDARD DOCUMENT ID DOES NOT EXIST")
-//
-//        docFile.forEach { u ->
-//            val upload = ISStandardUploads()
-//            with(upload) {
-//                isStdDocumentId = isStandard.id
-//
-//            }
-//            internationalStandardService.uploadISDFile(
-//                upload,
-//                u,
-//                "UPLOADS",
-//                loggedInUser,
-//                "IS STANDARD"
-//            )
-//        }
-//
-//        val sm = CommonDaoServices.MessageSuccessFailDTO()
-//        sm.message = "Document Uploaded successfully"
-//
-//        return sm
-//    }
-//
-//
-//    //view IS Justification Document
-//    @GetMapping("/view/iStandard")
-//    fun viewStandardFile(
-//        response: HttpServletResponse,
-//        @RequestParam("isStdDocumentId") isStdDocumentId: Long
-//    ) {
-//        val fileUploaded = internationalStandardService.findUploadedSTFileBYId(isStdDocumentId)
-//        val fileDoc = commonDaoServices.mapClass(fileUploaded)
-//        response.contentType = "application/pdf"
-////                    response.setHeader("Content-Length", pdfReportStream.size().toString())
-//        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
-//        response.outputStream
-//            .let { responseOutputStream ->
-//                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
-//                responseOutputStream.close()
-//            }
-//
-//        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
-//
-//    }
-
-
-
-//    //upload gazzette notice document
-//    @PostMapping("/gzt-file-upload")
-//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-//    fun uploadISGFiles(
-//        @RequestParam("isStandardID") isStandardID: Long,
-//        @RequestParam("docFile") docFile: List<MultipartFile>,
-//        model: Model
-//    ): CommonDaoServices.MessageSuccessFailDTO {
-//
-//        val loggedInUser = commonDaoServices.loggedInUserDetails()
-//        val isGazette = isGazetteNoticeRepository.findByIdOrNull(isStandardID)?: throw Exception("IS GAZETTE DOCUMENT ID DOES NOT EXIST")
-//
-//        docFile.forEach { u ->
-//            val upload = SDISGazetteNoticeUploads()
-//            with(upload) {
-//                isGnDocumentId = isGazette.id
-//
-//            }
-//            internationalStandardService.uploadISGFile(
-//                upload,
-//                u,
-//                "UPLOADS",
-//                loggedInUser,
-//                "IS STANDARD"
-//            )
-//        }
-//
-//        val sm = CommonDaoServices.MessageSuccessFailDTO()
-//        sm.message = "Document Uploaded successfully"
-//
-//        return sm
-//    }
-
-
-
-    //********************************************************** process upload Gazettement Date **********************************************************
-//    @PreAuthorize("hasAuthority('HO_SIC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
-//    @PostMapping("/updateGazettementDate")
-//    @ResponseBody
-//    fun updateGazettementDate(@RequestBody iSGazettement: ISGazettement): ServerResponse
-//    {
-//        return ServerResponse(HttpStatus.OK,"Successfully uploaded Gazette Notice",internationalStandardService.updateGazettementDate(iSGazettement))
-//    }
     @GetMapping("/international_standard/getPRNumber")
     @ResponseBody
     fun getPRNumber(): String

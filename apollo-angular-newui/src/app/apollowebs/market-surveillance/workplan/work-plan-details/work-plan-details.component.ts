@@ -74,7 +74,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('standardsInput') standardsInput: ElementRef;
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
-
+  selectedDataSheet: DataReportDto;
   active: Number = 0;
   selectedFile: File;
   selectedRefNo: string;
@@ -1717,10 +1717,10 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.ssfClientEmailNotificationForm = this.formBuilder.group({
       ssfID: null,
-      failedParameters: ['', Validators.required],
-      outLetEmail: null,
-      manufactureEmail: null,
-      complainantEmail: null,
+      failedParameters: null,
+      outLetEmail: [''],
+      manufactureEmail: [''],
+      complainantEmail: [''],
       remarks: null,
     });
 
@@ -1778,7 +1778,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       id: null,
       dataReportValueToClone: null,
       referenceNumber: ['', Validators.required],
-      inspectionDate: ['', Validators.required],
+      inspectionDate: null,
       inspectorName: ['', Validators.required],
       function: ['', Validators.required],
       department: ['', Validators.required],
@@ -1932,7 +1932,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       lbIdExpiryDate: null,
       lbIdTradeMark: null,
       noteTransResults: null,
-      standardsArray: [[], Validators.required],
+      referencesStandards: ['', Validators.required],
       scfNo: null,
       cocNumber: null,
       testChargesKsh: null,
@@ -1960,7 +1960,9 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.pdfSaveComplianceStatusForm = this.formBuilder.group({
       complianceStatus: ['', Validators.required],
+      failedParameters: [''],
       complianceRemarks: ['', Validators.required],
+
     });
 
     this.ssfSaveComplianceStatusForm = this.formBuilder.group({
@@ -4002,12 +4004,32 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.sampleSubmitForm.get('id').value !== null) {
       valuesToShow = '\'UPDATE SSF DETAILS\'';
     }
-    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
+
+    const standardsArrayControl = this.sampleSubmitForm.get('referencesStandards');
+    console.log("Data in the form control before: "+standardsArrayControl.value);
+    const newValues = [];
+    for (let selectedStandard of this.standardsArray) {
+      const valueInControl = standardsArrayControl.value;
+      if (!valueInControl.includes(selectedStandard)) {
+        newValues.push(selectedStandard);
+      }
+    }
+
+    if (newValues.length > 0) {
+      const updatedValue = standardsArrayControl.value.concat(newValues);
+      standardsArrayControl.patchValue(updatedValue);
+    }
+
+    console.log("Data in the form control after: "+standardsArrayControl.value);
+    if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
+    }
+    else{
+      this.msService.showError("Please Fill in all the fields!");
     }
   }
 
@@ -4789,7 +4811,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
       formData.append('docTypeName', 'DATA_REPORT_UPLOAD');
       formData.append('data', JSON.stringify(this.dataSaveDataReport));
-      if(this.uploadedFilesDataReport.length > 0 ){
+      if(this.uploadedFilesDataReport?.length > 0 ){
         const file = this.uploadedFilesDataReport;
         for (let i = 0; i < file.length; i++) {
           console.log(file[i]);
@@ -5388,6 +5410,6 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onSelectedDataReport(){
-    const selectedDataReport = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.sampleSubmitForm?.get('dataReportSelected')?.value);
+     this.selectedDataSheet = this.workPlanInspection?.dataReportDto.find(pr => pr.id === this.sampleSubmitForm?.get('dataReportSelected')?.value);
   }
 }

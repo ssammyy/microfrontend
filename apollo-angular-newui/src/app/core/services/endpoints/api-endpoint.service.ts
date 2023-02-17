@@ -73,7 +73,7 @@ export class ApiEndpointService {
     public static QA_INTERNAL_USER_CONTEXT = `${ApiEndpointService.QA_CONTEXT}/internal-users`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
-    public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/sd/wa`;
+    public static SD_NWA_CONTEXT = '/api/v1/migration/wa';
     public static SD_NEP_NATIONAL_ENQUIRY = `${ApiEndpointService.MASTERS_CONTEXT}/National_enquiry_point`;
     public static SD_SCHEME_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Scheme_membership`;
     public static SD_IST_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/international_standard`;
@@ -323,7 +323,7 @@ export class ApiEndpointService {
         INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
         INVOICE_DETAILS_BALANCE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-balance-details`,
         INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
-        INVOICE_LIST_NO_DIFFERENCE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-difference`,
+        INVOICE_LIST_NO_DIFFERENCE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/list-no-batch-Id-difference`,
         INVOICE_LIST_NO_DETAILS_PERMIT_TYPE: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id-permit-type`,
         INVOICE_LIST_ALL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list`,
         INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
@@ -361,6 +361,7 @@ export class ApiEndpointService {
 
         /*::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // SD Kenya National Workshop Agreement
+        NWA_VIEW_STANDARD_REQUEST: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopStandards`,
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
         NWA_KNW_COMMITTEE: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWCommittee`,
@@ -461,7 +462,11 @@ export class ApiEndpointService {
         IS_UPDATE_GAZETTE_DATE: `${ApiEndpointService.SD_IST_CONTEXT}/updateGazettementDate`,
         IST_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/submitDraftComments`,
         IST_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_IST_CONTEXT}/submitDraftComment`,
-
+        IST_SUBMIT_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/uploadInternationalStandard`,
+        IST_VIEW_COM_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getCompanyStandards`,
+        IST_VIEW_INT_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getInternationalStandards`,
+        IST_VIEW_ALL_STANDARDS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/international_standard/getStandards`,
+        ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/viewStandard`,
 
         // SD COMPANY STANDARDS
         ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,
@@ -501,7 +506,8 @@ export class ApiEndpointService {
         ICT_COM_UPLOAD_SD: `${ApiEndpointService.SD_ICT_CONTEXT}/std-file-upload`,
         ICT_COM_HOP_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHopTasks`,
         ICT_COM_EDIT_STANDARD: `${ApiEndpointService.SD_ICT_CONTEXT}/editCompanyStandard`,
-        ICT_COM_UPLOAD_SD_EDIT: `${ApiEndpointService.SD_ICT_CONTEXT}/std-efile-upload`,
+        ICT_COM_VIEW_STANDARD: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/viewStandard`,
+
 
 
         ICT_COM_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyStandardRequest`,
@@ -513,6 +519,8 @@ export class ApiEndpointService {
         ICT_COM_STD_APPROVED_DRAFT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getApprovedStdDraft`,
         ICT_COM_STD_EDITS_DRAFT: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdDraftForEditing`,
         ICT_COM_STD_PB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getComStdPublishing`,
+        ICT_COM_STD_SPB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAppStdPublishing`,
+        ICT_COM_STD_APB_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAppStd`,
         ICT_COM_STD_COMMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getAllComments`,
         ICT_COM_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftComments`,
         ICT_COM_DRAFT_COMMENTS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftCommentList`,
@@ -529,6 +537,8 @@ export class ApiEndpointService {
         ICT_COM_STD_DRAFT_DOCUMENT_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/getDraftDocumentList`,
         ICT_SUBMIT_DRAFT_COMMENTS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/company_standard/submitDraftComments`,
         ICT_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftComment`,
+        ICT_CONTACT_DETAILS: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyContactDetails`,
+        ICT_COMMITTEE_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCommitteeList`,
 
 
         // SD SYSTEMIC REVIEW
@@ -693,6 +703,12 @@ export class ApiEndpointService {
 
     };
 
+    public static QA_MANUFACTURE_ENDPOINT = {
+        GENERATE_INVOICE_DIFFERENCE: `${ApiEndpointService.QA_CONTEXT}/permit/apply/generate-difference-invoice`,
+        RE_GENERATE_INVOICE: `${ApiEndpointService.QA_CONTEXT}/permit/apply/re-generate-invoice`,
+        GET_STANDARD_LIST: `${ApiEndpointService.QA_CONTEXT}/standards-list`,
+    };
+
     public static QA_INTERNAL_USER_ENDPOINT = {
         LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list`,
         LOAD_PERMIT_DETAIL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permit-detail`,
@@ -700,9 +716,34 @@ export class ApiEndpointService {
         UPDATE_OFFICER_DIFFERENCE_STATUS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/difference-status-activate`,
         QAM_COMPLETENESS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/completeness`,
         ASSIGN_OFFICER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/assign-officer`,
+        RECOMMENDATION_APPROVAL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-recommendation`,
         ADD_STANDARD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/add-standards`,
+        ADD_RECOMMENDATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/save-recommendation`,
         SCHEDULE_INSPECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/schedule-inspection`,
-        INSPECTION_CHECKLIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection-checklist`,
+        APPROVE_REJECT_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/approve-reject-inspection-report`,
+        APPROVE_REJECT_PERMIT_QAM_HOD: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/qam-approve-reject-permit`,
+        APPROVE_REJECT_PERMIT_PSC_MEMBER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/psc-approve-reject-permit`,
+        APPROVE_REJECT_PERMIT_PCM: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/pcm-approve-reject-permit`,
+
+        CHECK_IF_INSPECTION_REPORT_EXISTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/check_if_inspection_report_exists`,
+        NEW_INSPECTION_TECHNICAL_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/new-technical-report`,
+        TECHNICAL_REPORT_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-details`,
+        TECHNICAL_REPORT_DETAILS_B: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-detailsB`,
+        PRODUCT_LABELLING: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/product-labelling`,
+        STANDARDIZATION_MARK: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/standardization-mark-scheme`,
+        OPERATION_PROCESS_CONTROLS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/operationProcessAndControls`,
+        HACCP_IMPLEMENTATION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/haccpImplementationDetails`,
+        RECOMMENDATION_SAVE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/recommendation_save`,
+
+        FINAL_INSPECTION_REPORT_SUBMISSION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-checklist-submit`,
+        GET_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/getInspectionReport`,
+
+
+
+
+
+
+
         ADD_SSF_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-details`,
         ADD_SSF_COMPLIANCE_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/ssf-compliance-status`,
         VIEW_PDF_LAB_RESULT: `${ApiEndpointService.QA_CONTEXT}/view/attached-lab-pdf`,

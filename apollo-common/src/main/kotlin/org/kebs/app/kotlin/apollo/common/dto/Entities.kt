@@ -25,7 +25,6 @@ package org.kebs.app.kotlin.apollo.common.dto
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import com.google.common.primitives.Booleans
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -581,6 +580,23 @@ data class CompanyTurnOverApproveDto(
     @NotEmpty(message = "is mandatory")
     var updateDetailsStatus: Boolean,
 )
+
+data class CompanyUpgradeStatusDto(
+    var companyProfileID: Long? = null,
+    var requesterComment: String? = null,
+    var updateFirmType: String? = null,
+    var updateFirmTypeID: Long? = null,
+    var upgradeType: Boolean? = null,
+    var updateDetailsStatus: Boolean? = null,
+    var inspectionFeeRequerd: Boolean? = null,
+)
+data class InspectionReportDtoPermit(
+    var id: Long? = null,
+    var refNo: String? = null,
+    var submittedInspectionReportStatus: Int? = null,
+    var createdOn: Timestamp?,
+    )
+
 data class CompanyTurnOverUpdateDto(
     @NotEmpty(message = "is mandatory")
     var companyProfileID: Long,
@@ -589,6 +605,7 @@ data class CompanyTurnOverUpdateDto(
     @NotEmpty(message = "is mandatory")
     var upgradeType: Boolean,
 )
+
 data class CompanyTurnOverUpdateRequestDto(
     @NotEmpty(message = "is mandatory")
     var companyProfileID: Long,
@@ -601,7 +618,6 @@ data class CompanyTurnOverUpdateRequestDto(
 )
 
 data class UserEntityDto(
-
     var id: Long? = null,
     var firstName: String? = null,
     var lastName: String? = null,

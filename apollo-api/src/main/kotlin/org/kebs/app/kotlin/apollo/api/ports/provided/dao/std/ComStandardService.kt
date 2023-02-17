@@ -3,15 +3,14 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import mu.KotlinLogging
+import okhttp3.internal.notifyAll
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.common.dto.std.ComDraftCommentDto
-import org.kebs.app.kotlin.apollo.common.dto.std.NamesList
-import org.kebs.app.kotlin.apollo.common.dto.std.ResponseMsg
+import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
@@ -55,45 +54,46 @@ class ComStandardService(
     private val comStdJointCommitteeRepository: ComStdJointCommitteeRepository,
     private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
+    private val comContactDetailsRepository: ComContactDetailsRepository
 ) {
-
     //request for company standard
-    fun requestForStandard(companyStandardRequest: CompanyStandardRequest): CompanyStandardRequest {
-
+    fun requestForStandard(isComStdRequestDto: ISComStdRequestDto): CompanyStandardRequest{
         val variables: MutableMap<String, Any> = HashMap()
-        companyStandardRequest.companyName = companyStandardRequest.companyName
-//        companyStandardRequest.tcId = companyStandardRequest.tcId
-//        companyStandardRequest.productId = companyStandardRequest.productId
-//        companyStandardRequest.productSubCategoryId = companyStandardRequest.productSubCategoryId
-        //companyStandardRequest.submissionDate?.let{ variables.put("submissionDate", it)}
-        companyStandardRequest.companyPhone = companyStandardRequest.companyPhone
-        companyStandardRequest.companyEmail = companyStandardRequest.companyEmail
+        var  companyStandardRequest = CompanyStandardRequest();
+        companyStandardRequest.companyName = isComStdRequestDto.companyName
+        companyStandardRequest.companyPhone = isComStdRequestDto.companyPhone
+        companyStandardRequest.companyEmail = isComStdRequestDto.companyEmail
         companyStandardRequest.submissionDate = Timestamp(System.currentTimeMillis())
         companyStandardRequest.requestNumber = getRQNumber()
         companyStandardRequest.status = 0
 
-        companyStandardRequest.departmentId = companyStandardRequest.departmentId
-        companyStandardRequest.subject=companyStandardRequest.subject
-        companyStandardRequest.description=companyStandardRequest.description
-        companyStandardRequest.contactOneFullName=companyStandardRequest.contactOneFullName
-        companyStandardRequest.contactOneTelephone=companyStandardRequest.contactOneTelephone
-        companyStandardRequest.contactOneEmail=companyStandardRequest.contactOneEmail
-        companyStandardRequest.contactTwoFullName=companyStandardRequest.contactTwoFullName
-        companyStandardRequest.contactTwoTelephone=companyStandardRequest.contactTwoTelephone
-        companyStandardRequest.contactTwoEmail=companyStandardRequest.contactTwoEmail
-        companyStandardRequest.contactThreeFullName=companyStandardRequest.contactThreeFullName
-        companyStandardRequest.contactThreeTelephone=companyStandardRequest.contactThreeTelephone
-        companyStandardRequest.contactThreeEmail=companyStandardRequest.contactThreeEmail
+        companyStandardRequest.departmentId = isComStdRequestDto.departmentId
+        companyStandardRequest.subject=isComStdRequestDto.subject
+        companyStandardRequest.description=isComStdRequestDto.description
+        companyStandardRequest.departmentName = departmentRepository.findNameById(isComStdRequestDto.departmentId?.toLong())
 
-        //companyStandardRequest.tcName = technicalCommitteeRepository.findNameById(companyStandardRequest.tcId?.toLong())
-        companyStandardRequest.departmentName = departmentRepository.findNameById(companyStandardRequest.departmentId?.toLong())
+        val request= comStandardRequestRepository.save(companyStandardRequest)
 
-        //companyStandardRequest.productName = productRepository.findNameById(companyStandardRequest.productId?.toLong())
+        val detailBody = isComStdRequestDto.contactDetails
 
-        //companyStandardRequest.productSubCategoryName = productSubCategoryRepository.findNameById(companyStandardRequest.productSubCategoryId?.toLong())
+        detailBody?.forEach { com ->
+            val  comContactDetails = ComContactDetails()
+            comContactDetails.requestId = request.id
+            comContactDetails.fullName = com.contactOneFullName
+            comContactDetails.email = com.contactOneEmail
+            comContactDetails.telephone = com.contactOneTelephone
+            comContactDetails.dateOfCreation = Timestamp(System.currentTimeMillis())
 
-        return comStandardRequestRepository.save(companyStandardRequest)
+            comContactDetailsRepository.save(comContactDetails)
+        }
+
+       return request
     }
+
+    fun getCompanyContactDetails(requestId: Long): MutableList<ComContactDetails>? {
+        return comContactDetailsRepository.findByRequestIdOrderByIdDesc(requestId)
+    }
+
 
     fun uploadCommitmentLetter(
         uploads: ComStandardRequestUploads,
@@ -168,15 +168,13 @@ class ComStandardService(
         if (jointLists != null) {
             for (recipient in jointLists) {
 
-                val user = "JC List"
+                val user = "Joint Committee Member"
                 val cj = ComStandardJointCommittee()
                 cj.name = user
                 cj.email = recipient
                 cj.requestId = comStandardJointCommittee.requestId
                 cj.dateOfCreation=Timestamp(System.currentTimeMillis())
                 cj.telephone="NA"
-                val gson = Gson()
-                KotlinLogging.logger { }.info { "JOINT COMMITTEE" + gson.toJson(recipient) }
 
                 comStdJointCommitteeRepository.save(cj)
 
@@ -208,7 +206,7 @@ class ComStandardService(
         }
 
 
-        KotlinLogging.logger { }.info { "JOINT COMMITTEE EMAIL" + gson.toJson(detailBody) }
+
 
         comStandardRequestRepository.findByIdOrNull(comStandardJointCommittee.requestId)?.let { companyStandardRequest ->
             with(companyStandardRequest) {
@@ -218,6 +216,10 @@ class ComStandardService(
              comStandardRequestRepository.save(companyStandardRequest)
         }?: throw Exception("REQUEST NOT FOUND")
         return "Saved"
+    }
+
+    fun getCommitteeList(requestId: Long): MutableList<EmailList>? {
+        return comStdJointCommitteeRepository.getCommitteeList(requestId)
     }
 
     fun submitJustificationForFormationOfTC(justificationForTC: JustificationForTC): JustificationForTC
@@ -568,11 +570,11 @@ class ComStandardService(
             comDraftComments.emailOfRespondent = com.emailOfRespondent
             comDraftComments.phoneOfRespondent = com.phoneOfRespondent
             comDraftComments.observation = com.observation
-            comDraftComments.draftComment = com.draftComment
+            comDraftComments.draftComment = com.comment
             comDraftComments.commentTitle = com.commentTitle
             comDraftComments.commentDocumentType = com.commentDocumentType
-            comDraftComments.comClause = com.comClause
-            comDraftComments.comParagraph = com.comParagraph
+            comDraftComments.comClause = com.clause
+            comDraftComments.comParagraph = com.paragraph
             comDraftComments.typeOfComment = com.typeOfComment
             comDraftComments.proposedChange = com.proposedChange
             comDraftComments.requestID = com.requestID
@@ -641,7 +643,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= comStdDraft.id
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -668,19 +670,21 @@ class ComStandardService(
                     companyStandardRemarksRepository.save(companyStandardRemarks)
                     response="Draft Approved"
                 }?: throw Exception("DRAFT NOT FOUND")
+                val contactLists = comContactDetailsRepository.getComContactList(companyStandardRemarks.requestId)
 
-                val recipient=comStdDraft.contactOneEmail
-                val contactName=comStdDraft.contactOneFullName
                 val companyName=comStdDraft.companyName
                 val companyPhone= comStdDraft.companyPhone
-                val contactTel=comStdDraft.contactOneTelephone
                 val draftId=comStdDraft.id
-                val targetUrl = "https://kimsint.kebs.org/comStdApproved/$draftId";
-                val subject = "Company Standard Draft"
-                val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to make Decision. $targetUrl  "
+//
 
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
+                val targetUrl = "https://kimsint.kebs.org/comStdApproved/$draftId";
+                contactLists.forEach { c ->
+                    val contactName= c.getName()
+                    val subject = "Company Standard Draft"
+                    val messageBody= "Dear $contactName, Hope You are Well,A Draft for a company standard for $companyName has been uploaded. Click on the Link below to make a Decision. $targetUrl"
+                    if (c.getEmail() != null) {
+                        notifications.sendEmail(c.getEmail()!!, subject, messageBody)
+                    }
                 }
 
 
@@ -731,7 +735,7 @@ class ComStandardService(
         val fName = "Company"
         val sName = ""
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= comStdDraft.id
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -751,24 +755,16 @@ class ComStandardService(
                val cs=CompanyStandard()
                 cs.companyName=comStdDraft.companyName
                 cs.companyPhone=comStdDraft.companyPhone
-                cs.contactOneFullName=comStdDraft.contactOneFullName
-                cs.contactOneEmail=comStdDraft.contactOneEmail
-                cs.contactOneTelephone=comStdDraft.contactOneTelephone
                 cs.departmentId=comStdDraft.departmentId
                 cs.subject=comStdDraft.subject
                 cs.description=comStdDraft.description
-                cs.contactTwoFullName=comStdDraft.contactTwoFullName
-                cs.contactTwoTelephone=comStdDraft.contactTwoTelephone
-                cs.contactTwoEmail=comStdDraft.contactTwoEmail
-                cs.contactThreeFullName=comStdDraft.contactThreeFullName
-                cs.contactThreeTelephone=comStdDraft.contactThreeTelephone
-                cs.contactThreeEmail=comStdDraft.contactThreeEmail
                 cs.requestNumber=comStdDraft.requestNumber
                 cs.status=0
                 cs.uploadDate = Timestamp(System.currentTimeMillis())
                 cs.comStdNumber = comStandard
                 cs.draftId=comStdDraft.id
                 cs.requestId=comStdDraft.requestId
+                cs.title=comStdDraft.title
                 cs.standardType="Company Standard"
 
                 val draftStandard= companyStandardRepository.save(cs)
@@ -826,11 +822,12 @@ class ComStandardService(
         return companyStandardRepository.getComStdForEditing()
     }
 
+
+
     fun submitDraftForEditing(companyStandard: CompanyStandard) : CompanyStandard
     {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-
 
         companyStandardRepository.findByIdOrNull(companyStandard.id)?.let { companyStandard ->
             with(companyStandard) {
@@ -838,22 +835,18 @@ class ComStandardService(
                 departmentId = companyStandard.departmentId
                 subject=companyStandard.subject
                 description=companyStandard.description
-                contactOneFullName=companyStandard.contactOneFullName
-                contactOneTelephone=companyStandard.contactOneTelephone
-                contactOneEmail=companyStandard.contactOneEmail
-                contactTwoFullName=companyStandard.contactTwoFullName
-                contactTwoTelephone=companyStandard.contactTwoTelephone
-                contactTwoEmail=companyStandard.contactTwoEmail
-                contactThreeFullName=companyStandard.contactThreeFullName
-                contactThreeTelephone=companyStandard.contactThreeTelephone
-                contactThreeEmail=companyStandard.contactThreeEmail
                 requestNumber=companyStandard.requestNumber
                 status=companyStandard.status
                 comStdNumber = companyStandard.comStdNumber
                 documentType=companyStandard.documentType
                 draftId=companyStandard.draftId
                 requestId=companyStandard.requestId
-                standardType="Company Standard"
+                scope=companyStandard.scope
+                normativeReference=companyStandard.normativeReference
+                symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
+                clause=companyStandard.clause
+                documentType=companyStandard.documentType
+                special=companyStandard.special
 
             }
 
@@ -888,6 +881,8 @@ class ComStandardService(
     }
 
 
+
+
     fun checkRequirements(
         companyStandard: CompanyStandard,
         companyStandardRemarks: CompanyStandardRemarks
@@ -899,7 +894,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -955,18 +950,13 @@ class ComStandardService(
                 contactOneFullName = companyStandard.contactOneFullName
                 contactOneTelephone = companyStandard.contactOneTelephone
                 contactOneEmail = companyStandard.contactOneEmail
-                contactTwoFullName = companyStandard.contactTwoFullName
-                contactTwoTelephone = companyStandard.contactTwoTelephone
-                contactTwoEmail = companyStandard.contactTwoEmail
-                contactThreeFullName = companyStandard.contactThreeFullName
-                contactThreeTelephone = companyStandard.contactThreeTelephone
-                contactThreeEmail = companyStandard.contactThreeEmail
                 requestNumber = companyStandard.requestNumber
                 status = companyStandard.status
                 comStdNumber = companyStandard.comStdNumber
                 documentType = companyStandard.documentType
                 draftId = companyStandard.draftId
                 requestId = companyStandard.requestId
+                standardType=companyStandard.standardType
             }
 
             //KotlinLogging.logger { }.info { "Status Check" + gson.toJson(companyStandard) }
@@ -1072,7 +1062,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1108,7 +1098,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1145,6 +1135,14 @@ class ComStandardService(
         return companyStandardRepository.getApprovedCompanyStdDraft()
     }
 
+    fun getAppStdPublishing(): MutableList<ComStandard> {
+        return companyStandardRepository.getAppStdPublishing()
+    }
+
+    fun getAppStd(): MutableList<ComStandard> {
+        return companyStandardRepository.getAppStd()
+    }
+
     fun rejectCompanyStandard(
         companyStandard: CompanyStandard,
         companyStandardRemarks: CompanyStandardRemarks,
@@ -1155,7 +1153,7 @@ class ComStandardService(
         val usersName = "$fName  $sName"
         companyStandard.id=companyStandard.id
 
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1192,7 +1190,7 @@ class ComStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= companyStandard.draftId
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1450,5 +1448,8 @@ class ComStandardService(
         return "$startId/$finalValue:$year";
     }
 
+    fun findUploadedStandard(standardId: Long): DatKebsSdStandardsEntity {
+        return sdDocumentsRepository.findStandardUpload(standardId)
+    }
 
 }

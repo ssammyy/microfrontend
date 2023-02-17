@@ -13,9 +13,9 @@ import {
 } from 'src/app/core/store';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MsService} from '../../core/store/data/ms/ms.service';
-import {ComplaintsListDto, MsDashBoardALLDto, WorkPlanListDto} from '../../core/store/data/ms/ms.model';
+import {ApiResponseModel, ComplaintsListDto, MsDashBoardALLDto, WorkPlanListDto} from '../../core/store/data/ms/ms.model';
 import {LocalDataSource} from 'ng2-smart-table';
-
+import { QaInternalService } from 'src/app/core/store/data/qa/qa-internal.service';
 declare const $: any;
 
 @Component({
@@ -41,6 +41,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     user: UserEntityDto;
     msDashBoardDetails: MsDashBoardALLDto;
+    dmarkapiResponse: ApiResponseModel;
+    fmarkapiResponse: ApiResponseModel;
+    smarkapiResponse: ApiResponseModel;
 
     roles: string[];
 
@@ -200,6 +203,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 private store$: Store<any>,
                 private SpinnerService: NgxSpinnerService,
                 private msService: MsService,
+                private QaInternalService: QaInternalService,
+               
     ) {
     }
 
@@ -234,6 +239,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             this.loadMSData();
         }
 
+        if (this.roles?.includes('QA_OFFICER_READ')
+        || this.roles?.includes('QA_MANAGER_READ')
+        || this.roles?.includes('QA_PCM_READ')
+        || this.roles?.includes('QA_PSC_MEMBERS_READ')
+        || this.roles?.includes('QA_DIRECTOR_READ')
+    ) {
+        this.loadSmarkData();
+        this.loadFmarkData();
+        this.loadDmarkData();
+
+    }       
 
     }
 
@@ -242,6 +258,51 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.msService.msDashBoardAllDetails().subscribe(
             (data) => {
                 this.msDashBoardDetails = data;
+                this.SpinnerService.hide();
+            },
+            error => {
+                this.SpinnerService.hide();
+                //(error);
+                // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+    }
+
+    private loadSmarkData(): any {
+        this.SpinnerService.show();
+        this.QaInternalService.loadMyTasksByPermitType(2).subscribe(
+            (data) => {
+                this.smarkapiResponse = data;
+                this.SpinnerService.hide();
+            },
+            error => {
+                this.SpinnerService.hide();
+                //(error);
+                // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+    }
+
+    private loadFmarkData(): any {
+        this.SpinnerService.show();
+        this.QaInternalService.loadMyTasksByPermitType(1).subscribe(
+            (data) => {
+                this.fmarkapiResponse = data;
+                this.SpinnerService.hide();
+            },
+            error => {
+                this.SpinnerService.hide();
+                //(error);
+                // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+    }
+    
+    private loadDmarkData(): any {
+        this.SpinnerService.show();
+        this.QaInternalService.loadMyTasksByPermitType(3).subscribe(
+            (data) => {
+                this.dmarkapiResponse = data;
                 this.SpinnerService.hide();
             },
             error => {
@@ -306,6 +367,38 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     gotoHome() {
         this.router.navigate(['/dashboard']);
     }
+
+    // qa admin
+    gotoDiamondMarkApplication() {
+        this.router.navigate(['/dmark-admin']);
+
+    }
+
+    gotoStandardizationMarkApplication() {
+        this.router.navigate(['/smark-admin']);
+
+    }
+
+    gotoFortificationMarkApplication() {
+        this.router.navigate(['/fmark-admin']);
+
+    }
+    gotoAwardedApplication() {
+        this.router.navigate(['']);
+
+    }
+
+    gotoExpiredApplication() {
+        this.router.navigate(['']);
+
+    }
+
+    gotodefferedApplication() {
+        this.router.navigate(['']);
+
+    }
+
+
 
     openModalAddDetails(divVal: string, headerVal: string): void {
         this.currDivLabel = headerVal;

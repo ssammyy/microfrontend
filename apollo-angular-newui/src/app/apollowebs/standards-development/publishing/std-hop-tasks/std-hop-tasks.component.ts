@@ -111,8 +111,6 @@ export class StdHopTasksComponent implements OnInit {
             special:[],
             comStdNumber:[],
             preparedBy: [],
-            docName:[],
-            requestNumber:[],
             departmentId:[],
             subject:[],
             description:[],
@@ -126,123 +124,156 @@ export class StdHopTasksComponent implements OnInit {
             contactThreeTelephone:[],
             contactThreeEmail:[],
             companyName:[],
-            companyPhone:[]
+            companyPhone:[],
+            docName:[],
+            draughting:[],
+            requestNumber:[],
+
+
 
         });
         this.approveRequirementsFormGroup = this.formBuilder.group({
             id:[],
-            comments: ['', Validators.required],
-            accentTo: [],
-            requestId:[],
-            draftId:[],
-            title:[],
-            standardNumber:[]
-
+            comments:null,
+            accentTo:null,
+            requestId:null,
+            draftId:null,
+            title:null,
+            standardNumber:null,
+            scope:null,
+            normativeReference:null,
+            symbolsAbbreviatedTerms:null,
+            clause:null,
+            special:null,
+            uploadDate:null,
+            preparedBy:null,
+            documentType:null,
+            departmentId:null,
+            subject:null,
+            description:null,
+            contactOneFullName:null,
+            contactOneTelephone:null,
+            contactOneEmail:null,
+            standardType:null,
+            companyName:[],
+            companyPhone:[],
+            docName:[],
+            draughting:[],
+            requestNumber:[],
         });
 
         this.rejectRequirementsFormGroup = this.formBuilder.group({
             id:[],
-            comments: ['', Validators.required],
-            accentTo: [],
-            justificationId:[],
-            requestId:[],
-            draftId:[]
+            comments:null,
+            accentTo:null,
+            requestId:null,
+            draftId:null,
+            title:null,
+            standardNumber:null,
+            scope:null,
+            normativeReference:null,
+            symbolsAbbreviatedTerms:null,
+            clause:null,
+            special:null,
+            uploadDate:null,
+            preparedBy:null,
+            documentType:null,
+            departmentId:null,
+            subject:null,
+            description:null,
+            contactOneFullName:null,
+            contactOneTelephone:null,
+            contactOneEmail:null,
+            standardType:null,
+            companyName:[],
+            companyPhone:[],
+            docName:[],
+            draughting:[],
+            requestNumber:[],
 
         });
         this.editDraughtFormGroup = this.formBuilder.group({
-            id: [],
-            requestId:[],
-            title:[],
+            id:[],
+            comments:null,
+            accentTo:null,
+            requestId:null,
+            draftId:null,
+            title:null,
+            standardNumber:null,
+            scope:null,
+            normativeReference:null,
+            symbolsAbbreviatedTerms:null,
+            clause:null,
+            special:null,
+            uploadDate:null,
+            preparedBy:null,
+            departmentId:null,
+            subject:null,
+            description:null,
+            standardType:null,
             docName:[],
-            standardNumber:[],
             draughting:[],
-            draftId:[],
-            scope:[],
-            normativeReference:[],
-            symbolsAbbreviatedTerms:[],
-            clause:[],
-            special:[],
-            comStdNumber:[],
-            preparedBy: [],
             requestNumber:[],
-            departmentId:[],
-            subject:[],
-            description:[],
-            contactOneFullName:[],
-            contactOneTelephone:[],
-            contactOneEmail:[],
-            contactTwoFullName:[],
-            contactTwoTelephone:[],
-            contactTwoEmail:[],
-            contactThreeFullName:[],
-            contactThreeTelephone:[],
-            contactThreeEmail:[],
-            companyName:[],
-            companyPhone:[]
 
         });
         this.draughtFormGroup = this.formBuilder.group({
-            id: [],
-            requestId:[],
-            title:[],
-            docName:[],
-            standardNumber:[],
-            draughting:[],
-            draftId:[],
-            scope:[],
-            normativeReference:[],
-            symbolsAbbreviatedTerms:[],
-            clause:[],
-            special:[],
-            comStdNumber:[],
-            preparedBy: [],
-            requestNumber:[],
-            departmentId:[],
-            subject:[],
-            description:[],
-            contactOneFullName:[],
-            contactOneTelephone:[],
-            contactOneEmail:[],
-            contactTwoFullName:[],
-            contactTwoTelephone:[],
-            contactTwoEmail:[],
-            contactThreeFullName:[],
-            contactThreeTelephone:[],
-            contactThreeEmail:[],
+            id:[],
+            comments:null,
+            accentTo:null,
+            requestId:null,
+            draftId:null,
+            title:null,
+            standardNumber:null,
+            scope:null,
+            normativeReference:null,
+            symbolsAbbreviatedTerms:null,
+            clause:null,
+            special:null,
+            uploadDate:null,
+            preparedBy:null,
+            documentType:null,
+            departmentId:null,
+            subject:null,
+            description:null,
+            contactOneFullName:null,
+            contactOneTelephone:null,
+            contactOneEmail:null,
+            standardType:null,
             companyName:[],
-            companyPhone:[]
+            companyPhone:[],
+            docName:[],
+            draughting:[],
+            requestNumber:[],
 
         });
         this.proofReadFormGroup = this.formBuilder.group({
-            id: [],
-            requestId:[],
-            title:[],
-            docName:[],
-            standardNumber:[],
-            draughting:[],
-            draftId:[],
-            scope:[],
-            normativeReference:[],
-            symbolsAbbreviatedTerms:[],
-            clause:[],
-            special:[],
-            comStdNumber:[],
-            preparedBy: [],
-            requestNumber:[],
-            departmentId:[],
-            subject:[],
-            description:[],
-            contactOneFullName:[],
-            contactOneTelephone:[],
-            contactOneEmail:[],
-            contactTwoFullName:[],
-            contactTwoTelephone:[],
-            contactTwoEmail:[],
-            contactThreeFullName:[],
-            contactThreeTelephone:[],
-            contactThreeEmail:[],
+            id:[],
+            comments:null,
+            accentTo:null,
+            requestId:null,
+            draftId:null,
+            title:null,
+            standardNumber:null,
+            scope:null,
+            normativeReference:null,
+            symbolsAbbreviatedTerms:null,
+            clause:null,
+            special:null,
+            uploadDate:null,
+            preparedBy:null,
+            documentType:null,
+            departmentId:null,
+            subject:null,
+            description:null,
+            contactOneFullName:null,
+            contactOneTelephone:null,
+            contactOneEmail:null,
+            standardType:null,
             companyName:[],
-            companyPhone:[]
+            companyPhone:[],
+            docName:[],
+            draughting:[],
+            requestNumber:[],
 
         });
 
@@ -409,7 +440,7 @@ export class StdHopTasksComponent implements OnInit {
         this.stdComStandardService.getComPublishingTasks().subscribe(
             (response: ISCheckRequirements[]) => {
                 this.isCheckRequirements = response;
-                console.log(this.isCheckRequirements)
+                //console.log(this.isCheckRequirements)
                 this.rerender();
                 this.SpinnerService.hide();
 
@@ -441,7 +472,7 @@ export class StdHopTasksComponent implements OnInit {
             (response: ComStdRemarks[]) => {
                 this.comStdRemarks = response;
                 this.SpinnerService.hide();
-               // console.log(this.comStdRemarks)
+                console.log(this.comStdRemarks)
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -461,7 +492,7 @@ export class StdHopTasksComponent implements OnInit {
             (response: ComStdCommitteeRemarks[]) => {
                 this.comStdCommitteeRemarks = response;
                 this.SpinnerService.hide();
-                console.log(this.comStdCommitteeRemarks)
+               // console.log(this.comStdCommitteeRemarks)
             },
             (error: HttpErrorResponse) => {
                 this.SpinnerService.hide();
@@ -507,7 +538,7 @@ export class StdHopTasksComponent implements OnInit {
                     symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
                     clause:this.actionRequests.clause,
                     special:this.actionRequests.special,
-                    comStdNumber:this.actionRequests.comStdNumber,
+                    standardNumber:this.actionRequests.comStdNumber,
                     departmentId:this.actionRequests.departmentId,
                     subject:this.actionRequests.subject,
                     description:this.actionRequests.description,
@@ -535,7 +566,8 @@ export class StdHopTasksComponent implements OnInit {
 
                     requestId: this.actionRequests.requestId,
                     id: this.actionRequests.id,
-                    draftId: this.actionRequests.draftId
+                    draftId: this.actionRequests.draftId,
+                    standardType: this.actionRequests.standardType
                 }
             );
 
@@ -552,6 +584,7 @@ export class StdHopTasksComponent implements OnInit {
                     title: this.actionRequests.title,
                     docName:this.actionRequests.documentType,
                     standardNumber:this.actionRequests.comStdNumber,
+                    standardType:this.actionRequests.standardType,
 
                     requestNumber: this.actionRequests.requestNumber,
                     scope:this.actionRequests.scope,
@@ -559,21 +592,11 @@ export class StdHopTasksComponent implements OnInit {
                     symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
                     clause:this.actionRequests.clause,
                     special:this.actionRequests.special,
-                    comStdNumber:this.actionRequests.comStdNumber,
                     departmentId:this.actionRequests.departmentId,
                     subject:this.actionRequests.subject,
                     description:this.actionRequests.description,
-                    contactOneFullName:this.actionRequests.contactOneFullName,
-                    contactOneTelephone:this.actionRequests.contactOneTelephone,
-                    contactOneEmail:this.actionRequests.contactOneEmail,
-                    contactTwoFullName:this.actionRequests.contactTwoFullName,
-                    contactTwoTelephone:this.actionRequests.contactTwoTelephone,
-                    contactTwoEmail:this.actionRequests.contactTwoEmail,
-                    contactThreeFullName:this.actionRequests.contactThreeFullName,
-                    contactThreeTelephone:this.actionRequests.contactThreeTelephone,
-                    contactThreeEmail:this.actionRequests.contactThreeEmail,
-                    companyName:this.actionRequests.companyName,
-                    companyPhone:this.actionRequests.companyPhone
+
+
                 }
             );
 
@@ -597,7 +620,6 @@ export class StdHopTasksComponent implements OnInit {
                     symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
                     clause:this.actionRequests.clause,
                     special:this.actionRequests.special,
-                    comStdNumber:this.actionRequests.comStdNumber,
                     departmentId:this.actionRequests.departmentId,
                     subject:this.actionRequests.subject,
                     description:this.actionRequests.description,
@@ -635,7 +657,6 @@ export class StdHopTasksComponent implements OnInit {
                     symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
                     clause:this.actionRequests.clause,
                     special:this.actionRequests.special,
-                    comStdNumber:this.actionRequests.comStdNumber,
                     departmentId:this.actionRequests.departmentId,
                     subject:this.actionRequests.subject,
                     description:this.actionRequests.description,
@@ -660,10 +681,25 @@ export class StdHopTasksComponent implements OnInit {
 
             this.approveRequirementsFormGroup.patchValue(
                 {
-                    accentTo: this.approve,
                     requestId: this.actionRequests.requestId,
                     id: this.actionRequests.id,
-                    draftId: this.actionRequests.draftId
+                    draftId: this.actionRequests.draftId,
+                    title: this.actionRequests.title,
+                    scope:this.actionRequests.scope,
+                    normativeReference: this.actionRequests.normativeReference,
+                    symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+                    clause:this.actionRequests.clause,
+                    special:this.actionRequests.special,
+                    standardNumber:this.actionRequests.comStdNumber,
+                    departmentId:this.actionRequests.departmentId,
+                    subject:this.actionRequests.subject,
+                    description:this.actionRequests.description,
+                    contactOneFullName:this.actionRequests.contactOneFullName,
+                    contactOneTelephone:this.actionRequests.contactOneTelephone,
+                    contactOneEmail:this.actionRequests.contactOneEmail,
+                    companyName:this.actionRequests.companyName,
+                    companyPhone:this.actionRequests.companyPhone,
+                    standardType:this.actionRequests.standardType,
                 }
             );
             this.rejectRequirementsFormGroup.patchValue(
@@ -681,12 +717,25 @@ export class StdHopTasksComponent implements OnInit {
 
             this.approveRequirementsFormGroup.patchValue(
                 {
-                    accentTo: this.approve,
                     requestId: this.actionRequests.requestId,
                     id: this.actionRequests.id,
                     draftId: this.actionRequests.draftId,
                     title: this.actionRequests.title,
-                    standardNumber: this.actionRequests.comStdNumber
+                    scope:this.actionRequests.scope,
+                    normativeReference: this.actionRequests.normativeReference,
+                    symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+                    clause:this.actionRequests.clause,
+                    special:this.actionRequests.special,
+                    standardNumber:this.actionRequests.comStdNumber,
+                    departmentId:this.actionRequests.departmentId,
+                    subject:this.actionRequests.subject,
+                    description:this.actionRequests.description,
+                    contactOneFullName:this.actionRequests.contactOneFullName,
+                    contactOneTelephone:this.actionRequests.contactOneTelephone,
+                    contactOneEmail:this.actionRequests.contactOneEmail,
+                    companyName:this.actionRequests.companyName,
+                    companyPhone:this.actionRequests.companyPhone,
+                    standardType:this.actionRequests.standardType,
                 }
             );
             this.rejectRequirementsFormGroup.patchValue(
@@ -1020,7 +1069,7 @@ export class StdHopTasksComponent implements OnInit {
     draughtStandard(): void {
         this.loadingText = "Approving Draft...";
         this.SpinnerService.show();
-        console.log(this.draughtFormGroup);
+        //console.log(this.draughtFormGroup);
         this.stdComStandardService.draughtStandard(this.draughtFormGroup.value).subscribe(
             (response ) => {
                 //console.log(response);
@@ -1079,6 +1128,26 @@ export class StdHopTasksComponent implements OnInit {
     }
 
     approveEditedDraft(): void {
+        this.loadingText = "Approving Edited Draft...";
+        this.SpinnerService.show();
+        this.stdComStandardService.approveEditedDraft(this.approveRequirementsFormGroup.value).subscribe(
+            (response ) => {
+                //console.log(response);
+                //this.onClickUploadStandard(response.body.id)
+                this.getComPublishingTasks();
+                this.SpinnerService.hide();
+                this.showToasterSuccess('Success', `Draft Approved`);
+            },
+            (error: HttpErrorResponse) => {
+                this.SpinnerService.hide();
+                this.showToasterError('Error', `Error Try Again`);
+                console.log(error.message);
+            }
+        );
+        this.hideModalEditedDraft();
+    }
+
+    approveComEditedDraft(): void {
         this.loadingText = "Approving Edited Draft...";
         this.SpinnerService.show();
         this.stdComStandardService.approveEditedDraft(this.approveRequirementsFormGroup.value).subscribe(

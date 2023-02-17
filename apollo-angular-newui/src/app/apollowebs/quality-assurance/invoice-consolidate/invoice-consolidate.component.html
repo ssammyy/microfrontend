@@ -63,15 +63,15 @@
 
                                             <td *ngIf="task.totalAmount != 0">
                                                 <button style="width: auto" type="button" class="btn btn-primary"
-                                                        (click)="payNowForOneInvoice(task.permitID,task.permitRefNumber)">
+                                                        (click)="payNowForOneInvoice(task.invoiceMasterID,task.permitRefNumber)">
                                                     PAY NOW
                                                 </button>
                                             </td>
                                             <td style="padding-left: 50px" *ngIf="task.totalAmount != 0">
                                                 <input class="form-check-input" type="checkbox"
-                                                       value="{{task.permitID}}"
+                                                       value="{{task.invoiceMasterID}}"
                                                        id="defaultCheck1"
-                                                       (change)="onChange($event.target.checked, task.permitID)"
+                                                       (change)="onChange($event.target.checked, task.invoiceMasterID)"
                                                        [checked]="checked(task)">
                                             </td>
                                         </tr>

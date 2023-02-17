@@ -55,6 +55,16 @@ export class PermitEntityDto {
     divisionValue: string;
     sectionValue: string;
     permitAwardStatus: boolean;
+
+    postalAddress:string;
+    telephoneNo:string;
+
+    commodityDescription:string;
+
+    brandName:string;
+
+    standardNumber:string;
+
     permitExpiredStatus: boolean;
     taskID: bigint;
     companyId: bigint;
@@ -115,7 +125,7 @@ export class ReportsPermitEntityDto {
     permitType: bigint;
     processStatusID: number;
     versionNumber: number;
-    firmTypeID: number
+    firmTypeID: number;
     firmTypeName: string;
     invoiceAmount: number;
     standardNumber: number;
@@ -296,11 +306,18 @@ export class PermitEntityDetails {
     assignOfficerStatus: boolean;
     assignOfficerID: number;
     permitGenerateDifference: boolean;
+    permitReGenerateInvoice: boolean;
     inspectionReportGenerated: boolean;
     companyId: number;
+    branchID: number;
     factoryInspectionReportApprovedRejectedStatus: boolean;
     ssfCompletedStatus: boolean;
     compliantStatus: boolean;
+    invoiceDifferenceGenerated: boolean;
+    recommendationApprovalStatus: boolean;
+    hodQamApproveRejectStatus: boolean;
+    pscMemberApprovalStatus: boolean;
+    pcmApprovalStatus: boolean;
 }
 
 
@@ -391,7 +408,18 @@ export class SSFDetailsDto {
     resultsAnalysis: boolean;
 }
 
+export class CompanyUpgradeStatusDto {
+    companyProfileID: bigint;
+    requesterComment: string;
+    updateFirmType: string;
+    updateFirmTypeID: bigint;
+    upgradeType: boolean;
+    updateDetailsStatus: boolean;
+    inspectionFeeRequerd: boolean;
+}
+
 export class AllPermitDetailsDto {
+    companyStatusDetails: CompanyUpgradeStatusDto;
     permitDetails: PermitEntityDetails;
     remarksDetails: PermitAllRemarksDetailsDto;
     invoiceDetails: InvoiceDetailsDto;
@@ -411,7 +439,13 @@ export class AllPermitDetailsDto {
     sectionList: SectionsEntityDto[];
     standardsList: StandardsDto[];
     ssfListDetails: SSFDetailsDto[];
+    inspectionNeeded: boolean;
+    inspectionInvoiceUploaded: number;
+    inspectionFeeInvoice: InvoiceDetailsDto;
     sampleLabResults: MSSSFLabResultsDto[];
+
+    inspectionReportDetails: InspectionReportDetailsDto;
+
 }
 
 
@@ -443,6 +477,12 @@ export class PlantDetailsDto {
     plotNo: string;
     designation: string;
     contactPerson: string;
+}
+export class InspectionReportDetailsDto {
+    id: bigint;
+    refNo: string;
+    submittedInspectionReportStatus: string;
+    createdOn: Date;
 }
 
 export class StgInvoiceBalanceDto {
@@ -480,6 +520,7 @@ export class PermitInvoiceDto {
     permitRefNumber: string;
     batchID: bigint;
     sageInvoiceNumber: string;
+    invoiceMasterID: string;
 
 }
 
@@ -603,7 +644,7 @@ export interface SamplesSubmittedDto {
     results_DATE: string;
     region: string;
     section: string;
-    product: string
+    product: string;
 }
 
 export class StatusesDto {
@@ -625,10 +666,13 @@ export class FilterDto {
 }
 
 export class AllInspectionDetailsApplyDto {
-    id: number;
+    id: bigint;
     technicalDetailsDto: TechnicalDetailsDto;
     inspectionDetailsDto: InspectionDetailsDto;
     inspectionDetailsDtoB: InspectionDetailsDtoB;
+    productLabelling: ProductLabellingDto[];
+
+    standardizationMarkScheme: StandardizationMarkSchemeDto
     operationProcessAndControls: OperationProcessAndControlsDetailsApplyDto[];
     haccpImplementationDetails: HaccpImplementationDetailsApplyDto;
     followPreviousRecommendationsNonConformities: string;
@@ -640,6 +684,8 @@ export class AllInspectionDetailsApplyDto {
     supervisorComments: string;
     supervisorName: string;
     supervisorDate: Date;
+
+    permitDetails:PermitEntityDto;
 }
 
 
@@ -653,6 +699,8 @@ export class TechnicalDetailsDto {
 
 export class InspectionDetailsDto {
     id: number;
+
+    inspectionRecommendationId: number;
     complianceApplicableStatutory: string;
     complianceApplicableStatutoryRemarks: string;
     plantHouseKeeping: string;
@@ -665,14 +713,12 @@ export class InspectionDetailsDto {
     testingFacilityRemarks: string;
 }
 
-export class ProductLabellingDto {
-    id: number;
-    standardMarking: string;
-    findings: string;
-}
 
 export class InspectionDetailsDtoB {
     id: number;
+
+    inspectionRecommendationId: number;
+
     equipmentCalibration: string;
     equipmentCalibrationRemarks: string;
     qualityRecords: string;
@@ -681,11 +727,42 @@ export class InspectionDetailsDtoB {
     recordsNonconformingRemarks: string;
     productRecallRecords: string;
     productRecallRecordsRemarks: string;
-    productLabelling: ProductLabellingDto[];
+
+}
+
+export class ProductLabellingDto {
+    id: number;
+    inspectionRecommendationId: number;
+
+    standardMarking: string;
+    findings: string;
+
+    statusOfCompliance: string;
+}
+
+export class StandardizationMarkSchemeDto {
+    id: number;
+    inspectionRecommendationId: number;
+    validitySmarkPermit: string;
+    validitySmarkPermitRemarks: string;
+    useTheSmark: string;
+    useTheSmarkRemarks: string;
+    changesAffectingProductCertification: string;
+    changesAffectingProductCertificationRemarks: string;
+    changesBeenCommunicatedKebs: string;
+    changesBeenCommunicatedKebsRemarks: string;
+
+    samplesDrawn: string;
+
+    samplesDrawnRemarks: string;
+
+
 }
 
 export class OperationProcessAndControlsDetailsApplyDto {
     id: number;
+    inspectionRecommendationId: number;
+
     processFlow: string;
     operations: string;
     qualityChecks: string;
@@ -696,6 +773,8 @@ export class OperationProcessAndControlsDetailsApplyDto {
 
 export class HaccpImplementationDetailsApplyDto {
     id: number;
+    inspectionRecommendationId: number;
+
     designFacilitiesConstructionLayout: string;
     designFacilitiesConstructionLayoutRemarks: string;
     maintenanceSanitationCleaningPrograms: string;

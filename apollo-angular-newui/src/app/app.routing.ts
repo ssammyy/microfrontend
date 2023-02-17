@@ -704,6 +704,37 @@ import {
 } from "./apollowebs/qualityAssuranceAdmin/permit-details-admin/permit-details-admin.component";
 import {StaDetailsComponent} from "./apollowebs/qualityAssuranceAdmin/sta-details/sta-details.component";
 import {InspectionReport} from "./apollowebs/qualityAssuranceAdmin/inspection-report/inspection-report";
+import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
+import {IntStdListComponent} from "./apollowebs/standards-development/international-standard/int-std-list/int-std-list.component";
+import { DelayedProjectsComponent } from './apollowebs/standards-development/reports/SD REPORTS/delayed-projects/delayed-projects.component';
+import { NspStatusComponent } from './apollowebs/standards-development/reports/SD REPORTS/nsp-status/nsp-status.component';
+import { NonePerformingProjectsComponent } from './apollowebs/standards-development/reports/SD REPORTS/none-preforming-projects/none-performing-projects.component';
+import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-development/reports/SD REPORTS/standards-approval-committee/standards-approval-committee.component';
+import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/SD REPORTS/tc-member-application/tc-member-application.component';
+import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/SD REPORTS/individual-weekly-report/individual-weekly-report.component';
+import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/SD REPORTS/departmental-weekly-report/departmental-weekly-report.component';
+import { StandardsReceivedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-received/standards-received.component';
+import { StandardsEditedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-edited/standards-edited.component';
+import { StandardsProofreadComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-proofread/standards-proofread.component';
+import { StandardsTypesetComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-typeset/standards-typeset.component';
+import { SpcReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/spc-report/spc-report.component';
+import { WeeklyReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/weekly-report/weekly-report.component';
+import { DraughsmanReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/draughsman-report/draughsman-report.component';
+import { PublishingEnquiriestComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/publishing-enquiriest/publishing-enquiriest.component';
+import { StandardsPrintedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-printed/standards-printed.component';
+import { InformationRequestRegisterComponent } from './apollowebs/standards-development/reports/SIRC/information-request-register/information-request-register.component';
+import { DisseminationPublicationComponent } from './apollowebs/standards-development/reports/SIRC/dissemination-publication/dissemination-publication.component';
+import { CatalogueReportComponent } from './apollowebs/standards-development/reports/SIRC/catalogue-report/catalogue-report.component';
+import { MembershipSubcriptionSchemeComponent } from './apollowebs/standards-development/reports/SIRC/membership-subcription-scheme/membership-subcription-scheme.component';
+import { KenyaStandardRequsitionFormComponent } from './apollowebs/standards-development/reports/SIRC/kenya-standard-requsition-form/kenya-standard-requsition-form.component';
+import { SaleForeignStandardRegisterComponent } from './apollowebs/standards-development/reports/SIRC/sale-foreign-standard-register/sale-foreign-standard-register.component';
+import { SalesStandardRegisterComponent } from './apollowebs/standards-development/reports/SIRC/sale-kenya-standard-register/sales-standard-register.component';
+import { PublicationOrderingRegisterComponent } from './apollowebs/standards-development/reports/SIRC/publication-ordering-register/publication-ordering-register.component';
+import { IcsAllocationComponent } from './apollowebs/standards-development/reports/SIRC/ics-allocation/ics-allocation.component';
+import { SdPaymentsComponent } from './apollowebs/standards-development/schemeMembership/sd-payments/sd-payments.component';
+import { DomesticNotificationComponent } from './apollowebs/standards-development/reports/WTO REPORTS/domestic-notification/domestic-notification.component';
+import { EnquariesHandledReportComponent } from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
+import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
 
 export const routes: Routes = [
     {
@@ -1012,7 +1043,7 @@ export const routes: Routes = [
         children: [{path: '', component: InvoiceConsolidateFmarkComponent}],
     },
     {
-        path: 'invoice/consolidate_invoice_dmark', component: AdminLayoutComponent,
+        path: 'invoice/consolidate_invoice-difference', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: InvoiceConsolidateDmarkComponent}],
     },
@@ -1049,7 +1080,6 @@ export const routes: Routes = [
     {
         path: 'payments', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: PaymentsComponent}],
     },
     {
@@ -1142,7 +1172,7 @@ export const routes: Routes = [
 
     },
     {
-        path: 'inspection-report', component: AdminLayoutComponent,
+        path: 'inspection-report/:id', component: AdminLayoutComponent,
         // canActivate: [RouteGuard]
 
         children: [
@@ -1690,6 +1720,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdPublishingComponent}],
     },
+    {
+        path: 'intStandardLists', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdListComponent}],
+    },
+
 
     // SD SYSTEMIC REVIEW
     {
@@ -1839,6 +1875,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: ComStdPublishingComponent}],
     },
+    {
+        path: 'companyStandardList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdConfirmComponent}],
+    },
+
 
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
@@ -2217,13 +2259,177 @@ export const routes: Routes = [
         children: [{path: '', component: SchemeMembershipSicComponent}],
     },
 
+    {
+        path: 'sdpayments',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: SdPaymentsComponent}],
+    },
+
 
     /****************************************************************
      * END OF STANDARD DEVELOPMENT - SCHEME MEMBERSHIP
      ***************************************************************/
 
+    // Standard development reports
+    {
+        path: 'nspStatus', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NspStatusComponent}],
+    },
+
+    {
+        path: 'nonePreformingProject', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NonePerformingProjectsComponent}],
+    },
+
+    {
+        path: 'delayedProjects', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: DelayedProjectsComponent}],
+    },
+
+    {
+        path: 'sacReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardsApprovalCommitteeComponent}],
+    },
+
+    {
+        path: 'tcMemberApplication', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: TcMemberApplicationComponent}],
+    },
+    {
+        path: 'individualWeeklyReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IndividualWeeklyReportComponent}],
+    },
+
+    {
+        path: 'deparmentalWeeklyReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: DepartmentalWeeklyReportComponent}],
+    },
+
+    // PUBLISHING REPORTS
+
+    {
+        path: 'standardsReceived', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardsReceivedComponent}],
+    },
+    {
+        path: 'standardsEdited', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardsEditedComponent}],
+    },
+    {
+        path: 'standardsProofread', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardsProofreadComponent}],
+    },
+    {
+        path: 'standardsTypeset', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardsTypesetComponent}],
+    },
+    {
+        path: 'spcReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SpcReportComponent}],
+    },
+    {
+        path: 'weeklyReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: WeeklyReportComponent}],
+    },
+    {
+        path: 'draughtsmans', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: DraughsmanReportComponent}],
+    },
+    {
+        path: 'publishingEnquiriest', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: PublishingEnquiriestComponent}],
+    },
+    {
+        path: 'standardsPrinted', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardsPrintedComponent}],
+    },
+
+    // SIRC REPORTS
+    
+
+    {
+        path: 'informationRequestRegister', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: InformationRequestRegisterComponent}],
+    },
+    {
+        path: 'publicationOrderingRegister', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: PublicationOrderingRegisterComponent}],
+    },
+    {
+        path: 'saleKenyastandard', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SalesStandardRegisterComponent }],
+    },
+    {
+        path: 'saleForeignstandard', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SaleForeignStandardRegisterComponent}],
+    },
+    {
+        path: 'standardRequsitionForm', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: KenyaStandardRequsitionFormComponent}],
+    },
+    {
+        path: 'membershipSubscriptionScheme', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: MembershipSubcriptionSchemeComponent}],
+    },
+    {
+        path: 'catalogueReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: CatalogueReportComponent}],
+    },
+    {
+        path: 'disseminationReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: DisseminationPublicationComponent}],
+    },
+
+    {
+      path: 'icsAllocation', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IcsAllocationComponent}],
+    },
+
+    // WOT REPORTS
+    {
+        path: 'domesticNotification', component: AdminLayoutComponent,
+          canActivate: [RouteGuard],
+          children: [{path: '', component: DomesticNotificationComponent}],
+      },
+      {
+        path: 'enquiriesHandled', component: AdminLayoutComponent,
+          canActivate: [RouteGuard],
+          children: [{path: '', component: EnquariesHandledReportComponent}],
+      },
+      {
+        path: 'standardworkProgramme', component: AdminLayoutComponent,
+          canActivate: [RouteGuard],
+          children: [{path: '', component: StandardWorkProgrammeBulletinComponent}],
+      },
 
 
+      
 
 
     // STANDARDS LEVY

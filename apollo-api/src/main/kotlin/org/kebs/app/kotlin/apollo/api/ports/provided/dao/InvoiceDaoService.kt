@@ -318,19 +318,22 @@ class InvoiceDaoService(
                 val permitMasterInvoice = qaDaoServices.findALlInvoicesPermitWithBatchID(permitBatchedDetails.id?: throw  ExpectedDataNotFound("Missing Batch ID QA For invoice"))
 
                 permitMasterInvoice.forEach { permitInvoiceMaster->
-                    qaInvoiceDetailsRepo.findByStatusAndInvoiceMasterIdAndInspectionStatus(1,permitInvoiceMaster.id,1)?.forEach {inspectionFeeCheck->
+                    qaInvoiceDetailsRepo.findByStatusAndInvoiceMasterIdAndInspectionStatus(1,permitInvoiceMaster.id,1)
+                        ?.forEach {inspectionFeeCheck->
                         manufacturePlantRepository.findByInvoiceSharedId(inspectionFeeCheck.id)
                             ?.let { plantDetails->
                                 companyProfileRepo.findByIdOrNull(plantDetails.companyProfileId)
                                     ?.let {manufacture->
-                                        val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
-                                        val selectedRate = ratesMap.firstOrNull { manufacture.yearlyTurnover!! > (it.min ?: BigDecimal.ZERO) && manufacture.yearlyTurnover!! <= (it.max ?: throw NullValueNotAllowedException("Max needs to be defined")) } ?: throw NullValueNotAllowedException("Rate not found")
-                                        with(plantDetails){
-                                            inspectionFeeStatus = 1
-                                            paidDate = commonDaoServices.getCurrentDate()
-                                            endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+                                        if (applicationMapProperties.mapQASmarkLargeFirmsTurnOverId==manufacture.firmCategory){
+                                            val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
+                                            val selectedRate = ratesMap.firstOrNull { manufacture.yearlyTurnover!! > (it.min ?: BigDecimal.ZERO) && manufacture.yearlyTurnover!! <= (it.max ?: throw NullValueNotAllowedException("Max needs to be defined")) } ?: throw NullValueNotAllowedException("Rate not found")
+                                            with(plantDetails){
+                                                inspectionFeeStatus = 1
+                                                paidDate = commonDaoServices.getCurrentDate()
+                                                endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+                                            }
+                                            manufacturePlantRepository.save(plantDetails)
                                         }
-                                         manufacturePlantRepository.save(plantDetails)
                                 }
                         }
                     }

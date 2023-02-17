@@ -27,6 +27,7 @@ import {take, takeUntil} from "rxjs/operators";
 import {MatSelect} from "@angular/material/select";
 import {IDropdownSettings} from "ng-multiselect-dropdown";
 import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
+import {CompanyContactDetails, JCList} from "../../../../core/store/data/levy/levy.model";
 
 @Component({
   selector: 'app-com-std-request-list',
@@ -39,12 +40,18 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     dtElements: QueryList<DataTableDirective>;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
+    dtTrigger1: Subject<any> = new Subject<any>();
+    dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
+    dtTrigger4: Subject<any> = new Subject<any>();
 
     /** Subject that emits when the component has been destroyed. */
     protected _onDestroy = new Subject();
   public users !: UserEntity[] ;
     selectedUser: number;
   tasks: ComStdRequest[] = [];
+  contactPersonDetails: CompanyContactDetails[] = [];
+  jointCommitteeLists: JCList[] = [];
   public actionRequest: ComStdRequest | undefined;
     public committeeFormGroup!: FormGroup;
     public uploadDraftFormGroup!: FormGroup;
@@ -139,35 +146,14 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
 
     ngOnDestroy(): void {
         this.dtTrigger.unsubscribe();
+        this.dtTrigger1.unsubscribe();
+        this.dtTrigger2.unsubscribe();
+        this.dtTrigger3.unsubscribe();
+        this.dtTrigger4.unsubscribe();
         //this._onDestroy.next();
         //this._onDestroy.complete();
     }
 
-    // protected setInitialValue() {
-    //     this.filteredWebsites
-    //         .pipe(take(1), takeUntil(this._onDestroy))
-    //         .subscribe(() => {
-    //             this.singleSelect.compareWith = (a: UserEntity, b: UserEntity) => a && b && a.id === b.id;
-    //         });
-    // }
-
-    // protected filterBanks() {
-    //     if (!this.users) {
-    //         return;
-    //     }
-    //
-    //     let search = this.websiteFilterCtrl.value;
-    //     if (!search) {
-    //         this.filteredWebsites.next(this.users.slice());
-    //         return;
-    //     } else {
-    //         search = search.toLowerCase();
-    //     }
-    //
-    //     this.filteredWebsites.next(
-    //         this.users.filter(bank => bank.name.toLowerCase().indexOf(search) > -1)
-    //     );
-    // }
 
     showToasterSuccess(title:string,message:string){
         this.notifyService.showSuccess(message, title)
@@ -181,6 +167,35 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         this.notifyService.showWarning(message, title)
 
     }
+
+    public getCompanyContactDetails(requestId: number): void{
+        this.SpinnerService.show();
+        this.stdComStandardService.getCompanyContactDetails(requestId).subscribe(
+            (response: CompanyContactDetails[])=> {
+                this.SpinnerService.hide();
+                this.contactPersonDetails = response;
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+    public getCommitteeList(requestId: number): void{
+        this.SpinnerService.show();
+        this.stdComStandardService.getCommitteeList(requestId).subscribe(
+            (response: JCList[])=> {
+                this.SpinnerService.hide();
+                this.jointCommitteeLists = response;
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+
 
   public getCompanyStandardRequest(): void{
     this.SpinnerService.show();
@@ -197,12 +212,14 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
     );
   }
 
-  public onOpenModal(task: ComStdRequest,mode:string): void{
+  public onOpenModal(task: ComStdRequest,mode:string,requestId: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+    this.getCompanyContactDetails(requestId);
+    this.getCommitteeList(requestId);
     if (mode==='assignProjectLeader'){
       this.actionRequest=task;
       button.setAttribute('data-target','#assignProjectLeader');
@@ -330,6 +347,10 @@ export class ComStdRequestListComponent implements OnInit,OnDestroy {
         });
         setTimeout(() => {
             this.dtTrigger.next();
+            this.dtTrigger1.next();
+            this.dtTrigger2.next();
+            this.dtTrigger3.next();
+            this.dtTrigger4.next();
         });
     }
 

@@ -27,17 +27,16 @@ import swal from "sweetalert2";
   styleUrls: ['./com-std-editor.component.css']
 })
 export class ComStdEditorComponent implements OnInit {
-  @ViewChildren(DataTableDirective)
-  dtOptions: DataTables.Settings = {};
-  dtElements: QueryList<DataTableDirective>;
-  dtTrigger: Subject<any> = new Subject<any>();
-  dtTrigger1: Subject<any> = new Subject<any>();
-  dtTrigger2: Subject<any> = new Subject<any>();
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtOptions: DataTables.Settings = {};
+    dtTrigger: Subject<any> = new Subject<any>();
   comStdRemarks: ComStdRemarks[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
   comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   isCheckRequirements:ISCheckRequirements[]=[];
   public actionRequests: ISCheckRequirements | undefined;
+    public departments !: Department[] ;
   loadingText: string;
   approve: string;
   reject: string;
@@ -62,7 +61,7 @@ export class ComStdEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.getStdDraftEditing();
-
+      this.getDepartments();
     this.uploadDraftStandardFormGroup = this.formBuilder.group({
       id:null,
       requestId:null,
@@ -80,15 +79,6 @@ export class ComStdEditorComponent implements OnInit {
       departmentId:null,
       subject:null,
       description:null,
-      contactOneFullName:null,
-      contactOneTelephone:null,
-      contactOneEmail:null,
-      contactTwoFullName:null,
-      contactTwoTelephone:null,
-      contactTwoEmail:null,
-      contactThreeFullName:null,
-      contactThreeTelephone:null,
-      contactThreeEmail:null,
       companyName:null,
       companyPhone:null
 
@@ -97,7 +87,6 @@ export class ComStdEditorComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
-    this.dtTrigger1.unsubscribe();
   }
 
   showToasterSuccess(title:string,message:string){
@@ -112,6 +101,16 @@ export class ComStdEditorComponent implements OnInit {
     this.notifyService.showWarning(message, title)
 
   }
+    public getDepartments(): void{
+        this.standardDevelopmentService.getDepartments().subscribe(
+            (response: Department[])=> {
+                this.departments = response;
+            },
+            (error: HttpErrorResponse)=>{
+                alert(error.message);
+            }
+        );
+    }
   public getStdDraftEditing(): void {
     this.loadingText = "Retrieving Drafts...";
     this.SpinnerService.show();
@@ -275,15 +274,6 @@ export class ComStdEditorComponent implements OnInit {
             departmentId:this.actionRequests.departmentId,
             subject:this.actionRequests.subject,
             description:this.actionRequests.description,
-            contactOneFullName:this.actionRequests.contactOneFullName,
-            contactOneTelephone:this.actionRequests.contactOneTelephone,
-            contactOneEmail:this.actionRequests.contactOneEmail,
-            contactTwoFullName:this.actionRequests.contactTwoFullName,
-            contactTwoTelephone:this.actionRequests.contactTwoTelephone,
-            contactTwoEmail:this.actionRequests.contactTwoEmail,
-            contactThreeFullName:this.actionRequests.contactThreeFullName,
-            contactThreeTelephone:this.actionRequests.contactThreeTelephone,
-            contactThreeEmail:this.actionRequests.contactThreeEmail,
             companyName:this.actionRequests.companyName,
             companyPhone:this.actionRequests.companyPhone
           }

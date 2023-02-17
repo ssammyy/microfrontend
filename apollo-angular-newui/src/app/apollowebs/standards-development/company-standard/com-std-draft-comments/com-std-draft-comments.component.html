@@ -33,9 +33,6 @@
                                         <th class="sl">Phone Number</th>
                                         <th class="sl">Draft Number</th>
                                         <th class="requestNumber">Title </th>
-                                        <th class="knw">Company Contact Name</th>
-                                        <th class="sl">Company Contact Telephone</th>
-                                        <th class="sl">Company Contact Email</th>
                                         <th class="sl">Deadline</th>
                                         <th class="sl">Number Of Comments</th>
                                         <th class="action">Action</th>
@@ -49,9 +46,6 @@
                                         <td>{{task.companyPhone}}</td>
                                         <td>{{task.draftNumber}}</td>
                                         <td>{{task.title}}</td>
-                                        <td>{{task.contactOneFullName}}</td>
-                                        <td>{{task.contactOneTelephone}}</td>
-                                        <td>{{task.contactOneEmail}}</td>
                                         <td>{{task.deadlineDate | date: 'yyyy-MM-dd'}}</td>
                                         <td>{{task.commentCount}}</td>
                                         <td *ngIf="task.status==0" ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style=" " data-original-title="preparePD">Comment on Draft</a></td>

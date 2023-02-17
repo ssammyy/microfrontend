@@ -60,6 +60,7 @@ class IntStandardService(
     private val comStandardDraftUploadsRepository: ComStandardDraftUploadsRepository,
     private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository,
     private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
+    private val iStdStakeHoldersRepository: IStdStakeHoldersRepository,
 
 
     ) {
@@ -146,6 +147,15 @@ class IntStandardService(
             val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
             val recipient = s.email
             val user = s.name
+
+            val shs = IStandardStakeHolders()
+            shs.name=user
+            shs.email=recipient
+            shs.draftId=draftNumber
+            shs.dateOfCreation=Timestamp(System.currentTimeMillis())
+            shs.telephone="NA"
+            iStdStakeHoldersRepository.save(shs)
+
             val messageBody= "Dear $user,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl "
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
@@ -155,6 +165,16 @@ class IntStandardService(
         val targetUrl2 = "https://kimsint.kebs.org/isProposalComments/$draftNumber";
         if (listTwo != null) {
             for (recipient in listTwo) {
+                val user = "Stake Holder"
+                val sh = IStandardStakeHolders()
+                sh.name = user
+                sh.email = recipient
+                sh.draftId = draftNumber
+                sh.dateOfCreation=Timestamp(System.currentTimeMillis())
+                sh.telephone="NA"
+
+                iStdStakeHoldersRepository.save(sh)
+
                 val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
                 val messageBody= "Hope You are Well,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "
                 notifications.sendEmail(recipient, subject, messageBody)
@@ -227,31 +247,27 @@ class IntStandardService(
     }
 
     //Submit Adoption Proposal comments
-    fun submitDraftComments(comDraft: List<ComDraftCommentDto>){
+    fun submitDraftComments(comDraft: List<IntDraftCommentDto>){
         val variables: MutableMap<String, Any> = HashMap()
         var  comDraftCommentsSaved = ComDraftComments();
         comDraft.forEach { com->
            val  comDraftComments = ComDraftComments();
-            comDraftComments.uploadDate=com.uploadDate
+            comDraftComments.uploadDate=com.preparedDate
             comDraftComments.emailOfRespondent=com.emailOfRespondent
             comDraftComments.phoneOfRespondent=com.phoneOfRespondent
             comDraftComments.observation=com.observation
-            comDraftComments.draftComment=com.draftComment
+            comDraftComments.draftComment=com.comment
             comDraftComments.commentTitle=com.commentTitle
             comDraftComments.commentDocumentType=com.commentDocumentType
-            comDraftComments.comClause=com.comClause
-            comDraftComments.comParagraph=com.comParagraph
+            comDraftComments.comClause=com.clause
+            comDraftComments.comParagraph=com.paragraph
             comDraftComments.typeOfComment=com.typeOfComment
             comDraftComments.proposedChange=com.proposedChange
             comDraftComments.requestID=com.requestID
             comDraftComments.draftID=com.draftID
-            comDraftComments.recommendations=com.recommendations
             comDraftComments.nameOfRespondent=com.nameOfRespondent
-            comDraftComments.positionOfRespondent=com.positionOfRespondent
             comDraftComments.nameOfOrganization=com.nameOfOrganization
-            comDraftComments.adoptStandard=com.adoptStandard
-            comDraftComments.adoptDraft=com.adoptDraft
-            comDraftComments.reason=com.reason
+            comDraftComments.scope=com.scope
             comDraftComments.commentTime = Timestamp(System.currentTimeMillis())
             comDraftCommentsSaved = comStandardDraftCommentsRepository.save(comDraftComments)
 
@@ -355,7 +371,7 @@ class IntStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= comStdDraft.id
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -403,54 +419,10 @@ class IntStandardService(
     }
 
     fun getDraftComments(requestId: Long): MutableIterable<CompanyStandardRemarks>? {
-        return companyStandardRemarksRepository.findCommentsOnDraft(requestId)
+        return companyStandardRemarksRepository.getDraftComments(requestId)
     }
 
-    // Decision on Proposal
-//    fun decisionOnProposal(
-//        iSAdoptionProposal: ISAdoptionProposal,
-//        internationalStandardRemarks: InternationalStandardRemarks
-//    ) : String {
-//        val loggedInUser = commonDaoServices.loggedInUserDetails()
-//        iSAdoptionProposal.accentTo=iSAdoptionProposal.accentTo
-//        val decision=iSAdoptionProposal.accentTo
-//
-//        val fName = loggedInUser.firstName
-//        val sName = loggedInUser.lastName
-//        val usersName = "$fName  $sName"
-//        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
-//        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
-//        internationalStandardRemarks.status = 1.toString()
-//        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-//        internationalStandardRemarks.remarkBy = usersName
-//        internationalStandardRemarks.role = "TC SEC"
-//
-//
-//        if (decision == "Yes") {
-//
-//            isAdoptionProposalRepository.findByIdOrNull(internationalStandardRemarks.proposalId)?.let { iSAdoptionProposal ->
-//                with(iSAdoptionProposal) {
-//                    status = 1
-//
-//                }
-//                isAdoptionProposalRepository.save(iSAdoptionProposal)
-//                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-//            }?: throw Exception("PROPOSAL NOT FOUND")
-//
-//        } else if (decision == "No") {
-//            isAdoptionProposalRepository.findByIdOrNull(internationalStandardRemarks.proposalId)?.let { iSAdoptionProposal ->
-//
-//                with(iSAdoptionProposal) {
-//                    status = 4
-//                }
-//                isAdoptionProposalRepository.save(iSAdoptionProposal)
-//                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-//            } ?: throw Exception("PROPOSAL NOT FOUND")
-//
-//        }
-//
-//        return "Actioned"
-//    }
+
 
     fun getApprovedProposals(): MutableList<ProposalDetails>{
         return isAdoptionProposalRepository.getApprovedProposals();
@@ -464,33 +436,36 @@ class IntStandardService(
     }
 
     //prepare justification
-    fun prepareJustification(iSAdoptionJustification: ISAdoptionJustification) : String
+    fun prepareJustification(isProposalJustification: ISProposalJustification) : String
     {
+
+        val justification= ISAdoptionJustification();
         val variables: MutableMap<String, Any> = HashMap()
-        iSAdoptionJustification.meetingDate=iSAdoptionJustification.meetingDate
-        iSAdoptionJustification.tcSec_id=iSAdoptionJustification.tcSec_id
-        iSAdoptionJustification.slNumber=iSAdoptionJustification.slNumber
-        iSAdoptionJustification.edition=iSAdoptionJustification.edition
-        iSAdoptionJustification.requestedBy=iSAdoptionJustification.requestedBy
-        iSAdoptionJustification.issuesAddressed=iSAdoptionJustification.issuesAddressed
-        iSAdoptionJustification.tcAcceptanceDate=iSAdoptionJustification.tcAcceptanceDate
-        iSAdoptionJustification.referenceMaterial=iSAdoptionJustification.referenceMaterial
-        iSAdoptionJustification.department=iSAdoptionJustification.department
-        iSAdoptionJustification.status= 0.toString()
-        iSAdoptionJustification.positiveVotes=iSAdoptionJustification.positiveVotes
-        iSAdoptionJustification.negativeVotes=iSAdoptionJustification.negativeVotes
-        iSAdoptionJustification.remarks=iSAdoptionJustification.remarks
-        iSAdoptionJustification.proposalId=iSAdoptionJustification.proposalId
-        iSAdoptionJustification.draftId=iSAdoptionJustification.draftId
+        justification.meetingDate=isProposalJustification.meetingDate
+        justification.slNumber=isProposalJustification.slNumber
+        justification.edition=isProposalJustification.edition
+        justification.requestedBy=isProposalJustification.requestedBy
+        justification.issuesAddressed=isProposalJustification.issuesAddressed
+        justification.tcAcceptanceDate=isProposalJustification.tcAcceptanceDate
+        justification.department=isProposalJustification.department
+        justification.status=isProposalJustification.toString()
+        justification.proposalId=isProposalJustification.proposalId
+        justification.draftId=isProposalJustification.draftId
+        justification.scope=isProposalJustification.scope
+        justification.purposeAndApplication=isProposalJustification.purposeAndApplication
+        justification.intendedUsers=isProposalJustification.intendedUsers
+        justification.circulationDate=isProposalJustification.circulationDate
+        justification.closingDate=isProposalJustification.closingDate
+        justification.status= 0.toString()
 
-        iSAdoptionJustification.submissionDate = Timestamp(System.currentTimeMillis())
+        justification.submissionDate = Timestamp(System.currentTimeMillis())
 
-        iSAdoptionJustification.requestNumber = getRQNumber()
-        iSAdoptionJustification.departmentName = departmentListRepository.findNameById(iSAdoptionJustification.department?.toLong())
+        justification.requestNumber = getRQNumber()
+        justification.departmentName = departmentListRepository.findNameById(isProposalJustification.department?.toLong())
 
-        isAdoptionJustificationRepository.save(iSAdoptionJustification)
+        isAdoptionJustificationRepository.save(justification)
 
-        comStdDraftRepository.findByIdOrNull(iSAdoptionJustification.draftId)?.let { comStdDraft ->
+        comStdDraftRepository.findByIdOrNull(isProposalJustification.draftId)?.let { comStdDraft ->
 
             with(comStdDraft) {
                 status = 3
@@ -572,7 +547,7 @@ class IntStandardService(
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        companyStandardRemarks.requestId= companyStandardRemarks.requestId
+        companyStandardRemarks.requestId= comStdDraft.id
         companyStandardRemarks.remarks= companyStandardRemarks.remarks
         companyStandardRemarks.status = 1.toString()
         companyStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -617,32 +592,35 @@ class IntStandardService(
     }
 
 
-    fun submitDraftForEditing(companyStandard: CompanyStandard) : CompanyStandard
+    fun submitDraftForEditing(isDraftDto: CSDraftDto) : CompanyStandard
     {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
+        val com= CompanyStandard()
 
-        companyStandard.title=companyStandard.title
-        companyStandard.departmentId = companyStandard.departmentId
-        companyStandard.subject=companyStandard.subject
-        companyStandard.description=companyStandard.description
-        companyStandard.status=companyStandard.status
-        companyStandard.comStdNumber = companyStandard.comStdNumber
-        companyStandard.documentType=companyStandard.documentType
-        companyStandard.draftId=companyStandard.draftId
-        companyStandard.requestId=companyStandard.requestId
-        companyStandard.standardType="International Standard"
-        companyStandard.scope=companyStandard.scope
-        companyStandard.normativeReference=companyStandard.normativeReference
-        companyStandard.symbolsAbbreviatedTerms=companyStandard.symbolsAbbreviatedTerms
-        companyStandard.clause=companyStandard.clause
-        companyStandard.preparedBy=loggedInUser.firstName + loggedInUser.lastName
-        companyStandard.special = companyStandard.special
+        com.comStdNumber=isDraftDto.comStdNumber
+        com.title=isDraftDto.title
+        com.scope=isDraftDto.scope
+        com.normativeReference=isDraftDto.normativeReference
+        com.symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+        com.clause=isDraftDto.clause
+        com.documentType=isDraftDto.documentType
+        com.preparedBy=isDraftDto.preparedBy
+        com.documentType=isDraftDto.docName
+        com.special=isDraftDto.special
+        com.requestId=isDraftDto.requestId
+        com.draftId=isDraftDto.draftId
+        com.departmentId=isDraftDto.departmentId
+        com.subject=isDraftDto.subject
+        com.description=isDraftDto.description
+        com.status=1
+        com.standardType="International Standard"
+        com.preparedBy=loggedInUser.firstName + loggedInUser.lastName
 
 
-        val draftStandard= companyStandardRepository.save(companyStandard)
-        comStdDraftRepository.findByIdOrNull(companyStandard.draftId)?.let { comStdDraft ->
+        val draftStandard= companyStandardRepository.save(com)
+        comStdDraftRepository.findByIdOrNull(isDraftDto.draftId)?.let { comStdDraft ->
             with(comStdDraft) {
                 status = 6
 
@@ -835,48 +813,7 @@ class IntStandardService(
 
     }
 
-    fun submitDraftForEditing(iSUploadStandard: ISUploadStandard) : ISUploadStandard
-    {
-        val variable: MutableMap<String, Any> = HashMap()
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
-        iSUploadStandard.title=iSUploadStandard.title
-        iSUploadStandard.scope=iSUploadStandard.scope
-        iSUploadStandard.normativeReference=iSUploadStandard.normativeReference
-        iSUploadStandard.symbolsAbbreviatedTerms=iSUploadStandard.symbolsAbbreviatedTerms
-        iSUploadStandard.clause=iSUploadStandard.clause
-        iSUploadStandard.special=iSUploadStandard.special
-        iSUploadStandard.justificationNo=iSUploadStandard.justificationNo
-        iSUploadStandard.proposalId=iSUploadStandard.proposalId
-        iSUploadStandard.status=0
-        iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
-        iSUploadStandard.iSNumber = iSUploadStandard.iSNumber
-        iSUploadStandard.preparedBy=iSUploadStandard.preparedBy
-        iSUploadStandard.documentType=iSUploadStandard.documentType
 
-        var userList= companyStandardRepository.getHopEmailList()
-
-        //email to Head of publishing
-        val targetUrl = "https://kimsint.kebs.org/";
-        userList.forEach { item->
-            //val recipient="stephenmuganda@gmail.com"
-            val recipient= item.getUserEmail()
-            val subject = "Standard Draft"
-            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard draft has been uploaded."
-            if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
-            }
-        }
-
-        iSAdoptionJustificationRepository.findByIdOrNull(iSUploadStandard.justificationNo)?.let { iSAdoptionJustification ->
-            with(iSAdoptionJustification) {
-                status = 3.toString()
-
-            }
-            iSAdoptionJustificationRepository.save(iSAdoptionJustification)
-        }?: throw Exception("JUSTIFICATION NOT FOUND")
-
-        return iSUploadStandardRepository.save(iSUploadStandard)
-    }
 
     fun getUploadedDraft(): MutableList<ISUploadedDraft> {
         return iSUploadStandardRepository.getUploadedDraft()
@@ -888,52 +825,67 @@ class IntStandardService(
 
 
     fun checkRequirements(
-        iSUploadStandard: ISUploadStandard,
-        internationalStandardRemarks: InternationalStandardRemarks
+        iSDraftDecisions: ISDraftDecisions
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        iSUploadStandard.accentTo=iSUploadStandard.accentTo
-        val decision=iSUploadStandard.accentTo
+        val comRemarks=CompanyStandardRemarks()
+
+        val decision=iSDraftDecisions.accentTo
+        val typeOfStandard=iSDraftDecisions.standardType
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
-        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
-        internationalStandardRemarks.role = "HOP"
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "HOP"
+        val deadline: Timestamp = Timestamp.valueOf(timeOfRemark.toLocalDateTime().plusMonths(5))
+
 
         if (decision == "Yes") {
-            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
-                with(iSUploadStandard) {
-                    status = 1
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
+                    status = 3
 
                 }
-                iSUploadStandardRepository.save(iSUploadStandard)
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
             }?: throw Exception("DRAFT NOT FOUND")
 
         } else if (decision == "No") {
-            iSAdoptionJustificationRepository.findByIdOrNull(iSUploadStandard.justificationNo)?.let { iSAdoptionJustification ->
+            if(typeOfStandard=="Company Standard"){
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
 
-                with(iSAdoptionJustification) {
-                    status = 1.toString()
-                }
-                iSAdoptionJustificationRepository.save(iSAdoptionJustification)
-
-                iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
-
-                    with(iSUploadStandard) {
-                        status = 2
+                    with(companyStandard) {
+                        status = 0
                     }
-                    iSUploadStandardRepository.save(iSUploadStandard)
-                    internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
 
-                } ?: throw Exception("JUSTIFICATION NOT FOUND")
+                } ?: throw Exception("DRAFT NOT FOUND")
+            }else if(typeOfStandard=="International Standard"){
+                comStdDraftRepository.findByIdOrNull(iSDraftDecisions.draftId)?.let { comStdDraft ->
+                    with(comStdDraft) {
+                        status = 4
 
-            } ?: throw Exception("JUSTIFICATION NOT FOUND")
+                    }
+                    comStdDraftRepository.save(comStdDraft)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                    companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                        with(companyStandard) {
+                            status = 11
+                        }
+                        companyStandardRepository.save(companyStandard)
+
+                    } ?: throw Exception("STANDARD NOT FOUND")
+                }?: throw Exception("DRAFT NOT FOUND")
+            }
 
 
         }
@@ -945,52 +897,44 @@ class IntStandardService(
         return iSUploadStandardRepository.getApprovedDraft()
     }
 
-
-
-
-    fun editStandardDraft(iSUploadStandard: ISUploadStandard) : ISUploadStandard {
+    fun editStandardDraft(isDraftDto: ISDraftDto) : ISUploadStandard {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val draft= ISUploadStandard()
-        iSUploadStandard.title = iSUploadStandard.title
-        iSUploadStandard.scope = iSUploadStandard.scope
-        iSUploadStandard.normativeReference = iSUploadStandard.normativeReference
-        iSUploadStandard.symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
-        iSUploadStandard.clause = iSUploadStandard.clause
-        iSUploadStandard.special = iSUploadStandard.special
-        iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
-        iSUploadStandard.proposalId = iSUploadStandard.proposalId
-        iSUploadStandard.documentType=iSUploadStandard.documentType
-        iSUploadStandard.iSNumber=iSUploadStandard.iSNumber
-        iSUploadStandard.draughting=iSUploadStandard.draughting
-        val draughting=iSUploadStandard.draughting
+        val standard= ISUploadStandard()
+
+
+        val draught=isDraftDto.draughting
         val uploadDate = Timestamp(System.currentTimeMillis())
         val deadline: Timestamp = Timestamp.valueOf(uploadDate.toLocalDateTime().plusDays(30))
-        iSUploadStandard.deadlineDate=deadline
 
 
-        iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
 
-            with(iSUploadStandard) {
+        companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
+
+            with(companyStandard) {
                 status = if (draughting =="Yes"){
-                    3
-                }else{
                     4
+                }else{
+                    5
                 }
-                title = iSUploadStandard.title
-                scope = iSUploadStandard.scope
-                normativeReference = iSUploadStandard.normativeReference
-                symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
-                clause = iSUploadStandard.clause
-                special = iSUploadStandard.special
-                iSNumber = iSUploadStandard.iSNumber
-                documentType = iSUploadStandard.documentType
+
+                requestId=isDraftDto.proposalId
+                title=isDraftDto.title
+                scope=isDraftDto.scope
+                normativeReference=isDraftDto.normativeReference
+                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+                clause=isDraftDto.clause
+                documentType=isDraftDto.docName
+                comStdNumber=isDraftDto.standardNumber
+                special=isDraftDto.special
+                draughting=isDraftDto.draughting
+
             }
-            iSUploadStandardRepository.save(iSUploadStandard)
+            companyStandardRepository.save(companyStandard)
 
         } ?: throw Exception("DRAFT NOT FOUND")
 
-        return draft
+        return standard
     }
 
     fun getEditedDraft(): MutableList<ISUploadedDraft> {
@@ -998,163 +942,148 @@ class IntStandardService(
     }
 
 
-    fun draughtStandard(iSUploadStandard: ISUploadStandard) : ISUploadStandard {
+    fun draughtStandard(isDraftDto: ISDraftDto) : ISUploadStandard {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val draft= ISUploadStandard()
-        iSUploadStandard.title = iSUploadStandard.title
-        iSUploadStandard.scope = iSUploadStandard.scope
-        iSUploadStandard.normativeReference = iSUploadStandard.normativeReference
-        iSUploadStandard.symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
-        iSUploadStandard.clause = iSUploadStandard.clause
-        iSUploadStandard.special = iSUploadStandard.special
-        iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
-        iSUploadStandard.proposalId = iSUploadStandard.proposalId
-        iSUploadStandard.documentType=iSUploadStandard.documentType
-        iSUploadStandard.iSNumber=iSUploadStandard.iSNumber
-        iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+        val standard= ISUploadStandard()
 
-            with(iSUploadStandard) {
-                status = 4
-                title = iSUploadStandard.title
-                scope = iSUploadStandard.scope
-                normativeReference = iSUploadStandard.normativeReference
-                symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
-                clause = iSUploadStandard.clause
-                special = iSUploadStandard.special
-                iSNumber = iSUploadStandard.iSNumber
-                documentType = iSUploadStandard.documentType
+        companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
+
+            with(companyStandard) {
+                status = 5
+                requestId=isDraftDto.proposalId
+                title=isDraftDto.title
+                scope=isDraftDto.scope
+                normativeReference=isDraftDto.normativeReference
+                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+                clause=isDraftDto.clause
+                documentType=isDraftDto.docName
+                comStdNumber=isDraftDto.standardNumber
+                special=isDraftDto.special
+                draughting=isDraftDto.draughting
             }
-            iSUploadStandardRepository.save(iSUploadStandard)
+            companyStandardRepository.save(companyStandard)
 
         } ?: throw Exception("DRAFT NOT FOUND")
 
-        return draft
+        return standard
     }
 
     fun getDraughtedDraft(): MutableList<ISUploadedDraft> {
         return iSUploadStandardRepository.getDraughtedDraft()
     }
 
-
-
-    fun proofReadStandard(iSUploadStandard: ISUploadStandard) : ISUploadStandard {
+    fun proofReadStandard(isDraftDto: ISDraftDto) : ISUploadStandard {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val draft= ISUploadStandard()
-        iSUploadStandard.title = iSUploadStandard.title
-        iSUploadStandard.scope = iSUploadStandard.scope
-        iSUploadStandard.normativeReference = iSUploadStandard.normativeReference
-        iSUploadStandard.symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
-        iSUploadStandard.clause = iSUploadStandard.clause
-        iSUploadStandard.special = iSUploadStandard.special
-        iSUploadStandard.justificationNo = iSUploadStandard.justificationNo
-        iSUploadStandard.proposalId = iSUploadStandard.proposalId
-        iSUploadStandard.documentType=iSUploadStandard.documentType
-        iSUploadStandard.iSNumber=iSUploadStandard.iSNumber
-        iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
+        val standard= ISUploadStandard()
 
-            with(iSUploadStandard) {
-                status = 5
-                title = iSUploadStandard.title
-                scope = iSUploadStandard.scope
-                normativeReference = iSUploadStandard.normativeReference
-                symbolsAbbreviatedTerms = iSUploadStandard.symbolsAbbreviatedTerms
-                clause = iSUploadStandard.clause
-                special = iSUploadStandard.special
-                iSNumber = iSUploadStandard.iSNumber
-                documentType = iSUploadStandard.documentType
+
+        companyStandardRepository.findByIdOrNull(isDraftDto.id)?.let { companyStandard ->
+
+            with(companyStandard) {
+                status = 6
+                title=isDraftDto.title
+                scope=isDraftDto.scope
+                normativeReference=isDraftDto.normativeReference
+                symbolsAbbreviatedTerms=isDraftDto.symbolsAbbreviatedTerms
+                clause=isDraftDto.clause
+                documentType=isDraftDto.docName
+                comStdNumber=isDraftDto.standardNumber
+                special=isDraftDto.special
+                draughting=isDraftDto.draughting
+                requestId=isDraftDto.proposalId
             }
-            iSUploadStandardRepository.save(iSUploadStandard)
+            companyStandardRepository.save(companyStandard)
 
         } ?: throw Exception("DRAFT NOT FOUND")
 
-        return draft
+        return standard
     }
+
+
+
 
     fun getProofReadDraft(): MutableList<ISUploadedDraft> {
         return iSUploadStandardRepository.getProofReadDraft()
     }
 
     fun approveProofReadStandard(
-        iSUploadStandard: ISUploadStandard,
-        internationalStandardRemarks: InternationalStandardRemarks
+        iSDraftDecisions: ISDrDecisions
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        iSUploadStandard.accentTo=iSUploadStandard.accentTo
-        val decision=iSUploadStandard.accentTo
+        val comRemarks=CompanyStandardRemarks()
+
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
-        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
-        internationalStandardRemarks.role = "HOP"
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "HOP"
 
+        companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
 
-            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
-                with(iSUploadStandard) {
-                    status = 6
+            with(companyStandard) {
+                status = 7
 
-                }
-                iSUploadStandardRepository.save(iSUploadStandard)
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-            }?: throw Exception("DRAFT NOT FOUND")
-
-
+            }
+            companyStandardRepository.save(companyStandard)
+            companyStandardRemarksRepository.save(comRemarks)
+        }?: throw Exception("DRAFT NOT FOUND")
 
         return "Actioned"
     }
+
+
 
     fun getApprovedProofReadDraft(): MutableList<ISUploadedDraft> {
         return iSUploadStandardRepository.getApprovedProofReadDraft()
     }
 
     fun approveEditedStandard(
-        iSUploadStandard: ISUploadStandard,
-        internationalStandardRemarks: InternationalStandardRemarks
+        iSDraftDecisions: ISDraftDecisions
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        iSUploadStandard.accentTo=iSUploadStandard.accentTo
-        val decision=iSUploadStandard.accentTo
+        val comRemarks=CompanyStandardRemarks()
+        val decision=iSDraftDecisions.accentTo
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
-        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
-        internationalStandardRemarks.role = "HOP"
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "HOP"
 
         if (decision == "Yes") {
-            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
-                with(iSUploadStandard) {
-                    status = 7
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+
+                with(companyStandard) {
+                    status = 8
 
                 }
-                iSUploadStandardRepository.save(iSUploadStandard)
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
             }?: throw Exception("DRAFT NOT FOUND")
 
         } else if (decision == "No") {
 
-                iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
-
-                    with(iSUploadStandard) {
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
                         status = 1
                     }
-                    iSUploadStandardRepository.save(iSUploadStandard)
-                    internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
 
                 } ?: throw Exception("DRAFT NOT FOUND")
-
-
-
 
         }
 
@@ -1165,56 +1094,43 @@ class IntStandardService(
         return iSUploadStandardRepository.getApprovedEditedDraft()
     }
 
+
     fun approveInternationalStandard(
-        iSUploadStandard: ISUploadStandard,
-        internationalStandardRemarks: InternationalStandardRemarks,
-        standard: Standard
+        iSDraftDecisions: ISDraftDecisionsStd
     ) : String {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        iSUploadStandard.accentTo=iSUploadStandard.accentTo
-        val decision=iSUploadStandard.accentTo
-
-        standard.title=standard.title
-        standard.normativeReference=standard.normativeReference
-        standard.symbolsAbbreviatedTerms=standard.symbolsAbbreviatedTerms
-        standard.clause=standard.clause
-        standard.scope=standard.scope
-        standard.special=standard.special
-        //val valueFound =getISDNumber()
-        standard.standardNumber=standard.standardNumber
-        //standard.isdn=valueFound.second
-        standard.standardType="International Standard"
-        standard.status=0
-        standard.dateFormed=Timestamp(System.currentTimeMillis())
-
-
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
+        val decision=iSDraftDecisions.accentTo
+        val standard= Standard()
+        val comRemarks=CompanyStandardRemarks()
+        val stdDraft= ISUploadStandard()
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
         val usersName = "$fName  $sName"
-        internationalStandardRemarks.proposalId= internationalStandardRemarks.proposalId
-        internationalStandardRemarks.remarks= internationalStandardRemarks.remarks
-        internationalStandardRemarks.status = 1.toString()
-        internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-        internationalStandardRemarks.remarkBy = usersName
-        internationalStandardRemarks.role = "SAC"
+        comRemarks.requestId= iSDraftDecisions.draftId
+        comRemarks.remarks= iSDraftDecisions.comments
+        comRemarks.status = 1.toString()
+        comRemarks.dateOfRemark = timeOfRemark
+        comRemarks.remarkBy = usersName
+        comRemarks.role = "SAC"
 
         if (decision == "Yes") {
-            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
-                with(iSUploadStandard) {
-                    status = 8
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
+                    status = 9
 
                 }
-                iSUploadStandardRepository.save(iSUploadStandard)
+                companyStandardRepository.save(companyStandard)
                 standardRepository.save(standard)
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-                var userList= companyStandardRepository.getSacSecEmailList()
+                companyStandardRemarksRepository.save(comRemarks)
+                var userList= iStdStakeHoldersRepository.getStakeHoldersList(iSDraftDecisions.draftId)
                 val targetUrl = "https://kimsint.kebs.org/";
                 userList.forEach { item->
                     //val recipient="stephenmuganda@gmail.com"
-                    val recipient= item.getUserEmail()
-                    val subject = "New Company Standard"+ standard.standardNumber
-                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded.Click on the Link below to view. ${targetUrl} "
+                    val recipient= item.getEmail()
+                    val subject = "New International Standard"+ standard.standardNumber
+                    val messageBody= "Dear ${item.getName()} ,Adoption for New standard has been approved "
                     if (recipient != null) {
                         notifications.sendEmail(recipient, subject, messageBody)
                     }
@@ -1224,22 +1140,62 @@ class IntStandardService(
 
         } else if (decision == "No") {
 
-            iSUploadStandardRepository.findByIdOrNull(iSUploadStandard.id)?.let { iSUploadStandard ->
-
-                with(iSUploadStandard) {
+            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                with(companyStandard) {
                     status = 1
                 }
-                iSUploadStandardRepository.save(iSUploadStandard)
-                internationalStandardRemarksRepository.save(internationalStandardRemarks)
+                companyStandardRepository.save(companyStandard)
+                companyStandardRemarksRepository.save(comRemarks)
 
             } ?: throw Exception("DRAFT NOT FOUND")
-
-
-
 
         }
 
         return "Actioned"
+    }
+
+    fun getStakeHoldersList(draftId: Long): MutableList<EmailList>? {
+        return iStdStakeHoldersRepository.getStakeHoldersList(draftId)
+    }
+
+    fun uploadInternationalStandard(iStandardUploadDto: IStandardUploadDto): Standard{
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val timeOfRemark= Timestamp(System.currentTimeMillis())
+        val standard= Standard()
+
+        standard.title=iStandardUploadDto.title
+        standard.normativeReference=iStandardUploadDto.normativeReference
+        standard.symbolsAbbreviatedTerms=iStandardUploadDto.symbolsAbbreviatedTerms
+        standard.clause=iStandardUploadDto.clause
+        standard.scope=iStandardUploadDto.scope
+        standard.special=iStandardUploadDto.special
+        standard.standardNumber=iStandardUploadDto.standardNumber
+        standard.standardType="International Standard"
+        standard.status=0
+        standard.dateFormed=timeOfRemark
+        standard.createdBy=loggedInUser.id
+        companyStandardRepository.findByIdOrNull(iStandardUploadDto.id)?.let { companyStandard ->
+            with(companyStandard) {
+                status = 10
+
+            }
+            companyStandardRepository.save(companyStandard)
+            standardRepository.save(standard)
+        }?: throw Exception("DRAFT NOT FOUND")
+
+        return standard
+    }
+
+    fun getInternationalStandards(): MutableList<Standard> {
+        return standardRepository.getInternationalStandards()
+    }
+
+    fun getCompanyStandards(): MutableList<Standard> {
+        return standardRepository.getCompanyStandards()
+    }
+
+    fun getStandards(): MutableList<Standard> {
+        return standardRepository.getStandards()
     }
 
     fun getStandardForGazettement(): MutableList<ISUploadedDraft> {
@@ -1265,148 +1221,6 @@ class IntStandardService(
         return standard
     }
 
-
-    // Upload NWA Standard
-//    fun uploadISStandard(iSUploadStandard: ISUploadStandard,isJustificationDecision: ISJustificationDecision,
-//                         internationalStandardRemarks: InternationalStandardRemarks,standard: Standard):  List<InternationalStandardTasks>
-//    {
-//        val variable:MutableMap<String, Any> = HashMap()
-//        val loggedInUser = commonDaoServices.loggedInUserDetails()
-//        iSUploadStandard.title?.let{variable.put("title", it)}
-//        iSUploadStandard.scope?.let{variable.put("scope", it)}
-//        iSUploadStandard.normativeReference?.let{variable.put("normativeReference", it)}
-//        iSUploadStandard.symbolsAbbreviatedTerms?.let{variable.put("symbolsAbbreviatedTerms", it)}
-//        iSUploadStandard.clause?.let{variable.put("clause", it)}
-//        iSUploadStandard.special?.let{variable.put("special", it)}
-//        iSUploadStandard.taskId?.let{variable.put("taskId", it)}
-//        iSUploadStandard.processId?.let{variable.put("processId", it)}
-//        val isStandard= getISNumber()
-//        iSUploadStandard.uploadDate = Timestamp(System.currentTimeMillis())
-//        variable["uploadDate"] = iSUploadStandard.uploadDate!!
-//
-//        //iSUploadStandard.iSNumber?.let{variable.put("ISNumber", it)}
-//        standard.title=iSUploadStandard.title
-//        standard.scope= iSUploadStandard.scope
-//        standard.normativeReference= iSUploadStandard.normativeReference
-//        standard.symbolsAbbreviatedTerms= iSUploadStandard.symbolsAbbreviatedTerms
-//        standard.clause= iSUploadStandard.clause
-//        standard.special=iSUploadStandard.special
-//        standard.standardNumber= isStandard
-//        standard.status=1
-//        standard.standardType="International Standard"
-//        standard.dateFormed=iSUploadStandard.uploadDate
-//
-//
-//        iSUploadStandard.iSNumber = isStandard
-//        variable["iSNumber"] = iSUploadStandard.iSNumber!!
-//
-//
-//
-//        //email to legal
-//        var userList= companyStandardRepository.getSacSecEmailList()
-//        val targetUrl = "https://kimsint.kebs.org/";
-//        userList.forEach { item->
-//            val recipient="stephenmuganda@gmail.com"
-//            //val recipient= item.getUserEmail()
-//            val subject = "International Standard Uploaded"+  iSUploadStandard.iSNumber
-//            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},International Standard has been uploaded by the Head of Publishing.Click on the Link below to view. ${targetUrl} "
-//            if (recipient != null) {
-//                notifications.sendEmail(recipient, subject, messageBody)
-//            }
-//        }
-//
-//        if(variable["Yes"]==true){
-//            iSUploadStandard.assignedTo= companyStandardRepository.getHoSicId()
-//                iSUploadStandardRepository.save(iSUploadStandard)
-//                standardRepository.save(standard)
-//                runtimeService.createProcessInstanceQuery()
-//                    .processInstanceId(iSUploadStandard.processId).list()
-//                    ?.let { l ->
-//                        val processInstance = l[0]
-//                        taskService.complete(iSUploadStandard.taskId, variable)
-//
-//                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-//                            ?.let { t ->
-//                                t.list()[0]
-//                                    ?.let { task ->
-//                                        task.assignee = "${
-//                                            iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(
-//                                                " invalid user id provided"
-//                                            )
-//                                        }"  //set the assignee}"
-//                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
-//                                        taskService.saveTask(task)
-//                                    }
-//                                    ?: KotlinLogging.logger { }
-//                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
-//
-//
-//                            }
-//                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-//                        bpmnService.slAssignTask(
-//                            processInstance.processInstanceId,
-//                            "uploadGazetteNotice",
-//                            iSUploadStandard.assignedTo
-//                                ?: throw NullValueNotAllowedException("invalid user id provided")
-//                        )
-//
-//                    }
-//                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSUploadStandard.processId} ")
-//
-//
-//        }else if(variable["No"]==false) {
-//            val fname=loggedInUser.firstName
-//            val sname=loggedInUser.lastName
-//            val usersName= "$fname  $sname"
-//            internationalStandardRemarks.proposalId= isJustificationDecision.approvalID
-//            internationalStandardRemarks.remarks= isJustificationDecision.comments
-//            internationalStandardRemarks.status = 1.toString()
-//            internationalStandardRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
-//            internationalStandardRemarks.remarkBy = usersName
-//            isJustificationDecision.assignedTo= companyStandardRepository.getEditorId()
-//
-//                internationalStandardRemarksRepository.save(internationalStandardRemarks)
-//                runtimeService.createProcessInstanceQuery()
-//                    .processInstanceId(iSUploadStandard.processId).list()
-//                    ?.let { l ->
-//                        val processInstance = l[0]
-//                        taskService.complete(iSUploadStandard.taskId, variable)
-//
-//                        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-//                            ?.let { t ->
-//                                t.list()[0]
-//                                    ?.let { task ->
-//                                        task.assignee = "${
-//                                            iSUploadStandard.assignedTo ?: throw NullValueNotAllowedException(
-//                                                " invalid user id provided"
-//                                            )
-//                                        }"  //set the assignee}"
-//                                        //task.dueDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate  //set the due date
-//                                        taskService.saveTask(task)
-//                                    }
-//                                    ?: KotlinLogging.logger { }
-//                                        .error("Task list empty for $PROCESS_DEFINITION_KEY ")
-//
-//
-//                            }
-//                            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-//                        bpmnService.slAssignTask(
-//                            processInstance.processInstanceId,
-//                            "draftStandardEditing",
-//                            iSUploadStandard.assignedTo
-//                                ?: throw NullValueNotAllowedException("invalid user id provided")
-//                        )
-//
-//                    }
-//                    ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${iSUploadStandard.processId} ")
-//
-//
-//
-//        }
-//
-//        return  getUserTasks()
-//
-//    }
 
     fun uploadISDFile(
         uploads: ISStandardUploads,
@@ -1439,26 +1253,6 @@ class IntStandardService(
     }
 
 
-
-
-//    // Upload NWA Gazette date
-//    fun updateGazettementDate(iSGazettement: ISGazettement)
-//    {
-//        val variable:MutableMap<String, Any> = HashMap()
-//        iSGazettement.iSNumber?.let{variable.put("iSNumber", it)}
-//        iSGazettement.dateOfGazettement = Timestamp(System.currentTimeMillis())
-//        variable["dateOfGazettement"] = iSGazettement.dateOfGazettement!!
-//        iSGazettement.description?.let{variable.put("description", it)}
-//        iSGazettement.taskId?.let{variable.put("taskId", it)}
-//        iSGazettement.processId?.let{variable.put("processId", it)}
-//
-//        print(iSGazettement.toString())
-//
-//        iSGazettementRepository.save(iSGazettement)
-//        taskService.complete(iSGazettement.taskId, variable)
-//        println("IS Gazzettement date has been updated")
-//
-//    }
 
     fun getISDNumber(): Pair<String, Long>
     {

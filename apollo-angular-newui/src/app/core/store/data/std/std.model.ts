@@ -118,7 +118,7 @@ export interface NWAJustification {
     departmentName: string;
     comments: string;
     assignedTo: number;
-
+    requestId: number;
 
 }
 
@@ -131,6 +131,7 @@ export interface KNWDepartment {
 export interface KNWCommittee {
     id: number;
     technical_committee_no: string;
+    title: string;
 
 }
 
@@ -534,6 +535,21 @@ export interface ComDraftComment {
 
 
 }
+export class ComStdContactFields{
+    contactOneFullName: string;
+    contactOneTelephone: string;
+    contactOneEmail: string;
+}
+export class ComStdRequestFields{
+    companyName: string;
+    companyPhone: string;
+    departmentId: number;
+    companyEmail: string;
+    subject: string;
+    description: string;
+    contactDetails: ComStdContactFields[]
+
+}
 export class PredefinedSdIntCommentsFields{
     commentTitle: string;
     commentDocumentType: string;
@@ -807,6 +823,7 @@ export interface ComStdDraftEdit{
     contactThreeEmail: string;
     companyName: string;
     companyPhone: string;
+    standardType: string;
 }
 
 export interface IStandardDraftEdit {
@@ -837,8 +854,26 @@ export interface ISDecision {
     processId: string;
     proposalId: number;
 }
+export interface ISProposalJustification{
+    meetingDate : string;
+    slNumber : string;
+    edition : string;
+    department : string;
+    requestedBy : string;
+    scope : string;
+    purposeAndApplication : string;
+    intendedUsers : string;
+    circulationDate : Timestamp<any>;
+    closingDate : Timestamp<any>;
+    tcAcceptanceDate : string;
+    proposalId : number;
+    draftId : number;  
+}
 
 export interface ISAdoptionJustification {
+    DocDescription : string;
+    proposalId : number;
+    draftId: number;
     id: number;
     meetingDate: string;
     tc_id: string;
@@ -911,6 +946,7 @@ export interface ISDraftDecision {
     proposalId: number;
     requestId: number;
     draftId: number;
+    standardType: string;
 }
 
 export interface ISDraftDecisionStd {
@@ -1308,18 +1344,10 @@ export interface ApproveDraft {
     response: string;
     companyName: string;
     companyPhone: string;
-    contactOneFullName: string;
-    contactOneTelephone: string;
-    contactOneEmail: string;
     departmentId: number;
     subject: string;
     description: string;
-    contactTwoFullName: string;
-    contactTwoTelephone: string;
-    contactTwoEmail: string;
-    contactThreeFullName: string;
-    contactThreeTelephone: string;
-    contactThreeEmail: string;
+    title: string;
 }
 
 export interface COMPreliminaryDraft {
@@ -1922,6 +1950,8 @@ export interface ComStdCommitteeRemarks {
     recommendations: string;
     nameOfRespondent: string;
     positionOfRespondent: string;
+    scope: string;
+    observation: string;
 }
 
 export interface CommentsOnCompanyStandard{
@@ -1950,6 +1980,48 @@ export interface TechnicalCommittee {
     createdBy: number;
     createdOn: string;
     advertisingStatus: number;
+}
+
+export interface StandardBody{
+    id : number;
+    title : string;
+    scope : string;
+    normativeReference : string;
+    symbolsAbbreviatedTerms : string;
+    clause : string;
+    special : string;
+    standardNumber : string;
+    status : string;
+    standardType : string;
+    description : string;
+    dateFormed : Timestamp<any>;
+    createdBy : string;
+}
+
+export interface NwaRequestList{
+    id: number;
+    requestNumber: string;
+    rank: string;
+    name: string;
+    phone: string;
+    email: string;
+    submissionDate: Timestamp<any>;
+    departmentId: string;
+    productSubCategoryId: string;
+    tcId: string;
+    productId: string;
+    organisationName: string;
+    subject: string;
+    description: string;
+    economicEfficiency: string;
+    healthSafety: string;
+    environment: string;
+    integration: string;
+    exportMarkets: string;
+    levelOfStandard: string;
+    status: string;
+    departmentName: string;
+    tcSecAssigned: string;
 }
 
 

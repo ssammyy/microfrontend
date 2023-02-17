@@ -3752,13 +3752,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             sendSffStatus = map.activeStatus
             onsiteEndStatus = map.activeStatus
             onsiteEndDate = commonDaoServices.getCurrentDate()
-//            onsiteTat = Period.between(onsiteEndDate!!.toLocalDate(), onsiteEndDateAdded!!.toLocalDate() ).toDays()
-            val period = Period.between(onsiteEndDate!!.toLocalDate(), onsiteEndDateAdded!!.toLocalDate())
-            val totalMonths = period.toTotalMonths()
-            val years = totalMonths / 12
-            val remainingMonths = totalMonths % 12
-            val remainingDays = period.days
-            onsiteTat = years * 365 + remainingMonths * 30 + remainingDays
+            onsiteTat = onsiteEndDateAdded?.let { commonDaoServices.getCalculatedDaysInLong(onsiteEndDate!!, it) }
             sendSffDate = commonDaoServices.getCurrentDate()
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionEndOnSiteActivities.let { timeLine ->
@@ -4553,6 +4547,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                         mostRecurringNonCompliant = body.mostRecurringNonCompliant
                         personMet = body.personMet
                         summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
+                        samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
+                        sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                         finalActionSeizedGoods = body.finalActionSeizedGoods
                         totalComplianceScore = body.totalComplianceScore
                         workPlanGeneratedID = workPlanScheduled.id
@@ -4581,6 +4577,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     mostRecurringNonCompliant = body.mostRecurringNonCompliant
                     personMet = body.personMet
                     summaryFindingsActionsTaken = body.summaryFindingsActionsTaken
+                    samplesDrawnAndSubmitted = body.samplesDrawnAndSubmitted
+                    sourceOfProductAndEvidence = body.sourceOfProductAndEvidence
                     finalActionSeizedGoods = body.finalActionSeizedGoods
                     totalComplianceScore = body.totalComplianceScore
                     workPlanGeneratedID = workPlanScheduled.id
@@ -4883,6 +4881,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             nameOfOutlet = body.nameOfOutlet
             descriptionProductsSeized = body.descriptionProductsSeized
             brand = body.brand
+            product = body.product
             sector = body.sector
             docId = body.docID
             mainSeizureId = body.mainSeizureID
@@ -4979,7 +4978,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             reportFunction = body.reportFunction
             backgroundInformation = body.backgroundInformation
             objectiveInvestigation = body.objectiveInvestigation
-            dateInvestigationInspection = body.dateInvestigationInspection
+            startDateInvestigationInspection = body.startDateInvestigationInspection
+            endDateInvestigationInspection = body.endDateInvestigationInspection
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
@@ -5029,7 +5029,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             reportFunction = body.reportFunction
             backgroundInformation = body.backgroundInformation
             objectiveInvestigation = body.objectiveInvestigation
-            dateInvestigationInspection = body.dateInvestigationInspection
+            startDateInvestigationInspection = body.startDateInvestigationInspection
+            endDateInvestigationInspection = body.endDateInvestigationInspection
             kebsInspectors = body.kebsInspectors?.let { commonDaoServices.convertClassToJson(it) }
             methodologyEmployed = body.methodologyEmployed
             findings = body.findings
@@ -5852,6 +5853,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 seizureDeclaration.nameOfOutlet,
                 seizureDeclaration.descriptionProductsSeized,
                 seizureDeclaration.brand,
+                seizureDeclaration.product,
                 seizureDeclaration.sector,
                 seizureDeclaration.reasonSeizure,
                 seizureDeclaration.nameSeizingOfficer,
@@ -5889,6 +5891,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             dataReport.mostRecurringNonCompliant,
             dataReport.personMet,
             dataReport.summaryFindingsActionsTaken,
+            dataReport.samplesDrawnAndSubmitted,
+            dataReport.sourceOfProductAndEvidence,
             dataReport.finalActionSeizedGoods,
             dataReport.totalComplianceScore,
             null,
@@ -5915,7 +5919,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             inspectionInvestigation.reportFunction,
             inspectionInvestigation.backgroundInformation,
             inspectionInvestigation.objectiveInvestigation,
-            inspectionInvestigation.dateInvestigationInspection,
+            inspectionInvestigation.startDateInvestigationInspection,
+            inspectionInvestigation.endDateInvestigationInspection,
             inspectionInvestigation.kebsInspectors?.let { mapKEBSOfficersNameListDto(it) },
             inspectionInvestigation.methodologyEmployed,
             inspectionInvestigation.findings,
@@ -5948,7 +5953,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.reportFunction,
                 it.backgroundInformation,
                 it.objectiveInvestigation,
-                it.dateInvestigationInspection,
+                it.startDateInvestigationInspection,
+                it.endDateInvestigationInspection,
                 it.kebsInspectors?.let { it2 -> mapKEBSOfficersNameListDto(it2) },
                 it.methodologyEmployed,
                 it.findings,
@@ -6180,8 +6186,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val sampleSubmittedParamList = sampleSubmitted.id.let {
                     msFuelDaoServices.findAllSampleSubmissionParametersBasedOnSampleSubmissionID(it)
                 }
-                val sampleSubmittedDtoValues =
-                    sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }
+                val sampleSubmittedDtoValues = sampleSubmittedParamList?.let { msFuelDaoServices.mapSampleSubmissionParamListDto(it) }
                         ?.let { msFuelDaoServices.mapSampleSubmissionDto(sampleSubmitted, it) }
                 if (sampleSubmittedDtoValues != null) {
                     sampleSubmittedDtoList.add(sampleSubmittedDtoValues)
@@ -6198,14 +6203,15 @@ class MarketSurveillanceWorkPlanDaoServices(
                             msFuelDaoServices.findSampleSubmittedListPdfBYSSFid(it)
                                 ?.let { ssfDetails -> msFuelDaoServices.mapLabPDFFilesListDto(ssfDetails) }
                         }
-                        val ssfResultsListCompliance =
-                            ssfDetailsLab?.let { msFuelDaoServices.mapSSFComplianceStatusDetailsDto(it) }
+                        val ssfResultsListCompliance = ssfDetailsLab?.let { msFuelDaoServices.mapSSFComplianceStatusDetailsDto(it) }
+
                         if (ssfDetailsLab?.analysisDone == map.activeStatus) {
                             analysisLabCountDone++
                             if (ssfDetailsLab.resultsSent == map.activeStatus) {
                                 analysisLabCountDoneAndSent++
                             }
                         }
+
                         val limsPDFFiles = ssfDetailsLab?.bsNumber?.let {
                             msFuelDaoServices.mapLIMSSavedFilesDto(
                                 it,

@@ -1,19 +1,20 @@
 package org.kebs.app.kotlin.apollo.store.model
 
-import org.kebs.app.kotlin.apollo.store.model.ms.MsFuelInspectionEntity
-import org.kebs.app.kotlin.apollo.store.model.ms.MsSampleCollectionEntity
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import java.util.*
 import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_MS_SAMPLE_SUBMISSION")
-class MsSampleSubmissionEntity : Serializable{
+class MsSampleSubmissionEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ")
+    @SequenceGenerator(
+        name = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ_GEN",
+        allocationSize = 1,
+        sequenceName = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ"
+    )
     @GeneratedValue(generator = "DAT_KEBS_MS_SAMPLE_SUBMISSION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long = 0

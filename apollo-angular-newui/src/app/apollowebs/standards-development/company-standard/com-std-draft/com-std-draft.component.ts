@@ -12,7 +12,7 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import {HttpErrorResponse} from "@angular/common/http";
 import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {CompanyContactDetails, DocumentDTO, JCList} from "../../../../core/store/data/levy/levy.model";
 import swal from "sweetalert2";
 
 @Component({
@@ -26,7 +26,11 @@ export class ComStdDraftComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
     dtTrigger1: Subject<any> = new Subject<any>();
+    dtTrigger2: Subject<any> = new Subject<any>();
+    dtTrigger3: Subject<any> = new Subject<any>();
     tasks: COMPreliminaryDraft[] = [];
+    jointCommitteeLists: JCList[] = [];
+    contactPersonDetails: CompanyContactDetails[] = [];
     comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
     public actionRequest: COMPreliminaryDraft | undefined;
     public committeeFormGroup!: FormGroup;
@@ -47,6 +51,9 @@ export class ComStdDraftComponent implements OnInit {
   }
     ngOnDestroy(): void {
         this.dtTrigger.unsubscribe();
+        this.dtTrigger1.unsubscribe();
+        this.dtTrigger2.unsubscribe();
+        this.dtTrigger3.unsubscribe();
     }
 
     showToasterSuccess(title:string,message:string){
@@ -95,13 +102,45 @@ export class ComStdDraftComponent implements OnInit {
         //this.isShowCommentsTab= true;
 
     }
+    public getCompanyContactDetails(requestId: number): void{
+        this.SpinnerService.show();
+        this.stdComStandardService.getCompanyContactDetails(requestId).subscribe(
+            (response: CompanyContactDetails[])=> {
+                this.SpinnerService.hide();
+                this.rerender();
+                this.contactPersonDetails = response;
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
 
-  public onOpenModal(task: COMPreliminaryDraft,mode:string,comStdDraftID: number): void{
+    public getCommitteeList(requestId: number): void{
+        this.SpinnerService.show();
+        this.stdComStandardService.getCommitteeList(requestId).subscribe(
+            (response: JCList[])=> {
+                this.SpinnerService.hide();
+                this.rerender();
+                this.jointCommitteeLists = response;
+            },
+            (error: HttpErrorResponse)=>{
+                this.SpinnerService.hide();
+                alert(error.message);
+            }
+        );
+    }
+
+
+  public onOpenModal(task: COMPreliminaryDraft,mode:string,comStdDraftID: number,requestId: number): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
+      this.getCommitteeList(requestId);
+      this.getCompanyContactDetails(requestId);
 
       this.stdComStandardService.getDraftCommentList(comStdDraftID).subscribe(
           (response: DocumentDTO[]) => {
@@ -252,6 +291,8 @@ export class ComStdDraftComponent implements OnInit {
         setTimeout(() => {
             this.dtTrigger.next();
             this.dtTrigger1.next();
+            this.dtTrigger2.next();
+            this.dtTrigger3.next();
         });
     }
 

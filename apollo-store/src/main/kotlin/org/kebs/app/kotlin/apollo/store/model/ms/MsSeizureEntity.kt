@@ -47,6 +47,10 @@ class MsSeizureEntity : Serializable {
     var brand: String? = null
 
     @Basic
+    @Column(name = "PRODUCT")
+    var product: String? = null
+
+    @Basic
     @Column(name = "DATE_SEIZURE")
     var dateSeizure: Date? = null
 

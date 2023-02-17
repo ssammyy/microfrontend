@@ -1,7 +1,10 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
+import org.kebs.app.kotlin.apollo.common.dto.CompanyUpgradeStatusDto
+import org.kebs.app.kotlin.apollo.common.dto.InspectionReportDtoPermit
 import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.ms.MSSSFLabResultsDto
 import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
@@ -87,11 +90,12 @@ data class AllInspectionDetailsApplyDto(
     var technicalDetailsDto: TechnicalDetailsDto? = null,
     var inspectionDetailsDto: InspectionDetailsDto? = null,
     var inspectionDetailsDtoB: InspectionDetailsDtoB? = null,
-    var managementSystemsAndStandardsDetailsApply: ManagementSystemsAndStandardsDetailsApplyDto? = null,
+    var productLabelling: List<ProductLabellingDto>? = null,
+    var standardizationMarkScheme: StandardizationMarkScheme? = null,
     var operationProcessAndControls: List<OperationProcessAndControlsDetailsApplyDto>? = null,
     var haccpImplementationDetails: HaccpImplementationDetailsApplyDto? = null,
     var followPreviousRecommendationsNonConformities: String? = null,
-    var documentsID: List<Long>? = null,
+//    var documentsID: List<Long>? = null,
     var recommendations: String? = null,
     var inspectorComments: String? = null,
     var inspectorName: String? = null,
@@ -99,26 +103,13 @@ data class AllInspectionDetailsApplyDto(
     var supervisorComments: String? = null,
     var supervisorName: String? = null,
     var supervisorDate: Date? = null,
-)
+    var permitDetails: PermitDetailsDto? = null,
 
-data class ManagementSystemsAndStandardsDetailsApplyDto(
+    )
+
+data class StandardizationMarkScheme(
     var id: Long? = null,
-    var firmImplementedAnyManagementSystem: String? = null,
-    var firmImplementedAnyManagementSystemRemarks: String? = null,
-    var indicateRelevantProductStandardCodes: String? = null,
-    var indicateRelevantProductStandardCodesRemarks: String? = null,
-    var complianceApplicableStatutory: String? = null,
-    var complianceApplicableStatutoryRemarks: String? = null,
-    var plantHouseKeeping: String? = null,
-    var plantHouseKeepingRemarks: String? = null,
-    var handlingComplaints: String? = null,
-    var handlingComplaintsRemarks: String? = null,
-    var qualityControlPersonnel: String? = null,
-    var qualityControlPersonnelRemarks: String? = null,
-    var testingFacility: String? = null,
-    var testingFacilityRemarks: String? = null,
-    var equipmentCalibration: String? = null,
-    var equipmentCalibrationRemarks: String? = null,
+    var inspectionRecommendationId:Long? = null,
     var validitySmarkPermit: String? = null,
     var validitySmarkPermitRemarks: String? = null,
     var useTheSmark: String? = null,
@@ -134,6 +125,7 @@ data class ManagementSystemsAndStandardsDetailsApplyDto(
 
 data class TechnicalDetailsDto(
     var id: Long? = null,
+    var inspectionRecommendationId: Long? = null,
     var firmImplementedAnyManagementSystem: String? = null,
     var firmImplementedAnyManagementSystemRemarks: String? = null,
     var indicateRelevantProductStandardCodes: String? = null,
@@ -142,6 +134,7 @@ data class TechnicalDetailsDto(
 
 data class InspectionDetailsDto(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var complianceApplicableStatutory: String? = null,
     var complianceApplicableStatutoryRemarks: String? = null,
     var plantHouseKeeping: String? = null,
@@ -156,6 +149,7 @@ data class InspectionDetailsDto(
 
 data class InspectionDetailsDtoB(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var equipmentCalibration: String? = null,
     var equipmentCalibrationRemarks: String? = null,
     var qualityRecords: String? = null,
@@ -164,19 +158,23 @@ data class InspectionDetailsDtoB(
     var recordsNonconformingRemarks: String? = null,
     var productRecallRecords: String? = null,
     var productRecallRecordsRemarks: String? = null,
-    var productLabelling: List<ProductLabellingDto>? = null,
 
     )
 
 data class ProductLabellingDto(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
+    var technicalReportId:Long? = null,
     var standardMarking: String? = null,
     var findings: String? = null,
-)
+    var statusOfCompliance: String? = null,
+
+    )
 
 
 data class OperationProcessAndControlsDetailsApplyDto(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var processFlow: String? = null,
     var operations: String? = null,
     var qualityChecks: String? = null,
@@ -187,6 +185,7 @@ data class OperationProcessAndControlsDetailsApplyDto(
 
 data class HaccpImplementationDetailsApplyDto(
     var id: Long? = null,
+    var inspectionRecommendationId:Long? = null,
     var designFacilitiesConstructionLayout: String? = null,
     var designFacilitiesConstructionLayoutRemarks: String? = null,
     var maintenanceSanitationCleaningPrograms: String? = null,
@@ -365,7 +364,8 @@ data class PermitInvoiceDto(
     var totalAmount: BigDecimal? = null,
     var paidStatus: Int? = null,
     var permitRefNumber: String? = null,
-    var batchID: Long? = null
+    var batchID: Long? = null,
+    var invoiceMasterID: Long? = null
 )
 
 data class SSFPDFListDetailsDto(
@@ -798,15 +798,23 @@ data class PermitDetailsDto(
     var assignOfficerStatus: Boolean? = null,
     var assignOfficerID: Long? = null,
     var permitGenerateDifference: Boolean? = null,
+    var permitReGenerateInvoice: Boolean? = null,
     var inspectionReportGenerated: Boolean? = null,
     var companyId: Long? = null,
+    var branchID: Long? = null,
     var factoryInspectionReportApprovedRejectedStatus: Boolean? = null,
     var ssfCompletedStatus: Boolean? = null,
     var compliantStatus: Boolean? = null,
+    var invoiceDifferenceGenerated: Boolean? = null,
+    var recommendationApprovalStatus: Boolean? = null,
+    var hodQamApproveRejectStatus: Boolean? = null,
+    var pscMemberApprovalStatus: Boolean? = null,
+    var pcmApprovalStatus: Boolean? = null,
 
     )
 
 data class AllPermitDetailsDto(
+    var companyStatusDetails: CompanyUpgradeStatusDto? = null,
     var permitDetails: PermitDetailsDto? = null,
     var remarksDetails: PermitAllRemarksDetailsDto? = null,
     var invoiceDetails: InvoiceDetailsDto? = null,
@@ -825,9 +833,14 @@ data class AllPermitDetailsDto(
     var sta3DTO: STA3Dto? = null,
     var sta10DTO: AllSTA10DetailsDto? = null,
     var sectionList: List<SectionsEntityDto>? = null,
-    var standardsList: List<StandardsDto>? = null,
     var ssfListDetails: List<SSFDetailsDto>? = null,
-)
+    var sampleLabResults: List<MSSSFLabResultsDto>? = null,
+    var inspectionNeeded: Boolean? = null,
+    var inspectionFeeInvoice: InvoiceDetailsDto? = null,
+    var inspectionInvoiceUploaded: Long? = null,
+    val inspectionReportDetails: InspectionReportDtoPermit? = null,
+
+    )
 
 
 data class AllSTA10DetailsDto(

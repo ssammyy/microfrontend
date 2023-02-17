@@ -31,8 +31,8 @@ class MsSampleSubmissionView : Serializable {
     @Column(name = "FILE_REF_NUMBER")
     var fileRefNumber: String? = null
 
-    @Basic
     @Column(name = "REFERENCES_STANDARDS")
+    @Basic
     var referencesStandards: String? = null
 
     @Basic

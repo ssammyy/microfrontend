@@ -1214,6 +1214,366 @@
 
             </div>
         </div>
+
+<!-- QA ADMIN -->
+<div *ngIf="roles?.includes('QA_OFFICER_READ') || roles?.includes('QA_MANAGER_READ') || roles?.includes('QA_PCM_READ') || roles?.includes('QA_PSC_MEMBERS_READ') || roles?.includes('QA_DIRECTOR_READ')" >
+<!-- <div *ngIf="roles?.includes('QA_OFFICER_READ', 'QA_MANAGER_READ', 'QA_PCM_READ','QA_PSC_MEMBERS_READ', 'QA_DIRECTOR_READ')" > -->
+    <div class="row" >
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="card card-stats" (click)="gotoStandardizationMarkApplication()">
+                <div class="card-header card-header-warning card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">class</i>
+                    </div>
+                    <p class="card-category">Allocated Smark Task</p>
+                    <h3 class="card-title">{{smarkapiResponse?.totalCount}}</h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats" (click)="gotoStandardizationMarkApplication()">
+                        <i class="material-icons">class</i> No of allocated Smark tasks
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="card card-stats"  (click)="gotoFortificationMarkApplication()">
+                <div class="card-header card-header-rose card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">recommended</i>
+                    </div>
+                    <p class="card-category">Allocated Fmark Tasks</p>
+                    <h3 class="card-title">{{fmarkapiResponse?.totalCount}}</h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats" (click)="gotoFortificationMarkApplication()">
+                       <i class="material-icons">recommended</i> No of allocated Fmark tasks
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="card card-stats" (click)="gotoDiamondMarkApplication()">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">verified</i>
+                    </div>
+                    <p class="card-category">Allocated Dmark Tasks</p>
+                    <h3 class="card-title">{{dmarkapiResponse?.totalCount}}</h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats" (click)="gotoDiamondMarkApplication()">
+                        <i class="material-icons">verified</i> No of allocated Dmark tasks
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" >
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="card card-stats" (click)="gotoAwardedApplication()">
+                <div class="card-header card-header-warning card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">done_outline</i>
+                    </div>
+                    <p class="card-category">Awarded Applications</p>
+                    <h3 class="card-title"></h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats" (click)="gotoAwardedApplication()">
+                        <i class="material-icons">done_outline</i> No of awarded applications
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="card card-stats"  (click)="gotoExpiredApplication()">
+                <div class="card-header card-header-rose card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">report_problem</i>
+                    </div>
+                    <p class="card-category">Expired Applications</p>
+                    <h3 class="card-title"></h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats"  (click)="gotoExpiredApplication()">
+                        <i class="material-icons">report_problem</i> No of expired applications
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="card card-stats" (click)="gotodefferedApplication()">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <p class="card-category">Deferred Applications</p>
+                    <h3 class="card-title"></h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats" (click)="gotodefferedApplication()">
+                        <i class="material-icons">assignment</i> No of deffered applications
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- END OF QA ADMIN -->
+
+
+
+<!-- SD Dashboard -->
+<!-- <div *ngIf="roles?.includes('STANDARDS_DEVELOPMENT_FULL_ADMIN')" >
+        <div class="row" >
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotoRequestModuleStandards()">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">class</i>
+                        </div>
+                        <p class="card-category">Pending Review Standard RequestS</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotoRequestModuleStandards()">
+                            <i class="material-icons">class</i> No of Pending Review Standard Requests
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats"  (click)="gotoFortificationMarkApplication()">
+                    <div class="card-header card-header-rose card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">recommended</i>
+                        </div>
+                        <p class="card-category">Committee of Preliminary Draft </p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotoFortificationMarkApplication()">
+                           <i class="material-icons">recommended</i> No of All New Work Items 
+    
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotoDiamondMarkApplication()">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">verified</i>
+                        </div>
+                        <p class="card-category">Public Review of Drafts</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotoDiamondMarkApplication()">
+                            <i class="material-icons">verified</i> No of All Committee Drafts
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotoAwardedApplication()">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">done_outline</i>
+                        </div>
+                        <p class="card-category">Ballot Drafts</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotoAwardedApplication()">
+                            <i class="material-icons">done_outline</i> No of All Public Review Drafts
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats"  (click)="gotoExpiredApplication()">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">report_problem</i>
+                        </div>
+                        <p class="card-category">Publishing</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats"  (click)="gotoExpiredApplication()">
+                            <i class="material-icons">report_problem</i> No of Review Draft Standards For Editing
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-rose card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">Request for Formation of TC</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of Request For Formation Of Technical Committee 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">Request for Membership of A TC</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of all applications
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">Adoption of EAS</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of SAC Summary
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-info card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">Workshop Agreement</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of all Workshop Agreement Tasks
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">National Enquiry Point</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of all Information Enquiries
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">Company Standards</p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of All Company Standard Requests
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-rose card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">International Standards </p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of SAC Tasks
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-info card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">Standards Review </p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of standards
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card card-stats" (click)="gotodefferedApplication()">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <p class="card-category">Scheme Membership </p>
+                        <h3 class="card-title"></h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats" (click)="gotodefferedApplication()">
+                            <i class="material-icons">assignment</i> No of all Requests
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+     -->
+    <!-- END OF QA ADMIN -->
+    
+
     </div>
     <app-inspection-dashboard></app-inspection-dashboard>
 

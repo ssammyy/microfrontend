@@ -111,6 +111,14 @@ class NWAJustification : Serializable {
     @Basic
     var cdn: Long? = 0
 
+    @Column(name = "REQUEST_ID")
+    @Basic
+    var requestId: Long? = null
+
+    @Column(name = "DEAD_LINE")
+    @Basic
+    var deadLine: Timestamp? = null
+
 
 
 

@@ -54,8 +54,6 @@ import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.apache.commons.text.StringEscapeUtils
-import org.apache.pdfbox.multipdf.PDFMergerUtility
-import org.apache.pdfbox.pdmodel.PDDocument
 import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
@@ -115,7 +113,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.function.Consumer
 import javax.activation.MimetypesFileTypeMap
 import javax.servlet.http.HttpServletResponse
 import javax.xml.stream.XMLInputFactory
@@ -1772,6 +1769,17 @@ class CommonDaoServices(
         val cal = Calendar.getInstance()
         cal.add(Calendar.DAY_OF_YEAR, days)
         return Date(cal.timeInMillis)
+    }
+
+    fun getCalculatedDateInLong(d1: Date): Long {
+        val differenceInTime: Long = getCurrentDate().time - d1.time
+        return (differenceInTime / (1000L * 60 * 60 * 24 * 365))
+    }
+
+    fun getCalculatedDaysInLong(d1: Date,d2: Date): Long {
+        val differenceInTime: Long = d2.time - d1.time
+        return ((differenceInTime / (1000 * 60 * 60 * 24)) % 365)
+//        return (differenceInTime / (1000L * 60 * 60 * 24 * 365))
     }
 
 

@@ -166,6 +166,19 @@ export interface StdLevyScheduleSiteVisitDTO {
     taskId: string;
 
 }
+export interface JCList{
+    email: string;
+    name: string;
+    telephone: string;
+}
+export interface CompanyContactDetails{
+    id : string;
+    requestId : number;
+    fullName : string;
+    email : string;
+    telephone : string;
+    dateOfCreation : Timestamp<any>;
+}
 
 export interface DocumentDTO{
     id: number;

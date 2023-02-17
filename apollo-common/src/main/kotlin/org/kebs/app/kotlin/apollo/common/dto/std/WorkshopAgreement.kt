@@ -76,6 +76,7 @@ class NWAJustificationDecision(
     @JsonProperty("taskId") val taskId: String,
     @JsonProperty("processId") val processId: String,
     @JsonProperty("accentTo") val accentTo: Boolean,
+    @JsonProperty("decision") val decision: String,
     @JsonProperty("approvalID")  val approvalID: Long,
     @JsonProperty("comments") val comments: String,
     @JsonProperty("assignedTo") var assignedTo: Long
@@ -185,6 +186,16 @@ class ISDraftDecisions(
     @JsonProperty("draftId") val draftId: Long,
     @JsonProperty("comments") val comments: String,
     @JsonProperty("requestId") val requestId: Long,
+    @JsonProperty("standardType") val standardType: String,
+    @JsonProperty("id") val id: Long
+){
+
+}
+class ISDrDecisions(
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String,
+    @JsonProperty("requestId") val requestId: Long,
     @JsonProperty("id") val id: Long
 ){
 
@@ -210,6 +221,23 @@ class ISDraftDecisionsStd(
     @JsonProperty("special") val special: String?,
     @JsonProperty("standardNumber") val standardNumber: String?,
     @JsonProperty("requestId") val requestId: Long?,
+    @JsonProperty("id") val id: Long
+
+){
+
+}
+
+class IStandardUploadDto(
+    @JsonProperty("proposalId") val proposalId: Long,
+    @JsonProperty("draftId") val draftId: Long,
+    @JsonProperty("comments") val comments: String?,
+    @JsonProperty("title") val title: String?,
+    @JsonProperty("normativeReference") val normativeReference: String?,
+    @JsonProperty("symbolsAbbreviatedTerms") val symbolsAbbreviatedTerms: String?,
+    @JsonProperty("clause") val clause: String?,
+    @JsonProperty("scope") val scope: String?,
+    @JsonProperty("special") val special: String?,
+    @JsonProperty("standardNumber") val standardNumber: String?,
     @JsonProperty("id") val id: Long
 
 ){
@@ -269,6 +297,9 @@ class NwaJustificationDto(
     @JsonProperty("department") var department: String,
     @JsonProperty("remarks") var remarks: String,
     @JsonProperty("requestNumber") var requestNumber: String,
+    @JsonProperty("meetingDate") var meetingDate: String,
+    @JsonProperty("knwAcceptanceDate") var knwAcceptanceDate: String,
+    @JsonProperty("requestId") var requestId: Long,
 ){
 
 }
@@ -374,7 +405,34 @@ data class ISAdoptionProposalComments(
 
 }
 
+data class ISProposalJustification(
+   var  meetingDate: String?=null,
+    var slNumber: String?=null,
+    var edition: String?=null,
+    var department: String?=null,
+    var requestedBy: String?=null,
+    var scope: String?=null,
+    var purposeAndApplication: String?=null,
+    var intendedUsers: String?=null,
+    var circulationDate: Timestamp?=null,
+    var closingDate: Timestamp?=null,
+    var tcAcceptanceDate: String?=null,
+    var proposalId: Long?=null,
+    var draftId: Long?=null,
+    var issuesAddressed: String?
+){
+
+}
+
 data class ISAdoptionJustifications(
+
+    var tc_id: String?=null,
+    var scope: String?=null,
+    var purposeAndApplication: String?=null,
+    var intendedUsers: String?=null,
+    var circulationDate: Timestamp?=null,
+    var closingDate: Timestamp?=null,
+
     var meetingDate:String?=null,
     var tcSec_id:String?=null,
     var slNumber:String?=null,
@@ -468,7 +526,29 @@ data class CSDraftDto(
     var contactThreeTelephone: String?=null,
     var contactThreeEmail: String?=null,
     var companyName: String?=null,
-    var companyPhone: String?=null
+    var companyPhone: String?=null,
+    var standardType: String?=null,
+){
+
+}
+
+
+data class ISComStdRequestDto(
+    var companyName: String?=null,
+    var companyPhone: String?=null,
+    var companyEmail: String?=null,
+    var departmentId: String?=null,
+    var subject: String?=null,
+    var description: String?=null,
+    var contactDetails: MutableList<ISComStdContactDto>?=null
+){
+
+}
+
+data class ISComStdContactDto(
+    var contactOneFullName: String?=null,
+    var contactOneTelephone: String?=null,
+    var contactOneEmail: String?=null
 ){
 
 }
@@ -538,3 +618,5 @@ class ComJustificationDecisions(
 ){
 
 }
+
+

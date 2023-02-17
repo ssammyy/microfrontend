@@ -15,8 +15,8 @@ import {
   COMPreliminaryDraft,
   ComStandard,
   ComStandardJC,
-  ComStdAction, ComStdCommitteeRemarks, ComStdDraftEdit, ComStdRemarks,
-  ComStdRequest,
+  ComStdAction, ComStdCommitteeRemarks, ComStdContactFields, ComStdDraftEdit, ComStdRemarks,
+  ComStdRequest, ComStdRequestFields,
   Department, InternationalStandardsComments,
   ISCheckRequirements, ISDraftDecision, IStandardDraftEdit, IStandardUpload,
   NWAPreliminaryDraft,
@@ -28,7 +28,8 @@ import {
 } from './std.model';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
-import {DocumentDTO, SiteVisitRemarks} from "../levy/levy.model";
+import {CompanyContactDetails, DocumentDTO, JCList, SiteVisitRemarks} from "../levy/levy.model";
+import {FormGroup} from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -93,10 +94,11 @@ export class StdComStandardService {
 //     return this.http.get<any>(url, {params}).pipe();
 //   }
 
-  public addStandardRequest(companyStandardRequest: CompanyStandardRequest): Observable<any> {
+  public addStandardRequest(companyStandardRequest: ComStdRequestFields, comStdContactFields: ComStdContactFields[]): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_ADD_STD_REQUEST);
     const params = new HttpParams();
-    return this.http.post<CompanyStandardRequest>(url, companyStandardRequest, {params}).pipe(
+    companyStandardRequest.contactDetails=comStdContactFields
+    return this.http.post<ComStdRequestFields>(url, companyStandardRequest, {params}).pipe(
         map(function (response: any) {
           return response;
         }),
@@ -574,6 +576,18 @@ export class StdComStandardService {
     return this.http.get<ISCheckRequirements>(url, {params}).pipe();
   }
 
+  public getAppStdPublishing(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_SPB_TASKS);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
+  public getAppStd(): any {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_APB_TASKS);
+    const params = new HttpParams();
+    return this.http.get<ISCheckRequirements>(url, {params}).pipe();
+  }
+
   public getAllComments(requestId: any): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_COMMENTS);
     const params = new HttpParams().set('requestId', requestId);
@@ -594,8 +608,19 @@ export class StdComStandardService {
     return this.http.get<DocumentDTO[]>(url, {params}).pipe();
   }
 
+  public getCompanyContactDetails(requestId: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_CONTACT_DETAILS);
+    const params = new HttpParams().set('requestId', requestId);
+    return this.http.get<CompanyContactDetails[]>(url, {params}).pipe();
+  }
+  public getCommitteeList(requestId: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COMMITTEE_LIST);
+    const params = new HttpParams().set('requestId', requestId);
+    return this.http.get<JCList[]>(url, {params}).pipe();
+  }
+
   public checkRequirements(isDraftDecision: ISDraftDecision): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_REQUIREMENTS);
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_HOP_DECISION_ON_JUSTIFICATION);
     const params = new HttpParams();
     return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
         map(function (response: any) {
@@ -623,7 +648,7 @@ export class StdComStandardService {
   }
 
   public editStandardDraft(comStdDraftEdit: ComStdDraftEdit): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_EDIT_DRAFT);
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_EDIT_APPROVED_DRAFT_STANDARD);
     const params = new HttpParams();
     return this.http.post<ComStdDraftEdit>(url, comStdDraftEdit, {params}).pipe(
         map(function (response: any) {
@@ -636,7 +661,7 @@ export class StdComStandardService {
   }
 
   public draughtStandard(comStdDraftEdit: ComStdDraftEdit): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DRAFTING);
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DRAFTING_STANDARD);
     const params = new HttpParams();
     return this.http.post<ComStdDraftEdit>(url, comStdDraftEdit, {params}).pipe(
         map(function (response: any) {
@@ -649,7 +674,7 @@ export class StdComStandardService {
   }
 
   public proofReadStandard(comStdDraftEdit: ComStdDraftEdit): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_PROOF_READ);
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_PROOFREADING_STANDARD);
     const params = new HttpParams();
     return this.http.post<ComStdDraftEdit>(url, comStdDraftEdit, {params}).pipe(
         map(function (response: any) {
@@ -662,7 +687,7 @@ export class StdComStandardService {
   }
 
   public approveProofReadStandard(isDraftDecision: ISDraftDecision): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_COM_STD_DEC_PROOF_READ);
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_PROOFREAD_STANDARD);
     const params = new HttpParams();
     return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
         map(function (response: any) {
@@ -675,7 +700,7 @@ export class StdComStandardService {
   }
 
   public approveEditedDraft(isDraftDecision: ISDraftDecision): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_APPROVE_COM_STANDARD);
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_DECISION_EDITED_STANDARD);
     const params = new HttpParams();
     return this.http.post<ISDraftDecision>(url, isDraftDecision, {params}).pipe(
         map(function (response: any) {

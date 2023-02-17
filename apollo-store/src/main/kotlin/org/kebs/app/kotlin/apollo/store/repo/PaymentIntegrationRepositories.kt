@@ -18,6 +18,8 @@ interface IStagingPaymentReconciliationRepo : HazelcastRepository<StagingPayment
 interface ILogStgPaymentReconciliationRepo : HazelcastRepository<LogStgPaymentReconciliationEntity, Long> {
     fun findByReferenceCode(referenceCode: String): LogStgPaymentReconciliationEntity?
     fun findBySageInvoiceNumber(sageInvoiceNumber: String): LogStgPaymentReconciliationEntity?
+
+    fun findByTransactionId(transactionId: String): LogStgPaymentReconciliationEntity?
     fun findByReferenceCodeAndInvoiceId(referenceCode: String, invoiceId: Long): LogStgPaymentReconciliationEntity?
 //    fun findByPaymentTablesUpdatedStatus(paymentTablesUpdatedStatus: Int): List<LogStgPaymentReconciliationEntity>?
 }
