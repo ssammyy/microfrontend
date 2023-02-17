@@ -663,7 +663,9 @@ class DestinationInspectionService(
                     ) {
                         with(consignmentDocument) {
                             targetStatus = map.activeStatus
+                            status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
                             targetReason = "Auto Target ${consignmentDocument.cdType?.typeName}"
+                            targetApproveRemarks = "Auto Target ${consignmentDocument.cdType?.typeName}"
                             targetApproveStatus = map.activeStatus
                             targetApproveDate = Date(Date().time)
                         }
@@ -676,7 +678,7 @@ class DestinationInspectionService(
                     // Reject CD due to auto reject
                     val conditions = cdType.autoRejectCondition?.split(",") ?: listOf()
                     if (cdType.autoTargetCondition.isNullOrEmpty() || conditions.contains(consignmentDocument.cdStandardsTwo?.localCocType)) {
-                        daoServices.findCdStatusCategory("REJECT").let {
+                        daoServices.findCdStatusCategory(ConsignmentDocumentStatus.REJECT_APPROVED.name).let {
                             this.updateCdStatusOnSw(
                                 cdUuid,
                                 it.id,
@@ -1021,13 +1023,14 @@ class DestinationInspectionService(
                 remarks,
                 "APPROVE TARGETING",
                 "Targeting of ${consignmentDocument.ucrNumber} has been approved by ${supervisor}",
-                supervisor
+                supervisor ?: consignmentDocument.assignedInspectionOfficer?.userName
             )
             // Submit consignment to Single/Window
             KotlinLogging.logger { }.info("REQUESTED TARGETING SCHEDULE: ${cdUuid}")
-            daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
+            // No longer necessary to set on hold status
+            // daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("REJECTION UPDATE STATUS", ex)
+            KotlinLogging.logger { }.error("REJECTION UPDATE STATUS FAILED", ex)
         }
         return true
     }
@@ -1309,13 +1312,14 @@ class DestinationInspectionService(
                     )
                 }
             }
+            // This action is performed by IO and does not need supervisor approval
             cdAuditService.addHistoryRecord(
                 updatedCDDetails.id,
                 consignmentDocument.ucrNumber,
                 remarks,
                 "KEBS_${cdStatus.category?.toUpperCase()}",
                 "${cdStatus.category?.capitalize()} consignment",
-                consignmentDocument.assigner?.userName
+                consignmentDocument.assignedInspectionOfficer?.userName
             )
         }
     }

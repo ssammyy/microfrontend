@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
+import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -19,7 +20,6 @@ import org.kebs.app.kotlin.apollo.store.model.std.SACSummary
 import org.kebs.app.kotlin.apollo.store.model.std.SACSummaryHolder
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
@@ -111,7 +111,7 @@ class AdoptionOfEastAfricaStandardService(
         sacSummaryRepository.save(u)
         decisionFeedback.user_id = loggedInUser.id!!
         decisionFeedback.user_id.let { variables.put("user_id", it) }
-
+        KotlinLogging.logger { }.debug("Complete standard levy task: ${decisionFeedback.taskId}")
         variables["approved"] = "approved"
         taskService.complete(decisionFeedback.taskId, variables)
 
