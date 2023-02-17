@@ -3551,15 +3551,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Report reference</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportReference.invalid && formInvestInspectReportForm.reportReference.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportReference"
-                                               name="reportReference" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportReference.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportReference.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                        <input class="form-control two-column-input"
+                                               formControlName="reportReference" disabled
+                                               name="reportReference" type="text">
                                     </div>
                                 </div>
                                 <div class="col">
@@ -4696,12 +4690,12 @@
                                                 [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formFinalRecommendationDetailsForm.recommendationId.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="recommendationId" name="recommendationId" required>
-                                            <option [value]="" selected>Please select</option>
+                                            <option [value]="" selected disabled>Please select</option>
                                             <option *ngFor="let app of recommendationList | filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
                                             <option value="other">Other</option>
                                         </select>
                                         <input *ngIf="finalRecommendationDetailsForm.get('recommendationId').value === 'other'" class="form-control two-column-input" type="text"
-                                               formControlName="recommendationName" name="recommendationName" placeholder="Enter other recommendation name">
+                                               formControlName="otherRecommendationName" name="recommendationName" placeholder="Enter other recommendation name">
                                     </div>
                                 </div>
 
@@ -4827,15 +4821,10 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Report reference</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportReference.invalid && formInvestInspectReportForm.reportReference.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportReference"
+                                        <input class="form-control two-column-input"
+                                               formControlName="reportReference" disabled
                                                name="reportReference" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportReference.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportReference.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="col">
@@ -7598,7 +7587,7 @@
                                         </mat-form-field>
                                         <!-- Failed Parameters field will only be shown if compliance status is non-compliant -->
                                         <div *ngIf="!ssfSaveComplianceStatusForm.get('complianceStatus').value">
-                                            <label for="failedParametersSSF"><b>Failed Parameters</b></label>
+                                            <label for="failedParametersSSF4"><b>Failed Parameters</b></label>
                                             <mat-form-field class="example-full-width">
                                                 <textarea id="failedParametersSSF4" matInput type="text"
                                                           formControlName="failedParameters"
@@ -7700,8 +7689,8 @@
                                         <div *ngIf="formApprovePreliminaryForm.get('approvalStatus').value">
                                             <label ><b>Please upload the letter/email stating the appeal:</b></label>
                                             <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="files"
-                                                             id="files"
+                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"
+                                                             id="uploadedAppealFilesID"
                                                              accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
                                                 </file-upload>
                                             </form>
@@ -7737,7 +7726,7 @@
                                             <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>
                                             <form #demoForm="ngForm">
                                                 <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"
-                                                             id="files"
+                                                             id="appealFiles"
                                                              accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
                                                 </file-upload>
                                             </form>

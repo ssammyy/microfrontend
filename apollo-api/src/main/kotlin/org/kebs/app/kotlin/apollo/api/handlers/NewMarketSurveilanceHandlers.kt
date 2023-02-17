@@ -1881,6 +1881,10 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+//    fun getReassignedComplaints(){
+//        println("DO sSOMETHING ABOUT GETTING THE REASSIGNED COMPLAINTS")
+//    }
+
     fun getAllWorkPlanBatchListOpen(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)

@@ -33,7 +33,8 @@
 	<field name="reportFunction" class="java.lang.String"/>
 	<field name="backgroundInformation" class="java.lang.String"/>
 	<field name="objectiveInvestigation" class="java.lang.String"/>
-	<field name="dateInvestigationInspection" class="java.lang.String"/>
+	<field name="startDateInvestigationInspection" class="java.lang.String"/>
+	<field name="endDateInvestigationInspection" class="java.lang.String"/>
 	<field name="methodologyEmployed" class="java.lang.String"/>
 	<field name="additionalInformation" class="java.lang.String"/>
 	<field name="conclusion" class="java.lang.String"/>
@@ -324,7 +325,7 @@
 				<textElement textAlignment="Justified" verticalAlignment="Top">
 					<font fontName="Times New Roman" size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{dateInvestigationInspection}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{startDateInvestigationInspection}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="61" y="436" width="218" height="20" forecolor="#0070C0" uuid="40ab117c-b11c-4a97-9405-6346b67c63d4">
@@ -520,7 +521,7 @@
 				<textElement textAlignment="Justified" verticalAlignment="Top">
 					<font fontName="Times New Roman" size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{dateInvestigationInspection}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{endDateInvestigationInspection}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="60" y="610" width="218" height="20" forecolor="#0070C0" uuid="f877e8a3-c3d0-4fb0-b31b-87320f969827">

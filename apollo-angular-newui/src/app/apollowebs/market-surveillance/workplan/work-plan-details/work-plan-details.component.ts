@@ -226,6 +226,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
   uploadedFilesOnly: FileList;
+  uploadedSuccessfulAppealFiles: FileList;
+  uploadedAppealFiles: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
@@ -238,6 +240,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   selectedRegionName: string;
   selectedTownName: string;
   selectedCountyName: string;
+
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
 
@@ -1803,7 +1806,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.investInspectReportForm = this.formBuilder.group({
       id: null,
-      reportReference: ['', Validators.required],
+      reportReference: null,
       reportClassification: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
@@ -1983,6 +1986,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
+      otherRecommendationName: [''],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -4914,7 +4918,14 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveInvestInspectReport() {
     this.submitted = true;
+    this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
+        'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
+          this.saveInitialReport();
+        });
 
+  }
+
+  saveInitialReport(){
     if (this.investInspectReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
@@ -4938,7 +4949,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       );
 
     } else if (this.investInspectReportForm.invalid) {
-      this.msService.showError('KINDLY FILL IN THE FIELDS REQUIRED');
+      this.msService.showError("PLEASE FILL IN ALL THE REQUIRED FIELDS");
     }
   }
 

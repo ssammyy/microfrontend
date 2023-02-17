@@ -614,8 +614,12 @@
                                                     {{workPlanInspection?.inspectionInvestigationDto?.objectiveInvestigation}}</span></p>
                                                 <br/>
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Date of Investigation/Inspection</div>
-                                                    <div class="list-text-accordion">{{workPlanInspection?.inspectionInvestigationDto?.dateInvestigationInspection}}</div>
+                                                    <div class="list-title-accordion">Start Date of Investigation/Inspection</div>
+                                                    <div class="list-text-accordion">{{workPlanInspection?.inspectionInvestigationDto?.startDateInvestigationInspection}}</div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">End Date of Investigation/Inspection</div>
+                                                    <div class="list-text-accordion">{{workPlanInspection?.inspectionInvestigationDto?.endDateInvestigationInspection}}</div>
                                                 </li>
                                                 <br/>
                                                 <div class="form-row">
@@ -3527,15 +3531,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Report reference</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportReference.invalid && formInvestInspectReportForm.reportReference.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportReference"
-                                               name="reportReference" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportReference.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportReference.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                        <input class="form-control two-column-input"
+                                               formControlName="reportReference" disabled
+                                               name="reportReference" type="text">
                                     </div>
                                 </div>
                                 <div class="col">
@@ -4676,12 +4674,12 @@
                                                 [class.is-invalid]="formFinalRecommendationDetailsForm.recommendationId.invalid && formFinalRecommendationDetailsForm.recommendationId.errors"
                                                 aria-describedby="inputGroup-sizing-lg" aria-label="Small"
                                                 class="form-control" formControlName="recommendationId" name="recommendationId" required>
-                                            <option [value]="" selected>Please select</option>
+                                            <option [value]="" selected disabled>Please select</option>
                                             <option *ngFor="let app of recommendationList | filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
                                             <option value="other">Other</option>
                                         </select>
-                                        <input *ngIf="finalRecommendationDetailsForm.get('recommendationId').value === 'OTHER'" class="form-control two-column-input" type="text"
-                                               formControlName="recommendationName" name="recommendationName" placeholder="Enter other recommendation name">
+                                        <input *ngIf="finalRecommendationDetailsForm.get('recommendationId').value === 'other'" class="form-control two-column-input" type="text"
+                                               formControlName="otherRecommendationName" name="recommendationName" placeholder="Enter other recommendation name">
                                     </div>
                                 </div>
 
@@ -4808,15 +4806,9 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Report reference</b> </label>
-                                        <input [class.is-invalid]="formInvestInspectReportForm.reportReference.invalid && formInvestInspectReportForm.reportReference.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="reportReference"
-                                               name="reportReference" required type="text">
-                                        <div *ngIf="submitted && formInvestInspectReportForm.reportReference.errors" class="invalid-feedback">
-                                            <div *ngIf="formInvestInspectReportForm.reportReference.errors.required">This field is
-                                                required
-                                            </div>
-                                        </div>
+                                        <input class="form-control two-column-input"
+                                               formControlName="reportReference" disabled
+                                               name="reportReference" type="text">
                                     </div>
                                 </div>
                                 <div class="col">
@@ -7697,6 +7689,15 @@
 
                                             </mat-select>
                                         </mat-form-field>
+                                        <div *ngIf="formApprovePreliminaryForm.get('approvalStatus').value">
+                                            <label ><b>Please upload the letter/email stating the appeal:</b></label>
+                                            <form #demoForm="ngForm">
+                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"
+                                                             id="uploadedAppealFilesID"
+                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
+                                                </file-upload>
+                                            </form>
+                                        </div>
                                         <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
@@ -7724,6 +7725,15 @@
 
                                             </mat-select>
                                         </mat-form-field>
+                                        <div>
+                                            <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>
+                                            <form #demoForm="ngForm">
+                                                <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"
+                                                             id="appealFiles"
+                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
+                                                </file-upload>
+                                            </form>
+                                        </div>
                                         <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"

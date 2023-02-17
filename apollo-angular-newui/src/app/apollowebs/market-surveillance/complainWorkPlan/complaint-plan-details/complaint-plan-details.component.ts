@@ -221,6 +221,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
+  uploadedAppealFiles: FileList;
+  uploadedSuccessfulAppealFiles: FileList;
   uploadedFilesSeizedGoods: FileList;
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
@@ -1791,7 +1793,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.investInspectReportForm = this.formBuilder.group({
       id: null,
-      reportReference: ['', Validators.required],
+      reportReference: null,
       reportClassification: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
@@ -1971,6 +1973,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
+      otherRecommendationName: [''],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -4702,6 +4705,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   // Remove Form repeater values
+
   removeDataActionOnSiezedGoods(index) {
     console.log(index);
     if (index === 0) {
@@ -4854,7 +4858,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveInvestInspectReport() {
     this.submitted = true;
-
+    this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
+        'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
+          this.saveInitialReport();
+        });
+  }
+  saveInitialReport(){
     if (this.investInspectReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
@@ -4868,7 +4877,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('INITIAL REPORT DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FIELD REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -4878,7 +4887,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       );
 
     } else if (this.investInspectReportForm.invalid) {
-      this.msService.showError('KINDLY FILL IN THE FIELDS REQUIRED');
+      this.msService.showError("PLEASE FILL IN ALL THE REQUIRED FIELDS");
     }
   }
 

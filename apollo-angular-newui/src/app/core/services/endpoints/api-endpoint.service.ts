@@ -903,6 +903,7 @@ export class ApiEndpointService {
         ALL_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-list`,
         OPEN_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-open`,
         CLOSE_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-closed`,
+        // REASSIGNED_COMPLAINTS: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/reAssignedComplaints`,
         ADD_NEW_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/add`,
         CLOSE_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/close`,
         ALL_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list`,
