@@ -128,6 +128,8 @@ class QaInvoiceCalculationDaoServices(
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
         with(invoiceMaster){
             varField10 = 1.toString()
+            description = permit.commodityDescription
+            varField9 = permit.tradeMark
         }
         invoiceMaster =qaInvoiceMasterDetailsRepo.save(invoiceMaster)
 
@@ -217,12 +219,15 @@ class QaInvoiceCalculationDaoServices(
                 invoiceDetailsList.forEach { invoice ->
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
-                            totalAmountPayable = when (invoice.itemAmount) {
-                                BigDecimal.ZERO -> {
+                            totalAmountPayable = when {
+                                invoice.itemAmount == BigDecimal.ZERO -> {
                                     masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
                                 }
-                                else -> {
+                                invoice.itemAmount!! > masterInvoicePrevious.subTotalBeforeTax -> {
                                     invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                                }
+                                else -> {
+                                    masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
                                 }
                             }
                     }
@@ -255,9 +260,12 @@ class QaInvoiceCalculationDaoServices(
                 invoiceDetailsList.forEach { invoice ->
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
-                            totalAmountPayable = when (masterInvoicePrevious.subTotalBeforeTax) {
-                                BigDecimal.ZERO -> {
+                            totalAmountPayable = when  {
+                                invoice.itemAmount == BigDecimal.ZERO  -> {
                                     invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                }
+                                invoice.itemAmount!! > masterInvoicePrevious.subTotalBeforeTax -> {
+                                    invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
                                 }
                                 else -> {
                                     masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!

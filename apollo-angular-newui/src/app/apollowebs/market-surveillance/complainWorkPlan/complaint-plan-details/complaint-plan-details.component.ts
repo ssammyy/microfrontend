@@ -71,7 +71,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
   active: Number = 0;
-  averageCompliance: number = 0;
+  averageCompliance: number =0;
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
   selectedFile: File;
@@ -221,6 +221,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
+  uploadedAppealFiles: FileList;
+  uploadedSuccessfulAppealFiles: FileList;
   uploadedFilesSeizedGoods: FileList;
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
@@ -1705,10 +1707,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.ssfClientEmailNotificationForm = this.formBuilder.group({
       ssfID: null,
-      failedParameters: ['', Validators.required],
-      outLetEmail: null,
-      manufactureEmail: null,
-      complainantEmail: null,
+      failedParameters: null,
+      outLetEmail: [''],
+      manufactureEmail: [''],
+      complainantEmail: [''],
       remarks: null,
     });
 
@@ -1791,7 +1793,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.investInspectReportForm = this.formBuilder.group({
       id: null,
-      reportReference: ['', Validators.required],
+      reportReference: null,
       reportClassification: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
@@ -1855,6 +1857,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm = this.formBuilder.group({
       id: null,
       docID: null,
+      seizureFormValueToClone: null,
       productField: ['', Validators.required],
       serialNumber: ['', Validators.required],
       marketTownCenter: ['', Validators.required],
@@ -1901,7 +1904,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       packaging: ['', Validators.required],
       labellingIdentification: null,
       fileRefNumber: null,
-      standardsArray: [[], Validators.required],
+      referencesStandards: ['', Validators.required],
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
       condition: ['', Validators.required],
@@ -1954,6 +1957,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.ssfSaveComplianceStatusForm = this.formBuilder.group({
       complianceStatus: ['', Validators.required],
       complianceRemarks: ['', Validators.required],
+      failedParameters: [''],
       totalCompliance: null,
       totalComplianceTest: null,
     });
@@ -1969,6 +1973,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
+      otherRecommendationName: [''],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -2504,7 +2509,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
       'ADD BS NUMBER', 'APPROVE/DECLINE PRELIMINARY REPORT', 'APPROVE/DECLINE PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/DECLINE FINAL REPORT', 'APPROVE/DECLINE FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
-      , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
+      , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
       'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD START AND END DATE YOU WISH TO END ON-SITE ACTIVITIES'];
@@ -3939,24 +3944,31 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (this.sampleSubmitForm.get('id').value !== null) {
       valuesToShow = '\'UPDATE SSF DETAILS\'';
     }
-    if(this.standardsInput.nativeElement.value !== ""){
-      this.addStandard();
-    }
-    const standardsArrayControl = this.sampleSubmitForm.get('standardsArray');
+    const standardsArrayControl = this.sampleSubmitForm.get('referencesStandards');
+    console.log("Data in the form control before: "+standardsArrayControl.value);
+    const newValues = [];
     for (let selectedStandard of this.standardsArray) {
-      const updatedValue = standardsArrayControl.value.concat(selectedStandard);
-      standardsArrayControl.patchValue(updatedValue);
-      console.log("Selected Standard: " + selectedStandard);
+      const valueInControl = standardsArrayControl.value;
+      if (!valueInControl.includes(selectedStandard)) {
+        newValues.push(selectedStandard);
+      }
     }
-      console.log("Standards Array: "+ this.standardsArray);
-      console.log("Values in the form group: "+ standardsArrayControl.value);
 
+    if (newValues.length > 0) {
+      const updatedValue = standardsArrayControl.value.concat(newValues);
+      standardsArrayControl.patchValue(updatedValue);
+    }
+
+    console.log("Data in the form control after: "+standardsArrayControl.value);
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
+    }
+    else{
+      this.msService.showError("Please Fill in all the fields!");
     }
   }
 
@@ -4515,6 +4527,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             (data: any) => {
               this.SpinnerService.hide();
               // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+              this.verificationPermitForm.patchValue(data);
+              this.currDivLabel = `UCR FOUND WITH FOLLOWING DETAILS`;
+              this.currDiv = 'verificationPermitDetails';
+              this.verificationPermitForm.disabled;
+
+              window.$('#myModal3').modal('show');
+
             },
             error => {
               this.SpinnerService.hide();
@@ -4686,6 +4705,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   // Remove Form repeater values
+
   removeDataActionOnSiezedGoods(index) {
     console.log(index);
     if (index === 0) {
@@ -4695,7 +4715,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
   }
 
-  // Remove Form repeater values
+
   removeDataSampleCollectItems(index) {
     console.log(index);
     if (index === 0) {
@@ -4838,7 +4858,12 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   onClickSaveInvestInspectReport() {
     this.submitted = true;
-
+    this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
+        'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
+          this.saveInitialReport();
+        });
+  }
+  saveInitialReport(){
     if (this.investInspectReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
@@ -4852,7 +4877,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('INITIAL REPORT DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FIELD REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -4862,7 +4887,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       );
 
     } else if (this.investInspectReportForm.invalid) {
-      this.msService.showError('KINDLY FILL IN THE FIELDS REQUIRED');
+      this.msService.showError("PLEASE FILL IN ALL THE REQUIRED FIELDS");
     }
   }
 

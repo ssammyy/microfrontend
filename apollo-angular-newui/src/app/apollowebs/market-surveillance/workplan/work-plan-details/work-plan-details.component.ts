@@ -226,6 +226,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
   uploadedFilesOnly: FileList;
+  uploadedSuccessfulAppealFiles: FileList;
+  uploadedAppealFiles: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
@@ -238,6 +240,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   selectedRegionName: string;
   selectedTownName: string;
   selectedCountyName: string;
+
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
 
@@ -1717,10 +1720,10 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.ssfClientEmailNotificationForm = this.formBuilder.group({
       ssfID: null,
-      failedParameters: ['', Validators.required],
-      outLetEmail: null,
-      manufactureEmail: null,
-      complainantEmail: null,
+      failedParameters: null,
+      outLetEmail: [''],
+      manufactureEmail: [''],
+      complainantEmail: [''],
       remarks: null,
     });
 
@@ -1803,7 +1806,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.investInspectReportForm = this.formBuilder.group({
       id: null,
-      reportReference: ['', Validators.required],
+      reportReference: null,
       reportClassification: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
@@ -1932,7 +1935,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       lbIdExpiryDate: null,
       lbIdTradeMark: null,
       noteTransResults: null,
-      standardsArray: [[], Validators.required],
+      referencesStandards: ['', Validators.required],
       scfNo: null,
       cocNumber: null,
       testChargesKsh: null,
@@ -1960,7 +1963,9 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.pdfSaveComplianceStatusForm = this.formBuilder.group({
       complianceStatus: ['', Validators.required],
+      failedParameters: [''],
       complianceRemarks: ['', Validators.required],
+
     });
 
     this.ssfSaveComplianceStatusForm = this.formBuilder.group({
@@ -1981,6 +1986,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
+      otherRecommendationName: [''],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -4002,23 +4008,32 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.sampleSubmitForm.get('id').value !== null) {
       valuesToShow = '\'UPDATE SSF DETAILS\'';
     }
-    if(this.standardsInput.nativeElement.value !== ""){
-      this.addStandard();
-    }
-    const standardsArrayControl = this.sampleSubmitForm.get('standardsArray');
+
+    const standardsArrayControl = this.sampleSubmitForm.get('referencesStandards');
+    console.log("Data in the form control before: "+standardsArrayControl.value);
+    const newValues = [];
     for (let selectedStandard of this.standardsArray) {
-      const updatedValue = standardsArrayControl.value.concat(selectedStandard);
-      standardsArrayControl.patchValue(updatedValue);
-      console.log("Selected Standard: " + selectedStandard);
+      const valueInControl = standardsArrayControl.value;
+      if (!valueInControl.includes(selectedStandard)) {
+        newValues.push(selectedStandard);
+      }
     }
-    console.log("Standards Array: "+ this.standardsArray);
-    console.log("Values in the form group: "+ standardsArrayControl.value);
+
+    if (newValues.length > 0) {
+      const updatedValue = standardsArrayControl.value.concat(newValues);
+      standardsArrayControl.patchValue(updatedValue);
+    }
+
+    console.log("Data in the form control after: "+standardsArrayControl.value);
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
           `You can click the${valuesToShow}button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
             this.saveSampleSubmitted();
           });
+    }
+    else{
+      this.msService.showError("Please Fill in all the fields!");
     }
   }
 
@@ -4903,7 +4918,14 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveInvestInspectReport() {
     this.submitted = true;
+    this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
+        'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
+          this.saveInitialReport();
+        });
 
+  }
+
+  saveInitialReport(){
     if (this.investInspectReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
@@ -4927,7 +4949,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       );
 
     } else if (this.investInspectReportForm.invalid) {
-      this.msService.showError('KINDLY FILL IN THE FIELDS REQUIRED');
+      this.msService.showError("PLEASE FILL IN ALL THE REQUIRED FIELDS");
     }
   }
 

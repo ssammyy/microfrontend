@@ -3532,7 +3532,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 with(dataValue) {
                     sourceProductEvidence = sampleFound?.sourceProductEvidence
                     failedResults = body.failedParameters
-                    standardName = sampleFound?.standardsArray.toString()
+                    standardName = sampleFound?.referencesStandards
                     baseUrl = applicationMapProperties.baseUrlValue
                     refNumber = savedSSfComplianceStatus.bsNumber
                     compliantDetails = mapCompliantStatusDto(savedSSfComplianceStatus, map)
@@ -3752,13 +3752,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             sendSffStatus = map.activeStatus
             onsiteEndStatus = map.activeStatus
             onsiteEndDate = commonDaoServices.getCurrentDate()
-//            onsiteTat = Period.between(onsiteEndDate!!.toLocalDate(), onsiteEndDateAdded!!.toLocalDate() ).toDays()
-            val period = Period.between(onsiteEndDate!!.toLocalDate(), onsiteEndDateAdded!!.toLocalDate())
-            val totalMonths = period.toTotalMonths()
-            val years = totalMonths / 12
-            val remainingMonths = totalMonths % 12
-            val remainingDays = period.days
-            onsiteTat = years * 365 + remainingMonths * 30 + remainingDays
+            onsiteTat = onsiteEndDateAdded?.let { commonDaoServices.getCalculatedDaysInLong(onsiteEndDate!!, it) }
             sendSffDate = commonDaoServices.getCurrentDate()
             timelineStartDate = commonDaoServices.getCurrentDate()
             timelineEndDate = applicationMapProperties.mapMSWorkPlanInspectionEndOnSiteActivities.let { timeLine ->
@@ -4887,6 +4881,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             nameOfOutlet = body.nameOfOutlet
             descriptionProductsSeized = body.descriptionProductsSeized
             brand = body.brand
+            product = body.product
             sector = body.sector
             docId = body.docID
             mainSeizureId = body.mainSeizureID
@@ -4970,7 +4965,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         update: Boolean
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
-            reportReference = body.reportReference
+            reportReference = "REF/INT/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough
@@ -5021,7 +5016,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         update: Boolean
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
-            reportReference = body.reportReference
+            reportReference = "REF/INT/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough
@@ -5858,6 +5853,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 seizureDeclaration.nameOfOutlet,
                 seizureDeclaration.descriptionProductsSeized,
                 seizureDeclaration.brand,
+                seizureDeclaration.product,
                 seizureDeclaration.sector,
                 seizureDeclaration.reasonSeizure,
                 seizureDeclaration.nameSeizingOfficer,

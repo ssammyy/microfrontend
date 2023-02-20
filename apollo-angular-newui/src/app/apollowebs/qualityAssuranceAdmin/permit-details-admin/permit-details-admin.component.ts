@@ -4,7 +4,7 @@ import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto,
     FilesListDto,
-    FirmTypeEntityDto,
+    FirmTypeEntityDto, InspectionReportDetailsDto,
     PermitEntityDetails,
     PermitEntityDto,
     PlantDetailsDto,
@@ -71,6 +71,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     form: FormGroup;
     memberReturnArray: any[] = [];
     uploadedFilesOnly: FileList;
+    uploadedSsfFilesOnly: FileList;
     uploadedFilesScheme: FileList;
     public actionRequest: PermitEntityDetails | undefined;
 
@@ -109,6 +110,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     addStandards: FormGroup;
     factoryVisit: FormGroup;
     docFileNameForm: FormGroup;
+    docSSFUpload: FormGroup;
 
     updateSectionForm: FormGroup;
     permitCompletenessForm: FormGroup;
@@ -117,7 +119,9 @@ export class PermitDetailsAdminComponent implements OnInit {
     scheduleInspectionForm: FormGroup;
     ssfDetailsForm: FormGroup;
     recommendationForm: FormGroup;
-    recommendationApprovalForm: FormGroup;
+    recommendationApproveRejectForm: FormGroup;
+    approveRejectPermitForm: FormGroup;
+    approveRejectInspectionReportForm: FormGroup;
     pdfSaveComplianceStatusForm!: FormGroup;
     ssfSaveComplianceStatusForm!: FormGroup;
 
@@ -164,6 +168,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
+
+    inspectionReportDetailsDto: InspectionReportDetailsDto
 
 
     public settingsLabResultsParam = {
@@ -493,14 +499,25 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.docFileNameForm = this.formBuilder.group({
             docFileName: null,
         });
-
+        
         this.recommendationForm = this.formBuilder.group({
             recommendationRemarks: ['', Validators.required],
         });
 
-        this.recommendationApprovalForm = this.formBuilder.group({
+        this.recommendationApproveRejectForm = this.formBuilder.group({
             recommendationApprovalStatus: ['', Validators.required],
             recommendationApprovalRemarks: null,
+        });
+
+        this.approveRejectPermitForm = this.formBuilder.group({
+            approvedRejectedStatus: ['', Validators.required],
+            approvedRejectedRemarks: null,
+        });
+
+        this.approveRejectInspectionReportForm = this.formBuilder.group({
+            approvedRejectedStatus: ['', Validators.required],
+            inspectionReportID: ['', Validators.required],
+            supervisorComments: null,
         });
 
 
@@ -747,10 +764,12 @@ export class PermitDetailsAdminComponent implements OnInit {
     openModalAddDetails(divVal: string): void {
 
         const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
-            'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'addRecommendationApproval'];
+            'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'approveRejectRecommendation', 'uploadSSF', 'approveRejectInspectionReport',
+            'approvePermitQAMHOD', 'approvePermitPSCMember', 'approvePermitPCM'];
 
         const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
-            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'ADD APPROVAL'];
+            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'APPROVE/REJECT RECOMMENDATION', 'UPLOAD SSF', 'APPROVE/REJECT GENERATED INSPECTION REPORT',
+            'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -759,6 +778,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
 
         this.currDiv = divVal;
+
     }
 
     updateSelectedStatus() {
@@ -831,6 +851,8 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
+        this.inspectionReportDetailsDto = this.allPermitDetails.inspectionReportDetails
+
 
         this.qaService.loadFirmPermitList().subscribe(
             (dataFirmType: FirmTypeEntityDto[]) => {
@@ -1031,6 +1053,133 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+
+    onClickSaveApproveRejectInspectionReportFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'APPROVE/REJECT GENERATED INSPECTION REPORT\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveApproveRejectInspectionReportFormResults(valid);
+            });
+    }
+
+    SaveApproveRejectInspectionReportFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaApproveRejectInspectionReport(this.approveRejectInspectionReportForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('INSPECTION REPORT STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+
+    onClickSaveApprovePermitQAMHOD(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'APPROVE/REJECT PERMIT\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveApprovePermitQAMHOD(valid);
+            });
+    }
+
+    SaveApprovePermitQAMHOD(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaApprovePermitQAMHOD(this.approveRejectPermitForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('PERMIT STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveApprovePermitPSCMember(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'APPROVE/REJECT PERMIT AWARDING\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveApprovePermitPSCMember(valid);
+            });
+    }
+
+    SaveApprovePermitPSCMember(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaApprovePermitPSCMember(this.approveRejectPermitForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('PERMIT STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveApprovePermitPCM(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'APPROVE/REJECT PERMIT AWARDING\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveApprovePermitPCM(valid);
+            });
+    }
+
+    SaveApprovePermitPCM(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaApprovePermitPCM(this.approveRejectPermitForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('PERMIT STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+
     onClickSavePermitCompletenessForUpgradeFormResults(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
             // tslint:disable-next-line:max-line-length
@@ -1086,6 +1235,8 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data1: ApiResponseModel) => {
                     if (data1.responseCode === '00') {
                         // tslint:disable-next-line:max-line-length
+                        this.allPermitDetails = data1?.data as AllPermitDetailsDto;
+                        // tslint:disable-next-line:max-line-length
                         const pdfSavedDetails = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
                         const pdfSave = pdfSavedDetails?.savedPDFFiles?.find(dat => dat?.pdfName === this.selectedPDFFileName);
                         this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.pdfSavedId);
@@ -1093,7 +1244,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                             (data: ApiResponseModel) => {
                                 if (data.responseCode === '00') {
                                     this.SpinnerService.hide();
-                                    this.qaService.showSuccess('PDF AND COMPLINACE STATUS, SAVED SUCCESSFULLY', () => {
+                                    this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {
                                         this.loadPermitDetails(data);
                                     });
                                 } else {
@@ -1119,6 +1270,30 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+    // savePDFComplianceRemarksSelected() {
+    //     if (valid) {
+    //         this.SpinnerService.show();
+    //         this.qaService.qaPermitSavePDF(this.pdfSaveComplianceStatusForm.value, this.permitID).subscribe(
+    //             (data1: ApiResponseModel) => {
+    //                 if (data1.responseCode === '00') {
+    //                     // tslint:disable-next-line:max-line-length
+    //                     const pdfSavedDetails = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
+    //                     const pdfSave = pdfSavedDetails?.savedPDFFiles?.find(dat => dat?.pdfName === this.selectedPDFFileName);
+    //                     this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.pdfSavedId);
+    //
+    //                 } else {
+    //                     this.SpinnerService.hide();
+    //                     this.qaService.showError(data1.message);
+    //                 }
+    //             },
+    //             error => {
+    //                 this.SpinnerService.hide();
+    //                 this.qaService.showError('AN ERROR OCCURRED');
+    //             },
+    //         );
+    //     }
+    // }
+
 
     onClickSaveAssignOfficerForm(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -1131,7 +1306,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     onClickSaveRecommendationApprovalForm(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
             // tslint:disable-next-line:max-line-length
-            'You can click the \'ADD APPROVAL\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+            'You can click the \'APPROVE/REJECT RECOMMENDATION\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
                 this.SaveRecommendationApprovalForm(valid);
             });
     }
@@ -1162,11 +1337,11 @@ export class PermitDetailsAdminComponent implements OnInit {
     SaveRecommendationApprovalForm(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaRecommendationApprovalForm(this.recommendationApprovalForm.value, this.permitID).subscribe(
+            this.qaService.qaRecommendationApprovalForm(this.recommendationApproveRejectForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
-                        this.qaService.showSuccess('RECOMMENDATION APPROVAL STATUS SAVED SUCCESSFULLY', () => {
+                        this.qaService.showSuccess('RECOMMENDATION STATUS SAVED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
@@ -1341,6 +1516,40 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+    onClickSaveSSFComplianceStatus(valid: boolean) {
+        if (valid) {
+            this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+                // tslint:disable-next-line:max-line-length
+                `You can click \'ADD COMPLIANCE STATUS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+                    this.saveSSFComplianceStatus(valid);
+                });
+        }
+    }
+
+
+    saveSSFComplianceStatus(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaSSFDetailsCompliance(this.ssfSaveComplianceStatusForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
 
     onClickSaveSSCForm() {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -1392,6 +1601,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             });
     }
 
+    
 
     saveUploadsAttachments() {
         if (this.uploadedFilesOnly.length > 0) {
@@ -1426,6 +1636,47 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
         }
     }
+
+    onClickSaveUploadsSSF() {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+
+            'You can click the \'UPLOAD SSF\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveUploadsSSF();
+            });
+    }
+
+    SaveUploadsSSF() {
+        if (this.uploadedSsfFilesOnly.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedSsfFilesOnly;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitID));
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('SSFdocFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveUploadFile(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('UPLOAD(S) SAVED  SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
+
 
 
 
@@ -1463,6 +1714,17 @@ export class PermitDetailsAdminComponent implements OnInit {
         console.log('encrypted', encrypted);
         this.router.navigate(['/new-inspection-report',encrypted])
 
+
+    }
+    goToInspectionReportPage(inspectionReportId: string) {
+        var text = inspectionReportId;
+        var key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        var encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        console.log('encrypted', encrypted);
+        this.router.navigate(['/inspection-report', encrypted])
 
     }
 

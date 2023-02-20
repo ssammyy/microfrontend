@@ -35,7 +35,8 @@ export class DelayedProjectsComponent implements OnInit {
     this.searchFormGroup = this.formBuilder.group({
       
       currentStage: ['', null],
-      date: ['', null],
+      startDate: ['', null],
+      endDate: ['', null],
     });
 
 

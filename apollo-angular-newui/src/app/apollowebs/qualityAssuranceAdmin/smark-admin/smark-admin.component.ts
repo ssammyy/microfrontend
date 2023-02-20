@@ -99,24 +99,11 @@ export class SmarkAdminComponent implements OnInit {
 
         var text = permitId;
         var key = '11A1764225B11AA1';
-        // Fix: Use the Utf8 encoder
         text = CryptoJS.enc.Utf8.parse(text);
-// Fix: Use the Utf8 encoder (or apply in combination with the hex encoder a 32 hex digit key for AES-128)
         key = CryptoJS.enc.Utf8.parse(key);
-
-// Fix: Apply padding (e.g. Zero padding). Note that PKCS#7 padding is more reliable and that ECB is insecure
         var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
-        console.log('encrypted', encrypted);
-
-
-
-     //   const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(permitId.toString()), {secretKey }); // or ${process.env.SECRET_KEY}
-
-
-        // const encryptedId = CryptoJS.AES.encrypt(permitId);
-       this.router.navigate(['/permit-details-admin',encrypted])
-        // this.router.navigateByUrl('/permit-details-admin', { state: { highlight:permitId  } });
+        this.router.navigate(['/permit-details-admin',encrypted])
 
 
     }

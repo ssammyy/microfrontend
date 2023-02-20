@@ -25,7 +25,6 @@ package org.kebs.app.kotlin.apollo.common.dto
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import com.google.common.primitives.Booleans
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -591,6 +590,12 @@ data class CompanyUpgradeStatusDto(
     var updateDetailsStatus: Boolean? = null,
     var inspectionFeeRequerd: Boolean? = null,
 )
+data class InspectionReportDtoPermit(
+    var id: Long? = null,
+    var refNo: String? = null,
+    var submittedInspectionReportStatus: Int? = null,
+    var createdOn: Timestamp?,
+    )
 
 data class CompanyTurnOverUpdateDto(
     @NotEmpty(message = "is mandatory")

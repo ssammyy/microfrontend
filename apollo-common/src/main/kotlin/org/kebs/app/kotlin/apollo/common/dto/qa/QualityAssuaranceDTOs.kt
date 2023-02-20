@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
 import org.kebs.app.kotlin.apollo.common.dto.CompanyUpgradeStatusDto
+import org.kebs.app.kotlin.apollo.common.dto.InspectionReportDtoPermit
 import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.MSSSFLabResultsDto
@@ -805,6 +806,10 @@ data class PermitDetailsDto(
     var ssfCompletedStatus: Boolean? = null,
     var compliantStatus: Boolean? = null,
     var invoiceDifferenceGenerated: Boolean? = null,
+    var recommendationApprovalStatus: Boolean? = null,
+    var hodQamApproveRejectStatus: Boolean? = null,
+    var pscMemberApprovalStatus: Boolean? = null,
+    var pcmApprovalStatus: Boolean? = null,
 
     )
 
@@ -833,7 +838,9 @@ data class AllPermitDetailsDto(
     var inspectionNeeded: Boolean? = null,
     var inspectionFeeInvoice: InvoiceDetailsDto? = null,
     var inspectionInvoiceUploaded: Long? = null,
-)
+    val inspectionReportDetails: InspectionReportDtoPermit? = null,
+
+    )
 
 
 data class AllSTA10DetailsDto(

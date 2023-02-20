@@ -1,19 +1,13 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
-import com.google.gson.Gson
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.WorkPlanScheduledDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.ApiResponseModel
-import org.kebs.app.kotlin.apollo.common.dto.ms.DataReportDto
-import org.kebs.app.kotlin.apollo.common.dto.ms.DataReportParamsDto
-import org.kebs.app.kotlin.apollo.common.dto.ms.WorkPlanInspectionDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -31,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.function.ServerResponse
 import java.io.ByteArrayInputStream
 import java.math.BigDecimal
 import java.sql.Date
@@ -100,9 +93,21 @@ class QualityAssuranceJSONControllers(
                     inspectionFeeStatus = 1
                     invoiceInspectionGenerated = 1
                     paidDate = userPaidDate
-//                    endingDate = commonDaoServices.getCalculatedDate(30)
-////                    paidDate = commonDaoServices.getCurrentDate()
-                    endingDate = commonDaoServices.addYearsToCurrentDate(selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS"))
+                    val validityInYears = selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS")
+                    val yearsGotten = commonDaoServices.getCalculatedDateInLong(userPaidDate)
+                    endingDate = when {
+                        validityInYears==yearsGotten -> {
+                            throw NullValueNotAllowedException("Inspection Fee has already reach The validity date for $validityInYears years after payment date")
+                        }
+
+                        yearsGotten>validityInYears -> {
+                            throw NullValueNotAllowedException("Inspection Fee has already passed, The validity date for $validityInYears years after payment date")
+                        }
+                        else -> {
+                            commonDaoServices.addYearsToCurrentDate(yearsGotten)
+                        }
+                    }
+
                 }
                 manufacturePlantRepository.save(branchDetails)
 //                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")
@@ -110,7 +115,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-scheme-supervision")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadSchemeOfSupervisionDataReport(
         @RequestParam("permitID") permitID: Long,
@@ -167,7 +172,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-docs")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDocuments(
         @RequestParam("permitID") permitID: Long,
@@ -220,7 +225,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-justification-report")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadJustificationReport(
         @RequestParam("permitID") permitID: Long,
@@ -277,7 +282,7 @@ class QualityAssuranceJSONControllers(
     }
 
     @PostMapping("/internal-users/apply/permit/upload-assessment-report")
-    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadAssessmentReport(
         @RequestParam("permitID") permitID: Long,
