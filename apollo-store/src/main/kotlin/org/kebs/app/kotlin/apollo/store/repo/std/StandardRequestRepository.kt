@@ -26,5 +26,15 @@ interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
         value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Assigned To TC Sec' ORDER BY ID DESC",nativeQuery = true)
     fun getWorkshopStandards(): MutableList<StandardRequest>
 
+    @Query(
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Workshop Justification Approval' ORDER BY ID DESC",nativeQuery = true)
+    fun getWorkshopJustification(): MutableList<StandardRequest>
+
+    @Query(
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Prepare Preliminary Draft' ORDER BY ID DESC",nativeQuery = true)
+    fun getWorkshopForPDraft(): MutableList<StandardRequest>
+
+
+
 
 }

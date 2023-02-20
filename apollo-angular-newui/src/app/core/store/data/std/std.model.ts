@@ -1586,6 +1586,11 @@ export interface DiSdtDECISION {
     comments: string;
     jstNumber: bigint;
 }
+export interface NwaDecisionOnJustification{
+    comments: string;
+    accentTo: string;
+    requestId: number;
+}
 
 export interface NWAJustificationDecision {
     taskId: string;

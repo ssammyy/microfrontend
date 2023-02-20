@@ -363,6 +363,8 @@ export class ApiEndpointService {
         // SD Kenya National Workshop Agreement
         NWA_VIEW_STANDARD_REQUEST: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopStandards`,
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
+        NWA_GET_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/getJustification`,
+        NWA_VIEW_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
         NWA_KNW_COMMITTEE: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWCommittee`,
         NWA_KNW_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/knwtasks`,

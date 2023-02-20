@@ -1068,6 +1068,7 @@ import { SdPaymentsComponent } from './apollowebs/standards-development/schemeMe
 import { DomesticNotificationComponent } from './apollowebs/standards-development/reports/WTO REPORTS/domestic-notification/domestic-notification.component';
 import { EnquariesHandledReportComponent } from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
 import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
+import { NwaViewJustificationComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-justification/nwa-view-justification.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1626,6 +1627,7 @@ import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-d
         DomesticNotificationComponent,
         EnquariesHandledReportComponent,
         StandardWorkProgrammeBulletinComponent,
+        NwaViewJustificationComponent,
     
       
 
