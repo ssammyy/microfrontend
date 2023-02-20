@@ -177,7 +177,7 @@ export class RegisterTivetComponent implements OnInit {
         this.stepOneForm = new FormGroup({
             // name: new FormControl('', [Validators.required]),
             registrationNumber: new FormControl('', [Validators.required]),
-            kraPin: new FormControl(''),
+            kraPin: new FormControl('', [Validators.required]),
             yearlyTurnover: new FormControl('', [Validators.required]),
             directorIdNumber: new FormControl('', [Validators.required]),
             businessLines: new FormControl('', [Validators.required]),
