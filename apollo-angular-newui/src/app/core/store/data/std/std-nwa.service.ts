@@ -4,11 +4,12 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {
+    CommentOnProposalStakeHolder,
     DiSdtDECISION,
     DISDTTasks, FileData, HOPTasks,
     HoSicTasks,
     KNWCommittee, KNWDepartment,
-    KnwSecTasks, NWADiSdtJustification,
+    KnwSecTasks, NwaDecisionOnJustification, NWADiSdtJustification,
     NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft, NwaRequestList,
     NWAStandard, NwaTasks, NWAWDDecision, NWAWorkShopDraft, PreliminaryDraftTasks, SacSecTasks, SPCSECTasks,
     UpdateNwaGazette, UploadNwaGazette, UsersEntity
@@ -54,6 +55,12 @@ export class StdNwaService {
         return this.http.get<NwaRequestList[]>(url, {params}).pipe();
     }
 
+    public getWorkshopJustification(): Observable<NwaRequestList[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_VIEW_JUSTIFICATION);
+        const params = new HttpParams();
+        return this.http.get<NwaRequestList[]>(url, {params}).pipe();
+    }
+
   public prepareJustification(nwaJustification: NWAJustification): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
     const params = new HttpParams();
@@ -66,6 +73,11 @@ export class StdNwaService {
         })
     );
   }
+    public getJustification(requestId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_GET_JUSTIFICATION);
+        const params = new HttpParams().set('requestId', requestId);
+        return this.http.get<NWAJustification>(url, {params}).pipe();
+    }
   //upload justification Document
     public uploadFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA);
@@ -150,10 +162,10 @@ export class StdNwaService {
         })
     );
   }
-    public decisionOnJustification(nwaJustificationDecision: NWAJustificationDecision): Observable<any> {
+    public decisionOnJustification(nwaJustificationDecision: NwaDecisionOnJustification): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_JUSTIFICATION);
         const params = new HttpParams();
-        return this.http.post<NWAJustification>(url, nwaJustificationDecision, {params}).pipe(
+        return this.http.post<NwaDecisionOnJustification>(url, nwaJustificationDecision, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

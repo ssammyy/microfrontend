@@ -137,6 +137,26 @@
                                     </div>
 
                                 </div>
+                                    <div class="row col-12">
+                                        <div class="form-group col-12">
+                                            <label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                            <textarea [class.is-invalid]="formPrepareJustification.referenceMaterial.invalid && formPrepareJustification.referenceMaterial.touched"
+                                                      aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                      class="form-control one-column-input" formControlName="referenceMaterial" name="referenceMaterial"
+                                                      placeholder="Name" type="text"></textarea>
+                                        </div>
+
+                                    </div>
+                                    <div class="row col-12">
+                                        <div class="form-group col-12">
+                                            <label><b>Remarks</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                            <textarea [class.is-invalid]="formPrepareJustification.remarks.invalid && formPrepareJustification.remarks.touched"
+                                                      aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                      class="form-control one-column-input" formControlName="remarks" name="remarks"
+                                                      placeholder="Name" type="text"></textarea>
+                                        </div>
+
+                                    </div>
                                     <input type="hidden" value="{{actionRequests?.id}}" formControlName="requestId" name="requestId" >
                                 <!--    <div class="row col-12">-->
                                 <!--        <div class="form-group col-12">-->

@@ -165,5 +165,9 @@ class ComStdDraft {
     @Basic
     var standardType: String?=null
 
+    @Column(name="WORK_SHOP_DATE")
+    @Basic
+    var workShopDate: Timestamp?=null
+
 
 }
