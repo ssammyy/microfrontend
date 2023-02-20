@@ -106,6 +106,49 @@
         font-size: 12px;
     }
 
+    .field-titles li {
+        font-weight: bold;
+    }
+
+    ul li {
+        padding-bottom: 3%;
+    }
+
+    .mat-form-field {
+        font-size: 17px;
+        width: 100%;
+    }
+
+    .mat-focused {
+        font-size: 20px;
+    }
+
+    .mat-input-element {
+        width: 100%;
+        font-size: 20px;
+    }
+
+    ::placeholder {
+        font-size: 14px;
+    }
+
+    mat-label.mat-label {
+        font-size: 16px;
+        color: white;
+
+    }
+
+    ::ng-deep.mat-form-field .mat-form-field-label {
+        color: white!important;
+    }
+
+
+    .mat-form-field-should-float {
+        font-size: 20px;
+        color: white;
+    }
+
+
 
 </style>
 <style>
@@ -174,8 +217,10 @@
             </h2>
             <div class="form-body">
 
+
+
                 <div class="form-group" style="margin-top: 3%">
-                    <label class="input-placeholder" for="compRegistrationNumber"><b>Company Registration
+                    <label style="font-size: 16px" class="input-placeholder" for="compRegistrationNumber"><b>Company Registration
                         Number</b></label>
                     <input [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.registrationNumber.errors }"
                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -191,7 +236,7 @@
                 </div>
 
                 <div class="form-group" style="margin-top: 3%">
-                    <label class="input-placeholder" for="compDirectorIdNumber"><b>Director's Id Number</b></label>
+                    <label style="font-size: 16px"  class="input-placeholder" for="compDirectorIdNumber"><b>Director's Id Number</b></label>
                     <input [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.directorIdNumber.errors }"
                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                            class="form-control two-column-input" formControlName="directorIdNumber"

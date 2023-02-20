@@ -276,8 +276,13 @@
                                            matInput
                                            class="form-control two-column-input"
                                            id="kraPin"
-                                           placeholder="KRA Pin If Present"
+                                           required
+                                           placeholder="KRA Pin"
                                            formControlName="kraPin">
+                                    <app-field-error-display
+                                            [displayError]="isFieldValid(stepOneForm, 'kraPin')"
+                                            errorMsg="Please Enter KRA pin">
+                                    </app-field-error-display>
                                 </mat-form-field>
                             </div>
 

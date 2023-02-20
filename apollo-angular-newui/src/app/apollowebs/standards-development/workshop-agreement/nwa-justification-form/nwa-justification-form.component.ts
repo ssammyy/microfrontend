@@ -81,7 +81,8 @@ export class NwaJustificationFormComponent implements OnInit {
         acceptanceDate: ['', Validators.required],
         uploadedFiles: [],
         requestId: [],
-        DocDescription: []
+        DocDescription: [],
+        referenceMaterial: []
       // postalAddress: ['', [Validators.required, Validators.pattern('P.O.BOX [0-9]{5}')]]
     });
 
@@ -140,14 +141,25 @@ export class NwaJustificationFormComponent implements OnInit {
   }
 
   saveJustification(): void {
+      this.loadingText = "Saving Justification...";
     this.SpinnerService.show();
     this.stdNwaService.prepareJustification(this.prepareJustificationFormGroup.value).subscribe(
         (response ) => {
           console.log(response);
           this.SpinnerService.hide();
-         //  this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
-         // this.onClickSaveUploads(response.body.savedRowID)
+          this.getWorkshopStandards();
+           this.showToasterSuccess(response.httpStatus, `Justification Saved`);
+            swal.fire({
+                title: 'Justification Prepared.',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+            });
+            this.router.navigate(['/nwaJustification']);
           this.prepareJustificationFormGroup.reset();
+          this.hideModalUploadDraft();
         },
         (error: HttpErrorResponse) => {
             this.SpinnerService.hide();

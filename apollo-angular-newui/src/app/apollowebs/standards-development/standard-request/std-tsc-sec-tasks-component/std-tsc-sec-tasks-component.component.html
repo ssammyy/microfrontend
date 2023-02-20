@@ -345,7 +345,7 @@
                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="updateExampleModalLabel">Proposal for
+                            <h5 class="modal-title" id="updateExampleModalLabelB">Proposal for
                                 New Work
                                 Item</h5>
                             <button type="button" class="close" data-dismiss="modal"
@@ -470,19 +470,13 @@
                                     <div class="form-group col-6">
                                         <label><b>Similar Standards/Subject of
                                             Standardization</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'similarStandards')">
-                                            <textarea type="text"
-                                                      matInput
-                                                      id="similarStandards"
-                                                      placeholder="Similar Standards"
-                                                      (ngModelChange)="numberValidationType($event)"
-                                                      formControlName="similarStandards"></textarea>
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'similarStandards')"
-                                                    errorMsg="Please Enter Similar Standards">
-                                            </app-field-error-display>
-                                        </mat-form-field>
+                                        <ng-select style="" placeholder="Please Select an option"
+                                                       formControlName="similarStandards"
+                                                       id="similarStandards" name="similarStandards">
+                                                <ng-option
+                                                        *ngFor="let app of loadedStandards"
+                                                        [value]="app.standardTitle + app.standardNumber">{{app.standardTitle}} {{app.standardNumber}} </ng-option>
+                                            </ng-select>
 
                                     </div>
                                 </div>
@@ -724,7 +718,7 @@
                 <div class="modal-dialog modal-lg modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="updateExampleModalLabel">NEW WORK
+                            <h5 class="modal-title" id="updateExampleModalLabelC">NEW WORK
                                 ITEM</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -837,7 +831,7 @@
                 <div class="modal-dialog modal-lg modal-xl" role="document" style="width: 100%">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="updateExampleModalLabel">View Votes</h5>
+                            <h5 class="modal-title" id="updateExampleModalLabelD">View Votes</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>

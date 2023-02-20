@@ -835,6 +835,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/allocated-task-overDue-wp-cp-view", handler::getAllWorkPlanComplaintAllocatedTaskOverDueList)
                 GET("/all-batch-list", handler::getAllWorkPlanBatchList)
                 GET("/all-batch-closed", handler::getAllWorkPlanBatchListClosed)
+//                GET("/reAssignedComplaints", handler::getReassignedComplaints)
                 GET("/all-batch-open", handler::getAllWorkPlanBatchListOpen)
                 POST("/add", handler::saveNewWorkPlanBatch)
                 PUT("/close", handler::closeWorkPlanBatchEntry)

@@ -15,6 +15,18 @@ class WorkshopAgreement(
     @JsonProperty("assignedTo") var assignedTo: Long
     ) {
 }
+data class WorkshopPreliminaryDraft(
+    val requestId: Long? = null,
+    val title: String? = null,
+    val scope: String? = null,
+    val normativeReference: String? = null,
+    val symbolsAbbreviatedTerms: String? = null,
+    val clause: String? = null,
+    val special: String? = null,
+    val diJNumber: Long? = null,
+    val workShopDate: Timestamp,
+    val nwaStandardNo: String? = null,
+){}
 data class JustificationNwa(
     var meetingDate: String? = null,
     var knwSecretary: String? = null,
@@ -220,6 +232,7 @@ class ISDraftDecisionsStd(
     @JsonProperty("scope") val scope: String?,
     @JsonProperty("special") val special: String?,
     @JsonProperty("standardNumber") val standardNumber: String?,
+    @JsonProperty("standardType") val standardType: String?,
     @JsonProperty("requestId") val requestId: Long?,
     @JsonProperty("id") val id: Long
 
@@ -288,7 +301,6 @@ class GazzettementDecision(
 class NwaJustificationDto(
     @JsonProperty("knw") var knw: String,
     @JsonProperty("dateOfMeeting") var dateOfMeeting: Timestamp,
-    @JsonProperty("knwSecretary") var knwSecretary: String,
     @JsonProperty("sl") var sl: String,
     @JsonProperty("requestedBy") var requestedBy: String,
     @JsonProperty("issuesAddressed") var issuesAddressed: String,
@@ -296,14 +308,15 @@ class NwaJustificationDto(
     @JsonProperty("referenceMaterial") var referenceMaterial: String,
     @JsonProperty("department") var department: String,
     @JsonProperty("remarks") var remarks: String,
-    @JsonProperty("requestNumber") var requestNumber: String,
-    @JsonProperty("meetingDate") var meetingDate: String,
-    @JsonProperty("knwAcceptanceDate") var knwAcceptanceDate: String,
     @JsonProperty("requestId") var requestId: Long,
 ){
 
 }
-
+data class NwaDecisionOnJustificationDto(
+    var comments: String?=null,
+    var accentTo: String?=null,
+    var requestId: Long?=null
+){}
 
 class NwaJustificationAction(
     @JsonProperty("justificationID") val justificationID: Long,

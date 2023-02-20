@@ -92,6 +92,15 @@ class NWAPreliminaryDraft : Serializable {
     @Basic
     var taskId: String? = null
 
+    @Column(name = "REQUEST_ID")
+    @Basic
+    var requestId: Long? = null
+
+    @Column(name = "STANDARD_TYPE")
+    @Basic
+    var standardType: String? = null
+
+
 
 
 }

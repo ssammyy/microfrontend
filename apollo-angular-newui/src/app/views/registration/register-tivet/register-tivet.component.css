@@ -23,9 +23,17 @@ ul li {
 ::placeholder {
     font-size: 14px;
 }
+
 mat-label.mat-label {
     font-size: 16px;
+    color: white;
+
 }
+
+::ng-deep.mat-form-field .mat-form-field-label {
+    color: white!important;
+}
+
 
 .mat-form-field-should-float {
     font-size: 20px;

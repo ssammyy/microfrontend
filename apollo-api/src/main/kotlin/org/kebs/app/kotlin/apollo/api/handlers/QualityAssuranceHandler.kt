@@ -5036,8 +5036,6 @@ class QualityAssuranceHandler(
                 ?: throw ExpectedDataNotFound("Required Company Name, check config")
 
             commonDaoServices.findCompanyProfileByName(companyName)
-            val companyId = commonDaoServices.findCompanyProfileByName(companyName)?.id
-                ?: throw ExpectedDataNotFound("Required Company Name, check config")
 
             var permitListAllApplicationsSmark: List<KebsWebistePermitEntityDto>? = null
             var permitListAllApplicationsDmark: List<KebsWebistePermitEntityDto>? = null //smarks
@@ -5046,7 +5044,7 @@ class QualityAssuranceHandler(
 
             permitListAllApplications = qaDaoServices.listPermitsWebsite(
                 qaDaoServices.findByCompanyIdAllAwardedPermitsKebsWebsite(
-                    companyId, map.activeStatus,
+                    companyName, map.activeStatus,
                     map.inactiveStatus
                 ), map
             )
