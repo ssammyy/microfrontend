@@ -747,6 +747,8 @@ export class SubmittedSamplesSummaryReportViewEntity {
     timeTakenForwardLetters: string;
     forwardingWithin14DaysTesting: string;
     batchNoDateManufacture: string;
+    sampleCollectionDate: Date;
+    failedParameters: string;
 }
 
 export class FieldInspectionSummaryReportViewEntity {
@@ -1555,6 +1557,7 @@ export class PDFSaveComplianceStatusDto {
 export class SSFSaveComplianceStatusDto {
     ssfID: number;
     bsNumber: string;
+    failedParameters: string;
     complianceStatus: boolean;
     complianceRemarks: string;
     totalCompliance: string;

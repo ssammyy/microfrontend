@@ -152,7 +152,8 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
         @Param("endDate") endDate: Date?,
         @Param("sampleReferences") sampleReferences: String?,
         @Param("assignIO") assignIO: Long?,
-        @Param("sectorID") sectorID: Long?
+        @Param("sectorID") sectorID: Long?,
+//        @Param("outletName") outletName: String?,
     ): List<SubmittedSamplesSummaryReportViewEntity>?
 }
 

@@ -126,4 +126,16 @@ class SubmittedSamplesSummaryReportViewEntity : Serializable {
     @Column(name = "BATCH_NO_DATE_MANUFACTURE")
     var batchNoDateManufacture: String? = null
 
+    @Basic
+    @Column(name = "SAMPLE_COLLECTION_DATE")
+    var sampleCollectionDate: String? = null
+
+    @Basic
+    @Column(name = "OUTLET_NAME")
+    var outletName: String? = null
+
+    @Basic
+    @Column(name = "FAILED_PARAMETERS")
+    var failedParameters: String? = null
+
 }
