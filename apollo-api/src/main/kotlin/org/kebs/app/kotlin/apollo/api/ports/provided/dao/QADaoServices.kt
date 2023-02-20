@@ -307,8 +307,7 @@ class QADaoServices(
                     permit = updateResults.second
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                    val permitAllDetails =
-                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
@@ -1587,6 +1586,17 @@ class QADaoServices(
         }
 
         return permitListAllApplications
+    }
+
+    fun updateFmarkGeneratedBySmark(permitDetails: PermitApplicationsEntity) {
+        findFmarkWithSmarkId(permitDetails.id?: throw ExpectedDataNotFound("MISSING PERMIT ID")).let { permSmarkFmark->
+            var perm = findPermitBYID(permSmarkFmark.fmarkId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Details"))
+            with(perm){
+                paidStatus = 1
+                permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+            }
+            perm = permitUpdate(perm, "SYSTEM")
+        }
     }
 
     /*:::::::::::::::::::::::::::::::::::::::::::::END INTERNAL USER FUNCTIONALITY:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/

@@ -1990,7 +1990,6 @@ class QualityAssuranceHandler(
             permit.id?.let { qaDaoServices.deletePermit(it) }
 
 
-
             return ok().body(permit)
 
 

@@ -357,7 +357,7 @@ class PermitApplicationsEntity : Serializable {
 
     @Column(name = "FMARK_GENERATED")
     @Basic
-    var fmarkGenerated: Int? = null
+    var fmarkGenerated: Int? = 0
 
     @Column(name = "FMARK_GENERATE_STATUS")
     @Basic

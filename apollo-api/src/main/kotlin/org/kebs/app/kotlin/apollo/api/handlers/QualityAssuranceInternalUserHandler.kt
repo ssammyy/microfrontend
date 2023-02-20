@@ -100,8 +100,7 @@ class QualityAssuranceInternalUserHandler(
 
     fun updatePermitDetailsSection(req: ServerRequest): ServerResponse {
         return try {
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val body = req.body<SectionApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, SectionApplyDto::class.java.name)
             validator.validate(body, errors)

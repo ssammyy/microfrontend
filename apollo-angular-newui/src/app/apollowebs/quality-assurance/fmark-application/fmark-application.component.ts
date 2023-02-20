@@ -84,7 +84,7 @@ export class FmarkApplicationComponent implements OnInit {
         let formattedArray = [];
         this.dataTable;
 
-        this.qaService.loadPermitAwardedListToGenerateFMarkAllAwarded(String(this.SMarkTypeID)).subscribe(
+        this.qaService.loadPermitAwardedListToGenerateFMark(String(this.SMarkTypeID)).subscribe(
             (data: any) => {
 
                 this.allPermitData = data;
