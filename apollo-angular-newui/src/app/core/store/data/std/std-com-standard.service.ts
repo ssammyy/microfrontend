@@ -337,10 +337,6 @@ export class StdComStandardService {
     return this.http.get<DocumentDTO[]>(url, {params}).pipe();
   }
 
-
-
-
-
   public decisionOnDraft(approveDraft: ApproveDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_DECISION_ON_DRAFT);
     const params = new HttpParams();

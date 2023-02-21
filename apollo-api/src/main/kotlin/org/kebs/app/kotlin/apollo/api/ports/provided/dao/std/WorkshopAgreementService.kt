@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
+import com.google.gson.Gson
+import mu.KotlinLogging
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
@@ -136,16 +138,18 @@ class WorkshopAgreementService
         sr.dateOfRemark = Timestamp(System.currentTimeMillis())
         sr.remarkBy = usersName
         if (decision == "Yes") {
+          var cdNumber=getCDNumber()
+//            val gson = Gson()
+//            KotlinLogging.logger { }.info { "CD Number" + gson.toJson(cdNumber) }
 
+            standardRequestRepository.findByIdOrNull(nwaDecisionOnJustificationDto.requestId)?.let { sts ->
 
-            standardRequestRepository.findByIdOrNull(nwaDecisionOnJustificationDto.requestId)?.let { standard ->
-
-                with(standard) {
-                    nwaCdNumber= getCDNumber()
+                with(sts) {
+                    nwaCdNumber= cdNumber
                     status="Prepare Preliminary Draft"
 
                 }
-                standardRequestRepository.save(standard)
+                standardRequestRepository.save(sts)
                 standardNwaRemarksRepository.save(sr)
             }?: throw Exception("REQUEST NOT FOUND")
         }else if (decision == "No"){
@@ -167,6 +171,7 @@ class WorkshopAgreementService
     {
         return standardRequestRepository.getWorkshopForPDraft()
     }
+
 
     // Prepare Preliminary Draft
     fun preparePreliminaryDraft(
@@ -198,6 +203,50 @@ class WorkshopAgreementService
         return nwaDetails
     }
 
+    fun getWorkShopDraftForEditing(): MutableList<NwaRequest>
+    {
+        return standardRequestRepository.getWorkShopDraftForEditing()
+    }
+
+    fun getPreparedPD(): MutableList<StandardRequest>
+    {
+        return standardRequestRepository.getPreparedPD()
+    }
+
+//    fun getWorkShopDraftForEditing(requestId: Long): MutableList<ComStandard> {
+//        return companyStandardRepository.getWorkShopDraftForEditing(requestId)
+//    }
+
+    fun editPreliminaryDraft(
+        wpd: WorkshopPreliminaryDraft
+    ) : ComStdDraft {
+        val pd= ComStdDraft()
+        val variable: MutableMap<String, Any> = HashMap()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        pd.requestId=wpd.requestId
+        pd.title=wpd.title
+        pd.scope=wpd.scope
+        pd.normativeReference=wpd.normativeReference
+        pd.symbolsAbbreviatedTerms=wpd.symbolsAbbreviatedTerms
+        pd.clause=wpd.clause
+        pd.special=wpd.special
+        pd.workShopDate=wpd.workShopDate
+        pd.standardType="Kenya Standard"
+        pd.uploadDate = commonDaoServices.getTimestamp()
+        pd.status=0
+        pd.id=wpd.id
+        val nwaDetails = comStdDraftRepository.save(pd)
+        standardRequestRepository.findByIdOrNull(wpd.requestId)?.let { standard ->
+
+            with(standard) {
+                status="Preliminary Draft Prepared"
+
+            }
+            standardRequestRepository.save(standard)
+        }?: throw Exception("REQUEST NOT FOUND")
+        return nwaDetails
+    }
+
     fun getWorkShopStdDraft(): MutableList<ComStdDraft> {
         return comStdDraftRepository.getWorkShopStdDraft()
     }
@@ -206,7 +255,8 @@ class WorkshopAgreementService
 
     fun decisionOnStdDraft(
         workshopAgreementDecisionDto: WorkshopAgreementDecisionDto
-    ) : String {
+    ) : ResponseMsg {
+        var response=""
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val companyStandardRemarks= CompanyStandardRemarks()
         val decision=workshopAgreementDecisionDto.accentTo
@@ -243,20 +293,20 @@ class WorkshopAgreementService
 
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
-//
-//                var userList= companyStandardRepository.getHopEmailList()
-//
-//                //email to Head of publishing
-//                val targetUrl = "https://kimsint.kebs.org/hopTasks";
-//                userList.forEach { item->
-//                    //val recipient="stephenmuganda@gmail.com"
-//                    val recipient= item.getUserEmail()
-//                    val subject = "Standard"
-//                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded.Login to KIEMS $targetUrl to initiate piblishing"
-//                    if (recipient != null) {
-//                        notifications.sendEmail(recipient, subject, messageBody)
-//                    }
-//                }
+                response="Draft Approved"
+                var userList= companyStandardRepository.getHopEmailList()
+
+                //email to Head of publishing
+                val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                userList.forEach { item->
+                    //val recipient="stephenmuganda@gmail.com"
+                    val recipient= item.getUserEmail()
+                    val subject = "Kenya Standard"
+                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded.Login to KIEMS $targetUrl to initiate piblishing"
+                    if (recipient != null) {
+                        notifications.sendEmail(recipient, subject, messageBody)
+                    }
+                }
 
             }?: throw Exception("DRAFT NOT FOUND")
 
@@ -269,23 +319,28 @@ class WorkshopAgreementService
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
 
-                standardRequestRepository.findByIdOrNull(comStdDraft.requestId)?.let { standard ->
+                standardRequestRepository.findByIdOrNull(workshopAgreementDecisionDto.requestId)?.let { standard ->
 
                     with(standard) {
-                        status="Prepare Preliminary Draft"
+                        status="Make Changes to Preliminary Draft"
                     }
                     standardRequestRepository.save(standard)
+                    response="Draft Not Approved"
                 }?: throw Exception("REQUEST NOT FOUND")
 
             } ?: throw Exception("DRAFT NOT FOUND")
         }
 
-        return "Actioned"
+        return ResponseMsg(response)
     }
 
     fun getWorkShopStdForEditing(): MutableList<ComStandard> {
         return companyStandardRepository.getWorkShopStdForEditing()
     }
+
+
+
+
 
     fun submitDraftForEditing(isDraftDto: CSDraftDto ) : CompanyStandard
     {

@@ -13,6 +13,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
+import swal from "sweetalert2";
 
 @Component({
   selector: 'app-nwa-view-justification',
@@ -103,8 +104,6 @@ export class NwaViewJustificationComponent implements OnInit {
           console.log(error.message);
         }
     );
-
-
   }
 
   rerender(): void {
@@ -157,11 +156,15 @@ export class NwaViewJustificationComponent implements OnInit {
           this.getWorkshopJustification();
           this.SpinnerService.hide();
           this.rerender();
-          if(this.selectedDecision=="Yes"){
-            this.showToasterSuccess('Success', `Justification Was approved`);
-          }else if(this.selectedDecision=="No"){
-            this.showToasterError('Success', `Justification Was Rejected`);
-          }
+            this.showToasterSuccess('Success', `Justification Was Actioned`);
+          swal.fire({
+            text: response.body.responseMessage,
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+          });
           this.approveReviewJustificationFormGroup.reset();
         },
         (error: HttpErrorResponse) => {

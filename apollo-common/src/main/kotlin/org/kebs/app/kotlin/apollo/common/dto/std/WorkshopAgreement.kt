@@ -17,6 +17,7 @@ class WorkshopAgreement(
 }
 data class WorkshopPreliminaryDraft(
     val requestId: Long? = null,
+    val id: Long? = null,
     val title: String? = null,
     val scope: String? = null,
     val normativeReference: String? = null,
