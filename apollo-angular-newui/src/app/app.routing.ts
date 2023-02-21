@@ -737,6 +737,8 @@ import { EnquariesHandledReportComponent } from './apollowebs/standards-developm
 import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
 import {NwaViewJustificationComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-view-justification/nwa-view-justification.component";
 import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
+import {NwaViewPreliminaryComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component";
+import {NwaEditPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component";
 
 export const routes: Routes = [
     {
@@ -1612,7 +1614,16 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
         children: [{path: '', component: NwaPreliminaryDraftComponent}],
     },
-
+    {
+        path: 'nwaViewPD', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaViewPreliminaryComponent}],
+    },
+    {
+        path: 'nwaEditPD', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaEditPreliminaryDraftComponent}],
+    },
     {
         path: 'nwaTasks', component: AdminLayoutComponent,
         canActivate: [RouteGuard],

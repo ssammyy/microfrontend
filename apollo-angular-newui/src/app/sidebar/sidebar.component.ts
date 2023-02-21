@@ -776,7 +776,9 @@ export const ROUTES: RouteInfo[] = [
             },
             {path: 'viewJustification', title: 'View Justification', ab: 'VW'},
             {path: 'nwaPreparePD', title: 'Preliminary Draft', ab: 'PD'},
-            {path: 'nwaTasks', title: 'Workshop Agreement Tasks', ab: 'WT'},
+            {path: 'nwaViewPD', title: 'View Draft', ab: 'VD'},
+            {path: 'nwaEditPD', title: 'Edit Draft', ab: 'ED'},
+
 
         ],
     },
