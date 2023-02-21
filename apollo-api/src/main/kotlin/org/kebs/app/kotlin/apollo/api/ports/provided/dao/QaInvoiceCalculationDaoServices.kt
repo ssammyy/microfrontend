@@ -223,12 +223,12 @@ class QaInvoiceCalculationDaoServices(
                                 ?.let { invoiceDetailsPreviousList ->
                                     invoiceDetailsPreviousList.forEach { invoicePrev ->
                                         if (invoicePrev.fmarkStatus != 1){
-                                            totalAmountPayable = when (invoice.itemAmount) {
+                                            totalAmountPayable = when (invoicePrev.itemAmount) {
                                                 BigDecimal.ZERO -> {
-                                                    invoicePrev.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                                    invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
                                                 }
                                                 else -> {
-                                                    invoicePrev.itemAmount?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                                                    invoice.itemAmount?.minus(invoicePrev.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
                                                 }
                                             }
                                         }
@@ -271,7 +271,7 @@ class QaInvoiceCalculationDaoServices(
                                         if (invoicePrev.fmarkStatus != 1){
                                             totalAmountPayable = when (invoice.itemAmount) {
                                                 BigDecimal.ZERO -> {
-                                                    invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                                    invoicePrev.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
                                                 }
                                                 else -> {
                                                     invoicePrev.itemAmount?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
