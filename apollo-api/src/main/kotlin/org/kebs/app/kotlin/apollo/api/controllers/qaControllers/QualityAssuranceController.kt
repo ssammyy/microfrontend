@@ -398,17 +398,7 @@ class QualityAssuranceController(
                 permitDetails = returnDetails.first
             }
 
-//            //Permit Resubmit application
-//            permit.resubmitApplicationStatus == map.activeStatus -> {
-//                with(permit) {
-//                    resubmitApplicationStatus = null
-//                }
-//                qaDaoServices.permitInsertStatus(
-//                    permitDetails,
-//                    applicationMapProperties.mapQaStatusResubmitted,
-//                    loggedInUser
-//                )
-//            }
+
             //Permit pending factory inspection Approval
             permit.factoryInspectionReportApprovedRejectedStatus == map.activeStatus -> {
                 qaDaoServices.permitInsertStatus(

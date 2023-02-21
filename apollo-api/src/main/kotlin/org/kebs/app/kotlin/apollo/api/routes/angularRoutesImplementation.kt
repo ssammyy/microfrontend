@@ -650,10 +650,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     "/permit".nest {
                         POST("/section", internalUserhandler::updatePermitDetailsSection)
                         POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
-                        POST(
-                            "/difference-status-activate",
-                            internalUserhandler::updatePermitDetailsDifferenceStatusActivate
-                        )
+                        POST(   "/difference-status-activate", internalUserhandler::updatePermitDetailsDifferenceStatusActivate)
                         POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
                         POST("/assign-assessor", internalUserhandler::updatePermitDetailsAssignAssessor)
                         POST("/add-standards", internalUserhandler::updatePermitDetailsStandards)
