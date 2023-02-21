@@ -14,6 +14,7 @@ import {
     InspectionDetailsDto,
     InspectionDetailsDtoB,
     InspectionReportProcessStepDto,
+    InspectionReportToBeClonedDto,
     OperationProcessAndControlsDetailsApplyDto,
     ProductLabellingDto,
     StandardizationMarkSchemeDto,
@@ -82,6 +83,9 @@ export class InspectionReport implements OnInit {
 
     currBtn = 'A';
     allInspectionReportDetails: AllInspectionDetailsApplyDto;
+    allInspectionReportDetailsToBeCloned: InspectionReportToBeClonedDto[] = [];
+    selectedPermitIdInspectionReport: number;
+    cloned: boolean;
 
 
     constructor(private formBuilder: FormBuilder,
@@ -97,6 +101,7 @@ export class InspectionReport implements OnInit {
 
     ngOnInit(): void {
 
+
         this.route.paramMap.subscribe(paramMap => {
             let key = '11A1764225B11AA1';
             const encrypted = paramMap.get('id');
@@ -110,6 +115,7 @@ export class InspectionReport implements OnInit {
         });
 
         this.checkIfInspectionReportExists(this.permitId);
+        this.getInspectionReportsFullyFilled()
 
         this.technicalForm = this.formBuilder.group({
             id: [''],
@@ -291,7 +297,7 @@ export class InspectionReport implements OnInit {
 
     onClickSaveInspectionReportTechnicalDetails(valid: boolean) {
         if (valid) {
-            if (this.technicalDetails == null || this.setCloned == true) {
+            if (this.technicalDetails == null) {
                 this.loading = true
                 this.loadingText = "Saving Technical Report"
                 this.SpinnerService.show();
@@ -709,26 +715,32 @@ export class InspectionReport implements OnInit {
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
-                        this.technicalDetails = this.allInspectionReportDetails.technicalDetailsDto;
-                        this.technicalForm.patchValue(this.technicalDetails);
 
-                        this.inspectionDetailsDto = this.allInspectionReportDetails.inspectionDetailsDto
-                        this.inspectionDetails.patchValue(this.inspectionDetailsDto);
+                        if (this.allInspectionReportDetails.technicalDetailsDto != null) {
+                            this.technicalDetails = this.allInspectionReportDetails.technicalDetailsDto;
+                            this.technicalForm.patchValue(this.technicalDetails);
+                        }
+                        if (this.allInspectionReportDetails.inspectionDetailsDto != null) {
 
-                        this.inspectionDetailsDtoB = this.allInspectionReportDetails.inspectionDetailsDtoB
-                        this.inspectionDetailsB.patchValue(this.inspectionDetailsDtoB);
+                            this.inspectionDetailsDto = this.allInspectionReportDetails.inspectionDetailsDto
+                            this.inspectionDetails.patchValue(this.inspectionDetailsDto);
+                        }
+                        if (this.allInspectionReportDetails.inspectionDetailsDtoB != null) {
 
-
+                            this.inspectionDetailsDtoB = this.allInspectionReportDetails.inspectionDetailsDtoB
+                            this.inspectionDetailsB.patchValue(this.inspectionDetailsDtoB);
+                        }
                         this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
-
-                        this.standardizationMarkSchemeDto = this.allInspectionReportDetails.standardizationMarkScheme
-                        this.standardizationMarkSchemeFormGroup.patchValue(this.standardizationMarkSchemeDto);
-
+                        if (this.allInspectionReportDetails.standardizationMarkScheme != null) {
+                            this.standardizationMarkSchemeDto = this.allInspectionReportDetails.standardizationMarkScheme
+                            this.standardizationMarkSchemeFormGroup.patchValue(this.standardizationMarkSchemeDto);
+                        }
                         this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
 
-                        this.haccpImplementationDetailsApplyDto = this.allInspectionReportDetails.haccpImplementationDetails
-                        this.haccpImplementationDetailsApplyFormGroup.patchValue(this.haccpImplementationDetailsApplyDto);
-
+                        if (this.allInspectionReportDetails.haccpImplementationDetails != null) {
+                            this.haccpImplementationDetailsApplyDto = this.allInspectionReportDetails.haccpImplementationDetails
+                            this.haccpImplementationDetailsApplyFormGroup.patchValue(this.haccpImplementationDetailsApplyDto);
+                        }
                         this.recommendationsFormGroup.patchValue(this.allInspectionReportDetails);
 
 
@@ -740,6 +752,22 @@ export class InspectionReport implements OnInit {
                 },
             );
         }
+        this.SpinnerService.hide()
+        this.loading = false
+
+    }
+
+
+    private getInspectionReportsFullyFilled() {
+        this.internalService.getFullyFilledInspectionReport().subscribe(
+            (data: ApiResponseModel) => {
+                if (data.responseCode === '00') {
+                    this.allInspectionReportDetailsToBeCloned = data?.data as InspectionReportToBeClonedDto[];
+                }
+
+            },
+        );
+
 
     }
 
@@ -759,4 +787,44 @@ export class InspectionReport implements OnInit {
         this.router.navigate(['/inspection-report', encrypted])
 
     }
+
+    setClonedMethod() {
+        this.hideCloneButton = true;
+    }
+
+    cloneInspectionReport() {
+        this.loading = true
+        this.loadingText = "Cloning"
+        this.SpinnerService.show();
+
+        this.internalService.checkIfInspectionReportExists(this.selectedPermitIdInspectionReport.toString()).subscribe(
+            (data: ApiResponseModel) => {
+                if (data.responseCode === '00') {
+                    this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+
+                        this.technicalForm.patchValue(this.allInspectionReportDetails.technicalDetailsDto);
+                        this.inspectionDetails.patchValue(this.allInspectionReportDetails.inspectionDetailsDto);
+                        this.inspectionDetailsB.patchValue(this.allInspectionReportDetails.inspectionDetailsDtoB);
+                        this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
+                        this.standardizationMarkSchemeFormGroup.patchValue( this.allInspectionReportDetails.standardizationMarkScheme);
+                        this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
+                        this.haccpImplementationDetailsApplyFormGroup.patchValue(this.allInspectionReportDetails.haccpImplementationDetails);
+                        this.recommendationsFormGroup.patchValue(this.allInspectionReportDetails);
+
+                        this.technicalForm.controls['id'].setValue('')
+
+                    this.SpinnerService.hide()
+                    this.loading = false
+                    this.hideCloneButton = false
+
+                }
+                this.SpinnerService.hide()
+                this.loading = false
+                this.hideCloneButton = false
+
+            },
+        );
+    }
+
+
 }

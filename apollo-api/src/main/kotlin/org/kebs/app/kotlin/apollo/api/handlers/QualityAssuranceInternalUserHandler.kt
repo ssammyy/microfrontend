@@ -332,6 +332,21 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+    fun getFullyFilledInspectionReport(req: ServerRequest): ServerResponse {
+        return try {
+
+            inspectionReportDaoServices.getFullyFilledInspectionReport()
+                .let {
+                    ok().body(it)
+                }
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
 
     fun updatePermitDetailsInspectionCheckListNew(req: ServerRequest): ServerResponse {

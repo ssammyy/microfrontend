@@ -86,6 +86,18 @@ export class QaInternalService {
             }),
         );
     }
+    public getFullyFilledInspectionReport(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.GET_FULLY_FILLED_INSPECTION_REPORT);
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
 
     public getInspectionReport(inspectionReport: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.GET_INSPECTION_REPORT);

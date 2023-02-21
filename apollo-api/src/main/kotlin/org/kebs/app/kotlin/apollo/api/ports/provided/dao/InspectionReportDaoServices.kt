@@ -94,6 +94,29 @@ class InspectionReportDaoServices(
 
     }
 
+    fun getFullyFilledInspectionReport(): ApiResponseModel {
+        val qaInspectionReportRecommendation =
+            qaInspectionReportRecommendationRepo.findAllBySubmittedInspectionReportStatusAndApprovedRejectedStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            )
+        val map = commonDaoServices.serviceMapDetails(appId)
+        return if (qaInspectionReportRecommendation != null) {
+            val response = listInspectionReports(qaInspectionReportRecommendation, map)
+
+            commonDaoServices.setSuccessResponse(response, null, null, null)
+
+        } else {
+            commonDaoServices.setErrorResponse("Does Not Exist")
+        }
+
+    }
+
 
     fun inspectionReportNewSave(
         permitID: Long,
@@ -161,7 +184,6 @@ class InspectionReportDaoServices(
                     inspectionTechnicalDetails = qaInspectionTechnicalRepo.save(inspectionTechnicalDetails)
 
                 }
-            println("############" + qaInspectionReportRecommendation.id)
             val inspectionReportAllDetails =
                 mapAllInspectionReportDetailsTogetherForInternalUsers(qaInspectionReportRecommendation, map)
             return commonDaoServices.setSuccessResponse(inspectionReportAllDetails, null, null, null)
@@ -356,7 +378,7 @@ class InspectionReportDaoServices(
             val qaInspectionReportRecommendation = findInspectionReportByID(inspectionReportRecommendationID)
 
             val qaInspectionTechnical =
-                qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportRecommendationID)
+                qaInspectionTechnicalRepo.findTopByInspectionRecommendationId(inspectionReportRecommendationID)
             body.forEach { productLabelling ->
                 var productLabellingDetails = productLabelling
                 qaInspectionProductLabelRepo.findByIdOrNull(productLabelling.id ?: -1L)
@@ -415,7 +437,7 @@ class InspectionReportDaoServices(
         var sr = commonDaoServices.createServiceRequest(map)
         var inspection = QaInspectionProductLabelEntity()
         val qaInspectionTechnical =
-            qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportRecommendationID)
+            qaInspectionTechnicalRepo.findTopByInspectionRecommendationId(inspectionReportRecommendationID)
 
         try {
             qaInspectionProductLabelRepo.findByIdOrNull(body.id ?: -1L)
@@ -870,7 +892,7 @@ class InspectionReportDaoServices(
 
             val qaInspectionReportRecommendation = qaInspectionReportRecommendationRepo.findByPermitId(permitID)
             if (qaInspectionReportRecommendation != null) {
-                qaInspectionReportRecommendation.submittedInspectionReportStatus=1
+                qaInspectionReportRecommendation.submittedInspectionReportStatus = 1
                 qaInspectionReportRecommendation.modifiedBy = commonDaoServices.concatenateName(loggedInUser)
                 qaInspectionReportRecommendation.modifiedOn = commonDaoServices.getTimestamp()
                 qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
@@ -954,7 +976,7 @@ class InspectionReportDaoServices(
         map: ServiceMapsEntity
     ): TechnicalDetailsDto? {
         val inspectionReportTechnical =
-            qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
+            qaInspectionTechnicalRepo.findTopByInspectionRecommendationId(inspectionReportTechnicalId)
         if (inspectionReportTechnical != null) {
             val it = TechnicalDetailsDto()
             with(it)
@@ -980,7 +1002,7 @@ class InspectionReportDaoServices(
         map: ServiceMapsEntity
     ): InspectionDetailsDto? {
         val inspectionReportTechnical =
-            qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
+            qaInspectionTechnicalRepo.findTopByInspectionRecommendationId(inspectionReportTechnicalId)
         if (inspectionReportTechnical != null) {
             val it = InspectionDetailsDto()
             with(it)
@@ -1019,7 +1041,7 @@ class InspectionReportDaoServices(
 
 
         val inspectionReportTechnical =
-            qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
+            qaInspectionTechnicalRepo.findTopByInspectionRecommendationId(inspectionReportTechnicalId)
         if (inspectionReportTechnical != null) {
             val it = InspectionDetailsDtoB()
             with(it)
@@ -1052,7 +1074,7 @@ class InspectionReportDaoServices(
         inspectionId: Long,
     ): List<QaInspectionProductLabelEntity>? {
 
-        qaInspectionProductLabelRepo.findByInspectionRecommendationId(inspectionId)
+        qaInspectionProductLabelRepo.findTopByInspectionRecommendationId(inspectionId)
             ?.let {
                 return it
             } ?: return null
@@ -1080,7 +1102,7 @@ class InspectionReportDaoServices(
     ): StandardizationMarkScheme? {
 
         val standardizationMarkScheme =
-            qaInspectionTechnicalRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
+            qaInspectionTechnicalRepo.findTopByInspectionRecommendationId(inspectionReportTechnicalId)
         if (standardizationMarkScheme != null) {
             val it = StandardizationMarkScheme()
             with(it)
@@ -1113,7 +1135,7 @@ class InspectionReportDaoServices(
     fun findAllOperationProcessAndControlsListId(
         inspectionId: Long
     ): List<QaInspectionOpcEntity>? {
-        qaInspectionOPCRepo.findByInspectionRecommendationId(inspectionId)
+        qaInspectionOPCRepo.findTopByInspectionRecommendationId(inspectionId)
             ?.let {
                 return it
             } ?: return null
@@ -1141,7 +1163,7 @@ class InspectionReportDaoServices(
     ): HaccpImplementationDetailsApplyDto? {
 
         val inspectionHaccpImplementation =
-            qaInspectionHaccpImplementationRepo.findByInspectionRecommendationId(inspectionReportTechnicalId)
+            qaInspectionHaccpImplementationRepo.findTopByInspectionRecommendationId(inspectionReportTechnicalId)
         if (inspectionHaccpImplementation != null) {
             val it = HaccpImplementationDetailsApplyDto()
             with(it)
@@ -1184,6 +1206,24 @@ class InspectionReportDaoServices(
                 statusOfCompliance = p.statusOfCompliance
 
             }
+        }
+    }
+
+    fun listInspectionReports(
+        inspectionReports: List<QaInspectionReportRecommendationEntity>,
+        map: ServiceMapsEntity
+    ): List<ApprovedInspectionReportDto> {
+        return inspectionReports.map { i ->
+            ApprovedInspectionReportDto(
+                i.id,
+                i.recommendations,
+                i.refNo,
+                i.permitId,
+                permitRefNumber = i.permitRefNumber,
+                tradeMark = i.permitId?.let { qaDaoServices.findPermitBYID(it).tradeMark }
+
+
+            )
         }
     }
 
