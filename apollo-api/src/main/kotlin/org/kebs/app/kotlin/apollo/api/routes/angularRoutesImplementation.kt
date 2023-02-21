@@ -537,10 +537,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/process-step-add", handler::permitProcessStepMigration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
-                    POST(
-                        "/generate-difference-invoice",
-                        handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration
-                    )
+                    POST("/generate-difference-invoice", handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration)
                     POST("/re-generate-invoice", handler::permitSubmitApplicationInvoiceReGenerationMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
@@ -560,14 +557,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/firm_details_update", handler::permitUpdateSTA10FirmDetailsMigration)
                         POST("/personnel_details", handler::permitApplySTA10PersonnelMigration)
                         PUT("/personnel_details_update", handler::permitApplySTA10PersonnelMigration)
-                        POST(
-                            "/products_being_manufactured",
-                            handler::permitApplySTA10ProductsBeingManufacturedMigration
-                        )
-                        PUT(
-                            "/products_being_manufactured_update",
-                            handler::permitApplySTA10ProductsBeingManufacturedMigration
-                        )
+                        POST("/products_being_manufactured", handler::permitApplySTA10ProductsBeingManufacturedMigration)
+                        PUT("/products_being_manufactured_update", handler::permitApplySTA10ProductsBeingManufacturedMigration)
                         POST("/raw_material", handler::permitApplySTA10RawMaterialsMigration)
                         PUT("/raw_material_update", handler::permitApplySTA10RawMaterialsMigration)
                         POST("/machinery_plant", handler::permitApplySTA10MachineryAndPlantMigration)

@@ -103,6 +103,7 @@ export class FieldInspectionSummaryComponent implements OnInit {
       sampleReferences: ['', null],
       assignIO: ['', null],
       sectorID: ['', null],
+      outletName: ['', null],
     });
 
     this.loadData(this.defaultPage, this.defaultPageSize);

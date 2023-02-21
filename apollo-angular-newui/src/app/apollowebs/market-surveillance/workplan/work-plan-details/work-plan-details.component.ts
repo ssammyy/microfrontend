@@ -1973,6 +1973,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       complianceRemarks: ['', Validators.required],
       totalCompliance: null,
       totalComplianceTest: null,
+      failedParameters: [''],
     });
 
     this.verificationPermitForm = this.formBuilder.group({

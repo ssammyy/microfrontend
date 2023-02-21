@@ -917,6 +917,7 @@ data class PDFSaveComplianceStatusDto(
         var ssfID: Long,
         @NotNull(message = "Required field")
         var bsNumber: String,
+        var failedParameters: String,
         @NotNull(message = "Required field")
         var PDFFileName: String,
         @NotNull(message = "Required field")
@@ -930,6 +931,7 @@ data class SSFSaveComplianceStatusDto(
         var ssfID: Long,
         @NotNull(message = "Required field")
         var bsNumber: String,
+        var failedParameters: String,
         @NotNull(message = "Required field")
         var complianceStatus: Boolean,
         @NotNull(message = "Required field")
@@ -1057,7 +1059,8 @@ data class SubmittedSamplesSummaryViewSearchValues(
         var endDate: Date? = null,
         var sampleReferences: String? = null,
         var assignIO: Long? = null,
-        var sectorID: Long? = null
+        var sectorID: Long? = null,
+        var outletName: String? = null
 )
 
 data class ConsumerComplaintViewSearchValues(

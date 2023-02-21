@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.LogStgPaymentReconciliationEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
@@ -352,6 +353,18 @@ class InvoiceDaoService(
                         permitStatus = applicationMapProperties.mapQaStatusPaymentDone
                     }
                     permitDetails = qaDaoServices.permitUpdate(permitDetails, "SYSTEM")
+
+                    if (permitDetails.fmarkGenerateStatus == 1 && permitDetails.fmarkGenerated == 1){
+                        qaDaoServices.findFmarkWithSmarkId(permitDetails.id?: throw ExpectedDataNotFound("MISSING PERMIT ID")).let { permSmarkFmark->
+                            var perm = qaDaoServices.findPermitBYID(permSmarkFmark.fmarkId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Details"))
+                            with(perm){
+                                paidStatus = 1
+                                permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                            }
+                            perm = qaDaoServices.permitUpdate(perm, "SYSTEM")
+                        }
+
+                    }
                 }
 
                 with(updatedBatchInvoiceDetail){

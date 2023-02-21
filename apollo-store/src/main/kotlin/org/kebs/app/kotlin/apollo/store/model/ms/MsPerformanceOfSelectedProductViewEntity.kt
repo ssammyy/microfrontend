@@ -42,6 +42,10 @@ class MsPerformanceOfSelectedProductViewEntity : Serializable {
     var bsNumber: String? = null
 
     @Basic
+    @Column(name = "FAILED_PARAMETERS")
+    var failedParameters: String? = null
+
+    @Basic
     @Column(name = "RESULTS_ANALYSIS")
     var resultsAnalysis: Int? = null
 
