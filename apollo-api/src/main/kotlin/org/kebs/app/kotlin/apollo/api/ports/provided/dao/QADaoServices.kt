@@ -337,7 +337,6 @@ class QADaoServices(
                         hofQamCompletenessStatus = 1
                         permitStatus = applicationMapProperties.mapQaStatusPQAOAssign
                     }
-
                     else -> {
                         resubmitApplicationStatus = 1
                         hofQamCompletenessStatus = 0
@@ -354,6 +353,14 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
+                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                        permit.hofQamCompletenessRemarks,
+                        permit.hofQamCompletenessStatus,
+                        "HOD/RM/QAM/HOF",
+                        "REVIEW COMPLETENESS",
+                        map,
+                        loggedInUser
+                    )
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
                     val permitAllDetails =
@@ -4217,10 +4224,7 @@ class QADaoServices(
         var justificationReport: RemarksAndStatusDto? = null
         when {
             permitDetails.hofQamCompletenessStatus != null -> {
-                hofQamCompleteness = RemarksAndStatusDto(
-                    permitDetails.hofQamCompletenessStatus == 1,
-                    permitDetails.hofQamCompletenessRemarks,
-                )
+                hofQamCompleteness = RemarksAndStatusDto(permitDetails.hofQamCompletenessStatus == 1, permitDetails.hofQamCompletenessRemarks,)
             }
         }
         when {
