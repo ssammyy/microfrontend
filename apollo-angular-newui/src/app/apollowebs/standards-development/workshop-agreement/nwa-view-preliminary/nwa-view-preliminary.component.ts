@@ -167,9 +167,9 @@ export class NwaViewPreliminaryComponent implements OnInit {
     button.style.display = 'none';
     button.setAttribute('data-toggle','modal');
     this.getDraftDocumentList(draftId)
-    if (mode==='reviewJustification'){
+    if (mode==='approveDraft'){
       this.actionRequest=task;
-      button.setAttribute('data-target','#reviewJustification');
+      button.setAttribute('data-target','#approveDraft');
       this.approveFormGroup.patchValue(
           {
             requestId: this.actionRequest.id,

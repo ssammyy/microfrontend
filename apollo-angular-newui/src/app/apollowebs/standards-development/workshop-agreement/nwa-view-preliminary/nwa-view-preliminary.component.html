@@ -11,80 +11,6 @@
     </div>
     <div class="main-content" >
         <div class="container-fluid">
-            <div class="row" >
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
-                        <div class="card-header card-header-warning card-header-icon">
-                            <div class="card-icon">
-                                Company Standard Requests
-                            </div>
-
-                        </div>
-                        <div class="card-footer">
-                            <div class="stats col-12">
-                                <div class="row align-items-center mb-2 d-flex col-12">
-                                    <div class="col-8">
-                                        <h4 class="d-flex align-items-center mb-0">
-                                            <a href="comStdList" style="color: orangered">Go</a>
-                                        </h4>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <a href="comStdList" style="color: orangered"><span> <i class="fa fa-arrow-right"></i></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
-                        <div class="card-header card-header-info card-header-icon">
-                            <div class="card-icon">
-                                Uploaded Drafts
-                            </div>
-
-                        </div>
-                        <div class="card-footer">
-                            <div class="stats col-12">
-                                <div class="row align-items-center mb-2 d-flex col-12">
-                                    <div class="col-8">
-                                        <h4 class="d-flex align-items-center mb-0">
-                                            <span style="color: dodgerblue">Go</span>
-                                        </h4>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <span style="color: dodgerblue"> <i class="fa fa-arrow-right"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="card card-stats">
-                        <div class="card-header card-header-success card-header-icon">
-                            <div class="card-icon">
-                                Publishing Tasks
-                            </div>
-
-                        </div>
-                        <div class="card-footer">
-                            <div class="stats col-12">
-                                <div class="row align-items-center mb-2 d-flex col-12">
-                                    <div class="col-8">
-                                        <h4 class="d-flex align-items-center mb-0">
-                                            <a href="hopTasks" style="color: seagreen">Go</a>
-                                        </h4>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <a href="hopTasks" style="color: seagreen"><span> <i class="fa fa-arrow-right"></i></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -126,6 +52,7 @@
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
+                                                <h3>Approve Preliminary Draft</h3>
                                                 <button type="button" class="close" #closeModalUploadDraft data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -164,10 +91,6 @@
                                                                 </div>
                                                                 <div class="row">
                                                                     <div class="form-group col-12">
-                                                                        <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
-                                                                        <textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
-                                                                    </div>
-                                                                    <div class="form-group col-12">
                                                                         <label>Decision On Draft</label>
                                                                         <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
                                                                                 class="form-control" required
@@ -179,6 +102,11 @@
                                                                             <option value="No">Reject Draft</option>
                                                                         </select>
                                                                     </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
+                                                                        <textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
+                                                                    </div>
+
                                                                     <input type="hidden" name="requestId" ngModel="{{actionRequest?.requestId}}" >
                                                                     <input type="hidden" name="id" ngModel="{{actionRequest?.id}}" >
                                                                     <input type="hidden" name="departmentId" ngModel="{{actionRequest?.departmentId}}" >

@@ -207,6 +207,12 @@ class WorkshopAgreementService
     {
         return standardRequestRepository.getWorkShopDraftForEditing()
     }
+
+    fun getPreparedPD(): MutableList<StandardRequest>
+    {
+        return standardRequestRepository.getPreparedPD()
+    }
+
 //    fun getWorkShopDraftForEditing(requestId: Long): MutableList<ComStandard> {
 //        return companyStandardRepository.getWorkShopDraftForEditing(requestId)
 //    }
@@ -249,7 +255,8 @@ class WorkshopAgreementService
 
     fun decisionOnStdDraft(
         workshopAgreementDecisionDto: WorkshopAgreementDecisionDto
-    ) : String {
+    ) : ResponseMsg {
+        var response=""
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val companyStandardRemarks= CompanyStandardRemarks()
         val decision=workshopAgreementDecisionDto.accentTo
@@ -286,7 +293,7 @@ class WorkshopAgreementService
 
                 comStdDraftRepository.save(comStdDraft)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
-
+                response="Draft Approved"
                 var userList= companyStandardRepository.getHopEmailList()
 
                 //email to Head of publishing
@@ -318,12 +325,13 @@ class WorkshopAgreementService
                         status="Make Changes to Preliminary Draft"
                     }
                     standardRequestRepository.save(standard)
+                    response="Draft Not Approved"
                 }?: throw Exception("REQUEST NOT FOUND")
 
             } ?: throw Exception("DRAFT NOT FOUND")
         }
 
-        return "Actioned"
+        return ResponseMsg(response)
     }
 
     fun getWorkShopStdForEditing(): MutableList<ComStandard> {

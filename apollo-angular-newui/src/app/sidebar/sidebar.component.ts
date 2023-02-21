@@ -777,7 +777,8 @@ export const ROUTES: RouteInfo[] = [
             {path: 'viewJustification', title: 'View Justification', ab: 'VW'},
             {path: 'nwaPreparePD', title: 'Preliminary Draft', ab: 'PD'},
             {path: 'nwaViewPD', title: 'View Draft', ab: 'VD'},
-            {path: 'nwaEditPD', title: 'Edit Draft', ab: 'ED'},
+            {path: 'nwaEditPD', title: 'Make Changes on Draft', ab: 'ED'},
+            {path: 'nwaWdEditing', title: 'Submit to Publishing', ab: 'SB'},
 
 
         ],
@@ -807,7 +808,7 @@ export const ROUTES: RouteInfo[] = [
            // {path: 'comStdRequest', title: 'Company Standard Request', ab: 'C'},
             {path: 'comStdList', title: 'Company Standard Requests', ab: 'CSR'},
             {path: 'comStdDraft', title: 'Uploaded Drafts', ab: 'UT'},
-            {path: 'comStdEdit', title: 'Editing Tasks', ab: 'ET'},
+            {path: 'comStdEdit', title: 'Submit to Publishing', ab: 'SP'},
             {path: 'companyStandardList', title: 'Company Standards', ab: 'CS'},
             {path: 'comStdListed', title: 'Standards', ab: 'ST'},
             //{path: 'comStdApproved', title: 'Company Tasks', ab: 'CT'},

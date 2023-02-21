@@ -1072,6 +1072,7 @@ import { NwaViewJustificationComponent } from './apollowebs/standards-developmen
 import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
 import { NwaEditPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component';
 import { NwaViewPreliminaryComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component';
+import { NwaEditingDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1634,6 +1635,7 @@ import { NwaViewPreliminaryComponent } from './apollowebs/standards-development/
         NwaPreliminaryDraftComponent,
         NwaEditPreliminaryDraftComponent,
         NwaViewPreliminaryComponent,
+        NwaEditingDraftComponent,
     
       
 

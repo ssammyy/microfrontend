@@ -8,7 +8,7 @@ import {
     CommentOnProposalStakeHolder, COMPreliminaryDraft, DecisionOnStdDraft,
     DiSdtDECISION,
     DISDTTasks, FileData, HOPTasks,
-    HoSicTasks,
+    HoSicTasks, ISCheckRequirements, IStandardUpload,
     KNWCommittee, KNWDepartment,
     KnwSecTasks, NwaDecisionOnJustification, NWADiSdtJustification, NwaEditPd,
     NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft, NwaRequestList,
@@ -86,6 +86,24 @@ export class StdNwaService {
         return this.http.get<NwaRequestList[]>(url, {params}).pipe();
     }
 
+    public getWorkShopStdForEditing(): Observable<ISCheckRequirements[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_GET_WD_FOR_EDITING);
+        const params = new HttpParams();
+        return this.http.get<ISCheckRequirements[]>(url, {params}).pipe();
+    }
+
+    public submitDraftForEditing(iStandardUpload: IStandardUpload): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_SUBMIT_DRAFT_FOR_EDITING);
+        const params = new HttpParams();
+        return this.http.post<IStandardUpload>(url, iStandardUpload, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
     public getWorkShopStdDraft(): Observable<COMPreliminaryDraft[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_GET_PD_FOR_ACTION);
         const params = new HttpParams();

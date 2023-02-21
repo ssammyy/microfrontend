@@ -48,6 +48,10 @@ interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
 
     fun getWorkShopDraftForEditing(): MutableList<NwaRequest>
 
+    @Query(
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Preliminary Draft Prepared' ORDER BY ID DESC",nativeQuery = true)
+    fun getPreparedPD(): MutableList<StandardRequest>
+
 
 
 

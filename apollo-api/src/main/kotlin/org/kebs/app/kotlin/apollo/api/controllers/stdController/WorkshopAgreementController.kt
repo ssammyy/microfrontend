@@ -140,6 +140,14 @@ class WorkshopAgreementController(
         return waService.getWorkShopStdDraft()
     }
 
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getPreparedPD")
+    @ResponseBody
+    fun getPreparedPD(): MutableList<StandardRequest>
+    {
+        return waService.getPreparedPD()
+    }
+
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/decisionOnStdDraft")
     fun decisionOnStdDraft(@RequestBody workshopAgreementDecisionDto: WorkshopAgreementDecisionDto

@@ -386,6 +386,8 @@ export class ApiEndpointService {
         NWA_PREPARE_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopForPDraft`,
         NWA_GET_EDIT_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopForEditing`,
         NWA_GET_PD_FOR_ACTION: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkShopStdDraft`,
+        NWA_GET_WD_FOR_EDITING: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkShopStdForEditing`,
+        NWA_SUBMIT_DRAFT_FOR_EDITING: `${ApiEndpointService.SD_NWA_CONTEXT}/submitDraftForEditing`,
         NWA_DECISION_ON_STD_DR: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnStdDraft`,
         NWA_GET_PD_FOR_EDITING: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkShopDraftForEditing`,
         NWA_DECISION_ON_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnPd`,
