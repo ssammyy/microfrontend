@@ -675,6 +675,7 @@ export class ConsumerComplaintViewSearchValues {
     startDate: Date;
     endDate: Date;
     sectorID: number;
+    outletName: string;
 }
 
 export class SubmittedSamplesSummaryViewSearchValues {

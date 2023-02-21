@@ -432,8 +432,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun msSubmittedSamplesSummaryViewSearchLists(page: PageRequest,search: SubmittedSamplesSummaryViewSearchValues): ApiResponseModel {
         val submittedSampleSummary = submittedSamplesSummaryReportViewRepo.findFilteredSubmittedSamplesSummaryReport(
-            search.startDate, search.endDate, search.sampleReferences, search.assignIO, search.sectorID,
-//            search.outletName,
+            search.startDate, search.endDate, search.sampleReferences, search.assignIO, search.sectorID, search.outletName,
         );
         val sampleProductPage: PageImpl<SubmittedSamplesSummaryReportViewEntity>? = submittedSampleSummary?.size?.let { PageImpl(submittedSampleSummary, page, it.toLong()) }
         return   commonDaoServices.setSuccessResponse(submittedSampleSummary,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)

@@ -736,6 +736,8 @@ export class ApiEndpointService {
         APPROVE_REJECT_PERMIT_PCM: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/pcm-approve-reject-permit`,
 
         CHECK_IF_INSPECTION_REPORT_EXISTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/check_if_inspection_report_exists`,
+        GET_FULLY_FILLED_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/getFullyFilledInspectionReport`,
+
         NEW_INSPECTION_TECHNICAL_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/new-technical-report`,
         TECHNICAL_REPORT_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-details`,
         TECHNICAL_REPORT_DETAILS_B: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-detailsB`,

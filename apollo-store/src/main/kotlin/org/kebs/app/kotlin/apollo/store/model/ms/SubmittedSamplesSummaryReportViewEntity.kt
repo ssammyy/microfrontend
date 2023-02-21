@@ -27,6 +27,10 @@ class SubmittedSamplesSummaryReportViewEntity : Serializable {
     var sampleReferences: String? = null
 
     @Basic
+    @Column(name = "SAMPLE_COLLECTION_DATE")
+    var sampleCollectionDate: String? = null
+
+    @Basic
     @Column(name = "RESULTS_DATE")
     var resultsDate: Date? = null
 
@@ -52,7 +56,7 @@ class SubmittedSamplesSummaryReportViewEntity : Serializable {
 
     @Basic
     @Column(name = "MARKET_CENTRE")
-    var marketCentre: String? = null
+    var outletName: String? = null
 
     @Basic
     @Column(name = "NAME_ADDRESS_OUTLET")
@@ -83,8 +87,8 @@ class SubmittedSamplesSummaryReportViewEntity : Serializable {
     var noSamplesTested: String? = null
 
     @Basic
-    @Column(name = "NATURE_FAILURE")
-    var natureFailure: String? = null
+    @Column(name = "FAILED_PARAMETERS")
+    var failedParameters: String? = null
 
     @Basic
     @Column(name = "ACTIONS_TAKEN")
@@ -126,16 +130,6 @@ class SubmittedSamplesSummaryReportViewEntity : Serializable {
     @Column(name = "BATCH_NO_DATE_MANUFACTURE")
     var batchNoDateManufacture: String? = null
 
-    @Basic
-    @Column(name = "SAMPLE_COLLECTION_DATE")
-    var sampleCollectionDate: String? = null
 
-    @Basic
-    @Column(name = "OUTLET_NAME")
-    var outletName: String? = null
-
-    @Basic
-    @Column(name = "FAILED_PARAMETERS")
-    var failedParameters: String? = null
 
 }
