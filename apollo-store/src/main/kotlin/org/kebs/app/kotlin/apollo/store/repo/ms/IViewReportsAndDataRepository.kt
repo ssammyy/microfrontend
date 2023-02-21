@@ -144,7 +144,8 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
         value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
                 "    (:startDate is null or a.DATE_VISIT >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_VISIT <=TO_DATE(:endDate))\n" +
                 "    AND (:sampleReferences is null or a.SAMPLE_REFERENCES =:sampleReferences) and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO))\n" +
-                "    AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))",
+                "    AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n" +
+                "AND (:outletName is null or a.MARKET_CENTER =:outletName)",
         nativeQuery = true
     )
     fun findFilteredSubmittedSamplesSummaryReport(
@@ -153,7 +154,7 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
         @Param("sampleReferences") sampleReferences: String?,
         @Param("assignIO") assignIO: Long?,
         @Param("sectorID") sectorID: Long?,
-//        @Param("outletName") outletName: String?,
+        @Param("outletName") outletName: String?,
     ): List<SubmittedSamplesSummaryReportViewEntity>?
 }
 

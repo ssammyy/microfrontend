@@ -255,15 +255,15 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         companyID: Long
     ): List<PermitApplicationsEntity>?
 
-    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNull(
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndDeletedStatusIsNull(
         companyId: Long, permitType: Long
     ): List<PermitApplicationsEntity>?
 
-    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta3FilledStatusIsNotNull(
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndDeletedStatusIsNullAndSta3FilledStatusIsNotNull(
         companyId: Long, permitType: Long
     ): List<PermitApplicationsEntity>?
 
-    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta10FilledStatusIsNotNull(
+    fun findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndDeletedStatusIsNullAndSta10FilledStatusIsNotNull(
         companyId: Long, permitType: Long
     ): List<PermitApplicationsEntity>?
 
@@ -571,7 +571,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     @Transactional
     @Modifying
     @Query(
-        value = "UPDATE  APOLLO.DAT_KEBS_PERMIT_TRANSACTION t1 SET t1.VAR_FIELD_9='1' WHERE t1.ID =:permitID ",
+        value = "UPDATE  APOLLO.DAT_KEBS_PERMIT_TRANSACTION t1 SET t1.DELETED_STATUS='1' WHERE t1.ID =:permitID ",
         nativeQuery = true
     )
     fun deletePermit(@Param("permitID") permitID: Long)

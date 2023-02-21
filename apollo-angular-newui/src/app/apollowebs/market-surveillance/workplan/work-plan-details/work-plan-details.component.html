@@ -1780,6 +1780,15 @@
 
                                             </mat-select>
                                         </mat-form-field>
+                                        <div *ngIf="formApprovePreliminaryForm.get('approvalStatus').value">
+                                            <label ><b>Please upload the letter/email stating the appeal:</b></label>
+                                            <form #demoForm="ngForm">
+                                                <file-upload [(ngModel)]="uploadedAppealFiles" name="uploadedAppealFiles"
+                                                             id="uploadedAppealFilesID"
+                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
+                                                </file-upload>
+                                            </form>
+                                        </div>
                                         <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
@@ -1807,6 +1816,15 @@
 
                                             </mat-select>
                                         </mat-form-field>
+                                        <div>
+                                            <label ><b>Please upload the letter/email/communication for the appeal, whether successful or not:</b></label>
+                                            <form #demoForm="ngForm">
+                                                <file-upload [(ngModel)]="uploadedSuccessfulAppealFiles" name="files"
+                                                             id="appealFiles"
+                                                             accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
+                                                </file-upload>
+                                            </form>
+                                        </div>
                                         <label ><b>Please write, in detail, your feedback:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea matInput type="text"
@@ -2892,16 +2910,16 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label><b>Date of inspection</b> </label>
-<!--                                        <input [class.is-invalid]="formDataReportForm.inspectionDate.invalid && formDataReportForm.inspectionDate.errors"-->
-                                               <input
-                                               class="form-control two-column-input"
-                                               formControlName="inspectionDate"
-                                               name="inspectionDate" type="date">
-<!--                                        <div *ngIf="submitted && formDataReportForm.inspectionDate.errors" class="invalid-feedback">-->
-<!--                                            <div *ngIf="formDataReportForm.inspectionDate.errors.required">Date of inspection is-->
-<!--                                                required-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        <!--                                        <input [class.is-invalid]="formDataReportForm.inspectionDate.invalid && formDataReportForm.inspectionDate.errors"-->
+                                        <input
+                                                class="form-control two-column-input"
+                                                formControlName="inspectionDate"
+                                                name="inspectionDate" type="date">
+                                        <!--                                        <div *ngIf="submitted && formDataReportForm.inspectionDate.errors" class="invalid-feedback">-->
+                                        <!--                                            <div *ngIf="formDataReportForm.inspectionDate.errors.required">Date of inspection is-->
+                                        <!--                                                required-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </div>
                                 <div class="col">

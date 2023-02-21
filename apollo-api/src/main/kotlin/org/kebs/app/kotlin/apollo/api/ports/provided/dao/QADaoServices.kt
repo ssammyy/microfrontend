@@ -2215,7 +2215,7 @@ class QADaoServices(
     }
 
     fun findAllFirmPermitsWithPermitType(companyID: Long, permitTypeID: Long): List<PermitApplicationsEntity> {
-        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNull(companyID, permitTypeID)
+        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndDeletedStatusIsNull(companyID, permitTypeID)
             ?.let { permitList ->
                 return permitList
             }
@@ -2226,7 +2226,7 @@ class QADaoServices(
 
     //Dmarks Get Permits with filled Sta3
     fun findAllDmarkFirmPermitsWithPermitType(companyID: Long, permitTypeID: Long): List<PermitApplicationsEntity> {
-        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta3FilledStatusIsNotNull(
+        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndDeletedStatusIsNullAndSta3FilledStatusIsNotNull(
             companyID,
             permitTypeID
         )
@@ -2239,7 +2239,7 @@ class QADaoServices(
 
     //Smarks Get Permits with filled Sta3
     fun findAllSmarkFirmPermitsWithPermitType(companyID: Long, permitTypeID: Long): List<PermitApplicationsEntity> {
-        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndVarField9IsNullAndSta10FilledStatusIsNotNull(
+        permitRepo.findByCompanyIdAndPermitTypeAndOldPermitStatusIsNullAndDeletedStatusIsNullAndSta10FilledStatusIsNotNull(
             companyID,
             permitTypeID
         )
@@ -7365,12 +7365,8 @@ class QADaoServices(
 
                             with(invoiceDetails) {
                                 description = "${permitMasterInvoiceFound.invoiceRef},$description"
-                                totalAmount = totalAmount?.plus(
-                                    permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
-                                )
-                                totalTaxAmount = totalTaxAmount?.plus(
-                                    permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
-                                )
+                                totalAmount = totalAmount?.plus( permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
+                                totalTaxAmount = totalTaxAmount?.plus( permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
 
                             }
                             invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)
@@ -7396,21 +7392,21 @@ class QADaoServices(
                                 userId = userID
                                 plantId = batchInvoiceDto.plantID
                                 varField1 = batchInvoiceDto.isWithHolding.toString() // withholding field
-                                if (batchInvoiceDto.isWithHolding == 1L) {
-                                    var foundTotalAmount = permitMasterInvoiceFound.totalAmount
-                                    foundTotalAmount = foundTotalAmount?.minus(permitMasterInvoiceFound.taxAmount!!)
-                                    val taxFoundAmount =
-                                        foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
-                                    foundTotalAmount = taxFoundAmount?.let { foundTotalAmount?.plus(it) }
-                                    with(permitMasterInvoiceFound) {
-                                        totalAmount = foundTotalAmount
-                                        taxAmount = taxFoundAmount
-                                        varField2 = "WITH HELD TRUE"
-                                        modifiedBy = commonDaoServices.concatenateName(user)
-                                        modifiedOn = commonDaoServices.getTimestamp()
-                                    }
-                                    permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
-                                }
+//                                if (batchInvoiceDto.isWithHolding == 1L) {
+//                                    var foundTotalAmount = permitMasterInvoiceFound.totalAmount
+//                                    foundTotalAmount = foundTotalAmount?.minus(permitMasterInvoiceFound.taxAmount!!)
+//                                    val taxFoundAmount =
+//                                        foundTotalAmount?.multiply(applicationMapProperties.mapInvoicesPermitWithHolding)
+//                                    foundTotalAmount = taxFoundAmount?.let { foundTotalAmount?.plus(it) }
+//                                    with(permitMasterInvoiceFound) {
+//                                        totalAmount = foundTotalAmount
+//                                        taxAmount = taxFoundAmount
+//                                        varField2 = "WITH HELD TRUE"
+//                                        modifiedBy = commonDaoServices.concatenateName(user)
+//                                        modifiedOn = commonDaoServices.getTimestamp()
+//                                    }
+//                                    permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
+//                                }
                                 status = s.activeStatus
                                 description = "${permitMasterInvoiceFound.invoiceRef},$description"
                                 totalAmount = totalAmount?.plus(
