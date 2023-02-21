@@ -225,7 +225,8 @@ class QAControllerTest {
     }
 
     @Test
-    fun invoiceGenerationGivenMultiplePermitsAppliedForTest() {
+    fun invoiceGenerationUpdateTest() {
+
     }
 
     @Test
