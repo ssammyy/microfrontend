@@ -4,12 +4,13 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {
-    CommentOnProposalStakeHolder,
+    ApproveDraft,
+    CommentOnProposalStakeHolder, COMPreliminaryDraft, DecisionOnStdDraft,
     DiSdtDECISION,
     DISDTTasks, FileData, HOPTasks,
     HoSicTasks,
     KNWCommittee, KNWDepartment,
-    KnwSecTasks, NwaDecisionOnJustification, NWADiSdtJustification,
+    KnwSecTasks, NwaDecisionOnJustification, NWADiSdtJustification, NwaEditPd,
     NWAJustification, NWAJustificationDecision, NWAPDDecision, NWAPreliminaryDraft, NwaRequestList,
     NWAStandard, NwaTasks, NWAWDDecision, NWAWorkShopDraft, PreliminaryDraftTasks, SacSecTasks, SPCSECTasks,
     UpdateNwaGazette, UploadNwaGazette, UsersEntity
@@ -73,11 +74,42 @@ export class StdNwaService {
         })
     );
   }
+
     public getJustification(requestId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_GET_JUSTIFICATION);
         const params = new HttpParams().set('requestId', requestId);
         return this.http.get<NWAJustification>(url, {params}).pipe();
     }
+    public getWorkshopForEditing(): Observable<NwaRequestList[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_GET_EDIT_PD);
+        const params = new HttpParams();
+        return this.http.get<NwaRequestList[]>(url, {params}).pipe();
+    }
+
+    public getWorkShopStdDraft(): Observable<COMPreliminaryDraft[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_GET_PD_FOR_ACTION);
+        const params = new HttpParams();
+        return this.http.get<COMPreliminaryDraft[]>(url, {params}).pipe();
+    }
+    public decisionOnDraft(approveDraft: DecisionOnStdDraft): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_STD_DR);
+        const params = new HttpParams();
+        return this.http.post<DecisionOnStdDraft>(url, approveDraft, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public getWorkShopDraftForEditing(): Observable<NwaEditPd[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_GET_PD_FOR_EDITING);
+        const params = new HttpParams();
+        return this.http.get<NwaEditPd[]>(url, {params}).pipe();
+    }
+
   //upload justification Document
     public uploadFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA);
@@ -114,6 +146,13 @@ export class StdNwaService {
   //           })
   //       );
   //   }
+    public getWorkshopForPDraft(): Observable<NwaRequestList[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_PD);
+        const params = new HttpParams();
+        return this.http.get<NwaRequestList[]>(url, {params}).pipe();
+    }
+
+
     public loadFileDetailsPDF(nwaDocumentId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW);
         const params = new HttpParams()
@@ -162,6 +201,8 @@ export class StdNwaService {
         })
     );
   }
+
+
     public decisionOnJustification(nwaJustificationDecision: NwaDecisionOnJustification): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_JUSTIFICATION);
         const params = new HttpParams();
@@ -224,6 +265,7 @@ export class StdNwaService {
         const params = new HttpParams();
         return this.http.get<PreliminaryDraftTasks[]>(url, {params}).pipe();
     }
+
   public preparePreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_PRELIMINARY_DRAFT);
     const params = new HttpParams();
@@ -236,6 +278,18 @@ export class StdNwaService {
         })
     );
   }
+    public editPreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_EDIT_PRELIMINARY_DRAFT);
+        const params = new HttpParams();
+        return this.http.post<NWAPreliminaryDraft>(url, nwaPreliminaryDraft, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
     public viewPreliminaryDraftPDF(nwaPDDocumentId: any): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_VIEW_PD);
         const params = new HttpParams()

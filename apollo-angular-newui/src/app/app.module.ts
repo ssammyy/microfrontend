@@ -1069,6 +1069,9 @@ import { DomesticNotificationComponent } from './apollowebs/standards-developmen
 import { EnquariesHandledReportComponent } from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
 import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
 import { NwaViewJustificationComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-justification/nwa-view-justification.component';
+import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+import { NwaEditPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component';
+import { NwaViewPreliminaryComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1628,6 +1631,9 @@ import { NwaViewJustificationComponent } from './apollowebs/standards-developmen
         EnquariesHandledReportComponent,
         StandardWorkProgrammeBulletinComponent,
         NwaViewJustificationComponent,
+        NwaPreliminaryDraftComponent,
+        NwaEditPreliminaryDraftComponent,
+        NwaViewPreliminaryComponent,
     
       
 
