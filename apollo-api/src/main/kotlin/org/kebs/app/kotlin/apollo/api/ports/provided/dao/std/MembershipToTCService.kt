@@ -145,21 +145,7 @@ class MembershipToTCService(
 
     fun submitTCMemberApplication(membershipTCApplication: MembershipTCApplication): ProcessInstanceResponseValue1 {
         val variable: MutableMap<String, Any> = HashMap()
-        membershipTCApplication.technicalCommittee?.let { variable.put("technicalCommittee", it) }
-        membershipTCApplication.organization?.let { variable.put("organization", it) }
-        membershipTCApplication.nomineeName?.let { variable.put("nomineeName", it) }
-        membershipTCApplication.position?.let { variable.put("position", it) }
-        membershipTCApplication.postalAddress?.let { variable.put("postalAddress", it) }
-        membershipTCApplication.mobileNumber?.let { variable.put("mobileNumber", it) }
-        membershipTCApplication.email?.let { variable.put("email", it) }
-        membershipTCApplication.authorizingName?.let { variable.put("authorizingName", it) }
-        membershipTCApplication.authorisingPersonPosition?.let { variable.put("authorisingPersonPosition", it) }
-        membershipTCApplication.authorisingPersonEmail?.let { variable.put("authorisingPersonEmail", it) }
-        membershipTCApplication.qualifications?.let { variable.put("qualifications", it) }
-        membershipTCApplication.commitment?.let { variable.put("commitment", it) }
-        membershipTCApplication.tcApplicationId?.let { variable.put("commitment", it) }
         membershipTCApplication.dateOfApplication = Timestamp(System.currentTimeMillis())
-        membershipTCApplication.dateOfApplication?.let { variable.put("dateOfPublishing", it) }
         membershipTCRepository.save(membershipTCApplication)
         println("Applicant has uploaded application")
 
