@@ -764,7 +764,6 @@ export class ApiEndpointService {
         UPLOAD_SCHEME_OF_SUPERVISION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-scheme-supervision`,
         UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
 
-
     };
 
     public static COMPANY_PROFILE_ENDPOINT = {

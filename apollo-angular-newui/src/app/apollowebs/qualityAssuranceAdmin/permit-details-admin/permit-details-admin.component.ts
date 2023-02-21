@@ -110,7 +110,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     addStandards: FormGroup;
     factoryVisit: FormGroup;
     docFileNameForm: FormGroup;
-    docSSFUpload: FormGroup;
+    docSSFUploadForm: FormGroup;
 
     updateSectionForm: FormGroup;
     permitCompletenessForm: FormGroup;
@@ -498,6 +498,10 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         this.docFileNameForm = this.formBuilder.group({
             docFileName: null,
+        });
+
+        this.docSSFUploadForm = this.formBuilder.group({
+            docSSFUpload: null,
         });
         
         this.recommendationForm = this.formBuilder.group({
@@ -1601,8 +1605,6 @@ export class PermitDetailsAdminComponent implements OnInit {
             });
     }
 
-    
-
     saveUploadsAttachments() {
         if (this.uploadedFilesOnly.length > 0) {
             this.SpinnerService.show();
@@ -1651,6 +1653,8 @@ export class PermitDetailsAdminComponent implements OnInit {
             const file = this.uploadedSsfFilesOnly;
             const formData = new FormData();
             formData.append('permitID', String(this.permitID));
+            formData.append('docSSFUpload', this.docSSFUploadForm.get('docSSFUpload').value);
+            formData.append('data', 'SCHEME_OF_SUPERVISION');
             for (let i = 0; i < file.length; i++) {
                 console.log(file[i]);
                 formData.append('SSFdocFile', file[i], file[i].name);

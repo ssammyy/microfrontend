@@ -60,11 +60,11 @@ export class QaTaskDetailsComponent implements OnInit {
                 (data: any) => {
                     this.allPermitTaskData = data;
                     // tslint:disable-next-line:max-line-length
-                    formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id, i.permitType]);
+                    formattedArray = data.map(i => [i.permitType, i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id]);
                     this.dataTable = {
                         // tslint:disable-next-line:max-line-length
-                        headerRow: ['Permit Ref No', 'Permit Type', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-                        footerRow: ['Permit Ref No', 'Permit Type', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
+                        headerRow: ['Actions','Permit Ref No', 'Permit Type', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status'],
+                        footerRow: ['Actions','Permit Ref No', 'Permit Type', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status'],
                         dataRows: formattedArray,
                     };
                     this.SpinnerService.hide();
@@ -81,12 +81,12 @@ export class QaTaskDetailsComponent implements OnInit {
 
                     this.allPermitTaskData = data;
                     // tslint:disable-next-line:max-line-length
-                    formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id, i.permitType]);
+                    formattedArray = data.map(i => [i.permitType, i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id]);
 
                     this.dataTable = {
                         // tslint:disable-next-line:max-line-length
-                        headerRow: ['Permit Ref No', 'Permit Type', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-                        footerRow: ['Permit Ref No', 'Permit Type', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
+                        headerRow: ['Actions','Permit Ref No', 'Permit Type', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status'],
+                        footerRow: ['Actions','Permit Ref No', 'Permit Type', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status'],
                         dataRows: formattedArray,
                     };
                     this.SpinnerService.hide();

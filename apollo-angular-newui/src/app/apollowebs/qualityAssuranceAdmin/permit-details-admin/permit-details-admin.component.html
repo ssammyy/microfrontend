@@ -1938,11 +1938,19 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                          </div>
                          <div class="modal-body">
                              <div>
-                                 <form  action="" class="form"
+                                 <form [formGroup]="docSSFUploadForm" action="" class="form"
                                        enctype="multipart/form-data" method="post">
                                      <div class="form-body">
                                          <div class="form-group">
                                              <div>
+
+                                                 <label for="files"><b>Description Of Attachment(s):</b></label>
+                                                 <mat-form-field class="example-full-width">
+                                                     <input formControlName="docSSFUpload" id="docSSFUpload"
+                                                            matInput name="docSSFUpload"
+                                                            placeholder="Please enter Description Of Attachment"
+                                                            type="text">
+                                                 </mat-form-field>
                                                 
                                                  <label for="files"><b>Upload SSF Here</b></label>
                                                  <form #demoForm="ngForm">

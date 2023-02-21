@@ -218,8 +218,6 @@ export class QaService {
         );
     }
 
-
-
     public qaUpdateSection(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
