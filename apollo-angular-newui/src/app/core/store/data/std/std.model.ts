@@ -328,6 +328,45 @@ export interface DisDTTaskData {
 
 
 }
+export interface NwaEditPd{
+    draftId: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    uploadDate: Timestamp<any>;
+    deadlineDate: Timestamp<any>;
+    draftNumber: string;
+    remarks: string;
+    requestId: number;
+    departmentId: string;
+    standardType: string;
+    workShopDate: string;
+    requestNumber: string;
+    rank: string;
+    name: string;
+    phone: string;
+    email: string;
+    submissionDate: Timestamp<any>;
+    productSubCategoryId: number;
+    tcId: number;
+    productId: number;
+    organisationName: string;
+    subject: string;
+    description: string;
+    economicEfficiency: string;
+    healthSafety: string;
+    environment: string;
+    integration: string;
+    exportMarkets: string;
+    levelOfStandard: string;
+    departmentName: string;
+    nwaCdNumber: string;
+
+}
+
 
 export interface NWAPreliminaryDraft {
     id: number;
@@ -338,7 +377,7 @@ export interface NWAPreliminaryDraft {
     special: string;
     clause: string;
     taskId: string;
-    diJNumber: number;
+    workShopDate: Timestamp<any>;
 }
 
 export interface NWAWorkShopDraft {
@@ -1333,6 +1372,17 @@ export interface ApproveSACJC {
     accentTo: boolean;
     approvalID: bigint;
     comments: string;
+}
+export interface DecisionOnStdDraft{
+    comments: string;
+    accentTo: string;
+    requestId: number;
+    id: number;
+    departmentId: string;
+    subject: string;
+    description: string;
+    requestNumber: string;
+    title: string;
 }
 
 export interface ApproveDraft {

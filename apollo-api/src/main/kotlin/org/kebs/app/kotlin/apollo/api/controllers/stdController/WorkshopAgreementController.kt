@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import com.google.gson.Gson
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.NwaDiJustificationFileService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.NwaJustificationFileService
@@ -86,6 +88,7 @@ class WorkshopAgreementController(
     fun decisionOnJustification(@RequestBody nwaDecisionOnJustificationDto: NwaDecisionOnJustificationDto
     ) : ServerResponse
     {
+
         return ServerResponse(
             HttpStatus.OK,"Saved",waService.
             decisionOnJustification(nwaDecisionOnJustificationDto))
@@ -110,11 +113,39 @@ class WorkshopAgreementController(
     }
 
     @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getWorkShopDraftForEditing")
+    @ResponseBody
+    fun getWorkShopDraftForEditing(): MutableList<NwaRequest>
+    {
+        return waService.getWorkShopDraftForEditing()
+    }
+
+    //********************************************************** process prepare Preliminary Draft **********************************************************
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/editPreliminaryDraft")
+    @ResponseBody
+    fun editPreliminaryDraft(@RequestBody workshopPreliminaryDraft: WorkshopPreliminaryDraft): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Preliminary Draft",waService.editPreliminaryDraft(workshopPreliminaryDraft))
+    }
+
+
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getWorkShopStdDraft")
     @ResponseBody
     fun getWorkShopStdDraft(): MutableList<ComStdDraft>
     {
         return waService.getWorkShopStdDraft()
+    }
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getPreparedPD")
+    @ResponseBody
+    fun getPreparedPD(): MutableList<StandardRequest>
+    {
+        return waService.getPreparedPD()
     }
 
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
@@ -126,6 +157,16 @@ class WorkshopAgreementController(
             HttpStatus.OK,"Saved",waService.
             decisionOnStdDraft(workshopAgreementDecisionDto))
     }
+
+
+
+//    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+//    @GetMapping("/getWorkShopDraftForEditing")
+//    @ResponseBody
+//    fun getWorkShopDraftForEditing(@RequestParam("requestId") requestId: Long): MutableList<ComStandard>
+//    {
+//        return waService.getWorkShopDraftForEditing(requestId)
+//    }
 
     @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getWorkShopStdForEditing")

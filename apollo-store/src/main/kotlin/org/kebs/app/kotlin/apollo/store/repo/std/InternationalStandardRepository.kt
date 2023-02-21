@@ -109,12 +109,14 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
                 "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
                 "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
                 "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,\n" +
-                "s.STANDARD_TYPE as standardType,s.CONTACT_THREE_EMAIL as contactThreeEmail,s.COMPANY_NAME as companyName,s.COMPANY_PHONE as companyPhone " +
+                "s.STANDARD_TYPE as standardType " +
                 "FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
                 "WHERE  s.STATUS=0 AND s.STANDARD_TYPE='Kenya Standard' ORDER BY s.ID DESC",
         nativeQuery = true
     )
     fun getWorkShopStdForEditing(): MutableList<ComStandard>
+
+
 
     @Query(
         value = "SELECT ID as id, TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE AS normativeReference,SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,CLAUSE as clause," +
@@ -370,8 +372,11 @@ interface ComStdDraftRepository : JpaRepository<ComStdDraft, Long> {
     @Query(value = "SELECT * FROM SD_COM_STD_DRAFT WHERE STATUS IN ('0') AND STANDARD_TYPE='Kenya Standard'  ORDER BY ID DESC", nativeQuery = true)
     fun getWorkShopStdDraft(): MutableList<ComStdDraft>
 
+
     @Query(value = "SELECT * FROM SD_COM_STD_DRAFT WHERE STATUS IN ('4') AND STANDARD_TYPE='Kenya Standard'  ORDER BY ID DESC", nativeQuery = true)
     fun getWorkShopStdDraftForEditing(): MutableList<ComStdDraft>
+
+
 
 }
 interface ComStandardDraftCommentsRepository : JpaRepository<ComDraftComments, Long> {
