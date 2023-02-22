@@ -80,13 +80,13 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'users', title: 'View Users ', ab: 'VU'},
         ],
     },
-    {
-        path: '/qa_task_list',
-        title: 'My Tasks',
-        type: 'link',
-        icontype: 'task',
-        privilege: ['QA_MANAGER_MODIFY', 'QA_OFFICER_MODIFY', 'QA_ASSESSORS_MODIFY'],
-    },
+    // {
+    //     path: '/qa_task_list',
+    //     title: 'My Tasks',
+    //     type: 'link',
+    //     icontype: 'task',
+    //     privilege: ['QA_MANAGER_MODIFY', 'QA_OFFICER_MODIFY', 'QA_ASSESSORS_MODIFY'],
+    // },
 
     {
         path: '/dmark/all_dmark',
