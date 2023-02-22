@@ -1170,8 +1170,8 @@ class NewMarketSurveillanceHandler(
     fun putAllFieldInspectionSummarySearchList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
-            val body = req.body<ConsumerComplaintViewSearchValues>()
-            val errors: Errors = BeanPropertyBindingResult(body, ConsumerComplaintViewSearchValues::class.java.name)
+            val body = req.body<FieldInspectionSummarySearch>()
+            val errors: Errors = BeanPropertyBindingResult(body, FieldInspectionSummarySearch::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
