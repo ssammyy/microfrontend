@@ -1747,15 +1747,32 @@ export interface CommentOnProposalStakeHolder{
 export interface StandardsForReview {
     id: number;
     title: string;
-    scope: string;
-    normativeReference: string;
-    symbolsAbbreviatedTerms: string;
-    clause: string;
-    special: string;
     standardNumber: string;
     standardType: string;
-    dateFormed: string;
     documentType: string;
+    dateFormed: Timestamp<any>;
+    circulationDate: Timestamp<any>;
+    edition: string;
+    scope: string;
+}
+export interface XStandardsForReview {
+    id: number;
+    title: string;
+    standardNumber: string;
+    standardType: string;
+    documentType: string;
+    dateFormed: Timestamp<any>;
+    circulationDate: Timestamp<any>;
+    //closingDate: string;
+    nameOfTcSecretary: string;
+    edition: string;
+    choice: string;
+    justification: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    date: Timestamp<any>;
+    scope: string;
 }
 
 export interface RevProposalComments {

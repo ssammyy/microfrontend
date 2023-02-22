@@ -1223,6 +1223,8 @@ class IntStandardService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val timeOfRemark= Timestamp(System.currentTimeMillis())
         val standard= Standard()
+        val dueDate: Timestamp = Timestamp.valueOf(timeOfRemark.toLocalDateTime().plusYears(5))
+
 
         standard.title=iStandardUploadDto.title
         standard.normativeReference=iStandardUploadDto.normativeReference
@@ -1235,6 +1237,7 @@ class IntStandardService(
         standard.status=0
         standard.dateFormed=timeOfRemark
         standard.createdBy=loggedInUser.id
+        standard.dueDateForReview=dueDate
         companyStandardRepository.findByIdOrNull(iStandardUploadDto.id)?.let { companyStandard ->
             with(companyStandard) {
                 status = 10

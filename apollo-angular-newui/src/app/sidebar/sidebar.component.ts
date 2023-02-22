@@ -632,9 +632,6 @@ export const ROUTES: RouteInfo[] = [
         path: '',
         title: 'Request Module',
         type: 'sub',
-        icontype: 'receipt',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'requestModule',
         children: [
             {path: 'ms-standards', title: 'Review Standard Requests', ab: 'RSR'},
             {path: 'std-tsc-sec-task', title: 'New Work Item', ab: 'NWI'},
@@ -643,8 +640,10 @@ export const ROUTES: RouteInfo[] = [
             {path: 'decision-justification', title: 'Decision On Justification', ab: 'DOJ'},
             // {path: 'upload-workplan', title: 'Upload Workplan', ab: 'UW'},
 
-
         ],
+        icontype: 'receipt',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        collapse: 'requestModule',
     },
     {
         path: '',
@@ -752,6 +751,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'Adoption of EAS',
         type: 'sub',
         icontype: 'group',
+
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
         collapse: 'adoption',
         children: [
