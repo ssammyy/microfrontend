@@ -96,15 +96,15 @@ class InspectionReportDaoServices(
 
     fun getFullyFilledInspectionReport(): ApiResponseModel {
         val qaInspectionReportRecommendation =
-            qaInspectionReportRecommendationRepo.findAllBySubmittedInspectionReportStatusAndApprovedRejectedStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
+            qaInspectionReportRecommendationRepo.findAllBySubmittedInspectionReportStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
                 1,
                 1,
                 1,
                 1,
                 1,
                 1,
-                1
-            )
+
+                )
         val map = commonDaoServices.serviceMapDetails(appId)
         return if (qaInspectionReportRecommendation != null) {
             val response = listInspectionReports(qaInspectionReportRecommendation, map)

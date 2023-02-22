@@ -231,11 +231,15 @@ export class StdTscSecTasksComponentComponent implements OnInit {
                 this.secTasks = response;
                 this.rerender()
                 this.SpinnerService.hide()
+                this.loading = false;
+
 
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
                 this.SpinnerService.hide()
+                this.loading = false;
+
 
             }
         )
