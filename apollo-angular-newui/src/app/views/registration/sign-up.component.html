@@ -864,7 +864,7 @@
                                    (ngModelChange)="passwordValidationRegister($event)"
                                    formControlName="credentials">
                             <app-field-error-display [displayError]="isFieldValid(stepFourForm, 'credentials')"
-                                                     errorMsg="Enter a valid password.">
+                                                     errorMsg="Enter a valid password(at least 6 characters).">
                             </app-field-error-display>
                         </mat-form-field>
                     </div>

@@ -140,13 +140,13 @@ export const ROUTES: RouteInfo[] = [
             {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
         ],
     },
-    {
-        path: '/all_qa_tasks_list',
-        title: 'My Tasks',
-        type: 'link',
-        icontype: 'task',
-        privilege: ['PERMIT_APPLICATION'],
-    },
+    // {
+    //     path: '/all_qa_tasks_list',
+    //     title: 'My Tasks',
+    //     type: 'link',
+    //     icontype: 'task',
+    //     privilege: ['PERMIT_APPLICATION'],
+    // },
     {
         path: '/payments',
         title: 'Payments',
