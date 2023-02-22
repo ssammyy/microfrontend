@@ -285,7 +285,6 @@ export class ApiEndpointService {
         SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
         MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
 
-
         PERMIT_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsWithNoFmarkGenerated`,
         PERMIT_REPORTS_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwarded`,
         PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
@@ -736,6 +735,8 @@ export class ApiEndpointService {
         APPROVE_REJECT_PERMIT_PCM: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/pcm-approve-reject-permit`,
 
         CHECK_IF_INSPECTION_REPORT_EXISTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/check_if_inspection_report_exists`,
+        GET_FULLY_FILLED_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/getFullyFilledInspectionReport`,
+
         NEW_INSPECTION_TECHNICAL_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/new-technical-report`,
         TECHNICAL_REPORT_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-details`,
         TECHNICAL_REPORT_DETAILS_B: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-detailsB`,
@@ -761,7 +762,6 @@ export class ApiEndpointService {
         SAVE_PDF_LAB_RESULT_COMPLIANCE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-compliance-status`,
         UPLOAD_SCHEME_OF_SUPERVISION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-scheme-supervision`,
         UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
-
 
     };
 

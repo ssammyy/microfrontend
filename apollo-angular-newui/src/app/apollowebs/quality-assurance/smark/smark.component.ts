@@ -695,6 +695,8 @@ export class SmarkComponent implements OnInit {
         const companyStatusDetails = this.allPermitDetails.companyStatusDetails;
         if (companyStatusDetails.updateDetailsStatus) {
             this.qaService.showWarning(`YOU ARE  REQUIERD TO UPGRADE FIRM TYPE TO ${companyStatusDetails.updateFirmType} BEFORE YOU GENERATE THE DIFFERENCE`, () => {this.loadCompanyDetails(); });
+        } else if (this.allPermitDetails?.inspectionFeeInvoice == null && this.allPermitDetails?.inspectionNeeded) {
+            this.qaService.showWarning(`YOU ARE  REQUIERD TO GENERATE INSPECTION INVOICE OR UPLOAD PAID INSPECTION INVOICE BEFORE YOU GENERATE THE DIFFERENCE`);
         } else {
             this.SpinnerService.show();
             // tslint:disable-next-line:max-line-length

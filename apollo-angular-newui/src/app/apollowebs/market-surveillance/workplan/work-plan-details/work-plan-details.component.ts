@@ -1789,11 +1789,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       county: ['', Validators.required],
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
+      outletDetails: ['', Validators.required],
       outletName: ['', Validators.required],
       physicalLocation: ['', Validators.required],
       emailAddress: ['', Validators.required],
       phoneNumber: ['', Validators.required],
-      outletDetails: ['', Validators.required],
       mostRecurringNonCompliant: ['', Validators.required],
       personMet: ['', Validators.required],
       samplesDrawnAndSubmitted: ['', Validators.required],
@@ -3131,13 +3131,65 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveClientAppealed(valid: boolean) {
+
+    if(this.uploadedAppealFiles.length > 0){
+        this.saveAppealFilesResults("CLIENT_APPEAL_DOCUMENT");
+    }
     if (valid) {
-      this.msService.showSuccessWith2Message('Are you sure your want to add the detals?', 'You won\'t be able to Update the Details after submission!',
+      this.msService.showSuccessWith2Message('Are you sure your want to add the details?', 'You won\'t be able to Update the Details after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
             this.saveClientAppealed(valid);
           });
     }
+  }
+
+  saveAppealFilesResults(docName: string){
+    this.SpinnerService.show();
+    const appealFiles = this.uploadedAppealFiles;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < appealFiles.length; i++) {
+      formData.append('docFile', appealFiles[i], appealFiles[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          this.SpinnerService.hide();
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  saveSuccessfulAppealFilesResults(docName: string){
+    this.SpinnerService.show();
+    const successfulAppealFiles = this.uploadedSuccessfulAppealFiles;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < successfulAppealFiles.length; i++) {
+      formData.append('docFile', successfulAppealFiles[i], successfulAppealFiles[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          this.SpinnerService.hide();
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
 
@@ -3168,10 +3220,13 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveClientAppealedSuccessfully(valid: boolean) {
+    if(this.uploadedSuccessfulAppealFiles.length > 0){
+      this.saveSuccessfulAppealFilesResults("SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT");
+    }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to save the details?', 'You won\'t be able to Update the Details after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
             this.saveClientAppealedSuccessfully(valid);
           });
     }

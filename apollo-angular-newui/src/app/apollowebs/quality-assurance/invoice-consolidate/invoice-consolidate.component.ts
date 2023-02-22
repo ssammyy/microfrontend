@@ -172,79 +172,55 @@ export class InvoiceConsolidateComponent implements OnInit {
   }
 
   submit() {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger',
-      },
-      buttonsStyling: false,
-    });
+    this.final_array.push(this.selected.sort());
+    console.log(this.final_array);
+    if (this.final_array.length > 0 ) {
+      this.qaService.showSuccessWith2Message('Are you sure you want to pay for the selected invoice\'s?', 'You won\'t be able to make changes after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can click the \'On the side Check Box for Consolidating\' more than one invoice.', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+            this.submitAllInvoiceConsolidated();
+          });
 
-    swalWithBootstrapButtons.fire({
-      title: 'Are you sure you want to pay for the selected invoice\'s?',
-      text: 'You won\'t be able to make changes after submission!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes!',
-      cancelButtonText: 'No!',
-      reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.SpinnerService.show();
-        this.final_array.push(this.selected.sort());
-        console.log(this.final_array);
-        // const permitInvoicesIDS:number[] = this.final_array;
-        const permitInvoicesIDS: number[] = [];
-        this.final_array.forEach(function (dataValue) {
-          for (let i = 0; i <= dataValue.length - 1; i++) {
-            const pickedI = dataValue[i];
-            const idIndex = dataValue[i].length;
-            console.log(`VALUE OF I =${dataValue[i]}`);
-            const myData = dataValue[i];
-            console.log(`DATA ADDED ${myData}`);
-            permitInvoicesIDS.push(myData);
-          }
-        });
-        console.log(permitInvoicesIDS);
-        const consolidatedInvoice = new GenerateInvoiceWithWithholdingDto;
-        consolidatedInvoice.batchID = -1;
-        consolidatedInvoice.plantID = null;
-        consolidatedInvoice.permitRefNumber = null;
-        consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
-        console.log('TEST CONSOLIDATE' + consolidatedInvoice);
-        console.log(consolidatedInvoice.permitInvoicesID);
-        this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
-            (data) => {
-              this.SpinnerService.hide();
-              swal.fire({
-                title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
-                buttonsStyling: false,
-                customClass: {
-                  confirmButton: 'btn btn-success form-wizard-next-btn ',
-                },
-                icon: 'success',
-              });
-              this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
-            },
-            (error: HttpErrorResponse) => {
-              alert(error.message);
-              this.SpinnerService.hide();
-            },
-        );
-      } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons.fire(
-            'Cancelled',
-            'You can click the \'On the side Check Box for Consolidating\' more than one invoice.',
-            'error',
-        );
+    } else {
+      this.qaService.showWarning(`Kindly Select atLeast One Invoice, So as To Consolidate`);
+    }
+  }
+
+  submitAllInvoiceConsolidated(): void {
+    this.SpinnerService.show();
+    this.final_array.push(this.selected.sort());
+    console.log(this.final_array);
+    // const permitInvoicesIDS:number[] = this.final_array;
+    const permitInvoicesIDS: number[] = [];
+    this.final_array.forEach(function (dataValue) {
+      for (let i = 0; i <= dataValue.length - 1; i++) {
+        const pickedI = dataValue[i];
+        const idIndex = dataValue[i].length;
+        console.log(`VALUE OF I =${dataValue[i]}`);
+        const myData = dataValue[i];
+        console.log(`DATA ADDED ${myData}`);
+        permitInvoicesIDS.push(myData);
       }
+    });
+    console.log(permitInvoicesIDS);
+    const consolidatedInvoice = new GenerateInvoiceWithWithholdingDto;
+    consolidatedInvoice.batchID = -1;
+    consolidatedInvoice.plantID = null;
+    consolidatedInvoice.permitRefNumber = null;
+    consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
+    console.log('TEST CONSOLIDATE' + consolidatedInvoice);
+    console.log(consolidatedInvoice.permitInvoicesID);
+    this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+        (data) => {
+          this.SpinnerService.hide();
+          this.qaService.showError('INVOICE CONSOLIDATED SUCCESSFULLY!');
+          this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
+        },
+        (error: HttpErrorResponse) => {
+          alert(error.message);
+          this.SpinnerService.hide();
         },
     );
-
-
   }
 
 

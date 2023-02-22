@@ -140,13 +140,13 @@ export const ROUTES: RouteInfo[] = [
             {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
         ],
     },
-    {
-        path: '/all_qa_tasks_list',
-        title: 'My Tasks',
-        type: 'link',
-        icontype: 'task',
-        privilege: ['PERMIT_APPLICATION'],
-    },
+    // {
+    //     path: '/all_qa_tasks_list',
+    //     title: 'My Tasks',
+    //     type: 'link',
+    //     icontype: 'task',
+    //     privilege: ['PERMIT_APPLICATION'],
+    // },
     {
         path: '/payments',
         title: 'Payments',
@@ -227,7 +227,6 @@ export const ROUTES: RouteInfo[] = [
 
         ],
     },
-
 
 
     //DI
@@ -632,98 +631,211 @@ export const ROUTES: RouteInfo[] = [
         path: '',
         title: 'Request Module',
         type: 'sub',
+
         children: [
-            {path: 'ms-standards', title: 'Review Standard Requests', ab: 'RSR'},
-            {path: 'std-tsc-sec-task', title: 'New Work Item', ab: 'NWI'},
-            {path: 'std-tc-task', title: 'Vote On New Work Item', ab: 'V'},
-            {path: 'upload-justification', title: 'Justification', ab: 'J'},
-            {path: 'decision-justification', title: 'Decision On Justification', ab: 'DOJ'},
+            {
+                path: 'ms-standards',
+                title: 'Review Standard Requests',
+                ab: 'RSR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'HOF_SD_READ'],
+            },
+            {
+                path: 'std-tsc-sec-task',
+                title: 'New Work Item',
+                ab: 'NWI',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ'],
+            },
+            {
+                path: 'std-tc-task',
+                title: 'Vote On New Work Item',
+                ab: 'V',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SD_READ'],
+            },
+            {
+                path: 'upload-justification',
+                title: 'Justification',
+                ab: 'J',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ'],
+            },
+            {
+                path: 'decision-justification',
+                title: 'Decision On Justification',
+                ab: 'DOJ',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ'],
+            },
             // {path: 'upload-workplan', title: 'Upload Workplan', ab: 'UW'},
+
 
         ],
         icontype: 'receipt',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'HOF_SD_READ', 'TC_SEC_SD_READ', 'TC_SD_READ', 'SPC_SEC_SD_READ'],
         collapse: 'requestModule',
+
+
     },
     {
         path: '',
         title: 'Committee Module',
         type: 'sub',
-        icontype: 'group',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'committeeModule',
         children: [
-            {path: 'preparePd', title: 'Prepare Preliminary Draft', ab: 'PRD'},
-            {path: 'reviewPd', title: 'Review Preliminary Draft', ab: 'RPD'},
-            {path: 'prepareCd', title: 'Prepare Committee Draft', ab: 'V'},
-            {path: 'reviewCd', title: 'Review Committee Draft', ab: 'UJ'},
-            {path: 'approveCD', title: 'Approve Committee Draft', ab: 'UW'},
+            {
+                path: 'preparePd',
+                title: 'Prepare Preliminary Draft',
+                ab: 'PRD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ'],
+            },
+            {
+                path: 'reviewPd',
+                title: 'Review Preliminary Draft',
+                ab: 'RPD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ'],
+            },
+            {
+                path: 'prepareCd',
+                title: 'Prepare Committee Draft',
+                ab: 'V',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ'],
+            },
+            {
+                path: 'reviewCd',
+                title: 'Review Committee Draft',
+                ab: 'UJ',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ'],
+            },
+            {
+                path: 'approveCD',
+                title: 'Approve Committee Draft',
+                ab: 'UW',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ'],
+            },
 
 
         ],
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ'],
+        collapse: 'committeeModule',
     },
     {
         path: '',
         title: 'Public Review Module',
         type: 'sub',
-        icontype: 'public',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'publicReviewModule',
         children: [
-            {path: 'preparePrd', title: 'Prepare Public Review Draft', ab: 'PRD'},
-            {path: 'commentOnPrd', title: 'Review Public Review Draft', ab: 'RPD'},
-            {path: 'viewPrd', title: 'Review Public Review Draft', ab: 'V'},
+            {
+                path: 'preparePrd',
+                title: 'Prepare Public Review Draft',
+                ab: 'PRD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
+            },
+            {
+                path: 'commentOnPrd',
+                title: 'Review Public Review Draft',
+                ab: 'RPD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ'],
+            },
+            {
+                path: 'viewPrd',
+                title: 'Review Public Review Draft',
+                ab: 'V',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
+            },
 
 
         ],
+        icontype: 'public',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ'],
+        collapse: 'publicReviewModule',
     },
     {
         path: '',
         title: 'Balloting Module',
         type: 'sub',
-        icontype: 'ballot',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'ballotingModule',
         children: [
-            {path: 'prepareBallot', title: 'Prepare Ballot Draft', ab: 'PBD'},
-            {path: 'voteOnBallot', title: 'Vote On Ballot Draft', ab: 'V'},
-            {path: 'reviewBallotDraft', title: 'Review Ballot Draft', ab: 'RBD'},
-
+            {
+                path: 'prepareBallot',
+                title: 'Prepare Ballot Draft',
+                ab: 'PBD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
+            },
+            {
+                path: 'voteOnBallot',
+                title: 'Vote On Ballot Draft',
+                ab: 'V',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ']
+            },
+            {
+                path: 'reviewBallotDraft',
+                title: 'Review Ballot Draft',
+                ab: 'RBD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
+            },
 
         ],
+        icontype: 'ballot',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'TC_SD_READ'],
+        collapse: 'ballotingModule',
     },
     {
         path: '',
         title: 'Publishing',
         type: 'sub',
-        icontype: 'publish',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'publish',
+
         children: [
-            {path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS'},
-            {path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS'},
-            {path: 'draughtsmanTasks', title: 'Draught Draft Standards', ab: 'DDS'},
-            {path: 'proofReaderTasks', title: 'Proofread Draft Standards', ab: 'PDS'},
+            {path: 'hopTasks', title: 'Review Draft Standards', ab: 'RDS', privilege: ['HOP_SD_READ']},
+            {path: 'editorTasks', title: 'Editor Tasks', ab: 'EDS', privilege: ['HOP_SD_READ', 'EDITOR_SD_READ']},
+            {
+                path: 'draughtsmanTasks',
+                title: 'Draught Draft Standards',
+                ab: 'DDS',
+                privilege: ['HOP_SD_READ', 'DRAUGHTSMAN_SD_READ']
+            },
+            {
+                path: 'proofReaderTasks',
+                title: 'Proofread Draft Standards',
+                ab: 'PDS',
+                privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
+            },
             // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
-
-
         ],
+        icontype: 'publish',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ', 'EDITOR_SD_READ', 'DRAUGHTSMAN_SD_READ', 'PROOFREADER_SD_READ'],
+        collapse: 'publish',
     },
     {
         path: '',
         title: 'Formation Of A TC',
         type: 'sub',
-        icontype: 'group',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'formation',
+
         children: [
-            {path: 'requestForFormationOfTC', title: 'Request For Formation', ab: 'RFF'},
-            {path: 'hofReviewJustificationOfTC', title: 'HOF Review', ab: 'HOF'},
-            {path: 'reviewJustificationOfTC', title: 'SPC Review', ab: 'SPC'},
-            {path: 'reviewFeedbackSAC', title: 'SAC Review', ab: 'SAC'},
+            {
+                path: 'requestForFormationOfTC',
+                title: 'Request For Formation',
+                ab: 'RFF',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
+            },
+            {
+                path: 'hofReviewJustificationOfTC',
+                title: 'HOF Review',
+                ab: 'HOF',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOF_SD_READ']
+            },
+            {
+                path: 'reviewJustificationOfTC',
+                title: 'SPC Review',
+                ab: 'SPC',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SD_READ']
+            },
+            {
+                path: 'reviewFeedbackSAC',
+                title: 'SAC Review',
+                ab: 'SAC',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SEC_SD_READ']
+            },
 
 
         ],
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'SAC_SEC_SD_READ'],
+        collapse: 'formation',
     },
     {
         path: '',
@@ -751,7 +863,6 @@ export const ROUTES: RouteInfo[] = [
         title: 'Adoption of EAS',
         type: 'sub',
         icontype: 'group',
-
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
         collapse: 'adoption',
         children: [
@@ -887,16 +998,17 @@ export const ROUTES: RouteInfo[] = [
         path: '',
         title: 'Scheme Membership',
         type: 'sub',
-        icontype: 'group',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'sm',
+
         children: [
-            {path: 'hodReview', title: 'Review Requests', ab: 'RR'},
-            {path: 'sicReview', title: 'SIC Review', ab: 'RR'},
-            {path: 'sdpayments', title: 'Payments', ab: 'P'},
+            {path: 'hodReview', title: 'Review Requests', ab: 'RR',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_SIC_SD_READ']},
+            {path: 'sicReview', title: 'SIC Review', ab: 'RR',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SIC_OFFICER_SD_READ']},
+            // {path: 'sdpayments', title: 'Payments', ab: 'P'},
 
 
         ],
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','HOD_SIC_SD_READ','SIC_OFFICER_SD_READ'],
+        collapse: 'sm'
     },
 
     //SD reports
@@ -920,7 +1032,7 @@ export const ROUTES: RouteInfo[] = [
         ],
     },
 
-    
+
     //Publishing reports
     {
         path: '',
@@ -962,14 +1074,13 @@ export const ROUTES: RouteInfo[] = [
             {path: 'catalogueReport', title: 'Catalogue Report  ', ab: 'CR'},
             {path: 'disseminationReport', title: 'Dissemination of Publications', ab: 'DP'},
             {path: 'icsAllocation', title: 'ICS Allocation Report', ab: 'IAR'},
-           
 
 
         ],
     },
 
-      // SIRC Reports
-      {
+    // SIRC Reports
+    {
         path: '',
         title: ' WTO TBT NEP KIMS Reports ',
         type: 'sub',
@@ -980,16 +1091,10 @@ export const ROUTES: RouteInfo[] = [
             {path: 'domesticNotification', title: 'Domestic Notifications ', ab: 'DN'},
             {path: 'enquiriesHandled', title: 'Enquiries Handled Report', ab: 'IHR'},
             {path: 'standardworkProgramme', title: 'Standard Work Programme Bulletin ', ab: 'SWPB'},
-           
-            
-           
 
 
         ],
     },
-
-
-
 
 
 ];

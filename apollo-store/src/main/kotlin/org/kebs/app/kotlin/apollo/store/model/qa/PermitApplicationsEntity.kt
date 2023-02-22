@@ -42,6 +42,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var ssfCompletedStatus: Int? = null
 
+    @Column(name = "DELETED_STATUS")
+    @Basic
+    var deletedStatus: Int? = null
+
 
     @Column(name = "APPLICATION_STATUS")
     @Basic

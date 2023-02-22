@@ -305,8 +305,8 @@ export class NewSmarkPermitComponent implements OnInit {
                                 this.allSta10Details = data1;
 
                                 //('TEST ALL STA10' + this.allSta10Details);
-                                this.sta10Details = this.allSta10Details.sta10FirmDetails;
-                                this.sta10Form.patchValue(this.sta10Details);
+                                // this.sta10Details = this.allSta10Details.sta10FirmDetails;
+                                this.sta10Form.patchValue(this.allSta10Details.sta10FirmDetails);
                                 this.sta10PersonnelDetails = this.allSta10Details.sta10PersonnelDetails;
                                 this.sta10ProductsManufactureDetails = this.allSta10Details.sta10ProductsManufactureDetails;
                                 this.sta10RawMaterialsDetails = this.allSta10Details.sta10RawMaterialsDetails;
@@ -315,10 +315,7 @@ export class NewSmarkPermitComponent implements OnInit {
                                 this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
                                 this.sta10FilesList = this.allSta10Details.sta10FilesList;
                                 this.sta10FormF.patchValue(this.allSta10Details.sta10FirmDetails);
-                                // if(this.sta10FilesList.map())
-                                // {
-                                //
-                                // }
+
                             },
                         );
                     },
@@ -350,13 +347,13 @@ export class NewSmarkPermitComponent implements OnInit {
 
                                 //('TEST ALL STA10' + this.allSta10Details);
                                 this.sta10Details = this.allSta10Details.sta10FirmDetails;
-                                this.sta10Form.patchValue(this.sta10Details);
+                                this.sta10Form.patchValue(this.allSta10Details.sta10FirmDetails);
                                 this.sta10PersonnelDetails = this.allSta10Details.sta10PersonnelDetails;
                                 this.sta10ProductsManufactureDetails = this.allSta10Details.sta10ProductsManufactureDetails;
                                 this.sta10RawMaterialsDetails = this.allSta10Details.sta10RawMaterialsDetails;
                                 this.sta10MachineryAndPlantDetails = this.allSta10Details.sta10MachineryAndPlantDetails;
                                 this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
-                                this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
+                                // this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
                                 this.sta10FilesList = this.allSta10Details.sta10FilesList;
                                 this.sta10FormF.patchValue(this.allSta10Details.sta10FirmDetails);
 
