@@ -7,7 +7,10 @@ import {NotificationService} from "../../../../core/store/data/std/notification.
 import { StandardsForReview} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {selectUserInfo} from "../../../../core/store";
+import {Store} from "@ngrx/store";
 
+declare const $: any;
 @Component({
   selector: 'app-standards-for-review',
   templateUrl: './standards-for-review.component.html',
@@ -22,9 +25,12 @@ export class StandardsForReviewComponent implements OnInit {
   public actionRequest: StandardsForReview | undefined;
   public proposalFormGroup!: FormGroup;
     loadingText: string;
+    documentType: string;
+    fullname = '';
 
 
   constructor(
+      private store$: Store<any>,
       private stdReviewService : StdReviewService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
@@ -32,24 +38,28 @@ export class StandardsForReviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     this.getStandardsForReview()
 
     this.proposalFormGroup= this.formBuilder.group({
-      id: [],
-      title: [],
-      scope: [],
-      normativeReference: [],
-      symbolsAbbreviatedTerms: [],
-      clause: [],
-      special: [],
-      standardNumber: [],
-      standardType: [],
-      dateFormed: [],
-      documentType: []
+        id: [],
+        title: [],
+        standardNumber: [],
+        standardType: [],
+        dateFormed: [],
+        documentType: [],
+        circulationDate: [],
+        edition: [],
+        choice: []
 
     });
+      this.documentType='Confirmation proposal';
 
+      this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+          return this.fullname = u.fullName;
+      });
   }
+
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
@@ -112,13 +122,9 @@ export class StandardsForReviewComponent implements OnInit {
           {
             title: this.actionRequest.title,
             standardNumber: this.actionRequest.standardNumber,
-            documentType: this.actionRequest.documentType,
-            scope: this.actionRequest.scope,
-            normativeReference: this.actionRequest.normativeReference,
-            symbolsAbbreviatedTerms: this.actionRequest.symbolsAbbreviatedTerms,
-            clause: this.actionRequest.clause,
-            special: this.actionRequest.special,
-            standardType: this.actionRequest.standardType
+            documentType: this.documentType,
+            standardType: this.actionRequest.standardType,
+              dateFormed:this.actionRequest.dateFormed
 
           });
     }

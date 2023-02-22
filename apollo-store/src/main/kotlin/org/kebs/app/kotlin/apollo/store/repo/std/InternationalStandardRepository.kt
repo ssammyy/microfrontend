@@ -116,6 +116,18 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
     )
     fun getWorkShopStdForEditing(): MutableList<ComStandard>
 
+    @Query(
+        value = "SELECT s.ID as id, s.TITLE as title,s.SCOPE as scope,s.NORMATIVE_REFERENCE AS normativeReference,s.SYMBOLS_ABBREVIATED_TERMS AS symbolsAbbreviatedTerms,s.CLAUSE as clause," +
+                "s.SPECIAL as special,s.COMPANY_STANDARD_NUMBER as comStdNumber,s.DOCUMENT_TYPE as documentType,s.PREPARED_BY as preparedBy," +
+                "cast(s.UPLOAD_DATE as varchar(200)) AS uploadDate,s.REQUEST_NUMBER AS requestNumber,s.STATUS as status,s.REQUEST_ID as requestId,s.DRAFT_ID as draftId," +
+                "s.DEPARTMENT as departmentId,d.NAME as departmentName,s.SUBJECT as subject,s.DESCRIPTION as description,\n" +
+                "s.STANDARD_TYPE as standardType " +
+                "FROM SD_COM_STANDARD s LEFT JOIN SD_DEPARTMENT d ON d.ID=s.DEPARTMENT " +
+                "WHERE  s.STATUS=0  ORDER BY s.ID DESC",
+        nativeQuery = true
+    )
+    fun getStdForEditing(): MutableList<ComStandard>
+
 
 
     @Query(
@@ -202,6 +214,12 @@ interface CompanyStandardRepository : JpaRepository<CompanyStandard, Long> {
         nativeQuery = true
     )
     fun getTcSecEmailList(): MutableList<UserEmailListHolder>
+
+    @Query(
+        value = "SELECT u.EMAIL as userEmail,u.FIRST_NAME as firstName,u.LAST_NAME as lastName  FROM DAT_KEBS_USERS u LEFT JOIN CFG_USER_ROLES_ASSIGNMENTS a ON u.ID=a.USER_ID LEFT JOIN CFG_USER_ROLES r ON a.ROLE_ID=r.ID   WHERE r.ROLE_NAME='SD_HEAD_OF_ICT'",
+        nativeQuery = true
+    )
+    fun getICTList(): MutableList<UserEmailListHolder>
 
 
 
@@ -657,6 +675,22 @@ interface StandardRepository : JpaRepository<Standard, Long> {
     )
     fun getStandardsForReview(): MutableList<ReviewStandards>
 
+    @Query(
+        value = "SELECT ID as id,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,STANDARD_NUMBER as standardNumber,STANDARD_TYPE as standardType,cast(DATE_FORMED as varchar(200)) AS dateFormed " +
+                "FROM SD_STANDARD_TBL WHERE STATUS='3' ",
+        nativeQuery = true
+    )
+    fun getStandardsForRecommendation(): MutableList<ReviewStandards>
+
+    @Query(
+        value = "SELECT ID as id,TITLE as title,SCOPE as scope,NORMATIVE_REFERENCE as normativeReference,SYMBOLS_ABBREVIATED_TERMS as symbolsAbbreviatedTerms,CLAUSE as clause," +
+                "SPECIAL as special,STANDARD_NUMBER as standardNumber,STANDARD_TYPE as standardType,cast(DATE_FORMED as varchar(200)) AS dateFormed " +
+                "FROM SD_STANDARD_TBL WHERE STATUS='4' ",
+        nativeQuery = true
+    )
+    fun getStandardsForSpcAction(): MutableList<ReviewStandards>
+
     @Query(value = "SELECT NVL (max(SDN),0) as SDN  FROM SD_STANDARD_TBL", nativeQuery = true)
     fun getMaxSDN(): Long
 
@@ -702,6 +736,14 @@ interface StandardReviewRepository : JpaRepository<StandardReview, Long> {
         nativeQuery = true
     )
     fun getStandardsProposalForComment(): MutableList<ReviewStandards>
+
+    @Query(value = "SELECT * FROM SD_STANDARD_REVIEW ",nativeQuery = true)
+    fun getReviewProposalForComment(): MutableList<StandardReview>
+
+    @Query(value = "SELECT * FROM SD_STANDARD_REVIEW WHERE ID=:id",nativeQuery = true)
+    fun getReviewProposalToComment(id: Long): MutableList<StandardReview>
+
+
 
 }
 interface StandardReviewProposalCommentsRepository : JpaRepository<StandardReviewProposalComments, Long> {
@@ -891,6 +933,11 @@ interface ComContactDetailsRepository : JpaRepository<ComContactDetails, Long> {
 interface SDWorkshopStdRepository : JpaRepository<SDWorkshopStd, Long> {
     fun findAllByOrderByIdDesc(): MutableList<SDWorkshopStd>
 }
+
+interface SDReviewCommentsRepository : JpaRepository<SDReviewComments, Long> {
+
+}
+
 
 
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{

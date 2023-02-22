@@ -1073,6 +1073,8 @@ import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development
 import { NwaEditPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component';
 import { NwaViewPreliminaryComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component';
 import { NwaEditingDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component';
+import { SchemeMemberShipReviewAllApplicationsComponent } from './apollowebs/standards-development/schemeMembership/scheme-member-ship-review-all-applications/scheme-member-ship-review-all-applications.component';
+import { SchemeMembershipReviewAssignedApplicationsComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review-assigned-applications/scheme-membership-review-assigned-applications.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1636,6 +1638,8 @@ import { NwaEditingDraftComponent } from './apollowebs/standards-development/wor
         NwaEditPreliminaryDraftComponent,
         NwaViewPreliminaryComponent,
         NwaEditingDraftComponent,
+        SchemeMemberShipReviewAllApplicationsComponent,
+        SchemeMembershipReviewAssignedApplicationsComponent,
     
       
 

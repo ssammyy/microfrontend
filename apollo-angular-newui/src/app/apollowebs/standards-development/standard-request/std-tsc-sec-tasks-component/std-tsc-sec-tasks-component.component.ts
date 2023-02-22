@@ -86,6 +86,8 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     public nwiForVotes: VotesNwiTally[] = [];
 
     loadedStandards: StandardsDto[] = [];
+    loading = false;
+    loadingText: string;
 
     displayedColumns: string[] = ['proposalTitle', 'scope', 'nameOfProposer', 'referenceNumber', 'actions'];
     dataSource!: MatTableDataSource<NwiItem>;
@@ -222,13 +224,23 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     // }
 
     public getTCSECTasks(): void {
+        this.loading = true;
+        this.SpinnerService.show()
         this.standardDevelopmentService.getTCSECTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.secTasks = response;
                 this.rerender()
+                this.SpinnerService.hide()
+                this.loading = false;
+
+
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.SpinnerService.hide()
+                this.loading = false;
+
+
             }
         )
     }

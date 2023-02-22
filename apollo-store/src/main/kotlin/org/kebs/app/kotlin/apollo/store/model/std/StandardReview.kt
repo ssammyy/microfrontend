@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.sql.Timestamp
 import javax.persistence.*
 
 
@@ -29,7 +30,7 @@ class StandardReview {
 
     @Column(name="DATE_PREPARED")
     @Basic
-    var datePrepared:String? =null
+    var datePrepared:Timestamp? =null
 
     @Column(name="SCOPE")
     @Basic
@@ -59,7 +60,65 @@ class StandardReview {
     @Basic
     var assignedTo:Long? =null
 
+    @Column(name="STANDARD_ID")
+    @Basic
+    var standardId:Long? =null
 
+    @Column(name="CIRCULATION_DATE")
+    @Basic
+    var circulationDate:Timestamp? =null
+
+    @Column(name="CLOSING_DATE")
+    @Basic
+    var closingDate:Timestamp? =null
+
+    @Column(name="DATE_FORMED")
+    @Basic
+    var dateFormed:Timestamp? =null
+
+    @Column(name="TC_SECRETARY")
+    @Basic
+    var tcSecretary:String? =null
+
+    @Column(name="EDITION")
+    @Basic
+    var edition:String? =null
+
+    @Column(name="OPERATION_OPTION")
+    @Basic
+    var operationOption:String? =null
+
+    @Column(name="JUSTIFICATION")
+    @Basic
+    var justification:String? =null
+
+    @Column(name="NAME_OF_RESPONDENT")
+    @Basic
+    var nameOfRespondent:String? =null
+
+    @Column(name="NAME_OF_ORGANIZATION")
+    @Basic
+    var nameOfOrganization:String? =null
+
+    @Column(name="POSITION_OF_RESPONDENT")
+    @Basic
+    var positionOfRespondent:String? =null
+
+    @Column(name="RECOMENDATION")
+    @Basic
+    var recommendation:String? =null
+
+    @Column(name="DATE_OF_RECOMENDATION")
+    @Basic
+    var dateOfRecommendation:Timestamp? =null
+
+    @Column(name="TIMELINE")
+    @Basic
+    var timeline:Timestamp? =null
+
+    @Column(name="STATUS")
+    @Basic
+    var status:Long? =null
 
 
 }

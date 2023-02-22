@@ -633,4 +633,65 @@ class ComJustificationDecisions(
 
 }
 
+data class StandardReviewDto(
+    val id: Long?=null,
+    val title: String?=null,
+    val standardNumber: String?=null,
+    val standardType: String?=null,
+    val documentType: String?=null,
+    val dateFormed: Timestamp?=null,
+    val circulationDate: Timestamp?=null,
+    val edition: String?=null
+)
+{}
+
+data class StandardReviewCommentDto(
+    val id: Long?=null,
+    val title: String?=null,
+    val standardNumber: String?=null,
+    val standardType: String?=null,
+    val documentType: String?=null,
+    val dateFormed: Timestamp?=null,
+    val circulationDate: Timestamp?=null,
+    val closingDate: Timestamp?=null,
+    val nameOfTcSecretary: String?=null,
+    val edition: String?=null,
+    val choice: String?=null,
+    val justification: String?=null,
+    val nameOfRespondent: String?=null,
+    val positionOfRespondent: String?=null,
+    val nameOfOrganization: String?=null
+)
+{}
+
+data class StandardReviewRecommendationDto(
+    val reviewId: Long?=null,
+    val recommendation: String?=null
+){
+
+}
+
+data class SpcStandardReviewCommentDto(
+    val id: Long?=null,
+    val title: String?=null,
+    val standardNumber: String?=null,
+    val standardType: String?=null,
+    val documentType: String?=null,
+    val dateFormed: Timestamp?=null,
+    val circulationDate: Timestamp?=null,
+    val closingDate: Timestamp?=null,
+    val nameOfTcSecretary: String?=null,
+    val edition: String?=null,
+    val choice: String?=null,
+    val justification: String?=null,
+    val nameOfRespondent: String?=null,
+    val positionOfRespondent: String?=null,
+    val nameOfOrganization: String?=null,
+    val accentTo: String?=null,
+    val requestNumber: String?=null,
+    val remarks: String?=null,
+    val subject: String?=null,
+    val description: String?=null,
+)
+{}
 

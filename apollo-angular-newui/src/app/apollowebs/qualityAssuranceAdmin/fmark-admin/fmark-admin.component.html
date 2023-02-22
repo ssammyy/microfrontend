@@ -47,7 +47,7 @@
 
                                 <div *ngIf="id == 'My Tasks'" class="w-100">
 
-                                 
+
                                     <div class="main-content" style="margin-top: 1px;">
                                         <div class="container-fluid">
                                             <div class="row">
@@ -59,87 +59,99 @@
                                                             </div>
                                                             <h4 class="card-title">My Tasks</h4>
                                                         </div>
-                                    
-                                    
-                                                        <div class="card-body">
-                                                            <div class="search" >
-                                                                <input  type="text" style="border: none; margin-left: 2px;" placeholder="Search..." >
-                                                                <i class="fa fa-search" aria-hidden="true" style="margin-right: 5px;"></i>
 
-                                                            </div>
-                                    
-                                                                <div class="material-datatables">
-                                                                    <div class="table-responsive" >
-                                                                        <ng-template #loading class="loaderHolder">
-                                                                            <!-- <ngx-spinner  type="ball-clip-rotate-multiple" size="medium">
-                                                                                <p class="loading">Loading...</p>
-                                                                            </ngx-spinner> -->
-                                                                        </ng-template>
-                                                                        <div >
-                                                                        <table class=" table table-bordered table-hover table-striped" datatable>
-                                                                               <thead>
-                                                                                <tr>
-                                                                                    <th><strong>View Details</strong></th>
-                                                                                    <th><strong>Status</strong></th>
-                                                                                    <th><strong>Permit Ref No</strong></th>
-                                                                                    <th><strong>Firm Name</strong></th>
-                                                                                    <th><strong>Application Date</strong></th>
-                                                                                    <th><strong>Product</strong></th>
-                                                                                    <th><strong>Brand Name</strong></th>
-                                                                                    <th><strong>Permit Number</strong></th>
-                                                                                    <th><strong>Section</strong></th>
-                                                                                    <th><strong>Region</strong></th>
-                                                                                    <th><strong>Country</strong></th>
-                                                                                    
-                                                                                    
-                                                                                    
-                                                                                </tr>
-                                                                                </thead>
-                                                                                <tfoot>
-                                                                            
-                                                                                </tfoot>
-                                                                                <tbody>
-                                                                               
-                                                                                <tr>
-                                                                                    <td class="text-right">
-                                                                                        <a mat-list-item routerLinkActive routerLink="/permit-details-admin"  class="btn btn"
-                                                                                         style="background: linear-gradient(60deg,#1b75bc,#1b75bc);
-                                                                                        background-color: rgba(0, 0, 0, 0);">View</a>
-                                                                         
+
+                                                        <div class="card-body">
+                                                            <div class="material-datatables">
+                                                                <div class="table-responsive" >
+                                                                    <ng-template #loading class="loaderHolder">
+                                                                        <!-- <ngx-spinner  type="ball-clip-rotate-multiple" size="medium">
+                                                                            <p class="loading">Loading...</p>
+                                                                        </ngx-spinner> -->
+                                                                    </ng-template>
+                                                                    <div >
+
+                                                                        <div class="mat-elevation-z8">
+                                                                            <mat-form-field appearance="standard" style="width:20%; float: right">
+                                                                                <mat-label>Search</mat-label>
+                                                                                <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
+                                                                            </mat-form-field>
+                                                                            <table class="table table-striped table-bordered table-hover" mat-table [dataSource]="dataSource" matSort style="width: 100%">
+
+                                                                                <!-- ID Column -->
+                                                                                <ng-container matColumnDef="permitRefNumber">
+                                                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Permit Ref No</th>
+                                                                                    <td mat-cell *matCellDef="let row"> {{row.permitRefNumber}} </td>
+                                                                                </ng-container>
+
+                                                                                <!-- Progress Column -->
+                                                                                <ng-container matColumnDef="createdOn">
+                                                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Application Date</th>
+                                                                                    <td mat-cell *matCellDef="let row"> {{row.createdOn}} </td>
+                                                                                </ng-container>
+
+                                                                                <!-- Name Column -->
+                                                                                <ng-container matColumnDef="productName">
+                                                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Product</th>
+                                                                                    <td mat-cell *matCellDef="let row"> {{row.productName}} </td>
+                                                                                </ng-container>
+
+                                                                                <!-- Fruit Column -->
+                                                                                <ng-container matColumnDef="tradeMark">
+                                                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Brand Name</th>
+                                                                                    <td mat-cell *matCellDef="let row"> {{row.tradeMark}} </td>
+                                                                                </ng-container>
+
+
+
+                                                                                <ng-container matColumnDef="sectionValue">
+                                                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Section</th>
+                                                                                    <td mat-cell *matCellDef="let row"> {{row.sectionValue}} </td>
+                                                                                </ng-container>
+                                                                                <ng-container matColumnDef="permitStatus">
+                                                                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
+                                                                                    <td mat-cell *matCellDef="let row"> {{row.permitStatus}} </td>
+                                                                                </ng-container>
+
+                                                                                <ng-container matColumnDef="actions">
+                                                                                    <th mat-header-cell *matHeaderCellDef> View</th>
+
+                                                                                    <td mat-cell *matCellDef="let row">
+                                                                                        <button class="btn btn-info tooltips"
+                                                                                                data-placement="top" (click)="gotoPermitDetails(row.id.toString())"
+                                                                                                data-original-title="Upload NWI">View</button>
                                                                                     </td>
-                                                                                    <td style="
-                                                                                    color: #0082f3;vertical-align: middle;padding: 12px 8px;
-                                                                                     font-size: .875rem;font-weight: 400;">Pending</td>
-                                                                                    <td>REFSM#202211162510B</td>
-                                                                                    <td>NAYLAN VENTURES</td>
-                                                                                    <td>16/11/2022</td>
-                                                                                    <td>Best drink</td>
-                                                                                    <td>Bestdrink</td>
-                                                                                    <td>SM#60003</td>
-                                                                                    <td>Food</td>
-                                                                                    <td>NORTH EASTERN REGION</td>
-                                                                                    <td>Kenya</td>
-                                                                                   
-                                         
+                                                                                </ng-container>
+
+                                                                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                                                                                <!-- Row shown when there is no matching data. -->
+                                                                                <tr class="mat-row" *matNoDataRow>
+                                                                                    <td class="mat-cell" colspan="4">No data matching the filter
+                                                                                        "{{input.value}}"
+                                                                                    </td>
                                                                                 </tr>
-                                                                                </tbody>
-                                                                            
-                                                                            
-                                                                        </table>
+                                                                            </table>
+
+                                                                            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"
+                                                                                           aria-label="Select page of users"></mat-paginator>
                                                                         </div>
+
                                                                     </div>
                                                                 </div>
-                                                                
                                                             </div>
+
                                                         </div>
-                                                        <!-- end content-->
                                                     </div>
-                                                    <!--  end card  -->
+                                                    <!-- end content-->
                                                 </div>
-                                                <!-- end col-md-12 -->
+                                                <!--  end card  -->
                                             </div>
-                                            <!-- end row -->
+                                            <!-- end col-md-12 -->
                                         </div>
+                                        <!-- end row -->
+                                    </div>
                                     
 
 
@@ -148,202 +160,12 @@
 
                                
                                  
-                                    <div class="main-content" style="margin-top: 1px;">
-                                        <div class="container-fluid">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="card">
-                                                        <div class="card-header card-header-icon">
-                                                            <div class="card-icon" style="background-color: #1b75bc;">
-                                                                <i class="material-icons">assignment</i>
-                                                            </div>
-                                                            <h4 class="card-title">All Applications</h4>
-                                                        </div>
-                                    
-                                    
-                                                        <div class="card-body">
-                                                            <div class="search">
-                                                                <input  type="text" style="border: none; margin-left: 2px;" placeholder="Search..." >
-                                                                <i class="fa fa-search" aria-hidden="true" style="margin-right: 5px;"></i>
 
-                                                            </div>
-                                    
-                                                                <div class="material-datatables">
-                                                                    <div class="table-responsive" >
-                                                                        <ng-template #loading class="loaderHolder">
-                                                                            <!-- <ngx-spinner  type="ball-clip-rotate-multiple" size="medium">
-                                                                                <p class="loading">Loading...</p>
-                                                                            </ngx-spinner> -->
-                                                                        </ng-template>
-                                                                        <div >
-                                                                        <table class="table table-striped table-bordered table-hover" datatable>
-                                                                            <thead>
-                                                                            <tr>
-                                                                                <th><strong>View Details</strong></th>
-                                                                                <th><strong>Status</strong></th>
-                                                                                <th><strong>Permit Ref No</strong></th>
-                                                                                <th><strong>Firm Name</strong></th>
-                                                                                <th><strong>Application Date</strong></th>
-                                                                                <th><strong>Product</strong></th>
-                                                                                <th><strong>Brand Name</strong></th>
-                                                                                <th><strong>Permit Number</strong></th>
-                                                                                <th><strong>Issue Date</strong></th>
-                                                                                <th><strong>Expiry Date</strong></th>
-                                                                                <th><strong>Section</strong></th>
-                                                                                <th><strong>Region</strong></th>
-                                                                                <th><strong>Country</strong></th>
-                                                                                
-                                                                               
-                                                                            </tr>
-                                                                            </thead>
-                                                                            <tfoot>
-                                                                        
-                                                                            </tfoot>
-                                                                            <tbody>
-                                                                            <tr>
-                                                                                <td class="text-right">
-                                                                                    <a mat-list-item routerLinkActive routerLink="/permit-details-admin"  class="btn btn"
-                                                                                     style="background: linear-gradient(60deg,#1b75bc,#1b75bc);
-                                                                                    background-color: rgba(0, 0, 0, 0);">View</a>
-                                                                     
-                                                                                </td>
-                                                                                <td style="
-                                                                                color: #0082f3;vertical-align: middle;padding: 12px 8px;
-                                                                                 font-size: .875rem;font-weight: 400;">Pending</td>
-                                                                                <td>REFSM#202211162510B</td>
-                                                                                <td>NAYLAN VENTURES</td>
-                                                                                <td>16/11/2022</td>
-                                                                                <td>Best drink</td>
-                                                                                <td>Bestdrink</td>
-                                                                                <td>SM#60003</td>
-                                                                                <td>16/11/2022</td>
-                                                                                <td>16/11/2022</td>
-                                                                                <td>Food</td>
-                                                                                <td>NORTH EASTERN REGION</td>
-                                                                                <td>Kenya</td>
-                                                                              
-                                                                                
-                                                                                
-                                                                                
-                                                                            
-                                                                            </tr>
-                                                                            </tbody>
-                                                                        </table>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                            </div>
-                                                        </div>
-                                                        <!-- end content-->
-                                                    </div>
-                                                    <!--  end card  -->
-                                                </div>
-                                                <!-- end col-md-12 -->
-                                            </div>
-                                            <!-- end row -->
-                                        </div>
-                                    
                                 </div>
                                 <div *ngIf="id == 'Complete Applications'" class="w-100">
                                
                                     
                                        
-                                    <div class="main-content" style="margin-top: 1px;">
-                                        <div class="container-fluid">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="card">
-                                                        <div class="card-header card-header-icon">
-                                                            <div class="card-icon" style="background-color: #1b75bc;">
-                                                                <i class="material-icons">assignment</i>
-                                                            </div>
-                                                            <h4 class="card-title">Complete Applications</h4>
-                                                        </div>
-                                    
-                                    
-                                                        <div class="card-body">
-                                                            <div class="search" >
-                                                                <input  type="text" style="border: none; margin-left: 2px;" placeholder="Search..." >
-                                                                <i class="fa fa-search" aria-hidden="true" style="margin-right: 5px;"></i>
-
-                                                            </div>
-                                    
-                                                                <div class="material-datatables">
-                                                                    <div class="table-responsive" >
-                                                                        <ng-template #loading class="loaderHolder">
-                                                                            <!-- <ngx-spinner  type="ball-clip-rotate-multiple" size="medium">
-                                                                                <p class="loading">Loading...</p>
-                                                                            </ngx-spinner> -->
-                                                                        </ng-template>
-                                                                        <div >
-                                                                            <table class="table table-striped table-bordered table-hover" datatable>
-                                                                         <thead>
-                                                                         <tr>
-                                                                            <th><strong>View Details</strong></th>
-                                                                            <th><strong>Status</strong></th>
-                                                                             <th><strong>Permit Ref No</strong></th>
-                                                                             <th><strong>Firm Name</strong></th>
-                                                                             <th><strong>Application Date</strong></th>
-                                                                             <th><strong>Product</strong></th>
-                                                                             <th><strong>Brand Name</strong></th>
-                                                                             <th><strong>Permit Number</strong></th>
-                                                                             <th><strong>Issue Date</strong></th>
-                                                                             <th><strong>Expiry Date</strong></th>
-                                                                             <th><strong>Section</strong></th>
-                                                                             <th><strong>Region</strong></th>
-                                                                             <th><strong>Country</strong></th>
-                                                                             
-                                                                            
-                                                                         </tr>
-                                                                         </thead>
-                                                                         <tfoot>
-                                                                     
-                                                                         </tfoot>
-                                                                         <tbody>
-                                                                         <tr>
-                                                                            <td class="text-right">
-                                                                                <a mat-list-item routerLinkActive routerLink="/permit-details-admin"  class="btn btn"
-                                                                                 style="background: linear-gradient(60deg,#1b75bc,#1b75bc);
-                                                                                background-color: rgba(0, 0, 0, 0);">View</a>
-                                                                 
-                                                                            </td>
-                                                                            <td style="
-                                                                            color: #0082f3;vertical-align: middle;padding: 12px 8px;
-                                                                             font-size: .875rem;font-weight: 400;">Pending</td>
-                                                                             <td>REFSM#202211162510B</td>
-                                                                             <td>NAYLAN VENTURES</td>
-                                                                             <td>16/11/2022</td>
-                                                                             <td>Best drink</td>
-                                                                             <td>Bestdrink</td>
-                                                                             <td>SM#60003</td>
-                                                                             <td>16/11/2022</td>
-                                                                             <td>16/11/2022</td>
-                                                                             <td>Food</td>
-                                                                             <td>NORTH EASTERN REGION</td>
-                                                                             <td>Kenya</td>
-                                                                           
-                                                                             
-                                                                             
-                                                                             
-                                                                         
-                                                                         </tr>
-                                                                         </tbody>
-                                                                     </table>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                            </div>
-                                                        </div>
-                                                        <!-- end content-->
-                                                    </div>
-                                                    <!--  end card  -->
-                                                </div>
-                                                <!-- end col-md-12 -->
-                                            </div>
-                                            <!-- end row -->
-                                        </div>
 
                                 </div>
 

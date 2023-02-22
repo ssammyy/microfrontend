@@ -951,9 +951,8 @@ interface IQaInspectionReportRecommendationRepository :
     ): QaInspectionReportRecommendationEntity?
 
 
-    fun findAllBySubmittedInspectionReportStatusAndApprovedRejectedStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
+    fun findAllBySubmittedInspectionReportStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
         submittedInspectionReportStatus: Int,
-        approvedRejectedStatus: Int,
         filledQpsmsStatus: Int,
         filledInspectionTestingStatus: Int,
         filledStandardizationMarkSchemeStatus: Int,
