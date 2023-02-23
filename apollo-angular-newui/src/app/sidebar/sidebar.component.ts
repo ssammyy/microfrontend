@@ -80,13 +80,13 @@ export const ROUTES: RouteInfo[] = [
             // {path: 'users', title: 'View Users ', ab: 'VU'},
         ],
     },
-    {
-        path: '/qa_task_list',
-        title: 'My Tasks',
-        type: 'link',
-        icontype: 'task',
-        privilege: ['QA_MANAGER_MODIFY', 'QA_OFFICER_MODIFY', 'QA_ASSESSORS_MODIFY'],
-    },
+    // {
+    //     path: '/qa_task_list',
+    //     title: 'My Tasks',
+    //     type: 'link',
+    //     icontype: 'task',
+    //     privilege: ['QA_MANAGER_MODIFY', 'QA_OFFICER_MODIFY', 'QA_ASSESSORS_MODIFY'],
+    // },
 
     {
         path: '/dmark/all_dmark',
@@ -955,7 +955,7 @@ export const ROUTES: RouteInfo[] = [
         title: 'International Standards',
         type: 'sub',
         children: [
-            {path: 'isProposalForm', title: 'Prepare Proposal', ab: 'C',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ'],},
+            {path: 'isProposalForm', title: 'Prepare Proposal', ab: 'C',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
             {path: 'isProposals', title: 'View Proposals ', ab: 'VP',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
             {path: 'isPrepareJustification', title: 'Prepare Justification', ab: 'PJ',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
             {path: 'isJustificationApp', title: 'View Justification', ab: 'VJ',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']},
@@ -975,24 +975,22 @@ export const ROUTES: RouteInfo[] = [
         path: '',
         title: 'Standards Review',
         type: 'sub',
+        children: [
+            {path: 'standardsForReview', title: 'View Standards', ab: 'VW',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
+            {path: 'systemicReviewComments', title: 'Comment on Systemic Review', ab: 'CP',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],},
+            {path: 'reviewStandardsTc', title: 'Review Comments', ab: 'CA',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
+            {path: 'reviewStandardsSPC', title: 'View Recommendations', ab: 'VR',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']},
+            // {path: 'reviewStandardsSAC', title: 'SAC SEC Tasks', ab: 'SAC'},
+            // {path: 'reviewStandardsProofReader', title: 'Proof Read', ab: 'PR'},
+            // {path: 'reviewStandardsHOP', title: 'HOP Tasks', ab: 'HOP'},
+            // {path: 'reviewStandardsEditor', title: 'Editor Tasks', ab: 'ET'},
+            // {path: 'reviewStandardsDraughtsMan', title: 'Draughting', ab: 'DT'},
+            // {path: 'reviewStandardsGazette', title: 'Gazette Standard', ab: 'GS'},
+            // {path: 'reviewStandardsGazetteDate', title: 'Update Gazetted Standard', ab: 'UGS'},
+        ],
         icontype: 'quiz',
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],
         collapse: 'SR',
-        children: [
-            {path: 'standardsForReview', title: 'View Standards', ab: 'VW'},
-            {path: 'systemicReviewComments', title: 'Comment on Proposal', ab: 'CP'},
-            {path: 'reviewStandardsTc', title: 'TC SEC Tasks', ab: 'TC'},
-            {path: 'reviewStandardsSPC', title: 'SPC SEC Tasks', ab: 'SPC'},
-            {path: 'reviewStandardsSAC', title: 'SAC SEC Tasks', ab: 'SAC'},
-            {path: 'reviewStandardsProofReader', title: 'Proof Read', ab: 'PR'},
-            {path: 'reviewStandardsHOP', title: 'HOP Tasks', ab: 'HOP'},
-            {path: 'reviewStandardsEditor', title: 'Editor Tasks', ab: 'ET'},
-            {path: 'reviewStandardsDraughtsMan', title: 'Draughting', ab: 'DT'},
-            {path: 'reviewStandardsGazette', title: 'Gazette Standard', ab: 'GS'},
-            {path: 'reviewStandardsGazetteDate', title: 'Update Gazetted Standard', ab: 'UGS'},
-
-
-        ],
     },
     {
         path: '',

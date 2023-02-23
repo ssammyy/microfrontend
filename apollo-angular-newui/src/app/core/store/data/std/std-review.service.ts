@@ -3,7 +3,7 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {
   CommentOnProposal,
-  CommentsOnProposal,
+  CommentsOnProposal, ComStdRemarks,
   GazetteStandard,
   InternationalStandardsComments,
   KNWCommittee,
@@ -18,7 +18,7 @@ import {
   ReviewProposalComments,
   ReviewRecommendation,
   ReviewStandardsComments,
-  RevProposalComments,
+  RevProposalComments, SRProposalComments, SRStdComments, SRStdForRecommendation,
   StakeholderProposalComments,
   StandardReviewComments,
   StandardReviewRecommendations,
@@ -108,6 +108,11 @@ export class StdReviewService {
     const params = new HttpParams();
     return this.http.get<StandardsForReview[]>(url, {params}).pipe();
   }
+  public getProposal(): Observable<SRProposalComments[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_GET_PROPOSALS_FOR_COMMENT);
+    const params = new HttpParams();
+    return this.http.get<SRProposalComments[]>(url, {params}).pipe();
+  }
 
   public standardReviewForm(standardsForReview: StandardsForReview): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_INITIATE_STD_REVIEW);
@@ -139,6 +144,23 @@ export class StdReviewService {
           return throwError(fault);
         })
     );
+  }
+
+  public getProposalsComments(reviewId: any): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_GET_PROPOSAL_COMMENTS);
+    const params = new HttpParams().set('reviewId', reviewId);
+    return this.http.get<SRStdComments>(url, {params}).pipe();
+  }
+
+  public getStandardsForRecommendation(): Observable<SRStdForRecommendation[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_STD_FOR_RECOMMENDATION);
+    const params = new HttpParams();
+    return this.http.get<SRStdForRecommendation[]>(url, {params}).pipe();
+  }
+  public getStandardsForSpcAction(): Observable<SRStdForRecommendation[]> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_STD_FOR_SPC_ACTION);
+    const params = new HttpParams();
+    return this.http.get<SRStdForRecommendation[]>(url, {params}).pipe();
   }
 
   public getTcSecTasks(): Observable<StandardReviewTasks[]> {

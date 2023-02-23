@@ -56,6 +56,10 @@ class StandardReview {
     @Basic
     var standardType:String? =null
 
+    @Column(name="REQUEST_NUMBER")
+    @Basic
+    var requestNumber:String? =null
+
     @Column(name="ASSIGNED_TO")
     @Basic
     var assignedTo:Long? =null
@@ -119,6 +123,10 @@ class StandardReview {
     @Column(name="STATUS")
     @Basic
     var status:Long? =null
+
+    @Column(name="FEED_BACK")
+    @Basic
+    var feedback:Long? =null
 
 
 }

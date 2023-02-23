@@ -1774,6 +1774,28 @@ export interface XStandardsForReview {
     date: Timestamp<any>;
     scope: string;
 }
+export interface SRProposalComments{
+    id: string;
+    standardNumber: string;
+    title: string;
+    documentType: string;
+    preparedBy: string;
+    datePrepared: Timestamp<any>;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    standardType: string;
+    assignedTo: number;
+    standardId: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    dateFormed: Timestamp<any>;
+    tcSecretary: string;
+    edition: string;
+    operationOption: string;
+}
 
 export interface RevProposalComments {
     id: number;
@@ -1806,6 +1828,47 @@ export interface CommentOnProposal {
     typeOfComment: string;
     proposedChange: string;
     proposalId: number;
+}
+export interface SRCommentsOnProposal{
+    id: number;
+    title: string;
+    standardNumber: string;
+    standardType: string;
+    documentType: string;
+    dateFormed: Timestamp<any>;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    nameOfTcSecretary: string;
+    edition: string;
+    choice: string;
+    justification: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+}
+export interface SRStdForRecommendation{
+    id: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    standardNumber: string;
+    standardType: string;
+    dateFormed: Timestamp<any>;
+    userName: string;
+    adoptionComment: string;
+    commentTime: string;
+    proposalId: string;
+    documentType: string;
+    paragraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+    requestNumber: string;
+    feedback : number;
+    subject : string;
+    description : string;
 }
 
 export interface StandardReviewTasks {
@@ -1864,9 +1927,9 @@ export interface ReviewProposalComments {
 
 export interface ReviewRecommendation {
     proposalId: number;
-    summaryOfRecommendations: string;
+    recommendation: string;
     processId: string;
-    taskId: string;
+    reviewId: number;
     feedback: number;
 }
 
@@ -1989,6 +2052,24 @@ export interface SchemeMembership {
     invoicePaymentDate: Date;
 
 
+}
+export interface SRStdComments{
+    id : string;
+    reviewId : string;
+    standardId : string;
+    title : string;
+    standardNumber : string;
+    documentType : string;
+    dateFormed : Timestamp<any>;
+    circulationDate : Timestamp<any>;
+    closingDate : Timestamp<any>;
+    nameOfTcSecretary : string;
+    justification : string;
+    edition : string;
+    nameOfRespondent : string;
+    positionOfRespondent : string;
+    nameOfOrganization : string;
+    commentTime : Timestamp<any>;
 }
 
 export interface ComStdRemarks {
