@@ -820,7 +820,7 @@ export class MsService {
     // tslint:disable-next-line:max-line-length
     public loadSearchFieldInspectionSummaryViewList(page: string, records: string, complaintViewSearchValues: ConsumerComplaintViewSearchValues): Observable<ApiResponseModel> {
         // console.log(data);
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_SUBMITTED_SAMPLES_SUMMARY_SEARCH);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_REPORTS.MS_FIELD_INSPECTION_SUMMARY_SEARCH);
         const params = new HttpParams()
             .set('page', page)
             .set('records', records);

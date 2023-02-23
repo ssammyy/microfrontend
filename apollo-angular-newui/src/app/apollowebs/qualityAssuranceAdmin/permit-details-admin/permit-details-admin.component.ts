@@ -191,7 +191,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         noDataMessage: 'No data found',
         columns: {
             param: {
-                title: 'PARAM',
+                title: 'PARAMETERS',
                 type: 'string',
                 filter: false,
             },
@@ -1579,7 +1579,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
-                        this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULL SUCCESSFULLY', () => {
+                        this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
