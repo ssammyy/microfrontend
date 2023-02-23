@@ -1,9 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
-import org.flowable.engine.ProcessEngine
-import org.flowable.engine.RepositoryService
-import org.flowable.engine.RuntimeService
-import org.flowable.engine.TaskService
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
@@ -24,24 +20,16 @@ import java.util.*
 
 @Service
 class SchemeMembershipService(
-    private val runtimeService: RuntimeService,
-    private val taskService: TaskService,
-    private val processEngine: ProcessEngine,
-    private val repositoryService: RepositoryService,
     private val notifications: Notifications,
     val commonDaoServices: CommonDaoServices,
     applicationMapProperties: ApplicationMapProperties,
     private val userRolesRepo: IUserRolesRepository,
     private val userRolesAssignRepo: IUserRoleAssignmentsRepository,
     private val usersRepo: IUserRepository,
-
     private val schemeMembershipRequestRepository: SchemeMembershipRequestRepository
 ) {
 
     var PROCESS_DEFINITION_KEY: String = "schemeMembership"
-    val TASK_CANDIDATE_GROUP_HOD_SEC = "SD_HEAD_OF_SIC"
-    val TASK_CANDIDATE_GROUP_SIC_OFFICER = "SD_SIC_OFFICER"
-    val sic_assignee = "3"
     var appId = applicationMapProperties.mapStandardsDevelopment
 
 
