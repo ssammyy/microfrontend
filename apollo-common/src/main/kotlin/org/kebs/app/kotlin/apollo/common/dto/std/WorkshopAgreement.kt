@@ -660,13 +660,15 @@ data class StandardReviewCommentDto(
     val justification: String?=null,
     val nameOfRespondent: String?=null,
     val positionOfRespondent: String?=null,
-    val nameOfOrganization: String?=null
+    val nameOfOrganization: String?=null,
+    val standardId: Long?=null
 )
 {}
 
 data class StandardReviewRecommendationDto(
     val reviewId: Long?=null,
-    val recommendation: String?=null
+    val recommendation: String?=null,
+    val feedback: Long?=null
 ){
 
 }
@@ -692,6 +694,8 @@ data class SpcStandardReviewCommentDto(
     val remarks: String?=null,
     val subject: String?=null,
     val description: String?=null,
+    val feedback: Long?=null,
+
 )
 {}
 

@@ -67,7 +67,7 @@
                                                     <div class="row col-12">
                                                         <div class="form-group col-12">
                                                             <label>Document Type </label>
-                                                            <input class="form-control" formControlName="documentType" value="{{documentType}}" name="documentType" type="text" >
+                                                            <input class="form-control" formControlName="documentType" value="{{documentType}}" name="documentType" type="text" disabled>
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label>Date of Circulation <span style="color: red"> *(If not selected current date will be selected)</span> </label>
@@ -75,11 +75,11 @@
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label>Kenya Standard Number </label>
-                                                            <input class="form-control" formControlName="standardNumber" value="{{actionRequest?.standardNumber}}" name="standardNumber" type="text" >
+                                                            <input class="form-control" formControlName="standardNumber" value="{{actionRequest?.standardNumber}}" name="standardNumber" type="text" disabled >
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label>Title</label>
-                                                            <textarea class="form-control" formControlName="title"  value="{{actionRequest?.title}}" name="title" type="text"></textarea>
+                                                            <textarea class="form-control" formControlName="title"  value="{{actionRequest?.title}}" name="title" type="text" disabled></textarea>
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label>Edition </label>
@@ -87,10 +87,12 @@
                                                         </div>
                                                         <div class="form-group col-12">
                                                             <label>Date Standard was formed </label>
-                                                            <input class="form-control" formControlName="dateFormed" value="{{actionRequest?.dateFormed}}"  name="dateFormed" type="text" >
+                                                            <input class="form-control" formControlName="dateFormed" value="{{actionRequest?.dateFormed}}"  name="dateFormed" type="date" >
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <input class="form-control" formControlName="standardType" value="{{actionRequest?.standardType}}"  name="standardType" type="hidden" >
+                                                <input class="form-control" formControlName="id" value="{{actionRequest?.id}}"  name="id" type="hidden" >
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
