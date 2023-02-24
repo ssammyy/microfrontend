@@ -96,6 +96,11 @@ export class SchemeMembershipFormComponent implements OnInit {
 
     }
 
+    showToasterError(title: string, message: string) {
+        this.notifyService.showError(message, title)
+
+    }
+
     get formStdRequest(): any {
         return this.stdRequestFormGroup.controls;
     }
@@ -139,22 +144,25 @@ export class SchemeMembershipFormComponent implements OnInit {
             this.schemeMembershipService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
                 (response) => {
 
-                    // let requestNumber = response.responseText+":"+response.body.body.requestNumber;
+                    if (response.body == 'You Have Already Registered') {
+                        this.showToasterError(response.httpStatus, `You Have Already Registered`);
+                        this.SpinnerService.hide();
 
-                    this.showToasterSuccess(response.httpStatus, `Successfully submitted your application`);
-
-                    this.SpinnerService.hide();
-                    formDirective.resetForm();
-                    this.isFormSubmitted = false;
-                    this.stdRequestFormGroup.reset()
-                    swal.fire({
-                        title: 'Your Application Has Been Submitted.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
+                    } else {
+                        this.showToasterSuccess(response.httpStatus, `Successfully submitted your application`);
+                        this.SpinnerService.hide();
+                        formDirective.resetForm();
+                        this.isFormSubmitted = false;
+                        this.stdRequestFormGroup.reset()
+                        swal.fire({
+                            title: 'Your Application Has Been Submitted.',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    }
 
                 },
                 (error: HttpErrorResponse) => {
@@ -170,6 +178,5 @@ export class SchemeMembershipFormComponent implements OnInit {
 
 
     }
-
 
 }

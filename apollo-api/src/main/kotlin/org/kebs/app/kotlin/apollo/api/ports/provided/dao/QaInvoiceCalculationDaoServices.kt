@@ -219,17 +219,22 @@ class QaInvoiceCalculationDaoServices(
                 invoiceDetailsList.forEach { invoice ->
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
-                            totalAmountPayable = when {
-                                invoice.itemAmount == BigDecimal.ZERO -> {
-                                    masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                            qaInvoiceDetailsRepo.findByInvoiceMasterId(masterInvoicePrevious.id)
+                                ?.let { invoiceDetailsPreviousList ->
+                                    invoiceDetailsPreviousList.forEach { invoicePrev ->
+                                        if (invoicePrev.fmarkStatus != 1){
+                                            totalAmountPayable = when (invoicePrev.itemAmount) {
+                                                BigDecimal.ZERO -> {
+                                                    invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                                }
+                                                else -> {
+                                                    invoice.itemAmount?.minus(invoicePrev.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                                                }
+                                            }
+                                        }
+                                    }
+
                                 }
-                                invoice.itemAmount!! > masterInvoicePrevious.subTotalBeforeTax -> {
-                                    invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
-                                }
-                                else -> {
-                                    masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
-                                }
-                            }
                     }
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
@@ -260,17 +265,21 @@ class QaInvoiceCalculationDaoServices(
                 invoiceDetailsList.forEach { invoice ->
                     qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(invoiceMaster.permitId ?: throw Exception("PERMIT ID MISSING"))
                         ?.let {masterInvoicePrevious->
-                            totalAmountPayable = when  {
-                                invoice.itemAmount == BigDecimal.ZERO  -> {
-                                    invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                            qaInvoiceDetailsRepo.findByInvoiceMasterId(masterInvoicePrevious.id)
+                                ?.let { invoiceDetailsPreviousList ->
+                                    invoiceDetailsPreviousList.forEach { invoicePrev ->
+                                        if (invoicePrev.fmarkStatus != 1){
+                                            totalAmountPayable = when (invoice.itemAmount) {
+                                                BigDecimal.ZERO -> {
+                                                    invoicePrev.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL")
+                                                }
+                                                else -> {
+                                                    invoicePrev.itemAmount?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                                invoice.itemAmount!! > masterInvoicePrevious.subTotalBeforeTax -> {
-                                    invoice.itemAmount?.minus(masterInvoicePrevious.subTotalBeforeTax?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
-                                }
-                                else -> {
-                                    masterInvoicePrevious.subTotalBeforeTax?.minus(invoice.itemAmount?: throw ExpectedDataNotFound("INVOICE AMOUNT IS NULL"))!!
-                                }
-                            }
                     }
                 }
             } ?: throw ExpectedDataNotFound("NO QA INVOICE DETAILS FOUND")
@@ -846,10 +855,8 @@ class QaInvoiceCalculationDaoServices(
          *  same token that acted as promotion or discount so that they can be able to be moved to next process
          *
          * */
-        val companyListMediumType =
-            qaDaoServices.findAllCompanyWithTurnOverID(applicationMapProperties.mapQASmarkMediumTurnOverId, 1)
-        val companyListSmallType =
-            qaDaoServices.findAllCompanyWithTurnOverID(applicationMapProperties.mapQASmarkJuakaliTurnOverId, 1)
+        val companyListMediumType = qaDaoServices.findAllCompanyWithTurnOverID(applicationMapProperties.mapQASmarkMediumTurnOverId, 1)
+        val companyListSmallType = qaDaoServices.findAllCompanyWithTurnOverID(applicationMapProperties.mapQASmarkJuakaliTurnOverId, 1)
 
         val allCompanyTogether = mutableListOf<CompanyProfileEntity>()
         allCompanyTogether.addAll(companyListSmallType)

@@ -42,6 +42,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var ssfCompletedStatus: Int? = null
 
+    @Column(name = "DELETED_STATUS")
+    @Basic
+    var deletedStatus: Int? = null
+
 
     @Column(name = "APPLICATION_STATUS")
     @Basic
@@ -357,7 +361,7 @@ class PermitApplicationsEntity : Serializable {
 
     @Column(name = "FMARK_GENERATED")
     @Basic
-    var fmarkGenerated: Int? = null
+    var fmarkGenerated: Int? = 0
 
     @Column(name = "FMARK_GENERATE_STATUS")
     @Basic

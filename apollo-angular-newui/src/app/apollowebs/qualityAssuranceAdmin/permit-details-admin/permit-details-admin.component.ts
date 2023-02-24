@@ -110,7 +110,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     addStandards: FormGroup;
     factoryVisit: FormGroup;
     docFileNameForm: FormGroup;
-    docSSFUpload: FormGroup;
+    docSSFUploadForm: FormGroup;
 
     updateSectionForm: FormGroup;
     updateBrandForm: FormGroup;
@@ -192,7 +192,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         noDataMessage: 'No data found',
         columns: {
             param: {
-                title: 'PARAM',
+                title: 'PARAMETERS',
                 type: 'string',
                 filter: false,
             },
@@ -504,6 +504,11 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         this.docFileNameForm = this.formBuilder.group({
             docFileName: ['', Validators.required],
+        });
+
+
+        this.docSSFUploadForm = this.formBuilder.group({
+            docSSFUpload: null,
         });
 
         this.recommendationForm = this.formBuilder.group({
@@ -1620,7 +1625,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
-                        this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULL SUCCESSFULLY', () => {
+                        this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
@@ -1696,6 +1701,8 @@ export class PermitDetailsAdminComponent implements OnInit {
             const file = this.uploadedSsfFilesOnly;
             const formData = new FormData();
             formData.append('permitID', String(this.permitID));
+            formData.append('docSSFUpload', this.docSSFUploadForm.get('docSSFUpload').value);
+            formData.append('data', 'SCHEME_OF_SUPERVISION');
             for (let i = 0; i < file.length; i++) {
                 console.log(file[i]);
                 formData.append('SSFdocFile', file[i], file[i].name);

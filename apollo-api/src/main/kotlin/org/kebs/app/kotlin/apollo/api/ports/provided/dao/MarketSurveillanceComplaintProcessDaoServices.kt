@@ -414,8 +414,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun msFieldInspectionSummaryViewSearchLists(page: PageRequest,search: ConsumerComplaintViewSearchValues): ApiResponseModel {
-        val fieldInspectionSummaryList = fieldInspectionSummaryReportViewRepo.findFilteredFieldInspectionSummaryReport(search.startDate, search.endDate, search.assignIO, search.sectorID);
+    fun msFieldInspectionSummaryViewSearchLists(page: PageRequest,search: FieldInspectionSummarySearch): ApiResponseModel {
+        val fieldInspectionSummaryList = fieldInspectionSummaryReportViewRepo.findFilteredFieldInspectionSummaryReport(search.startDate, search.endDate, search.assignIO, search.sectorID, search.outletName);
         val sampleProductPage: PageImpl<FieldInspectionSummaryReportViewEntity>? = fieldInspectionSummaryList?.size?.let { PageImpl(fieldInspectionSummaryList, page, it.toLong()) }
         return   commonDaoServices.setSuccessResponse(fieldInspectionSummaryList,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)
 
@@ -432,7 +432,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun msSubmittedSamplesSummaryViewSearchLists(page: PageRequest,search: SubmittedSamplesSummaryViewSearchValues): ApiResponseModel {
         val submittedSampleSummary = submittedSamplesSummaryReportViewRepo.findFilteredSubmittedSamplesSummaryReport(
-            search.startDate, search.endDate, search.sampleReferences, search.assignIO, search.sectorID
+            search.startDate, search.endDate, search.sampleReferences, search.assignIO, search.sectorID,
         );
         val sampleProductPage: PageImpl<SubmittedSamplesSummaryReportViewEntity>? = submittedSampleSummary?.size?.let { PageImpl(submittedSampleSummary, page, it.toLong()) }
         return   commonDaoServices.setSuccessResponse(submittedSampleSummary,sampleProductPage?.totalPages,sampleProductPage?.number,sampleProductPage?.totalElements)

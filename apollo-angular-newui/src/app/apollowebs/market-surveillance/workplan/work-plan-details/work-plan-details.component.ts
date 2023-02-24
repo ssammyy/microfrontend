@@ -226,6 +226,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFilesDataReport: FileList;
   arrayOfUploadedDataReportFiles: File[] = [];
   uploadedFilesOnly: FileList;
+  uploadedSuccessfulAppealFiles: FileList;
+  uploadedAppealFiles: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
@@ -238,6 +240,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   selectedRegionName: string;
   selectedTownName: string;
   selectedCountyName: string;
+
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
 
@@ -1786,11 +1789,11 @@ export class WorkPlanDetailsComponent implements OnInit {
       county: ['', Validators.required],
       town: ['', Validators.required],
       marketCenter: ['', Validators.required],
+      outletDetails: ['', Validators.required],
       outletName: ['', Validators.required],
       physicalLocation: ['', Validators.required],
       emailAddress: ['', Validators.required],
       phoneNumber: ['', Validators.required],
-      outletDetails: ['', Validators.required],
       mostRecurringNonCompliant: ['', Validators.required],
       personMet: ['', Validators.required],
       samplesDrawnAndSubmitted: ['', Validators.required],
@@ -1803,7 +1806,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.investInspectReportForm = this.formBuilder.group({
       id: null,
-      reportReference: ['', Validators.required],
+      reportReference: null,
       reportClassification: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
@@ -1970,6 +1973,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       complianceRemarks: ['', Validators.required],
       totalCompliance: null,
       totalComplianceTest: null,
+      failedParameters: [''],
     });
 
     this.verificationPermitForm = this.formBuilder.group({
@@ -1983,6 +1987,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
+      otherRecommendationName: [''],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -3126,13 +3131,65 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveClientAppealed(valid: boolean) {
+
+    if(this.uploadedAppealFiles.length > 0){
+        this.saveAppealFilesResults("CLIENT_APPEAL_DOCUMENT");
+    }
     if (valid) {
-      this.msService.showSuccessWith2Message('Are you sure your want to add the detals?', 'You won\'t be able to Update the Details after submission!',
+      this.msService.showSuccessWith2Message('Are you sure your want to add the details?', 'You won\'t be able to Update the Details after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
             this.saveClientAppealed(valid);
           });
     }
+  }
+
+  saveAppealFilesResults(docName: string){
+    this.SpinnerService.show();
+    const appealFiles = this.uploadedAppealFiles;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < appealFiles.length; i++) {
+      formData.append('docFile', appealFiles[i], appealFiles[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          this.SpinnerService.hide();
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
+  }
+
+  saveSuccessfulAppealFilesResults(docName: string){
+    this.SpinnerService.show();
+    const successfulAppealFiles = this.uploadedSuccessfulAppealFiles;
+    const formData = new FormData();
+    formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+    formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+    formData.append('docTypeName', docName);
+    for (let i = 0; i < successfulAppealFiles.length; i++) {
+      formData.append('docFile', successfulAppealFiles[i], successfulAppealFiles[i].name);
+    }
+    this.msService.saveWorkPlanFiles(formData).subscribe(
+        (data: any) => {
+          this.workPlanInspection = data;
+          this.SpinnerService.hide();
+          this.msService.showSuccess('APPEAL FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+        },
+        error => {
+          this.SpinnerService.hide();
+          console.log(error);
+          this.msService.showError('AN ERROR OCCURRED');
+        },
+    );
   }
 
 
@@ -3163,10 +3220,13 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveClientAppealedSuccessfully(valid: boolean) {
+    if(this.uploadedSuccessfulAppealFiles.length > 0){
+      this.saveSuccessfulAppealFilesResults("SUCCESSFUL/UNSUCCESSFUL_APPEAL_DOCUMENT");
+    }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to save the details?', 'You won\'t be able to Update the Details after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can go back and  update the remarks you have added Before Saving', 'BS NUMBER ADDING ENDED SUCCESSFUL', () => {
+          'You can go back and change the details/files Before Saving', 'SUCCESS', () => {
             this.saveClientAppealedSuccessfully(valid);
           });
     }
@@ -4914,7 +4974,14 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveInvestInspectReport() {
     this.submitted = true;
+    this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
+        'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
+          this.saveInitialReport();
+        });
 
+  }
+
+  saveInitialReport(){
     if (this.investInspectReportForm.valid) {
       this.SpinnerService.show();
       this.dataSaveInvestInspectReport = {...this.dataSaveInvestInspectReport, ...this.investInspectReportForm.value};
@@ -4938,7 +5005,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       );
 
     } else if (this.investInspectReportForm.invalid) {
-      this.msService.showError('KINDLY FILL IN THE FIELDS REQUIRED');
+      this.msService.showError("PLEASE FILL IN ALL THE REQUIRED FIELDS");
     }
   }
 

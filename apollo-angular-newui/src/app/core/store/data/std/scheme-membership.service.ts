@@ -34,6 +34,12 @@ export class SchemeMembershipService {
     public getHodTasks(): Observable<SchemeMembership[]> {
         return this.http.get<SchemeMembership[]>(`${this.apiServerUrl}` + 'hod/tasks')
     }
+    public getHodTasksUnassigned(): Observable<SchemeMembership[]> {
+        return this.http.get<SchemeMembership[]>(`${this.apiServerUrl}` + 'hod/getHodTasksUnassigned')
+    }
+    public getHodTasksAssigned(): Observable<SchemeMembership[]> {
+        return this.http.get<SchemeMembership[]>(`${this.apiServerUrl}` + 'hod/getHodTasksAssigned')
+    }
 
 
     public assignTask(schemeMembership: SchemeMembership): Observable<any> {

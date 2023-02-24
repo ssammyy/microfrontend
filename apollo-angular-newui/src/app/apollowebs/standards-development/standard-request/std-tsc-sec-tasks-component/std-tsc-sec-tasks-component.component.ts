@@ -1,4 +1,13 @@
-import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    Input,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+    ViewEncapsulation
+} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {
     Document,
@@ -25,6 +34,9 @@ import {CommitteeService} from "../../../../core/store/data/std/committee.servic
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
+import {StandardsDto} from "../../../../core/store/data/master/master.model";
+import {QaService} from "../../../../core/store/data/qa/qa.service";
+import {MsService} from "../../../../core/store/data/ms/ms.service";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -36,7 +48,9 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 @Component({
     selector: 'app-std-tsc-sec-tasks-component',
     templateUrl: './std-tsc-sec-tasks-component.component.html',
-    styleUrls: ['./std-tsc-sec-tasks-component.component.css']
+    styleUrls: ['../../../../../../node_modules/@ng-select/ng-select/themes/material.theme.css'],
+    encapsulation: ViewEncapsulation.None,
+
 })
 export class StdTscSecTasksComponentComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
@@ -71,6 +85,9 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     rejectedNwiS: NwiItem[] = [];
     public nwiForVotes: VotesNwiTally[] = [];
 
+    loadedStandards: StandardsDto[] = [];
+    loading = false;
+    loadingText: string;
 
     displayedColumns: string[] = ['proposalTitle', 'scope', 'nameOfProposer', 'referenceNumber', 'actions'];
     dataSource!: MatTableDataSource<NwiItem>;
@@ -106,6 +123,8 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         private SpinnerService: NgxSpinnerService,
         private notifyService: NotificationService,
         private committeeService: CommitteeService,
+        private msService: MsService,
+
     ) {
     }
 
@@ -137,6 +156,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         this.getAllNwisUnderVote();
         this.getRejectedNwis();
         this.getApprovedNwis();
+        this.loadAllStandards();
 
         this.getLiasisonOrganization();
         this.dropdownSettings = {
@@ -204,13 +224,23 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     // }
 
     public getTCSECTasks(): void {
+        this.loading = true;
+        this.SpinnerService.show()
         this.standardDevelopmentService.getTCSECTasks().subscribe(
             (response: StandardRequestB[]) => {
                 this.secTasks = response;
                 this.rerender()
+                this.SpinnerService.hide()
+                this.loading = false;
+
+
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.SpinnerService.hide()
+                this.loading = false;
+
+
             }
         )
     }
@@ -266,6 +296,9 @@ export class StdTscSecTasksComponentComponent implements OnInit {
                     this.hideModel();
                     this.SpinnerService.hide();
                     this.getTCSECTasks();
+                    this.getApprovedNwis()
+                    this.getRejectedNwis()
+
 
                 }
             },
@@ -329,6 +362,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         button.click();
 
     }
+
     public onOpenModalViewNwi(nwiId: string, mode: string): void {
         const container = document.getElementById('main-container');
         const button = document.createElement('button');
@@ -341,7 +375,6 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             this.getAllDocs(String(nwiId))
             button.setAttribute('data-target', '#viewNwi');
         }
-
 
 
         // @ts-ignore
@@ -542,6 +575,18 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             (error: HttpErrorResponse) => {
                 alert(error.message);
             }
+        );
+    }
+
+    loadAllStandards() {
+        this.msService.msStandardsListDetails().subscribe(
+            (standardsList: StandardsDto[]) => {
+                this.loadedStandards = standardsList;
+            },
+            error => {
+                console.log(error);
+                this.msService.showError('AN ERROR OCCURRED');
+            },
         );
     }
 

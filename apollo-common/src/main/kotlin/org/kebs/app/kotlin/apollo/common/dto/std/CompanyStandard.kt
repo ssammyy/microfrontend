@@ -147,3 +147,18 @@ class ComDraftCommentDto(
 ){
 
 }
+
+class WorkshopAgreementDecisionDto(
+    var accentTo: String?=null,
+    var departmentId: Long?=null,
+    var subject: String?=null,
+    var description: String?=null,
+    var requestNumber: String?=null,
+    var standardNumber: String?=null,
+    var id: Long?=null,
+    var requestId: Long?=null,
+    var title: String?=null,
+    var remarks: String?=null,
+){
+
+}

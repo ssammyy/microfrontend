@@ -221,28 +221,53 @@ export class StandardTaskComponent implements OnInit {
 
     public onReviewTask(): void {
 
-        if (this.stdHOFReview.valid) {
-            this.SpinnerService.show();
+        if (this.stdHOFReview.controls['sdResult'].value == 'Reject For Review') {
+            if (this.stdHOFReview.controls['reason'].value != '') {
+                this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
+                    (response) => {
+                        this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
+                        this.SpinnerService.hide();
+                        this.getHOFTasks();
+                        this.getApprovedTasks();
+                        this.getRejectedTasks();
+                        this.stdHOFReview.reset();
+                        this.hideModel()
+                    },
+                    (error: HttpErrorResponse) => {
+                        alert(error.message);
+                        this.SpinnerService.hide();
 
-            this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
-                (response) => {
-                    this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
-                    this.SpinnerService.hide();
-                    this.getHOFTasks();
-                    this.getApprovedTasks();
-                    this.getRejectedTasks();
-                    this.stdHOFReview.reset();
-                    this.hideModel()
-                },
-                (error: HttpErrorResponse) => {
-                    alert(error.message);
-                    this.SpinnerService.hide();
+                    }
+                )
+            } else {
+                this.showToasterError("Error", `Please Enter A Reason For Rejection.`);
 
-                }
-            )
+            }
         } else {
-            this.showToasterError("Error", `Please Fill In All The Fields.`);
 
+            if (this.stdHOFReview.valid) {
+                this.SpinnerService.show();
+
+                this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
+                    (response) => {
+                        this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
+                        this.SpinnerService.hide();
+                        this.getHOFTasks();
+                        this.getApprovedTasks();
+                        this.getRejectedTasks();
+                        this.stdHOFReview.reset();
+                        this.hideModel()
+                    },
+                    (error: HttpErrorResponse) => {
+                        alert(error.message);
+                        this.SpinnerService.hide();
+
+                    }
+                )
+            } else {
+                this.showToasterError("Error", `Please Fill In All The Fields.`);
+
+            }
         }
     }
 

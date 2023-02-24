@@ -56,14 +56,14 @@ export class PermitEntityDto {
     sectionValue: string;
     permitAwardStatus: boolean;
 
-    postalAddress:string;
-    telephoneNo:string;
+    postalAddress: string;
+    telephoneNo: string;
 
-    commodityDescription:string;
+    commodityDescription: string;
 
-    brandName:string;
+    brandName: string;
 
-    standardNumber:string;
+    standardNumber: string;
 
     permitExpiredStatus: boolean;
     taskID: bigint;
@@ -479,6 +479,7 @@ export class PlantDetailsDto {
     designation: string;
     contactPerson: string;
 }
+
 export class InspectionReportDetailsDto {
     id: bigint;
     refNo: string;
@@ -686,7 +687,17 @@ export class AllInspectionDetailsApplyDto {
     supervisorName: string;
     supervisorDate: Date;
 
-    permitDetails:PermitEntityDto;
+    permitDetails: PermitEntityDto;
+}
+
+
+export class InspectionReportToBeClonedDto {
+    id: number;
+    recommendations: string;
+    refNo: string;
+    permitId: number;
+    permitRefNumber: number;
+    tradeMark: string;
 }
 
 

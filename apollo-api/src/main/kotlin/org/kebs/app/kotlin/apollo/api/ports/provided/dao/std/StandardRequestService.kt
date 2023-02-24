@@ -109,7 +109,6 @@ class StandardRequestService(
     }
 
 
-
     fun updateDepartmentStandardRequest(standardRequest: StandardRequest) {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val department = departmentRepository.findByIdOrNull(standardRequest.departmentId?.toLong())
@@ -244,8 +243,13 @@ class StandardRequestService(
     }
 
     fun getAllStandardRequestsToPrepareNWI(): List<StandardsDto> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
         val standardRequest: List<StandardRequest> =
-            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("Assigned To TC Sec")
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNullAndTcSecAssigned(
+                "Assigned To TC Sec",
+                loggedInUser.id.toString()
+            )
 
         return standardRequest.map { p ->
             StandardsDto(
@@ -373,12 +377,22 @@ class StandardRequestService(
         return standardNWIRepository.findAllByStatus("Vote ON NWI")
     }
 
+    fun getAllTcSecLoggedInNwiSUnderVote(): List<StandardNWI> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardNWIRepository.findAllByStatusAndTcSec("Vote ON NWI", loggedInUser.id.toString())
+    }
+
     fun getAllNwiSApproved(): List<StandardNWI> {
-        return standardNWIRepository.findAllByStatus("Upload Justification")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardNWIRepository.findAllByStatusAndTcSec("Upload Justification", loggedInUser.id.toString())
     }
 
     fun getAllNwiSRejected(): List<StandardNWI> {
-        return standardNWIRepository.findAllByStatus("NWI Rejected")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardNWIRepository.findAllByStatusAndTcSec("NWI Rejected", loggedInUser.id.toString())
     }
 
     fun getANwiById(nwiId: Long): List<StandardNWI> {
@@ -460,7 +474,9 @@ class StandardRequestService(
     }
 
     fun getAllVotesTally(): List<NwiVotesTally> {
-        return voteOnNWIRepository.getVotesTally()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return voteOnNWIRepository.getVotesTally(loggedInUser.id.toString())
 
     }
 
@@ -490,7 +506,9 @@ class StandardRequestService(
     }
 
     fun getAllNwiSApprovedForJustification(): List<StandardNWI> {
-        return standardNWIRepository.findAllByStatusAndProcessStatusIsNull("Upload Justification")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardNWIRepository.findAllByStatusAndProcessStatusIsNullAndTcSec("Upload Justification",loggedInUser.id.toString())
     }
 
 
@@ -553,19 +571,27 @@ class StandardRequestService(
     }
 
     fun getJustificationsPendingDecision(): List<StandardJustification> {
-        return standardJustificationRepository.findByStatus("Justification Created. Awaiting Decision")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Created. Awaiting Decision", loggedInUser.id.toString())
     }
 
     fun getApprovedJustifications(): List<StandardJustification> {
-        return standardJustificationRepository.findByStatus("Justification Approved")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Approved", loggedInUser.id.toString())
     }
 
     fun getRejectedJustifications(): List<StandardJustification> {
-        return standardJustificationRepository.findByStatus("Justification Rejected")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Rejected", loggedInUser.id.toString())
     }
 
     fun getRejectedAmendmentJustifications(): List<StandardJustification> {
-        return standardJustificationRepository.findByStatus("Justification Rejected With Amendments")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Rejected With Amendments", loggedInUser.id.toString())
     }
 
     fun getJustificationByNwiId(nwiId: Long): List<StandardJustification> {
@@ -658,7 +684,7 @@ class StandardRequestService(
     fun getAllTcSec(): MutableList<UsersEntity> {
         val users: MutableList<UsersEntity> = ArrayList()
 
-        userRolesRepo.findByRoleNameAndStatus("SD_TC_SEC", 1)
+        userRolesRepo.findByRoleNameAndStatus("TC_SEC_SD", 1)
             ?.let { role ->
                 userRolesAssignRepo.findByRoleIdAndStatus(role.id, 1)
                     ?.let { roleAssigns ->
@@ -947,7 +973,7 @@ class StandardRequestService(
     }
 
     fun findHofFeedbackDetails(sdRequestNumber: String): HOFFeedback? {
-        hofFeedbackRepository.findBySdRequestID(sdRequestNumber).let {
+        hofFeedbackRepository.findTopBySdRequestID(sdRequestNumber).let {
             return it
         }
     }
@@ -992,7 +1018,7 @@ class StandardRequestService(
         return sdDocumentsRepository.save(uploads)
     }
 
-    fun standardReceivedReports(): MutableList<ReceivedStandards>{
+    fun standardReceivedReports(): MutableList<ReceivedStandards> {
         return standardRequestRepository.getReceivedStandardsReport()
     }
 

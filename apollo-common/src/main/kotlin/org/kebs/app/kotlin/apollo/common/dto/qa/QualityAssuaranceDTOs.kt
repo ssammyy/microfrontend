@@ -957,6 +957,16 @@ data class InspectionReportDto
 
     )
 
+data class ApprovedInspectionReportDto
+    (
+    var id: Long? = null,
+    var recommendations: String? = null,
+    var refNo: String? = null,
+    var permitId: Long? = null,
+    var permitRefNumber: String? = null,
+    var tradeMark: String? = null,
+            )
+
 data class FilterDto(
     var regionId: Long? = null,
     var sectionId: Long? = null,

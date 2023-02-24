@@ -1170,8 +1170,8 @@ class NewMarketSurveillanceHandler(
     fun putAllFieldInspectionSummarySearchList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
-            val body = req.body<ConsumerComplaintViewSearchValues>()
-            val errors: Errors = BeanPropertyBindingResult(body, ConsumerComplaintViewSearchValues::class.java.name)
+            val body = req.body<FieldInspectionSummarySearch>()
+            val errors: Errors = BeanPropertyBindingResult(body, FieldInspectionSummarySearch::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
@@ -1880,6 +1880,10 @@ class NewMarketSurveillanceHandler(
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+//    fun getReassignedComplaints(){
+//        println("DO sSOMETHING ABOUT GETTING THE REASSIGNED COMPLAINTS")
+//    }
 
     fun getAllWorkPlanBatchListOpen(req: ServerRequest): ServerResponse {
         return try {

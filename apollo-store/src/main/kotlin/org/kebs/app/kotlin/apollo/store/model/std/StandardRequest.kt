@@ -147,4 +147,8 @@ class StandardRequest {
     @Basic
     var nwaStdNumber: String? = null
 
+    @Column(name = "NWA_CD_NUMBER")
+    @Basic
+    var nwaCdNumber: String? = null
+
 }

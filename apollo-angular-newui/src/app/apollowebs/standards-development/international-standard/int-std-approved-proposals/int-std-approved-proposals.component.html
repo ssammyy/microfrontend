@@ -147,7 +147,7 @@
                                                                     <a class="nav-item nav-link active" id="nav-jProposal-tab" data-toggle="tab" href="#nav-jProposal" role="tab" aria-controls="nav-jProposal" aria-selected="true">Proposal</a>
                                                                     <a class="nav-item nav-link" id="nav-jProposal-comments-tab" (click)=displayDraftComments(actionRequest?.draftId) data-toggle="tab" href="#nav-jProposal-comments" role="tab" aria-controls="nav-jProposal-comments" aria-selected="false">Stakeholders Comments</a>
                                                                     <a class="nav-item nav-link" id="nav-prepare-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequest?.draftId) data-toggle="tab" href="#nav-prepare-justification-list-comments" role="tab" aria-controls="nav-prepare-justification-list-comments" aria-selected="false">Remarks</a>
-                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-tab" data-toggle="tab" href="#nav-prepare-justification" role="tab" aria-controls="nav-prepare-justification" aria-selected="false">Prepare Justification</a>
+                                                                    <a class="nav-item nav-link" id="nav-prepare-justification-tab" data-toggle="tab" href="#nav-prepare-justification" role="tab" aria-controls="nav-prepare-justification" aria-selected="false">SPC Justification</a>
                                                                 </div>
                                                             </nav>
                                                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent-pj">
@@ -336,7 +336,7 @@
                                                                             <div class="form-body">
                                                                                 <div class="row col-12">
                                                                                     <div class="form-group col-6">
-                                                                                        <label><b>Meeting Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <label><b>SPC Meeting Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 [class.is-invalid]="formPrepareJustification.meetingDate.invalid && formPrepareJustification.meetingDate.touched"
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -353,7 +353,7 @@
                                                                                         <label><b>Edition</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"  formControlName="edition" name="edition"
-                                                                                                placeholder="Name" type="text">
+                                                                                                placeholder="Edition" type="text">
                                                                                     </div>
                                                                                     <div class="form-group col-6">
                                                                                         <label>Department/Sector</label>

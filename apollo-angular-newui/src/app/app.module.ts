@@ -1068,6 +1068,13 @@ import { SdPaymentsComponent } from './apollowebs/standards-development/schemeMe
 import { DomesticNotificationComponent } from './apollowebs/standards-development/reports/WTO REPORTS/domestic-notification/domestic-notification.component';
 import { EnquariesHandledReportComponent } from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
 import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
+import { NwaViewJustificationComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-justification/nwa-view-justification.component';
+import { NwaPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component';
+import { NwaEditPreliminaryDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component';
+import { NwaViewPreliminaryComponent } from './apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component';
+import { NwaEditingDraftComponent } from './apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component';
+import { SchemeMemberShipReviewAllApplicationsComponent } from './apollowebs/standards-development/schemeMembership/scheme-member-ship-review-all-applications/scheme-member-ship-review-all-applications.component';
+import { SchemeMembershipReviewAssignedApplicationsComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review-assigned-applications/scheme-membership-review-assigned-applications.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1626,6 +1633,13 @@ import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-d
         DomesticNotificationComponent,
         EnquariesHandledReportComponent,
         StandardWorkProgrammeBulletinComponent,
+        NwaViewJustificationComponent,
+        NwaPreliminaryDraftComponent,
+        NwaEditPreliminaryDraftComponent,
+        NwaViewPreliminaryComponent,
+        NwaEditingDraftComponent,
+        SchemeMemberShipReviewAllApplicationsComponent,
+        SchemeMembershipReviewAssignedApplicationsComponent,
     
       
 

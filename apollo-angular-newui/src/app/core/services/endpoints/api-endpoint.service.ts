@@ -285,7 +285,6 @@ export class ApiEndpointService {
         SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
         MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
 
-
         PERMIT_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsWithNoFmarkGenerated`,
         PERMIT_REPORTS_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwarded`,
         PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
@@ -363,6 +362,8 @@ export class ApiEndpointService {
         // SD Kenya National Workshop Agreement
         NWA_VIEW_STANDARD_REQUEST: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopStandards`,
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
+        NWA_GET_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/getJustification`,
+        NWA_VIEW_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
         NWA_KNW_COMMITTEE: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWCommittee`,
         NWA_KNW_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/knwtasks`,
@@ -380,6 +381,14 @@ export class ApiEndpointService {
         NWA_DISDT_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getDiSdtTasks`,
         NWA_DECISION_ON_DISDT_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnDiSdtJustification`,
         NWA_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/preparePreliminaryDraft`,
+        NWA_EDIT_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/editPreliminaryDraft`,
+        NWA_PREPARE_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopForPDraft`,
+        NWA_GET_EDIT_PD: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkshopForEditing`,
+        NWA_GET_PD_FOR_ACTION: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkShopStdDraft`,
+        NWA_GET_WD_FOR_EDITING: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkShopStdForEditing`,
+        NWA_SUBMIT_DRAFT_FOR_EDITING: `${ApiEndpointService.SD_NWA_CONTEXT}/submitDraftForEditing`,
+        NWA_DECISION_ON_STD_DR: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnStdDraft`,
+        NWA_GET_PD_FOR_EDITING: `${ApiEndpointService.SD_NWA_CONTEXT}/getWorkShopDraftForEditing`,
         NWA_DECISION_ON_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnPd`,
         NWA_TC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getTCSeCTasks`,
         NWA_HOP_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getHOPTasks`,
@@ -551,10 +560,15 @@ export class ApiEndpointService {
         SR_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_SR_CONTEXT}/sr-file-upload`,
         SR_SD_FOR_REVIEW_STD: `${ApiEndpointService.SD_SR_CONTEXT}/getStandardsForReview`,
         SR_INITIATE_STD_REVIEW: `${ApiEndpointService.SD_SR_CONTEXT}/standardReviewForm`,
+        SR_GET_PROPOSAL_FOR_COMMENT: `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard_review/getProposals`,
+        SR_GET_PROPOSALS_FOR_COMMENT: `${ApiEndpointService.SD_SR_CONTEXT}/getProposal`,
         SR_USER_TASKS: `${ApiEndpointService.SD_SR_CONTEXT}/getUserTasks`,
         SR_SD_PROPOSAL_FOR_COMMENTS: `${ApiEndpointService.SD_SR_CONTEXT}/getStandardsProposalForComment`,
-        SR_SUBMIT_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_SR_CONTEXT}/SubmitAPComments`,
+        SR_SUBMIT_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_SR_CONTEXT}/submitProposalComments`,
         SR_SD_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_SR_CONTEXT}/getStandardsProposalComments`,
+        SR_SD_GET_PROPOSAL_COMMENTS: `${ApiEndpointService.SD_SR_CONTEXT}/getProposalsComments`,
+        SR_STD_FOR_RECOMMENDATION: `${ApiEndpointService.SD_SR_CONTEXT}/getStandardsForRecommendation`,
+        SR_STD_FOR_SPC_ACTION: `${ApiEndpointService.SD_SR_CONTEXT}/getStandardsForSpcAction`,
         SR_SD_PROPOSAL_RECOMMENDATIONS: `${ApiEndpointService.SD_SR_CONTEXT}/makeRecommendationsOnAdoptionProposal`,
         SR_SD_DECISION_ON_RECOMMENDATIONS: `${ApiEndpointService.SD_SR_CONTEXT}/decisionOnRecommendation`,
         SR_SD_PROPOSAL_RECOMMENDATIONS_DECISION_LEVEL_UP: `${ApiEndpointService.SD_SR_CONTEXT}/levelUpDecisionOnRecommendations`,
@@ -727,6 +741,8 @@ export class ApiEndpointService {
         APPROVE_REJECT_PERMIT_PCM: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/pcm-approve-reject-permit`,
 
         CHECK_IF_INSPECTION_REPORT_EXISTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/check_if_inspection_report_exists`,
+        GET_FULLY_FILLED_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/getFullyFilledInspectionReport`,
+
         NEW_INSPECTION_TECHNICAL_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/new-technical-report`,
         TECHNICAL_REPORT_DETAILS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-details`,
         TECHNICAL_REPORT_DETAILS_B: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/inspection/inspection-detailsB`,
@@ -752,7 +768,6 @@ export class ApiEndpointService {
         SAVE_PDF_LAB_RESULT_COMPLIANCE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-compliance-status`,
         UPLOAD_SCHEME_OF_SUPERVISION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-scheme-supervision`,
         UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
-
 
     };
 
@@ -904,6 +919,7 @@ export class ApiEndpointService {
         ALL_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-list`,
         OPEN_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-open`,
         CLOSE_BATCH_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/all-batch-closed`,
+        // REASSIGNED_COMPLAINTS: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/reAssignedComplaints`,
         ADD_NEW_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/add`,
         CLOSE_BATCH: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/close`,
         ALL_WORK_PLAN_LIST: `${ApiEndpointService.MS_WORK_PLAN_CONTEXT}/inspection/list`,

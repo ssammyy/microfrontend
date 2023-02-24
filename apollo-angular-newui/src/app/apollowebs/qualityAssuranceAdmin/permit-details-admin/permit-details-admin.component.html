@@ -1862,10 +1862,11 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD APPROVAL</a>-->
 
                                    <a data-toggle="modal"
-                                 
-                                   data-target="#uploadSSFModal"
+                                      *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                      data-target="#uploadSSFModal"
                                    (click)="openModalAddDetails('uploadSSF')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SSF</a>
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>
                                    
                             </div>
 
@@ -1956,21 +1957,51 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                          </div>
                          <div class="modal-body">
                              <div>
-                                 <form  action="" class="form"
+                                 <form [formGroup]="docSSFUploadForm" action="" class="form"
                                        enctype="multipart/form-data" method="post">
                                      <div class="form-body">
                                          <div class="form-group">
                                              <div>
+
+                                                 <label for="files"><b>Description Of Attachment(s):</b></label>
+                                                 <mat-form-field class="example-full-width">
+                                                     <input formControlName="docSSFUpload" id="docSSFUpload"
+                                                            matInput name="docSSFUpload"
+                                                            placeholder="Please enter Description Of Attachment"
+                                                            type="text">
+                                                 </mat-form-field>
                                                 
                                                  <label for="files"><b>Upload SSF Here</b></label>
                                                  <form #demoForm="ngForm">
                                                      <file-upload [(ngModel)]="uploadedSsfFilesOnly" name="files"
-                                                                  id="files"
+                                                                  id="filesb"
                                                                   accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt"></file-upload>
                                                  </form>
                                              </div>
                                          </div>
                                      </div>
+                                     <div class="form-group">
+                                         <div>
+                                             <label><b>Select Compliance Status</b></label>
+                                             <mat-form-field id="complianceStatusSSF43">
+                                                 <mat-select placeholder="Please Select an option"
+                                                             formControlName="resultsAnalysis"
+                                                             name="resultsAnalysis">
+                                                     <mat-option [value]="true">Compliant</mat-option>
+                                                     <mat-option [value]="false">Non-Compliant</mat-option>
+                                                 </mat-select>
+                                             </mat-form-field>
+                                             <label><b>Please write, in detail, your feedback for the whole Lab
+                                                 results:</b></label>
+                                             <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksSSF43" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                             </mat-form-field>
+                                         </div>
+                                     </div>
+
                                  </form>
                              </div>
                          </div>
@@ -5831,7 +5862,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                     </div>
                                     <div class="form-row">
                                         <div class="col-md-12 mb-3">
-                                            <label style="color: #0082f3">Lab Results Param</label>
+                                            <label style="color: #0082f3">Lab Results parameters</label>
                                         </div>
                                         <div class="table-striped table-condensed table-responsive">
                                             <ng2-smart-table [settings]="settingsLabResultsParam"

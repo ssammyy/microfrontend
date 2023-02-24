@@ -7,5 +7,5 @@ import java.util.*
 
 interface HOFFeedbackRepository :JpaRepository<HOFFeedback,Long> {
 
-    fun findBySdRequestID(sdRequestId: String): HOFFeedback?
+    fun findTopBySdRequestID(sdRequestId: String): HOFFeedback?
 }
