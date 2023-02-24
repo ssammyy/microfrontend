@@ -2,10 +2,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StdReviewService
 import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.std.ComStandard
-import org.kebs.app.kotlin.apollo.store.model.std.ProposalDetails
-import org.kebs.app.kotlin.apollo.store.model.std.ReviewStandards
-import org.kebs.app.kotlin.apollo.store.model.std.StandardReview
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -62,10 +59,17 @@ class stdReviewController(
 
     }
 
+    @GetMapping("/standard_review/getProposalsComments")
+    @ResponseBody
+    fun getProposalsComments(@RequestParam("reviewId") reviewId: Long): MutableList<SDReviewComments>
+    {
+        return stdReviewService.getProposalsComments(reviewId)
+    }
+
     @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/standard_review/getStandardsForRecommendation")
     @ResponseBody
-    fun getStandardsForRecommendation(): MutableList<ReviewStandards>
+    fun getStandardsForRecommendation(): MutableList<StandardReview>
     {
         return stdReviewService.getStandardsForRecommendation()
     }
@@ -80,7 +84,7 @@ class stdReviewController(
     @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/standard_review/getStandardsForSpcAction")
     @ResponseBody
-    fun getStandardsForSpcAction(): MutableList<ReviewStandards>
+    fun getStandardsForSpcAction(): MutableList<StandardReview>
     {
         return stdReviewService.getStandardsForSpcAction()
     }

@@ -1060,7 +1060,6 @@ data class SubmittedSamplesSummaryViewSearchValues(
         var sampleReferences: String? = null,
         var assignIO: Long? = null,
         var sectorID: Long? = null,
-        var outletName: String? = null
 )
 
 data class ConsumerComplaintViewSearchValues(
@@ -1069,6 +1068,15 @@ data class ConsumerComplaintViewSearchValues(
         var startDate: Date? = null,
         var endDate: Date? = null,
         var sectorID: Long? = null
+)
+
+data class FieldInspectionSummarySearch(
+        var refNumber: String? = null,
+        var assignIO: Long? = null,
+        var startDate: Date? = null,
+        var endDate: Date? = null,
+        var sectorID: Long? = null,
+        var outletName: String? =null,
 )
 
 data class SeizeViewSearchValues(

@@ -18,6 +18,11 @@ data class SectionApplyDto(
     var sectionRemarks: String? = null
 )
 
+data class BrandApplyDto(
+    var commodityDescription: String? = null,
+    var tradeMark: String? = null
+)
+
 data class StandardsApplyDto(
     var productStandardID: String? = null,
     var productStandardRemarks: String? = null
@@ -810,6 +815,7 @@ data class PermitDetailsDto(
     var hodQamApproveRejectStatus: Boolean? = null,
     var pscMemberApprovalStatus: Boolean? = null,
     var pcmApprovalStatus: Boolean? = null,
+    var paidStatus: Boolean? = null,
 
     )
 

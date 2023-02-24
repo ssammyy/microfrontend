@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao.std
 
+import com.google.gson.Gson
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
+import java.util.*
+import kotlin.collections.HashMap
 
 @Service
 class StdReviewService(
@@ -38,6 +42,8 @@ class StdReviewService(
 
     fun standardReviewForm(standardReviewDto: StandardReviewDto) : StandardReview
     {
+                val gson = Gson()
+        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(standardReviewDto) }
 
         val reviewBody= StandardReview();
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -105,6 +111,7 @@ class StdReviewService(
         val sc= SDReviewComments()
 
         sc.reviewId=st.id
+        sc.standardId=st.standardId
         sc.title=st.title
         sc.standardNumber=st.standardNumber
         sc.documentType=st.documentType
@@ -123,9 +130,12 @@ class StdReviewService(
         sdReviewCommentsRepository.save(sc)
 
     }
+    fun getProposalsComments(reviewId: Long): MutableList<SDReviewComments> {
+        return sdReviewCommentsRepository.getProposalsComments(reviewId)
+    }
 
-    fun getStandardsForRecommendation(): MutableList<ReviewStandards> {
-        return standardRepository.getStandardsForRecommendation()
+    fun getStandardsForRecommendation(): MutableList<StandardReview> {
+        return standardReviewRepository.getStandardsForRecommendation()
     }
 
     fun makeRecommendationsOnAdoptionProposal(st: StandardReviewRecommendationDto) : StandardReview {
@@ -138,31 +148,38 @@ class StdReviewService(
         reviewBody.recommendation= st.recommendation
         reviewBody.timeline=deadline
         val ispDetails = standardReviewRepository.save(reviewBody)
-        standardRepository.findByIdOrNull(st.reviewId)?.let { std ->
+        standardReviewRepository.findByIdOrNull(st.reviewId)?.let { std ->
             with(std) {
-                status = 4
+                status = 1
+                dateOfRecommendation=dateOfAnalysis
+                timeline=deadline
+                feedback=st.feedback
 
             }
-            standardRepository.save(std)
-        }?: throw Exception("STANDARD NOT FOUND")
+            standardReviewRepository.save(std)
+        }?: throw Exception("REVIEW NOT FOUND")
 
         return ispDetails
 
     }
 
-    fun getStandardsForSpcAction(): MutableList<ReviewStandards> {
-        return standardRepository.getStandardsForSpcAction()
+    fun getStandardsForSpcAction(): MutableList<StandardReview> {
+        return standardReviewRepository.getStandardsForSpcAction()
     }
+
+
 
     fun decisionOnStdDraft(
         sp: SpcStandardReviewCommentDto
     ) : ResponseMsg {
         val sr=StandardRequest()
+        var requestNo=generateSRNumber("ENG")
         sr.submissionDate = Timestamp(System.currentTimeMillis())
         sr.createdOn = Timestamp(System.currentTimeMillis())
-        sr.status = "Assigned to Tc Sec"
+        sr.status = "NA"
+        sr.levelOfStandard=sp.standardType
 
-        sr.requestNumber = sp.requestNumber
+        sr.requestNumber = requestNo
         sr.rank = '3'.toString()
         val reqId= standardRequestRepository.save(sr)
         val pd= ComStdDraft()
@@ -174,7 +191,15 @@ class StdReviewService(
 
         val drId=comStdDraftRepository.save(pd)
 
+        standardReviewRepository.findByIdOrNull(sp.id)?.let { std ->
+            with(std) {
+                status = 1
 
+            }
+            standardReviewRepository.save(std)
+        }?: throw Exception("REVIEW NOT FOUND")
+
+        var feedback =sp.feedback
         var response=""
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val companyStandardRemarks= CompanyStandardRemarks()
@@ -192,35 +217,116 @@ class StdReviewService(
         //val deadline: Timestamp = Timestamp.valueOf(companyStandardRemarks.dateOfRemark!!.toLocalDateTime().plusMonths(2))
 
         if (decision == "Yes") {
+            if (feedback != null) {
+                if(feedback.equals(1)){
+                    val cs=CompanyStandard()
+                    cs.subject=sp.subject
+                    cs.description=sp.description
+                    cs.requestNumber=requestNo
+                    cs.status=0
+                    cs.uploadDate = Timestamp(System.currentTimeMillis())
+                    cs.draftId=drId.id
+                    cs.requestId=sr.id
+                    cs.title=sp.title
+                    cs.standardType=sp.standardType
 
-                val cs=CompanyStandard()
-                cs.subject=sp.subject
-                cs.description=sp.description
-                cs.requestNumber=sp.requestNumber
-                cs.status=0
-                cs.uploadDate = Timestamp(System.currentTimeMillis())
-                cs.draftId=drId.id
-                cs.requestId=sr.id
-                cs.title=sp.title
-                cs.standardType=sp.standardType
+                    val draftStandard= companyStandardRepository.save(cs)
 
-                val draftStandard= companyStandardRepository.save(cs)
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
 
-                companyStandardRemarksRepository.save(companyStandardRemarks)
+                    var userList= companyStandardRepository.getHopEmailList()
 
-                var userList= companyStandardRepository.getHopEmailList()
+                    //email to Head of publishing
+                    val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                    userList.forEach { item->
+                        //val recipient="stephenmuganda@gmail.com"
+                        val recipient= item.getUserEmail()
+                        val subject = "Kenya Standard"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded.Login to KIEMS $targetUrl to initiate piblishing"
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
+                }else if (feedback.equals(2)){
+                    val cs=CompanyStandard()
+                    cs.subject=sp.subject
+                    cs.description=sp.description
+                    cs.requestNumber=requestNo
+                    cs.status=0
+                    cs.uploadDate = Timestamp(System.currentTimeMillis())
+                    cs.draftId=drId.id
+                    cs.requestId=sr.id
+                    cs.title=sp.title
+                    cs.standardType=sp.standardType
 
-                //email to Head of publishing
-                val targetUrl = "https://kimsint.kebs.org/hopTasks";
-                userList.forEach { item->
-                    //val recipient="stephenmuganda@gmail.com"
-                    val recipient= item.getUserEmail()
-                    val subject = "Kenya Standard"
-                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded.Login to KIEMS $targetUrl to initiate piblishing"
-                    if (recipient != null) {
-                        notifications.sendEmail(recipient, subject, messageBody)
+                    val draftStandard= companyStandardRepository.save(cs)
+
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
+
+                    var userList= companyStandardRepository.getHopEmailList()
+
+                    //email to Head of publishing
+                    val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                    userList.forEach { item->
+                        //val recipient="stephenmuganda@gmail.com"
+                        val recipient= item.getUserEmail()
+                        val subject = "Kenya Standard"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded.Login to KIEMS $targetUrl to initiate piblishing"
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
+                }else if (feedback.equals(3)){
+                    if(sp.standardType=="Kenya Standard"){
+                        standardRequestRepository.findByIdOrNull(reqId.id)?.let { ks ->
+                            with(ks) {
+                                status = "Assigned to Tc Sec"
+
+                            }
+                            standardRequestRepository.save(ks)
+                        }?: throw Exception("REVIEW NOT FOUND")
+                    }else{
+                        standardRequestRepository.findByIdOrNull(reqId.id)?.let { ks ->
+                            with(ks) {
+                                status = "To Be Defined"
+
+                            }
+                            standardRequestRepository.save(ks)
+                        }?: throw Exception("REVIEW NOT FOUND")
+                    }
+
+                }else if(feedback.equals(4)){
+                    val cs=CompanyStandard()
+                    cs.subject=sp.subject
+                    cs.description=sp.description
+                    cs.requestNumber=requestNo
+                    cs.status=0
+                    cs.uploadDate = Timestamp(System.currentTimeMillis())
+                    cs.draftId=drId.id
+                    cs.requestId=sr.id
+                    cs.title=sp.title
+                    cs.standardType=sp.standardType
+
+                    val draftStandard= companyStandardRepository.save(cs)
+
+                    companyStandardRemarksRepository.save(companyStandardRemarks)
+
+                    var userList= companyStandardRepository.getHopEmailList()
+
+                    //email to Head of publishing
+                    val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                    userList.forEach { item->
+                        //val recipient="stephenmuganda@gmail.com"
+                        val recipient= item.getUserEmail()
+                        val subject = "Kenya Standard"
+                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded.Login to KIEMS $targetUrl to initiate piblishing"
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
                     }
                 }
+            }
+
 
 
         } else if (decision == "No") {
@@ -287,6 +393,34 @@ class StdReviewService(
             }
         }
         return com
+    }
+
+    fun generateSRNumber(departmentAbbrv: String?): String {
+        val allRequests = standardRequestRepository.findAllByOrderByIdDesc()
+        var lastId: String? = "0"
+        var finalValue = 1
+
+        for (item in allRequests) {
+            lastId = item.requestNumber
+            break
+        }
+        if (lastId != "0") {
+            val strs = lastId?.split(":")?.toTypedArray()
+
+            val firstPortion = strs?.get(0)
+
+            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
+
+            val intToIncrement = lastPortArray?.get(1)
+
+            finalValue = (intToIncrement?.toInt()!!)
+            finalValue += 1
+        }
+
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+
+        return "$departmentAbbrv/$finalValue:$year"
     }
 
 }

@@ -3,7 +3,12 @@ import {Subject} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgxSpinnerService} from "ngx-spinner";
 import {StdReviewService} from "../../../../core/store/data/std/std-review.service";
-import {ProposalComments, RevProposalComments, StandardReviewComments} from "../../../../core/store/data/std/std.model";
+import {
+  ProposalComments,
+  RevProposalComments,
+  SRProposalComments,
+  StandardReviewComments
+} from "../../../../core/store/data/std/std.model";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -15,8 +20,8 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 })
 export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
 
-  revProposalComments: RevProposalComments[] = [];
-  public actionRequest: RevProposalComments | undefined;
+  revProposalComments: SRProposalComments[] = [];
+  public actionRequest: SRProposalComments | undefined;
   public commentFormGroup!: FormGroup;
   loadingText: string;
   dtOptions: DataTables.Settings = {};
@@ -31,15 +36,21 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getStandardsProposalForComment();
+    this.getProposal();
     this.commentFormGroup= this.formBuilder.group({
-      adoptionComment:[],
-      title:[],
       documentType:[],
-      paragraph:[],
-      typeOfComment:[],
-      proposedChange:[],
-      proposalId:[]
+      circulationDate:[],
+      closingDate:[],
+      nameOfTcSecretary:[],
+      standardNumber:[],
+      title:[],
+      choice:[],
+      justification:[],
+      nameOfRespondent:[],
+      positionOfRespondent:[],
+      nameOfOrganization:[],
+      date:[],
+      id:[],
     });
   }
   ngOnDestroy(): void {
@@ -54,11 +65,11 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
     this.notifyService.showError(message, title)
 
   }
-  public getStandardsProposalForComment(): void{
+  public getProposal(): void{
     this.loadingText = "Loading Proposal ...."
     this.SpinnerService.show();
-    this.stdReviewService.getStandardsProposalForComment().subscribe(
-        (response: RevProposalComments[])=> {
+    this.stdReviewService.getProposal().subscribe(
+        (response: SRProposalComments[])=> {
           this.SpinnerService.hide();
           this.rerender();
           this.revProposalComments = response;
@@ -69,7 +80,7 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
         }
     );
   }
-  public onOpenModal(revProposalComment: RevProposalComments,mode:string): void{
+  public onOpenModal(revProposalComment: SRProposalComments,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -80,8 +91,13 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
       button.setAttribute('data-target','#commentModal');
       this.commentFormGroup.patchValue(
           {
-            title: this.actionRequest.title,
-            proposalId: this.actionRequest.id
+            documentType:this.actionRequest.documentType,
+            circulationDate:this.actionRequest.circulationDate,
+            closingDate:this.actionRequest.closingDate,
+            nameOfTcSecretary:this.actionRequest.tcSecretary,
+            standardNumber:this.actionRequest.standardNumber,
+            title:this.actionRequest.title,
+            id:this.actionRequest.id,
           });
     }
 
@@ -99,7 +115,7 @@ export class SystemicReviewCommentsComponent implements OnInit, OnDestroy {
           console.log(response);
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Comment Submitted`);
-          this.getStandardsProposalForComment();
+          this.getProposal();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

@@ -737,12 +737,17 @@ interface StandardReviewRepository : JpaRepository<StandardReview, Long> {
     )
     fun getStandardsProposalForComment(): MutableList<ReviewStandards>
 
-    @Query(value = "SELECT * FROM SD_STANDARD_REVIEW ",nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_STANDARD_REVIEW WHERE STATUS=0",nativeQuery = true)
     fun getReviewProposalForComment(): MutableList<StandardReview>
 
-    @Query(value = "SELECT * FROM SD_STANDARD_REVIEW WHERE ID=:id",nativeQuery = true)
+    @Query(value = "SELECT * FROM SD_STANDARD_REVIEW WHERE ID=:id AND STATUS=0",nativeQuery = true)
     fun getReviewProposalToComment(id: Long): MutableList<StandardReview>
 
+    @Query(value = "SELECT * FROM SD_STANDARD_REVIEW WHERE STATUS=0",nativeQuery = true)
+    fun getStandardsForRecommendation(): MutableList<StandardReview>
+
+    @Query(value = "SELECT * FROM SD_STANDARD_REVIEW WHERE STATUS=1",nativeQuery = true)
+    fun getStandardsForSpcAction(): MutableList<StandardReview>
 
 
 }
@@ -932,10 +937,12 @@ interface ComContactDetailsRepository : JpaRepository<ComContactDetails, Long> {
 }
 interface SDWorkshopStdRepository : JpaRepository<SDWorkshopStd, Long> {
     fun findAllByOrderByIdDesc(): MutableList<SDWorkshopStd>
+
 }
 
 interface SDReviewCommentsRepository : JpaRepository<SDReviewComments, Long> {
-
+    @Query(value = "SELECT * FROM SD_REVIEW_COMMENTS WHERE REVIEW_ID=:id ORDER BY ID DESC",nativeQuery = true)
+    fun getProposalsComments(@Param("id") id: Long?): MutableList<SDReviewComments>
 }
 
 

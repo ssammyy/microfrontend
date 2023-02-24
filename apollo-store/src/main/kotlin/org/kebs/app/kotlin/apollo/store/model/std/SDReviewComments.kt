@@ -20,6 +20,9 @@ class SDReviewComments {
     @Column(name = "REVIEW_ID")
     @Basic
     var reviewId: Long? = null
+    @Column(name = "STANDARD_ID")
+    @Basic
+    var standardId: Long? = null
 
     @Column(name = "TITLE")
     @Basic
