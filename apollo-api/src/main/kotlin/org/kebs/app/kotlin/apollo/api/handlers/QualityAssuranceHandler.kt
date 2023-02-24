@@ -3076,24 +3076,21 @@ class QualityAssuranceHandler(
             var batchDetailDifference: Long? = null
 
             if (permit.sendApplication == map.activeStatus) {
-                batchDetail = when {
-                    permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1 -> {
-                        val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
-                        val findSMark = qaDaoServices.findPermitBYCompanyIDAndId(
-                            findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
-                            loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
-                        )
-                        qaDaoServices.findPermitInvoiceByPermitID(
-                            findSMarkID
-                        ).batchInvoiceNo
-
+                batchDetail = if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.fmarkGenerated == 1) {
+                    val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
+                    val findSMark = qaDaoServices.findPermitBYCompanyIDAndId(findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"), loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"))
+                    val invoiceFound =  qaDaoServices.findPermitInvoiceByPermitIDOrNull(permitID)
+                    if(invoiceFound!=null){
+                        invoiceFound.batchInvoiceNo
+                    }else{
+                        qaDaoServices.findPermitInvoiceByPermitID(findSMarkID).batchInvoiceNo
                     }
 
-                    else -> {
-                        qaDaoServices.findPermitInvoiceByPermitID(
-                            permitID
-                        ).batchInvoiceNo
-                    }
+                }
+                else {
+                    qaDaoServices.findPermitInvoiceByPermitID(
+                        permitID
+                    ).batchInvoiceNo
                 }
 
             }

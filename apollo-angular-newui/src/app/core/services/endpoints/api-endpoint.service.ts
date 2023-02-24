@@ -713,6 +713,7 @@ export class ApiEndpointService {
         LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list`,
         LOAD_PERMIT_DETAIL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permit-detail`,
         UPDATE_SECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/section`,
+        UPDATE_BRAND: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/update-brand`,
         UPDATE_OFFICER_DIFFERENCE_STATUS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/difference-status-activate`,
         QAM_COMPLETENESS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/completeness`,
         ASSIGN_OFFICER: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/assign-officer`,

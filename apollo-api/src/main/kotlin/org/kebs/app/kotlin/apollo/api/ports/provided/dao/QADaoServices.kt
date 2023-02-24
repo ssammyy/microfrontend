@@ -321,6 +321,45 @@ class QADaoServices(
         }
     }
 
+
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitBrandDetails(
+        permitID: Long,
+        body: BrandApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+
+            with(permit) {
+                commodityDescription = body.commodityDescription
+                tradeMark = body.tradeMark
+            }
+
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails =
+                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitCompletenessDetails(
@@ -3611,6 +3650,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
     }
 
+    fun findPermitInvoiceByPermitIDOrNull(
+        permitID: Long
+    ): QaInvoiceMasterDetailsEntity? {
+        return invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permitID)
+    }
+
     fun findPermitMasterInvoiceByID(
         masterInvoiceID: Long
     ): QaInvoiceMasterDetailsEntity {
@@ -4455,6 +4500,7 @@ class QADaoServices(
             hodQamApproveRejectStatus = permit.hodQamApproveRejectStatus == 1
             pscMemberApprovalStatus  = permit.pscMemberApprovalStatus  == 1
             pcmApprovalStatus  = permit.pcmApprovalStatus == 1
+            paidStatus  = permit.paidStatus == 10
         }
         return p
     }

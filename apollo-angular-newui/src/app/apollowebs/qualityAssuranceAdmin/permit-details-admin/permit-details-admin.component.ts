@@ -113,6 +113,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     docSSFUpload: FormGroup;
 
     updateSectionForm: FormGroup;
+    updateBrandForm: FormGroup;
     permitCompletenessForm: FormGroup;
     assignOfficerForm: FormGroup;
     addStandardsForm: FormGroup;
@@ -169,7 +170,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
-    inspectionReportDetailsDto: InspectionReportDetailsDto
+    inspectionReportDetailsDto: InspectionReportDetailsDto;
 
 
     public settingsLabResultsParam = {
@@ -467,6 +468,11 @@ export class PermitDetailsAdminComponent implements OnInit {
             sectionRemarks: null,
         });
 
+        this.updateBrandForm = this.formBuilder.group({
+            commodityDescription: ['', Validators.required],
+            tradeMark: ['', Validators.required],
+        });
+
         this.permitCompletenessForm = this.formBuilder.group({
             hofQamCompletenessStatus: ['', Validators.required],
             rejectedForStatus: null,
@@ -497,9 +503,9 @@ export class PermitDetailsAdminComponent implements OnInit {
         });
 
         this.docFileNameForm = this.formBuilder.group({
-            docFileName: null,
+            docFileName: ['', Validators.required],
         });
-        
+
         this.recommendationForm = this.formBuilder.group({
             recommendationRemarks: ['', Validators.required],
         });
@@ -765,11 +771,11 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
             'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'approveRejectRecommendation', 'uploadSSF', 'approveRejectInspectionReport',
-            'approvePermitQAMHOD', 'approvePermitPSCMember', 'approvePermitPCM'];
+            'approvePermitQAMHOD', 'approvePermitPSCMember', 'approvePermitPCM', 'updateBrand'];
 
         const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
             'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'APPROVE/REJECT RECOMMENDATION', 'UPLOAD SSF', 'APPROVE/REJECT GENERATED INSPECTION REPORT',
-            'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM'];
+            'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM', 'UPDATE BRAND'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -851,7 +857,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
-        this.inspectionReportDetailsDto = this.allPermitDetails.inspectionReportDetails
+        this.inspectionReportDetailsDto = this.allPermitDetails.inspectionReportDetails;
 
 
         this.qaService.loadFirmPermitList().subscribe(
@@ -931,6 +937,10 @@ export class PermitDetailsAdminComponent implements OnInit {
             let inspectionFee = 0;
             let permitFee = 0;
             let fMarkFee = 0;
+            let paidStatus = 'NOT PAID';
+            if (this.allPermitDetails?.permitDetails?.paidStatus) {
+                paidStatus = 'PAID';
+            }
 
             for (let h = 0; h < invoiceDetailsList.length; h++) {
                 if (invoiceDetailsList[h].permitStatus === true) {
@@ -955,6 +965,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                     ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
                     ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
                     ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
+                    ['Paid STATUS', paidStatus],
 
                 ],
             };
@@ -970,6 +981,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                     ['Sub Total Before Tax', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.subTotalBeforeTax}`],
                     ['Tax Amount', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.taxAmount}`],
                     ['Total Amount', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.totalAmount}`],
+                    ['Paid STATUS', paidStatus],
 
                 ],
             };
@@ -984,6 +996,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                     ['Sub Total Before Tax', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.subTotalBeforeTax}`],
                     ['Tax Amount', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.taxAmount}`],
                     ['Total Amount', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.totalAmount}`],
+                    ['Paid STATUS', paidStatus],
                 ],
             };
             this.SpinnerService.hide();
@@ -1021,6 +1034,38 @@ export class PermitDetailsAdminComponent implements OnInit {
             );
         }
     }
+
+    onClickSaveBrandFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPDATE BRAND\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveBrandFormResults(valid);
+            });
+    }
+
+    saveBrandFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaUpdateBrand(this.updateBrandForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('BRAND DETAILS, UPDATED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
 
     onClickSavePermitCompletenessFormResults(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -1601,7 +1646,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             });
     }
 
-    
+
 
     saveUploadsAttachments() {
         if (this.uploadedFilesOnly.length > 0) {
@@ -1705,26 +1750,38 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     generateInspectionReport(permitId: string) {
 
-        var text = permitId;
-        var key = '11A1764225B11AA1';
+        let text = permitId;
+        let key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
-        var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
+        let encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
         console.log('encrypted', encrypted);
-        this.router.navigate(['/new-inspection-report',encrypted])
+        this.router.navigate(['/new-inspection-report', encrypted]);
 
 
     }
     goToInspectionReportPage(inspectionReportId: string) {
-        var text = inspectionReportId;
-        var key = '11A1764225B11AA1';
+        let text = inspectionReportId;
+        let key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
-        var encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
         console.log('encrypted', encrypted);
-        this.router.navigate(['/inspection-report', encrypted])
+        this.router.navigate(['/inspection-report', encrypted]);
+
+    }
+
+    goToFmarkPermitDetails(permitId: number) {
+
+        let text = String(permitId);
+        let key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        this.router.navigate(['/permit-details-admin', encrypted]);
 
     }
 
