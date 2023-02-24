@@ -637,7 +637,6 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/filterRenewed", handler::filterAllRenewedApplicationsReports)
                     POST("/filterDejected", handler::filterAllDejectedApplicationsReports)
                 }
-
             }
 
             "internal-users".nest {
