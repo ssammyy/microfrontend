@@ -100,13 +100,38 @@ class QualityAssuranceInternalUserHandler(
 
     fun updatePermitDetailsSection(req: ServerRequest): ServerResponse {
         return try {
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID =req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val body = req.body<SectionApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, SectionApplyDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updatePermitSectionDetails(permitID, body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsBrand(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val body = req.body<BrandApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, BrandApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitBrandDetails(permitID, body)
                         .let {
                             ok().body(it)
                         }

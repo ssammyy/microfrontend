@@ -10,6 +10,9 @@ interface StandardJustificationRepository : JpaRepository<StandardJustification,
 
     fun findByStatus( status: String?) : List<StandardJustification>
 
+    fun findByStatusAndTcSecretary( status: String?, tcSecretary:String?) : List<StandardJustification>
+
+
     fun findByNwiId(nwiId: String?):List<StandardJustification>
 
 }

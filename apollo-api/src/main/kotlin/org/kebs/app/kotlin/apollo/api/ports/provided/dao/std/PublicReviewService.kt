@@ -42,7 +42,9 @@ class PublicReviewService(
 
     // get all approved CDs
     fun getAllApprovedCd(): MutableList<CdWithUserName> {
-        return committeeCDRepository.findApprovedCommitteeDraft()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return committeeCDRepository.findApprovedCommitteeDraft(loggedInUser.id.toString())
     }
 
 
@@ -96,7 +98,9 @@ class PublicReviewService(
 
     //get all Prd
     fun getAllPrd(): MutableList<PrdWithUserName> {
-        return publicReviewDraftRepository.findPublicReviewDraft()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return publicReviewDraftRepository.findPublicReviewDraft(loggedInUser.id.toString())
     }
 
     fun getAllPrdDocuments(publicReviewDraftId: Long): Collection<DatKebsSdStandardsEntity?>? {
@@ -303,7 +307,9 @@ class PublicReviewService(
 
     //get all Prd Approved
     fun getAllPrdApproved(): MutableList<PrdWithUserName> {
-        return publicReviewDraftRepository.findApprovedPublicReviewDraft()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return publicReviewDraftRepository.findApprovedPublicReviewDraft(loggedInUser.id.toString())
     }
 
 

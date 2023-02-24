@@ -318,6 +318,7 @@ export class PermitEntityDetails {
     hodQamApproveRejectStatus: boolean;
     pscMemberApprovalStatus: boolean;
     pcmApprovalStatus: boolean;
+    paidStatus: boolean;
 }
 
 

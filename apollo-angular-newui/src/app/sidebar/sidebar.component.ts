@@ -223,6 +223,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
             {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
             {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+            {path: 'reports/qa-sl-report', title: 'QA-SL Reports', ab: 'QSR'},
 
 
         ],

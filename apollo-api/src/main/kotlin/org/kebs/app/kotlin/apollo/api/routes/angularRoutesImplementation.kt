@@ -637,7 +637,6 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/filterRenewed", handler::filterAllRenewedApplicationsReports)
                     POST("/filterDejected", handler::filterAllDejectedApplicationsReports)
                 }
-
             }
 
             "internal-users".nest {
@@ -649,6 +648,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 "/apply".nest {
                     "/permit".nest {
                         POST("/section", internalUserhandler::updatePermitDetailsSection)
+                        POST("/update-brand", internalUserhandler::updatePermitDetailsBrand)
                         POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
                         POST(   "/difference-status-activate", internalUserhandler::updatePermitDetailsDifferenceStatusActivate)
                         POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)

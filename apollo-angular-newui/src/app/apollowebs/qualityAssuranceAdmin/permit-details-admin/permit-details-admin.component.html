@@ -42,7 +42,7 @@
                                             <i class="material-icons">assignment_turned_in</i> Application Invoice
                                         </a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li *ngIf="allPermitDetails?.permitDetails?.invoiceDifferenceGenerated" class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link10" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i>Application Difference
                                             Invoice
@@ -1721,6 +1721,20 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
             <div class="col-lg-3">
                 <div class="card ">
                     <div class="card-header ">
+                        <h4 class="card-title">Documents</h4>
+                    </div>
+                    <div class="card-body ">
+                        <div>
+                            <div>
+                                <a  *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
+                                    (click)="goToFmarkPermitDetails(allPermitDetails?.permitDetails?.fmarkGeneratedID)"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">FMARK APPLICATION DETAILS</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card ">
+                    <div class="card-header ">
                         <h4 class="card-title">Actions</h4>
                     </div>
                     <div class="card-body ">
@@ -1731,6 +1745,11 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('updateSection')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
+
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('updateBrand')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
 
                                 <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                 && !allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
@@ -1892,7 +1911,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <label for="files"><b>Description Of Attachment(s):</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="docFileName" id="docFileName"
-                                                               matInput name="docFileName"
+                                                               matInput name="docFileName" required
                                                                placeholder="Please enter Description Of Attachment"
                                                                type="text">
                                                     </mat-form-field>
@@ -2039,6 +2058,30 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                               formControlName="sectionRemarks"
                                                               name="sectionRemarks">
                                                     </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'updateBrand')">
+                                    <form [formGroup]="updateBrandForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Trade Mark:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="tradeMark" id="tradeMark"
+                                                               matInput name="tradeMark"
+                                                               placeholder="Please enter Trade Mark"
+                                                               type="text">
+                                                    </mat-form-field>
+                                                    <label><b>Commodity Description:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="commodityDescription" id="commodityDescription"
+                                                               matInput name="commodityDescription"
+                                                               placeholder="Please enter Commodity Description"
+                                                               type="text">
                                                     </mat-form-field>
                                                 </div>
                                             </div>
@@ -2226,14 +2269,14 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <label><b>Brand Name:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="brandName" id="brandName" matInput
-                                                               name="brandName" required
+                                                               name="brandName" disabled ngModel="{{allPermitDetails?.permitDetails?.brandName}}"
                                                                placeholder="Please enter brand Name" type="text">
                                                     </mat-form-field>
                                                     <label><b>Product Description:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="productDescription"
                                                                id="productDescription" matInput
-                                                               name="productDescription" required
+                                                               name="productDescription" disabled ngModel="{{allPermitDetails?.permitDetails?.commodityDescription}}"
                                                                placeholder="Please enter product Description"
                                                                type="text">
                                                     </mat-form-field>
@@ -2430,6 +2473,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         class="btn btn-success"
                                         (click)="onClickSaveSectionFormResults(updateSectionForm.valid);"
                                         [disabled]="!updateSectionForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'updateBrand')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveBrandFormResults(updateBrandForm.valid);"
+                                        [disabled]="!updateBrandForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>

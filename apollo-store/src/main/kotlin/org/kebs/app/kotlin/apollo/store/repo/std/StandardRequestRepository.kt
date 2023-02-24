@@ -11,6 +11,8 @@ interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
     fun findAllByOrderByIdDesc(): MutableList<StandardRequest>
     fun findAllByStatusAndNwiStatusIsNull(status: String): List<StandardRequest>
 
+    fun findAllByStatusAndNwiStatusIsNullAndTcSecAssigned(status: String, tcSecAssigned:String): List<StandardRequest>
+
 
     fun findAllById(id: Long): List<StandardRequest>
 
