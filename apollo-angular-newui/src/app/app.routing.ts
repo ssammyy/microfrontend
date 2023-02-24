@@ -740,6 +740,7 @@ import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/w
 import {NwaViewPreliminaryComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component";
 import {NwaEditPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component";
 import {NwaEditingDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component";
+import { QaSlReportsComponent } from './apollowebs/quality-assurance/reports/qa-sl-reports/qa-sl-reports.component';
 
 export const routes: Routes = [
     {
@@ -955,6 +956,11 @@ export const routes: Routes = [
                 path: 'samples_submitted',
                 component: SamplesSubmittedComponent,
             },
+            {
+                path: 'qa-sl-report',
+                component: QaSlReportsComponent,
+            },
+
 
         ],
     },

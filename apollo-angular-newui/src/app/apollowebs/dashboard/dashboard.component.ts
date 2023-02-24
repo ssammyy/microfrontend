@@ -290,7 +290,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     private loadFmarkData(): any {
         this.SpinnerService.show();
-        this.QaInternalService.loadMyTasksByPermitType(1).subscribe(
+        this.QaInternalService.loadMyTasksByPermitType(3).subscribe(
             (data) => {
                 this.fmarkapiResponse = data;
                 this.SpinnerService.hide();
@@ -305,7 +305,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     private loadDmarkData(): any {
         this.SpinnerService.show();
-        this.QaInternalService.loadMyTasksByPermitType(3).subscribe(
+        this.QaInternalService.loadMyTasksByPermitType(1).subscribe(
             (data) => {
                 this.dmarkapiResponse = data;
                 this.SpinnerService.hide();
