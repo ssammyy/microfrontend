@@ -1924,6 +1924,16 @@ export interface ReviewProposalComments {
     typeOfComment: string;
     proposedChange: string;
 }
+export interface ReviewSpcDecision{
+    accentTo: string;
+    remarks: string;
+    reviewId: number;
+    standardType: string;
+    title: string;
+    feedback: string;
+    subject: string;
+    description: string;
+}
 
 export interface ReviewRecommendation {
     proposalId: number;
@@ -2175,6 +2185,35 @@ export interface NwaRequestList{
     status: string;
     departmentName: string;
     tcSecAssigned: string;
+}
+
+export interface NepEnquiries{
+    id: number;
+    requesterName: string;
+    requesterEmail: string;
+    requesterPhone: string;
+    requesterInstitution: string;
+    requesterCountry: string;
+    requesterSubject: string;
+    requesterComment: string;
+    requestDate: Timestamp<any>;
+    status: number;
+}
+
+export interface NepInfoCheckDto {
+    comments: string;
+    accentTo: string;
+    requestId: string;
+    enquiryId: string;
+    feedbackSent: string;
+    requesterEmail: string;
+
+    requesterName: string;
+    requesterPhone: string;
+    requesterInstitution: string;
+    requesterCountry: string;
+    requesterSubject: string;
+    requesterComment: string;
 }
 
 

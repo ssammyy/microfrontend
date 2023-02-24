@@ -67,60 +67,52 @@
                                                     <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
                                                         <nav>
                                                             <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                                                                <a class="nav-item nav-link active" id="nav-proposal-tab" data-toggle="tab" href="#nav-proposal" role="tab" aria-controls="nav-proposal" aria-selected="true">Standard Details</a>
+                                                                <a class="nav-item nav-link active" id="nav-proposal-tab" data-toggle="tab" href="#nav-proposal" role="tab" aria-controls="nav-proposal" aria-selected="true">Decision on TC Recommendation</a>
                                                                 <a class="nav-item nav-link" id="nav-proposal-recommendations-tab" (click)=getProposalsComments(actionRequest.id) data-toggle="tab" href="#nav-proposal-recommendations" role="tab" aria-controls="nav-proposal-recommendations" aria-selected="false">Proposal Comments</a>
-                                                                <a class="nav-item nav-link" id="nav-approve-proposal-tab" data-toggle="tab" href="#nav-approve-proposal" role="tab" aria-controls="nav-approve-proposal" aria-selected="false">Recommendations</a>
                                                             </div>
                                                         </nav>
                                                         <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                                                             <div class="tab-pane fade show active" id="nav-proposal" role="tabpanel" aria-labelledby="nav-proposal-tab">
                                                                 <div class="modal-body">
                                                                     <div class="form-body">
-                                                                        <div class="list-group list-group-flush">
-
-                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                <div class="d-flex w-100 justify-content-between">
-                                                                                    <div>
-                                                                                        <div class="d-flex w-100 align-items-center">
-                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Title</b></h5>
-                                                                                        </div>
+                                                                        <form (ngSubmit)="submitRecommendation()" [formGroup]="approveRecommendationFormGroup" class="form">
+                                                                            <div class="modal-body">
+                                                                                <div class="row col-12">
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Decision on Reviewed Standard</b></label>
+                                                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control" required formControlName="accentTo" name="accentTo">
+                                                                                            <option disabled>--Select--</option>
+                                                                                            <option value="Yes">Approve Review</option>
+                                                                                            <option value="No">Reject Review </option>
+                                                                                        </select>
                                                                                     </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Remarks</b></label>
+                                                                                        <textarea class="form-control one-column-input" formControlName="remarks" name="remarks"></textarea>
+                                                                                    </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>TC Secretary Feedback</b></label>
+                                                                                        <h3 *ngIf="actionRequest?.feedback==1">Withdrawal with replacement of the standard</h3>
+                                                                                        <h3 *ngIf="actionRequest?.feedback==2">Withdraw without Replacement</h3>
+                                                                                        <h3 *ngIf="actionRequest?.feedback==3">Revise the standard </h3>
+                                                                                        <h3 *ngIf="actionRequest?.feedback==4">Confirm the current standard</h3>
+                                                                                    </div>
+                                                                                    <input type="hidden" formControlName="id" value="{{actionRequest?.id}}" name="id" >
+                                                                                    <input type="hidden" formControlName="standardType" value="{{actionRequest?.standardType}}" name="standardType" >
+                                                                                    <input type="hidden" formControlName="title" value="{{actionRequest?.title}}" name="title" >
+                                                                                    <input type="hidden" formControlName="feedback" value="{{actionRequest?.feedback}}" name="feedback" >
+                                                                                    <input type="hidden" formControlName="subject" value="{{actionRequest?.subject}}" name="subject" >
+                                                                                    <input type="hidden" formControlName="description" value="{{actionRequest?.description}}" name="description" >
 
                                                                                 </div>
-
-                                                                                <p class="text-sm mb-0">{{actionRequest?.title}}.</p>
-                                                                            </a>
-                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                <div class="d-flex w-100 justify-content-between">
-                                                                                    <div>
-                                                                                        <div class="d-flex w-100 align-items-center">
-                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Date Prepared</b></h5>
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                </div>
-
-                                                                                <p class="text-sm mb-0">{{actionRequest?.dateFormed}}.</p>
-                                                                            </a>
-                                                                            <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                <div class="d-flex w-100 justify-content-between">
-                                                                                    <div>
-                                                                                        <div class="d-flex w-100 align-items-center">
-                                                                                            <h5 class="mb-1" style="color: #0d0505"><b>Standard Number</b></h5>
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                </div>
-
-                                                                                <p class="text-sm mb-0">{{actionRequest?.standardNumber}}.</p>
-                                                                            </a>
-
-
-                                                                        </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                                                <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
+                                                                            </div>
+                                                                        </form>
                                                                     </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
                                                                 </div>
                                                             </div>
                                                             <div class="tab-pane fade" id="nav-proposal-recommendations" role="tabpanel" aria-labelledby="nav-proposal-recommendations-tab">
@@ -168,61 +160,6 @@
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
                                                                 </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="nav-approve-proposal" role="tabpanel" aria-labelledby="nav-approve-proposal-tab">
-                                                                <div class="modal-body">
-                                                                    <div class="form-body">
-                                                                        <div class="container col-md-12" >
-                                                                            <div class="col-12">
-                                                                                <div class="card" >
-                                                                                    <div class="card-header">Make Recommendations</div>
-                                                                                    <form (ngSubmit)="submitRecommendation()" [formGroup]="approveRecommendationFormGroup" class="form">
-                                                                                        <div class="modal-body">
-                                                                                            <div class="row col-12">
-                                                                                                <div class="form-group col-12">
-                                                                                                    <label><b>Recommendation</b></label>
-                                                                                                    <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                                                                            class="form-control" required formControlName="feedback" name="feedback">
-                                                                                                        <option disabled>--Select committee--</option>
-                                                                                                        <option value="Yes">Approve Review</option>
-                                                                                                        <option value="No">Reject Review </option>
-                                                                                                    </select>
-                                                                                                </div>
-                                                                                                <div class="form-group col-12">
-                                                                                                    <label><b>Remarks</b></label>
-                                                                                                    <textarea class="form-control one-column-input" formControlName="remarks" name="remarks"></textarea>
-                                                                                                </div>
-                                                                                                <div class="form-group col-12">
-                                                                                                    <label><b>TC Secretary Feedback</b></label>
-                                                                                                    <h3 *ngIf="actionRequest?.feedback==1">Withdrawal with replacement of the standard</h3>
-                                                                                                    <h3 *ngIf="actionRequest?.feedback==2">Withdraw without Replacement</h3>
-                                                                                                    <h3 *ngIf="actionRequest?.feedback==3">Revise the standard </h3>
-                                                                                                    <h3 *ngIf="actionRequest?.feedback==4">Confirm the current standard</h3>
-                                                                                                </div>
-                                                                                                <input type="hidden" formControlName="reviewId" value="{{actionRequest?.id}}" name="reviewId" >
-                                                                                                <input type="hidden" formControlName="standardType" value="{{actionRequest?.standardType}}" name="standardType" >
-                                                                                                <input type="hidden" formControlName="title" value="{{actionRequest?.title}}" name="title" >
-                                                                                                <input type="hidden" formControlName="feedback" value="{{actionRequest?.feedback}}" name="feedback" >
-                                                                                                <input type="hidden" formControlName="subject" value="{{actionRequest?.subject}}" name="subject" >
-                                                                                                <input type="hidden" formControlName="description" value="{{actionRequest?.description}}" name="description" >
-
-                                                                                            </div>
-                                                                                        </div>
-
-
-                                                                                        <div class="modal-footer">
-                                                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                                            <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
-                                                                                        </div>
-                                                                                    </form>
-
-                                                                                </div>
-                                                                            </div>
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
                                                             </div>
 
                                                         </div>

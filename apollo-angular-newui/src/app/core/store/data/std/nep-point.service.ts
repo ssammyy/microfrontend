@@ -8,7 +8,7 @@ import {
     DepartmentResponse, DraftNotification,
     FeedbackEmail, finalSubmit,
     HOPTasks, InboundNotification, InfoAvailableNo,
-    InfoAvailableYes, NepNotification,
+    InfoAvailableYes, ISAdoptionProposal, NepEnquiries, NepInfoCheckDto, NepNotification,
     Notifications,
     NWAWorkShopDraft,
     RootObject
@@ -49,6 +49,24 @@ export class NepPointService {
         })
     );
   }
+
+    public uploadAttachment(enquiryId: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOAD_ATTACHMENT);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'enquiryId': enquiryId}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
   public infoAvailableYes(infoAvailableYes: InfoAvailableYes): Observable<any> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_INFORMATION_AVAILABLE_YES);
@@ -101,5 +119,25 @@ export class NepPointService {
         })
     );
   }
+    public getNepRequests(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_FETCH_ENQ);
+        const params = new HttpParams();
+        return this.http.get<NepEnquiries>(url, {params}).pipe();
+    }
+
+    public submitInfoResponse(nepInfoCheckDto: NepInfoCheckDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_INFORMATION_AVAILABLE_YES);
+        const params = new HttpParams();
+        return this.http.post<NepInfoCheckDto>(url, nepInfoCheckDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+
 
 }

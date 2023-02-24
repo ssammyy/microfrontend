@@ -193,7 +193,7 @@ class StdReviewService(
 
         standardReviewRepository.findByIdOrNull(sp.id)?.let { std ->
             with(std) {
-                status = 1
+                status = 2
 
             }
             standardReviewRepository.save(std)

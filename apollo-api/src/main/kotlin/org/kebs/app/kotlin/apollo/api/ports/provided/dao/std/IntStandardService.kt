@@ -930,6 +930,7 @@ class IntStandardService(
                 comStdNumber=isDraftDto.standardNumber
                 special=isDraftDto.special
                 draughting=isDraftDto.draughting
+                requestNumber=isDraftDto.requestNumber
 
             }
             companyStandardRepository.save(companyStandard)

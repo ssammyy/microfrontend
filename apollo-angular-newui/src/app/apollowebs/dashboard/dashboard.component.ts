@@ -214,6 +214,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     public ngOnInit() {
+        console.log(this.roles);
         // Load all PermitList Details
         // this.qaService.loadFirmPermitList(this.)
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
@@ -230,9 +231,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             },
         );
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            //(u.roles);
+
             this.roles = u.roles;
             return this.roles = u.roles;
+
         });
 
         if (this.roles?.includes('MS_HOD_READ')

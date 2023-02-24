@@ -4,13 +4,17 @@ import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
-@Table(name = "SD_NEP_NOTIFICATION")
-class NationalEnquiryPoint {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+@Table(name = "SD_NEP_NOTIFICATION_TBL")
+class NationalEnquiryPointEntity {
     @Column(name = "ID")
-    @Basic
-    var id : Long? = 0
+    @SequenceGenerator(
+        name = "SD_NEP_NOTIFICATION_TBL_SEQ_GEN",
+        allocationSize = 1,
+        sequenceName = "SD_NEP_NOTIFICATION_TBL_SEQ"
+    )
+    @GeneratedValue(generator = "SD_NEP_NOTIFICATION_TBL_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @Id
+    var id: Long? = 0
 
     @Column(name = "ENQUIRER_NAME")
     @Basic
