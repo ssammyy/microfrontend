@@ -7,7 +7,7 @@ import {
     FirmTypeEntityDto, InspectionReportDetailsDto,
     PermitEntityDetails,
     PermitEntityDto,
-    PlantDetailsDto,
+    PlantDetailsDto, RemarksAndStatusDto,
     SectionDto,
     SSFComplianceStatusDetailsDto, SSFDetailsDto,
     SSFPDFListDetailsDto,
@@ -63,6 +63,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
     resubmitForm!: FormGroup;
+    remarksForm!: FormGroup;
     uploadForm!: FormGroup;
     uploadedFile: File;
     uploadedFiles: FileList;
@@ -78,6 +79,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     dtOptionsSSF: DataTables.Settings = {};
     dtTriggerSSF: Subject<any> = new Subject<any>();
+    dtOptionsRemarks: DataTables.Settings = {};
+    dtTriggerRemarks: Subject<any> = new Subject<any>();
     dtOptionsSCS: DataTables.Settings = {};
     dtTriggerSCS: Subject<any> = new Subject<any>();
     dtOptionsDOCS: DataTables.Settings = {};
@@ -459,6 +462,10 @@ export class PermitDetailsAdminComponent implements OnInit {
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
 
+        this.remarksForm = this.formBuilder.group({
+            remarksValue: ['', Validators.required],
+        });
+
         this.uploadForm = this.formBuilder.group({
             upLoadDescription: ['', Validators.required],
             uploadedFile: this.filesControl,
@@ -683,6 +690,14 @@ export class PermitDetailsAdminComponent implements OnInit {
         setTimeout(function() {
             window.$('#sampleLabResultsModal').modal('show');
         }, 500);
+    }
+
+    viewSavedRemarks(data: RemarksAndStatusDto) {
+        this.currDivLabel = `REMARKS FOR PROCESS # ${data.processName}`;
+        this.currDiv = 'viewRemarksDetails';
+        this.remarksForm.patchValue(data);
+
+        window.$('#allProcessModel').modal('show');
     }
 
     viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {

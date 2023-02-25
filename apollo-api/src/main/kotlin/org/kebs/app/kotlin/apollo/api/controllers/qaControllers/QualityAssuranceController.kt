@@ -314,8 +314,7 @@ class QualityAssuranceController(
         when {
             //PCM REVIEW ACTIONS TO BE DONE
             permit.pcmReviewApprovalStatus != null -> {
-                returnDetails =
-                    permitApplicationsPCMReviewActions(permitDetails, permit, invoiceDetails, map, loggedInUser)
+                returnDetails = permitApplicationsPCMReviewActions(permitDetails, permit, invoiceDetails, map, loggedInUser)
                 permitDetails = returnDetails.first
             }
             //Permit completeness status

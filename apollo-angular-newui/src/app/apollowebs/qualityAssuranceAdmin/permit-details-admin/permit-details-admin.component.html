@@ -1298,71 +1298,46 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     </div>
                                                                     <div class="card-body" style="margin-top: 20px;">
 
-
                                                                         <div class="material-datatables">
                                                                             <div class="table-responsive">
-
                                                                                 <div>
                                                                                     <table class=" table table-bordered table-hover table-striped"
                                                                                            datatable
+                                                                                           [dtOptions]="dtOptionsRemarks"
+                                                                                           [dtTrigger]="dtTriggerRemarks"
                                                                                     >
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
-                                                                                            <th>
-                                                                                                <strong>Process
-                                                                                                    Name</strong></th>
-                                                                                            <th>
-                                                                                                <strong>Process
-                                                                                                    By</strong></th>
 
-                                                                                            <th>
-                                                                                                <strong>Process
-                                                                                                    On</strong></th>
-
-                                                                                            <th>
-                                                                                                <strong>Remarks
-                                                                                                    By</strong></th>
-                                                                                            <th>
-                                                                                                <strong>Status</strong>
-                                                                                            </th>
-
-
+                                                                                            <th><strong>Process Name</strong></th>
+                                                                                            <th><strong>Process By</strong></th>
+                                                                                            <th><strong>Process On</strong></th>
+                                                                                            <th><strong>Remarks By</strong></th>
+                                                                                            <th><strong>Status</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View</strong>
+                                                                                                <strong>View Details</strong>
                                                                                             </th>
-
-
                                                                                         </tr>
                                                                                         </thead>
-
                                                                                         <tbody>
-                                                                                        <tr>
-                                                                                            <td>REVIEW COMPLETENESS</td>
-
-                                                                                            <td>HOF/QAM</td>
-
-                                                                                            <td>17/11/2022</td>
-
-                                                                                            <td> Maryline QAM</td>
-
-                                                                                            <td> APPROVED</td>
-
-                                                                                            <td class="text-right">
-
-                                                                                                <a data-toggle="modal"
-                                                                                                   data-target="#Remarks"
-                                                                                                   class="btn btn-info"
-                                                                                                   style="width: 100px; background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
-
-                                                                                                <!-- <a
-                                                                                                                 class="text-right"
-                                                                                                                ><i style="color: red" class="material-icons">delete</i></a> -->
-
-
+                                                                                        <tr *ngFor="let remarksParam of allPermitDetails?.remarksDetailsList let i=index ">
+                                                                                            <td>{{i + 1}} </td>
+                                                                                            <td>{{remarksParam?.processName}}</td>
+                                                                                            <td>{{remarksParam?.processBy }}</td>
+                                                                                            <td>{{remarksParam?.createdOn}}</td>
+                                                                                            <td>{{remarksParam?.createdBy}}</td>
+                                                                                            <td>
+                                                                                                <div *ngIf="!remarksParam?.remarksStatus && remarksParam?.status == null">N/A</div>
+                                                                                                <div *ngIf="!remarksParam?.remarksStatus && remarksParam?.status == 1">REJECTED/NON-COMPLIANT</div>
+                                                                                                <div *ngIf="remarksParam?.remarksStatus && remarksParam?.status == 1">APPROVED/COMPLIANT</div>
                                                                                             </td>
-
+                                                                                            <td class="text-right">
+                                                                                                <a (click)="viewSavedRemarks(remarksParam)"
+                                                                                                   class="btn btn-info"
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
+                                                                                            </td>
                                                                                         </tr>
-
                                                                                         </tbody>
                                                                                     </table>
                                                                                 </div>
@@ -1766,23 +1741,42 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
 
                                 <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('uploadSSC')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION
                                     AND CONTROL</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                <a data-toggle="modal"
+                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('uploadSSC')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD NEW SCHEME OF SUPERVISION
+                                    AND CONTROL</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                    && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('addSSFDetails')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('addSSFDetails')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD  NEW SSF & BS NUMBER</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                    && allPermitDetails?.permitDetails?.compliantStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('addRecommendationRemarks')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATION</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                   && allPermitDetails?.permitDetails?.compliantStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('addRecommendationRemarks')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
 
                                 <!--                                <a data-toggle="modal"-->
                                 <!--                                   data-target="#allProcessModel"-->
@@ -1985,6 +1979,23 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <textarea id="sectionRemarks" matInput type="text"
                                                               formControlName="sectionRemarks"
                                                               name="sectionRemarks">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'viewRemarksDetails')">
+                                    <form [formGroup]="remarksForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>feedback :</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea id="remarksValue" matInput type="text"
+                                                              formControlName="remarksValue" disabled
+                                                              name="remarksValue">
                                                     </textarea>
                                                     </mat-form-field>
                                                 </div>

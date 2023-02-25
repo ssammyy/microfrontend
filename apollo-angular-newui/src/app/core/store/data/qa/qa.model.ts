@@ -155,6 +155,11 @@ export class ConsolidatedInvoiceDto {
 export class RemarksAndStatusDto {
     remarksStatus: boolean;
     remarksValue: string;
+    processName: string;
+    processBy: string;
+    createdOn: Date;
+    createdBy: string;
+    status: number;
 }
 
 export class PermitAllRemarksDetailsDto {
@@ -447,6 +452,7 @@ export class AllPermitDetailsDto {
     sampleLabResults: MSSSFLabResultsDto[];
     inspectionReportDetails: InspectionReportDetailsDto;
     schemeOfSuperVisionList: FilesListDto[];
+    remarksDetailsList: RemarksAndStatusDto[];
 
 }
 
