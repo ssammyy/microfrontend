@@ -88,6 +88,7 @@ data class SSFDetailsDto(
     var brandName: String? = null,
     var productDescription: String? = null,
     var resultsAnalysis: Boolean? = null,
+    var complianceRemarks: String? = null,
 )
 
 data class AllInspectionDetailsApplyDto(
@@ -845,6 +846,7 @@ data class AllPermitDetailsDto(
     var inspectionFeeInvoice: InvoiceDetailsDto? = null,
     var inspectionInvoiceUploaded: Long? = null,
     val inspectionReportDetails: InspectionReportDtoPermit? = null,
+    var schemeOfSuperVisionList: List<FilesListDto>? = null,
 
     )
 

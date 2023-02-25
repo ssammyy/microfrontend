@@ -86,7 +86,7 @@ class QualityAssuranceInternalUserHandler(
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 //            
-            qaDaoServices.findPermitDetails(permitID.toLong())
+            qaDaoServices.findPermitDetails(permitID)
                 .let {
                     ok().body(it)
                 }

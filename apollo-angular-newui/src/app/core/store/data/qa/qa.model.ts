@@ -407,6 +407,7 @@ export class SSFDetailsDto {
     brandName: string;
     productDescription: string;
     resultsAnalysis: boolean;
+    complianceRemarks: string;
 }
 
 export class CompanyUpgradeStatusDto {
@@ -444,8 +445,8 @@ export class AllPermitDetailsDto {
     inspectionInvoiceUploaded: number;
     inspectionFeeInvoice: InvoiceDetailsDto;
     sampleLabResults: MSSSFLabResultsDto[];
-
     inspectionReportDetails: InspectionReportDetailsDto;
+    schemeOfSuperVisionList: FilesListDto[];
 
 }
 

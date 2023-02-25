@@ -321,7 +321,7 @@ class QADaoServices(
     }
 
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitBrandDetails(
         permitID: Long,
@@ -852,13 +852,8 @@ class QADaoServices(
             val sampleSubmissionDetails = QaSampleSubmissionEntity()
             with(sampleSubmissionDetails) {
                 resultsAnalysis = when {
-                    body.resultsAnalysis -> {
-                        1
-                    }
-
-                    else -> {
-                        0
-                    }
+                    body.resultsAnalysis -> { 1 }
+                    else -> { 0 }
                 }
                 complianceRemarks = body.complianceRemarks
             }
@@ -1520,11 +1515,15 @@ class QADaoServices(
         when (permit.sendApplication) {
             map.activeStatus -> {
                 batchID =
-                    if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.smarkGeneratedFrom == 1) {
+                    if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.fmarkGenerated == 1) {
                         val findSMarkID = findSmarkWithFmarkId(permitID).smarkId
-                        val findSMark =
-                            findPermitBYID(findSMarkID ?: throw Exception("NO S-MARK ID FOUND WITH F-MARK ID"))
-                        findPermitInvoiceByPermitID(findSMark.id ?: throw Exception("MISSING ID")).batchInvoiceNo
+                        val findSMark = findPermitBYCompanyIDAndId(findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"), permit.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"))
+                        val invoiceFound =  findPermitInvoiceByPermitIDOrNull(permitID)
+                        if(invoiceFound!=null){
+                            invoiceFound.batchInvoiceNo
+                        }else{
+                            findPermitInvoiceByPermitID(findSMarkID).batchInvoiceNo
+                        }
                     } else {
                         findPermitInvoiceByPermitID(permitID).batchInvoiceNo
                     }
@@ -3857,6 +3856,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
 
+    fun findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(permitRefNumber: String,  permitID: Long,status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitRefNumberAndPermitIdAndSscStatus(permitRefNumber,permitID, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
+    }
+
     fun findAllUploadedFileBYPermitRefNumberAndJustificationReportStatusAndPermitId(
         permitRefNumber: String,
         status: Int,
@@ -4645,11 +4650,9 @@ class QADaoServices(
             ssfListDetails.addAll(ssfListDTO)
             ssfList.forEach { samp ->
                 val ssfResultsListCompliance = mapSSFComplianceStatusDetailsDto(samp)
-                val savedPDFFilesLims =
-                    samp.id?.let { findSampleSubmittedListPdfBYSSFidWithNullValues(it)?.let { mapLabPDFFilesListDto(it) } }
+                val savedPDFFilesLims = samp.id?.let { findSampleSubmittedListPdfBYSSFidWithNullValues(it)?.let { mapLabPDFFilesListDto(it) } }
                 val limsPDFFiles = samp.bsNumber?.let { mapLIMSSavedFilesDto(it, savedPDFFilesLims) }
-                val labResultsParameters =
-                    samp.bsNumber?.let { findSampleLabTestResultsRepoBYBSNumberWithNullvalue(it) }
+                val labResultsParameters = samp.bsNumber?.let { findSampleLabTestResultsRepoBYBSNumberWithNullvalue(it) }
 
                 val labResultsDto = mapLabResultsDetailsDto(
                     ssfResultsListCompliance,
@@ -4680,8 +4683,7 @@ class QADaoServices(
                 }
             }
         }
-        val inspectionReport =
-            qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(permitID, 1)
+        val inspectionReport = qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(permitID, 1)
         val inspectionReportDetails = InspectionReportDtoPermit(
             id = inspectionReport?.id,
             refNo = inspectionReport?.refNo,
@@ -4706,52 +4708,27 @@ class QADaoServices(
             permitsRemarksDTO(permit),
             permitsInvoiceDetailsDTO(permit),
             permitsInvoiceDetailsDifferenceDTO(permit),
-            commonDaoServices.userListDto(
-                findOfficersList(
-                    permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"),
-                    permit,
-                    map,
-                    applicationMapProperties.mapQAUserOfficerRoleId
-                )
-            ),
-            findAllOldPermitWithPermitRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
-            )?.let { listPermits(it, map) },
-            findAllUploadedFileBYPermitIDAndOrdinarStatus(
-                permit.id ?: throw Exception("MISSING PERMIT ID"),
-                1
-            ).let { listFilesDto(it) },
-            findAllUploadedFileBYPermitIDAndSta3Status(
-                permit.id ?: throw Exception("MISSING PERMIT ID"),
-                1
-            ).let { listFilesDto(it) },
-            findAllUploadedFileBYPermitIDAndSta10Status(
-                permit.id ?: throw Exception("MISSING PERMIT ID"),
-                1
-            ).let { listFilesDto(it) },
-            getALLLabResultsForCertainPermit(
-                permit,
-                permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")
-            ),
+            commonDaoServices.userListDto(findOfficersList(permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"), permit, map, applicationMapProperties.mapQAUserOfficerRoleId)),
+            findAllOldPermitWithPermitRefNumber(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))?.let { listPermits(it, map) },
+            findAllUploadedFileBYPermitIDAndOrdinarStatus(permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitIDAndSta3Status(permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitIDAndSta10Status(permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
+            getALLLabResultsForCertainPermit(permit, permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")),
             permit.sscId?.let { filesDtoDetails(findUploadedFileBYId(it)) },
             batchID,
             batchIDDifference,
             jasyptStringEncryptor.encrypt(permit.id.toString()),
             mapDtoSTA1View(permit),
-            findSTA3WithPermitIDAndRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-                permitID
-            )?.let { mapDtoSTA3View(it, permitID) },
-            findSTA10WithPermitRefNumberANdPermitID(
-                permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID
-            )?.let { listSTA10ViewDetails(permitID, it) },
+            findSTA3WithPermitIDAndRefNumber(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID)?.let { mapDtoSTA3View(it, permitID) },
+            findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID)?.let { listSTA10ViewDetails(permitID, it) },
             loadSectionDetails(departmentEntity, map),
             ssfListDetails,
             labResultsDtoList,
             inspectionNeeded,
             inspectionFeeInvoice,
             inspectionInvoiceUploaded,
-            inspectionReportDetails
+            inspectionReportDetails,
+            findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
         )
     }
 
@@ -4863,6 +4840,7 @@ class QADaoServices(
                 u.brandName,
                 u.productDescription,
                 u.resultsAnalysis == 1,
+                u.complianceRemarks,
             )
         }
     }
