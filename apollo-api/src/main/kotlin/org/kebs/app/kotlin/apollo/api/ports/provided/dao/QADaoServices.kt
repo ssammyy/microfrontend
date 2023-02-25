@@ -375,6 +375,7 @@ class QADaoServices(
                     body.hofQamCompletenessStatus -> {
                         hofQamCompletenessStatus = 1
                         resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
                         permitStatus = applicationMapProperties.mapQaStatusPQAOAssign
                     }
                     else -> {
@@ -958,6 +959,7 @@ class QADaoServices(
                     body.recommendationApprovalStatus -> {
                         recommendationApprovalStatus = 1
                         resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
                         userTaskId = applicationMapProperties.mapUserTaskNameQAM
                         permitStatus = applicationMapProperties.mapQaStatusPHodQamApproval
                     }
@@ -1040,6 +1042,7 @@ class QADaoServices(
                         when {
                             body.approvedRejectedStatus -> {
                                 resubmitApplicationStatus = 0
+                                changesMadeStatus = 0
                                 factoryInspectionReportApprovedRejectedStatus = 1
                                 when (permitType.id) {
                                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
@@ -1133,6 +1136,7 @@ class QADaoServices(
                     body.approvedRejectedStatus -> {
                         justificationReportStatus = 1
                         resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
 //                        userTaskId = applicationMapProperties.mapUserTaskNamePSC
                         permitStatus = applicationMapProperties.mapQaStatusPAssesorAssigning
                     }
@@ -1193,6 +1197,7 @@ class QADaoServices(
                     body.approvedRejectedStatus -> {
                         hodApproveAssessmentStatus = 1
                         resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
                         userTaskId = applicationMapProperties.mapUserTaskNamePACSECRETARY
                         permitStatus = applicationMapProperties.mapQaStatusPPACSecretaryAwarding
                     }
@@ -1253,6 +1258,7 @@ class QADaoServices(
                     body.approvedRejectedStatus -> {
                         hodQamApproveRejectStatus = 1
                         resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
                         userTaskId = applicationMapProperties.mapUserTaskNamePSC
                         permitStatus = applicationMapProperties.mapQaStatusPPSCMembersAward
                     }
@@ -1313,6 +1319,7 @@ class QADaoServices(
                     body.approvedRejectedStatus -> {
                         pscMemberApprovalStatus = 1
                         resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
                         userTaskId = applicationMapProperties.mapUserTaskNamePCM
                         permitStatus = applicationMapProperties.mapQaStatusPPCMAwarding
                     }
@@ -1373,6 +1380,7 @@ class QADaoServices(
                     body.approvedRejectedStatus -> {
                         pacDecisionStatus = 1
                         resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
                         userTaskId = applicationMapProperties.mapUserTaskNamePCM
                         permitStatus = applicationMapProperties.mapQaStatusPPCMAwarding
                     }
@@ -1432,6 +1440,7 @@ class QADaoServices(
                 when {
                     body.approvedRejectedStatus -> {
                         resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
                         //TODO: CHANGE THE DATE OF EXPIRY IF RENEWAL
                         val expiryDate = commonDaoServices.addYearsToCurrentDate(permitType.numberOfYears ?: throw Exception("MISSING PERMIT TYPE NUMBER O YEARS TO BE ACTIVE"))
                         val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
@@ -4632,6 +4641,7 @@ class QADaoServices(
             pscMemberApprovalStatus  = permit.pscMemberApprovalStatus  == 1
             pcmApprovalStatus  = permit.pcmApprovalStatus == 1
             paidStatus  = permit.paidStatus == 10
+            changesMadeStatus  = permit.changesMadeStatus == 1
         }
         return p
     }
@@ -6301,6 +6311,7 @@ class QADaoServices(
 
                     "resubmitHofQamCompletenessResults" -> {
                         resubmitApplicationStatus = 10
+                        changesMadeStatus = 1
                         resubmitRemarks = permitResubmit.resubmitRemarks
 //                        hofQamCompletenessStatus = null
 //                        hofQamCompletenessRemarks = null

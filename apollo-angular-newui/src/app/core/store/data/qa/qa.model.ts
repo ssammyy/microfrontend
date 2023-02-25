@@ -324,6 +324,7 @@ export class PermitEntityDetails {
     pscMemberApprovalStatus: boolean;
     pcmApprovalStatus: boolean;
     paidStatus: boolean;
+    changesMadeStatus: boolean;
 }
 
 

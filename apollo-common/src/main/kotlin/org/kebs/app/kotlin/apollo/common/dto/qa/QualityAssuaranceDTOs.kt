@@ -822,6 +822,7 @@ data class PermitDetailsDto(
     var pscMemberApprovalStatus: Boolean? = null,
     var pcmApprovalStatus: Boolean? = null,
     var paidStatus: Boolean? = null,
+    var changesMadeStatus: Boolean? = null,
 
     )
 

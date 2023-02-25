@@ -272,6 +272,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var recommendationApprovalStatus: Int? = null
 
+    @Column(name = "CHANGES_MADE_STATUS")
+    @Basic
+    var changesMadeStatus: Int? = null
+
     @Column(name = "RECOMMENDATION_REMARKS")
     @Basic
     var recommendationRemarks: String? = null
