@@ -74,7 +74,7 @@ class Scheduler(
  */
 @Configuration
 @EnableScheduling
-@Profile("dvve")
+@Profile("prod")
 class SchedulerDevelopment(
     private val schedulerImpl: SchedulerImpl,
     private val qaDaoServices: QADaoServices,

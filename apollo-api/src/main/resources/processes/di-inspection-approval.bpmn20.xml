@@ -14,7 +14,7 @@
     <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="servicetask1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${consignmentDocumentApproved}]]></conditionExpression>
     </sequenceFlow>
-    <serviceTask id="servicetask1" name="Check Has Coc/Cor" activiti:async="true" activiti:exclusive="false"
+    <serviceTask id="servicetask1" name="Check Has Coc/Cor" activiti:exclusive="false"
                  activiti:expression="#{diService.consignmentChecks(cdUuid)}"></serviceTask>
     <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow5" sourceRef="servicetask1" targetRef="exclusivegateway2"></sequenceFlow>
@@ -31,7 +31,7 @@
     <serviceTask id="servicetask2" name="Reject Approval"
                  activiti:expression="#{diService.consignmentChecks(cdUuid)}"></serviceTask>
     <sequenceFlow id="flow12" sourceRef="startevent1" targetRef="exclusivegateway1"></sequenceFlow>
-    <serviceTask id="servicetask3" name="Update CD Status" activiti:async="true" activiti:exclusive="false"
+    <serviceTask id="servicetask3" name="Update CD Status" activiti:exclusive="false"
                  activiti:expression="#{diService.updateStatus(cdUuid,cdStatusTypeId,supervisor,remarks)}"></serviceTask>
     <serviceTask id="servicetask4" name="Update SW"
                  activiti:expression="#{diService.updateCdStatusOnSw(cdUuid,cdStatusTypeId,remarks)}"></serviceTask>

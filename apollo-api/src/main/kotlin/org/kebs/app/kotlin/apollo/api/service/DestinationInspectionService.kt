@@ -1002,33 +1002,35 @@ class DestinationInspectionService(
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             var consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
-            consignmentDocument.targetStatus = map.activeStatus
-            consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
-            consignmentDocument.varField10 = "Target approved awaiting inspection"
-            consignmentDocument.targetApproveDate = Date(Date().time)
-            consignmentDocument.targetApproveRemarks = remarks
-            consignmentDocument.targetApproveDate = Date(Date().time)
-            consignmentDocument = if (supervisor == null) {
-                this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
-            } else {
-                this.daoServices.updateCdDetailsInDB(
-                    consignmentDocument,
-                    this.commonDaoServices.findUserByUserName(supervisor)
+            if (consignmentDocument.targetStatus != map.activeStatus) {
+                consignmentDocument.targetStatus = map.activeStatus
+                consignmentDocument.status = ConsignmentApprovalStatus.UNDER_INSPECTION.code
+                consignmentDocument.varField10 = "Target approved awaiting inspection"
+                consignmentDocument.targetApproveDate = Date(Date().time)
+                consignmentDocument.targetApproveRemarks = remarks
+                consignmentDocument.targetApproveDate = Date(Date().time)
+                consignmentDocument = if (supervisor == null) {
+                    this.daoServices.updateCdDetailsInDB(consignmentDocument, null)
+                } else {
+                    this.daoServices.updateCdDetailsInDB(
+                        consignmentDocument,
+                        this.commonDaoServices.findUserByUserName(supervisor)
+                    )
+                }
+                daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.TARGET_APPROVED)
+                this.cdAuditService.addHistoryRecord(
+                    consignmentDocument.id!!,
+                    consignmentDocument.ucrNumber,
+                    remarks,
+                    "APPROVE TARGETING",
+                    "Targeting of ${consignmentDocument.ucrNumber} has been approved by ${supervisor}",
+                    supervisor ?: consignmentDocument.assignedInspectionOfficer?.userName
                 )
+                // Submit consignment to Single/Window
+                KotlinLogging.logger { }.info("REQUESTED TARGETING SCHEDULE: ${cdUuid}")
+                // No longer necessary to set on hold status
+                // daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
             }
-            daoServices.updateCDStatus(consignmentDocument, ConsignmentDocumentStatus.TARGET_APPROVED)
-            this.cdAuditService.addHistoryRecord(
-                consignmentDocument.id!!,
-                consignmentDocument.ucrNumber,
-                remarks,
-                "APPROVE TARGETING",
-                "Targeting of ${consignmentDocument.ucrNumber} has been approved by ${supervisor}",
-                supervisor ?: consignmentDocument.assignedInspectionOfficer?.userName
-            )
-            // Submit consignment to Single/Window
-            KotlinLogging.logger { }.info("REQUESTED TARGETING SCHEDULE: ${cdUuid}")
-            // No longer necessary to set on hold status
-            // daoServices.submitCDStatusToKesWS("OH", "OH", consignmentDocument.version.toString(), consignmentDocument)
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("REJECTION UPDATE STATUS FAILED", ex)
         }
