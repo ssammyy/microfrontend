@@ -131,6 +131,39 @@ class CfsStationForm {
     }
 }
 
+class CfsStationDao {
+    var id: Long? = null
+    var cfsCode: String? = null
+    var altCfsCode: String? = null
+    var cfsNumber: String? = null
+    var revenueLineNumber: String? = null
+    var cfsName: String? = null
+    var description: String? = null
+    var status: Int? = 1
+
+    companion object {
+        fun fromEntity(cfsEntity: CfsTypeCodesEntity): CfsStationDao {
+            val cfs = CfsStationDao()
+            cfs.cfsCode = cfsEntity.cfsCode
+            cfs.altCfsCode = cfsEntity.altCfsCode
+            cfs.cfsName = cfsEntity.cfsName
+            cfs.revenueLineNumber = cfsEntity.revenueLineNumber
+            cfs.description = cfsEntity.description
+            cfs.id = cfsEntity.id
+            cfs.status = cfsEntity.status
+            return cfs
+        }
+
+        fun fromList(cfsList: List<CfsTypeCodesEntity>): List<CfsStationDao> {
+            val cfsLst = mutableListOf<CfsStationDao>()
+            cfsList.forEach { cfs ->
+                cfsLst.add(fromEntity(cfs))
+            }
+            return cfsLst
+        }
+    }
+}
+
 class BillingLimitForm {
     @NotEmpty(message = "Bill type is required")
     var billType: String? = null

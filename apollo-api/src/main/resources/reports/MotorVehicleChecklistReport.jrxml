@@ -38,18 +38,18 @@
     <parameter name="RegistrationDate" class="java.lang.String"/>
     <parameter name="OdometreReading" class="java.lang.String"/>
     <parameter name="Drive" class="java.lang.String"/>
-	<parameter name="Transmission" class="java.lang.String"/>
-	<parameter name="Colour" class="java.lang.String"/>
-	<parameter name="OverallAppearance" class="java.lang.String"/>
-	<parameter name="Remarks" class="java.lang.String"/>
-	<parameter name="OverallRemarks" class="java.lang.String"/>
-	<queryString>
-		<![CDATA[]]>
-	</queryString>
-	<background>
-		<band splitType="Stretch"/>
+    <parameter name="Transmission" class="java.lang.String"/>
+    <parameter name="Colour" class="java.lang.String"/>
+    <parameter name="OverallAppearance" class="java.lang.String"/>
+    <parameter name="Remarks" class="java.lang.String"/>
+    <parameter name="OverallRemarks" class="java.lang.String"/>
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
+    <background>
+        <band splitType="Stretch"/>
 	</background>
-	<title>
+    <title>
         <band height="298" splitType="Stretch">
             <staticText>
                 <reportElement mode="Opaque" x="1" y="79" width="799" height="20" backcolor="#D9E1F2"
@@ -518,9 +518,9 @@
                 <text><![CDATA[Tel : 020 6948000]]></text>
             </staticText>
         </band>
-	</title>
+    </title>
 	<detail>
-		<band height="215" splitType="Stretch">
+        <band height="215" splitType="Stretch">
             <staticText>
                 <reportElement mode="Opaque" x="1" y="0" width="798" height="23" backcolor="#D9E1F2"
                                uuid="2f5e1ab0-fe64-4dd7-a8c6-05cb9b8da55e"/>
@@ -532,16 +532,16 @@
             <rectangle>
                 <reportElement x="0" y="29" width="801" height="186" uuid="d85bee61-a8d7-4934-af0a-faa0f978b919"/>
             </rectangle>
-			<line>
-				<reportElement x="33" y="24" width="1" height="185" uuid="ca2682d4-5240-422f-bbf5-e238d4818086"/>
-			</line>
-			<line>
-				<reportElement x="87" y="24" width="1" height="185" uuid="e9605214-e27a-4faf-bae6-608d6a43be66"/>
-			</line>
-			<line>
-				<reportElement x="145" y="24" width="1" height="187" uuid="cba14856-fd61-410a-a63d-6fd750cb77dd"/>
-			</line>
-			<line>
+            <line>
+                <reportElement x="33" y="24" width="1" height="185" uuid="ca2682d4-5240-422f-bbf5-e238d4818086"/>
+            </line>
+            <line>
+                <reportElement x="87" y="24" width="1" height="185" uuid="e9605214-e27a-4faf-bae6-608d6a43be66"/>
+            </line>
+            <line>
+                <reportElement x="145" y="24" width="1" height="187" uuid="cba14856-fd61-410a-a63d-6fd750cb77dd"/>
+            </line>
+            <line>
 				<reportElement x="212" y="24" width="1" height="186" uuid="5236717b-6e1c-4b7b-a449-22c1be9bfb87"/>
 			</line>
 			<line>
@@ -590,13 +590,13 @@ VEHICLE]]></text>
 				</textElement>
 				<text><![CDATA[CHASSIS NO.]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="144" y="73" width="67" height="30" uuid="dc04bf5b-30c0-40fd-b241-21e2fe6b426b"/>
-				<textElement textAlignment="Center">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[ENGINE NO./CAPACITY]]></text>
-			</staticText>
+            <staticText>
+                <reportElement x="144" y="73" width="67" height="30" uuid="dc04bf5b-30c0-40fd-b241-21e2fe6b426b"/>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[ENGINE CAPACITY]]></text>
+            </staticText>
 			<staticText>
 				<reportElement x="222" y="37" width="35" height="67" uuid="59df7be9-3aa9-4497-b2b0-f4ce86748eda"/>
 				<textElement textAlignment="Center" rotation="Left">
@@ -695,16 +695,16 @@ VEHICLE]]></text>
 				<reportElement x="408" y="115" width="30" height="86" uuid="7d6ce0eb-42f1-49b0-84b4-b858acf44968"/>
 				<textElement rotation="Left"/>
 				<textFieldExpression><![CDATA[$P{Drive}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="467" y="117" width="30" height="85" uuid="eae768ab-28a0-480c-908f-09a7f9022ff0"/>
-				<textElement rotation="Left"/>
-				<textFieldExpression><![CDATA[$P{Transmission}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="518" y="115" width="48" height="89" uuid="950fffd1-c730-4e08-9d38-e2e9895192d5"/>
-				<textElement rotation="Left"/>
-				<textFieldExpression><![CDATA[$P{Colour}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="467" y="117" width="30" height="85" uuid="eae768ab-28a0-480c-908f-09a7f9022ff0"/>
+                <textElement rotation="Left"/>
+                <textFieldExpression><![CDATA[$P{Transmission}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="518" y="115" width="48" height="89" uuid="950fffd1-c730-4e08-9d38-e2e9895192d5"/>
+                <textElement rotation="Left"/>
+                <textFieldExpression><![CDATA[$P{Colour}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="581" y="130" width="100" height="30" uuid="019aed7b-b9b6-4b10-a450-f49b1ae8b7a2"/>
@@ -1006,5 +1006,5 @@ VEHICLE]]></text>
                 </textField>
             </frame>
         </band>
-	</detail>
+    </detail>
 </jasperReport>

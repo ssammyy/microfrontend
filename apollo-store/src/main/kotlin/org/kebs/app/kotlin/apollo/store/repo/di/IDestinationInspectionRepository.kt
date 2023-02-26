@@ -185,6 +185,7 @@ interface IBlackListUserTargetRepository : HazelcastRepository<CdBlackListUserTa
 @Repository
 interface ICfsTypeCodesRepository : HazelcastRepository<CfsTypeCodesEntity, Long> {
     fun findByCfsCode(cfsCode: String): CfsTypeCodesEntity?
+    fun findByCfsCodeIn(cfsCode: List<String>): List<CfsTypeCodesEntity>
     fun findByStatus(status: Int): List<CfsTypeCodesEntity>?
     fun findByStatusOrderByCfsName(status: Int): List<CfsTypeCodesEntity>?
 

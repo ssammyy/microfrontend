@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.api.service;
+package org.kebs.app.kotlin.apollo.api.service
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
@@ -42,7 +42,7 @@ class ConsignmentDocumentAuditService(
                 this.cdHistory.save(history)
             }
         } catch (ex: Exception) {
-            KotlinLogging.logger { }.error("FAILED TO ADD", ex)
+            KotlinLogging.logger { }.warn("FAILED TO ADD AUDIT Log, check user context is set", ex.localizedMessage)
         }
     }
 

@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sftp
 import com.fasterxml.jackson.databind.DeserializationFeature
 import mu.KotlinLogging
 import org.apache.camel.Exchange
+import org.apache.camel.LoggingLevel
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.file.GenericFile
 import org.apache.camel.model.dataformat.JacksonXMLDataFormat
@@ -586,6 +587,7 @@ class CamelSftpDownload(
             .setHeader("error", simple("Invalid file received: \${in.headers.CamelFileName}"))
             .log("Invalid file \${file:name} complete.")
             .setHeader("moveFailed", simple("\${in.headers.CamelFileName}"))
+            .log(LoggingLevel.WARN, "Unknown file type, not processed: \${in.headers.CamelFileName}")
             .throwException(java.lang.Exception(header("error").toString()))
             .end()
             .bean(SFTPService::class.java, "successfulProcessingRequest") // Save Download status

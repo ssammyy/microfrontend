@@ -102,6 +102,9 @@ class JpaConnectionProperties {
     @Value("\${org.app.properties.jpa.cache.prep.stmts}")
     val cachePrepStmts: Boolean = false
 
+    @Value("\${org.app.properties.jpa.search.init-enabled:true}")
+    val searchInitEnabled: Boolean = true
+
     @Value("\${org.app.properties.jpa.prep.stmt.cache.size}")
     val prepStmtCacheSize: Int = 0
 
