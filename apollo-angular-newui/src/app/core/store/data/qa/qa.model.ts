@@ -38,7 +38,7 @@ export class FirmTypeEntityDto {
 }
 
 export class PermitEntityDto {
-    id: bigint;
+    id: number;
     firmName: string;
     permitRefNumber: string;
     productName: string;

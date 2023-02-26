@@ -261,6 +261,208 @@ class QADaoServices(
         )
     }
 
+
+    @PreAuthorize(
+        "hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') " +
+                "or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ')" +
+                " or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')"
+    )
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun findLoggedInUserOngoing(page: PageRequest, permitTypeID: Long): ApiResponseModel {
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val permitListMyTasksAddedTogether = mutableListOf<PermitEntityDto>()
+        auth.authorities.forEach { a ->
+            when (a.authority) {
+                "QA_OFFICER_READ" -> {
+                    listPermits(
+                        findAllQAOPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID,
+                        ), map
+                    ).let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_ASSESSORS_READ" -> {
+                    listPermits(
+                        findAllAssessorPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID,
+                        ), map
+                    ).let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_HOD_READ" -> {
+                    findAllApplicationsQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_HOD_READ",
+                        permitTypeID,
+                        map,
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_HOF_READ" -> {
+                    findAllApplicationsQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_HOF_READ",
+                        permitTypeID,
+                        map,
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_RM_READ" -> {
+                    findAllApplicationsQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_RM_READ",
+                        permitTypeID,
+                        map,
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_MANAGER_READ" -> {
+                    findAllApplicationsQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_MANAGER_READ",
+                        permitTypeID,
+                        map,
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            if (a.authority == "QA_PAC_SECRETARY_READ" || a.authority == "QA_PSC_MEMBERS_READ" || a.authority == "QA_PCM_READ") {
+                findAllFirmsInKenyaPermitsApplicationsWithPermitTypeAndPaidStatus(
+                    permitTypeID,
+                    map.initStatus
+                ).let { listPermits(it, map) }.let { permitListMyTasksAddedTogether.addAll(it) }
+            }
+
+        }
+        val permitListMyTasksAddedTogetherPage: PageImpl<PermitEntityDto> =
+            PageImpl(permitListMyTasksAddedTogether, page, permitListMyTasksAddedTogether.distinct().size.toLong())
+        return commonDaoServices.setSuccessResponse(
+            permitListMyTasksAddedTogetherPage.toList(),
+            permitListMyTasksAddedTogetherPage.totalPages,
+            permitListMyTasksAddedTogetherPage.number,
+            permitListMyTasksAddedTogetherPage.totalElements
+        )
+    }
+
+    @PreAuthorize(
+        "hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') " +
+                "or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ')" +
+                " or hasAuthority('QA_PCM_READ') or hasAuthority('QA_DIRECTOR_READ')"
+    )
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun findLoggedInUserComplete(page: PageRequest, permitTypeID: Long): ApiResponseModel {
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val permitListMyTasksAddedTogether = mutableListOf<PermitEntityDto>()
+        auth.authorities.forEach { a ->
+            when (a.authority) {
+                "QA_OFFICER_READ" -> {
+                    listPermits(
+                        findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID,
+                        ), map
+                    ).let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_ASSESSORS_READ" -> {
+                    listPermits(
+                        findAllAssessorPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID,
+                        ), map
+                    ).let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_HOD_READ" -> {
+                    findAllApplicationsAwardedQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_HOD_READ",
+                        permitTypeID,
+                        map,
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_HOF_READ" -> {
+                    findAllApplicationsAwardedQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_HOF_READ",
+                        permitTypeID,
+                        map,
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_RM_READ" -> {
+                    findAllApplicationsAwardedQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_RM_READ",
+                        permitTypeID,
+                        map,
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            when (a.authority) {
+                "QA_MANAGER_READ" -> {
+                    findAllApplicationsAwardedQAMHODRMHOFByRegion(
+                        loggedInUser,
+                        auth,
+                        "QA_MANAGER_READ",
+                        permitTypeID,
+                        map,
+                    )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
+                }
+            }
+
+            if (a.authority == "QA_PAC_SECRETARY_READ" || a.authority == "QA_PSC_MEMBERS_READ" || a.authority == "QA_PCM_READ") {
+                findAllFirmInKenyaPermitsAwardedWithPermitType(
+                    map.activeStatus,
+                    permitTypeID
+                ).let { listPermits(it, map) }.let { permitListMyTasksAddedTogether.addAll(it) }
+            }
+
+        }
+        val permitListMyTasksAddedTogetherPage: PageImpl<PermitEntityDto> =
+            PageImpl(permitListMyTasksAddedTogether, page, permitListMyTasksAddedTogether.distinct().size.toLong())
+        return commonDaoServices.setSuccessResponse(
+            permitListMyTasksAddedTogetherPage.toList(),
+            permitListMyTasksAddedTogetherPage.totalPages,
+            permitListMyTasksAddedTogetherPage.number,
+            permitListMyTasksAddedTogetherPage.totalElements
+        )
+    }
+
+
     @PreAuthorize(
         "hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_READ') " +
                 "or hasAuthority('QA_HOF_READ') or hasAuthority('QA_RM_READ') or hasAuthority('QA_ASSESSORS_READ') " +
@@ -7494,45 +7696,46 @@ class QADaoServices(
                             }
                         }
 
-                    invoiceQaBatchRepo.findByIdOrNull(batchID)
-                        ?.let { invoiceDetails ->
+                    if(permitMasterInvoiceFound.batchInvoiceNo==null){
+                        invoiceQaBatchRepo.findByIdOrNull(batchID)
+                            ?.let { invoiceDetails ->
 
-                            with(permitMasterInvoiceFound) {
-                                batchInvoiceNo = invoiceDetails.id
-                                modifiedBy = commonDaoServices.concatenateName(user)
-                                modifiedOn = commonDaoServices.getTimestamp()
+                                with(permitMasterInvoiceFound) {
+                                    batchInvoiceNo = invoiceDetails.id
+                                    modifiedBy = commonDaoServices.concatenateName(user)
+                                    modifiedOn = commonDaoServices.getTimestamp()
+                                }
+                                permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
+
+                                with(invoiceDetails) {
+                                    description = "${permitMasterInvoiceFound.invoiceRef},$description"
+                                    totalAmount = totalAmount?.plus( permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
+                                    totalTaxAmount = totalTaxAmount?.plus( permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
+
+                                }
+                                invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)
+
+                                val detailBody = SageValuesDto().apply {
+                                    revenueAcc = paymentRevenueCode.revenueCode
+                                    revenueAccDesc = paymentRevenueCode.revenueDescription
+                                    taxable = 1
+                                    totalAmount = permitMasterInvoiceFound.totalAmount
+                                    taxAmount = permitMasterInvoiceFound.taxAmount
+                                }
+                                sageValuesDtoList.add(detailBody)
                             }
-                            permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
-
-                            with(invoiceDetails) {
-                                description = "${permitMasterInvoiceFound.invoiceRef},$description"
-                                totalAmount = totalAmount?.plus( permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
-                                totalTaxAmount = totalTaxAmount?.plus( permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
-
-                            }
-                            invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)
-
-                            val detailBody = SageValuesDto().apply {
-                                revenueAcc = paymentRevenueCode.revenueCode
-                                revenueAccDesc = paymentRevenueCode.revenueDescription
-                                taxable = 1
-                                totalAmount = permitMasterInvoiceFound.totalAmount
-                                taxAmount = permitMasterInvoiceFound.taxAmount
-                            }
-                            sageValuesDtoList.add(detailBody)
-                        }
-                        ?: kotlin.run {
-                            var batchInvoicePermit = QaBatchInvoiceEntity()
-                            with(batchInvoicePermit) {
-                                invoiceNumber = applicationMapProperties.mapInvoicesPrefix + generateRandomText(
-                                    5,
-                                    s.secureRandom,
-                                    s.messageDigestAlgorithm,
-                                    true
-                                ).toUpperCase()
-                                userId = userID
-                                plantId = batchInvoiceDto.plantID
-                                varField1 = batchInvoiceDto.isWithHolding.toString() // withholding field
+                            ?: kotlin.run {
+                                var batchInvoicePermit = QaBatchInvoiceEntity()
+                                with(batchInvoicePermit) {
+                                    invoiceNumber = applicationMapProperties.mapInvoicesPrefix + generateRandomText(
+                                        5,
+                                        s.secureRandom,
+                                        s.messageDigestAlgorithm,
+                                        true
+                                    ).toUpperCase()
+                                    userId = userID
+                                    plantId = batchInvoiceDto.plantID
+                                    varField1 = batchInvoiceDto.isWithHolding.toString() // withholding field
 //                                if (batchInvoiceDto.isWithHolding == 1L) {
 //                                    var foundTotalAmount = permitMasterInvoiceFound.totalAmount
 //                                    foundTotalAmount = foundTotalAmount?.minus(permitMasterInvoiceFound.taxAmount!!)
@@ -7548,41 +7751,41 @@ class QADaoServices(
 //                                    }
 //                                    permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
 //                                }
-                                status = s.activeStatus
-                                description = "${permitMasterInvoiceFound.invoiceRef},$description"
-                                totalAmount = totalAmount?.plus(
-                                    permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
-                                )
-                                totalTaxAmount = totalTaxAmount?.plus(
-                                    permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
-                                )
-                                createdBy = commonDaoServices.concatenateName(user)
-                                createdOn = commonDaoServices.getTimestamp()
+                                    status = s.activeStatus
+                                    description = "${permitMasterInvoiceFound.invoiceRef},$description"
+                                    totalAmount = totalAmount?.plus(
+                                        permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
+                                    )
+                                    totalTaxAmount = totalTaxAmount?.plus(
+                                        permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
+                                    )
+                                    createdBy = commonDaoServices.concatenateName(user)
+                                    createdOn = commonDaoServices.getTimestamp()
+                                }
+
+                                batchInvoicePermit = invoiceQaBatchRepo.save(batchInvoicePermit)
+
+                                with(permitMasterInvoiceFound) {
+                                    batchInvoiceNo = batchInvoicePermit.id
+                                    modifiedBy = commonDaoServices.concatenateName(user)
+                                    modifiedOn = commonDaoServices.getTimestamp()
+                                }
+                                permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
+
+                                invoiceBatchDetails = batchInvoicePermit
+
+                                val detailBody = SageValuesDto().apply {
+                                    revenueAcc = paymentRevenueCode.revenueCode
+                                    revenueAccDesc = paymentRevenueCode.revenueDescription
+                                    taxable = 1
+                                    totalAmount = permitMasterInvoiceFound.totalAmount
+                                    taxAmount = permitMasterInvoiceFound.taxAmount
+                                }
+                                sageValuesDtoList.add(detailBody)
+
+                                //Create details to batch invoice for all transactions at kebs main Staging table
                             }
-
-                            batchInvoicePermit = invoiceQaBatchRepo.save(batchInvoicePermit)
-
-                            with(permitMasterInvoiceFound) {
-                                batchInvoiceNo = batchInvoicePermit.id
-                                modifiedBy = commonDaoServices.concatenateName(user)
-                                modifiedOn = commonDaoServices.getTimestamp()
-                            }
-                            permitMasterInvoiceFound = invoiceMasterDetailsRepo.save(permitMasterInvoiceFound)
-
-                            invoiceBatchDetails = batchInvoicePermit
-
-                            val detailBody = SageValuesDto().apply {
-                                revenueAcc = paymentRevenueCode.revenueCode
-                                revenueAccDesc = paymentRevenueCode.revenueDescription
-                                taxable = 1
-                                totalAmount = permitMasterInvoiceFound.totalAmount
-                                taxAmount = permitMasterInvoiceFound.taxAmount
-                            }
-                            sageValuesDtoList.add(detailBody)
-
-                            //Create details to batch invoice for all transactions at kebs main Staging table
-                        }
-
+                    }
 
                     batchID = invoiceBatchDetails?.id!!
 

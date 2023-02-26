@@ -1437,74 +1437,42 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                     </div>
                                                                     <div class="card-body" style="margin-top: 20px;">
-
-
                                                                         <div class="material-datatables">
                                                                             <div class="table-responsive">
-
                                                                                 <div>
                                                                                     <table class=" table table-bordered table-hover table-striped"
                                                                                            datatable
+                                                                                           [dtOptions]="dtOptionsVersion"
+                                                                                           [dtTrigger]="dtTriggerVersion"
                                                                                     >
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
-                                                                                            <th>
-                                                                                                <strong>File
-                                                                                                    Name</strong></th>
-                                                                                            <th>
-                                                                                                <strong>File
-                                                                                                    Type</strong></th>
 
-                                                                                            <th>
-                                                                                                <strong>Document
-                                                                                                    Description</strong>
-                                                                                            </th>
-
-                                                                                            <th>
-                                                                                                <strong>Version
-                                                                                                    Number</strong></th>
-
-
+                                                                                            <th><strong>Permit Ref Number</strong></th>
+                                                                                            <th><strong>Permit Number</strong></th>
+                                                                                            <th><strong>Version Number</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View</strong>
+                                                                                                <strong>View Details</strong>
                                                                                             </th>
-
-
                                                                                         </tr>
                                                                                         </thead>
-
                                                                                         <tbody>
-                                                                                        <tr>
-                                                                                            <td>bsk.pdf</td>
-
-                                                                                            <td>application</td>
-
-
-                                                                                            <td>QAO-uploads</td>
-
-                                                                                            <td>1</td>
-
+                                                                                        <tr *ngFor="let oldVersionDetails of allPermitDetails?.oldVersionList">
+                                                                                            <td>{{oldVersionDetails?.permitRefNumber}}</td>
+                                                                                            <td>{{oldVersionDetails?.awardedPermitNumber }}</td>
+                                                                                            <td>{{oldVersionDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
-
-                                                                                                <a mat-list-item
+                                                                                                <a (click)="goToFmarkPermitDetails(oldVersionDetails?.id)"
                                                                                                    class="btn btn-info"
-                                                                                                   style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
-
-                                                                                                <!-- <a
-                                                                                                                     class="text-right"
-                                                                                                                    ><i style="color: red" class="material-icons">delete</i></a> -->
-
-
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
                                                                                             </td>
-
                                                                                         </tr>
-
                                                                                         </tbody>
                                                                                     </table>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-
                                                                     </div>
                                                                 </div>
 
