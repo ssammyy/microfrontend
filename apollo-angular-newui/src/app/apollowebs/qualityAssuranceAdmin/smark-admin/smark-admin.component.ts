@@ -52,7 +52,7 @@ export class SmarkAdminComponent implements OnInit {
         this.getMySmarkTasks();
     }
 
-    id: any = "My Tasks";
+    id: any = 'My Tasks';
 
     tabChange(ids: any) {
         this.id = ids;

@@ -250,7 +250,7 @@ export class ResubmitApplicationDto {
 
 
 export class PermitEntityDetails {
-    id: bigint;
+    id: number;
     permitNumber: string;
     permitRefNumber: string;
     firmName: string;

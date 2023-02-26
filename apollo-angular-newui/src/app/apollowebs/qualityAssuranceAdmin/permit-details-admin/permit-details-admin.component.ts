@@ -1340,6 +1340,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                                 if (data.responseCode === '00') {
                                     this.SpinnerService.hide();
                                     this.loadPermitDetails(data);
+                                    // tslint:disable-next-line:max-line-length
                                     this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {this.closePopUpsModal2();});
                                 } else {
                                     this.SpinnerService.hide();
