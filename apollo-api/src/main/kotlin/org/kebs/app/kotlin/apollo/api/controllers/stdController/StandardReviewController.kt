@@ -15,7 +15,7 @@ import java.util.stream.Collectors
 
 
 @RestController
-@RequestMapping("api/v1/migration/standard_review")
+@RequestMapping("api/v1/migration/standard_review/feel")
 class StandardReviewController(
     val standardReviewService: StandardReviewService,
     val standardReviewFormService: StandardReviewFormService

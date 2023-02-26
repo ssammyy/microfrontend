@@ -35,7 +35,7 @@ export class SmarkAdminComponent implements OnInit {
     dataSourceC!: MatTableDataSource<MyTasksPermitEntityDto>;
     dataSourceD!: MatTableDataSource<MyTasksPermitEntityDto>;
 
-    displayedColumns: string[] = ['permitRefNumber', 'createdOn', 'productName', 'tradeMark', 'sectionValue', 'permitStatus', 'actions'];
+    displayedColumns: string[] = ['actions', 'permitStatus','permitRefNumber', 'createdOn', 'productName', 'tradeMark', 'sectionValue','firmName','region'];
 
 
     constructor(private store$: Store<any>,
@@ -103,7 +103,7 @@ export class SmarkAdminComponent implements OnInit {
         key = CryptoJS.enc.Utf8.parse(key);
         var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
-        this.router.navigate(['/permit-details-admin',encrypted])
+        this.router.navigate(['/permit-details-admin', encrypted])
 
 
     }

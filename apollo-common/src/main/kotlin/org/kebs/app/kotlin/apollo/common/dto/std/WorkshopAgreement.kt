@@ -15,6 +15,19 @@ class WorkshopAgreement(
     @JsonProperty("assignedTo") var assignedTo: Long
     ) {
 }
+data class WorkshopPreliminaryDraft(
+    val requestId: Long? = null,
+    val id: Long? = null,
+    val title: String? = null,
+    val scope: String? = null,
+    val normativeReference: String? = null,
+    val symbolsAbbreviatedTerms: String? = null,
+    val clause: String? = null,
+    val special: String? = null,
+    val diJNumber: Long? = null,
+    val workShopDate: Timestamp,
+    val nwaStandardNo: String? = null,
+){}
 data class JustificationNwa(
     var meetingDate: String? = null,
     var knwSecretary: String? = null,
@@ -220,6 +233,7 @@ class ISDraftDecisionsStd(
     @JsonProperty("scope") val scope: String?,
     @JsonProperty("special") val special: String?,
     @JsonProperty("standardNumber") val standardNumber: String?,
+    @JsonProperty("standardType") val standardType: String?,
     @JsonProperty("requestId") val requestId: Long?,
     @JsonProperty("id") val id: Long
 
@@ -288,7 +302,6 @@ class GazzettementDecision(
 class NwaJustificationDto(
     @JsonProperty("knw") var knw: String,
     @JsonProperty("dateOfMeeting") var dateOfMeeting: Timestamp,
-    @JsonProperty("knwSecretary") var knwSecretary: String,
     @JsonProperty("sl") var sl: String,
     @JsonProperty("requestedBy") var requestedBy: String,
     @JsonProperty("issuesAddressed") var issuesAddressed: String,
@@ -296,14 +309,15 @@ class NwaJustificationDto(
     @JsonProperty("referenceMaterial") var referenceMaterial: String,
     @JsonProperty("department") var department: String,
     @JsonProperty("remarks") var remarks: String,
-    @JsonProperty("requestNumber") var requestNumber: String,
-    @JsonProperty("meetingDate") var meetingDate: String,
-    @JsonProperty("knwAcceptanceDate") var knwAcceptanceDate: String,
     @JsonProperty("requestId") var requestId: Long,
 ){
 
 }
-
+data class NwaDecisionOnJustificationDto(
+    var comments: String?=null,
+    var accentTo: String?=null,
+    var requestId: Long?=null
+){}
 
 class NwaJustificationAction(
     @JsonProperty("justificationID") val justificationID: Long,
@@ -476,7 +490,7 @@ data class ISDraftDto(
     var docName:String?=null,
     var special:String?=null,
     var draughting:String?=null,
-    var requestNumber:Long?=null,
+    var requestNumber:String?=null,
     var comStdNumber:String?=null,
     var documentType:String?=null,
 ){
@@ -619,4 +633,69 @@ class ComJustificationDecisions(
 
 }
 
+data class StandardReviewDto(
+    val id: Long?=null,
+    val title: String?=null,
+    val standardNumber: String?=null,
+    val standardType: String?=null,
+    val documentType: String?=null,
+    val dateFormed: Timestamp?=null,
+    val circulationDate: Timestamp?=null,
+    val edition: String?=null
+)
+{}
+
+data class StandardReviewCommentDto(
+    val id: Long?=null,
+    val title: String?=null,
+    val standardNumber: String?=null,
+    val standardType: String?=null,
+    val documentType: String?=null,
+    val dateFormed: Timestamp?=null,
+    val circulationDate: Timestamp?=null,
+    val closingDate: Timestamp?=null,
+    val nameOfTcSecretary: String?=null,
+    val edition: String?=null,
+    val choice: String?=null,
+    val justification: String?=null,
+    val nameOfRespondent: String?=null,
+    val positionOfRespondent: String?=null,
+    val nameOfOrganization: String?=null,
+    val standardId: Long?=null
+)
+{}
+
+data class StandardReviewRecommendationDto(
+    val reviewId: Long?=null,
+    val recommendation: String?=null,
+    val feedback: Long?=null
+){
+
+}
+
+data class SpcStandardReviewCommentDto(
+    val id: Long?=null,
+    val title: String?=null,
+    val standardNumber: String?=null,
+    val standardType: String?=null,
+    val documentType: String?=null,
+    val dateFormed: Timestamp?=null,
+    val circulationDate: Timestamp?=null,
+    val closingDate: Timestamp?=null,
+    val nameOfTcSecretary: String?=null,
+    val edition: String?=null,
+    val choice: String?=null,
+    val justification: String?=null,
+    val nameOfRespondent: String?=null,
+    val positionOfRespondent: String?=null,
+    val nameOfOrganization: String?=null,
+    val accentTo: String?=null,
+    val requestNumber: String?=null,
+    val remarks: String?=null,
+    val subject: String?=null,
+    val description: String?=null,
+    val feedback: Long?=null,
+
+)
+{}
 

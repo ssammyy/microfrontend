@@ -61,6 +61,8 @@ class IntStandardService(
     private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository,
     private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
     private val iStdStakeHoldersRepository: IStdStakeHoldersRepository,
+    private val sdWorkshopStdRepository: SDWorkshopStdRepository,
+    private val standardRequestRepository: StandardRequestRepository
 
 
     ) {
@@ -928,6 +930,7 @@ class IntStandardService(
                 comStdNumber=isDraftDto.standardNumber
                 special=isDraftDto.special
                 draughting=isDraftDto.draughting
+                requestNumber=isDraftDto.requestNumber
 
             }
             companyStandardRepository.save(companyStandard)
@@ -1052,6 +1055,7 @@ class IntStandardService(
         val comRemarks=CompanyStandardRemarks()
         val decision=iSDraftDecisions.accentTo
         val timeOfRemark= Timestamp(System.currentTimeMillis())
+        val typeOfStandard= iSDraftDecisions.standardType
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
@@ -1062,6 +1066,7 @@ class IntStandardService(
         comRemarks.dateOfRemark = timeOfRemark
         comRemarks.remarkBy = usersName
         comRemarks.role = "HOP"
+        var url=""
 
         if (decision == "Yes") {
             companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
@@ -1070,8 +1075,26 @@ class IntStandardService(
                     status = 8
 
                 }
+                if(typeOfStandard=="International Standard"){
+                    url="intSacList"
+                }else if(typeOfStandard=="Company Standard"){
+                    url="intSacList"
+                }else if(typeOfStandard=="Kenya Standard"){
+                    url="intSacList"
+                }
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
+                var userList= companyStandardRepository.getSacSecEmailList()
+                val targetUrl = "https://kimsint.kebs.org/$url";
+                userList.forEach { item->
+                    //val recipient="stephenmuganda@gmail.com"
+                    val recipient= item.getUserEmail()
+                    val subject = "New Standard"
+                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded for SAC Decision.Click on the link below to view $targetUrl "
+                    if (recipient != null) {
+                        notifications.sendEmail(recipient, subject, messageBody)
+                    }
+                }
             }?: throw Exception("DRAFT NOT FOUND")
 
         } else if (decision == "No") {
@@ -1104,6 +1127,7 @@ class IntStandardService(
         val standard= Standard()
         val comRemarks=CompanyStandardRemarks()
         val stdDraft= ISUploadStandard()
+        val typeOfStandard= iSDraftDecisions.standardType
 
         val fName = loggedInUser.firstName
         val sName = loggedInUser.lastName
@@ -1116,38 +1140,76 @@ class IntStandardService(
         comRemarks.role = "SAC"
 
         if (decision == "Yes") {
-            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-                with(companyStandard) {
-                    status = 9
+            if(typeOfStandard=="International Standard"){
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 9
 
-                }
-                companyStandardRepository.save(companyStandard)
-                standardRepository.save(standard)
-                companyStandardRemarksRepository.save(comRemarks)
-                var userList= iStdStakeHoldersRepository.getStakeHoldersList(iSDraftDecisions.draftId)
-                val targetUrl = "https://kimsint.kebs.org/";
-                userList.forEach { item->
-                    //val recipient="stephenmuganda@gmail.com"
-                    val recipient= item.getEmail()
-                    val subject = "New International Standard"+ standard.standardNumber
-                    val messageBody= "Dear ${item.getName()} ,Adoption for New standard has been approved "
-                    if (recipient != null) {
-                        notifications.sendEmail(recipient, subject, messageBody)
                     }
-                }
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+                    var userList= iStdStakeHoldersRepository.getStakeHoldersList(iSDraftDecisions.draftId)
+                    val targetUrl = "https://kimsint.kebs.org/";
+                    userList.forEach { item->
+                        //val recipient="stephenmuganda@gmail.com"
+                        val recipient= item.getEmail()
+                        val subject = "New International Standard"+ standard.standardNumber
+                        val messageBody= "Dear ${item.getName()} ,Adoption for New standard has been approved "
+                        if (recipient != null) {
+                            notifications.sendEmail(recipient, subject, messageBody)
+                        }
+                    }
 
-            }?: throw Exception("DRAFT NOT FOUND")
+                }?: throw Exception("DRAFT NOT FOUND")
+            }else if(typeOfStandard=="Kenya Standard"){
+                var kenyaStd=getKSNumber()
+                var ks= SDWorkshopStd()
+                ks.nwaStdNumber=kenyaStd
+                ks.requestId=iSDraftDecisions.draftId
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 9
+                        comStdNumber=kenyaStd
+
+                    }
+                    sdWorkshopStdRepository.save(ks)
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                }?: throw Exception("DRAFT NOT FOUND")
+
+
+            }
+
 
         } else if (decision == "No") {
+            if(typeOfStandard=="International Standard"){
+                standardRequestRepository.findByIdOrNull(iSDraftDecisions.requestId)?.let { standard ->
 
-            companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
-                with(companyStandard) {
-                    status = 1
-                }
-                companyStandardRepository.save(companyStandard)
-                companyStandardRemarksRepository.save(comRemarks)
+                    with(standard) {
+                        status="Prepare Preliminary Draft"
 
-            } ?: throw Exception("DRAFT NOT FOUND")
+                    }
+                    standardRequestRepository.save(standard)
+                    companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                        with(companyStandard) {
+                            status = 11
+                        }
+                        companyStandardRepository.save(companyStandard)
+                        companyStandardRemarksRepository.save(comRemarks)
+
+                    } ?: throw Exception("DRAFT NOT FOUND")
+                }?: throw Exception("REQUEST NOT FOUND")
+            }else if(typeOfStandard=="Kenya Standard") {
+                companyStandardRepository.findByIdOrNull(iSDraftDecisions.id)?.let { companyStandard ->
+                    with(companyStandard) {
+                        status = 1
+                    }
+                    companyStandardRepository.save(companyStandard)
+                    companyStandardRemarksRepository.save(comRemarks)
+
+                } ?: throw Exception("DRAFT NOT FOUND")
+            }
 
         }
 
@@ -1162,6 +1224,8 @@ class IntStandardService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val timeOfRemark= Timestamp(System.currentTimeMillis())
         val standard= Standard()
+        val dueDate: Timestamp = Timestamp.valueOf(timeOfRemark.toLocalDateTime().plusYears(5))
+
 
         standard.title=iStandardUploadDto.title
         standard.normativeReference=iStandardUploadDto.normativeReference
@@ -1174,6 +1238,7 @@ class IntStandardService(
         standard.status=0
         standard.dateFormed=timeOfRemark
         standard.createdBy=loggedInUser.id
+        standard.dueDateForReview=dueDate
         companyStandardRepository.findByIdOrNull(iStandardUploadDto.id)?.let { companyStandard ->
             with(companyStandard) {
                 status = 10
@@ -1402,7 +1467,42 @@ class IntStandardService(
 
         return "$startId/$finalValue:$year"
     }
+    fun getKSNumber(): String
+    {
+        val allRequests = sdWorkshopStdRepository.findAllByOrderByIdDesc()
+
+        var lastId:String?="0"
+        var finalValue =1
+        var startId="NWA"
+
+
+        for(item in allRequests){
+            println(item)
+            lastId = item.nwaStdNumber
+            break
+        }
+
+        if(lastId != "0")
+        {
+            val strs = lastId?.split(":")?.toTypedArray()
+
+            val firstPortion = strs?.get(0)
+
+            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
+
+            val intToIncrement =lastPortArray?.get(1)
+
+            finalValue = (intToIncrement?.toInt()!!)
+            finalValue += 1
+        }
+
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+
+        return "$startId/$finalValue:$year"
+    }
 }
+
 
 private fun <E> MutableList<E>.addAll(elements: E) {
 

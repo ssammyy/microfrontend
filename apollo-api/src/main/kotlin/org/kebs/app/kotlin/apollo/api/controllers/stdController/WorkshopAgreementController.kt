@@ -1,16 +1,14 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import com.google.gson.Gson
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.NwaDiJustificationFileService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.NwaJustificationFileService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.StandardReviewFormService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.WorkshopAgreementService
-import org.kebs.app.kotlin.apollo.common.dto.std.NwaJustificationDto
-import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
-import org.kebs.app.kotlin.apollo.store.model.std.Department
-import org.kebs.app.kotlin.apollo.store.model.std.NWAJustification
-import org.kebs.app.kotlin.apollo.store.model.std.StandardRequest
-import org.kebs.app.kotlin.apollo.store.model.std.TechnicalCommittee
+import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -49,6 +47,7 @@ class WorkshopAgreementController(
     }
 
     //Get KNW Committee
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getWorkshopStandards")
     @ResponseBody
     fun getWorkshopStandards(): MutableList<StandardRequest>
@@ -69,6 +68,122 @@ class WorkshopAgreementController(
         //return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",response)
     }
 
+    @GetMapping("/getJustification")
+    @ResponseBody
+    fun getJustification(@RequestParam("requestId") requestId: Long): MutableList<NWAJustification>
+    {
+        return waService.getJustification(requestId)
+    }
 
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getWorkshopJustification")
+    @ResponseBody
+    fun getWorkshopJustification(): MutableList<StandardRequest>
+    {
+        return waService.getWorkshopJustification()
+    }
+
+    @PreAuthorize("hasAuthority('SPC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/decisionOnJustification")
+    fun decisionOnJustification(@RequestBody nwaDecisionOnJustificationDto: NwaDecisionOnJustificationDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(
+            HttpStatus.OK,"Saved",waService.
+            decisionOnJustification(nwaDecisionOnJustificationDto))
+    }
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getWorkshopForPDraft")
+    @ResponseBody
+    fun getWorkshopForPDraft(): MutableList<StandardRequest>
+    {
+        return waService.getWorkshopForPDraft()
+    }
+
+    //********************************************************** process prepare Preliminary Draft **********************************************************
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/preparePreliminaryDraft")
+    @ResponseBody
+    fun preparePreliminaryDraft(@RequestBody workshopPreliminaryDraft: WorkshopPreliminaryDraft): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Preliminary Draft",waService.preparePreliminaryDraft(workshopPreliminaryDraft))
+    }
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getWorkShopDraftForEditing")
+    @ResponseBody
+    fun getWorkShopDraftForEditing(): MutableList<NwaRequest>
+    {
+        return waService.getWorkShopDraftForEditing()
+    }
+
+    //********************************************************** process prepare Preliminary Draft **********************************************************
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/editPreliminaryDraft")
+    @ResponseBody
+    fun editPreliminaryDraft(@RequestBody workshopPreliminaryDraft: WorkshopPreliminaryDraft): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Preliminary Draft",waService.editPreliminaryDraft(workshopPreliminaryDraft))
+    }
+
+
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getWorkShopStdDraft")
+    @ResponseBody
+    fun getWorkShopStdDraft(): MutableList<ComStdDraft>
+    {
+        return waService.getWorkShopStdDraft()
+    }
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getPreparedPD")
+    @ResponseBody
+    fun getPreparedPD(): MutableList<StandardRequest>
+    {
+        return waService.getPreparedPD()
+    }
+
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/decisionOnStdDraft")
+    fun decisionOnStdDraft(@RequestBody workshopAgreementDecisionDto: WorkshopAgreementDecisionDto
+    ) : ServerResponse
+    {
+        return ServerResponse(
+            HttpStatus.OK,"Saved",waService.
+            decisionOnStdDraft(workshopAgreementDecisionDto))
+    }
+
+
+
+//    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+//    @GetMapping("/getWorkShopDraftForEditing")
+//    @ResponseBody
+//    fun getWorkShopDraftForEditing(@RequestParam("requestId") requestId: Long): MutableList<ComStandard>
+//    {
+//        return waService.getWorkShopDraftForEditing(requestId)
+//    }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/getWorkShopStdForEditing")
+    @ResponseBody
+    fun getWorkShopStdForEditing(): MutableList<ComStandard>
+    {
+        return waService.getWorkShopStdForEditing()
+    }
+
+    @PreAuthorize("hasAuthority('EDITOR_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PostMapping("/submitDraftForEditing")
+    @ResponseBody
+    fun submitDraftForEditing(@RequestBody isDraftDto: CSDraftDto): ServerResponse
+    {
+        return ServerResponse(
+            HttpStatus.OK,"Saved",waService.
+            submitDraftForEditing(isDraftDto))
+    }
 
 }

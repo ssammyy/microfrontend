@@ -9,6 +9,7 @@ import {UserEntityService} from "../../../../core/store";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-scheme-membership-review',
@@ -22,6 +23,8 @@ export class SchemeMembershipReviewComponent implements OnInit {
     dtTrigger1: Subject<any> = new Subject<any>();
     public tcSecs !: UsersEntity[];
 
+    loading = false;
+    loadingText: string;
     p = 1;
     p2 = 1;
     public tcTasks: SchemeMembership[] = [];
@@ -30,11 +33,17 @@ export class SchemeMembershipReviewComponent implements OnInit {
     selectedNwi: string;
     public itemId: string = "";
 
+    id: any = "Ongoing Applications";
+    displayUsers: boolean = false;
+
+
     constructor(private schemeMembershipService: SchemeMembershipService,
                 private service: UserEntityService,
                 private standardDevelopmentService: StandardDevelopmentService,
                 private SpinnerService: NgxSpinnerService,
                 private notifyService: NotificationService,
+
+                private router:Router,
                 private formBuilder: FormBuilder,) {
     }
 
@@ -48,15 +57,24 @@ export class SchemeMembershipReviewComponent implements OnInit {
     }
 
     public getApplicationsForReview(): void {
-        this.schemeMembershipService.getHodTasks().subscribe(
+        this.loading = true;
+        this.SpinnerService.show()
+        this.schemeMembershipService.getHodTasksUnassigned().subscribe(
             (response: SchemeMembership[]) => {
                 console.log(response);
                 this.tcTasks = response;
                 this.rerender()
+                this.SpinnerService.hide()
+                this.displayUsers = true;
+
+                this.loading = false;
 
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
+                this.SpinnerService.hide()
+                this.displayUsers = true;
+                this.loading = false;
             }
         )
     }
@@ -84,24 +102,6 @@ export class SchemeMembershipReviewComponent implements OnInit {
         button.click();
 
     }
-
-    // public decisionOnApplications(decisionFeedback: DecisionFeedback, decision: boolean): void {
-    //     decisionFeedback.status = decision;
-    //
-    //     console.log(decisionFeedback);
-    //
-    //     this.standardDevelopmentService.decisionOnApplications(decisionFeedback).subscribe(
-    //         (response: DecisionFeedback) => {
-    //             console.log(response);
-    //             this.hideModel();
-    //             this.getApplicationsForReview();
-    //         },
-    //         (error: HttpErrorResponse) => {
-    //             alert(error.message);
-    //         }
-    //     )
-    // }
-
     @ViewChild('closeViewModal') private closeModal: ElementRef | undefined;
 
     public hideModel() {
@@ -178,4 +178,18 @@ export class SchemeMembershipReviewComponent implements OnInit {
         );
     }
 
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "Ongoing Applications") {
+            this.reloadCurrentRoute()
+        }
+
+    }
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+        });
+    }
 }

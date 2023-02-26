@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.store.model.invoice.BillPayments
 import org.kebs.app.kotlin.apollo.store.model.invoice.CorporateCustomerAccounts
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.LogStgPaymentReconciliationEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteItemsDetailsRepository
@@ -345,13 +346,28 @@ class InvoiceDaoService(
 
                    val permitInvoiceUpdated = qaDaoServices.updateQAMasterInvoiceDetails(permitInvoiceMaster,"SYSTEM")
 
-                    var permitDetails = qaDaoServices.findPermitBYID(permitInvoiceUpdated.permitId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Payment Status"))
+                    if (permitInvoiceUpdated.permitId!= null){
+                        var permitDetails = qaDaoServices.findPermitBYID(permitInvoiceUpdated.permitId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Payment Status"))
 
-                    with(permitDetails){
-                        paidStatus = 1
-                        permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                        with(permitDetails){
+                            paidStatus = 1
+                            permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                        }
+                        permitDetails = qaDaoServices.permitUpdate(permitDetails, "SYSTEM")
+
+                        if (permitDetails.fmarkGenerateStatus == 1 && permitDetails.fmarkGenerated == 1){
+                            qaDaoServices.findFmarkWithSmarkId(permitDetails.id?: throw ExpectedDataNotFound("MISSING PERMIT ID")).let { permSmarkFmark->
+                                var perm = qaDaoServices.findPermitBYID(permSmarkFmark.fmarkId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Details"))
+                                with(perm){
+                                    paidStatus = 1
+                                    permitStatus = applicationMapProperties.mapQaStatusPaymentDone
+                                }
+                                perm = qaDaoServices.permitUpdate(perm, "SYSTEM")
+                            }
+
+                        }
                     }
-                    permitDetails = qaDaoServices.permitUpdate(permitDetails, "SYSTEM")
+
                 }
 
                 with(updatedBatchInvoiceDetail){

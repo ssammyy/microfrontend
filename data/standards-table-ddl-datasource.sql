@@ -1046,6 +1046,47 @@ end;
 create index SD_COM_STD_DRAFT_UPLOADS_idx on SD_COM_STD_DRAFT_UPLOADS (COM_DRAFT_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
 /
 
+create table SD_NEP_DOCUMENT_UPLOADS
+(
+    id               NUMBER PRIMARY KEY,
+    FILEPATH         VARCHAR2(200),
+    NAME             VARCHAR2(50),
+    FILE_TYPE        VARCHAR2(200),
+    DOCUMENT_TYPE    VARCHAR2(200),
+    DOCUMENT         BLOB,
+    TRANSACTION_DATE DATE,
+    NEP_DOCUMENT_ID      NUMBER REFERENCES SD_NEP_NOTIFICATION (ID),
+
+    DESCRIPTION      VARCHAR2(200),
+    status           NUMBER(2),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+create sequence SD_NEP_DOCUMENT_UPLOADS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger SD_NEP_DOCUMENT_UPLOADS_seq_trg
+    before
+        insert
+    on SD_NEP_DOCUMENT_UPLOADS
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select SD_NEP_DOCUMENT_UPLOADS_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index SD_NEP_DOCUMENT_UPLOADS_idx on SD_NEP_DOCUMENT_UPLOADS (DI_DOCUMENT_ID, status) TABLESPACE qaimssdb_idx;
+/
+
 
 
 

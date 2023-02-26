@@ -18,6 +18,11 @@ data class SectionApplyDto(
     var sectionRemarks: String? = null
 )
 
+data class BrandApplyDto(
+    var commodityDescription: String? = null,
+    var tradeMark: String? = null
+)
+
 data class StandardsApplyDto(
     var productStandardID: String? = null,
     var productStandardRemarks: String? = null
@@ -83,6 +88,7 @@ data class SSFDetailsDto(
     var brandName: String? = null,
     var productDescription: String? = null,
     var resultsAnalysis: Boolean? = null,
+    var complianceRemarks: String? = null,
 )
 
 data class AllInspectionDetailsApplyDto(
@@ -517,6 +523,11 @@ data class STA10MachineryAndPlantDto(
 data class RemarksAndStatusDto(
     var remarksStatus: Boolean? = null,
     var remarksValue: String? = null,
+    var processName: String? = null,
+    var processBy: String? = null,
+    var createdOn: Timestamp? = null,
+    var createdBy: String? = null,
+    var status: Long? = null,
 )
 
 data class LimsFilesFoundDto(
@@ -810,6 +821,8 @@ data class PermitDetailsDto(
     var hodQamApproveRejectStatus: Boolean? = null,
     var pscMemberApprovalStatus: Boolean? = null,
     var pcmApprovalStatus: Boolean? = null,
+    var paidStatus: Boolean? = null,
+    var changesMadeStatus: Boolean? = null,
 
     )
 
@@ -839,6 +852,8 @@ data class AllPermitDetailsDto(
     var inspectionFeeInvoice: InvoiceDetailsDto? = null,
     var inspectionInvoiceUploaded: Long? = null,
     val inspectionReportDetails: InspectionReportDtoPermit? = null,
+    var schemeOfSuperVisionList: List<FilesListDto>? = null,
+    var remarksDetailsList: List<RemarksAndStatusDto>? = null,
 
     )
 
@@ -950,6 +965,16 @@ data class InspectionReportDto
 
 
     )
+
+data class ApprovedInspectionReportDto
+    (
+    var id: Long? = null,
+    var recommendations: String? = null,
+    var refNo: String? = null,
+    var permitId: Long? = null,
+    var permitRefNumber: String? = null,
+    var tradeMark: String? = null,
+            )
 
 data class FilterDto(
     var regionId: Long? = null,

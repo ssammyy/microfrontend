@@ -32,6 +32,7 @@
                                         <th class="knw">Standard Number</th>
                                         <th class="sl">Document Type</th>
                                         <th class="requestNumber">Title</th>
+                                        <th class="department">Standard Type</th>
                                         <th class="department">Scope</th>
                                         <th class="action">Action</th>
                                         </tr>
@@ -41,6 +42,7 @@
                                             <td>{{revProposalComment.standardNumber}}</td>
                                             <td>{{revProposalComment.standardType}}</td>
                                             <td>{{revProposalComment.title}}</td>
+                                            <td>{{revProposalComment.standardType}}</td>
                                             <td>{{revProposalComment.scope}}</td>
                                             <td><a  (click)="onOpenModal(revProposalComment,'comment')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Make Commets</a></td>
                                         </tr>
@@ -52,7 +54,7 @@
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="approveExampleModalLabel">Make Comments</h5>
+                                                    <h3 class="modal-title" id="approveExampleModalLabel" style="font-weight: bold">SYSTEMATIC REVIEW FORM</h3>
                                                     <button type="button" class="close" #closeModalCDetails data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
@@ -60,50 +62,81 @@
                                                 <form (ngSubmit)="submitComment()" [formGroup]="commentFormGroup" class="form">
                                                     <div class="modal-body">
                                                         <div class="row col-12">
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-12">
+                                                                    <label>Document Type </label>
+                                                                    <input class="form-control" formControlName="documentType" value="{{actionRequest?.documentType}}" name="documentType" type="text" disabled>
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label>Date of Circulation  </label>
+                                                                    <input class="form-control" formControlName="circulationDate" value="{{actionRequest?.circulationDate}}"  name="circulationDate" type="text" disabled >
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label>Closing Date  </label>
+                                                                    <input class="form-control" formControlName="closingDate" value="{{actionRequest?.closingDate}}"  name="closingDate" type="text" disabled >
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label>This form shall be filled, signed and returned to Kenya Bureau of Standards for the attention of The TC Secretary </label>
+                                                                    <input class="form-control" formControlName="nameOfTcSecretary" value="{{actionRequest?.tcSecretary}}" name="nameOfTcSecretary" type="text" disabled >
+                                                                </div>
+                                                                <h3 style="font-weight: bold">The Kenya Bureau of Standards is in the process of reviewing the Kenya Standard(s) as detailed in the attached list of Kenya Standard(s) for Systematic Review.
+                                                                    We are therefore seeking views from potential users in respect of relevance and effectiveness of the attached standard(s) in addressing current market needs, regulatory needs and scientific and technological development.
+                                                                    The Standard(s) are available at the Kenya Bureau of Standards Information Centre.  Please tick (mark) and fill your preference of the listed option.  (If the spaces provided are not enough, please attach a separate sheet of paper). </h3>
+                                                                <div class="form-group col-12">
+                                                                    <label>Kenya Standard Number </label>
+                                                                    <input class="form-control" formControlName="standardNumber" value="{{actionRequest?.standardNumber}}" name="standardNumber" type="text" disabled >
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label>Title</label>
+                                                                    <textarea class="form-control" formControlName="title"  value="{{actionRequest?.title}}" name="title" type="text" disabled></textarea>
+                                                                </div>
+                                                            </div>
 
 
                                                             <div class="form-group col-12">
-                                                                <label><b>Comment</b></label>
-                                                                <textarea class="form-control one-column-input" formControlName="adoptionComment" name="adoptionComment"></textarea>
-
+                                                                <label>Please indicate your choice out of the following actions which you prefer to be taken on this Kenya Standard.</label>
+                                                                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                        class="form-control" required
+                                                                        formControlName="choice"
+                                                                        name="choice"
+                                                                >
+                                                                    <option disabled>--Select Option--</option>
+                                                                    <option  value="Yes">CONFIRMATION</option>
+                                                                    <option value="No">REVISION</option>
+                                                                    <option value="No">AMENDMENT</option>
+                                                                    <option value="No">WITHDRAWAL</option>
+                                                                </select>
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label><b>Title</b></label>
-                                                                <textarea class="form-control one-column-input" value="{{actionRequest?.title}}" formControlName="title" name="title" disabled></textarea>
-
+                                                                <label>Justification for amendment or withdrawal (cite specific clauses and wording preferred):</label>
+                                                                <textarea class="form-control" formControlName="justification"  name="justification" type="text"></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Name of Respondent </label>
+                                                                <input class="form-control" formControlName="nameOfRespondent"  name="nameOfRespondent" type="text" >
                                                             </div>
 
                                                             <div class="form-group col-12">
-                                                                <label><b>Document Type</b></label>
-                                                                <textarea class="form-control one-column-input" formControlName="documentType" name="documentType"></textarea>
-
-                                                            </div>
-
-
-                                                            <div class="form-group col-12">
-                                                                <label><b>Paragraph</b></label>
-                                                                <textarea class="form-control one-column-input" formControlName="paragraph" name="paragraph"></textarea>
-
+                                                                <label>Position of Respondent </label>
+                                                                <input class="form-control" formControlName="positionOfRespondent"  name="positionOfRespondent" type="text" >
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label><b>Comment Type</b></label>
-                                                                <textarea class="form-control one-column-input" formControlName="typeOfComment" name="typeOfComment"></textarea>
-
+                                                                <label>Name of Organization </label>
+                                                                <input class="form-control" formControlName="nameOfOrganization"  name="nameOfOrganization" type="text" >
                                                             </div>
-                                                            <div class="form-group col-12">
-                                                                <label><b>Proposed Change</b></label>
-                                                                <textarea class="form-control one-column-input" formControlName="proposedChange" name="proposedChange"></textarea>
 
-                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <input type="hidden" formControlName="proposalId" value="{{actionRequest?.id}}" name="proposalId" >
+                                                    <input type="hidden" formControlName="id" value="{{actionRequest?.id}}" name="id" >
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
                                                         <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
                                                     </div>
+                                                    <h4 style="color: black;font-weight: bold">NOTE:  Absence of any reply or comments shall be deemed to be an acceptance of the proposal for confirmation and shall constitute an approval vote.  </h4>
                                                 </form>
+
+
                                             </div>
                                         </div>
                                     </div>

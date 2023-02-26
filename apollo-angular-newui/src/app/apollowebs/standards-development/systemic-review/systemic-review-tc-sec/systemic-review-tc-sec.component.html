@@ -24,7 +24,7 @@
                             <div class="toolbar">
 
                             </div>
-                            <div class="material-datatables">
+                            <div class="material-datatables  table-responsive">
                                 <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
 
                                     <thead>
@@ -41,328 +41,134 @@
                                     <tbody>
                                     <tr  *ngFor="let task of tasks let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{task.taskData.standardNumber}}</td>
-                                        <td>{{task.taskData.standardType}}</td>
-                                        <td>{{task.taskData.recommendationTime}}</td>
-                                        <td>{{task.taskData.title}}</td>
-                                        <td>{{task.taskData.scope}}</td>
-                                        <td *ngIf="task.name==='makeRecommendations'"><a  (click)="onOpenModal(task,'comment')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve">Recommendations</a></td>
+                                        <td>{{task.standardNumber}}</td>
+                                        <td>{{task.standardType}}</td>
+                                        <td>{{task.dateFormed}}</td>
+                                        <td>{{task.title}}</td>
+                                        <td>{{task.scope}}</td>
+                                        <td ><a  (click)="onOpenModal(task,'comment')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve">Recommendations</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentLabel" aria-hidden="true">a
-                                    <div class="modal-dialog modal-xl" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h3 class="modal-title" id="commentLabel">Recommendations on Proposal</h3>
-                                                <button type="button" #closeModalCDetails class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <hr>
-                                            <section id="tabs">
-                                                <div class="container">
-                                                    <div class="row">
-                                                        <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
-                                                            <nav>
-                                                                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                                                                    <a class="nav-item nav-link active" id="nav-proposal-tab" data-toggle="tab" href="#nav-proposal" role="tab" aria-controls="nav-proposal" aria-selected="true">Proposal</a>
-                                                                    <a class="nav-item nav-link" id="nav-proposal-comments-tab" (click)=toggleStandardsProposalCommentsTab(actionRequest?.taskData?.reviewID) data-toggle="tab" href="#nav-proposal-comments" role="tab" aria-controls="nav-proposal-comments" aria-selected="false">Stakeholders Comments</a>
-                                                                    <a class="nav-item nav-link" id="nav-proposal-officer-comments-tab" (click)=toggleDisplayCommentsTab(actionRequest?.taskData?.reviewID) data-toggle="tab" href="#nav-proposal-officer-comments" role="tab" aria-controls="nav-proposal-officer-comments" aria-selected="false">Other Comments</a>
-                                                                    <a class="nav-item nav-link" id="nav-proposal-recommendations-tab" (click)=toggleDisplayRecommendationsTab() data-toggle="tab" href="#nav-proposal-recommendations" role="tab" aria-controls="nav-proposal-recommendations" aria-selected="false">Recommendations</a>
-                                                                    <a class="nav-item nav-link" id="nav-approve-proposal-tab" data-toggle="tab" href="#nav-approve-proposal" role="tab" aria-controls="nav-approve-proposal" aria-selected="false">Approve</a>
-                                                                    <a class="nav-item nav-link" id="nav-reject-proposal-tab" data-toggle="tab" href="#nav-reject-proposal" role="tab" aria-controls="nav-reject-proposal" aria-selected="false">Reject</a>
-                                                                </div>
-                                                            </nav>
-                                                            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
-                                                                <div class="tab-pane fade show active" id="nav-proposal" role="tabpanel" aria-labelledby="nav-proposal-tab">
-                                                                    <div class="modal-body">
-                                                                        <div class="form-body">
-                                                                            <div class="list-group list-group-flush">
-
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Title</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
+                            </div>
+                            <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentLabel" aria-hidden="true">a
+                                <div class="modal-dialog modal-xl" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title" id="commentLabel">Recommendations on Proposal</h3>
+                                            <button type="button" #closeModalCDetails class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <hr>
+                                        <section id="tabs">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
+                                                        <nav>
+                                                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                                                <a class="nav-item nav-link active" id="nav-proposal-tab" data-toggle="tab" href="#nav-proposal" role="tab" aria-controls="nav-proposal" aria-selected="true">Make Recommendations</a>
+                                                                <a class="nav-item nav-link" id="nav-proposal-recommendations-tab" (click)=getProposalsComments(actionRequest.id) data-toggle="tab" href="#nav-proposal-recommendations" role="tab" aria-controls="nav-proposal-recommendations" aria-selected="false">Proposal Comments</a>
+                                                            </div>
+                                                        </nav>
+                                                        <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                                                            <div class="tab-pane fade show active" id="nav-proposal" role="tabpanel" aria-labelledby="nav-proposal-tab">
+                                                                <div class="modal-body">
+                                                                    <div class="form-body">
+                                                                        <form (ngSubmit)="submitRecommendation()" [formGroup]="recommendationFormGroup" class="form">
+                                                                            <div class="modal-body">
+                                                                                <div class="row col-12">
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Recommendation</b></label>
+                                                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                                                class="form-control" required formControlName="feedback" name="feedback">
+                                                                                            <option disabled>--Select committee--</option>
+                                                                                            <option [value]="1">Withdrawal with replacement of the standard</option>
+                                                                                            <option [value]="2">Withdraw without Replacement </option>
+                                                                                            <option [value]="3">Revise the standard </option>
+                                                                                            <option [value]="4">Confirm the current standard</option>
+                                                                                        </select>
                                                                                     </div>
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.title}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Date of Circulation</b></h5>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Summary of Recommendations</b></label>
+                                                                                        <textarea class="form-control one-column-input" formControlName="recommendation" name="recommendation"></textarea>
 
                                                                                     </div>
+                                                                                    <input type="hidden" formControlName="reviewId" value="{{actionRequest?.id}}" name="reviewId" >
 
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.datePrepared}}.</p>
-                                                                                </a>
-                                                                                <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                    <div class="d-flex w-100 justify-content-between">
-                                                                                        <div>
-                                                                                            <div class="d-flex w-100 align-items-center">
-                                                                                                <h5 class="mb-1" style="color: #0d0505"><b>Closing Date</b></h5>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                    </div>
-
-                                                                                    <p class="text-sm mb-0">{{actionRequest?.taskData?.datePrepared}}.</p>
-                                                                                </a>
-
-
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                                                <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
+                                                                            </div>
+                                                                        </form>
                                                                     </div>
                                                                 </div>
-                                                                <div class="tab-pane fade" id="nav-proposal-comments" role="tabpanel" aria-labelledby="nav-proposal-comments-tab">
-                                                                    <div class="modal-body">
-                                                                        <div class="form-body">
-                                                                            <div class="material-datatables">
-                                                                                <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" style="width: 100%">
+                                                            </div>
+                                                            <div class="tab-pane fade" id="nav-proposal-recommendations" role="tabpanel" aria-labelledby="nav-proposal-recommendations-tab">
+                                                                <div class="modal-body">
+                                                                    <div class="form-body">
+                                                                        <div class="material-datatables  table-responsive">
+                                                                            <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" style="width: 100%">
 
                                                                                 <thead>
-                                                                                    <tr>
-                                                                                        <th>#</th>
-                                                                                        <th class="knw">Time</th>
-                                                                                        <th class="knw">Title</th>
-                                                                                        <th class="knw">Document Type</th>
-                                                                                        <th class="knw">Clause</th>
-                                                                                        <th class="knw">Paragraph</th>
-                                                                                        <th class="knw">Type</th>
-                                                                                        <th class="knw">Proposed Change</th>
-                                                                                        <th class="knw">Comment</th>
-                                                                                    </tr>
-                                                                                    </thead>
-                                                                                    <tbody>
-                                                                                    <tr  *ngFor="let reviewProposalComment of reviewProposalComments let i=index">
-                                                                                        <td>{{i+1}}</td>
-                                                                                        <td>{{reviewProposalComment.commentTime}}</td>
-                                                                                        <td>{{reviewProposalComment.title}}</td>
-                                                                                        <td>{{reviewProposalComment.documentType}}</td>
-                                                                                        <td>{{reviewProposalComment.clause}}</td>
-                                                                                        <td>{{reviewProposalComment.paragraph}}</td>
-                                                                                        <td>{{reviewProposalComment.typeOfComment}}</td>
-                                                                                        <td>{{reviewProposalComment.proposedChange}}</td>
-                                                                                        <td>{{reviewProposalComment.adoptionComment}}</td>
-                                                                                    </tr>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </div>
+                                                                                <tr>
+                                                                                    <th>#</th>
+                                                                                    <th class="knw">Title</th>
+                                                                                    <th class="knw">Document Type</th>
+                                                                                    <th class="knw">Standard Number</th>
+                                                                                    <th class="knw">Circulation Date</th>
+                                                                                    <th class="knw">Closing Date</th>
+                                                                                    <th class="knw">Edition</th>
+                                                                                    <th class="knw">Justification</th>
+                                                                                    <th class="knw">Name of Organization</th>
+                                                                                    <th class="knw">Name of Respondent</th>
+                                                                                    <th class="knw">Name of TC Secretary</th>
+                                                                                    <th class="knw">Position Of Respondent</th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                <tr  *ngFor="let srStdComment of srStdComments let i=index">
+                                                                                    <td>{{i+1}}</td>
+                                                                                    <td>{{srStdComment.title}}</td>
+                                                                                    <td>{{srStdComment.documentType}}</td>
+                                                                                    <td>{{srStdComment.standardNumber}}</td>
+                                                                                    <td>{{srStdComment.circulationDate}}</td>
+                                                                                    <td>{{srStdComment.closingDate}}</td>
+                                                                                    <td>{{srStdComment.edition}}</td>
+                                                                                    <td>{{srStdComment.justification}}</td>
+                                                                                    <td>{{srStdComment.nameOfOrganization}}</td>
+                                                                                    <td>{{srStdComment.nameOfRespondent}}</td>
+                                                                                    <td>{{srStdComment.nameOfTcSecretary}}</td>
+                                                                                    <td>{{srStdComment.positionOfRespondent}}</td>
+                                                                                </tr>
+                                                                                </tbody>
+                                                                            </table>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                    </div>
-
                                                                 </div>
-                                                                <div class="tab-pane fade" id="nav-proposal-officer-comments" role="tabpanel" aria-labelledby="nav-proposal-officer-comments-tab">
-                                                                    <div class="modal-body">
-                                                                        <div class="col-12">
-                                                                            <div class="card" *ngFor="let reviewStandardsComment of reviewStandardsComments">
-                                                                                <div class="card-header">
-                                                                                    <span class="badge badge-info">Comment By</span>{{reviewStandardsComment.remarkBy}} On {{reviewStandardsComment.dateOfRemark }}
-                                                                                </div>
-                                                                                <div class="card-body">
-                                                                                    <blockquote class="blockquote mb-0">
-                                                                                        <p>Remark: {{reviewStandardsComment.remarks}}.</p>
-                                                                                    </blockquote>
-                                                                                </div>
-
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                    </div>
-
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
                                                                 </div>
-                                                                <div class="tab-pane fade" id="nav-proposal-recommendations" role="tabpanel" aria-labelledby="nav-proposal-recommendations-tab">
-                                                                    <div class="modal-body">
-                                                                        <div class="form-body">
-                                                                            <div class="container col-md-12" [hidden]="isShowRecommendationsTab">
-                                                                                <div class="col-12">
-                                                                                    <div class="card" >
-                                                                                        <div class="card-header">Make Recommendations</div>
-                                                                                        <form (ngSubmit)="submitRecommendation()" [formGroup]="recommendationFormGroup" class="form">
-                                                                                            <div class="modal-body">
-                                                                                                <div class="row col-12">
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <label><b>Recommendation</b></label>
-                                                                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                                                                                class="form-control" required formControlName="feedback" name="feedback">
-                                                                                                            <option disabled>--Select committee--</option>
-                                                                                                            <option [value]="1">Withdrawal with replacement of the standard</option>
-                                                                                                            <option [value]="2">Withdraw without Replacement </option>
-                                                                                                            <option [value]="3">Revise the standard </option>
-                                                                                                            <option [value]="4">Confirm the current standard</option>
-                                                                                                        </select>
-                                                                                                    </div>
-
-                                                                                                    <div class="form-group col-12">
-                                                                                                        <label><b>Summary of Recommendations</b></label>
-                                                                                                        <textarea class="form-control one-column-input" formControlName="summaryOfRecommendations" name="summaryOfRecommendations"></textarea>
-
-                                                                                                    </div>
-                                                                                                    <input type="hidden" formControlName="proposalId" value="{{actionRequest?.taskData?.proposalId}}" name="proposalId" >
-                                                                                                    <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >
-
-                                                                                                </div>
-                                                                                            </div>
-
-
-                                                                                            <div class="modal-footer">
-                                                                                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                                                <button type="submit" class="btn btn-primary btn-sm" >Submit</button>
-                                                                                            </div>
-                                                                                        </form>
-
-                                                                                    </div>
-                                                                                </div>
-
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-
-                                                                </div>
-<!--                                                                <div class="tab-pane fade" id="nav-approve-proposal" role="tabpanel" aria-labelledby="nav-approve-proposal-tab">-->
-<!--                                                                    <form (ngSubmit)="approveProposal()" [formGroup]="approveProposalFormGroup" class="form">-->
-<!--                                                                        <div class="modal-body">-->
-<!--                                                                            <div class="form-body">-->
-<!--                                                                                <div class="row">-->
-<!--                                                                                    <div class="form-group col-12">-->
-<!--                                                                                        <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>-->
-<!--                                                                                        <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>-->
-<!--                                                                                    </div>-->
-<!--                                                                                </div>-->
-<!--                                                                                <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >-->
-<!--                                                                                <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >-->
-<!--                                                                                <input type="hidden" formControlName="accentTo" value="{{approve}}" name="accentTo"  >-->
-<!--                                                                                <input type="hidden" formControlName="approvalID" name="approvalID" value="{{actionRequest?.taskData?.ID}}" >-->
-<!--                                                                            </div>-->
-<!--                                                                        </div>-->
-<!--                                                                        <div class="modal-footer">-->
-<!--                                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>-->
-<!--                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Approve</button>-->
-<!--                                                                        </div>-->
-<!--                                                                    </form>-->
-<!--                                                                </div>-->
-<!--                                                                <div class="tab-pane fade" id="nav-reject-proposal" role="tabpanel" aria-labelledby="nav-reject-proposal-tab">-->
-<!--                                                                    <form (ngSubmit)="rejectProposal()" [formGroup]="rejectProposalFormGroup" class="form">-->
-<!--                                                                        <div class="modal-body">-->
-<!--                                                                            <div class="form-body">-->
-<!--                                                                                <div class="row">-->
-<!--                                                                                    <div class="form-group col-12">-->
-<!--                                                                                        <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>-->
-<!--                                                                                        <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>-->
-<!--                                                                                    </div>-->
-<!--                                                                                </div>-->
-<!--                                                                                <input type="hidden" formControlName="processId" value="{{actionRequest?.processId}}" name="processId" >-->
-<!--                                                                                <input type="hidden" formControlName="taskId" value="{{actionRequest?.taskId}}" name="taskId" >-->
-<!--                                                                                <input type="hidden" formControlName="accentTo" value="{{reject}}" name="accentTo"  >-->
-<!--                                                                                <input type="hidden" formControlName="approvalID" name="approvalID" value="{{actionRequest?.taskData?.ID}}" >-->
-<!--                                                                            </div>-->
-<!--                                                                        </div>-->
-<!--                                                                        <div class="modal-footer">-->
-<!--                                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>-->
-<!--                                                                            <button type="submit" class="btn btn-primary btn-sm"  >Reject Proposal</button>-->
-<!--                                                                        </div>-->
-<!--                                                                    </form>-->
-<!--                                                                </div>-->
                                                             </div>
 
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </section>
+                                            </div>
+                                        </section>
 
-
-
-                                        </div>
                                     </div>
                                 </div>
-
-<!--                                <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a-->
-<!--                                    <div class="modal-dialog modal-lg" role="document">-->
-<!--                                        <div class="modal-content">-->
-<!--                                            <div class="modal-header">-->
-<!--                                                <h5 class="modal-title" id="approveExampleModalLabel">Prepare Proposal</h5>-->
-<!--                                                <button type="button" class="close" #closeModalCDetails data-dismiss="modal" aria-label="Close">-->
-<!--                                                    <span aria-hidden="true">&times;</span>-->
-<!--                                                </button>-->
-<!--                                            </div>-->
-<!--                                            <form (ngSubmit)="uploadProposal()" [formGroup]="proposalFormGroup"-->
-<!--                                                  class="form">-->
-<!--                                                <div class="modal-body">-->
-<!--                                                    <div class="row col-12">-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Title</label>-->
-<!--                                                            <textarea class="form-control"  value="{{actionRequest?.title}}" name="title" type="text"></textarea>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Standard Number </label>-->
-<!--                                                            <input class="form-control"  value="{{actionRequest?.standardNumber}}" name="standardNumber" type="text" >-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Document Type </label>-->
-<!--                                                            <input class="form-control"  value="{{actionRequest?.documentType}}" name="documentType" type="text" >-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Scope</label>-->
-<!--                                                            <textarea class="form-control"  value="{{actionRequest?.scope}}" name="scope" type="text"></textarea>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Normative Reference</label>-->
-<!--                                                            <textarea class="form-control"  value="{{actionRequest?.normativeReference}}" name="normativeReference" type="text"></textarea>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Symbols Abbreviated Terms</label>-->
-<!--                                                            <textarea class="form-control"  value="{{actionRequest?.symbolsAbbreviatedTerms}}" name="symbolsAbbreviatedTerms" type="text"></textarea>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Clause</label>-->
-<!--                                                            <textarea class="form-control"  value="{{actionRequest?.clause}}" name="clause" type="text"></textarea>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Special</label>-->
-<!--                                                            <textarea class="form-control"  value="{{actionRequest?.special}}" name="special" type="text"></textarea>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group col-12">-->
-<!--                                                            <label>Standard Type</label>-->
-<!--                                                            <textarea class="form-control"  value="{{actionRequest?.standardType}}" name="standardType" type="text"></textarea>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-
-<!--                                                </div>-->
-
-
-
-<!--                                                <div class="modal-footer">-->
-<!--                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>-->
-<!--                                                    <button type="submit" class="btn btn-primary btn-sm"  data-dismiss="modal">Save</button>-->
-<!--                                                </div>-->
-<!--                                            </form>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
+</div>
+
 

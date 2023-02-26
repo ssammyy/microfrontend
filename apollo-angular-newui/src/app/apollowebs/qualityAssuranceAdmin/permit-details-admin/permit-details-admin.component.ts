@@ -7,7 +7,7 @@ import {
     FirmTypeEntityDto, InspectionReportDetailsDto,
     PermitEntityDetails,
     PermitEntityDto,
-    PlantDetailsDto,
+    PlantDetailsDto, RemarksAndStatusDto,
     SectionDto,
     SSFComplianceStatusDetailsDto, SSFDetailsDto,
     SSFPDFListDetailsDto,
@@ -27,7 +27,7 @@ import {QaService} from '../../../core/store/data/qa/qa.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {QaInternalService} from '../../../core/store/data/qa/qa-internal.service';
 import {
-    ApiResponseModel,
+    ApiResponseModel, ComplaintsFilesFoundDto,
     LIMSFilesFoundDto,
     MSSSFLabResultsDto,
     MSSSFPDFListDetailsDto,
@@ -63,6 +63,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
     resubmitForm!: FormGroup;
+    remarksForm!: FormGroup;
     uploadForm!: FormGroup;
     uploadedFile: File;
     uploadedFiles: FileList;
@@ -78,6 +79,12 @@ export class PermitDetailsAdminComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     dtOptionsSSF: DataTables.Settings = {};
     dtTriggerSSF: Subject<any> = new Subject<any>();
+    dtOptionsRemarks: DataTables.Settings = {};
+    dtTriggerRemarks: Subject<any> = new Subject<any>();
+    dtOptionsSCS: DataTables.Settings = {};
+    dtTriggerSCS: Subject<any> = new Subject<any>();
+    dtOptionsDOCS: DataTables.Settings = {};
+    dtTriggerDOCS: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
     @ViewChildren(DataTableDirective)
@@ -110,9 +117,10 @@ export class PermitDetailsAdminComponent implements OnInit {
     addStandards: FormGroup;
     factoryVisit: FormGroup;
     docFileNameForm: FormGroup;
-    docSSFUpload: FormGroup;
+    docSSFUploadForm: FormGroup;
 
     updateSectionForm: FormGroup;
+    updateBrandForm: FormGroup;
     permitCompletenessForm: FormGroup;
     assignOfficerForm: FormGroup;
     addStandardsForm: FormGroup;
@@ -169,7 +177,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
-    inspectionReportDetailsDto: InspectionReportDetailsDto
+    inspectionReportDetailsDto: InspectionReportDetailsDto;
 
 
     public settingsLabResultsParam = {
@@ -191,7 +199,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         noDataMessage: 'No data found',
         columns: {
             param: {
-                title: 'PARAM',
+                title: 'PARAMETER',
                 type: 'string',
                 filter: false,
             },
@@ -239,7 +247,13 @@ export class PermitDetailsAdminComponent implements OnInit {
             },
             fileSavedStatus: {
                 title: 'FILE SAVED STATUS',
-                type: 'boolean',
+                type: 'string',
+                valuePrepareFunction: (dataTest) => {
+                    if (dataTest) {
+                        return 'SAVED';
+                    }
+                    return 'NOT SAVED';
+                },
                 filter: false,
             },
         },
@@ -276,7 +290,13 @@ export class PermitDetailsAdminComponent implements OnInit {
             },
             complianceStatus: {
                 title: 'COMPLIANCE STATUS',
-                type: 'boolean',
+                type: 'string',
+                valuePrepareFunction: (dataTest) => {
+                    if (dataTest) {
+                        return 'COMPLIANT';
+                    }
+                    return 'NON-COMPLIANT';
+                },
                 filter: false,
             },
         },
@@ -442,6 +462,10 @@ export class PermitDetailsAdminComponent implements OnInit {
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
 
+        this.remarksForm = this.formBuilder.group({
+            remarksValue: ['', Validators.required],
+        });
+
         this.uploadForm = this.formBuilder.group({
             upLoadDescription: ['', Validators.required],
             uploadedFile: this.filesControl,
@@ -465,6 +489,11 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.updateSectionForm = this.formBuilder.group({
             sectionId: ['', Validators.required],
             sectionRemarks: null,
+        });
+
+        this.updateBrandForm = this.formBuilder.group({
+            commodityDescription: ['', Validators.required],
+            tradeMark: ['', Validators.required],
         });
 
         this.permitCompletenessForm = this.formBuilder.group({
@@ -497,9 +526,14 @@ export class PermitDetailsAdminComponent implements OnInit {
         });
 
         this.docFileNameForm = this.formBuilder.group({
-            docFileName: null,
+            docFileName: ['', Validators.required],
         });
-        
+
+
+        this.docSSFUploadForm = this.formBuilder.group({
+            docSSFUpload: null,
+        });
+
         this.recommendationForm = this.formBuilder.group({
             recommendationRemarks: ['', Validators.required],
         });
@@ -658,6 +692,14 @@ export class PermitDetailsAdminComponent implements OnInit {
         }, 500);
     }
 
+    viewSavedRemarks(data: RemarksAndStatusDto) {
+        this.currDivLabel = `REMARKS FOR PROCESS # ${data.processName}`;
+        this.currDiv = 'viewRemarksDetails';
+        this.remarksForm.patchValue(data);
+
+        window.$('#allProcessModel').modal('show');
+    }
+
     viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {
         this.selectedPDFFileName = data.pdfName;
         this.currDivLabel = `COMPLIANCE STATUS AND REMARKS FOR PDF # ${this.selectedPDFFileName}`;
@@ -697,6 +739,10 @@ export class PermitDetailsAdminComponent implements OnInit {
         );
     }
 
+    viewSavedFilesSaved(data: FilesListDto) {
+        this.viewPdfFile(String(data.id), data.name, data.fileType);
+    }
+
 
 
     viewSSFLabResultsRecord(data: SSFDetailsDto) {
@@ -724,12 +770,16 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
-        console.log('TEST 101 REF NO SAVE: ' + data.fileName);
-        this.selectedPDFFileName = data.fileName;
-        this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
-        this.currDiv = 'pdfSaveCompliance';
-
-        window.$('#myModal2').modal('show');
+        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf.pdfName === this.selectedPDFFileName);
+        if (savedPdf === null) {
+            console.log('TEST 101 REF NO SAVE: ' + data.fileName);
+            this.selectedPDFFileName = data.fileName;
+            this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
+            this.currDiv = 'pdfSaveCompliance';
+            window.$('#myModal2').modal('show');
+        } else {
+            this.qaService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ', Already Saved');
+        }
     }
 
 
@@ -746,10 +796,14 @@ export class PermitDetailsAdminComponent implements OnInit {
                 this.blob = new Blob([dataPdf], {type: applicationType});
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
-                const link = document.createElement('a');
-                link.href = downloadURL;
-                link.download = fileName;
-                link.click();
+                if (applicationType === 'application/pdf') {
+                    window.open(downloadURL, '_blank');
+                } else {
+                    const link = document.createElement('a');
+                    link.href = downloadURL;
+                    link.download = fileName;
+                    link.click();
+                }
                 // this.pdfUploadsView = dataPdf;
             },
             error => {
@@ -765,11 +819,11 @@ export class PermitDetailsAdminComponent implements OnInit {
 
         const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
             'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'approveRejectRecommendation', 'uploadSSF', 'approveRejectInspectionReport',
-            'approvePermitQAMHOD', 'approvePermitPSCMember', 'approvePermitPCM'];
+            'approvePermitQAMHOD', 'approvePermitPSCMember', 'approvePermitPCM', 'updateBrand'];
 
         const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
             'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'APPROVE/REJECT RECOMMENDATION', 'UPLOAD SSF', 'APPROVE/REJECT GENERATED INSPECTION REPORT',
-            'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM'];
+            'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM', 'UPDATE BRAND'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -851,7 +905,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
         this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
-        this.inspectionReportDetailsDto = this.allPermitDetails.inspectionReportDetails
+        this.inspectionReportDetailsDto = this.allPermitDetails.inspectionReportDetails;
 
 
         this.qaService.loadFirmPermitList().subscribe(
@@ -931,6 +985,10 @@ export class PermitDetailsAdminComponent implements OnInit {
             let inspectionFee = 0;
             let permitFee = 0;
             let fMarkFee = 0;
+            let paidStatus = 'NOT PAID';
+            if (this.allPermitDetails?.permitDetails?.paidStatus) {
+                paidStatus = 'PAID';
+            }
 
             for (let h = 0; h < invoiceDetailsList.length; h++) {
                 if (invoiceDetailsList[h].permitStatus === true) {
@@ -955,6 +1013,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                     ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
                     ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
                     ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`],
+                    ['Paid STATUS', paidStatus],
 
                 ],
             };
@@ -970,6 +1029,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                     ['Sub Total Before Tax', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.subTotalBeforeTax}`],
                     ['Tax Amount', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.taxAmount}`],
                     ['Total Amount', `KSH ${this.allPermitDetails?.invoiceDifferenceDetails?.totalAmount}`],
+                    ['Paid STATUS', paidStatus],
 
                 ],
             };
@@ -984,6 +1044,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                     ['Sub Total Before Tax', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.subTotalBeforeTax}`],
                     ['Tax Amount', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.taxAmount}`],
                     ['Total Amount', `KSH ${this.allPermitDetails?.inspectionFeeInvoice?.totalAmount}`],
+                    ['Paid STATUS', paidStatus],
                 ],
             };
             this.SpinnerService.hide();
@@ -1021,6 +1082,38 @@ export class PermitDetailsAdminComponent implements OnInit {
             );
         }
     }
+
+    onClickSaveBrandFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'UPDATE BRAND\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveBrandFormResults(valid);
+            });
+    }
+
+    saveBrandFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaUpdateBrand(this.updateBrandForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('BRAND DETAILS, UPDATED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
 
     onClickSavePermitCompletenessFormResults(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -1244,9 +1337,8 @@ export class PermitDetailsAdminComponent implements OnInit {
                             (data: ApiResponseModel) => {
                                 if (data.responseCode === '00') {
                                     this.SpinnerService.hide();
-                                    this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {
-                                        this.loadPermitDetails(data);
-                                    });
+                                    this.loadPermitDetails(data);
+                                    this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {this.closePopUpsModal2();});
                                 } else {
                                     this.SpinnerService.hide();
                                     this.qaService.showError(data.message);
@@ -1534,8 +1626,9 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
+                        this.loadPermitDetails(data);
                         this.qaService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
-                            this.loadPermitDetails(data);
+                            this.closePopUpsModal2();
                         });
                     } else {
                         this.SpinnerService.hide();
@@ -1575,7 +1668,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
-                        this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULL SUCCESSFULLY', () => {
+                        this.qaService.showSuccess('SCHEME OF SUPERVISION UPLOADED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
@@ -1601,7 +1694,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             });
     }
 
-    
+
 
     saveUploadsAttachments() {
         if (this.uploadedFilesOnly.length > 0) {
@@ -1651,6 +1744,8 @@ export class PermitDetailsAdminComponent implements OnInit {
             const file = this.uploadedSsfFilesOnly;
             const formData = new FormData();
             formData.append('permitID', String(this.permitID));
+            formData.append('docSSFUpload', this.docSSFUploadForm.get('docSSFUpload').value);
+            formData.append('data', 'SCHEME_OF_SUPERVISION');
             for (let i = 0; i < file.length; i++) {
                 console.log(file[i]);
                 formData.append('SSFdocFile', file[i], file[i].name);
@@ -1705,26 +1800,38 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     generateInspectionReport(permitId: string) {
 
-        var text = permitId;
-        var key = '11A1764225B11AA1';
+        let text = permitId;
+        let key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
-        var encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
+        let encrypted = CryptoJS.AES.encrypt(text, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding });
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
         console.log('encrypted', encrypted);
-        this.router.navigate(['/new-inspection-report',encrypted])
+        this.router.navigate(['/new-inspection-report', encrypted]);
 
 
     }
     goToInspectionReportPage(inspectionReportId: string) {
-        var text = inspectionReportId;
-        var key = '11A1764225B11AA1';
+        let text = inspectionReportId;
+        let key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
-        var encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
         console.log('encrypted', encrypted);
-        this.router.navigate(['/inspection-report', encrypted])
+        this.router.navigate(['/inspection-report', encrypted]);
+
+    }
+
+    goToFmarkPermitDetails(permitId: number) {
+
+        let text = String(permitId);
+        let key = '11A1764225B11AA1';
+        text = CryptoJS.enc.Utf8.parse(text);
+        key = CryptoJS.enc.Utf8.parse(key);
+        let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+        encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+        this.router.navigate(['/permit-details-admin', encrypted]);
 
     }
 

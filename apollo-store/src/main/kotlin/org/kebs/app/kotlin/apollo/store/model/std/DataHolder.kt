@@ -693,6 +693,43 @@ interface COMUploadedDraft{
     fun getCompanyname(): String?
     fun getCompanyphone(): String?
 }
+interface NwaRequest{
+    fun getDraftId(): Long?
+    fun getTitle(): String?
+    fun getScope(): String?
+    fun getNormativeReference(): String?
+    fun getSymbolsAbbreviatedTerms(): String?
+    fun getClause(): String?
+    fun getSpecial(): String?
+    fun getUploadDate(): Timestamp?
+    fun getDeadlineDate(): Timestamp?
+    fun getDraftNumber(): String?
+    fun getRemarks(): String?
+    fun getRequestId(): Long?
+    fun getDepartmentId(): String?
+    fun getStandardType(): String?
+    fun getWorkShopDate(): String?
+    fun getRequestNumber(): String?
+    fun getRank(): String?
+    fun getName(): String?
+    fun getPhone(): String?
+    fun getEmail(): String?
+    fun getSubmissionDate(): String?
+    fun getProductSubCategoryId(): String?
+    fun getTcId(): String?
+    fun getProductId(): String?
+    fun getOrganisationName(): String?
+    fun getSubject(): String?
+    fun getDescription(): String?
+    fun getEconomicEfficiency(): String?
+    fun getHealthSafety(): String?
+    fun getEnvironment(): String?
+    fun getIntegration(): String?
+    fun getExportMarkets(): String?
+    fun getLevelOfStandard(): String?
+    fun getDepartmentName(): String?
+    fun getNwaCdNumber(): String?
+}
 
 interface ComStandard {
     fun getId(): Long?
@@ -726,6 +763,7 @@ interface ComStandard {
     fun getCompanyName(): String?
     fun getCompanyPhone(): String?
     fun getStandardType(): String?
+    fun getWorkShopDate(): Timestamp?
 }
 
 interface ComStdRequest{

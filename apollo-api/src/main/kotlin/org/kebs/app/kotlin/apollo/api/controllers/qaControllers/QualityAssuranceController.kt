@@ -314,8 +314,7 @@ class QualityAssuranceController(
         when {
             //PCM REVIEW ACTIONS TO BE DONE
             permit.pcmReviewApprovalStatus != null -> {
-                returnDetails =
-                    permitApplicationsPCMReviewActions(permitDetails, permit, invoiceDetails, map, loggedInUser)
+                returnDetails = permitApplicationsPCMReviewActions(permitDetails, permit, invoiceDetails, map, loggedInUser)
                 permitDetails = returnDetails.first
             }
             //Permit completeness status
@@ -398,17 +397,7 @@ class QualityAssuranceController(
                 permitDetails = returnDetails.first
             }
 
-//            //Permit Resubmit application
-//            permit.resubmitApplicationStatus == map.activeStatus -> {
-//                with(permit) {
-//                    resubmitApplicationStatus = null
-//                }
-//                qaDaoServices.permitInsertStatus(
-//                    permitDetails,
-//                    applicationMapProperties.mapQaStatusResubmitted,
-//                    loggedInUser
-//                )
-//            }
+
             //Permit pending factory inspection Approval
             permit.factoryInspectionReportApprovedRejectedStatus == map.activeStatus -> {
                 qaDaoServices.permitInsertStatus(

@@ -81,7 +81,9 @@ class CommitteeService(
 
     //get all Preliminary Drafts
     fun getAllPd(): MutableList<PdWithUserName> {
-        return committeePDRepository.findPreliminaryDraft()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return committeePDRepository.findPreliminaryDraft(loggedInUser.id.toString())
     }
 
     //get all Docs On PDs
@@ -196,7 +198,9 @@ class CommitteeService(
 
     // get all CDs
     fun getAllCd(): MutableList<CdWithUserName> {
-        return committeeCDRepository.findCommitteeDraft()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return committeeCDRepository.findCommitteeDraft(loggedInUser.id.toString())
     }
 
 
@@ -259,8 +263,10 @@ class CommitteeService(
 
 
     fun getAllNwiSApprovedForPd(): List<StandardNWI> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardNWIRepository.findAllByPdStatus("Prepare Minutes and Drafts For Preliminary Draft")
+
+        return standardNWIRepository.findAllByPdStatusAndTcSec("Prepare Minutes and Drafts For Preliminary Draft",loggedInUser.id.toString())
     }
 
 

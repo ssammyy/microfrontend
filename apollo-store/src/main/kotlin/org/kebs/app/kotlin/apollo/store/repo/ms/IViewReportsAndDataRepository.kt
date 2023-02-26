@@ -144,7 +144,7 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
         value = "SELECT a.* from APOLLO.SUBMITTED_SAMPLES_SUMMARY_REPORT_VIEW a where\n" +
                 "    (:startDate is null or a.DATE_VISIT >=TO_DATE(:startDate)) and (:endDate is null or a.DATE_VISIT <=TO_DATE(:endDate))\n" +
                 "    AND (:sampleReferences is null or a.SAMPLE_REFERENCES =:sampleReferences) and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO))\n" +
-                "    AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))",
+                "    AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n",
         nativeQuery = true
     )
     fun findFilteredSubmittedSamplesSummaryReport(
@@ -152,7 +152,7 @@ interface ISubmittedSamplesSummaryReportViewRepository : HazelcastRepository<Sub
         @Param("endDate") endDate: Date?,
         @Param("sampleReferences") sampleReferences: String?,
         @Param("assignIO") assignIO: Long?,
-        @Param("sectorID") sectorID: Long?
+        @Param("sectorID") sectorID: Long?,
     ): List<SubmittedSamplesSummaryReportViewEntity>?
 }
 
@@ -170,14 +170,16 @@ interface IFieldInspectionSummaryReportViewRepository : HazelcastRepository<Fiel
     @Query(
         value = "SELECT a.* from APOLLO.FIELD_INSPECTION_SUMMARY_REPORT_VIEW a where\n" +
                 "    (:startDate is null or a.INSPECTION_DATE >=TO_DATE(:startDate)) and (:endDate is null or a.INSPECTION_DATE <=TO_DATE(:endDate))\n" +
-                "    and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n",
+                "    and (:assignIO is null or a.OFFICER_ID =TO_NUMBER(:assignIO)) AND (:sectorID is null or a.COMPLAINT_DEPARTMENT =TO_NUMBER(:sectorID))\n" +
+                "AND (:outletName is null or a.NAME_OUTLET =:outletName)",
         nativeQuery = true
     )
     fun findFilteredFieldInspectionSummaryReport(
         @Param("startDate") startDate: Date?,
         @Param("endDate") endDate: Date?,
         @Param("assignIO") assignIO: Long?,
-        @Param("sectorID") sectorID: Long?
+        @Param("sectorID") sectorID: Long?,
+        @Param("outletName") outletName: String?
     ): List<FieldInspectionSummaryReportViewEntity>?
 }
 

@@ -27,6 +27,11 @@
                                             <i class="material-icons">description</i> Application Details
                                         </a>
                                     </li>
+                                    <li *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
+                                            <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link2" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i> Application Information
@@ -37,7 +42,7 @@
                                             <i class="material-icons">assignment_turned_in</i> Application Invoice
                                         </a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li *ngIf="allPermitDetails?.permitDetails?.invoiceDifferenceGenerated" class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#link10" role="tablist">
                                             <i class="material-icons">assignment_turned_in</i>Application Difference
                                             Invoice
@@ -1021,6 +1026,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         </div>
 
                                     </div>
+                                    <div class="tab-pane" id="link14">
+                                        <ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
+                                                                 [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
+                                    </div>
 
                                     <div class="tab-pane" id="link4">
                                         <h3>Inspection Report</h3>
@@ -1141,79 +1150,48 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                 <div>
                                                                     <div class="text-center">
                                                                         <h5 class="text-dark" style="text-align: left;
-                                                                               margin-top: 20px;">Documents Attached
-                                                                            Details</h5>
+                                                                               margin-top: 20px;">Documents Attached Details</h5>
 
                                                                     </div>
                                                                     <div class="card-body" style="margin-top: 20px;">
-
-
                                                                         <div class="material-datatables">
                                                                             <div class="table-responsive">
-
                                                                                 <div>
                                                                                     <table class=" table table-bordered table-hover table-striped"
                                                                                            datatable
+                                                                                           [dtOptions]="dtOptionsSCS"
+                                                                                           [dtTrigger]="dtTriggerSCS"
                                                                                     >
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
 
-                                                                                            <th>
-                                                                                                <strong>Document
-                                                                                                    Description</strong>
-                                                                                            </th>
-                                                                                            <th>
-                                                                                                <strong>File
-                                                                                                    Name</strong></th>
-                                                                                            <th>
-                                                                                                <strong>File
-                                                                                                    Type</strong></th>
-
-                                                                                            <th>
-                                                                                                <strong>Version
-                                                                                                    Number</strong></th>
-
-
+                                                                                            <th><strong>File Name</strong></th>
+                                                                                            <th><strong>File Type</strong></th>
+                                                                                            <th><strong>Document Description</strong></th>
+                                                                                            <th><strong>Version Number</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View</strong>
+                                                                                                <strong>View Details</strong>
                                                                                             </th>
-
-
                                                                                         </tr>
                                                                                         </thead>
-
                                                                                         <tbody>
-                                                                                        <tr>
-                                                                                            <td>SCHEME_OF_SUPERVISION
-                                                                                            </td>
-
-                                                                                            <td>bsk.pdf</td>
-                                                                                            <td>application</td>
-
-                                                                                            <td>1</td>
-
+                                                                                        <tr *ngFor="let scsDetails of allPermitDetails?.schemeOfSuperVisionList">
+                                                                                            <td>{{scsDetails?.name}}</td>
+                                                                                            <td>{{scsDetails?.fileType }}</td>
+                                                                                            <td>{{scsDetails?.documentType}}</td>
+                                                                                            <td>{{scsDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
-
-                                                                                                <a mat-list-item
-                                                                                                   routerLink=""
+                                                                                                <a (click)="viewSavedFilesSaved(scsDetails)"
                                                                                                    class="btn btn-info"
-                                                                                                   style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
-
-                                                                                                <!-- <a
-                                                                                                             class="text-right"
-                                                                                                            ><i style="color: red" class="material-icons">delete</i></a> -->
-
-
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
                                                                                             </td>
-
                                                                                         </tr>
-
                                                                                         </tbody>
                                                                                     </table>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-
                                                                     </div>
                                                                 </div>
 
@@ -1242,24 +1220,11 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                     </div>
                                                                     <div class="card-body" style="margin-top: 20px;">
-
-
-<!--                                                                        <div class="search">-->
-
-<!--                                                                            <input type="text"-->
-<!--                                                                                   style="border: none; margin-left: 2px;"-->
-<!--                                                                                   placeholder="Search...">-->
-<!--                                                                            <i class="fa fa-search" aria-hidden="true"-->
-<!--                                                                               style="margin-right: 5px;"></i>-->
-
-<!--                                                                        </div>-->
-
                                                                         <a data-toggle="modal" data-target="#allProcessModel"
                                                                            (click)="openModalAddDetails('addSSFDetails')"
                                                                            class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
                                                                         <div class="material-datatables">
                                                                             <div class="table-responsive">
-
                                                                                 <div>
                                                                                     <table class=" table table-bordered table-hover table-striped"
                                                                                            datatable
@@ -1289,7 +1254,11 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                             <td>{{sffDetails?.bsNumber}}</td>
                                                                                             <td>{{sffDetails?.brandName}}</td>
                                                                                             <td>{{sffDetails?.productDescription}}</td>
-                                                                                            <td>{{sffDetails?.resultsAnalysis}}</td>
+                                                                                            <td>
+                                                                                                <div *ngIf="!sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks == null">PENDING ANALYSES</div>
+                                                                                                <div *ngIf="!sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks != null">NON-COMPLIANT</div>
+                                                                                                <div *ngIf="sffDetails?.resultsAnalysis && sffDetails?.complianceRemarks != null">COMPLIANT</div>
+                                                                                            </td>
                                                                                             <td class="text-right">
                                                                                                 <a (click)="viewSSFLabResultsRecord(sffDetails)"
                                                                                                    class="btn btn-info"
@@ -1329,71 +1298,46 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                     </div>
                                                                     <div class="card-body" style="margin-top: 20px;">
 
-
                                                                         <div class="material-datatables">
                                                                             <div class="table-responsive">
-
                                                                                 <div>
                                                                                     <table class=" table table-bordered table-hover table-striped"
                                                                                            datatable
+                                                                                           [dtOptions]="dtOptionsRemarks"
+                                                                                           [dtTrigger]="dtTriggerRemarks"
                                                                                     >
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
-                                                                                            <th>
-                                                                                                <strong>Process
-                                                                                                    Name</strong></th>
-                                                                                            <th>
-                                                                                                <strong>Process
-                                                                                                    By</strong></th>
 
-                                                                                            <th>
-                                                                                                <strong>Process
-                                                                                                    On</strong></th>
-
-                                                                                            <th>
-                                                                                                <strong>Remarks
-                                                                                                    By</strong></th>
-                                                                                            <th>
-                                                                                                <strong>Status</strong>
-                                                                                            </th>
-
-
+                                                                                            <th><strong>Process Name</strong></th>
+                                                                                            <th><strong>Process By</strong></th>
+                                                                                            <th><strong>Process On</strong></th>
+                                                                                            <th><strong>Remarks By</strong></th>
+                                                                                            <th><strong>Status</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View</strong>
+                                                                                                <strong>View Details</strong>
                                                                                             </th>
-
-
                                                                                         </tr>
                                                                                         </thead>
-
                                                                                         <tbody>
-                                                                                        <tr>
-                                                                                            <td>REVIEW COMPLETENESS</td>
-
-                                                                                            <td>HOF/QAM</td>
-
-                                                                                            <td>17/11/2022</td>
-
-                                                                                            <td> Maryline QAM</td>
-
-                                                                                            <td> APPROVED</td>
-
-                                                                                            <td class="text-right">
-
-                                                                                                <a data-toggle="modal"
-                                                                                                   data-target="#Remarks"
-                                                                                                   class="btn btn-info"
-                                                                                                   style="width: 100px; background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
-
-                                                                                                <!-- <a
-                                                                                                                 class="text-right"
-                                                                                                                ><i style="color: red" class="material-icons">delete</i></a> -->
-
-
+                                                                                        <tr *ngFor="let remarksParam of allPermitDetails?.remarksDetailsList let i=index ">
+                                                                                            <td>{{i + 1}} </td>
+                                                                                            <td>{{remarksParam?.processName}}</td>
+                                                                                            <td>{{remarksParam?.processBy }}</td>
+                                                                                            <td>{{remarksParam?.createdOn}}</td>
+                                                                                            <td>{{remarksParam?.createdBy}}</td>
+                                                                                            <td>
+                                                                                                <div *ngIf="!remarksParam?.remarksStatus && remarksParam?.status == null">N/A</div>
+                                                                                                <div *ngIf="!remarksParam?.remarksStatus && remarksParam?.status == 1">REJECTED/NON-COMPLIANT</div>
+                                                                                                <div *ngIf="remarksParam?.remarksStatus && remarksParam?.status == 1">APPROVED/COMPLIANT</div>
                                                                                             </td>
-
+                                                                                            <td class="text-right">
+                                                                                                <a (click)="viewSavedRemarks(remarksParam)"
+                                                                                                   class="btn btn-info"
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
+                                                                                            </td>
                                                                                         </tr>
-
                                                                                         </tbody>
                                                                                     </table>
                                                                                 </div>
@@ -1427,69 +1371,38 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                     </div>
                                                                     <div class="card-body" style="margin-top: 20px;">
-
-
                                                                         <div class="material-datatables">
                                                                             <div class="table-responsive">
-
                                                                                 <div>
                                                                                     <table class=" table table-bordered table-hover table-striped"
                                                                                            datatable
+                                                                                           [dtOptions]="dtOptionsDOCS"
+                                                                                           [dtTrigger]="dtTriggerDOCS"
                                                                                     >
                                                                                         <thead style="text-align: left;">
                                                                                         <tr>
-                                                                                            <th>
-                                                                                                <strong>File
-                                                                                                    Name</strong></th>
-                                                                                            <th>
-                                                                                                <strong>File
-                                                                                                    Type</strong></th>
-
-                                                                                            <th>
-                                                                                                <strong>Document
-                                                                                                    Description</strong>
-                                                                                            </th>
-
-                                                                                            <th>
-                                                                                                <strong>Version
-                                                                                                    Number</strong></th>
-
-
+                                                                                            <th><strong>File Name</strong></th>
+                                                                                            <th><strong>File Type</strong></th>
+                                                                                            <th><strong>Document Description</strong></th>
+                                                                                            <th><strong>Version Number</strong></th>
                                                                                             <th class="text-center">
-                                                                                                <strong>View</strong>
+                                                                                                <strong>View Details</strong>
                                                                                             </th>
-
-
                                                                                         </tr>
                                                                                         </thead>
-
                                                                                         <tbody>
-                                                                                        <tr>
-                                                                                            <td>bsk.pdf</td>
-
-                                                                                            <td>application</td>
-
-
-                                                                                            <td>QAO-uploads</td>
-
-                                                                                            <td>1</td>
-
+                                                                                        <tr *ngFor="let docsDetails of allPermitDetails?.ordinaryFilesList">
+                                                                                            <td>{{docsDetails?.name}}</td>
+                                                                                            <td>{{docsDetails?.fileType }}</td>
+                                                                                            <td>{{docsDetails?.documentType}}</td>
+                                                                                            <td>{{docsDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
-
-                                                                                                <a mat-list-item
-                                                                                                   routerLink=""
+                                                                                                <a (click)="viewSavedFilesSaved(docsDetails)"
                                                                                                    class="btn btn-info"
-                                                                                                   style="width: 100%; margin-right: 5px;background: rgba(0, 0, 0, 0) linear-gradient(60deg,#1b75bc,#1b75bc);">View</a>
-
-                                                                                                <!-- <a
-                                                                                                                   class="text-right"
-                                                                                                                  ><i style="color: red" class="material-icons">delete</i></a> -->
-
-
+                                                                                                   style="background: rgba(0, 0, 0, 0)
+                                                                                                    linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
                                                                                             </td>
-
                                                                                         </tr>
-
                                                                                         </tbody>
                                                                                     </table>
                                                                                 </div>
@@ -1712,27 +1625,58 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
             <div class="col-lg-3">
                 <div class="card ">
                     <div class="card-header ">
+                        <h4 class="card-title">Documents</h4>
+                    </div>
+                    <div class="card-body ">
+                        <div>
+                            <div>
+                                <a  *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
+                                    (click)="goToFmarkPermitDetails(allPermitDetails?.permitDetails?.fmarkGeneratedID)"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">FMARK APPLICATION DETAILS</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card ">
+                    <div class="card-header ">
                         <h4 class="card-title">Actions</h4>
                     </div>
                     <div class="card-body ">
                         <div *ngFor="let role of roles">
                             <div *ngIf="role == 'QA_MANAGER_MODIFY' || role == 'QA_HOF_MODIFY' || role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'">
+
                                 <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('updateSection')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPDATE SECTION</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus
-                                && !allPermitDetails?.permitDetails?.permitGenerateDifference && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('updateBrand')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPDATE BRAND</a>
+
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('permitCompleteness')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
 
-                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus
-                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"
+                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                && allPermitDetails?.permitDetails?.changesMadeStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('permitCompleteness')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>
+
+<!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+<!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
+<!--                                   data-target="#allProcessModel"-->
+<!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
+<!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
+
+<!--                                <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus-->
+<!--                                && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"-->
+<!--                                   data-target="#allProcessModel"-->
+<!--                                   (click)="openModalAddDetails('permitCompleteness')"-->
+<!--                                   class="btn btn-kebs mat-raised-button mat-button-base">REVIEW FOR COMPLETENESS ?</a>-->
 
                                 <a data-toggle="modal"
                                    *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && !allPermitDetails?.permitDetails?.assignOfficerStatus "
@@ -1741,7 +1685,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    class="btn btn-kebs mat-raised-button mat-button-base">Assign Officer</a>
 
                                 <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus "
+                                   *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus && allPermitDetails?.permitDetails?.hofQamCompletenessStatus && allPermitDetails?.permitDetails?.assignOfficerStatus "
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('assignOfficer')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">Re-Assign Officer</a>
@@ -1796,24 +1740,42 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
 
                                 <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.generateSchemeStatus"
+                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.resubmitApplicationStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('uploadSSC')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SCHEME OF SUPERVISION
                                     AND CONTROL</a>
 
                                 <a data-toggle="modal"
-                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.generateSchemeStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('uploadSSC')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD NEW SCHEME OF SUPERVISION
+                                    AND CONTROL</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                    && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('addSSFDetails')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">ADD SSF & BS NUMBER</a>
 
-                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus && allPermitDetails?.permitDetails?.resubmitApplicationStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('addSSFDetails')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD  NEW SSF & BS NUMBER</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null && !allPermitDetails?.permitDetails?.resubmitApplicationStatus
                                    && allPermitDetails?.permitDetails?.compliantStatus"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('addRecommendationRemarks')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">ADD RECOMMENDATION</a>
+
+                                <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.recommendationRemarks == null && allPermitDetails?.permitDetails?.resubmitApplicationStatus
+                                   && allPermitDetails?.permitDetails?.compliantStatus"
+                                   data-target="#allProcessModel"
+                                   (click)="openModalAddDetails('addRecommendationRemarks')"
+                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD NEW RECOMMENDATION</a>
 
                                 <!--                                <a data-toggle="modal"-->
                                 <!--                                   data-target="#allProcessModel"-->
@@ -1821,10 +1783,11 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                 <!--                                   class="btn btn-kebs mat-raised-button mat-button-base">ADD APPROVAL</a>-->
 
                                    <a data-toggle="modal"
-                                 
-                                   data-target="#uploadSSFModal"
+                                      *ngIf="allPermitDetails?.permitDetails?.inspectionReportGenerated
+                                   && allPermitDetails?.permitDetails?.generateSchemeStatus && !allPermitDetails?.permitDetails?.ssfCompletedStatus"
+                                      data-target="#uploadSSFModal"
                                    (click)="openModalAddDetails('uploadSSF')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD SSF</a>
+                                   class="btn btn-kebs mat-raised-button mat-button-base">UPLOAD EXTERNAL TEST RESULTS</a>
                                    
                             </div>
 
@@ -1869,7 +1832,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <label for="files"><b>Description Of Attachment(s):</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="docFileName" id="docFileName"
-                                                               matInput name="docFileName"
+                                                               matInput name="docFileName" required
                                                                placeholder="Please enter Description Of Attachment"
                                                                type="text">
                                                     </mat-form-field>
@@ -1915,21 +1878,51 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                          </div>
                          <div class="modal-body">
                              <div>
-                                 <form  action="" class="form"
+                                 <form [formGroup]="docSSFUploadForm" action="" class="form"
                                        enctype="multipart/form-data" method="post">
                                      <div class="form-body">
                                          <div class="form-group">
                                              <div>
+
+                                                 <label for="files"><b>Description Of Attachment(s):</b></label>
+                                                 <mat-form-field class="example-full-width">
+                                                     <input formControlName="docSSFUpload" id="docSSFUpload"
+                                                            matInput name="docSSFUpload"
+                                                            placeholder="Please enter Description Of Attachment"
+                                                            type="text">
+                                                 </mat-form-field>
                                                 
                                                  <label for="files"><b>Upload SSF Here</b></label>
                                                  <form #demoForm="ngForm">
                                                      <file-upload [(ngModel)]="uploadedSsfFilesOnly" name="files"
-                                                                  id="files"
+                                                                  id="filesb"
                                                                   accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt"></file-upload>
                                                  </form>
                                              </div>
                                          </div>
                                      </div>
+                                     <div class="form-group">
+                                         <div>
+                                             <label><b>Select Compliance Status</b></label>
+                                             <mat-form-field id="complianceStatusSSF43">
+                                                 <mat-select placeholder="Please Select an option"
+                                                             formControlName="resultsAnalysis"
+                                                             name="resultsAnalysis">
+                                                     <mat-option [value]="true">Compliant</mat-option>
+                                                     <mat-option [value]="false">Non-Compliant</mat-option>
+                                                 </mat-select>
+                                             </mat-form-field>
+                                             <label><b>Please write, in detail, your feedback for the whole Lab
+                                                 results:</b></label>
+                                             <mat-form-field class="example-full-width">
+                                            <textarea id="complianceRemarksSSF43" matInput type="text"
+                                                      formControlName="complianceRemarks"
+                                                      name="complianceRemarks">
+                                            </textarea>
+                                             </mat-form-field>
+                                         </div>
+                                     </div>
+
                                  </form>
                              </div>
                          </div>
@@ -1986,6 +1979,47 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                               formControlName="sectionRemarks"
                                                               name="sectionRemarks">
                                                     </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'viewRemarksDetails')">
+                                    <form [formGroup]="remarksForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>feedback :</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                    <textarea id="remarksValue" matInput type="text"
+                                                              formControlName="remarksValue" disabled
+                                                              name="remarksValue">
+                                                    </textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="(currDiv == 'updateBrand')">
+                                    <form [formGroup]="updateBrandForm" class="form">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label><b>Trade Mark:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="tradeMark" id="tradeMark"
+                                                               matInput name="tradeMark"
+                                                               placeholder="Please enter Trade Mark"
+                                                               type="text">
+                                                    </mat-form-field>
+                                                    <label><b>Commodity Description:</b></label>
+                                                    <mat-form-field class="example-full-width">
+                                                        <input formControlName="commodityDescription" id="commodityDescription"
+                                                               matInput name="commodityDescription"
+                                                               placeholder="Please enter Commodity Description"
+                                                               type="text">
                                                     </mat-form-field>
                                                 </div>
                                             </div>
@@ -2173,14 +2207,14 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                     <label><b>Brand Name:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="brandName" id="brandName" matInput
-                                                               name="brandName" required
+                                                               name="brandName" disabled ngModel="{{allPermitDetails?.permitDetails?.brandName}}"
                                                                placeholder="Please enter brand Name" type="text">
                                                     </mat-form-field>
                                                     <label><b>Product Description:</b></label>
                                                     <mat-form-field class="example-full-width">
                                                         <input formControlName="productDescription"
                                                                id="productDescription" matInput
-                                                               name="productDescription" required
+                                                               name="productDescription" disabled ngModel="{{allPermitDetails?.permitDetails?.commodityDescription}}"
                                                                placeholder="Please enter product Description"
                                                                type="text">
                                                     </mat-form-field>
@@ -2377,6 +2411,13 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         class="btn btn-success"
                                         (click)="onClickSaveSectionFormResults(updateSectionForm.valid);"
                                         [disabled]="!updateSectionForm.valid"
+                                        data-dismiss="modal"
+                                >SUBMIT
+                                </button>
+                                <button *ngIf="(currDiv == 'updateBrand')" mat-raised-button type="button"
+                                        class="btn btn-success"
+                                        (click)="onClickSaveBrandFormResults(updateBrandForm.valid);"
+                                        [disabled]="!updateBrandForm.valid"
                                         data-dismiss="modal"
                                 >SUBMIT
                                 </button>
@@ -5727,15 +5768,17 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Compliance Status</div>
-
-                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus"
-                                                         class="list-text-accordion">COMPLIANT
+                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceRemarks != null">
+                                                        <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus"
+                                                             class="list-text-accordion">COMPLIANT
+                                                        </div>
+                                                        <div *ngIf="!selectedLabResults?.ssfResultsList?.complianceStatus"
+                                                             class="list-text-accordion">NON-COMPLIANT
+                                                        </div>
                                                     </div>
-                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false"
-                                                         class="list-text-accordion">NON-COMPLIANT
-                                                    </div>
-<!--                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceStatus==false && selectedLabResults?.ssfResultsList?.analysisDone==false"-->
-<!--                                                         class="list-text-accordion"></div>-->
+<!--                                                    <div *ngIf="selectedLabResults?.ssfResultsList?.complianceRemarks == null">-->
+<!--                                                        <div *ngIf="!selectedLabResults?.ssfResultsList?.complianceStatus" class="list-text-accordion"></div>-->
+<!--                                                    </div>-->
                                                 </li>
                                             </ul>
                                         </div>
@@ -5759,7 +5802,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                     </div>
                                     <div class="form-row">
                                         <div class="col-md-12 mb-3">
-                                            <label style="color: #0082f3">Lab Results Param</label>
+                                            <label style="color: #0082f3">Lab Results parameters</label>
                                         </div>
                                         <div class="table-striped table-condensed table-responsive">
                                             <ng2-smart-table [settings]="settingsLabResultsParam"

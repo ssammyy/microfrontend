@@ -150,7 +150,7 @@
                                         <tbody>
                                         <tr  *ngFor="let companyModel of loadedData let i=index ">
                                             <td >{{i+1}} </td>
-                                            <td>{{companyModel?.dateofVisit}}</td>
+                                            <td>{{companyModel?.sampleCollectionDate}}</td>
                                             <td>{{companyModel?.marketCentre }}</td>
                                             <td>{{companyModel?.nameAddressOutlet}}</td>
                                             <td>{{companyModel?.productDescription}}</td>
@@ -163,7 +163,7 @@
                                             <td>{{companyModel?.sampleReferences}}</td>
                                             <td>{{companyModel?.noSamplesTested}}</td>
                                             <td>{{companyModel?.complianceTesting}}</td>
-                                            <td>{{companyModel?.natureFailure}}</td>
+                                            <td>{{companyModel?.failedParameters}}</td>
                                             <td>{{companyModel?.dateofTestReport}}</td>
                                             <td>{{companyModel?.dateofForwardingTestResults}}</td>
                                             <td>{{companyModel?.actionsTaken}}</td>

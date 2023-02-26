@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.SchemeMembershipService
 import org.kebs.app.kotlin.apollo.common.dto.std.ServerResponse
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.SchemeMembershipRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -23,6 +24,19 @@ class SchemeMembershipController(val schemeMembershipService: SchemeMembershipSe
     @GetMapping("/schemeMembership/hod/tasks")
     fun getTasks(): MutableIterable<SchemeMembershipRequest?>? {
         return schemeMembershipService.getHodTasks()
+    }
+    @GetMapping("/schemeMembership/hod/getHodTasksAssigned")
+    fun getTasksAssigned(): List<SchemeMembershipRequest?>? {
+        return schemeMembershipService.getHodTasksAssigned()
+    }
+    @GetMapping("/schemeMembership/hod/getHodTasksUnassigned")
+    fun getTasksUnAssigned(): List<SchemeMembershipRequest?>? {
+        return schemeMembershipService.getHodTasksUnassigned()
+    }
+
+    @GetMapping("schemeMembership/getAllSICOfficers")
+    fun getAllTcSec(): List<UsersEntity> {
+        return schemeMembershipService.getAllSICOfficers()
     }
 
     @PostMapping("/schemeMembership/assignTask")

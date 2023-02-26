@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
-  ReviewProposalComments, ReviewStandardsComments,
+  ReviewProposalComments, ReviewStandardsComments, SRStdComments, SRStdForRecommendation,
   StakeholderProposalComments,
   StandardReviewTasks
 } from "../../../../core/store/data/std/std.model";
@@ -23,9 +23,10 @@ export class SystemicReviewTcSecComponent implements OnInit {
   dtElements: QueryList<DataTableDirective>;
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger1: Subject<any> = new Subject<any>();
-  tasks: StandardReviewTasks[]=[];
+  tasks: SRStdForRecommendation[]=[];
   reviewProposalComments: ReviewProposalComments[]=[];
-  public actionRequest: StandardReviewTasks | undefined;
+  srStdComments: SRStdComments[]=[];
+  public actionRequest: SRStdForRecommendation | undefined;
   loadingText: string;
   public isShowRecommendationsTab=true;
   public isShowProposalCommentsTab=true;
@@ -40,13 +41,12 @@ export class SystemicReviewTcSecComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getTcSecTasks();
+    this.getStandardsForRecommendation();
     this.recommendationFormGroup= this.formBuilder.group({
-      proposalId:[],
-      summaryOfRecommendations:[],
+      recommendation:[],
       feedback:[],
-      processId:[],
-      taskId:[]
+      reviewId:[]
+
     });
 
   }
@@ -63,12 +63,12 @@ export class SystemicReviewTcSecComponent implements OnInit {
     this.notifyService.showError(message, title)
 
   }
-  public getTcSecTasks(): void{
+  public getStandardsForRecommendation(): void{
     this.SpinnerService.show();
-    this.stdReviewService.getTcSecTasks().subscribe(
-        (response: StandardReviewTasks[])=> {
+    this.stdReviewService.getStandardsForRecommendation().subscribe(
+        (response: SRStdForRecommendation[])=> {
           this.tasks = response;
-          console.log(this.tasks);
+          //console.log(this.tasks);
           this.SpinnerService.hide();
           this.rerender();
 
@@ -79,7 +79,25 @@ export class SystemicReviewTcSecComponent implements OnInit {
         }
     );
   }
-  public onOpenModal(StandardReviewTask: StandardReviewTasks,mode:string): void{
+
+  public getProposalsComments(reviewId: number): void{
+    this.SpinnerService.show();
+    this.stdReviewService.getProposalsComments(reviewId).subscribe(
+        (response: SRStdComments[])=> {
+          this.srStdComments = response;
+          console.log(this.srStdComments);
+          this.SpinnerService.hide();
+          this.rerender();
+
+        },
+        (error: HttpErrorResponse)=>{
+          this.SpinnerService.hide();
+          alert(error.message);
+        }
+    );
+  }
+
+  public onOpenModal(StandardReviewTask: SRStdForRecommendation,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -90,8 +108,7 @@ export class SystemicReviewTcSecComponent implements OnInit {
       button.setAttribute('data-target','#commentModal');
       this.recommendationFormGroup.patchValue(
           {
-            taskId: this.actionRequest.taskId,
-            proposalId: this.actionRequest.taskData.proposalId
+            reviewId: this.actionRequest.id
           });
 
     }
@@ -129,7 +146,7 @@ export class SystemicReviewTcSecComponent implements OnInit {
         (response: ReviewProposalComments[]) => {
           this.reviewProposalComments = response;
           this.SpinnerService.hide();
-          console.log(this.reviewProposalComments)
+          //console.log(this.reviewProposalComments)
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -147,13 +164,13 @@ export class SystemicReviewTcSecComponent implements OnInit {
   }
 
   submitRecommendation(): void {
-    console.log(this.recommendationFormGroup.value)
+    //console.log(this.recommendationFormGroup.value)
     this.loadingText = "Submitting Recommendation ...."
     this.SpinnerService.show();
     this.stdReviewService.makeRecommendationsOnAdoptionProposal(this.recommendationFormGroup.value).subscribe(
         (response) => {
-          console.log(response);
-          this.getTcSecTasks();
+          //console.log(response);
+          this.getStandardsForRecommendation();
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Recommendation Submitted`);
 
@@ -175,7 +192,7 @@ export class SystemicReviewTcSecComponent implements OnInit {
         (response: ReviewStandardsComments[]) => {
           this.reviewStandardsComments = response;
           this.SpinnerService.hide();
-          console.log(this.reviewStandardsComments)
+          //console.log(this.reviewStandardsComments)
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

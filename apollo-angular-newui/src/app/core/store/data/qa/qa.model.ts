@@ -56,14 +56,14 @@ export class PermitEntityDto {
     sectionValue: string;
     permitAwardStatus: boolean;
 
-    postalAddress:string;
-    telephoneNo:string;
+    postalAddress: string;
+    telephoneNo: string;
 
-    commodityDescription:string;
+    commodityDescription: string;
 
-    brandName:string;
+    brandName: string;
 
-    standardNumber:string;
+    standardNumber: string;
 
     permitExpiredStatus: boolean;
     taskID: bigint;
@@ -155,6 +155,11 @@ export class ConsolidatedInvoiceDto {
 export class RemarksAndStatusDto {
     remarksStatus: boolean;
     remarksValue: string;
+    processName: string;
+    processBy: string;
+    createdOn: Date;
+    createdBy: string;
+    status: number;
 }
 
 export class PermitAllRemarksDetailsDto {
@@ -318,6 +323,8 @@ export class PermitEntityDetails {
     hodQamApproveRejectStatus: boolean;
     pscMemberApprovalStatus: boolean;
     pcmApprovalStatus: boolean;
+    paidStatus: boolean;
+    changesMadeStatus: boolean;
 }
 
 
@@ -406,6 +413,7 @@ export class SSFDetailsDto {
     brandName: string;
     productDescription: string;
     resultsAnalysis: boolean;
+    complianceRemarks: string;
 }
 
 export class CompanyUpgradeStatusDto {
@@ -443,8 +451,9 @@ export class AllPermitDetailsDto {
     inspectionInvoiceUploaded: number;
     inspectionFeeInvoice: InvoiceDetailsDto;
     sampleLabResults: MSSSFLabResultsDto[];
-
     inspectionReportDetails: InspectionReportDetailsDto;
+    schemeOfSuperVisionList: FilesListDto[];
+    remarksDetailsList: RemarksAndStatusDto[];
 
 }
 
@@ -478,6 +487,7 @@ export class PlantDetailsDto {
     designation: string;
     contactPerson: string;
 }
+
 export class InspectionReportDetailsDto {
     id: bigint;
     refNo: string;
@@ -685,7 +695,17 @@ export class AllInspectionDetailsApplyDto {
     supervisorName: string;
     supervisorDate: Date;
 
-    permitDetails:PermitEntityDto;
+    permitDetails: PermitEntityDto;
+}
+
+
+export class InspectionReportToBeClonedDto {
+    id: number;
+    recommendations: string;
+    refNo: string;
+    permitId: number;
+    permitRefNumber: number;
+    tradeMark: string;
 }
 
 

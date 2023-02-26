@@ -8,13 +8,21 @@
 
                         <ul class=" tabs-container nav nav-pills nav-pills-rose nav-pills-icons justify-content-center"
                             role="tablist">
-
+                           
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" id="ongoing-applications"
                                    (click)="tabChange('Ongoing Applications')" role="tablist">
                                     <i class="material-icons">done_outline</i>Ongoing Applications
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" id="my-tasks"
+                                   (click)="tabChange('My Tasks')" role="tablist">
+                                    <i class="material-icons">task</i>My Tasks
+                                </a>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" id="new-application"
                                    (click)="tabChange('New Applications')" role="tablist">
@@ -185,6 +193,13 @@
 
             <!-- end of Expired Applications -->
 
+            <div *ngIf="id == 'My Tasks'" class="w-100">
+
+                <app-qa-task-details></app-qa-task-details>
+
+            </div>
+
+            
         </div>
     </div>
 </div>

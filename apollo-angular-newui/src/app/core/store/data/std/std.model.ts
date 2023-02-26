@@ -328,6 +328,45 @@ export interface DisDTTaskData {
 
 
 }
+export interface NwaEditPd{
+    draftId: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    uploadDate: Timestamp<any>;
+    deadlineDate: Timestamp<any>;
+    draftNumber: string;
+    remarks: string;
+    requestId: number;
+    departmentId: string;
+    standardType: string;
+    workShopDate: string;
+    requestNumber: string;
+    rank: string;
+    name: string;
+    phone: string;
+    email: string;
+    submissionDate: Timestamp<any>;
+    productSubCategoryId: number;
+    tcId: number;
+    productId: number;
+    organisationName: string;
+    subject: string;
+    description: string;
+    economicEfficiency: string;
+    healthSafety: string;
+    environment: string;
+    integration: string;
+    exportMarkets: string;
+    levelOfStandard: string;
+    departmentName: string;
+    nwaCdNumber: string;
+
+}
+
 
 export interface NWAPreliminaryDraft {
     id: number;
@@ -338,7 +377,7 @@ export interface NWAPreliminaryDraft {
     special: string;
     clause: string;
     taskId: string;
-    diJNumber: number;
+    workShopDate: Timestamp<any>;
 }
 
 export interface NWAWorkShopDraft {
@@ -1334,6 +1373,17 @@ export interface ApproveSACJC {
     approvalID: bigint;
     comments: string;
 }
+export interface DecisionOnStdDraft{
+    comments: string;
+    accentTo: string;
+    requestId: number;
+    id: number;
+    departmentId: string;
+    subject: string;
+    description: string;
+    requestNumber: string;
+    title: string;
+}
 
 export interface ApproveDraft {
     taskId: string;
@@ -1586,6 +1636,11 @@ export interface DiSdtDECISION {
     comments: string;
     jstNumber: bigint;
 }
+export interface NwaDecisionOnJustification{
+    comments: string;
+    accentTo: string;
+    requestId: number;
+}
 
 export interface NWAJustificationDecision {
     taskId: string;
@@ -1692,15 +1747,54 @@ export interface CommentOnProposalStakeHolder{
 export interface StandardsForReview {
     id: number;
     title: string;
+    standardNumber: string;
+    standardType: string;
+    documentType: string;
+    dateFormed: Timestamp<any>;
+    circulationDate: Timestamp<any>;
+    edition: string;
+    scope: string;
+}
+export interface XStandardsForReview {
+    id: number;
+    title: string;
+    standardNumber: string;
+    standardType: string;
+    documentType: string;
+    dateFormed: Timestamp<any>;
+    circulationDate: Timestamp<any>;
+    //closingDate: string;
+    nameOfTcSecretary: string;
+    edition: string;
+    choice: string;
+    justification: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    date: Timestamp<any>;
+    scope: string;
+}
+export interface SRProposalComments{
+    id: string;
+    standardNumber: string;
+    title: string;
+    documentType: string;
+    preparedBy: string;
+    datePrepared: Timestamp<any>;
     scope: string;
     normativeReference: string;
     symbolsAbbreviatedTerms: string;
     clause: string;
     special: string;
-    standardNumber: string;
     standardType: string;
-    dateFormed: string;
-    documentType: string;
+    assignedTo: number;
+    standardId: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    dateFormed: Timestamp<any>;
+    tcSecretary: string;
+    edition: string;
+    operationOption: string;
 }
 
 export interface RevProposalComments {
@@ -1734,6 +1828,47 @@ export interface CommentOnProposal {
     typeOfComment: string;
     proposedChange: string;
     proposalId: number;
+}
+export interface SRCommentsOnProposal{
+    id: number;
+    title: string;
+    standardNumber: string;
+    standardType: string;
+    documentType: string;
+    dateFormed: Timestamp<any>;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    nameOfTcSecretary: string;
+    edition: string;
+    choice: string;
+    justification: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+}
+export interface SRStdForRecommendation{
+    id: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    standardNumber: string;
+    standardType: string;
+    dateFormed: Timestamp<any>;
+    userName: string;
+    adoptionComment: string;
+    commentTime: string;
+    proposalId: string;
+    documentType: string;
+    paragraph: string;
+    typeOfComment: string;
+    proposedChange: string;
+    requestNumber: string;
+    feedback : number;
+    subject : string;
+    description : string;
 }
 
 export interface StandardReviewTasks {
@@ -1789,12 +1924,22 @@ export interface ReviewProposalComments {
     typeOfComment: string;
     proposedChange: string;
 }
+export interface ReviewSpcDecision{
+    accentTo: string;
+    remarks: string;
+    reviewId: number;
+    standardType: string;
+    title: string;
+    feedback: string;
+    subject: string;
+    description: string;
+}
 
 export interface ReviewRecommendation {
     proposalId: number;
-    summaryOfRecommendations: string;
+    recommendation: string;
     processId: string;
-    taskId: string;
+    reviewId: number;
     feedback: number;
 }
 
@@ -1918,6 +2063,24 @@ export interface SchemeMembership {
 
 
 }
+export interface SRStdComments{
+    id : string;
+    reviewId : string;
+    standardId : string;
+    title : string;
+    standardNumber : string;
+    documentType : string;
+    dateFormed : Timestamp<any>;
+    circulationDate : Timestamp<any>;
+    closingDate : Timestamp<any>;
+    nameOfTcSecretary : string;
+    justification : string;
+    edition : string;
+    nameOfRespondent : string;
+    positionOfRespondent : string;
+    nameOfOrganization : string;
+    commentTime : Timestamp<any>;
+}
 
 export interface ComStdRemarks {
     id: number;
@@ -2022,6 +2185,35 @@ export interface NwaRequestList{
     status: string;
     departmentName: string;
     tcSecAssigned: string;
+}
+
+export interface NepEnquiries{
+    id: number;
+    requesterName: string;
+    requesterEmail: string;
+    requesterPhone: string;
+    requesterInstitution: string;
+    requesterCountry: string;
+    requesterSubject: string;
+    requesterComment: string;
+    requestDate: Timestamp<any>;
+    status: number;
+}
+
+export interface NepInfoCheckDto {
+    comments: string;
+    accentTo: string;
+    requestId: string;
+    enquiryId: string;
+    feedbackSent: string;
+    requesterEmail: string;
+
+    requesterName: string;
+    requesterPhone: string;
+    requesterInstitution: string;
+    requesterCountry: string;
+    requesterSubject: string;
+    requesterComment: string;
 }
 
 

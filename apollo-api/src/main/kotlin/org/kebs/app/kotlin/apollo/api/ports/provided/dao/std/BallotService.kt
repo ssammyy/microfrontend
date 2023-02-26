@@ -132,7 +132,9 @@ class BallotService(
     }
 
     fun getAllVotesTally(): List<VotesTally> {
-        return ballotvoteRepository.getVotesTally()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        return ballotvoteRepository.getVotesTally(loggedInUser.id.toString())
 
     }
 

@@ -4965,7 +4965,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         update: Boolean
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
-            reportReference = body.reportReference
+            reportReference = "REF/INT/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough
@@ -5016,7 +5016,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         update: Boolean
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
-            reportReference = body.reportReference
+            reportReference = "REF/INT/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough

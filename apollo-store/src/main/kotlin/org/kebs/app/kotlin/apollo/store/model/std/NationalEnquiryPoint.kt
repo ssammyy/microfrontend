@@ -8,39 +8,43 @@ import javax.persistence.*
 class NationalEnquiryPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "NOTIFICATION_ID")
+    @Column(name = "ID")
     @Basic
-    val notificationId : Long = 0
+    var id : Long? = 0
 
     @Column(name = "ENQUIRER_NAME")
     @Basic
-    val requesterName : String = ""
+    var requesterName : String? = null
 
     @Column(name = "EMAIL")
     @Basic
-    val requesterEmail : String =""
+    var requesterEmail : String ? = null
 
     @Column(name = "PHONE")
     @Basic
-    val requesterPhone : String =""
+    var requesterPhone : String ? = null
 
     @Column(name = "INSTITUTION")
     @Basic
-    val requesterInstitution : String = ""
+    var requesterInstitution : String ? = null
 
     @Column(name = "COUNTRY")
     @Basic
-    val requesterCountry : String = ""
+    var requesterCountry : String ? = null
 
     @Column(name = "ENQUIRER_SUBJECT")
     @Basic
-    val requesterSubject : String = ""
+    var requesterSubject : String ? = null
 
     @Column(name = "ENQUIRER_COMMENT")
     @Basic
-    val requesterComment : String = ""
+    var requesterComment : String? = null
 
     @Column(name = "REQUEST_DATE")
     @Basic
-    val requestDate: LocalDate = LocalDate.now()
+    var requestDate: LocalDate = LocalDate.now()
+
+    @Column(name = "STATUS")
+    @Basic
+    var status : Long? =0
 }

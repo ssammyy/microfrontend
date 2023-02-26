@@ -38,7 +38,6 @@ class NationalWorkshopAgreementController(
         val nwaJustification= NWAJustification().apply {
             knw=nwaJustificationDto.knw
             dateOfMeeting=nwaJustificationDto.dateOfMeeting
-            knwSecretary=nwaJustificationDto.knwSecretary
             sl=nwaJustificationDto.sl
             requestedBy=nwaJustificationDto.requestedBy
             issuesAddressed=nwaJustificationDto.issuesAddressed
@@ -46,7 +45,6 @@ class NationalWorkshopAgreementController(
             referenceMaterial=nwaJustificationDto.referenceMaterial
             department=nwaJustificationDto.department
             remarks=nwaJustificationDto.remarks
-            requestNumber=nwaJustificationDto.requestNumber
         }
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",nwaService.
         prepareJustification(nwaJustification))

@@ -83,6 +83,10 @@ class Standard {
     @Basic
     var createdBy:Long? =null
 
+    @Column(name="DUE_DATE_FOR_REVIEW")
+    @Basic
+    var dueDateForReview: Timestamp? =null
+
 
 
 }
