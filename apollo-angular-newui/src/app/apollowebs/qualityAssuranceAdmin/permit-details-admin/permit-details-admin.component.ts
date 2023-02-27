@@ -458,7 +458,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         });
         this.resubmitForm = this.formBuilder.group({
             resubmitRemarks: ['', Validators.required],
-            resubmittedDetails: ['', Validators.required],
+            resubmittedDetails: null,
             // resubmittedDetails: ['']
             // resubmittedDetails: [this.resubmitDetail, Validators.required]
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
@@ -467,6 +467,8 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.remarksForm = this.formBuilder.group({
             remarksValue: ['', Validators.required],
         });
+
+
 
         this.uploadForm = this.formBuilder.group({
             upLoadDescription: ['', Validators.required],
@@ -772,7 +774,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
-        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf.pdfName === this.selectedPDFFileName);
+        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
         if (savedPdf === null) {
             console.log('TEST 101 REF NO SAVE: ' + data.fileName);
             this.selectedPDFFileName = data.fileName;
@@ -1070,6 +1072,37 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('SECTION DETAILS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSaveResubmitFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Resubmit the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'RE-SUBMIT APPLICATION\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveResubmitFormResults(valid);
+            });
+    }
+
+    saveResubmitFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaUpdateResubmit(this.resubmitForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('RE-SUBMITTED DETAILS, SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {

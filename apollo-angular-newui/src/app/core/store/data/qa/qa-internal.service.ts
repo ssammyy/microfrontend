@@ -4,15 +4,19 @@ import {Observable, throwError} from "rxjs";
 import {
     AllInspectionDetailsApplyDto,
     HaccpImplementationDetailsApplyDto,
-    InspectionDetailsDto, InspectionDetailsDtoB,
-    InspectionReportProcessStepDto, OperationProcessAndControlsDetailsApplyDto,
-    PermitProcessStepDto, ProductLabellingDto, StandardizationMarkSchemeDto,
+    InspectionDetailsDto,
+    InspectionDetailsDtoB,
+    InspectionReportProcessStepDto,
+    OperationProcessAndControlsDetailsApplyDto,
+    ProductLabellingDto,
+    StandardizationMarkSchemeDto,
     TechnicalDetailsDto
 } from "./qa.model";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {formatDate} from "@angular/common";
 import {ApiResponseModel} from "../ms/ms.model";
+import {Router} from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
@@ -21,7 +25,8 @@ export class QaInternalService {
     dateFormat = "yyyy-MM-dd";
     language = "en";
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private router: Router,
+    ) {
     }
 
     formatFormDate(date: Date) {
@@ -114,6 +119,7 @@ export class QaInternalService {
             }),
         );
     }
+
     public getFullyFilledInspectionReport(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.GET_FULLY_FILLED_INSPECTION_REPORT);
         return this.http.get<any>(url).pipe(
@@ -155,6 +161,7 @@ export class QaInternalService {
             }),
         );
     }
+
     public updateInspectionReportTechnicalDetails(permitId: string, data: InspectionDetailsDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.TECHNICAL_REPORT_DETAILS);
         const params = new HttpParams()
@@ -184,6 +191,7 @@ export class QaInternalService {
             }),
         );
     }
+
     public updateInspectionReportProductLabelling(permitId: string, inspectionReportId: string, data: ProductLabellingDto[]): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.PRODUCT_LABELLING);
         const params = new HttpParams()
@@ -199,6 +207,7 @@ export class QaInternalService {
             }),
         );
     }
+
     public updateInspectionReportStandardization(permitID: string, data: StandardizationMarkSchemeDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.STANDARDIZATION_MARK);
         const params = new HttpParams()
@@ -215,7 +224,7 @@ export class QaInternalService {
     }
 
 
-    public updateInspectionReportOperation(permitId: string,inspectionReportId: string, data: OperationProcessAndControlsDetailsApplyDto[]): Observable<any> {
+    public updateInspectionReportOperation(permitId: string, inspectionReportId: string, data: OperationProcessAndControlsDetailsApplyDto[]): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.OPERATION_PROCESS_CONTROLS);
         const params = new HttpParams()
             .set('permitID', permitId)
@@ -231,7 +240,7 @@ export class QaInternalService {
         );
     }
 
-    public updateInspectionReportHaccp(permitId: string,inspectionReportId: string, data: HaccpImplementationDetailsApplyDto): Observable<any> {
+    public updateInspectionReportHaccp(permitId: string, inspectionReportId: string, data: HaccpImplementationDetailsApplyDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.HACCP_IMPLEMENTATION);
         const params = new HttpParams()
             .set('permitID', permitId)
@@ -248,7 +257,7 @@ export class QaInternalService {
         );
     }
 
-    public recommendationsSave(permitId: string,inspectionReportId: string, data: AllInspectionDetailsApplyDto): Observable<any> {
+    public recommendationsSave(permitId: string, inspectionReportId: string, data: AllInspectionDetailsApplyDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.RECOMMENDATION_SAVE);
         const params = new HttpParams()
             .set('permitID', permitId)
@@ -263,7 +272,7 @@ export class QaInternalService {
         );
     }
 
-    public inspectionReportFinalSave(permitId: string,inspectionReportId: string, data: AllInspectionDetailsApplyDto): Observable<any> {
+    public inspectionReportFinalSave(permitId: string, inspectionReportId: string, data: AllInspectionDetailsApplyDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.FINAL_INSPECTION_REPORT_SUBMISSION);
         const params = new HttpParams()
             .set('permitID', permitId)
@@ -279,8 +288,6 @@ export class QaInternalService {
     }
 
 
-
-
     public saveInspectionReportProcessStep(data: InspectionReportProcessStepDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_PROCESS_STEP);
         return this.http.post<any>(url, data).pipe(
@@ -292,6 +299,13 @@ export class QaInternalService {
                 return throwError(fault);
             }),
         );
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+        });
     }
 
 }

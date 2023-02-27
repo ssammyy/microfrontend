@@ -34,6 +34,7 @@ class NationalEnquiryPointService(
     private val nepRemarksRepository: NepRemarksRepository,
     private val nationalEnquiryEntityRepository: NationalEnquiryEntityRepository,
     private val sdNepDocUploads: SdNepDocUploadsEntityRepository
+
 ) {
 
     var PROCESS_DEFINITION_KEY: String = "nationalEnquiryPoint"
@@ -91,6 +92,10 @@ class NationalEnquiryPointService(
         return nepDocUploads.save(uploads)
     }
 
+    fun findUploadedReportFileBYId(enquiryId: Long): SdNepDocumentUploadsEntity {
+        return nepDocUploads.findAllByNepDocumentId(enquiryId)
+    }
+
     fun getNepRequests(): MutableList<NationalEnquiryPointEntity>
     {
         return nationalEnquiryPointRepository.getNepRequests()
@@ -113,12 +118,12 @@ class NationalEnquiryPointService(
         rem.description="Remarks on Request recieved"
         rem.dateOfRemark= Timestamp(System.currentTimeMillis())
         if (decision == "Yes") {
-            informationTracker.enquiryId=nepInfoCheckDto.requestId
+            informationTracker.enquiryId=nepInfoCheckDto.enquiryId
             informationTracker.nepOfficerId=loggedInUser.id
             informationTracker.feedbackSent=nepInfoCheckDto.feedbackSent
             informationTracker.requesterEmail=nepInfoCheckDto.requesterEmail
 
-            nationalEnquiryPointRepository.findByIdOrNull(nepInfoCheckDto.requestId)?.let { sts ->
+            nationalEnquiryPointRepository.findByIdOrNull(nepInfoCheckDto.enquiryId)?.let { sts ->
 
                 with(sts) {
                     status=1
@@ -139,15 +144,16 @@ class NationalEnquiryPointService(
         }else{
 
 
-            nationalEnquiry.requesterName=nepInfoCheckDto.requesterName
+            nationalEnquiry.requesterName=loggedInUser.firstName + loggedInUser.lastName
             nationalEnquiry.requesterComment=nepInfoCheckDto.requesterComment
-            nationalEnquiry.requesterCountry=nepInfoCheckDto.requesterCountry
-            nationalEnquiry.requesterInstitution=nepInfoCheckDto.requesterInstitution
-            nationalEnquiry.requesterPhone=nepInfoCheckDto.requesterPhone
+            nationalEnquiry.requesterCountry="Kenya"
+            nationalEnquiry.requesterEmail=nepInfoCheckDto.requesterEmail
+            nationalEnquiry.requesterInstitution="Kenya Buraeu of Standards"
+            nationalEnquiry.requesterPhone=loggedInUser.cellphone
             nationalEnquiry.requesterSubject=nepInfoCheckDto.requesterSubject
             nationalEnquiry.requestDate=Timestamp(System.currentTimeMillis())
-            nationalEnquiry.requesterid=nepInfoCheckDto.requestId
-            nationalEnquiryPointRepository.findByIdOrNull(nepInfoCheckDto.requestId)?.let { sts ->
+            nationalEnquiry.requesterid=nepInfoCheckDto.enquiryId
+            nationalEnquiryPointRepository.findByIdOrNull(nepInfoCheckDto.enquiryId)?.let { sts ->
 
                 with(sts) {
                     status=2
@@ -189,6 +195,8 @@ class NationalEnquiryPointService(
         return sdNepDocUploads.save(uploads)
     }
 
+
+
     fun getNepDivisionRequests(): MutableList<NationalEnquiryEntity>
     {
         return nationalEnquiryEntityRepository.getNepDivisionRequests()
@@ -197,8 +205,44 @@ class NationalEnquiryPointService(
     fun responseOnEnquiryInfo(
         nepInfoCheckDto: NepInfoCheckDto
     ) : NationalEnquiryEntity {
+        //val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val nationalEnquiry=NationalEnquiryEntity();
+
+            nationalEnquiryEntityRepository.findByIdOrNull(nepInfoCheckDto.requestId)?.let { sts ->
+
+                with(sts) {
+                    status=1
+                    requesterFeedBack=nepInfoCheckDto.feedbackSent
+
+                }
+                nationalEnquiryEntityRepository.save(sts)
+                nationalEnquiryPointRepository.findByIdOrNull(nepInfoCheckDto.requesterid)?.let { stsr ->
+
+                    with(stsr) {
+                        status=3
+
+                    }
+                    nationalEnquiryPointRepository.save(stsr)
+                }?: throw Exception("REQUEST NOT FOUND")
+
+
+
+            }?: throw Exception("REQUEST NOT FOUND")
+
+
+
+        return nationalEnquiry
+    }
+    fun getNepDivisionResponse(): MutableList<NationalEnquiryEntity>
+    {
+        return nationalEnquiryEntityRepository.getNepDivisionResponse()
+    }
+
+    fun sendFeedBack(
+        nepInfoCheckDto: NepInfoCheckDto
+    ) : NationalEnquiryEntity {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val decision = nepInfoCheckDto.accentTo
         val nep=NationalEnquiryPointEntity();
         val rem= NepRemarks()
         val nationalEnquiry=NationalEnquiryEntity();
@@ -208,24 +252,33 @@ class NationalEnquiryPointService(
         rem.remarks=nepInfoCheckDto.comments
         rem.remarkBy=loggedInUser.firstName + loggedInUser.lastName
         rem.role=loggedInUser.typeOfUser
-        rem.description="Remarks on Request recieved"
+        rem.description="Remarks on Request received"
         rem.dateOfRemark= Timestamp(System.currentTimeMillis())
-        if (decision == "Yes") {
+
+            informationTracker.enquiryId=nepInfoCheckDto.enquiryId
             informationTracker.nepOfficerId=loggedInUser.id
-            informationTracker.responseId=nepInfoCheckDto.enquiryId
             informationTracker.feedbackSent=nepInfoCheckDto.feedbackSent
             informationTracker.requesterEmail=nepInfoCheckDto.requesterEmail
 
-            nationalEnquiryEntityRepository.findByIdOrNull(nepInfoCheckDto.requestId)?.let { sts ->
+            nationalEnquiryPointRepository.findByIdOrNull(nepInfoCheckDto.enquiryId)?.let { sts ->
 
                 with(sts) {
                     status=1
 
                 }
-                nationalEnquiryEntityRepository.save(sts)
+                nationalEnquiryPointRepository.save(sts)
                 nepRemarksRepository.save(rem)
                 informationTrackerRepository.save(informationTracker)
             }?: throw Exception("REQUEST NOT FOUND")
+        nationalEnquiryEntityRepository.findByIdOrNull(nepInfoCheckDto.requestId)?.let { stsr ->
+
+            with(stsr) {
+                status=2
+
+            }
+            nationalEnquiryEntityRepository.save(stsr)
+        }?: throw Exception("REQUEST NOT FOUND")
+
             val subject = "ENQUIRY RESPONSE"
             val messageBody = nepInfoCheckDto.feedbackSent
             nepInfoCheckDto.requesterEmail?.let {
@@ -234,31 +287,6 @@ class NationalEnquiryPointService(
                 }
             }
 
-        }else{
-
-
-            nationalEnquiry.requesterName=nepInfoCheckDto.requesterName
-            nationalEnquiry.requesterComment=nepInfoCheckDto.requesterComment
-            nationalEnquiry.requesterCountry=nepInfoCheckDto.requesterCountry
-            nationalEnquiry.requesterInstitution=nepInfoCheckDto.requesterInstitution
-            nationalEnquiry.requesterPhone=nepInfoCheckDto.requesterPhone
-            nationalEnquiry.requesterSubject=nepInfoCheckDto.requesterSubject
-            nationalEnquiry.requestDate=Timestamp(System.currentTimeMillis())
-            nationalEnquiry.requesterid=nepInfoCheckDto.requestId
-            nationalEnquiryEntityRepository.findByIdOrNull(nepInfoCheckDto.requestId)?.let { sts ->
-
-                with(sts) {
-                    status=2
-
-                }
-                nationalEnquiryEntityRepository.save(sts)
-                nepRemarksRepository.save(rem)
-                nationalEnquiryEntityRepository.save(nationalEnquiry)
-
-                informationTrackerRepository.save(informationTracker)
-            }?: throw Exception("REQUEST NOT FOUND")
-
-        }
 
         return nationalEnquiry
     }

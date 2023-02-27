@@ -1,61 +1,49 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {
-  InfoAvailableYes,
-  ISCheckRequirements,
-  NepEnquiries, NepInfoCheckDto,
-  NwaRequestList
-} from "../../../../core/store/data/std/std.model";
-import {HttpErrorResponse} from "@angular/common/http";
+import {NepInfoDto, NepRequests} from "../../../../core/store/data/std/std.model";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
+import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
 
-declare const $: any;
-
 @Component({
-  selector: 'app-nep-view-enquiries',
-  templateUrl: './nep-view-enquiries.component.html',
-  styleUrls: ['./nep-view-enquiries.component.css']
+  selector: 'app-national-enquiry-point-response',
+  templateUrl: './national-enquiry-point-response.component.html',
+  styleUrls: ['./national-enquiry-point-response.component.css']
 })
-export class NepViewEnquiriesComponent implements OnInit {
+export class NationalEnquiryPointResponseComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-  nepEnquiries: NepEnquiries[]=[];
-  public actionRequests: NepEnquiries | undefined;
+  nepEnquiries: NepRequests[]=[];
+  public actionRequests: NepRequests | undefined;
   blob: Blob;
   public uploadedFiles:  FileList;
   loadingText: string;
   public nepInfoFormGroup!: FormGroup;
-  selectedOption = '';
-
-
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
       private router: Router,
       private SpinnerService: NgxSpinnerService,
       private notificationService: NepPointService,
-      private notifyService : NotificationService,
+      private notifyService : NotificationService
   ) { }
 
   ngOnInit(): void {
     this.nepInfoFormGroup = this.formBuilder.group({
-      comments: [],
-      accentTo: [],
-      enquiryId: [],
-      feedbackSent: [],
-      requesterEmail: [],
-      requesterComment:[]
+      requestId: [],
+      enquiryId:[],
+      feedbackSent:[],
+      requesterEmail:[]
 
     });
-    this.getNepRequests()
+    this.getNepDivisionResponse()
   }
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
@@ -69,22 +57,14 @@ export class NepViewEnquiriesComponent implements OnInit {
     this.notifyService.showWarning(message, title)
 
   }
-
-  onSelected(value:string): void {
-    this.selectedOption = value;
-  }
-
-
-  get formSendFeedBack(): any {
-    return this.nepInfoFormGroup.controls;
-  }
-  public getNepRequests(): void {
+  public getNepDivisionResponse(): void {
     this.loadingText = "Retrieving Enquiries...";
     this.SpinnerService.show();
-    this.notificationService.getNepRequests().subscribe(
-        (response: NepEnquiries[]) => {
+    this.notificationService.getNepDivisionResponse().subscribe(
+        (response: NepRequests[]) => {
           this.nepEnquiries = response;
           this.rerender();
+          console.log(this.nepEnquiries);
           this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
@@ -97,8 +77,8 @@ export class NepViewEnquiriesComponent implements OnInit {
   public onSubmit(): void{
     this.loadingText = "Saving Response ...."
     this.SpinnerService.show();
-    this.notificationService.submitInfoResponse(this.nepInfoFormGroup.value).subscribe(
-        (response: NepInfoCheckDto) => {
+    this.notificationService.sendFeedBack(this.nepInfoFormGroup.value).subscribe(
+        (response: NepInfoDto) => {
           console.log(response);
           swal.fire({
             title: 'Confirmed.',
@@ -109,7 +89,7 @@ export class NepViewEnquiriesComponent implements OnInit {
             icon: 'success'
           });
           this.SpinnerService.hide();
-          this.getNepRequests();
+          this.getNepDivisionResponse();
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
@@ -119,7 +99,7 @@ export class NepViewEnquiriesComponent implements OnInit {
     this.hideModalEditedDraft()
   }
 
-  public onOpenModal(nepEnquiry: NepEnquiries,mode:string): void{
+  public onOpenModal(nepEnquiry: NepRequests,mode:string): void{
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
     button.type = 'button';
@@ -131,8 +111,9 @@ export class NepViewEnquiriesComponent implements OnInit {
 
       this.nepInfoFormGroup.patchValue(
           {
-            enquiryId: this.actionRequests.id,
-            requesterEmail: this.actionRequests.requesterEmail
+            enquiryId: this.actionRequests.requesterid,
+            requestId: this.actionRequests.id,
+            requesterEmail:this.actionRequests.requesterEmail
           }
       );
 
@@ -162,6 +143,7 @@ export class NepViewEnquiriesComponent implements OnInit {
   }
 
   viewUpload(pdfId: number, fileName: string, applicationType: string): void {
+    this.loadingText = "Retriving Document Uloads ...."
     this.SpinnerService.show();
     this.notificationService.viewUpload(pdfId).subscribe(
         (dataPdf: any) => {
@@ -185,5 +167,6 @@ export class NepViewEnquiriesComponent implements OnInit {
   public hideModalEditedDraft() {
     this.closeModalEditedDraft?.nativeElement.click();
   }
+
 
 }
