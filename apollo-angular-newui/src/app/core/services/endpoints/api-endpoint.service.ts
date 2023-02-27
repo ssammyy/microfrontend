@@ -779,6 +779,7 @@ export class ApiEndpointService {
         SAVE_PDF_LAB_RESULT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-pdf-selected`,
         SAVE_PDF_LAB_RESULT_COMPLIANCE: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/lab-save-compliance-status`,
         UPLOAD_SCHEME_OF_SUPERVISION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-scheme-supervision`,
+        UPLOAD_INSPECTION_REPORT: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/uploadInspectionReport`,
         UPLOAD_ATTACHMENTS: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/upload-docs`,
 
     };
