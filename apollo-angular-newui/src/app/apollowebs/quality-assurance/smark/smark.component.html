@@ -1669,7 +1669,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <a style="width: -webkit-fill-available;white-space: normal;"
-                           *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
+                           *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true
+                           && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
                            href="/smarkpermitdetails#{{allPermitDetails?.permitDetails?.fmarkGeneratedID}}"
                            mat-raised-button=""
                            class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">FMARK APPLICATION DETAILS</span>
