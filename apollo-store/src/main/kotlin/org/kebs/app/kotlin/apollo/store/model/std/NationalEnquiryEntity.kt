@@ -50,6 +50,10 @@ class NationalEnquiryEntity {
     @Basic
     var requesterComment : String? = null
 
+    @Column(name = "FEED_BACK")
+    @Basic
+    var requesterFeedBack : String? = null
+
     @Column(name = "REQUEST_DATE")
     @Basic
     var requestDate: Timestamp?=null

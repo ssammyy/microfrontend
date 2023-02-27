@@ -24,17 +24,21 @@
                             <div class="toolbar">
 
                             </div>
-                            <div class="material-datatables">
+                            <div class="material-datatables table-responsive">
                                 <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
 
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th class="knw">Standard Number</th>
-                                        <th class="sl">Standard Type</th>
-                                        <th class="requestNumber">Date Prepared</th>
-                                        <th class="department">Title</th>
-                                        <th class="action">Scope</th>
+                                        <th class="knw">Name</th>
+                                        <th class="sl">Email</th>
+                                        <th class="requestNumber">Phone Number</th>
+                                        <th class="department">Organisation</th>
+                                        <th class="action">Country</th>
+                                        <th class="action">Subject</th>
+                                        <th class="action">Comment</th>
+                                        <th class="action">View Document</th>
+                                        <th class="action">Date</th>
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -49,7 +53,9 @@
                                         <td>{{nepEnquiry.requesterSubject}}</td>
                                         <td>{{nepEnquiry.requesterComment}}</td>
                                         <td>{{nepEnquiry.requestDate}}</td>
-                                        <td><a  (click)="onOpenModal(nepEnquiry,'viewRequests')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve">Comment on Enquiry</a></td>
+                                        <td><button mat-raised-button type="button" (click)="viewUpload( nepEnquiry.id,'Download'+nepEnquiry.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                            <i class="fa fa-download"></i>Download</button></td>
+                                        <td><a  (click)="onOpenModal(nepEnquiry,'viewRequests')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 150px;">Comment on Enquiry</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -59,8 +65,8 @@
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="viewRequestsModalLabel">Systemic Review Form</h3>
-                                                <button type="button" class="close" #closeModalCDetails data-dismiss="modal" aria-label="Close">
+                                                <h3 class="modal-title" id="viewRequestsModalLabel">NEP Response</h3>
+                                                <button type="button" class="close" #closeModalEditedDraft data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -73,21 +79,36 @@
                                                             <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
                                                                     class="form-control" required
                                                                     formControlName="accentTo"
-                                                                    name="accentTo">
+                                                                    name="accentTo" #teams (change)="onSelected(teams.value)">
                                                                 <option disabled>--Select Option--</option>
                                                                 <option  value="Yes">Yes</option>
                                                                 <option value="No">No</option>
                                                             </select>
                                                         </div>
-
-                                                        <div class="form-group col-12">
-                                                            <label>Feed back</label>
-                                                            <textarea class="form-control" formControlName="feedbackSent"  name="feedbackSent" type="text" disabled></textarea>
-                                                        </div>
                                                     </div>
+                                                        <div class="row col-12" *ngIf="selectedOption==='Yes'">
+                                                            <div class="form-group col-12">
+                                                                <label>Feed back</label>
+                                                                <textarea class="form-control" formControlName="feedbackSent"  name="feedbackSent" type="text" ></textarea>
+                                                            </div>
+                                                            <input class="form-control" formControlName="enquiryId" value="{{actionRequests?.id}}"  name="enquiryId" type="hidden" >
+                                                            <input class="form-control" formControlName="requesterEmail" value="{{actionRequests?.requesterEmail}}"  name="requesterEmail" type="hidden" >
+                                                        </div>
+                                                        <div class="row col-12" *ngIf="selectedOption==='No'">
+                                                            <div class="form-group col-12">
+                                                                <label>Subject</label>
+                                                                <input class="form-control" formControlName="requesterSubject"  name="requesterSubject" type="text" >
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Request Comment</label>
+                                                                <textarea class="form-control" formControlName="requesterComment"  name="requesterComment" type="text" ></textarea>
+                                                            </div>
+                                                            <input class="form-control" formControlName="enquiryId" value="{{actionRequests?.id}}"  name="enquiryId" type="hidden" >
+                                                            <input class="form-control" formControlName="requesterEmail" value="{{actionRequests?.requesterEmail}}"  name="requesterEmail" type="hidden" >
+                                                        </div>
+
                                                 </div>
-                                                <input class="form-control" formControlName="enquiryId" value="{{actionRequests?.id}}"  name="enquiryId" type="hidden" >
-                                                <input class="form-control" formControlName="requesterEmail" value="{{actionRequests?.requesterEmail}}"  name="requesterEmail" type="hidden" >
+
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-primary btn-sm"  >Save</button>

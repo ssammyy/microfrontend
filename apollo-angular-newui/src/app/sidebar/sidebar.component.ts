@@ -903,6 +903,7 @@ export const ROUTES: RouteInfo[] = [
             //{path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
             {path: 'nepResponse', title: 'Manage Enquiries', ab: 'EM',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NEP_OFFICER_SD_READ']},
             {path: 'nep_division_response', title: 'Division Response', ab: 'DR'},
+            {path: 'divResponse', title: 'Division Response', ab: 'DR'},
 
         ],
         icontype: 'quiz',

@@ -33,4 +33,5 @@ data class NepInfoCheckDto(
     var requesterCountry: String?=null,
     var requesterSubject: String?=null,
     var requesterComment: String?=null,
+    var requesterid: Long
 ){}
