@@ -10,9 +10,18 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito Sans">
+    <script>
+        function init()
+        {
+            window.location.replace("https://kims.kebs.org/");
+
+        }
+
+
+    </script>
 
 </head>
-<body>
+<body onload="init()">
 <header>
 
     <div class="header">
@@ -344,6 +353,12 @@
             return false;
         }
         return true;
+    }
+</script>
+<script>
+    window.onload = function() {
+        // similar behavior as an HTTP redirect
+        window.location.replace("https://kimsint.kebs.org/");
     }
 </script>
 </html>
