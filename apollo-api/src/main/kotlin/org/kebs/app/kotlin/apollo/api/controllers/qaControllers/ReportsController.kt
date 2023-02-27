@@ -177,7 +177,7 @@ class ReportsController(
         map["datePrepared"] = commonDaoServices.convertTimestampToKeswsValidDate(
             batchInvoice.createdOn ?: throw ExpectedDataNotFound("MISSING CREATION DATE")
         )
-        map["demandNoteNo"] = batchInvoice.invoiceNumber.toString()
+        map["demandNoteNo"] = batchInvoice.sageInvoiceNumber.toString()
         map["companyName"] = companyProfile.name.toString()
         map["companyAddress"] = companyProfile.postalAddress.toString()
         map["companyTelephone"] = companyProfile.companyTelephone.toString()
@@ -228,6 +228,32 @@ class ReportsController(
         }
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
         var filePath: String? = null
+        var permitType:String? = null
+
+
+        when (foundPermitDetails.permitTypeID) {
+            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                map["DmarkLogo"] = dMarkImageFile
+                map["backGroundImage"] = dMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportDmarkPermitReportPath
+                permitType ="DM#"
+
+            }
+            applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                map["SmarkLogo"] = sMarkImageFile
+                map["backGroundImage"] = sMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportSmarkPermitReportPath
+                permitType ="SM#"
+
+            }
+            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                map["FmarkLogo"] = fMarkImageFile
+                map["backGroundImage"] = fMarkImageBackGroundFile
+                filePath = applicationMapProperties.mapReportFmarkPermitReportPath
+                permitType ="FM#"
+
+            }
+        }
 
         map["FirmName"] = foundPermitDetails.firmName.toString()
         map["PermitNo"] = foundPermitDetails.permitNumber.toString()
@@ -247,28 +273,14 @@ class ReportsController(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
-        map["QrCode"] =
-            "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
-        when (foundPermitDetails.permitTypeID) {
-            applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                map["DmarkLogo"] = dMarkImageFile
-                map["backGroundImage"] = dMarkImageBackGroundFile
-                filePath = applicationMapProperties.mapReportDmarkPermitReportPath
 
-            }
-            applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                map["SmarkLogo"] = sMarkImageFile
-                map["backGroundImage"] = sMarkImageBackGroundFile
-                filePath = applicationMapProperties.mapReportSmarkPermitReportPath
+        map["QrCode"] = "${applicationMapProperties.baseEndPointValue}getAllAwardedPermits?permitNumber=$permitType${foundPermitDetails.permitNumber}"
 
-            }
-            applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                map["FmarkLogo"] = fMarkImageFile
-                map["backGroundImage"] = fMarkImageBackGroundFile
-                filePath = applicationMapProperties.mapReportFmarkPermitReportPath
 
-            }
-        }
+
+
+//        map["QrCode"] = "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
+
         return Pair(map, filePath ?: throw ExpectedDataNotFound("MISSING FILE PATH"))
     }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
@@ -16,7 +16,8 @@ declare const $: any;
 export class MakeEnquiryComponent implements OnInit {
   blob: Blob;
   public uploadedFiles:  FileList;
-
+  loadingText: string;
+  @ViewChild('uploadFile') myInputVariable: ElementRef;
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private router: Router,
@@ -25,8 +26,12 @@ export class MakeEnquiryComponent implements OnInit {
               private SpinnerService: NgxSpinnerService,
   ) { }
   public enquiryFormGroup!: FormGroup;
+  public demoFormGroup!: FormGroup;
 
   ngOnInit(): void {
+    this.demoFormGroup = this.formBuilder.group({
+      uploadedFiles: ['']
+    });
     this.enquiryFormGroup = this.formBuilder.group({
       requesterName: [''],
       requesterComment: [''],
@@ -52,14 +57,17 @@ export class MakeEnquiryComponent implements OnInit {
   }
 
   sendEnquiry(): void{
-
+    this.loadingText = "Saving Enquiry ...."
+    this.SpinnerService.show();
     this.notificationService.makeEnquiry(this.enquiryFormGroup.value).subscribe(
         (response) => {
           this.showToasterSuccess(response.httpStatus, `Enquiry Sent`);
           this.onClickSaveUploads(response.body.id)
+          this.SpinnerService.hide();
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
+          this.SpinnerService.hide();
         }
     );
   }
@@ -77,7 +85,7 @@ export class MakeEnquiryComponent implements OnInit {
           (data: any) => {
             this.SpinnerService.hide();
             this.uploadedFiles = null;
-            console.log(data);
+            //console.log(data);
             swal.fire({
               title: 'Thank you....',
               html:'Your enquiry has been successfully sent. A response shall be made to your E-mail Address',
@@ -87,6 +95,7 @@ export class MakeEnquiryComponent implements OnInit {
               },
               icon: 'success'
             }).then(r => this.enquiryFormGroup.reset());
+            this.myInputVariable.nativeElement.value = '';
           },
       );
     }

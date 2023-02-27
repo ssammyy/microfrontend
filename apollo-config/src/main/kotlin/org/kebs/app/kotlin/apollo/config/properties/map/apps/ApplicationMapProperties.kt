@@ -60,6 +60,10 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value.angular}")
     val baseUrlQRValue: String = "https://127.0.0.1/qr-code-qa-permit-scan"
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.endPointValue}")
+    val baseEndPointValue: String = "https://127.0.0.1:8005"
+
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.permit.questionnaire}")
     val mapPermitQuestionnaire: Int? = null
 
@@ -244,20 +248,20 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.tax.rate}")
     val mapKebsTaxRate: BigDecimal = BigDecimal.ZERO
 
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.extra.products.cost}")
-    val mapQaSmarkMediumExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
-
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.extra.products.cost}")
-    val mapQaSmarkJuakaliExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
-
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.domestic.amountToPay}")
-    val mapQaDmarkDomesticAmountToPay: BigDecimal = 0.0000.toBigDecimal()
-
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.foregin.amountToPay}")
-    val mapQaDmarkForeginAmountToPay: BigDecimal = 0.0000.toBigDecimal()
-
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.amountToPay}")
-    val mapQaFmarkAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.extra.products.cost}")
+//    val mapQaSmarkMediumExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
+//
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.extra.products.cost}")
+//    val mapQaSmarkJuakaliExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
+//
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.domestic.amountToPay}")
+//    val mapQaDmarkDomesticAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+//
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.foregin.amountToPay}")
+//    val mapQaDmarkForeginAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+//
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.amountToPay}")
+//    val mapQaFmarkAmountToPay: BigDecimal = 0.0000.toBigDecimal()
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.type.foregin.status}")
     val mapQaDmarkForeginStatus: Int = 0

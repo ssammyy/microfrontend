@@ -1935,7 +1935,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       lbIdExpiryDate: null,
       lbIdTradeMark: null,
       noteTransResults: null,
-      referencesStandards: ['', Validators.required],
+      referencesStandards: null,
       scfNo: null,
       cocNumber: null,
       testChargesKsh: null,
@@ -1943,6 +1943,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       invoiceNumber: null,
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
+      countryOfOrigin: null,
       sourceProductEvidence: null,
       sampleCollectionNumber: null,
     });

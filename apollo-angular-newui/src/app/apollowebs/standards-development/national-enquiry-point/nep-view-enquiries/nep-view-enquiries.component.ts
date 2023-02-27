@@ -33,6 +33,8 @@ export class NepViewEnquiriesComponent implements OnInit {
   public uploadedFiles:  FileList;
   loadingText: string;
   public nepInfoFormGroup!: FormGroup;
+  selectedOption = '';
+
 
   constructor(
       private formBuilder: FormBuilder,
@@ -50,6 +52,7 @@ export class NepViewEnquiriesComponent implements OnInit {
       enquiryId: [],
       feedbackSent: [],
       requesterEmail: [],
+      requesterComment:[]
 
     });
     this.getNepRequests()
@@ -65,6 +68,10 @@ export class NepViewEnquiriesComponent implements OnInit {
   showToasterWarning(title:string,message:string){
     this.notifyService.showWarning(message, title)
 
+  }
+
+  onSelected(value:string): void {
+    this.selectedOption = value;
   }
 
 
@@ -88,6 +95,8 @@ export class NepViewEnquiriesComponent implements OnInit {
   }
 
   public onSubmit(): void{
+    this.loadingText = "Saving Response ...."
+    this.SpinnerService.show();
     this.notificationService.submitInfoResponse(this.nepInfoFormGroup.value).subscribe(
         (response: NepInfoCheckDto) => {
           console.log(response);
@@ -99,12 +108,15 @@ export class NepViewEnquiriesComponent implements OnInit {
             },
             icon: 'success'
           });
+          this.SpinnerService.hide();
           this.getNepRequests();
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
+          this.SpinnerService.hide();
         }
     );
+    this.hideModalEditedDraft()
   }
 
   public onOpenModal(nepEnquiry: NepEnquiries,mode:string): void{
@@ -147,6 +159,31 @@ export class NepViewEnquiriesComponent implements OnInit {
     setTimeout(() => {
       this.dtTrigger.next();
     });
+  }
+
+  viewUpload(pdfId: number, fileName: string, applicationType: string): void {
+    this.SpinnerService.show();
+    this.notificationService.viewUpload(pdfId).subscribe(
+        (dataPdf: any) => {
+          this.SpinnerService.hide();
+          this.blob = new Blob([dataPdf], {type: applicationType});
+          let downloadURL = window.URL.createObjectURL(this.blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+        },
+        (error: HttpErrorResponse) => {
+          this.SpinnerService.hide();
+          alert(error.message);
+        }
+    );
+  }
+
+  @ViewChild('closeModalEditedDraft') private closeModalEditedDraft: ElementRef | undefined;
+
+  public hideModalEditedDraft() {
+    this.closeModalEditedDraft?.nativeElement.click();
   }
 
 }
