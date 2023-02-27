@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.store.model.UserVerificationTokensEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserVerificationTokensRepository
+import org.springframework.dao.DataAccessException
 import org.springframework.http.server.ServletServerHttpRequest
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -251,35 +252,11 @@ class ApiAuthenticationHandler(
             ServerResponse.status(500).body(response)
 //            throw NullValueNotAllowedException("Invalid Username And Password")
 
-        }
+        } catch (e: DataAccessException) {
+            val response = "Your Network Connection Is Down. Please Try Again Later."
+            KotlinLogging.logger { }.trace(e.message, e)
 
-//    fun uiLogin(req: ServerRequest): ServerResponse =
-//        try {
-//            val loginRequest = req.body<LoginRequest>()
-//            KotlinLogging.logger { }.info("username ${loginRequest.username} ${loginRequest.password}")
-//            val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password))
-//            authentication
-//                ?.let { auth ->
-//                    SecurityContextHolder.getContext().authentication = auth
-//
-//                    usersRepo.findByUserName(auth.name)
-//                        ?.let { user ->
-//
-//                            val request = ServletServerHttpRequest(req.servletRequest())
-//                            val token = tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
-//
-//                            val roles = tokenService.extractRolesFromToken(token)?.map { it.authority }
-//
-//                            val response = JwtResponse(token, user.id, user.userName, user.email, commonDaoServices.concatenateName(user), roles)
-//                            ServerResponse.ok().body(response)
-//                        }
-//                        ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
-//                }
-//                ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message, e)
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            ServerResponse.badRequest().body(e.message ?: "Unknown Error")
-//        }
+            ServerResponse.status(500).body(response)
+        }
 
 }
