@@ -35,7 +35,7 @@ export class FmarkAdminComponent implements OnInit {
   dataSourceC!: MatTableDataSource<MyTasksPermitEntityDto>;
   dataSourceD!: MatTableDataSource<MyTasksPermitEntityDto>;
 
-  displayedColumns: string[] = ['permitRefNumber', 'createdOn', 'productName', 'tradeMark', 'sectionValue', 'permitStatus', 'actions'];
+  displayedColumns: string[] = ['actions','permitStatus','permitRefNumber', 'createdOn', 'productName', 'tradeMark', 'sectionValue','firmName','region'];
 
 
   constructor(private store$: Store<any>,

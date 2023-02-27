@@ -38,7 +38,7 @@ export class FirmTypeEntityDto {
 }
 
 export class PermitEntityDto {
-    id: bigint;
+    id: number;
     firmName: string;
     permitRefNumber: string;
     productName: string;
@@ -155,6 +155,11 @@ export class ConsolidatedInvoiceDto {
 export class RemarksAndStatusDto {
     remarksStatus: boolean;
     remarksValue: string;
+    processName: string;
+    processBy: string;
+    createdOn: Date;
+    createdBy: string;
+    status: number;
 }
 
 export class PermitAllRemarksDetailsDto {
@@ -245,7 +250,7 @@ export class ResubmitApplicationDto {
 
 
 export class PermitEntityDetails {
-    id: bigint;
+    id: number;
     permitNumber: string;
     permitRefNumber: string;
     firmName: string;
@@ -301,7 +306,7 @@ export class PermitEntityDetails {
     processStatusID: number;
     fmarkGeneratedID: number;
     oldPermitStatus: number;
-    Field7: string;
+    varField7: string;
     productStandards: number;
     assignOfficerStatus: boolean;
     assignOfficerID: number;
@@ -319,6 +324,7 @@ export class PermitEntityDetails {
     pscMemberApprovalStatus: boolean;
     pcmApprovalStatus: boolean;
     paidStatus: boolean;
+    changesMadeStatus: boolean;
 }
 
 
@@ -407,6 +413,7 @@ export class SSFDetailsDto {
     brandName: string;
     productDescription: string;
     resultsAnalysis: boolean;
+    complianceRemarks: string;
 }
 
 export class CompanyUpgradeStatusDto {
@@ -444,8 +451,9 @@ export class AllPermitDetailsDto {
     inspectionInvoiceUploaded: number;
     inspectionFeeInvoice: InvoiceDetailsDto;
     sampleLabResults: MSSSFLabResultsDto[];
-
     inspectionReportDetails: InspectionReportDetailsDto;
+    schemeOfSuperVisionList: FilesListDto[];
+    remarksDetailsList: RemarksAndStatusDto[];
 
 }
 

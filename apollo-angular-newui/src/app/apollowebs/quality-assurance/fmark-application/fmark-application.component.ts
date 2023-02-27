@@ -26,7 +26,7 @@ export class FmarkApplicationComponent implements OnInit {
     public allPermitData: PermitEntityDto[];
     public allPermitDetails!: AllPermitDetailsDto;
     fmarkSelected: FmarkEntityDto;
-    public permitID!: bigint;
+    public permitID!: number;
 
     fmarkForm: FormGroup;
 

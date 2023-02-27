@@ -18,10 +18,14 @@
     <sequenceFlow id="flow4" name="Rejected" sourceRef="exclusivegateway1" targetRef="updateTargetRejectionStatus">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!taskApproved}]]></conditionExpression>
     </sequenceFlow>
-    <serviceTask id="targetingApprovedStatus" name="Target Consignment" activiti:async="true" activiti:expression="#{diService.swScheduledTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
-    <serviceTask id="updateTargetRejectionStatus" name="Update  Rejection Status" activiti:async="true" activiti:expression="#{diService.rejectTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
-    <sequenceFlow id="flow6" sourceRef="updateTargetRejectionStatus" targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
-    <serviceTask id="updateConsignmentDocumentProcessFields" name="Clear CD Proccess" activiti:async="true" activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
+    <serviceTask id="targetingApprovedStatus" name="Target Consignment"
+                 activiti:expression="#{diService.swScheduledTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
+    <serviceTask id="updateTargetRejectionStatus" name="Update  Rejection Status"
+                 activiti:expression="#{diService.rejectTargeting(cdUuid,remarks,supervisor)}"></serviceTask>
+    <sequenceFlow id="flow6" sourceRef="updateTargetRejectionStatus"
+                  targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
+    <serviceTask id="updateConsignmentDocumentProcessFields" name="Clear CD Proccess"
+                 activiti:expression="${diService.clearCurrentProcess(cdUuid)}"></serviceTask>
     <endEvent id="endTargetConsignmentDocument" name="End"></endEvent>
     <sequenceFlow id="flow8" sourceRef="updateConsignmentDocumentProcessFields"
                   targetRef="endTargetConsignmentDocument"></sequenceFlow>
@@ -38,6 +42,7 @@
                   targetRef="updateConsignmentDocumentProcessFields"></sequenceFlow>
     <sequenceFlow sourceRef="targetingApprovedStatus" targetRef="targetingApprovedStatus"
                   id="targetingApprovedStatus-targetingApprovedStatus"/>
+    <sequenceFlow sourceRef="usertask1" targetRef="usertask1" id="usertask1-usertask1"/>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_targetConsignmentDocument">
     <bpmndi:BPMNPlane bpmnElement="targetConsignmentDocument" id="BPMNPlane_targetConsignmentDocument">
@@ -116,6 +121,10 @@
       <bpmndi:BPMNEdge bpmnElement="targetingApprovedStatus-targetingApprovedStatus">
         <omgdi:waypoint x="622.5" y="272.5"/>
         <omgdi:waypoint x="622.5" y="272.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="usertask1-usertask1">
+        <omgdi:waypoint x="275.5" y="272.5"/>
+        <omgdi:waypoint x="275.5" y="272.5"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

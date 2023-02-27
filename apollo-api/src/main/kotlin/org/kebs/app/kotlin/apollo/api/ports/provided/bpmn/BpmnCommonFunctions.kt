@@ -114,6 +114,7 @@ class BpmnCommonFunctions(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
         }
+
         return null
     }
 
@@ -210,7 +211,7 @@ class BpmnCommonFunctions(
                     KotlinLogging.logger { }.info("${job.createTime} -- ${job.id} -- ${job.processInstanceId} -- ${job.jobType}")
                 }
             }
-            println("Timer Jobs--------------")
+            KotlinLogging.logger { }.trace("----------Timer Jobs--------------")
             managementService.createTimerJobQuery().processInstanceId(processInstanceId).list()?.let { jobsList ->
                 for (job in jobsList) {
                     KotlinLogging.logger { }.info("${job.createTime} -- ${job.id} -- ${job.processInstanceId} -- ${job.jobType}")

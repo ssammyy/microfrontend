@@ -88,6 +88,7 @@ data class SSFDetailsDto(
     var brandName: String? = null,
     var productDescription: String? = null,
     var resultsAnalysis: Boolean? = null,
+    var complianceRemarks: String? = null,
 )
 
 data class AllInspectionDetailsApplyDto(
@@ -522,6 +523,11 @@ data class STA10MachineryAndPlantDto(
 data class RemarksAndStatusDto(
     var remarksStatus: Boolean? = null,
     var remarksValue: String? = null,
+    var processName: String? = null,
+    var processBy: String? = null,
+    var createdOn: Timestamp? = null,
+    var createdBy: String? = null,
+    var status: Long? = null,
 )
 
 data class LimsFilesFoundDto(
@@ -816,6 +822,7 @@ data class PermitDetailsDto(
     var pscMemberApprovalStatus: Boolean? = null,
     var pcmApprovalStatus: Boolean? = null,
     var paidStatus: Boolean? = null,
+    var changesMadeStatus: Boolean? = null,
 
     )
 
@@ -845,6 +852,8 @@ data class AllPermitDetailsDto(
     var inspectionFeeInvoice: InvoiceDetailsDto? = null,
     var inspectionInvoiceUploaded: Long? = null,
     val inspectionReportDetails: InspectionReportDtoPermit? = null,
+    var schemeOfSuperVisionList: List<FilesListDto>? = null,
+    var remarksDetailsList: List<RemarksAndStatusDto>? = null,
 
     )
 

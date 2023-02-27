@@ -1720,7 +1720,7 @@ class RegistrationDaoServices(
     fun completeTask(processInstance: ProcessInstance, sr: ServiceRequestsEntity): ServiceRequestsEntity {
         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId).singleResult()
             ?.let { task ->
-
+                KotlinLogging.logger { }.debug("Complete registration task: ${task.id} -> ${task.toString()}")
                 taskService.complete(task.id)
             }
         return sr

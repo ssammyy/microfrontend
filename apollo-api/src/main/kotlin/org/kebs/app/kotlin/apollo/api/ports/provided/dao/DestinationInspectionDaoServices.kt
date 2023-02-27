@@ -2011,6 +2011,10 @@ class DestinationInspectionDaoServices(
         return iCfsTypeCodesRepository.findByCfsCode(cfsCodeValue)
     }
 
+    fun findCfsCdWithList(cfsCodeValues: List<String>): List<CfsTypeCodesEntity> {
+        return iCfsTypeCodesRepository.findByCfsCodeIn(cfsCodeValues)
+    }
+
     fun findCfsID(id: Long): CfsTypeCodesEntity {
         iCfsTypeCodesRepository.findByIdOrNull(id)?.let {
             return it

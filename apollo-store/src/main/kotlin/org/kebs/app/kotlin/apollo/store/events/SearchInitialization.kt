@@ -7,6 +7,7 @@ import org.hibernate.search.jpa.FullTextEntityManager
 import org.hibernate.search.jpa.FullTextQuery
 import org.hibernate.search.jpa.Search
 import org.hibernate.search.query.dsl.QueryBuilder
+import org.kebs.app.kotlin.apollo.config.properties.jpa.JpaConnectionProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
@@ -24,18 +25,24 @@ import javax.persistence.EntityManager
  */
 @Service
 class SearchInitialization(
-        var entityManager: EntityManager,
-        val fullTextEntityManager: FullTextEntityManager
+    var entityManager: EntityManager,
+    private val jcp: JpaConnectionProperties,
+    val fullTextEntityManager: FullTextEntityManager
 ) {
     @Transactional
     @EventListener(ContextRefreshedEvent::class)
     fun onApplicationEvent(event: ContextRefreshedEvent) {
         try {
+            var mode = CacheMode.IGNORE
+            if (jcp.searchInitEnabled) {
+                mode = CacheMode.REFRESH
+            }
+            // Create index
             fullTextEntityManager.createIndexer()
-                    .cacheMode(CacheMode.REFRESH)
-                    .purgeAllOnStart(false)
-                    .optimizeOnFinish(true)
-                    .startAndWait()
+                .cacheMode(mode)
+                .purgeAllOnStart(false)
+                .optimizeOnFinish(true)
+                .startAndWait()
         } catch (e: InterruptedException) {
             KotlinLogging.logger { }.error("Error occurred trying to build Hibernate Search indexes ", e)
         }

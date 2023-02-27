@@ -178,7 +178,14 @@ class DestinationInspectionBpmn(
             consignmentDocument.modifiedOn = commonDaoServices.getTimestamp()
 
             this.daoServices.updateCdDetailsInDB(consignmentDocument, this.commonDaoServices.getLoggedInUser())
-
+            // Save IO request remarks
+            this.auditService.addHistoryRecord(
+                consignmentDocument.id!!,
+                consignmentDocument.ucrNumber,
+                form.remarks,
+                "REQUEST CONSIGNMENT STATUS UPDATE: ${cdStatusType.category?.toUpperCase()}",
+                "Consignment status update request"
+            )
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Success"
         } else {
@@ -196,6 +203,7 @@ class DestinationInspectionBpmn(
         val response = ApiResponseModel()
         // Check already approved
         try {
+            KotlinLogging.logger { }.debug("Completing DI task: ${taskId} -> $data")
             taskService.complete(taskId, data)
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Task updated successfully"

@@ -309,15 +309,16 @@ class StandardLevyService(
                     rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
 
                     var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
-                    userList.forEach { item->
-                        val recipient= item.getUserEmail()
+                    userList.forEach { item ->
+                        val recipient = item.getUserEmail()
                         val subject = "Company Details Approved"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details Edited for ${companyProfileEntity.name} have been Approved."
+                        val messageBody =
+                            "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details Edited for ${companyProfileEntity.name} have been Approved."
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
                     }
-
+                    KotlinLogging.logger { }.debug("Complete standard levy task: ${companyProfileEntity.taskId}")
                     taskService.complete(companyProfileEntity.taskId, variables)
                 }
                 if (variables["No"] == false) {
@@ -342,6 +343,7 @@ class StandardLevyService(
                     }
 
                     rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
+                    KotlinLogging.logger { }.debug("Complete standard levy task: ${companyProfileEntity.taskId}")
                     taskService.complete(companyProfileEntity.taskId, variables)
 
                 }
@@ -428,6 +430,8 @@ return getUserTasks();
                         .processInstanceId(companyProfileEntity.slBpmnProcessInstance).list()
                         ?.let { l ->
                             val processInstance = l[0]
+                            KotlinLogging.logger { }
+                                .debug("Complete standard levy task: ${companyProfileEntity.taskId}")
                             taskService.complete(companyProfileEntity.taskId, variables)
 
                             taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -478,6 +482,7 @@ return getUserTasks();
                         }
                     }
                     rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
+                    KotlinLogging.logger { }.debug("Complete standard levy task: ${companyProfileEntity.taskId}")
                     taskService.complete(companyProfileEntity.taskId, variables)
 
                 }
@@ -574,6 +579,7 @@ return getUserTasks();
 
                     companyProfileRepo.save(entity)
                     rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
+                    KotlinLogging.logger { }.debug("Complete standard levy task: ${companyProfileEntity.taskId}")
                     taskService.complete(companyProfileEntity.taskId, variables)
                 }
                 if (variables["No"] == false) {
@@ -600,6 +606,8 @@ return getUserTasks();
                         ?.let { l ->
                             val processInstance = l[0]
                             rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
+                            KotlinLogging.logger { }
+                                .debug("Complete standard levy task: ${companyProfileEntity.taskId}")
                             taskService.complete(companyProfileEntity.taskId, variables)
 
                             taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -762,15 +770,17 @@ return getUserTasks();
 
                         val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                         var manufacturerList= companyStandardRepository.getUserEmail(userID)
-                        manufacturerList.forEach { item->
-                            val recipient= item.getUserEmail()
+                        manufacturerList.forEach { item ->
+                            val recipient = item.getUserEmail()
                             val subject = "Site Visit"
-                            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
+                            val messageBody =
+                                "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
                             if (recipient != null) {
                                 notifications.sendEmail(recipient, subject, messageBody)
                             }
                         }
-
+                        KotlinLogging.logger { }
+                            .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                         taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
                         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
                             ?.let { t ->
@@ -834,7 +844,8 @@ return getUserTasks();
                         .processInstanceId(standardLevyFactoryVisitReportEntity.slProcessInstanceId).list()
                         ?.let { l ->
                             val processInstance = l[0]
-
+                            KotlinLogging.logger { }
+                                .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                             taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
                             taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -901,15 +912,17 @@ return getUserTasks();
                     } ?: throw Exception("COMPANY NOT FOUND")
                 val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                 var manufacturerList= companyStandardRepository.getUserEmail(userID)
-                manufacturerList.forEach { item->
-                    val recipient= item.getUserEmail()
+                manufacturerList.forEach { item ->
+                    val recipient = item.getUserEmail()
                     val subject = "Site Visit"
-                    val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},Scheduled site visit to Your Firm,  ${comProfileEntity.name}  on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers has been cancelled.Apologies for inconveniences. NB. Auto Generated E-Mail From KEBS."
+                    val messageBody =
+                        "Dear ${item.getFirstName()} ${item.getLastName()},Scheduled site visit to Your Firm,  ${comProfileEntity.name}  on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers has been cancelled.Apologies for inconveniences. NB. Auto Generated E-Mail From KEBS."
                     if (recipient != null) {
                         notifications.sendEmail(recipient, subject, messageBody)
                     }
                 }
-
+                KotlinLogging.logger { }
+                    .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                 taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
             }catch (e: Exception) {
                 KotlinLogging.logger { }.error(e.message)
@@ -1044,8 +1057,8 @@ return getUserTasks();
                     .processInstanceId(standardLevyFactoryVisitReportEntity.slProcessInstanceId).list()
                     ?.let { l ->
                         val processInstance = l[0]
-
-
+                        KotlinLogging.logger { }
+                            .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                         taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
                         var userList= companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
@@ -1239,6 +1252,8 @@ return getUserTasks();
                         ?.let { l ->
                             val processInstance = l[0]
 
+                            KotlinLogging.logger { }
+                                .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                             taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
                             taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -1304,6 +1319,8 @@ return getUserTasks();
                         ?.let { l ->
                             val processInstance = l[0]
 
+                            KotlinLogging.logger { }
+                                .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                             taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
                             taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -1400,6 +1417,8 @@ return getUserTasks();
                         ?.let { l ->
                             val processInstance = l[0]
 
+                            KotlinLogging.logger { }
+                                .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                             taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
                             taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -1463,6 +1482,8 @@ return getUserTasks();
                         ?.let { l ->
                             val processInstance = l[0]
 
+                            KotlinLogging.logger { }
+                                .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                             taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
                             taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -1694,6 +1715,8 @@ return getUserTasks();
                     .processInstanceId(standardLevyFactoryVisitReportEntity.slProcessInstanceId).list()
                     ?.let { l ->
                         val processInstance = l[0]
+                        KotlinLogging.logger { }
+                            .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                         taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
                         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -1999,6 +2022,7 @@ return getUserTasks();
 
 
     fun closeTask(taskId: String) {
+        KotlinLogging.logger { }.debug("Complete standard levy task: ${taskId}")
         taskService.complete(taskId)
         taskService.deleteTask(taskId, true)
 
