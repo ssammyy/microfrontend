@@ -279,7 +279,7 @@ class BillingService(
         when {
             !keyword.isNullOrEmpty() -> {
                 val pg =
-                    billPaymentRepository.findAllByBillNumberContainsAndPaymentStatusInOrCustomerNameContainsAndPaymentStatusIn(
+                    billPaymentRepository.findAllByBillNumberContainsAndBillStatusInOrCustomerNameContainsAndBillStatusIn(
                         keyword ?: "",
                         paymentStatus,
                         keyword,
@@ -294,7 +294,8 @@ class BillingService(
                 response.message = "Search success"
             }
             paymentStatus.isNotEmpty() -> {
-                val pg2 = billPaymentRepository.findAllByPaymentStatusIn(paymentStatus, page)
+                KotlinLogging.logger { }.trace("Bill Statuses: ${paymentStatus}")
+                val pg2 = billPaymentRepository.findAllByBillStatusIn(paymentStatus, page)
                 response.data = pg2.toList()
                 response.pageNo = pg2.number
                 response.totalPages = pg2.totalPages
@@ -304,7 +305,7 @@ class BillingService(
             }
             else -> {
                 response.responseCode = ResponseCodes.NOT_FOUND
-                response.message = "Invalid payment status in requets"
+                response.message = "Invalid payment status in request"
             }
         }
         return response

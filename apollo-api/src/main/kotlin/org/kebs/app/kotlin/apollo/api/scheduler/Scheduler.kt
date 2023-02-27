@@ -74,7 +74,7 @@ class Scheduler(
  */
 @Configuration
 @EnableScheduling
-@Profile("default")
+@Profile("prod")
 class SchedulerDevelopment(
     private val schedulerImpl: SchedulerImpl,
     private val qaDaoServices: QADaoServices,
@@ -96,8 +96,8 @@ class SchedulerDevelopment(
         KotlinLogging.logger { }.trace("DEV: UPDATED DEMAND NOTES on SW")
     }
 
-    //@Scheduled(cron = "\${scheduler.cron.monthly}")
-    @Scheduled(fixedDelay = 600_000) //3 Minutes for now
+    @Scheduled(cron = "\${scheduler.cron.monthly}")
+    //@Scheduled(fixedDelay = 600_000) //3 Minutes for now
     fun runMonthlyScheduler() {
         standardLevyService.sendLevyPaymentReminders()
         sendEntryNumberToKraServices.postPenaltyDetailsToKra()

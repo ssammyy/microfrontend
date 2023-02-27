@@ -7,7 +7,7 @@ import {
     FirmTypeEntityDto, InspectionReportDetailsDto,
     PermitEntityDetails,
     PermitEntityDto,
-    PlantDetailsDto,
+    PlantDetailsDto, RemarksAndStatusDto,
     SectionDto,
     SSFComplianceStatusDetailsDto, SSFDetailsDto,
     SSFPDFListDetailsDto,
@@ -27,7 +27,7 @@ import {QaService} from '../../../core/store/data/qa/qa.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {QaInternalService} from '../../../core/store/data/qa/qa-internal.service';
 import {
-    ApiResponseModel,
+    ApiResponseModel, ComplaintsFilesFoundDto,
     LIMSFilesFoundDto,
     MSSSFLabResultsDto,
     MSSSFPDFListDetailsDto,
@@ -63,6 +63,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
     resubmitForm!: FormGroup;
+    remarksForm!: FormGroup;
     uploadForm!: FormGroup;
     uploadedFile: File;
     uploadedFiles: FileList;
@@ -78,6 +79,14 @@ export class PermitDetailsAdminComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
     dtOptionsSSF: DataTables.Settings = {};
     dtTriggerSSF: Subject<any> = new Subject<any>();
+    dtOptionsRemarks: DataTables.Settings = {};
+    dtTriggerRemarks: Subject<any> = new Subject<any>();
+    dtOptionsSCS: DataTables.Settings = {};
+    dtTriggerSCS: Subject<any> = new Subject<any>();
+    dtOptionsVersion: DataTables.Settings = {};
+    dtTriggerVersion: Subject<any> = new Subject<any>();
+    dtOptionsDOCS: DataTables.Settings = {};
+    dtTriggerDOCS: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
     dtTrigger3: Subject<any> = new Subject<any>();
     @ViewChildren(DataTableDirective)
@@ -192,7 +201,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         noDataMessage: 'No data found',
         columns: {
             param: {
-                title: 'PARAMETERS',
+                title: 'PARAMETER',
                 type: 'string',
                 filter: false,
             },
@@ -240,7 +249,13 @@ export class PermitDetailsAdminComponent implements OnInit {
             },
             fileSavedStatus: {
                 title: 'FILE SAVED STATUS',
-                type: 'boolean',
+                type: 'string',
+                valuePrepareFunction: (dataTest) => {
+                    if (dataTest) {
+                        return 'SAVED';
+                    }
+                    return 'NOT SAVED';
+                },
                 filter: false,
             },
         },
@@ -277,7 +292,13 @@ export class PermitDetailsAdminComponent implements OnInit {
             },
             complianceStatus: {
                 title: 'COMPLIANCE STATUS',
-                type: 'boolean',
+                type: 'string',
+                valuePrepareFunction: (dataTest) => {
+                    if (dataTest) {
+                        return 'COMPLIANT';
+                    }
+                    return 'NON-COMPLIANT';
+                },
                 filter: false,
             },
         },
@@ -441,6 +462,10 @@ export class PermitDetailsAdminComponent implements OnInit {
             // resubmittedDetails: ['']
             // resubmittedDetails: [this.resubmitDetail, Validators.required]
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
+        });
+
+        this.remarksForm = this.formBuilder.group({
+            remarksValue: ['', Validators.required],
         });
 
         this.uploadForm = this.formBuilder.group({
@@ -669,6 +694,14 @@ export class PermitDetailsAdminComponent implements OnInit {
         }, 500);
     }
 
+    viewSavedRemarks(data: RemarksAndStatusDto) {
+        this.currDivLabel = `REMARKS FOR PROCESS # ${data.processName}`;
+        this.currDiv = 'viewRemarksDetails';
+        this.remarksForm.patchValue(data);
+
+        window.$('#allProcessModel').modal('show');
+    }
+
     viewLIMSPDFSavedRemarks(data: MSSSFPDFListDetailsDto) {
         this.selectedPDFFileName = data.pdfName;
         this.currDivLabel = `COMPLIANCE STATUS AND REMARKS FOR PDF # ${this.selectedPDFFileName}`;
@@ -708,6 +741,10 @@ export class PermitDetailsAdminComponent implements OnInit {
         );
     }
 
+    viewSavedFilesSaved(data: FilesListDto) {
+        this.viewPdfFile(String(data.id), data.name, data.fileType);
+    }
+
 
 
     viewSSFLabResultsRecord(data: SSFDetailsDto) {
@@ -735,12 +772,16 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
-        console.log('TEST 101 REF NO SAVE: ' + data.fileName);
-        this.selectedPDFFileName = data.fileName;
-        this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
-        this.currDiv = 'pdfSaveCompliance';
-
-        window.$('#myModal2').modal('show');
+        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf.pdfName === this.selectedPDFFileName);
+        if (savedPdf === null) {
+            console.log('TEST 101 REF NO SAVE: ' + data.fileName);
+            this.selectedPDFFileName = data.fileName;
+            this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
+            this.currDiv = 'pdfSaveCompliance';
+            window.$('#myModal2').modal('show');
+        } else {
+            this.qaService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ', Already Saved');
+        }
     }
 
 
@@ -757,10 +798,14 @@ export class PermitDetailsAdminComponent implements OnInit {
                 this.blob = new Blob([dataPdf], {type: applicationType});
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
-                const link = document.createElement('a');
-                link.href = downloadURL;
-                link.download = fileName;
-                link.click();
+                if (applicationType === 'application/pdf') {
+                    window.open(downloadURL, '_blank');
+                } else {
+                    const link = document.createElement('a');
+                    link.href = downloadURL;
+                    link.download = fileName;
+                    link.click();
+                }
                 // this.pdfUploadsView = dataPdf;
             },
             error => {
@@ -1294,9 +1339,9 @@ export class PermitDetailsAdminComponent implements OnInit {
                             (data: ApiResponseModel) => {
                                 if (data.responseCode === '00') {
                                     this.SpinnerService.hide();
-                                    this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {
-                                        this.loadPermitDetails(data);
-                                    });
+                                    this.loadPermitDetails(data);
+                                    // tslint:disable-next-line:max-line-length
+                                    this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {this.closePopUpsModal2();});
                                 } else {
                                     this.SpinnerService.hide();
                                     this.qaService.showError(data.message);
@@ -1584,8 +1629,9 @@ export class PermitDetailsAdminComponent implements OnInit {
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
+                        this.loadPermitDetails(data);
                         this.qaService.showSuccess('SSF COMPLIANCE STATUS SAVED SUCCESSFULLY', () => {
-                            this.loadPermitDetails(data);
+                            this.closePopUpsModal2();
                         });
                     } else {
                         this.SpinnerService.hide();

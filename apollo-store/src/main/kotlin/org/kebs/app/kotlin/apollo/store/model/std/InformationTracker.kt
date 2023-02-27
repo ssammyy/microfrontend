@@ -10,15 +10,23 @@ class InformationTracker {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "INFORMATION_TRACKER_ID")
-    val informationTrackerId: Long = 0
+    var informationTrackerId: Long = 0
 
     @Column(name = "NEP_OFFICER_ID")
     @Basic
-    val nepOfficerId: Long? = null
+    var nepOfficerId: Long? = null
+
+    @Column(name = "ENQUIRY_ID")
+    @Basic
+    var enquiryId: Long? = null
+
+    @Column(name = "RESPONSE_ID")
+    @Basic
+    var responseId: Long? = null
 
     @Column(name = "FEEDBACK_SENT")
     @Basic
-    val feedbackSent: String? = ""
+    var feedbackSent: String? = ""
 
     @Column(name = "REQUESTER_EMAIL")
     @Basic

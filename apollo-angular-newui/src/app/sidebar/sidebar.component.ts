@@ -223,6 +223,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
             {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
             {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
+            {path: 'reports/qa-sl-report', title: 'QA-SL Reports', ab: 'QSR'},
 
 
         ],
@@ -898,15 +899,15 @@ export const ROUTES: RouteInfo[] = [
         path: '',
         title: 'National Enquiry Point',
         type: 'sub',
-        icontype: 'quiz',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN'],
-        collapse: 'nep',
         children: [
-            {path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
-            {path: 'nep_information_received', title: 'Enquiry Manage', ab: 'EM'},
+            //{path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
+            {path: 'nepResponse', title: 'Manage Enquiries', ab: 'EM',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NEP_OFFICER_SD_READ']},
             {path: 'nep_division_response', title: 'Division Response', ab: 'DR'},
 
         ],
+        icontype: 'quiz',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NEP_OFFICER_SD_READ'],
+        collapse: 'nep',
     },
 
     {

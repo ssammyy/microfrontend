@@ -490,7 +490,7 @@ data class ISDraftDto(
     var docName:String?=null,
     var special:String?=null,
     var draughting:String?=null,
-    var requestNumber:Long?=null,
+    var requestNumber:String?=null,
     var comStdNumber:String?=null,
     var documentType:String?=null,
 ){

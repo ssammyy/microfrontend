@@ -52,16 +52,67 @@ export class SmarkAdminComponent implements OnInit {
         this.getMySmarkTasks();
     }
 
-    id: any = "My Tasks";
+    id: any = 'My Tasks';
 
     tabChange(ids: any) {
         this.id = ids;
         console.log(this.id);
+        switch (this.id) {
+            case 'My Tasks':
+                this.getMySmarkTasks();
+                break;
+            case 'All Applications':
+                this.getMySmarkComplete();
+                break;
+            case 'Ongoing Applications':
+                this.getMySmarkOngoing();
+                break;
+        }
     }
 
     public getMySmarkTasks(): void {
         this.SpinnerService.show();
         this.internalService.loadMyTasksByPermitType(this.smarkID).subscribe(
+            (dataResponse: ApiResponseModel) => {
+                if (dataResponse.responseCode === '00') {
+                    // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
+                    this.allPermitTaskData = dataResponse?.data as MyTasksPermitEntityDto[];
+                    this.dataSource = new MatTableDataSource(this.allPermitTaskData);
+                    this.dataSource.paginator = this.paginator;
+                    this.dataSource.sort = this.sort;
+                }
+                this.SpinnerService.hide();
+            },
+            error => {
+                this.SpinnerService.hide();
+                console.log(error);
+            },
+        );
+    }
+
+    public getMySmarkOngoing(): void {
+        this.SpinnerService.show();
+        this.internalService.loadMyOngoingByPermitType(this.smarkID).subscribe(
+            (dataResponse: ApiResponseModel) => {
+                if (dataResponse.responseCode === '00') {
+                    // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
+                    this.allPermitTaskData = dataResponse?.data as MyTasksPermitEntityDto[];
+                    this.dataSource = new MatTableDataSource(this.allPermitTaskData);
+                    this.dataSource.paginator = this.paginator;
+                    this.dataSource.sort = this.sort;
+                }
+                this.SpinnerService.hide();
+            },
+            error => {
+                this.SpinnerService.hide();
+                console.log(error);
+            },
+        );
+    }
+
+    public getMySmarkComplete(): void {
+        this.SpinnerService.show();
+        this.internalService.loadMyCompleteByPermitType(this.smarkID).subscribe(
             (dataResponse: ApiResponseModel) => {
                 if (dataResponse.responseCode === '00') {
                     // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);

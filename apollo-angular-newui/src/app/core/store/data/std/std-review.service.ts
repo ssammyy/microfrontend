@@ -16,7 +16,7 @@ import {
   ReviewedStandards,
   ReviewForm,
   ReviewProposalComments,
-  ReviewRecommendation,
+  ReviewRecommendation, ReviewSpcDecision,
   ReviewStandardsComments,
   RevProposalComments, SRProposalComments, SRStdComments, SRStdForRecommendation,
   StakeholderProposalComments,
@@ -228,6 +228,18 @@ export class StdReviewService {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROPOSAL_RECOMMENDATIONS);
     const params = new HttpParams();
     return this.http.post<ReviewRecommendation>(url, reviewRecommendation, {params}).pipe(
+        map(function (response: any) {
+          return response;
+        }),
+        catchError((fault: HttpErrorResponse) => {
+          return throwError(fault);
+        })
+    );
+  }
+  public decisionOnStdDraft(reviewSpcDecision: ReviewSpcDecision): Observable<any> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SR_SD_PROPOSAL_DECION);
+    const params = new HttpParams();
+    return this.http.post<ReviewSpcDecision>(url, reviewSpcDecision, {params}).pipe(
         map(function (response: any) {
           return response;
         }),

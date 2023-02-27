@@ -214,6 +214,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     public ngOnInit() {
+        console.log(this.roles);
         // Load all PermitList Details
         // this.qaService.loadFirmPermitList(this.)
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
@@ -230,9 +231,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             },
         );
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            //(u.roles);
+
             this.roles = u.roles;
             return this.roles = u.roles;
+
         });
 
         if (this.roles?.includes('MS_HOD_READ')
@@ -290,7 +292,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     private loadFmarkData(): any {
         this.SpinnerService.show();
-        this.QaInternalService.loadMyTasksByPermitType(1).subscribe(
+        this.QaInternalService.loadMyTasksByPermitType(3).subscribe(
             (data) => {
                 this.fmarkapiResponse = data;
                 this.SpinnerService.hide();
@@ -305,7 +307,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     private loadDmarkData(): any {
         this.SpinnerService.show();
-        this.QaInternalService.loadMyTasksByPermitType(3).subscribe(
+        this.QaInternalService.loadMyTasksByPermitType(1).subscribe(
             (data) => {
                 this.dmarkapiResponse = data;
                 this.SpinnerService.hide();

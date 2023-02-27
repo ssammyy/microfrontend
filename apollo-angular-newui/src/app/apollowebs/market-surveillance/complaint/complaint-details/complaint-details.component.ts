@@ -596,7 +596,6 @@ export class ComplaintDetailsComponent implements OnInit {
         (dataPdf: any) => {
           this.SpinnerService.hide();
           this.blob = new Blob([dataPdf], {type: applicationType});
-
           // tslint:disable-next-line:prefer-const
           let downloadURL = window.URL.createObjectURL(this.blob);
           const link = document.createElement('a');

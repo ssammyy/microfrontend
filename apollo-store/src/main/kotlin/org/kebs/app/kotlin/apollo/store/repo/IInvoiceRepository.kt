@@ -98,8 +98,8 @@ interface IBillPaymentsRepository : HazelcastRepository<BillPayments, Long> {
     ): BigDecimal?
 
     fun findAllByCorporateIdAndPaymentStatusIn(corporateId: Long?, status: List<Int>): List<BillPayments>
-    fun findAllByPaymentStatusIn(status: List<Int>, page: Pageable): Page<BillPayments>
-    fun findAllByBillNumberContainsAndPaymentStatusInOrCustomerNameContainsAndPaymentStatusIn(
+    fun findAllByBillStatusIn(status: List<Int>, page: Pageable): Page<BillPayments>
+    fun findAllByBillNumberContainsAndBillStatusInOrCustomerNameContainsAndBillStatusIn(
         billNumber: String,
         status: List<Int>,
         customerName: String,

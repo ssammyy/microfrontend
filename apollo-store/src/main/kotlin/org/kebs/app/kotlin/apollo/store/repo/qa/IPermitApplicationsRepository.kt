@@ -1186,6 +1186,7 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
 
     fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndSscStatus(permitRefNumber: String, sscStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitRefNumberAndPermitIdAndSscStatus(permitRefNumber: String,permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndJustificationReportStatusAndPermitId(
         permitRefNumber: String,
         justificationReportStatus: Int,
@@ -1257,11 +1258,14 @@ interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<Per
     fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
+    
 
-    fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntity>?
+    fun findAllByCompanyNameContainingIgnoreCase(companyName: String): List<PermitMigrationApplicationsEntity>?
 
     @Query(
-        "SELECT * FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION WHERE ROWID IN ( SELECT MAX(ROWID) FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION GROUP BY COMPANY_NAME )",
+        "SELECT firm_id, position, vat_no, annual_turnover, suspension_status, date_of_visit, inspector_name, inspector_remarks, ks_number, permit_type, product_name, title, total_cost, total_payment, trade_mark, user_id, permit_number, commodity_description, enabled, broad_product_category, product_category, product, product_sub_category, standard_category, product_standard, permit_foreign_status, end_of_production_status, division_id, section_id, permit_expired_status, renewal_status, company_name, address, postal_code, phone, fax, email, physical_address, pin_no, vat_no2, region, type, migrated_status, migration_remarks, migration_by, migration_on, town, id," +
+                "CAST(DATE_OF_EXPIRY AS TIMESTAMP) AS DATE_OF_EXPIRY,CAST(DATE_OF_ISSUE AS TIMESTAMP) AS DATE_OF_ISSUE,CAST(EFFECTIVE_DATE AS TIMESTAMP) AS EFFECTIVE_DATE " +
+                "FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION WHERE ROWID IN ( SELECT MAX(ROWID) FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION X GROUP BY X.COMPANY_NAME )",
         nativeQuery = true
     )
     fun getallCompanies(): List<PermitMigrationApplicationsEntity>?
@@ -1275,7 +1279,7 @@ interface IPermitMigrationApplicationsFmarkEntityRepository :
     fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntityFmark>?
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntityFmark>?
 
-    fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntityFmark>?
+    fun findAllByCompanyNameContainingIgnoreCase(companyName: String): List<PermitMigrationApplicationsEntityFmark>?
 
     @Query(
         "SELECT * FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_FMARK WHERE ROWID IN ( SELECT MAX(ROWID) FROM DAT_KEBS_PERMIT_TRANSACTION_MIGRATION_FMARK GROUP BY COMPANY_NAME )",
@@ -1306,7 +1310,7 @@ interface IPermitMigrationApplicationsDmarkEntityRepository :
     fun findByPermitNumber(permitNumber: String): List<PermitMigrationApplicationsEntityDmark>?
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntityDmark>?
 
-    fun findAllByCompanyName(companyName: String): List<PermitMigrationApplicationsEntityDmark>?
+    fun findAllByCompanyNameContainingIgnoreCase(companyName: String): List<PermitMigrationApplicationsEntityDmark>?
 
 
     @Query(

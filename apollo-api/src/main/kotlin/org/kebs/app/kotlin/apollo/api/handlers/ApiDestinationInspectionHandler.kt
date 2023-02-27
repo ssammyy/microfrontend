@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import okhttp3.internal.toLongOrDefault
 import org.kebs.app.kotlin.apollo.api.payload.*
+import org.kebs.app.kotlin.apollo.api.payload.request.CfsStationDao
 import org.kebs.app.kotlin.apollo.api.payload.request.SearchForms
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
@@ -12,7 +13,6 @@ import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CfsTypeCodesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.DiUploadsEntity
@@ -62,18 +62,14 @@ class ApiDestinationInspectionHandler(
     fun listUserFreightStations(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
         try {
-            // Load active ports
+
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+            // Load current user details and profile
             val user = commonDaoServices.loggedInUserDetails()
             val userProfile = commonDaoServices.findUserProfileByUserID(user, map.activeStatus)
+            // Get all CFS assignment under this user
             val supervisorsCfs = this.daoServices.findAllCFSUserCodes(userProfile.id!!)
-            val lt = mutableListOf<CfsTypeCodesEntity>()
-            supervisorsCfs.forEach {
-                daoServices.findCfsCd(it)?.let { cfs ->
-                    lt.add(cfs)
-                }
-            }
-            response.data = lt
+            response.data = CfsStationDao.fromList(daoServices.findCfsCdWithList(supervisorsCfs))
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
         } catch (ex: Exception) {

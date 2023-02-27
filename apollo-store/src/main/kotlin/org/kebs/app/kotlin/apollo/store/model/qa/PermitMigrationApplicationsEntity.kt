@@ -8,15 +8,14 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_KEBS_PERMIT_TRANSACTION_MIGRATION")
 class PermitMigrationApplicationsEntity : Serializable {
-    @Column(name = "FIRM_ID")
-    @SequenceGenerator(
-        name = "DAT_KEBS_PERMIT_TRANSACTION_SEQ_GEN",
-        allocationSize = 1,
-        sequenceName = "DAT_KEBS_PERMIT_TRANSACTION_SEQ"
-    )
-    @GeneratedValue(generator = "DAT_KEBS_PERMIT_TRANSACTION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID")
+   @GeneratedValue(generator = "DAT_KEBS_PERMIT_TRANSACTION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = 0
+
+    @Column(name = "FIRM_ID")
+    @Basic
+    var firmId: String? = null
 
     @Column(name = "POSITION")
     @Basic
@@ -46,7 +45,7 @@ class PermitMigrationApplicationsEntity : Serializable {
 
     @Column(name = "DATE_OF_VISIT")
     @Basic
-    var dateOfVisit: Timestamp? = null
+    var dateOfVisit: String? = null
 
     @Column(name = "INSPECTOR_NAME")
     @Basic

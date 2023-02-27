@@ -157,7 +157,7 @@
       }
     },
     "consignment_report": {
-      "base_query": "DAT_KEBS_CD_ITEM_DETAILS cid left join DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS cdd on (cid.CD_DOC_ID=cdd.ID) left join DAT_KEBS_CD_STANDARDS_TWO cs2 on(cdd.CD_STANDARDS_TWO=cs2.ID)  left join  DAT_KEBS_DECLARATION_DETAILS kdd on (cdd.MANIFEST_NUMBER=kdd.MANIFEST_NUMBER)  left join DAT_KEBS_CD_ITEM_NON_STANDARD cdns on (cdns.CD_ITEM_DETAILS_ID=cid.ID)",
+      "base_query": "DAT_KEBS_CD_ITEM_DETAILS cid left join DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS cdd on (cid.CD_DOC_ID=cdd.ID) left join DAT_KEBS_CD_STANDARDS_TWO cs2 on(cdd.CD_STANDARDS_TWO=cs2.ID) left join DAT_KEBS_CD_STANDARDS cs on(cdd.CD_STANDARD=cs.ID) left join  DAT_KEBS_CD_EXPORTER_DETAILS ced on (cdd.CD_EXPORTER=ced.id)  left join  DAT_KEBS_CD_IMPORTER_DETAILS cid on (cdd.CD_IMPORTER=cid.id) left join  CFG_KEBS_CFS_TYPE_CODES cfs on (cdd.FREIGHT_STATION=cfs.id) left join DAT_KEBS_CD_ITEM_NON_STANDARD cdns on (cdns.CD_ITEM_DETAILS_ID=cid.ID) left join DAT_KEBS_MANIFEST_DETAILS md on (md.UCR_NUMBER=cdd.UCR_NUMBER or md.MANIFEST_NUMBER=cdd.MANIFEST_NUMBER) left join DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST DKCIMVIC on (cid.ID = DKCIMVIC.ITEM_ID) left join DAT_KEBS_DECLARATION_DETAILS dd on (dd.REF_NUM = cdd.UCR_NUMBER)",
       "filters": {
         "station_id": "cdd.FREIGHT_STATION",
         "doc_type": "cdd.DOC_TYPE_ID",
@@ -167,8 +167,8 @@
         "compliant": "cdd.COMPLIANT_STATUS",
         "sampled": "cid.SAMPLED_STATUS",
         "coc_type": "cs2.COC_TYPE",
-        "importer": "kdd.CONSIGNEE_PIN_NUMBER",
-        "exporter": "kdd.CONSIGNOR_PIN_NUMBER",
+        "importer": "cid.PIN",
+        "exporter": "ced.PIN",
         "chassis": "cid.CHASIS_NUMBER",
         "verified": "cid.APPROVE_STATUS",
         "assigned_to": "cdd.ASSIGNED_INSPECTION_OFFICER",
@@ -179,19 +179,19 @@
         "date__range": "cdd.CREATED_ON"
       },
       "fields": {
-        "kdd.DECLARATION_REF_NO": "Declaration",
+        "dd.DECLARATION_REF_NO": "Declaration",
         "cdd.MANIFEST_NUMBER": "Date Application Submitted",
-        "kdd.CD_REGISTRATION_DATE": "CD Registration Date",
-        "kdd.REF_NUM": "Ref Num",
+        "cdd.CREATED_ON": "CD Registration Date",
+        "cs.APPLICATION_REF_NO": "Ref Num",
         "cdd.UCR_NUMBER": "UCR No.",
-        "cdd.DESCRIPTION": "Document Name",
+        "cs.DESCRIPTION": "Document Name",
         "cs2.COC_TYPE": "Local Coc Type",
         "cs2.COC_REF_NO": "COC Ref No.",
         "cdd.APPROVE_REJECT_CD_DATE": "Approval Date",
-        "kdd.CONSIGNEE_BUSINESS_NAME": "Importer Name",
-        "kdd.CONSIGNOR_BUSINESS_NAME": "Exporter Name",
-        "kdd.SUB_OFFICE_3": "Port Of Destination",
-        "kdd.CONSIGNOR_COUNTRY_CODE": "Country of Supply",
+        "cid.NAME": "Importer Name",
+        "ced.NAME": "Exporter Name",
+        "cfs.CFS_NAME": "Port Of Destination",
+        "cid.COUNTRY_OF_ORGIN": "Country of Supply",
         "cid.ITEM_DESCRIPTION": "Item Description",
         "cid.ITEM_HS_CODE": "HS Code",
         "cid.HS_DESCRIPTION": "HS COde Description",
@@ -203,12 +203,13 @@
         "cdns.VEHICLE_MAKE": "Make",
         "cdns.VEHICLE_MODEL": "Model",
         "cdns.VEHICLE_YEAR": "Vehicle Year",
+        "(case when DKCIMVIC.ENGINE_NO_CAPACITY is NULL then 'UNKNOWN' else DKCIMVIC.ENGINE_NO_CAPACITY end) as ENGINE_NO_CAPACITY": "Engine Capacity",
         "(case when length(cdns.USED_INDICATOR)>0 then 'Used' else 'New' end) as VEHICLE_STATUS": "Vehicle Status",
         "(case when cid.APPROVE_STATUS=1 then 'Y' else 'N' end) as VERIFIED": "Verified",
         "(case when cid.SAMPLED_STATUS=1 then 'Y' else 'N' end) as SAMPLED": "Sampled",
         "cid.SAMPLED_DATE": "Date Sampled",
         "cid.APPROVE_BY": "Approved By",
-        "cid.APPROVE_REASON": "Remarks"
+        "cid.INSPECTION_REMARKS": "Remarks"
       }
     }
   }

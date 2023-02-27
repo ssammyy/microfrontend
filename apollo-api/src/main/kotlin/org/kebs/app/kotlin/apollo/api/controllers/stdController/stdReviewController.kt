@@ -77,7 +77,7 @@ class stdReviewController(
     @PostMapping("/standard_review/makeRecommendationsOnAdoptionProposal")
     @ResponseBody
     fun makeRecommendationsOnAdoptionProposal(@RequestBody st: StandardReviewRecommendationDto): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully Analysis",stdReviewService.makeRecommendationsOnAdoptionProposal(st))
+        return ServerResponse(HttpStatus.OK,"Successful Analysis",stdReviewService.makeRecommendationsOnAdoptionProposal(st))
 
     }
 
@@ -92,7 +92,7 @@ class stdReviewController(
     @PostMapping("/standard_review/decisionOnStdDraft")
     @ResponseBody
     fun decisionOnStdDraft(@RequestBody sp: SpcStandardReviewCommentDto): ServerResponse{
-        return ServerResponse(HttpStatus.OK,"Successfully Analysis",stdReviewService.decisionOnStdDraft(sp))
+        return ServerResponse(HttpStatus.OK,"Success",stdReviewService.decisionOnStdDraft(sp))
 
     }
 

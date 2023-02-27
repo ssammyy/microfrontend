@@ -740,6 +740,8 @@ import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/w
 import {NwaViewPreliminaryComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component";
 import {NwaEditPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component";
 import {NwaEditingDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component";
+import {NepViewEnquiriesComponent} from "./apollowebs/standards-development/national-enquiry-point/nep-view-enquiries/nep-view-enquiries.component";
+import { QaSlReportsComponent } from './apollowebs/quality-assurance/reports/qa-sl-reports/qa-sl-reports.component';
 
 export const routes: Routes = [
     {
@@ -955,6 +957,11 @@ export const routes: Routes = [
                 path: 'samples_submitted',
                 component: SamplesSubmittedComponent,
             },
+            {
+                path: 'qa-sl-report',
+                component: QaSlReportsComponent,
+            },
+
 
         ],
     },
@@ -1914,6 +1921,10 @@ export const routes: Routes = [
 
 
     {
+        path: 'nepResponse', component: AdminLayoutComponent,
+        children: [{path: '', component: NepViewEnquiriesComponent}],
+    },
+    {
         path: 'nep_information_received', component: AdminLayoutComponent,
         children: [{path: '', component: InformationcheckComponent}],
     },
@@ -1929,8 +1940,13 @@ export const routes: Routes = [
         path: 'nepnotification', component: AdminLayoutComponent,
         children: [{path: '', component: NepNotificationComponent}],
     },
+    // {
+    //     path: 'make_enquiry', component: MakeEnquiryComponent,
+    // },
     {
-        path: 'make_enquiry', component: MakeEnquiryComponent,
+        path: 'make_enquiry',
+        component: StandardRequestComponent,
+        children: [{path: '', component: MakeEnquiryComponent}],
     },
 
 

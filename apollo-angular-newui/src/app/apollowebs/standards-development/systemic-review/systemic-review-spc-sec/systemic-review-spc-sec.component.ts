@@ -53,6 +53,7 @@ export class SystemicReviewSpcSecComponent implements OnInit {
         remarks:[],
         subject:[],
         description:[],
+        title:[]
 
     });
 
@@ -178,9 +179,9 @@ export class SystemicReviewSpcSecComponent implements OnInit {
 
     submitRecommendation(): void {
         //console.log(this.recommendationFormGroup.value)
-        this.loadingText = "Submitting Recommendation ...."
+        this.loadingText = "Submitting Decision ...."
         this.SpinnerService.show();
-        this.stdReviewService.makeRecommendationsOnAdoptionProposal(this.approveRecommendationFormGroup.value).subscribe(
+        this.stdReviewService.decisionOnStdDraft(this.approveRecommendationFormGroup.value).subscribe(
             (response) => {
                 //console.log(response);
                 this.getStandardsForSpcAction();
