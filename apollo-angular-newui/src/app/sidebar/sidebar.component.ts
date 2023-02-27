@@ -902,8 +902,9 @@ export const ROUTES: RouteInfo[] = [
         children: [
             //{path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
             {path: 'nepResponse', title: 'Manage Enquiries', ab: 'EM',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NEP_OFFICER_SD_READ']},
-            {path: 'nep_division_response', title: 'Division Response', ab: 'DR'},
+            //{path: 'nep_division_response', title: 'Division Response', ab: 'DR'},
             {path: 'divResponse', title: 'Division Response', ab: 'DR'},
+            {path: 'sendFeedBack', title: 'Send Feedback', ab: 'SF'},
 
         ],
         icontype: 'quiz',
