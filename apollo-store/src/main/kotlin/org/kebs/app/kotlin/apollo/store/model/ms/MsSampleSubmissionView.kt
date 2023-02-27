@@ -92,6 +92,10 @@ class MsSampleSubmissionView : Serializable {
     var remarks: String? = null
 
     @Basic
+    @Column(name = "COUNTRY_OF_ORIGIN")
+    var countryOfOrigin: String? = null
+
+    @Basic
     @Column(name = "SAMPLE_COLLECTION_NUMBER")
     var sampleCollectionNumber: String? = null
 

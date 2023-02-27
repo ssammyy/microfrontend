@@ -179,6 +179,10 @@ class MsSampleSubmissionEntity : Serializable {
     @Basic
     var remarks: String? = null
 
+    @Column(name = "COUNTRY_OF_ORIGIN")
+    @Basic
+    var countryOfOrigin: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = 0

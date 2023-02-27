@@ -771,6 +771,7 @@ class MSJSONControllers(
             data.invoiceNumber,
             data.disposal,
             data.remarks,
+            data.countryOfOrigin,
             data.sampleCollectionNumber.toString(),
             null,
             data.bsNumber,
