@@ -231,7 +231,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
+                {name: 'viewRecord', title: '<a class="btn btn-sm btn-primary">View PDF</a>'},
                 {name: 'saveRecord', title: '<i class="btn btn-sm btn-primary">Save PDF</i>'},
             ],
             position: 'right', // left|right
@@ -774,15 +774,24 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
-        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
-        if (savedPdf === null) {
+
+        if (this.selectedLabResults.savedPDFFiles.length === 0) {
             console.log('TEST 101 REF NO SAVE: ' + data.fileName);
             this.selectedPDFFileName = data.fileName;
             this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
             this.currDiv = 'pdfSaveCompliance';
             window.$('#myModal2').modal('show');
-        } else {
-            this.qaService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ', Already Saved');
+        }else {
+                const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
+                if (savedPdf.pdfName === null || savedPdf.pdfName === undefined) {
+                console.log('TEST 101 REF NO SAVE: ' + data.fileName);
+                this.selectedPDFFileName = data.fileName;
+                this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
+                this.currDiv = 'pdfSaveCompliance';
+                window.$('#myModal2').modal('show');
+            } else {
+                this.qaService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ', Already Saved');
+            }
         }
     }
 
@@ -800,14 +809,15 @@ export class PermitDetailsAdminComponent implements OnInit {
                 this.blob = new Blob([dataPdf], {type: applicationType});
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
-                if (applicationType === 'application/pdf') {
+                // if (applicationType === 'application/pdf') {
                     window.open(downloadURL, '_blank');
-                } else {
-                    const link = document.createElement('a');
-                    link.href = downloadURL;
-                    link.download = fileName;
-                    link.click();
-                }
+
+                // } else {
+                //     const link = document.createElement('a');
+                //     link.href = downloadURL;
+                //     link.download = fileName;
+                //     link.click();
+                // }
                 // this.pdfUploadsView = dataPdf;
             },
             error => {
