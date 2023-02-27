@@ -15,7 +15,7 @@ interface NationalEnquiryPointRepository : JpaRepository<NationalEnquiryPoint, L
 }
 interface SdNepDocumentUploadsEntityRepository : JpaRepository<SdNepDocumentUploadsEntity, Long>
 {
-
+    fun findAllByNepDocumentId(id: Long): SdNepDocumentUploadsEntity
 }
 interface NationalEnquiryPointEntityRepository : JpaRepository<NationalEnquiryPointEntity, Long>
 {
@@ -29,11 +29,15 @@ interface NepRemarksRepository : JpaRepository<NepRemarks, Long>
 
 }
 interface SdNepDocUploadsEntityRepository : JpaRepository<SdNepDocUploadsEntity, Long> {
-    fun findByNepDocumentId(id: Long): SdNepDocUploadsEntity
+    fun findAllByNepDocumentId(id: Long): SdNepDocUploadsEntity
 }
 interface NationalEnquiryEntityRepository : JpaRepository<NationalEnquiryEntity, Long> {
     @Query(
         value = "SELECT * FROM SD_NEP_EQUIRY  WHERE STATUS=0 ORDER BY ID DESC",nativeQuery = true)
     fun getNepDivisionRequests(): MutableList<NationalEnquiryEntity>
+
+    @Query(
+        value = "SELECT * FROM SD_NEP_EQUIRY  WHERE STATUS=1 ORDER BY ID DESC",nativeQuery = true)
+    fun getNepDivisionResponse(): MutableList<NationalEnquiryEntity>
 
 }

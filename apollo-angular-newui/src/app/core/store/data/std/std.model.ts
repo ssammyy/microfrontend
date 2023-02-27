@@ -2186,6 +2186,18 @@ export interface NwaRequestList{
     departmentName: string;
     tcSecAssigned: string;
 }
+export interface NepRequests{
+    id : number;
+    requesterid : number;
+    requesterName : string;
+    requesterEmail : string;
+    requesterPhone : string;
+    requesterInstitution : string;
+    requesterCountry : string;
+    requesterSubject : string;
+    requesterComment : string;
+    requestDate : Timestamp<any>;
+}
 
 export interface NepEnquiries{
     id: number;
@@ -2199,12 +2211,21 @@ export interface NepEnquiries{
     requestDate: Timestamp<any>;
     status: number;
 }
+export interface NepInfoDto{
+    requesterid : number;
+    requestId: number;
+    requesterFeedBack: string;
+    enquiryId: number;
+    feedbackSent: string;
+    requesterEmail: string;
+
+}
 
 export interface NepInfoCheckDto {
     comments: string;
     accentTo: string;
-    requestId: string;
-    enquiryId: string;
+    requestId: number;
+    enquiryId: number;
     feedbackSent: string;
     requesterEmail: string;
 

@@ -254,6 +254,23 @@ export class QaService {
         );
     }
 
+    public qaUpdateResubmit(data: any, permitID: string): Observable<any> {
+        console.log(data);
+        // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.RESUBMIT_APPLICATION);
+        const params = new HttpParams()
+            .set('permitID', String(permitID));
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public qaUpdateBrand(data: any, permitID: string): Observable<any> {
         console.log(data);
         // tslint:disable-next-line:max-line-length

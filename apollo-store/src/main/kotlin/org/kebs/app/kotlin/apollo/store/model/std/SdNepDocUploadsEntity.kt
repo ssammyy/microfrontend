@@ -45,7 +45,7 @@ class SdNepDocUploadsEntity: Serializable {
     @Basic
     var transactionDate: Date? = null
 
-    @Column(name = "NEP_DOCUMENT_ID")
+    @Column(name = "NEP_DOC_ID")
     @Basic
     var nepDocumentId: Long? = null
 

@@ -1077,6 +1077,8 @@ import { SchemeMemberShipReviewAllApplicationsComponent } from './apollowebs/sta
 import { SchemeMembershipReviewAssignedApplicationsComponent } from './apollowebs/standards-development/schemeMembership/scheme-membership-review-assigned-applications/scheme-membership-review-assigned-applications.component';
 import { NepViewEnquiriesComponent } from './apollowebs/standards-development/national-enquiry-point/nep-view-enquiries/nep-view-enquiries.component';
 import { QaSlReportsComponent } from './apollowebs/quality-assurance/reports/qa-sl-reports/qa-sl-reports.component';
+import { NationalEnquiryPointReferalComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point-referal/national-enquiry-point-referal.component';
+import { NationalEnquiryPointResponseComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point-response/national-enquiry-point-response.component';
 import { SmarkOngoingComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-ongoing/smark-ongoing.component';
 import { SmarkExpiredComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-expired/smark-expired.component';
 import { SmarkAwardedComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-awarded/smark-awarded.component';
@@ -1648,6 +1650,8 @@ import { SmarkAllApplicationsComponent } from './apollowebs/qualityAssuranceAdmi
         SchemeMembershipReviewAssignedApplicationsComponent,
         NepViewEnquiriesComponent,
         QaSlReportsComponent,
+        NationalEnquiryPointReferalComponent,
+        NationalEnquiryPointResponseComponent,
         SmarkOngoingComponent,
         SmarkExpiredComponent,
         SmarkAwardedComponent,
