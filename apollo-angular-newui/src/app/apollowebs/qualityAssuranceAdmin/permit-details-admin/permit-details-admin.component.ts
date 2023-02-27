@@ -772,7 +772,7 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
-        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf.pdfName === this.selectedPDFFileName);
+        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
         if (savedPdf === null) {
             console.log('TEST 101 REF NO SAVE: ' + data.fileName);
             this.selectedPDFFileName = data.fileName;
