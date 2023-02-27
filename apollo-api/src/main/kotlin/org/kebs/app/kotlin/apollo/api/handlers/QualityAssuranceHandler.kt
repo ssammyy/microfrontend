@@ -3075,7 +3075,7 @@ class QualityAssuranceHandler(
             var batchDetailDifference: Long? = null
 
             if (permit.sendApplication == map.activeStatus) {
-                batchDetail = if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.fmarkGenerated == 1) {
+                batchDetail = if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark) {
                     val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
                     val findSMark = qaDaoServices.findPermitBYCompanyIDAndId(findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"), loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"))
                     val invoiceFound =  qaDaoServices.findPermitInvoiceByPermitIDOrNull(permitID)
