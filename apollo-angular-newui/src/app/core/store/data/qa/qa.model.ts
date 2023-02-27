@@ -306,7 +306,7 @@ export class PermitEntityDetails {
     processStatusID: number;
     fmarkGeneratedID: number;
     oldPermitStatus: number;
-    Field7: string;
+    varField7: string;
     productStandards: number;
     assignOfficerStatus: boolean;
     assignOfficerID: number;
