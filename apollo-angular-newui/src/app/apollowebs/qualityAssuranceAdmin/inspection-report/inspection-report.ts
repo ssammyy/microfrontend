@@ -796,6 +796,9 @@ export class InspectionReport implements OnInit {
 
             },
         );
+        this.SpinnerService.hide()
+        this.loading = false
+        this.hideCloneButton = false
     }
 
     onClickSaveInspectionReportDocs() {

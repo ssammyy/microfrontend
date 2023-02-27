@@ -1762,7 +1762,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             </a>
 
                             <button style="width: -webkit-fill-available;white-space: normal;" (click)="submitApplication()"
-                                    mat-raised-button="" *ngIf="allPermitDetails?.permitDetails?.sendApplication"
+                                    mat-raised-button="" *ngIf="!allPermitDetails?.permitDetails?.sendApplication"
                                     class="btn btn-kebs mat-raised-button mat-button-base"><span
                                     class="mat-button-wrapper">SUBMIT APPLICATION</span>
                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
