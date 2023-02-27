@@ -191,6 +191,22 @@ class StandardAcquisitionRequestService(
         return users
     }
 
+    //HOD SEC assigns Join request to an SIC officer
+    //  fun assignSicOfficer
+    fun assignSICOfficer(standardAcquisitionRequest: StandardAcquisitionRequest) {
+        val selectedStandardAcquisitionRequest =
+            standardAcquisitionRepository.findAllByRequestId(standardAcquisitionRequest.requestId)
+        selectedStandardAcquisitionRequest.sicAssignedId = standardAcquisitionRequest.sicAssignedId
+        selectedStandardAcquisitionRequest.sicAssignedDateAssigned = Timestamp(System.currentTimeMillis())
+        standardAcquisitionRepository.save(selectedStandardAcquisitionRequest)
+    }
+
+    fun getSicLoggedInTasks(): List<StandardAcquisitionRequest> {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        return standardAcquisitionRepository.findAllBySicAssignedId(loggedInUser.id.toString())
+    }
+
+
 
 
 

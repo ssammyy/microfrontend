@@ -9922,7 +9922,7 @@ class QADaoServices(
 
         var permitListRetrieved: List<PermitApplicationsEntity> = emptyList()
 
-        val companyID = commonDaoServices.findCompanyProfileByName(companyName)?.id
+        val companyID = companyProfileRepo.findByName(companyName)?.id
         if (companyID != null)
             permitRepo.findByCompanyIdAndOldPermitStatusIsNullAndPermitAwardStatus(
                 companyID,
@@ -10130,7 +10130,7 @@ class QADaoServices(
         companyName: String
     ): List<PermitMigrationApplicationsEntity> {
 
-        permitMigratedRepo.findAllByCompanyName(companyName)
+        permitMigratedRepo.findAllByCompanyNameContainingIgnoreCase(companyName)
             ?.let { permitList ->
                 return permitList
             }
@@ -10155,7 +10155,7 @@ class QADaoServices(
         companyName: String
     ): List<PermitMigrationApplicationsEntityDmark> {
 
-        permitMigratedRepoDmark.findAllByCompanyName(companyName)
+        permitMigratedRepoDmark.findAllByCompanyNameContainingIgnoreCase(companyName)
             ?.let { permitList ->
                 return permitList
             }
@@ -10183,7 +10183,7 @@ class QADaoServices(
         companyName: String
     ): List<PermitMigrationApplicationsEntityFmark> {
 
-        permitMigratedRepoFmark.findAllByCompanyName(companyName)
+        permitMigratedRepoFmark.findAllByCompanyNameContainingIgnoreCase(companyName)
             ?.let { permitList ->
                 return permitList
             }

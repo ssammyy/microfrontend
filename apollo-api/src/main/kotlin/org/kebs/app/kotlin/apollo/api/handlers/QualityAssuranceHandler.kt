@@ -5032,7 +5032,6 @@ class QualityAssuranceHandler(
             val companyName = req.paramOrNull("companyName")
                 ?: throw ExpectedDataNotFound("Required Company Name, check config")
 
-            commonDaoServices.findCompanyProfileByName(companyName)
 
             var permitListAllApplicationsSmark: List<KebsWebistePermitEntityDto>? = null
             var permitListAllApplicationsDmark: List<KebsWebistePermitEntityDto>? = null //smarks
