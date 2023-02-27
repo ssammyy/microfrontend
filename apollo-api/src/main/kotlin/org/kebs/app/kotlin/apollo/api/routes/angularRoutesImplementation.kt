@@ -643,7 +643,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
                     GET("/permit-detail", internalUserhandler::getPermitDetails)
-//                    GET("/standards-list", internalUserhandler::getStandardsList)
+//                  GET("/standards-list", internalUserhandler::getStandardsList)
                 }
                 "/apply".nest {
                     "/permit".nest {
