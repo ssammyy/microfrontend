@@ -1287,8 +1287,7 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-<!--                                            workPlanInspection?.compliantStatusAdded &&-->
-                                            <button *ngIf=" workPlanInspection?.onsiteEndStatus &&
+                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
