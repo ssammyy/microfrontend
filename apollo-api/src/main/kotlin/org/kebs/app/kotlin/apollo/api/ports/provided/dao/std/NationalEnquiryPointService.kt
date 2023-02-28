@@ -208,9 +208,9 @@ class NationalEnquiryPointService(
 
 
 
-    fun getNepDivisionRequests(): MutableList<NationalEnquiryEntity>
+    fun getNepDivisionRequests(enquiryId: Long): MutableList<NationalEnquiryEntity>
     {
-        return nationalEnquiryEntityRepository.getNepDivisionRequests()
+        return nationalEnquiryEntityRepository.getNepDivisionRequests(enquiryId)
     }
 
     fun responseOnEnquiryInfo(

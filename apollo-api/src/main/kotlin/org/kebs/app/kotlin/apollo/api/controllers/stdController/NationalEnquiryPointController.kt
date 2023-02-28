@@ -143,10 +143,11 @@ class NationalEnquiryPointController(
 
     @GetMapping("/anonymous/National_enquiry_point/getNepDivisionRequests")
     @ResponseBody
-    fun getNepDivisionRequests(): MutableList<NationalEnquiryEntity>
+    fun getNepDivisionRequests(@RequestParam("enquiryId") enquiryId: Long): MutableList<NationalEnquiryEntity>
     {
-        return nationalEnquiryPointService.getNepDivisionRequests()
+        return nationalEnquiryPointService.getNepDivisionRequests(enquiryId)
     }
+    /////
 
     @PostMapping("/anonymous/National_enquiry_point/responseOnEnquiryInfo")
     fun responseOnEnquiryInfo(@RequestBody nep: NepInfoCheckDto): ServerResponse? {

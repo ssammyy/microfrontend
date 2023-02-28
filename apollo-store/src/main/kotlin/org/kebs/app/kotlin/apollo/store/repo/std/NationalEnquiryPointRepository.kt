@@ -33,8 +33,8 @@ interface SdNepDocUploadsEntityRepository : JpaRepository<SdNepDocUploadsEntity,
 }
 interface NationalEnquiryEntityRepository : JpaRepository<NationalEnquiryEntity, Long> {
     @Query(
-        value = "SELECT * FROM SD_NEP_EQUIRY  WHERE STATUS=0 ORDER BY ID DESC",nativeQuery = true)
-    fun getNepDivisionRequests(): MutableList<NationalEnquiryEntity>
+        value = "SELECT * FROM SD_NEP_EQUIRY  WHERE STATUS=0 AND ID=:enquiryId ORDER BY ID DESC",nativeQuery = true)
+    fun getNepDivisionRequests(enquiryId: Long): MutableList<NationalEnquiryEntity>
 
     @Query(
         value = "SELECT * FROM SD_NEP_EQUIRY  WHERE STATUS=1 ORDER BY ID DESC",nativeQuery = true)
