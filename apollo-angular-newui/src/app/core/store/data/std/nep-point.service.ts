@@ -138,9 +138,9 @@ export class NepPointService {
         return this.http.get<NepEnquiries>(url, {params}).pipe();
     }
 
-    public getNepDivisionRequests(): any {
+    public getNepDivisionRequests(enquiryId: any): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_FETCH_REQUESTS);
-        const params = new HttpParams();
+        const params = new HttpParams().set('enquiryId', enquiryId);
         return this.http.get<NepRequests>(url, {params}).pipe();
     }
 

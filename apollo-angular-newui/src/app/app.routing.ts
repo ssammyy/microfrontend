@@ -1943,7 +1943,7 @@ export const routes: Routes = [
         children: [{path: '', component: NepNotificationComponent}],
     },
     {
-        path: 'divResponse', component: AdminLayoutComponent,
+        path: 'divResponse/:enquiryId', component: AdminLayoutComponent,
         children: [{path: '', component: NationalEnquiryPointReferalComponent}],
     },
     {
