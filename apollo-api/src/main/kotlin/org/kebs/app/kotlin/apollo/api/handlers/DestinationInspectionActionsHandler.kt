@@ -326,6 +326,8 @@ class DestinationInspectionActionsHandler(
             val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
             if (diBpmn.modifyDisabled(consignmentDocument, response)) {
                 KotlinLogging.logger { }.error("FAILED to APPROVE IO, MODIFICATION disabled")
+                response.responseCode = ResponseCodes.FAILED_CODE
+                response.message = "CONSIGNMENT CANNOT BE MODIFIED IN THIS STATUS"
             } else {
                 req.pathVariable("taskId").let {
                     return ServerResponse.ok()
