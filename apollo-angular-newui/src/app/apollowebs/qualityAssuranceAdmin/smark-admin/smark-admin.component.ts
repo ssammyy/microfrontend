@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {selectUserInfo} from "../../../core/store";
 import {Store} from "@ngrx/store";
 import {NgxSpinnerService} from "ngx-spinner";
@@ -20,6 +20,11 @@ export class SmarkAdminComponent implements OnInit {
     public allPermitTaskData: MyTasksPermitEntityDto[];
 
     roles: string[];
+    dtOptions: DataTables.Settings = {};
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtTrigger1: Subject<any> = new Subject<any>();
+    displayUsers: boolean = false;
 
     loading = false;
     loadingText: string;
@@ -29,10 +34,7 @@ export class SmarkAdminComponent implements OnInit {
     dmarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID);
     smarkID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     isDtInitialized: boolean = false
-    dtOptions: DataTables.Settings = {};
-    dtTrigger: Subject<any> = new Subject<any>();
-    @ViewChild(DataTableDirective, {static: false})
-    dtElement: DataTableDirective;
+
 
     constructor(private store$: Store<any>,
                 private SpinnerService: NgxSpinnerService,
@@ -66,32 +68,28 @@ export class SmarkAdminComponent implements OnInit {
                 if (dataResponse.responseCode === '00') {
                     // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
                     this.allPermitTaskData = dataResponse?.data as MyTasksPermitEntityDto[];
+                    this.rerender()
+                    this.SpinnerService.hide()
+                    this.displayUsers = true;
 
-                    if (this.isDtInitialized) {
-                        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                            dtInstance.destroy();
-                            this.dtTrigger.next();
-                            this.loading = false;
+                    this.loading = false;
 
-                        });
-                    } else {
-                        this.isDtInitialized = true
-                        this.dtTrigger.next();
-                        this.loading = false;
-
-                    }
                 }
                 this.SpinnerService.hide();
+                this.SpinnerService.hide()
+                this.displayUsers = true;
+
+                this.loading = false;
             },
             error => {
                 this.SpinnerService.hide();
-                console.log(error);
-                this.loading = false;
+                this.SpinnerService.hide()
+                this.displayUsers = true;
 
+                this.loading = false;
             },
         );
     }
-
 
     gotoPermitDetails(permitId: string) {
 
@@ -103,6 +101,21 @@ export class SmarkAdminComponent implements OnInit {
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
         this.router.navigate(['/permit-details-admin', encrypted])
 
+
+    }
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger1.next();
+
+
+        });
 
     }
 
