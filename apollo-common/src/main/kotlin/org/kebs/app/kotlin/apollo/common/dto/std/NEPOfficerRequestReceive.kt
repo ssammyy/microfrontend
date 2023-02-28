@@ -19,6 +19,7 @@ data class NepRequestsDto(
 ){
 
 }
+
 data class NepInfoCheckDto(
     var comments: String?=null,
     var accentTo: String?=null,
@@ -26,6 +27,8 @@ data class NepInfoCheckDto(
     var enquiryId: Long,
     var feedbackSent: String?=null,
     var requesterEmail: String?=null,
+    var subject: String,
+    var emailAddress: String,
 
     var requesterName: String?=null,
     var requesterPhone: String?=null,
@@ -35,3 +38,26 @@ data class NepInfoCheckDto(
     var requesterComment: String?=null,
     var requesterid: Long
 ){}
+
+data class NepDraftDto(
+    var id: Long,
+    var title: String?=null,
+    var scope: String?=null,
+    var normativeReference: String?=null,
+    var symbolsAbbreviatedTerms: String?=null,
+    var clause: String?=null,
+    var special: String?=null,
+    var preparedBy: String?=null,
+    var notification: String?=null
+){
+
+}
+
+data class NepDraftDecisionDto(
+    var draftId: Long,
+    var remarks: String?=null,
+    var accentTo: String?=null
+
+){
+
+}

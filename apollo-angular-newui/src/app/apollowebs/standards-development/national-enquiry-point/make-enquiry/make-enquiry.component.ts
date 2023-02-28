@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
 import {RootObject} from "../../../../core/store/data/std/std.model";
@@ -33,14 +33,18 @@ export class MakeEnquiryComponent implements OnInit {
       uploadedFiles: ['']
     });
     this.enquiryFormGroup = this.formBuilder.group({
-      requesterName: [''],
-      requesterComment: [''],
-      requesterCountry: [''],
-      requesterEmail: [''],
-      requesterInstitution: [''],
-      requesterPhone: [''],
-      requesterSubject: ['']
+      requesterName: ['', Validators.required],
+      requesterComment: ['', Validators.required],
+      requesterCountry: [],
+      requesterEmail: ['', Validators.required],
+      requesterInstitution: ['', Validators.required],
+      requesterPhone: ['', Validators.required],
+      requesterSubject: ['', Validators.required]
     });
+  }
+
+  get formEnquiryFormGroup(): any {
+    return this.enquiryFormGroup.controls;
   }
 
   showToasterSuccess(title:string,message:string){
@@ -62,8 +66,9 @@ export class MakeEnquiryComponent implements OnInit {
     this.notificationService.makeEnquiry(this.enquiryFormGroup.value).subscribe(
         (response) => {
           this.showToasterSuccess(response.httpStatus, `Enquiry Sent`);
-          this.onClickSaveUploads(response.body.id)
           this.SpinnerService.hide();
+          this.onClickSaveUploads(response.body.id)
+
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
@@ -97,9 +102,41 @@ export class MakeEnquiryComponent implements OnInit {
             }).then(r => this.enquiryFormGroup.reset());
             this.myInputVariable.nativeElement.value = '';
           },
+          (error: HttpErrorResponse) => {
+            alert(error.message);
+            this.SpinnerService.hide();
+          }
       );
     }
 
+  }
+
+  showNotification(from: any, align: any) {
+    const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
+
+    const color = Math.floor((Math.random() * 6) + 1);
+
+    $.notify({
+      icon: 'notifications',
+      message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+    }, {
+      type: type[color],
+      timer: 3000,
+      placement: {
+        from: from,
+        align: align
+      },
+      template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0} alert-with-icon" role="alert">' +
+          '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
+          '<i class="material-icons" data-notify="icon">notifications</i> ' +
+          '<span data-notify="title"></span> ' +
+          '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
+          '<div class="progress" data-notify="progressbar">' +
+          '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>' +
+          '</div>' +
+          '<a href="{3}" target="{4}" data-notify="url"></a>' +
+          '</div>'
+    });
   }
 
 }

@@ -2228,6 +2228,8 @@ export interface NepInfoCheckDto {
     enquiryId: number;
     feedbackSent: string;
     requesterEmail: string;
+    emailAddress: string;
+
 
     requesterName: string;
     requesterPhone: string;

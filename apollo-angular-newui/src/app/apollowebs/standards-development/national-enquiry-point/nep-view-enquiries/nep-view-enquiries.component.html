@@ -88,6 +88,10 @@
                                                     </div>
                                                         <div class="row col-12" *ngIf="selectedOption==='Yes'">
                                                             <div class="form-group col-12">
+                                                                <label>Subject</label>
+                                                                <input class="form-control" formControlName="requesterSubject" value="{{actionRequests?.requesterSubject}}" name="requesterSubject" type="text" >
+                                                            </div>
+                                                            <div class="form-group col-12">
                                                                 <label>Feed back</label>
                                                                 <textarea class="form-control" formControlName="feedbackSent"  name="feedbackSent" type="text" ></textarea>
                                                             </div>
@@ -97,11 +101,15 @@
                                                         <div class="row col-12" *ngIf="selectedOption==='No'">
                                                             <div class="form-group col-12">
                                                                 <label>Subject</label>
-                                                                <input class="form-control" formControlName="requesterSubject"  name="requesterSubject" type="text" >
+                                                                <input class="form-control" formControlName="requesterSubject" value="{{actionRequests?.requesterSubject}}" name="requesterSubject" type="text" >
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label>Request Comment</label>
+                                                                <label>Make Request</label>
                                                                 <textarea class="form-control" formControlName="requesterComment"  name="requesterComment" type="text" ></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Email Address of Division/Organization you are enquiring from</label>
+                                                                <input class="form-control" formControlName="emailAddress"  name="emailAddress" type="text" >
                                                             </div>
                                                             <input class="form-control" formControlName="enquiryId" value="{{actionRequests?.id}}"  name="enquiryId" type="hidden" >
                                                             <input class="form-control" formControlName="requesterEmail" value="{{actionRequests?.requesterEmail}}"  name="requesterEmail" type="hidden" >

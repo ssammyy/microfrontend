@@ -52,7 +52,9 @@ export class NepViewEnquiriesComponent implements OnInit {
       enquiryId: [],
       feedbackSent: [],
       requesterEmail: [],
-      requesterComment:[]
+      requesterComment:[],
+      requesterSubject:[],
+      emailAddress:[]
 
     });
     this.getNepRequests()
@@ -132,7 +134,8 @@ export class NepViewEnquiriesComponent implements OnInit {
       this.nepInfoFormGroup.patchValue(
           {
             enquiryId: this.actionRequests.id,
-            requesterEmail: this.actionRequests.requesterEmail
+            requesterEmail: this.actionRequests.requesterEmail,
+            requesterSubject: this.actionRequests.requesterSubject
           }
       );
 

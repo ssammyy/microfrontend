@@ -41,3 +41,13 @@ interface NationalEnquiryEntityRepository : JpaRepository<NationalEnquiryEntity,
     fun getNepDivisionResponse(): MutableList<NationalEnquiryEntity>
 
 }
+
+interface SdNepDraftRepository : JpaRepository<SdNepDraft, Long> {
+    @Query(
+        value = "SELECT * FROM SD_NEP_DRAFT  WHERE STATUS=0 ORDER BY ID DESC",nativeQuery = true)
+    fun getDraftNotification(): MutableList<SdNepDraft>
+}
+interface SdNepDraftUploadsEntityRepository : JpaRepository<SdNepDraftUploadsEntity, Long> {
+    fun findAllByNepDraftId(id: Long): SdNepDraftUploadsEntity
+}
+

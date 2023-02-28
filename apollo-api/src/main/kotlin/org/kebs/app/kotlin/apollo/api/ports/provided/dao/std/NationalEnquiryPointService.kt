@@ -33,7 +33,9 @@ class NationalEnquiryPointService(
     private val nepDocUploads: SdNepDocumentUploadsEntityRepository,
     private val nepRemarksRepository: NepRemarksRepository,
     private val nationalEnquiryEntityRepository: NationalEnquiryEntityRepository,
-    private val sdNepDocUploads: SdNepDocUploadsEntityRepository
+    private val sdNepDocUploads: SdNepDocUploadsEntityRepository,
+    private val nepDraftRepo: SdNepDraftRepository,
+    private val nepDraftDocRepo: SdNepDraftUploadsEntityRepository
 
 ) {
 
@@ -133,10 +135,10 @@ class NationalEnquiryPointService(
                 nepRemarksRepository.save(rem)
                 informationTrackerRepository.save(informationTracker)
             }?: throw Exception("REQUEST NOT FOUND")
-            val subject = "ENQUIRY RESPONSE"
-            val messageBody = nepInfoCheckDto.feedbackSent
+            val subject = nepInfoCheckDto.requesterSubject
+            val messageBody= "Dear ${nepInfoCheckDto.requesterName}, This is in response to your enquiry on the above subject.Herein is the feedback as per your request; ${nepInfoCheckDto.feedbackSent}"
             nepInfoCheckDto.requesterEmail?.let {
-                if (messageBody != null) {
+                if (subject != null) {
                     notifications.sendEmail(it, subject, messageBody)
                 }
             }
@@ -165,6 +167,15 @@ class NationalEnquiryPointService(
 
                 informationTrackerRepository.save(informationTracker)
             }?: throw Exception("REQUEST NOT FOUND")
+
+            val targetUrl = "https://kimsint.kebs.org/divResponse/${nepInfoCheckDto.enquiryId}";
+            val subject = nepInfoCheckDto.requesterSubject
+            val messageBody= "Dear Sir/Madam, find below an enquiry for your review and response; ${nepInfoCheckDto.requesterComment}. Click on the link below to respond. ${targetUrl}"
+            nepInfoCheckDto.emailAddress.let {
+                if (subject != null) {
+                    notifications.sendEmail(it, subject, messageBody)
+                }
+            }
 
         }
 
@@ -279,12 +290,10 @@ class NationalEnquiryPointService(
             nationalEnquiryEntityRepository.save(stsr)
         }?: throw Exception("REQUEST NOT FOUND")
 
-            val subject = "ENQUIRY RESPONSE"
-            val messageBody = nepInfoCheckDto.feedbackSent
+            val subject = nepInfoCheckDto.subject
+        val messageBody= "Dear ${nepInfoCheckDto.requesterName}, This is in response to your enquiry on the above subject.Herein is the feedback as per your request; ${nepInfoCheckDto.feedbackSent}"
             nepInfoCheckDto.requesterEmail?.let {
-                if (messageBody != null) {
-                    notifications.sendEmail(it, subject, messageBody)
-                }
+                notifications.sendEmail(it, subject, messageBody)
             }
 
 
@@ -387,6 +396,166 @@ class NationalEnquiryPointService(
         }
 
     }
+    //make enquiry and process initiation function
+    fun notificationOfReview(nep: NepDraftDto): SdNepDraft {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val sNep=SdNepDraft();
+
+        sNep.title=nep.title
+        sNep.scope=nep.scope
+        sNep.normativeReference=nep.normativeReference
+        sNep.symbolsAbbreviatedTerms=nep.symbolsAbbreviatedTerms
+        sNep.clause=nep.clause
+        sNep.special=nep.special
+        sNep.preparedBy=loggedInUser.id
+        sNep.datePrepared=Timestamp(System.currentTimeMillis())
+
+        return nepDraftRepo.save(sNep)
+    }
+
+    fun getDraftNotification(): MutableList<SdNepDraft>
+    {
+        return nepDraftRepo.getDraftNotification()
+    }
+
+    fun uploadNepDraftDoc(
+        uploads: SdNepDraftUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: String,
+        DocDescription: String
+    ): SdNepDraftUploadsEntity {
+
+        with(uploads) {
+
+            name = commonDaoServices.saveDocuments(docFile)
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description = DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = user
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return nepDraftDocRepo.save(uploads)
+    }
+
+    fun findUploadedDraftBYId(draftId: Long): SdNepDraftUploadsEntity {
+        return nepDraftDocRepo.findAllByNepDraftId(draftId)
+    }
+
+    fun decisionOnReviewDraft(
+        nep: NepDraftDecisionDto
+    ) : SdNepDraft {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val decision = nep.accentTo
+        val rem= NepRemarks()
+        val snep=SdNepDraft();
+        val informationTracker= InformationTracker()
+
+//        rem.requestId=nepInfoCheckDto.requestId
+//        rem.remarks=nepInfoCheckDto.comments
+//        rem.remarkBy=loggedInUser.firstName + loggedInUser.lastName
+//        rem.role=loggedInUser.typeOfUser
+//        rem.description="Remarks on Request recieved"
+//        rem.dateOfRemark= Timestamp(System.currentTimeMillis())
+        if (decision == "Yes") {
+
+            nepDraftRepo.findByIdOrNull(nep.draftId)?.let { sts ->
+
+                with(sts) {
+                    status=1
+
+                }
+                nepDraftRepo.save(sts)
+
+            }?: throw Exception("DRAFT NOT FOUND")
+
+
+        }else{
+
+            nepDraftRepo.findByIdOrNull(nep.draftId)?.let { sts ->
+
+                with(sts) {
+                    status=3
+
+                }
+                nepDraftRepo.save(sts)
+            }?: throw Exception("DRAFT NOT FOUND")
+
+        }
+
+        return snep
+    }
+
+    fun draftNotification(nep: NepDraftDto): SdNepDraft {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val sNep=SdNepDraft();
+        nepDraftRepo.findByIdOrNull(nep.id)?.let { sts ->
+
+            with(sts) {
+                status=2
+                notification=nep.notification
+
+            }
+            nepDraftRepo.save(sts)
+
+        }?: throw Exception("DRAFT NOT FOUND")
+
+
+        return sNep
+    }
+
+    fun decisionOnNotification(
+        nep: NepDraftDecisionDto
+    ) : SdNepDraft {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val decision = nep.accentTo
+        val rem= NepRemarks()
+        val snep=SdNepDraft();
+        val informationTracker= InformationTracker()
+
+//        rem.requestId=nepInfoCheckDto.requestId
+//        rem.remarks=nepInfoCheckDto.comments
+//        rem.remarkBy=loggedInUser.firstName + loggedInUser.lastName
+//        rem.role=loggedInUser.typeOfUser
+//        rem.description="Remarks on Request recieved"
+//        rem.dateOfRemark= Timestamp(System.currentTimeMillis())
+        if (decision == "Yes") {
+
+            nepDraftRepo.findByIdOrNull(nep.draftId)?.let { sts ->
+
+                with(sts) {
+                    status=4
+
+                }
+                nepDraftRepo.save(sts)
+
+            }?: throw Exception("DRAFT NOT FOUND")
+
+
+        }else{
+
+            nepDraftRepo.findByIdOrNull(nep.draftId)?.let { sts ->
+
+                with(sts) {
+                    status=1
+
+                }
+                nepDraftRepo.save(sts)
+            }?: throw Exception("DRAFT NOT FOUND")
+
+        }
+
+        return snep
+    }
+
+
+
+
+
 }
 
 private fun Boolean.toBoolean() {
