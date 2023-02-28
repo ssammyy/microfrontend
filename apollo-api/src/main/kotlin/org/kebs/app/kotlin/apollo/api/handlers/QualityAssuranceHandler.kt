@@ -4878,17 +4878,13 @@ class QualityAssuranceHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitNumber = req.paramOrNull("permitNumber")
                 ?: throw ExpectedDataNotFound("Required Permit Number, check config")
-
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
-            println(qaDaoServices.findPermitByPermitNumber(permitNumber))
-
             permitListAllApplications =
                 if (qaDaoServices.findPermitByPermitNumber(permitNumber).isEmpty()) {
                     qaDaoServices.listPermitsNotMigratedWebsite(
                         qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumber), map
                     )
                 } else {
-
                     qaDaoServices.listPermitsWebsite(
                         qaDaoServices.findPermitByPermitNumber(
                             permitNumber
