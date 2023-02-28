@@ -274,7 +274,7 @@ class ReportsController(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
 
-        map["QrCode"] = "${applicationMapProperties.baseEndPointValue}getAllAwardedPermits?permitNumber=$permitType${foundPermitDetails.permitNumber}"
+        map["QrCode"] = "${applicationMapProperties.baseEndPointValue}getAllAwardedPermits?permitNumber=${foundPermitDetails.permitNumber}"
 
 
 

@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.math.BigDecimal
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.sql.Date
 import javax.servlet.http.HttpServletResponse
 
@@ -773,7 +775,16 @@ class QualityAssuranceJSONControllers(
         val s = commonDaoServices.serviceMapDetails(appId)
         val permit = qaDaoServices.findPermitBYID(permitID)
 
+
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
+
+        val q = foundPermitDetails.permitNumber
+        val url =
+            "${applicationMapProperties.baseEndPointValue}/getAllAwardedPermits?permitNumber=" + URLEncoder.encode(
+                q,
+                StandardCharsets.UTF_8
+            )
+
 
         map["FirmName"] = foundPermitDetails.firmName.toString()
         map["PermitNo"] = foundPermitDetails.permitNumber.toString()
@@ -794,7 +805,8 @@ class QualityAssuranceJSONControllers(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
-        map["QrCode"] = foundPermitDetails.permitNumber.toString()
+        map["QrCode"] = url
+
         val user = permit.varField6?.toLong().let { it?.let { it1 -> commonDaoServices.findUserByID(it1) } }
 
 
