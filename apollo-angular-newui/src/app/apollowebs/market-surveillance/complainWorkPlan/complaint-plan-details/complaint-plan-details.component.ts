@@ -2524,9 +2524,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
 
     if (divVal === 'seizureDeclarationDetails') {
-      this.dataSaveSeizureDeclarationList = [];
-      this.seizureDeclarationForm.reset();
-      this.seizureForm.reset();
+      //this.dataSaveSeizureDeclarationList = [];
+      //this.seizureDeclarationForm.reset();
+      //this.seizureForm.reset();
       this.seizureForm.enable();
       this.addSeizureProductsStatus = true;
     }
@@ -4786,6 +4786,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveDataReport() {
+    //need permanent solution for picking user input
+    const inspectionDateControl = this.dataReportForm.get("inspectionDate");
+    inspectionDateControl.setValue(null);
     if (this.uploadedFilesDataReport) {
       for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {
         this.arrayOfUploadedDataReportFiles.push(this.uploadedFilesDataReport[i]);
@@ -4858,7 +4861,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           });
     }
     else{
-      this.msService.showError("Fill in all the fields! (Make sure you have uploaded a file)");
+      this.msService.showError("FILL IN ALL THE FIELDS! (MAKE SURE YOU\'VE UPLOADED A FILE)");
     }
   }
 
@@ -5377,6 +5380,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm.patchValue(selectedClone);
     this.seizureForm?.get('id').setValue(0);
     const paramDetails = selectedClone.seizureList;
+
     this.dataSaveSeizureDeclarationList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSeizureDeclarationList.push(paramDetails[i]);

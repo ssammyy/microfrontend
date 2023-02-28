@@ -2557,7 +2557,6 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   openModalAddDetails(divVal: string): void {
-    this.addProductsStatus = true;
     const arrHead = ['approveSchedule', 'uploadFiles', 'chargeSheetDetails', 'dataReportDetails', 'seizureDeclarationDetails', 'finalLabComplianceStatus',
       'addBsNumber', 'approvePreliminaryHOF', 'approvePreliminaryHOD', 'addPreliminaryRecommendation', 'approveFinalPreliminaryHOF', 'approveFinalPreliminaryHOD',
       'ssfAddComplianceStatus', 'addFinalRecommendationHOD', 'uploadDestructionNotificationFile',
@@ -2582,9 +2581,9 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
 
     if (divVal === 'seizureDeclarationDetails') {
-      this.dataSaveSeizureDeclarationList = [];
-      this.seizureDeclarationForm.reset();
-      this.seizureForm.reset();
+      //this.dataSaveSeizureDeclarationList = [];
+      //this.seizureDeclarationForm.reset();
+      //this.seizureForm.reset();
       this.seizureForm.enable();
       this.addSeizureProductsStatus = true;
     }
@@ -4844,6 +4843,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveDataReport() {
+    const inspectionDateControl = this.dataReportForm.get("inspectionDate");
+    inspectionDateControl.setValue(null);
     if (this.uploadedFilesDataReport) {
       for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {
         this.arrayOfUploadedDataReportFiles.push(this.uploadedFilesDataReport[i]);
@@ -4914,7 +4915,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.saveSeizureDeclaration();
           });
     } else {
-      this.msService.showError('Fill in all the fields! (Make sure you\'ve uploaded a file)');
+      this.msService.showError('FILL IN ALL THE FIELDS! (MAKE SURE YOU\'VE UPLOADED A FILE)');
     }
   }
 
