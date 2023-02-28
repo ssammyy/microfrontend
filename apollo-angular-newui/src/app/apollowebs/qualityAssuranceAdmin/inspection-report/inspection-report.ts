@@ -10,6 +10,7 @@ import * as CryptoJS from 'crypto-js';
 import swal from "sweetalert2";
 import {
     AllInspectionDetailsApplyDto,
+    FilesListDto,
     HaccpImplementationDetailsApplyDto,
     InspectionDetailsDto,
     InspectionDetailsDtoB,
@@ -87,6 +88,9 @@ export class InspectionReport implements OnInit {
     selectedPermitIdInspectionReport: number;
     cloned: boolean;
 
+    sta10FilesList: FilesListDto[] = [];
+    public uploadedFiles: FileList;
+
 
     constructor(private formBuilder: FormBuilder,
                 public router: Router,
@@ -120,37 +124,37 @@ export class InspectionReport implements OnInit {
         this.technicalForm = this.formBuilder.group({
             id: [''],
             firmImplementedAnyManagementSystem: ['', Validators.required],
-            firmImplementedAnyManagementSystemRemarks: ['', Validators.required],
+            firmImplementedAnyManagementSystemRemarks: [''],
             indicateRelevantProductStandardCodes: ['', Validators.required],
-            indicateRelevantProductStandardCodesRemarks: ['', Validators.required],
+            indicateRelevantProductStandardCodesRemarks: [''],
 
         });
         this.inspectionDetails = this.formBuilder.group({
             id: [''],
             inspectionRecommendationId: [''],
             complianceApplicableStatutory: ['', Validators.required],
-            complianceApplicableStatutoryRemarks: ['', Validators.required],
+            complianceApplicableStatutoryRemarks: [''],
             plantHouseKeeping: ['', Validators.required],
-            plantHouseKeepingRemarks: ['', Validators.required],
+            plantHouseKeepingRemarks: [''],
             handlingComplaints: ['', Validators.required],
-            handlingComplaintsRemarks: ['', Validators.required],
+            handlingComplaintsRemarks: [''],
             qualityControlPersonnel: ['', Validators.required],
-            qualityControlPersonnelRemarks: ['', Validators.required],
+            qualityControlPersonnelRemarks: [''],
             testingFacility: ['', Validators.required],
-            testingFacilityRemarks: ['', Validators.required],
+            testingFacilityRemarks: [''],
         });
 
         this.inspectionDetailsB = this.formBuilder.group({
             id: [''],
             inspectionRecommendationId: [''],
             equipmentCalibration: ['', Validators.required],
-            equipmentCalibrationRemarks: ['', Validators.required],
+            equipmentCalibrationRemarks: [''],
             qualityRecords: ['', Validators.required],
-            qualityRecordsRemarks: ['', Validators.required],
+            qualityRecordsRemarks: [''],
             recordsNonconforming: ['', Validators.required],
-            recordsNonconformingRemarks: ['', Validators.required],
+            recordsNonconformingRemarks: [''],
             productRecallRecords: ['', Validators.required],
-            productRecallRecordsRemarks: ['', Validators.required],
+            productRecallRecordsRemarks: [''],
 
         });
 
@@ -164,15 +168,15 @@ export class InspectionReport implements OnInit {
             id: [''],
             inspectionRecommendationId: [''],
             validitySmarkPermit: ['', Validators.required],
-            validitySmarkPermitRemarks: ['', Validators.required],
+            validitySmarkPermitRemarks: [''],
             useTheSmark: ['', Validators.required],
-            useTheSmarkRemarks: ['', Validators.required],
+            useTheSmarkRemarks: [''],
             changesAffectingProductCertification: ['', Validators.required],
-            changesAffectingProductCertificationRemarks: ['', Validators.required],
+            changesAffectingProductCertificationRemarks: [''],
             changesBeenCommunicatedKebs: ['', Validators.required],
-            changesBeenCommunicatedKebsRemarks: ['', Validators.required],
+            changesBeenCommunicatedKebsRemarks: [''],
             samplesDrawn: ['', Validators.required],
-            samplesDrawnRemarks: ['', Validators.required],
+            samplesDrawnRemarks: [''],
 
         });
 
@@ -188,17 +192,17 @@ export class InspectionReport implements OnInit {
             id: [''],
             inspectionRecommendationId: [''],
             designFacilitiesConstructionLayout: ['', Validators.required],
-            designFacilitiesConstructionLayoutRemarks: ['', Validators.required],
+            designFacilitiesConstructionLayoutRemarks: [''],
             maintenanceSanitationCleaningPrograms: ['', Validators.required],
-            maintenanceSanitationCleaningProgramsRemarks: ['', Validators.required],
+            maintenanceSanitationCleaningProgramsRemarks: [''],
             personnelHygiene: ['', Validators.required],
-            personnelHygieneRemarks: ['', Validators.required],
+            personnelHygieneRemarks: [''],
             transportationConveyance: ['', Validators.required],
-            transportationConveyanceRemarks: ['', Validators.required],
+            transportationConveyanceRemarks: [''],
             determinationCriticalParameters: ['', Validators.required],
-            determinationCriticalParametersRemarks: ['', Validators.required],
+            determinationCriticalParametersRemarks: [''],
             evidenceCorrectiveActions: ['', Validators.required],
-            evidenceCorrectiveActionsRemarks: ['', Validators.required],
+            evidenceCorrectiveActionsRemarks: [''],
 
 
         });
@@ -234,41 +238,6 @@ export class InspectionReport implements OnInit {
         }
     }
 
-    onClickNext(valid: boolean) {
-        if (valid) {
-            switch (this.step) {
-                case 1:
-                    // this.stepSoFar = {...this.sta1Form?.value};
-                    break;
-                case 2:
-                    //   this.stepSoFar = {...this.sta10Form?.value};
-                    break;
-                case 3:
-                    //   this.stepSoFar = {...this.sta10FormA?.value};
-                    break;
-                case 4:
-                    //    this.stepSoFar = {...this.sta10FormB?.value};
-                    break;
-                case 5:
-                    //  this.stepSoFar = {...this.sta10FormC?.value};
-                    break;
-                case 6:
-                    // this.stepSoFar = {...this.sta10FormD?.value};
-                    break;
-                case 7:
-                    //     this.stepSoFar = {...this.sta10FormE?.value};
-                    break;
-                case 8:
-                    //   this.stepSoFar = {...this.sta10FormF?.value};
-                    break;
-                case 9:
-                    //     this.stepSoFar = {...this.sta1Form?.value};
-                    break;
-            }
-            this.step += 1;
-            //(`Clicked and step = ${this.step}`);
-        }
-    }
 
     get formTechnicalForm(): any {
         return this.technicalForm.controls;
@@ -436,7 +405,8 @@ export class InspectionReport implements OnInit {
                 //(this.sta10Details.id.toString());
                 this.internalService.updateInspectionReportProductLabelling(this.permitId, this.allInspectionReportDetails.id.toString(), this.productLabellingDtos).subscribe(
                     (data) => {
-                        this.productLabellingDtos = data;
+                        this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+                        this.productLabellingDtos = this.allInspectionReportDetails.productLabelling;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
                         this.loading = false
@@ -540,7 +510,9 @@ export class InspectionReport implements OnInit {
                 //(this.sta10Details.id.toString());
                 this.internalService.updateInspectionReportOperation(this.permitId, this.allInspectionReportDetails.id.toString(), this.operationProcessAndControlsDetailsDtos).subscribe(
                     (data) => {
-                        this.operationProcessAndControlsDetailsDtos = data;
+                        this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
+
+                        this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls;
                         this.onClickUpdateStep(this.step);
                         this.SpinnerService.hide();
                         this.loading = false
@@ -802,16 +774,16 @@ export class InspectionReport implements OnInit {
                 if (data.responseCode === '00') {
                     this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
 
-                        this.technicalForm.patchValue(this.allInspectionReportDetails.technicalDetailsDto);
-                        this.inspectionDetails.patchValue(this.allInspectionReportDetails.inspectionDetailsDto);
-                        this.inspectionDetailsB.patchValue(this.allInspectionReportDetails.inspectionDetailsDtoB);
-                        this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
-                        this.standardizationMarkSchemeFormGroup.patchValue( this.allInspectionReportDetails.standardizationMarkScheme);
-                        this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
-                        this.haccpImplementationDetailsApplyFormGroup.patchValue(this.allInspectionReportDetails.haccpImplementationDetails);
-                        this.recommendationsFormGroup.patchValue(this.allInspectionReportDetails);
+                    this.technicalForm.patchValue(this.allInspectionReportDetails.technicalDetailsDto);
+                    this.inspectionDetails.patchValue(this.allInspectionReportDetails.inspectionDetailsDto);
+                    this.inspectionDetailsB.patchValue(this.allInspectionReportDetails.inspectionDetailsDtoB);
+                    this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
+                    this.standardizationMarkSchemeFormGroup.patchValue(this.allInspectionReportDetails.standardizationMarkScheme);
+                    this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
+                    this.haccpImplementationDetailsApplyFormGroup.patchValue(this.allInspectionReportDetails.haccpImplementationDetails);
+                    this.recommendationsFormGroup.patchValue(this.allInspectionReportDetails);
 
-                        this.technicalForm.controls['id'].setValue('')
+                    this.technicalForm.controls['id'].setValue('')
 
                     this.SpinnerService.hide()
                     this.loading = false
@@ -824,7 +796,56 @@ export class InspectionReport implements OnInit {
 
             },
         );
+        this.SpinnerService.hide()
+        this.loading = false
+        this.hideCloneButton = false
     }
 
+    onClickSaveInspectionReportDocs() {
+        if (this.sta10FilesList.length > 0) {
+            if (this?.uploadedFiles) {
+                this.fileListSaveDetails();
+            }
+        } else if (this.uploadedFiles?.length > 0) {
+            this.fileListSaveDetails();
+        }
+
+    }
+
+    fileListSaveDetails() {
+        if (this.uploadedFiles.length > 0) {
+            this.SpinnerService.show();
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            formData.append('permitID', String(this.permitId));
+            formData.append('permitID', String(this.inspectionDetails));
+            formData.append('inspectionReportId', this.allInspectionReportDetails.id.toString())
+            formData.append('data', 'INSPECTION_REPORT'); //will be saved under varField1
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.qaService.qaSaveInspectionReport(formData).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('Additional Documents Uploaded Successfully', () => {
+                            // this.loadPermitDetails(data);
+                            this.loading = false
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        } else {
+            this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
+        }
+    }
 
 }

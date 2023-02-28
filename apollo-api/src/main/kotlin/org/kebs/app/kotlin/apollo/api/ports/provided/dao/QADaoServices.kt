@@ -522,6 +522,58 @@ class QADaoServices(
         }
     }
 
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitResubmitDetails(
+        permitID: Long,
+        body: ResubmitApplicationDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(permit) {
+                when (permitType.id) {
+                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                    }
+
+                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                        userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                    }
+
+                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                    }
+                }
+                resubmitRemarks = body.resubmitRemarks
+                changesMadeStatus = 1
+                permitStatus = applicationMapProperties.mapQaStatusPInspectionReportApproval
+            }
+
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
 
     @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1789,8 +1841,8 @@ class QADaoServices(
             bsNumber?.toUpperCase()
             permitId = permitID
             permitRefNumber = permitRefNUMBER
-            status = map.activeStatus
-            labResultsStatus = map.inactiveStatus
+            status = 1
+            labResultsStatus = 0
             when {
                 update -> {
                     modifiedBy = commonDaoServices.concatenateName(user)

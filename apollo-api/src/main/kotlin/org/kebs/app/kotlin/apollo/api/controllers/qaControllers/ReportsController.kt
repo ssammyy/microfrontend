@@ -274,12 +274,12 @@ class ReportsController(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
 
-        map["QrCode"] = "${applicationMapProperties.baseEndPointValue}getAllAwardedPermits?permitNumber=$permitType${foundPermitDetails.permitNumber}"
+      //  map["QrCode"] = "${applicationMapProperties.baseEndPointValue}getAllAwardedPermits?permitNumber=${foundPermitDetails.permitNumber}"
 
 
 
 
-//        map["QrCode"] = "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
+        map["QrCode"] = "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
 
         return Pair(map, filePath ?: throw ExpectedDataNotFound("MISSING FILE PATH"))
     }

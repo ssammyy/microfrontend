@@ -154,6 +154,30 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+    fun updatePermitDetailsResubmit(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID =req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val body = req.body<ResubmitApplicationDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ResubmitApplicationDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitResubmitDetails(permitID, body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
     fun updatePermitDetailsBrand(req: ServerRequest): ServerResponse {
         return try {
