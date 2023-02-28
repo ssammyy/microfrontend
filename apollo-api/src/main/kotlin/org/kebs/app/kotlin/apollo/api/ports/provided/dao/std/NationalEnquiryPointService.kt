@@ -78,6 +78,7 @@ class NationalEnquiryPointService(
         DocDescription: String
     ): SdNepDocumentUploadsEntity {
 
+
         with(uploads) {
 
             name = commonDaoServices.saveDocuments(docFile)
@@ -91,7 +92,17 @@ class NationalEnquiryPointService(
             createdOn = commonDaoServices.getTimestamp()
         }
 
-        return nepDocUploads.save(uploads)
+        val saved= nepDocUploads.save(uploads)
+        nationalEnquiryPointRepository.findByIdOrNull(saved.nepDocumentId)?.let { sts ->
+
+            with(sts) {
+                docUploadStatus = 1
+
+            }
+        }?: throw Exception("ENQUIRY NOT FOUND")
+
+        return saved
+
     }
 
     fun findUploadedReportFileBYId(enquiryId: Long): SdNepDocumentUploadsEntity {
@@ -155,6 +166,7 @@ class NationalEnquiryPointService(
             nationalEnquiry.requesterSubject=nepInfoCheckDto.requesterSubject
             nationalEnquiry.requestDate=Timestamp(System.currentTimeMillis())
             nationalEnquiry.requesterid=nepInfoCheckDto.enquiryId
+            nationalEnquiry.docUploadStatus=nepInfoCheckDto.docUploadStatus
             nationalEnquiryPointRepository.findByIdOrNull(nepInfoCheckDto.enquiryId)?.let { sts ->
 
                 with(sts) {
@@ -163,19 +175,20 @@ class NationalEnquiryPointService(
                 }
                 nationalEnquiryPointRepository.save(sts)
                 nepRemarksRepository.save(rem)
-                nationalEnquiryEntityRepository.save(nationalEnquiry)
-
+                val up=nationalEnquiryEntityRepository.save(nationalEnquiry)
                 informationTrackerRepository.save(informationTracker)
-            }?: throw Exception("REQUEST NOT FOUND")
-
-            val targetUrl = "https://kimsint.kebs.org/divResponse/${nepInfoCheckDto.enquiryId}";
-            val subject = nepInfoCheckDto.requesterSubject
-            val messageBody= "Dear Sir/Madam, find below an enquiry for your review and response; ${nepInfoCheckDto.requesterComment}. Click on the link below to respond. ${targetUrl}"
-            nepInfoCheckDto.emailAddress.let {
-                if (subject != null) {
-                    notifications.sendEmail(it, subject, messageBody)
+                val targetUrl = "https://kimsint.kebs.org/divResponse/${up.id}";
+                val subject = nepInfoCheckDto.requesterSubject
+                val messageBody= "Dear Sir/Madam, find below an enquiry for your review and response; ${nepInfoCheckDto.requesterComment}. Click on the link below to respond. ${targetUrl}"
+                nepInfoCheckDto.emailAddress.let {
+                    if (subject != null) {
+                        if (it != null) {
+                            notifications.sendEmail(it, subject, messageBody)
+                        }
+                    }
                 }
-            }
+
+            }?: throw Exception("REQUEST NOT FOUND")
 
         }
 
@@ -203,6 +216,7 @@ class NationalEnquiryPointService(
             createdOn = commonDaoServices.getTimestamp()
         }
 
+
         return sdNepDocUploads.save(uploads)
     }
 
@@ -214,7 +228,7 @@ class NationalEnquiryPointService(
     }
 
     fun responseOnEnquiryInfo(
-        nepInfoCheckDto: NepInfoCheckDto
+        nepInfoCheckDto: DivResponseDto
     ) : NationalEnquiryEntity {
         //val loggedInUser = commonDaoServices.loggedInUserDetails()
 
@@ -224,7 +238,8 @@ class NationalEnquiryPointService(
 
                 with(sts) {
                     status=1
-                    requesterFeedBack=nepInfoCheckDto.feedbackSent
+                    requesterFeedBack=nepInfoCheckDto.requesterFeedBack
+                    requesterSubject=nepInfoCheckDto.requesterSubject
 
                 }
                 nationalEnquiryEntityRepository.save(sts)
@@ -290,10 +305,12 @@ class NationalEnquiryPointService(
             nationalEnquiryEntityRepository.save(stsr)
         }?: throw Exception("REQUEST NOT FOUND")
 
-            val subject = nepInfoCheckDto.subject
+            val subject = nepInfoCheckDto.requesterSubject
         val messageBody= "Dear ${nepInfoCheckDto.requesterName}, This is in response to your enquiry on the above subject.Herein is the feedback as per your request; ${nepInfoCheckDto.feedbackSent}"
             nepInfoCheckDto.requesterEmail?.let {
-                notifications.sendEmail(it, subject, messageBody)
+                if (subject != null) {
+                    notifications.sendEmail(it, subject, messageBody)
+                }
             }
 
 

@@ -54,7 +54,8 @@ export class NepViewEnquiriesComponent implements OnInit {
       requesterEmail: [],
       requesterComment:[],
       requesterSubject:[],
-      emailAddress:[]
+      emailAddress:[],
+      docUploadStatus:[]
 
     });
     this.getNepRequests()
@@ -135,7 +136,8 @@ export class NepViewEnquiriesComponent implements OnInit {
           {
             enquiryId: this.actionRequests.id,
             requesterEmail: this.actionRequests.requesterEmail,
-            requesterSubject: this.actionRequests.requesterSubject
+            requesterSubject: this.actionRequests.requesterSubject,
+            docUploadStatus: this.actionRequests.docUploadStatus
           }
       );
 

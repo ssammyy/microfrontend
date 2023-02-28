@@ -2,11 +2,11 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
-import {RootObject} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NgxSpinnerService} from "ngx-spinner";
+import {ComStdRequest, Countries} from "../../../../core/store/data/std/std.model";
 declare const $: any;
 @Component({
   selector: 'app-make-enquiry',
@@ -17,6 +17,7 @@ export class MakeEnquiryComponent implements OnInit {
   blob: Blob;
   public uploadedFiles:  FileList;
   loadingText: string;
+  selectedUser: number;
   @ViewChild('uploadFile') myInputVariable: ElementRef;
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
@@ -67,6 +68,15 @@ export class MakeEnquiryComponent implements OnInit {
         (response) => {
           this.showToasterSuccess(response.httpStatus, `Enquiry Sent`);
           this.SpinnerService.hide();
+          swal.fire({
+            title: 'Thank you....',
+            html:'Your enquiry has been successfully sent. A response shall be made to your E-mail Address',
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+          }).then(r => this.enquiryFormGroup.reset());
           this.onClickSaveUploads(response.body.id)
 
         },
@@ -90,16 +100,16 @@ export class MakeEnquiryComponent implements OnInit {
           (data: any) => {
             this.SpinnerService.hide();
             this.uploadedFiles = null;
-            //console.log(data);
             swal.fire({
               title: 'Thank you....',
-              html:'Your enquiry has been successfully sent. A response shall be made to your E-mail Address',
+              html:'Attachment has been uploaded',
               buttonsStyling: false,
               customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
               },
               icon: 'success'
             }).then(r => this.enquiryFormGroup.reset());
+
             this.myInputVariable.nativeElement.value = '';
           },
           (error: HttpErrorResponse) => {
@@ -138,5 +148,7 @@ export class MakeEnquiryComponent implements OnInit {
           '</div>'
     });
   }
+
+
 
 }

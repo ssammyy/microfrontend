@@ -51,4 +51,9 @@ class NationalEnquiryPointEntity {
     @Column(name = "STATUS")
     @Basic
     var status : Long? =0
+
+    @Column(name = "DOCUMENT_UPLOAD_STATUS")
+    @Basic
+    var docUploadStatus : Long? =0
+
 }

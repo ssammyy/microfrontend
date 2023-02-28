@@ -46,10 +46,10 @@ export class NationalEnquiryPointReferalComponent implements OnInit {
           },
       );
     this.nepInfoFormGroup = this.formBuilder.group({
-      requesterFeedBack: [],
-      requestId: [],
-        requesterid:[]
-
+        requesterFeedBack: [],
+        requestId: [],
+        requesterid:[],
+        requesterSubject:[]
     });
     this.getNepDivisionRequests(this.enquiryId)
   }
@@ -120,7 +120,8 @@ export class NationalEnquiryPointReferalComponent implements OnInit {
       this.nepInfoFormGroup.patchValue(
           {
               requesterid: this.actionRequests.requesterid,
-              requestId: this.actionRequests.id
+              requestId: this.actionRequests.id,
+              requesterSubject: this.actionRequests.requesterSubject,
           }
       );
 

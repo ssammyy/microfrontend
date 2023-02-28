@@ -147,10 +147,10 @@ class NationalEnquiryPointController(
     {
         return nationalEnquiryPointService.getNepDivisionRequests(enquiryId)
     }
-    /////
+
 
     @PostMapping("/anonymous/National_enquiry_point/responseOnEnquiryInfo")
-    fun responseOnEnquiryInfo(@RequestBody nep: NepInfoCheckDto): ServerResponse? {
+    fun responseOnEnquiryInfo(@RequestBody nep: DivResponseDto): ServerResponse? {
         return ServerResponse(
             HttpStatus.OK,"Successfully uploaded Justification",nationalEnquiryPointService.
             responseOnEnquiryInfo(nep))
