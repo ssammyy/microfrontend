@@ -8,7 +8,7 @@ import {
     DepartmentResponse, DraftNotification,
     FeedbackEmail, finalSubmit,
     HOPTasks, InboundNotification, InfoAvailableNo,
-    InfoAvailableYes, ISAdoptionProposal, NepEnquiries, NepInfoCheckDto, NepNotification,
+    InfoAvailableYes, ISAdoptionProposal, NepEnquiries, NepInfoCheckDto, NepInfoDto, NepNotification, NepRequests,
     Notifications,
     NWAWorkShopDraft,
     RootObject
@@ -63,6 +63,19 @@ export class NepPointService {
             }),
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewUpload(enquiryId: any): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_VIEW_ATTACHMENT);
+        const params = new HttpParams().set('enquiryId', enquiryId);
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
                 return throwError(fault);
             })
         );
@@ -125,10 +138,49 @@ export class NepPointService {
         return this.http.get<NepEnquiries>(url, {params}).pipe();
     }
 
+    public getNepDivisionRequests(enquiryId: any): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_FETCH_REQUESTS);
+        const params = new HttpParams().set('enquiryId', enquiryId);
+        return this.http.get<NepRequests>(url, {params}).pipe();
+    }
+
+    public getNepDivisionResponse(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_FETCH_RESPONSE);
+        const params = new HttpParams();
+        return this.http.get<NepRequests>(url, {params}).pipe();
+    }
+
+
     public submitInfoResponse(nepInfoCheckDto: NepInfoCheckDto): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_INFORMATION_AVAILABLE_YES);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_SEND_RESPONSE);
         const params = new HttpParams();
         return this.http.post<NepInfoCheckDto>(url, nepInfoCheckDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public responseOnEnquiryInfo(nepInfoCheckDto: NepInfoDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_DIV_SEND_RESPONSE);
+        const params = new HttpParams();
+        return this.http.post<NepInfoDto>(url, nepInfoCheckDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public sendFeedBack(nepInfoCheckDto: NepInfoDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_SEND_FEED_BACK);
+        const params = new HttpParams();
+        return this.http.post<NepInfoDto>(url, nepInfoCheckDto, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

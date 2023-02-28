@@ -39,7 +39,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_smark_background_image.png"]]></imageExpression>
+				<imageExpression><![CDATA["/Users/marvinmakauusalamatechnology/IdeaProjects/apollo_new/conf/test/reports/images/kebs_smark_background_image.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="10" y="27" width="454" height="20" uuid="614eea48-cb68-464f-be18-c03f01c3dccf"/>
@@ -317,7 +317,7 @@
 			</staticText>
 			<image>
 				<reportElement x="230" y="343" width="50" height="50" uuid="0bf5d339-9145-4306-a6d1-de2437403f27"/>
-				<imageExpression><![CDATA[$P{SmarkLogo}]]></imageExpression>
+				<imageExpression><![CDATA["/Users/marvinmakauusalamatechnology/IdeaProjects/apollo_new/conf/test/reports/images/KEBS_SMARK.jpg"]]></imageExpression>
 			</image>
 			<textField textAdjust="StretchHeight">
 				<reportElement x="212" y="469" width="298" height="51" uuid="41a0736b-c6d5-456c-b2a4-889ab48e29a3"/>
@@ -360,7 +360,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression><![CDATA["/app/apps_home/apollo/conf/test/reports/images/kebs_dmark_background_image.png"]]></imageExpression>
+				<imageExpression><![CDATA["/Users/marvinmakauusalamatechnology/IdeaProjects/apollo_new/conf/test/reports/images/kebs_dmark_background_image.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="80" y="30" width="390" height="20" uuid="a5ffe669-cb88-4eec-a0c2-86ba85191ebd"/>

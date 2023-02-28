@@ -213,7 +213,7 @@ export class InvoiceConsolidateComponent implements OnInit {
     this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
         (data) => {
           this.SpinnerService.hide();
-          this.qaService.showError('INVOICE CONSOLIDATED SUCCESSFULLY!');
+          this.qaService.showSuccess('INVOICE CONSOLIDATED SUCCESSFULLY!');
           this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
         },
         (error: HttpErrorResponse) => {

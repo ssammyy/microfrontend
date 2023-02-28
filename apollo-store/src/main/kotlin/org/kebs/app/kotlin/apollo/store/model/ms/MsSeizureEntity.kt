@@ -19,22 +19,6 @@ class MsSeizureEntity : Serializable {
     var marketTownCenter: String? = null
 
     @Basic
-    @Column(name = "ADDITIONAL_OUTLET_DETAILS")
-    var additionalOutletDetails: String? = null
-
-    @Column(name = "WORKPLAN_GENERATED_ID")
-    @Basic
-    var workPlanGeneratedID: Long? = null
-
-    @Column(name = "DOC_ID")
-    @Basic
-    var docId: Long? = null
-
-    @Column(name = "MAIN_SEIZURE_ID")
-    @Basic
-    var mainSeizureId: Long? = null
-
-    @Basic
     @Column(name = "NAME_OF_OUTLET")
     var nameOfOutlet: String? = null
 
@@ -47,28 +31,8 @@ class MsSeizureEntity : Serializable {
     var brand: String? = null
 
     @Basic
-    @Column(name = "PRODUCT")
-    var product: String? = null
-
-    @Basic
-    @Column(name = "DATE_SEIZURE")
-    var dateSeizure: Date? = null
-
-    @Basic
-    @Column(name = "DATE_DESTRUCTED")
-    var dateDestructed: Date? = null
-
-    @Basic
-    @Column(name = "DATE_RELEASE")
-    var dateRelease: Date? = null
-
-    @Basic
     @Column(name = "SECTOR")
     var sector: String? = null
-
-    @Basic
-    @Column(name = "PRODUCTS_RELEASE")
-    var productsRelease: String? = null
 
     @Basic
     @Column(name = "REASON_SEIZURE")
@@ -173,5 +137,42 @@ class MsSeizureEntity : Serializable {
     @Basic
     @Column(name = "DELETED_ON")
     var deletedOn: Timestamp? = null
+
+    @Column(name = "WORKPLAN_GENERATED_ID")
+    @Basic
+    var workPlanGeneratedID: Long? = null
+
+    @Column(name = "DOC_ID")
+    @Basic
+    var docId: Long? = null
+
+    @Basic
+    @Column(name = "ADDITIONAL_OUTLET_DETAILS")
+    var additionalOutletDetails: String? = null
+
+
+    @Column(name = "MAIN_SEIZURE_ID")
+    @Basic
+    var mainSeizureId: Long? = null
+
+    @Basic
+    @Column(name = "DATE_SEIZURE")
+    var dateSeizure: Date? = null
+
+    @Basic
+    @Column(name = "PRODUCTS_RELEASE")
+    var productsRelease: String? = null
+
+    @Basic
+    @Column(name = "DATE_DESTRUCTED")
+    var dateDestructed: Date? = null
+
+    @Basic
+    @Column(name = "DATE_RELEASE")
+    var dateRelease: Date? = null
+
+    @Basic
+    @Column(name = "PRODUCT")
+    var product: String? = null
 
 }

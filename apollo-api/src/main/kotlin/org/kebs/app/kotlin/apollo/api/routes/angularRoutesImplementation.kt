@@ -642,23 +642,26 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "internal-users".nest {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
+                    GET("/permits-list-ongoing", internalUserhandler::getAllOngoingList)
+                    GET("/permits-list-complete", internalUserhandler::getAllCompleteList)
                     GET("/permit-detail", internalUserhandler::getPermitDetails)
-//                    GET("/standards-list", internalUserhandler::getStandardsList)
+//                  GET("/standards-list", internalUserhandler::getStandardsList)
                 }
                 "/apply".nest {
                     "/permit".nest {
+                        POST("/resubmit-details", internalUserhandler::updatePermitDetailsResubmit)
                         POST("/section", internalUserhandler::updatePermitDetailsSection)
                         POST("/update-brand", internalUserhandler::updatePermitDetailsBrand)
                         POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
-                        POST("/difference-status-activate", internalUserhandler::updatePermitDetailsDifferenceStatusActivate)
+                        POST(
+                            "/difference-status-activate",
+                            internalUserhandler::updatePermitDetailsDifferenceStatusActivate
+                        )
                         POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
                         POST("/assign-assessor", internalUserhandler::updatePermitDetailsAssignAssessor)
                         POST("/add-standards", internalUserhandler::updatePermitDetailsStandards)
                         POST("/schedule-inspection", internalUserhandler::updatePermitDetailsScheduleInspection)
-                        POST(
-                            "/schedule-assessment-visit",
-                            internalUserhandler::updatePermitDetailsScheduleAssessmentVisit
-                        )
+                        POST("/schedule-assessment-visit", internalUserhandler::updatePermitDetailsScheduleAssessmentVisit)
                         "/inspection".nest {
                             GET(
                                 "/check_if_inspection_report_exists",
@@ -698,20 +701,41 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         }
                         POST("/ssf-details", internalUserhandler::updatePermitDetailsSaveSSFDetails)
                         POST("/lab-save-pdf-selected", internalUserhandler::updatePermitDetailsSaveSelectedLabPDF)
-                        POST(
-                            "/lab-save-compliance-status",
-                            internalUserhandler::updatePermitDetailsLabResultsComplianceStatus
-                        )
+                        POST("/lab-save-compliance-status", internalUserhandler::updatePermitDetailsLabResultsComplianceStatus)
                         POST("/ssf-compliance-status", internalUserhandler::updatePermitDetailsSSFCompliance)
                         POST("/save-recommendation", internalUserhandler::updatePermitDetailsSaveRecommendation)
-                        POST("/approve-reject-inspection-report", internalUserhandler::updatePermitDetailsApproveRejectInspection)
-                        POST("/approve-reject-justification-report", internalUserhandler::updatePermitDetailsApproveRejectJustification)
-                        POST("/approve-reject-assessment-report", internalUserhandler::updatePermitDetailsApproveRejectAssessmentReport)
-                        POST("/approve-reject-recommendation", internalUserhandler::updatePermitDetailsApproveRejectRecommendation)
-                        POST("/qam-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitQAM)
-                        POST("/psc-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitPSC)
-                        POST("/pac-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitPAC)
-                        POST("/pcm-approve-reject-permit", internalUserhandler::updatePermitDetailsApproveRejectPermitPCM)
+                        POST(
+                            "/approve-reject-inspection-report",
+                            internalUserhandler::updatePermitDetailsApproveRejectInspection
+                        )
+                        POST(
+                            "/approve-reject-justification-report",
+                            internalUserhandler::updatePermitDetailsApproveRejectJustification
+                        )
+                        POST(
+                            "/approve-reject-assessment-report",
+                            internalUserhandler::updatePermitDetailsApproveRejectAssessmentReport
+                        )
+                        POST(
+                            "/approve-reject-recommendation",
+                            internalUserhandler::updatePermitDetailsApproveRejectRecommendation
+                        )
+                        POST(
+                            "/qam-approve-reject-permit",
+                            internalUserhandler::updatePermitDetailsApproveRejectPermitQAM
+                        )
+                        POST(
+                            "/psc-approve-reject-permit",
+                            internalUserhandler::updatePermitDetailsApproveRejectPermitPSC
+                        )
+                        POST(
+                            "/pac-approve-reject-permit",
+                            internalUserhandler::updatePermitDetailsApproveRejectPermitPAC
+                        )
+                        POST(
+                            "/pcm-approve-reject-permit",
+                            internalUserhandler::updatePermitDetailsApproveRejectPermitPCM
+                        )
 
                     }
 //                    GET("/permit-detail", internalUserhandler::getPermitDetails)

@@ -706,8 +706,7 @@ GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllCompanie
 GET https://kims.kebs.org:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermits?permitNumber=9154
 
 ###
-GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByCompanyName?
-    companyName=MAISHA MABATI MILLS LTD
+GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByCompanyName?companyName=HASBA (K) LTD/ ENERGIZER HOLDINGS INC. – ALEXANDRIA EGYPT
 
 
 ###

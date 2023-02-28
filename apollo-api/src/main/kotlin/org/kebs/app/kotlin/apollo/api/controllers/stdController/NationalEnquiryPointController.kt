@@ -1,12 +1,15 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.NationalEnquiryEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.NationalEnquiryPointRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.SdNepDocUploadsEntityRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.SdNepDraftRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Propagation
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import javax.servlet.http.HttpServletResponse
 
 
 @RestController
@@ -23,6 +27,8 @@ class NationalEnquiryPointController(
     private val nationalEnquiryPointRepository: NationalEnquiryPointRepository,
     private val sdNepDocUploads: SdNepDocUploadsEntityRepository,
     private val nationalEnquiryEntityRepository: NationalEnquiryEntityRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val nepDraftRepo: SdNepDraftRepository,
 ) {
 
     //********************************************************** deployment endpoints **********************************************************
@@ -51,12 +57,12 @@ class NationalEnquiryPointController(
     ): CommonDaoServices.MessageSuccessFailDTO {
 
 
-        val nepRequest = nationalEnquiryPointRepository.findByIdOrNull(enquiryId)?: throw Exception("REQUEST ID DOES NOT EXIST")
+       // val nepRequest = nationalEnquiryPointRepository.findByIdOrNull(enquiryId)?: throw Exception("ENQUIRY ID DOES NOT EXIST")
 
         docFile.forEach { u ->
             val upload = SdNepDocumentUploadsEntity()
             with(upload) {
-                nepDocumentId = nepRequest.id
+                nepDocumentId = enquiryId
 
             }
             nationalEnquiryPointService.uploadNepDocument(
@@ -113,11 +119,49 @@ class NationalEnquiryPointController(
         return sm
     }
 
+    //View NEP Enquiry Document
+    @GetMapping("/National_enquiry_point/viewRequestUpload")
+    fun viewPDFile(
+        response: HttpServletResponse,
+        @RequestParam("enquiryId") enquiryId: Long
+    ) {
+
+        val fileUploaded = nationalEnquiryPointService.findUploadedReportFileBYId(enquiryId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
     @GetMapping("/anonymous/National_enquiry_point/getNepDivisionRequests")
     @ResponseBody
-    fun getNepDivisionRequests(): MutableList<NationalEnquiryEntity>
+    fun getNepDivisionRequests(@RequestParam("enquiryId") enquiryId: Long): MutableList<NationalEnquiryEntity>
     {
-        return nationalEnquiryPointService.getNepDivisionRequests()
+        return nationalEnquiryPointService.getNepDivisionRequests(enquiryId)
+    }
+
+
+    @PostMapping("/anonymous/National_enquiry_point/responseOnEnquiryInfo")
+    fun responseOnEnquiryInfo(@RequestBody nep: DivResponseDto): ServerResponse? {
+        return ServerResponse(
+            HttpStatus.OK,"Successfully uploaded Justification",nationalEnquiryPointService.
+            responseOnEnquiryInfo(nep))
+
+    }
+
+    @GetMapping("/National_enquiry_point/getNepDivisionResponse")
+    @ResponseBody
+    fun getNepDivisionResponse(): MutableList<NationalEnquiryEntity>
+    {
+        return nationalEnquiryPointService.getNepDivisionResponse()
     }
 
 
@@ -129,6 +173,16 @@ class NationalEnquiryPointController(
         return ServerResponse(
             HttpStatus.OK,"Saved",nationalEnquiryPointService.
             decisionOnEnquiryInfo(nepInfoCheckDto))
+    }
+
+    @PostMapping("/National_enquiry_point/sendFeedBack")
+    fun sendFeedBack(@RequestBody nepInfoCheckDto: NepInfoCheckDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(
+            HttpStatus.OK,"Saved",nationalEnquiryPointService.
+            sendFeedBack(nepInfoCheckDto))
     }
 
     //Retrieves requests made by users on the front end
@@ -166,4 +220,73 @@ class NationalEnquiryPointController(
     fun divisionResponse(@RequestBody departmentResponse: DepartmentResponse) {
         nationalEnquiryPointService.departmentOrganizationResponse(departmentResponse, departmentResponse.taskId)
     }
+
+    @PostMapping("/National_enquiry_point/notificationOfReview")
+    fun notificationOfReview(@RequestBody nep: NepDraftDto): ServerResponse? {
+        return ServerResponse(
+            HttpStatus.OK,"Successfully uploaded Review",nationalEnquiryPointService.
+            notificationOfReview(nep))
+
+    }
+
+    @GetMapping("/National_enquiry_point/getDraftNotification")
+    @ResponseBody
+    fun getDraftNotification(): MutableList<SdNepDraft>
+    {
+        return nationalEnquiryPointService.getDraftNotification()
+    }
+
+    @PostMapping("/National_enquiry_point/uploadNepDraftDoc")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadNepDraftDoc(
+        @RequestParam("draftId") draftId: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+
+        val nepRequest = nepDraftRepo.findByIdOrNull(draftId)?: throw Exception("DRAFT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = SdNepDraftUploadsEntity()
+            with(upload) {
+                nepDraftId = nepRequest.id
+
+            }
+            nationalEnquiryPointService.uploadNepDraftDoc(
+                upload,
+                u,
+                "UPLOADS",
+                "NEP Request",
+                "Request Document"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+    @GetMapping("/National_enquiry_point/viewDraftUpload")
+    fun viewDraftUpload(
+        response: HttpServletResponse,
+        @RequestParam("draftId") draftId: Long
+    ) {
+
+        val fileUploaded = nationalEnquiryPointService.findUploadedDraftBYId(draftId)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+
 }

@@ -50,6 +50,10 @@ class NationalEnquiryEntity {
     @Basic
     var requesterComment : String? = null
 
+    @Column(name = "FEED_BACK")
+    @Basic
+    var requesterFeedBack : String? = null
+
     @Column(name = "REQUEST_DATE")
     @Basic
     var requestDate: Timestamp?=null
@@ -57,4 +61,10 @@ class NationalEnquiryEntity {
     @Column(name = "STATUS")
     @Basic
     var status : Long? =0
+
+    @Column(name = "DOCUMENT_UPLOAD_STATUS")
+    @Basic
+    var docUploadStatus : Long? =0
+
+
 }

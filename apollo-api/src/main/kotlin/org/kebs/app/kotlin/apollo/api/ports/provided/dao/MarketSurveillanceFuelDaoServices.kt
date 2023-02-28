@@ -1863,6 +1863,7 @@ class MarketSurveillanceFuelDaoServices(
             invoiceNumber = body.invoiceNumber
             disposal = body.disposal
             remarks = body.remarks
+            countryOfOrigin = body.countryOfOrigin
             receiversDate = body.receiversDate
             lbIdAnyAomarking = body.lbIdAnyAomarking
             lbIdBatchNo = body.lbIdBatchNo
@@ -3635,6 +3636,7 @@ class MarketSurveillanceFuelDaoServices(
             data.invoiceNumber,
             data.disposal,
             data.remarks,
+            data.countryOfOrigin,
             data.sampleCollectionNumber,
             null,
             data.lbIdAnyAomarking,

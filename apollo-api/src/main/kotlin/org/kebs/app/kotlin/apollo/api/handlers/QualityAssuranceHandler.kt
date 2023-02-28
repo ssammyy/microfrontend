@@ -3075,7 +3075,7 @@ class QualityAssuranceHandler(
             var batchDetailDifference: Long? = null
 
             if (permit.sendApplication == map.activeStatus) {
-                batchDetail = if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.fmarkGenerated == 1) {
+                batchDetail = if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark) {
                     val findSMarkID = qaDaoServices.findSmarkWithFmarkId(permitID).smarkId
                     val findSMark = qaDaoServices.findPermitBYCompanyIDAndId(findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"), loggedInUser.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"))
                     val invoiceFound =  qaDaoServices.findPermitInvoiceByPermitIDOrNull(permitID)
@@ -4878,17 +4878,13 @@ class QualityAssuranceHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitNumber = req.paramOrNull("permitNumber")
                 ?: throw ExpectedDataNotFound("Required Permit Number, check config")
-
             var permitListAllApplications: List<KebsWebistePermitEntityDto>? = null
-            println(qaDaoServices.findPermitByPermitNumber(permitNumber))
-
             permitListAllApplications =
                 if (qaDaoServices.findPermitByPermitNumber(permitNumber).isEmpty()) {
                     qaDaoServices.listPermitsNotMigratedWebsite(
                         qaDaoServices.findPermitByPermitNumberNotMigrated(permitNumber), map
                     )
                 } else {
-
                     qaDaoServices.listPermitsWebsite(
                         qaDaoServices.findPermitByPermitNumber(
                             permitNumber
@@ -5032,7 +5028,6 @@ class QualityAssuranceHandler(
             val companyName = req.paramOrNull("companyName")
                 ?: throw ExpectedDataNotFound("Required Company Name, check config")
 
-            commonDaoServices.findCompanyProfileByName(companyName)
 
             var permitListAllApplicationsSmark: List<KebsWebistePermitEntityDto>? = null
             var permitListAllApplicationsDmark: List<KebsWebistePermitEntityDto>? = null //smarks

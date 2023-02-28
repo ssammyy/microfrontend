@@ -1,0 +1,110 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title">Standards</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+
+                            <div class="material-datatables table-responsive">
+                                <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="knw">Name</th>
+                                        <th class="sl">Email</th>
+                                        <th class="requestNumber">Phone Number</th>
+                                        <th class="department">Organisation</th>
+                                        <th class="action">Country</th>
+                                        <th class="action">Subject</th>
+                                        <th class="action">Comment</th>
+                                        <th class="action">View Document</th>
+                                        <th class="action">Date</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr  *ngFor="let nepEnquiry of nepEnquiries let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{nepEnquiry.requesterName}}</td>
+                                        <td>{{nepEnquiry.requesterEmail}}</td>
+                                        <td>{{nepEnquiry.requesterPhone}}</td>
+                                        <td>{{nepEnquiry.requesterInstitution}}</td>
+                                        <td>{{nepEnquiry.requesterCountry}}</td>
+                                        <td>{{nepEnquiry.requesterSubject}}</td>
+                                        <td>{{nepEnquiry.requesterComment}}</td>
+                                        <td>{{nepEnquiry.requestDate | date: 'dd/MM/yyyy'}}</td>
+                                        <td *ngIf="nepEnquiry.docUploadStatus==1"><button mat-raised-button type="button" (click)="viewUpload( nepEnquiry.requesterid,'Download'+nepEnquiry.requesterid, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                            <i class="fa fa-download"></i>Download</button></td>
+                                        <td *ngIf="nepEnquiry.docUploadStatus==0"><button mat-raised-button type="button" style="width: 118px"   class="btn btn-success btn-sm ">
+                                            <i class="fa fa-download"></i>NA</button></td>
+                                        <td><a  (click)="onOpenModal(nepEnquiry,'viewRequests')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 150px;">Comment on Enquiry</a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+                                <div class="modal fade" id="viewRequests" tabindex="-1" role="dialog" aria-labelledby="viewRequestsModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="viewRequestsModalLabel">NEP Response</h3>
+                                                <button type="button" class="close" #closeModalEditedDraft data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form (ngSubmit)="onSubmit()" [formGroup]="nepInfoFormGroup"
+                                                  class="form">
+                                                <div class="modal-body">
+                                                    <div class="row col-12" >
+                                                        <div class="form-group col-12">
+                                                            <label>Subject</label>
+                                                            <textarea class="form-control" formControlName="requesterSubject" value="{{actionRequests?.requesterSubject}}" name="requesterSubject" type="text" ></textarea>
+                                                        </div>
+                                                        <div class="form-group col-12">
+                                                            <label>Feed back</label>
+                                                            <textarea class="form-control" formControlName="requesterFeedBack"  name="requesterFeedBack" type="text" ></textarea>
+                                                        </div>
+                                                        <input class="form-control" formControlName="requestId" value="{{actionRequests?.id}}"  name="requestId" type="hidden" >
+                                                        <input class="form-control" formControlName="requesterid" value="{{actionRequests?.requesterid}}"  name="requesterid" type="hidden" >
+
+                                                </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm"  >Send</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

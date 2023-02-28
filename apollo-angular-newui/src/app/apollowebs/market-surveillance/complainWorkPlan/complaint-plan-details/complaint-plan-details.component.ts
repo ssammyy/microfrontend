@@ -71,7 +71,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   @ViewChild('selectList', { static: false }) selectList: ElementRef;
 
   active: Number = 0;
-  averageCompliance: number =0;
+  averageCompliance: number = 0;
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
   selectedFile: File;
@@ -1671,8 +1671,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentDateDetails = new Date();
+    //console.log("the current data report dto: "+ this.workPlanInspection?.dataReportDto);
 
     if(this.workPlanInspection?.dataReportDto?.length!=0){
+
         this.calculateAverageCompliance();
     }
 
@@ -1904,7 +1906,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       packaging: ['', Validators.required],
       labellingIdentification: null,
       fileRefNumber: null,
-      referencesStandards: ['', Validators.required],
+      referencesStandards: null,
       sizeTestSample: ['', Validators.required],
       sizeRefSample: null,
       condition: ['', Validators.required],
@@ -1931,6 +1933,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       invoiceNumber: null,
       disposal: ['', Validators.required],
       remarks: ['', Validators.required],
+      countryOfOrigin: null,
       sourceProductEvidence: null,
       sampleCollectionNumber: null,
     });
@@ -2521,9 +2524,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     }
 
     if (divVal === 'seizureDeclarationDetails') {
-      this.dataSaveSeizureDeclarationList = [];
-      this.seizureDeclarationForm.reset();
-      this.seizureForm.reset();
+      //this.dataSaveSeizureDeclarationList = [];
+      //this.seizureDeclarationForm.reset();
+      //this.seizureForm.reset();
       this.seizureForm.enable();
       this.addSeizureProductsStatus = true;
     }
@@ -2552,6 +2555,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (divVal === 'updateIOPreliminary') {
       this.updatePreliminaryReportHOFHODIO();
       console.log(divVal);
+    }
+
+    if (divVal === "dataReportDetails"){
+      this.addProductsStatus = true;
     }
 
     this.updateFieldReport();
@@ -2712,7 +2719,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   public onCustomDataReportAction(event: any): void {
-
     switch (event.action) {
       case 'viewRecord':
         this.viewDataReportRecord(event.data);
@@ -4780,6 +4786,9 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveDataReport() {
+    //need permanent solution for picking user input
+    const inspectionDateControl = this.dataReportForm.get("inspectionDate");
+    inspectionDateControl.setValue(null);
     if (this.uploadedFilesDataReport) {
       for ( let i = 0; i < this.uploadedFilesDataReport.length; i++) {
         this.arrayOfUploadedDataReportFiles.push(this.uploadedFilesDataReport[i]);
@@ -4804,6 +4813,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       this.dataSaveDataReport.productsList = this.dataSaveDataReportParamList;
       const formData = new FormData();
       formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      console.log("ref number is: "+ this.workPlanInspection.referenceNumber);
       formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber);
       formData.append('docTypeName', 'DATA_REPORT_UPLOAD');
       formData.append('data', JSON.stringify(this.dataSaveDataReport));
@@ -4851,7 +4861,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
           });
     }
     else{
-      this.msService.showError("Fill in all the fields! (Make sure you have uploaded a file)");
+      this.msService.showError("FILL IN ALL THE FIELDS! (MAKE SURE YOU\'VE UPLOADED A FILE)");
     }
   }
 
@@ -5370,6 +5380,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm.patchValue(selectedClone);
     this.seizureForm?.get('id').setValue(0);
     const paramDetails = selectedClone.seizureList;
+
     this.dataSaveSeizureDeclarationList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSeizureDeclarationList.push(paramDetails[i]);

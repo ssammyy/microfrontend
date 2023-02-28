@@ -60,6 +60,10 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value.angular}")
     val baseUrlQRValue: String = "https://127.0.0.1/qr-code-qa-permit-scan"
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.endPointValue}")
+    val baseEndPointValue: String = "https://127.0.0.1:8005"
+
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.permit.questionnaire}")
     val mapPermitQuestionnaire: Int? = null
 
@@ -244,20 +248,20 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.tax.rate}")
     val mapKebsTaxRate: BigDecimal = BigDecimal.ZERO
 
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.extra.products.cost}")
-    val mapQaSmarkMediumExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
-
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.extra.products.cost}")
-    val mapQaSmarkJuakaliExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
-
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.domestic.amountToPay}")
-    val mapQaDmarkDomesticAmountToPay: BigDecimal = 0.0000.toBigDecimal()
-
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.foregin.amountToPay}")
-    val mapQaDmarkForeginAmountToPay: BigDecimal = 0.0000.toBigDecimal()
-
-    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.amountToPay}")
-    val mapQaFmarkAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.extra.products.cost}")
+//    val mapQaSmarkMediumExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
+//
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.extra.products.cost}")
+//    val mapQaSmarkJuakaliExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
+//
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.domestic.amountToPay}")
+//    val mapQaDmarkDomesticAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+//
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.foregin.amountToPay}")
+//    val mapQaDmarkForeginAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+//
+//    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.amountToPay}")
+//    val mapQaFmarkAmountToPay: BigDecimal = 0.0000.toBigDecimal()
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.type.foregin.status}")
     val mapQaDmarkForeginStatus: Int = 0
@@ -835,68 +839,90 @@ class ApplicationMapProperties {
     val mapMSFuelInspectionEnded: Long = 0L
 
 
-
     /**********************ALL MS PROCESS NAME START***********************************/
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.generateWorkPlan}")
     val mapMSWorkPlanInspectionGenerateWorkPlan: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.submittedForApproval}")
     val mapMSWorkPlanInspectionSubmittedForApproval: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.approvedWorPlan}")
     val mapMSWorkPlanInspectionApprovedWorPlan: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.rejectedWorPlan}")
     val mapMSWorkPlanInspectionRejectedWorPlan: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.resubmitWorkPlanModification}")
     val mapMSWorkPlanInspectionResubmitWorkPlanModification: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.startOnSiteActivities}")
     val mapMSWorkPlanInspectionStartOnSiteActivities: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.endOnSiteActivities}")
     val mapMSWorkPlanInspectionEndOnSiteActivities: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.bsNumberAdded}")
     val mapMSWorkPlanInspectionBsNumberAdded: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.lIMSResultsAvailable}")
     val mapMSWorkPlanInspectionLIMSResultsAvailable: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.labResultsAnalysed}")
     val mapMSWorkPlanInspectionLabResultsAnalysed: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.preliminaryReportGenerated}")
     val mapMSWorkPlanInspectionPreliminaryReportGenerated: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.preliminaryReportApprovedHOF}")
     val mapMSWorkPlanInspectionPreliminaryReportApprovedHOF: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.preliminaryReportRejectedHOF}")
     val mapMSWorkPlanInspectionPreliminaryReportRejectedHOF: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.preliminaryReportModified}")
     val mapMSWorkPlanInspectionPreliminaryReportModified: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.preliminaryReportApprovedHODRM}")
     val mapMSWorkPlanInspectionPreliminaryReportApprovedHODRM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.preliminaryReportRejectedHODRM}")
     val mapMSWorkPlanInspectionPreliminaryReportRejectedHODRM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportGenerated}")
     val mapMSWorkPlanInspectionFinalReportGenerated: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportApprovedHOF}")
     val mapMSWorkPlanInspectionFinalReportApprovedHOF: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportRejectedHOF}")
     val mapMSWorkPlanInspectionFinalReportRejectedHOF: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportModified}")
     val mapMSWorkPlanInspectionFinalReportModified: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportApprovedHODRM}")
     val mapMSWorkPlanInspectionFinalReportApprovedHODRM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportApprovedDIRECTOR}")
     val mapMSWorkPlanInspectionFinalReportApprovedDIRECTOR: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportRejectedHODRM}")
     val mapMSWorkPlanInspectionFinalReportRejectedHODRM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.finalReportRejectedDIRECTOR}")
     val mapMSWorkPlanInspectionFinalReportRejectedDirector: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.recommendationsADDED}")
     val mapMSWorkPlanInspectionRecommendationsADDED: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.directorRemarksADDED}")
     val mapMSWorkPlanInspectionDirectorRemarksADDED: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.recommendationDoneMSIO}")
     val mapMSWorkPlanInspectionRecommendationDoneMSIO: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.work.plan.step.msProcessEnded}")
     val mapMSWorkPlanInspectionMSProcessEnded: Long = 0L
-
-
-
-
 
 
     /**********************ALL MS PROCESS NAME END***********************************/

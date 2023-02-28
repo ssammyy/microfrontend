@@ -83,6 +83,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     dtTriggerRemarks: Subject<any> = new Subject<any>();
     dtOptionsSCS: DataTables.Settings = {};
     dtTriggerSCS: Subject<any> = new Subject<any>();
+    dtOptionsVersion: DataTables.Settings = {};
+    dtTriggerVersion: Subject<any> = new Subject<any>();
     dtOptionsDOCS: DataTables.Settings = {};
     dtTriggerDOCS: Subject<any> = new Subject<any>();
     dtTrigger2: Subject<any> = new Subject<any>();
@@ -229,7 +231,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             edit: false,
             delete: false,
             custom: [
-                {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">View PDF</i>'},
+                {name: 'viewRecord', title: '<a class="btn btn-sm btn-primary">View PDF</a>'},
                 {name: 'saveRecord', title: '<i class="btn btn-sm btn-primary">Save PDF</i>'},
             ],
             position: 'right', // left|right
@@ -456,7 +458,7 @@ export class PermitDetailsAdminComponent implements OnInit {
         });
         this.resubmitForm = this.formBuilder.group({
             resubmitRemarks: ['', Validators.required],
-            resubmittedDetails: ['', Validators.required],
+            resubmittedDetails: null,
             // resubmittedDetails: ['']
             // resubmittedDetails: [this.resubmitDetail, Validators.required]
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
@@ -465,6 +467,8 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.remarksForm = this.formBuilder.group({
             remarksValue: ['', Validators.required],
         });
+
+
 
         this.uploadForm = this.formBuilder.group({
             upLoadDescription: ['', Validators.required],
@@ -770,15 +774,24 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
     saveLIMSPDFRecord(data: LIMSFilesFoundDto) {
-        const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf.pdfName === this.selectedPDFFileName);
-        if (savedPdf === null) {
+
+        if (this.selectedLabResults.savedPDFFiles.length === 0) {
             console.log('TEST 101 REF NO SAVE: ' + data.fileName);
             this.selectedPDFFileName = data.fileName;
             this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
             this.currDiv = 'pdfSaveCompliance';
             window.$('#myModal2').modal('show');
-        } else {
-            this.qaService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ', Already Saved');
+        }else {
+                const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
+                if (savedPdf.pdfName === null || savedPdf.pdfName === undefined) {
+                console.log('TEST 101 REF NO SAVE: ' + data.fileName);
+                this.selectedPDFFileName = data.fileName;
+                this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
+                this.currDiv = 'pdfSaveCompliance';
+                window.$('#myModal2').modal('show');
+            } else {
+                this.qaService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ', Already Saved');
+            }
         }
     }
 
@@ -796,14 +809,15 @@ export class PermitDetailsAdminComponent implements OnInit {
                 this.blob = new Blob([dataPdf], {type: applicationType});
                 // tslint:disable-next-line:prefer-const
                 let downloadURL = window.URL.createObjectURL(this.blob);
-                if (applicationType === 'application/pdf') {
+                // if (applicationType === 'application/pdf') {
                     window.open(downloadURL, '_blank');
-                } else {
-                    const link = document.createElement('a');
-                    link.href = downloadURL;
-                    link.download = fileName;
-                    link.click();
-                }
+
+                // } else {
+                //     const link = document.createElement('a');
+                //     link.href = downloadURL;
+                //     link.download = fileName;
+                //     link.click();
+                // }
                 // this.pdfUploadsView = dataPdf;
             },
             error => {
@@ -1083,6 +1097,37 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+    onClickSaveResubmitFormResults(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Resubmit the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'RE-SUBMIT APPLICATION\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.saveResubmitFormResults(valid);
+            });
+    }
+
+    saveResubmitFormResults(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaUpdateResubmit(this.resubmitForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('RE-SUBMITTED DETAILS, SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
     onClickSaveBrandFormResults(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
             // tslint:disable-next-line:max-line-length
@@ -1338,6 +1383,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                                 if (data.responseCode === '00') {
                                     this.SpinnerService.hide();
                                     this.loadPermitDetails(data);
+                                    // tslint:disable-next-line:max-line-length
                                     this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {this.closePopUpsModal2();});
                                 } else {
                                     this.SpinnerService.hide();

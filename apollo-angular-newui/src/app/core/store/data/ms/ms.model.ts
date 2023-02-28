@@ -1593,6 +1593,7 @@ export class SampleSubmissionDto {
     invoiceNumber: string;
     disposal: string;
     remarks: string;
+    countryOfOrigin: string;
     sampleCollectionNumber: number;
     sampleCollectionProduct: number;
     lbIdAnyAomarking: string;

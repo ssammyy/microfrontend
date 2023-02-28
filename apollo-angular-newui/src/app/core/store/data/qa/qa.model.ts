@@ -38,7 +38,7 @@ export class FirmTypeEntityDto {
 }
 
 export class PermitEntityDto {
-    id: bigint;
+    id: number;
     firmName: string;
     permitRefNumber: string;
     productName: string;
@@ -250,7 +250,7 @@ export class ResubmitApplicationDto {
 
 
 export class PermitEntityDetails {
-    id: bigint;
+    id: number;
     permitNumber: string;
     permitRefNumber: string;
     firmName: string;
@@ -306,7 +306,7 @@ export class PermitEntityDetails {
     processStatusID: number;
     fmarkGeneratedID: number;
     oldPermitStatus: number;
-    Field7: string;
+    varField7: string;
     productStandards: number;
     assignOfficerStatus: boolean;
     assignOfficerID: number;
