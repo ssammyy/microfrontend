@@ -19,15 +19,16 @@
                     <div>
                         <form (ngSubmit)="sendEnquiry()" [formGroup]="enquiryFormGroup" class="form">
                             <div class="form-group row">
-                                <label class="col-sm-2 col-form-label">Name</label>
+                                <label class="col-sm-2 col-form-label">Name <span style="font-size: xx-small; color: red;">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="requesterName" name="requesterName" placeholder="Enter your name">
+                                    <input [class.is-invalid]="formEnquiryFormGroup.requesterName.invalid && formEnquiryFormGroup.requesterName.touched" type="text" class="form-control" formControlName="requesterName" name="requesterName" placeholder="Enter your name">
                                 </div>
                             </div>
+
                             <div class="form-group row">
-                                <label  class="col-sm-2 col-form-label">Country</label>
+                                <label  class="col-sm-2 col-form-label">Country <span style="font-size: xx-small; color: red;">*</span></label>
                                 <div class="col-sm-10">
-                                    <select id="country" formControlName="requesterCountry" name="requesterCountry" class="form-control">
+                                    <select  id="country" formControlName="requesterCountry" name="requesterCountry" class="form-control">
                                         <option value="Afganistan">Afghanistan</option>
                                         <option value="Albania">Albania</option>
                                         <option value="Algeria">Algeria</option>
@@ -278,38 +279,38 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-2 col-form-label">Institution</label>
+                                <label class="col-sm-2 col-form-label">Institution <span style="font-size: xx-small; color: red;">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="requesterInstitution" name="requesterInstitution" placeholder="Enter your Institution">
+                                    <input type="text" [class.is-invalid]="formEnquiryFormGroup.requesterInstitution.invalid && formEnquiryFormGroup.requesterInstitution.touched" class="form-control" formControlName="requesterInstitution" name="requesterInstitution" placeholder="Enter your Institution">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-2 col-form-label">E-mail</label>
+                                <label class="col-sm-2 col-form-label">E-mail <span style="font-size: xx-small; color: red;">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="email" class="form-control" formControlName="requesterEmail"  name="requesterEmail" placeholder="Enter your E-mail">
+                                    <input type="email" class="form-control" [class.is-invalid]="formEnquiryFormGroup.requesterEmail.invalid && formEnquiryFormGroup.requesterEmail.touched" formControlName="requesterEmail"  name="requesterEmail" placeholder="Enter your E-mail">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label  class="col-sm-2 col-form-label">Phone</label>
+                                <label  class="col-sm-2 col-form-label">Phone <span style="font-size: xx-small; color: red;">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="requesterPhone" name="requesterPhone" placeholder="Enter your phone number">
+                                    <input type="text" [class.is-invalid]="formEnquiryFormGroup.requesterPhone.invalid && formEnquiryFormGroup.requesterPhone.touched" class="form-control" formControlName="requesterPhone" name="requesterPhone" placeholder="Enter your phone number">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label  class="col-sm-2 col-form-label">Subject</label>
+                                <label  class="col-sm-2 col-form-label">Subject <span style="font-size: xx-small; color: red;">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" formControlName="requesterSubject" name="requesterSubject" placeholder="Enter the Subject of your Enquiry">
+                                    <input type="text" [class.is-invalid]="formEnquiryFormGroup.requesterSubject.invalid && formEnquiryFormGroup.requesterSubject.touched" class="form-control" formControlName="requesterSubject" name="requesterSubject" placeholder="Enter the Subject of your Enquiry">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-2 col-form-label">Comments</label>
+                                <label class="col-sm-2 col-form-label">Comments <span style="font-size: xx-small; color: red;">*</span></label>
                                 <div class="col-sm-10">
-                                    <textarea class="form-control" formControlName="requesterComment" name = "requesterComment" rows="2  "></textarea>
+                                    <textarea [class.is-invalid]="formEnquiryFormGroup.requesterComment.invalid && formEnquiryFormGroup.requesterComment.touched" class="form-control" formControlName="requesterComment" name = "requesterComment" rows="2"></textarea>
                                 </div>
                             </div>
                             <div class="row col-12">
                                 <div class="form-group col-12">
-                                    <label><b>Attach File  </b> <span style="font-size: xx-small; color: red;"></span></label><br>
+                                    <label><b>Attach File  </b> <span style="font-size: xx-small; color: blue;">Optional</span></label><br>
                                     <form #demoForm="ngForm">
 <!--                                        <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>-->
                                         <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  type="file"  fileslimit="1" accept=".pdf" #uploadFile></file-upload>
@@ -318,10 +319,18 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-10 pull-right">
-                                    <button type="submit" class="btn btn-sm btn-primary">Enquire</button>
+                                    <button *ngIf="enquiryFormGroup.valid" [disabled]="!enquiryFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit Enquiry</button>
+
                                 </div>
                             </div>
                         </form>
+                        <div class="col-sm-10 pull-right">
+                            <button *ngIf="!enquiryFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                                    (click)="showNotification('top','right')">Submit Enquiry
+                            </button>
+                            <span style="color: orangered">Fields marked with (*) are required</span>
+
+                        </div>
                     </div>
                 </div>
             </div>

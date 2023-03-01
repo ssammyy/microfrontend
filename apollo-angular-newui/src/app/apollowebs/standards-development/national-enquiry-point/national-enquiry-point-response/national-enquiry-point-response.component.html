@@ -37,8 +37,9 @@
                                         <th class="action">Country</th>
                                         <th class="action">Subject</th>
                                         <th class="action">Comment</th>
-                                        <th class="action">View Document</th>
                                         <th class="action">Date</th>
+                                        <th class="action">View Document</th>
+
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -52,9 +53,11 @@
                                         <td>{{nepEnquiry.requesterCountry}}</td>
                                         <td>{{nepEnquiry.requesterSubject}}</td>
                                         <td>{{nepEnquiry.requesterComment}}</td>
-                                        <td>{{nepEnquiry.requestDate}}</td>
-                                        <td><button mat-raised-button type="button" (click)="viewUpload( nepEnquiry.requesterid,'Download'+nepEnquiry.requesterid, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                        <td>{{nepEnquiry.requestDate | date: 'dd/MM/yyyy'}}</td>
+                                        <td *ngIf="nepEnquiry.docUploadStatus==1"><button mat-raised-button type="button" (click)="viewUpload( nepEnquiry.requesterid,'Download'+nepEnquiry.requesterid, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
                                             <i class="fa fa-download"></i>Download</button></td>
+                                        <td *ngIf="nepEnquiry.docUploadStatus==0"><button mat-raised-button type="button"  target="_blank" class="btn btn-info btn-sm  " style="width: 113px">
+                                            <i class="fa fa-download"></i>NA</button></td>
                                         <td><a  (click)="onOpenModal(nepEnquiry,'viewRequests')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 150px;">Comment on Enquiry</a></td>
                                     </tr>
                                     </tbody>
@@ -65,7 +68,7 @@
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="viewRequestsModalLabel">NEP Response</h3>
+                                                <h3 class="modal-title" id="viewRequestsModalLabel">Forward Response</h3>
                                                 <button type="button" class="close" #closeModalEditedDraft data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -75,8 +78,12 @@
                                                 <div class="modal-body">
                                                     <div class="row col-12" >
                                                         <div class="form-group col-12">
+                                                            <label>Subject</label>
+                                                            <textarea class="form-control" formControlName="requesterSubject" value="{{actionRequests?.requesterSubject}}"  name="requesterSubject" type="text" ></textarea>
+                                                        </div>
+                                                        <div class="form-group col-12">
                                                             <label>Feed back</label>
-                                                            <textarea class="form-control" formControlName="feedbackSent"  name="feedbackSent" type="text" ></textarea>
+                                                            <textarea class="form-control" formControlName="feedbackSent" value="{{actionRequests?.requesterComment}}"  name="feedbackSent" type="text" ></textarea>
                                                         </div>
                                                         <input class="form-control" formControlName="requestId" value="{{actionRequests?.id}}"  name="requestId" type="hidden" >
                                                         <input class="form-control" formControlName="enquiryId" value="{{actionRequests?.requesterid}}"  name="enquiryId" type="hidden" >
@@ -87,7 +94,7 @@
 
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm"  >Send</button>
                                                 </div>
                                             </form>
                                         </div>

@@ -37,9 +37,9 @@
                                         <th class="action">Country</th>
                                         <th class="action">Subject</th>
                                         <th class="action">Comment</th>
-                                        <th class="action">View Document</th>
                                         <th class="action">Date</th>
-                                        <th></th>
+                                        <th class="action">View Document</th>
+                                        <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -53,7 +53,9 @@
                                         <td>{{nepEnquiry.requesterSubject}}</td>
                                         <td>{{nepEnquiry.requesterComment}}</td>
                                         <td>{{nepEnquiry.requestDate}}</td>
-                                        <td><button mat-raised-button type="button" (click)="viewUpload( nepEnquiry.id,'Download'+nepEnquiry.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                        <td *ngIf="nepEnquiry.docUploadStatus==0"><button mat-raised-button type="button" style="width: 118px"   class="btn btn-success btn-sm ">
+                                            <i class="fa fa-download"></i>NA</button></td>
+                                        <td *ngIf="nepEnquiry.docUploadStatus==1"><button mat-raised-button type="button" (click)="viewUpload( nepEnquiry.id,'Download'+nepEnquiry.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
                                             <i class="fa fa-download"></i>Download</button></td>
                                         <td><a  (click)="onOpenModal(nepEnquiry,'viewRequests')" class="btn btn-outline-info btn-sm tooltips" data-placement="top"  data-original-title="Approve" style="width: 150px;">Comment on Enquiry</a></td>
                                     </tr>
@@ -88,6 +90,10 @@
                                                     </div>
                                                         <div class="row col-12" *ngIf="selectedOption==='Yes'">
                                                             <div class="form-group col-12">
+                                                                <label>Subject</label>
+                                                                <input class="form-control" formControlName="requesterSubject" value="{{actionRequests?.requesterSubject}}" name="requesterSubject" type="text" >
+                                                            </div>
+                                                            <div class="form-group col-12">
                                                                 <label>Feed back</label>
                                                                 <textarea class="form-control" formControlName="feedbackSent"  name="feedbackSent" type="text" ></textarea>
                                                             </div>
@@ -97,21 +103,26 @@
                                                         <div class="row col-12" *ngIf="selectedOption==='No'">
                                                             <div class="form-group col-12">
                                                                 <label>Subject</label>
-                                                                <input class="form-control" formControlName="requesterSubject"  name="requesterSubject" type="text" >
+                                                                <input class="form-control" formControlName="requesterSubject" value="{{actionRequests?.requesterSubject}}" name="requesterSubject" type="text" >
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label>Request Comment</label>
+                                                                <label>Make Request</label>
                                                                 <textarea class="form-control" formControlName="requesterComment"  name="requesterComment" type="text" ></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Email Address of Respondent:</label>
+                                                                <input class="form-control" formControlName="emailAddress"  name="emailAddress" type="text" >
                                                             </div>
                                                             <input class="form-control" formControlName="enquiryId" value="{{actionRequests?.id}}"  name="enquiryId" type="hidden" >
                                                             <input class="form-control" formControlName="requesterEmail" value="{{actionRequests?.requesterEmail}}"  name="requesterEmail" type="hidden" >
+                                                            <input class="form-control" formControlName="docUploadStatus" value="{{actionRequests?.docUploadStatus}}"  name="docUploadStatus" type="hidden" >
                                                         </div>
 
                                                 </div>
 
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm"  >Respond</button>
                                                 </div>
                                             </form>
                                         </div>

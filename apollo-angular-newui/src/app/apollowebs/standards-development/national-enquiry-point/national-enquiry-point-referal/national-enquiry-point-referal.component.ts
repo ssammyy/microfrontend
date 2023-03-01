@@ -26,6 +26,7 @@ export class NationalEnquiryPointReferalComponent implements OnInit {
   public uploadedFiles:  FileList;
   loadingText: string;
   public nepInfoFormGroup!: FormGroup;
+    enquiryId: string;
 
   constructor(
       private formBuilder: FormBuilder,
@@ -34,16 +35,23 @@ export class NationalEnquiryPointReferalComponent implements OnInit {
       private SpinnerService: NgxSpinnerService,
       private notificationService: NepPointService,
       private notifyService : NotificationService,
+      private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.nepInfoFormGroup = this.formBuilder.group({
-      requesterFeedBack: [],
-      requestId: [],
-        requesterid:[]
+      this.activatedRoute.paramMap.subscribe(
+          rs => {
+              this.enquiryId = rs.get('enquiryId');
 
+          },
+      );
+    this.nepInfoFormGroup = this.formBuilder.group({
+        requesterFeedBack: [],
+        requestId: [],
+        requesterid:[],
+        requesterSubject:[]
     });
-    this.getNepDivisionRequests()
+    this.getNepDivisionRequests(this.enquiryId)
   }
   showToasterSuccess(title:string,message:string){
     this.notifyService.showSuccess(message, title)
@@ -57,10 +65,10 @@ export class NationalEnquiryPointReferalComponent implements OnInit {
     this.notifyService.showWarning(message, title)
 
   }
-  public getNepDivisionRequests(): void {
+  public getNepDivisionRequests(enquiryId: string): void {
     this.loadingText = "Retrieving Enquiries...";
     this.SpinnerService.show();
-    this.notificationService.getNepDivisionRequests().subscribe(
+    this.notificationService.getNepDivisionRequests(enquiryId).subscribe(
         (response: NepRequests[]) => {
           this.nepEnquiries = response;
           this.rerender();
@@ -89,7 +97,7 @@ export class NationalEnquiryPointReferalComponent implements OnInit {
             icon: 'success'
           });
           this.SpinnerService.hide();
-          this.getNepDivisionRequests();
+          this.getNepDivisionRequests(this.enquiryId);
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
@@ -112,7 +120,8 @@ export class NationalEnquiryPointReferalComponent implements OnInit {
       this.nepInfoFormGroup.patchValue(
           {
               requesterid: this.actionRequests.requesterid,
-              requestId: this.actionRequests.id
+              requestId: this.actionRequests.id,
+              requesterSubject: this.actionRequests.requesterSubject,
           }
       );
 

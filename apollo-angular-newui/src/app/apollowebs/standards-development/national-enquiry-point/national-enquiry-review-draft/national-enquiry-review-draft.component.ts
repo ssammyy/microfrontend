@@ -1,51 +1,46 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import {Store} from "@ngrx/store";
+import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
+import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
+import {NgxSpinnerService} from "ngx-spinner";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
-import {NotificationService} from "../../../../core/store/data/std/notification.service";
-import {NgxSpinnerService} from "ngx-spinner";
-import {ComStdRequest, Countries} from "../../../../core/store/data/std/std.model";
+import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
 declare const $: any;
+
 @Component({
-  selector: 'app-make-enquiry',
-  templateUrl: './make-enquiry.component.html',
-  styleUrls: ['./make-enquiry.component.css']
+  selector: 'app-national-enquiry-review-draft',
+  templateUrl: './national-enquiry-review-draft.component.html',
+  styleUrls: ['./national-enquiry-review-draft.component.css']
 })
-export class MakeEnquiryComponent implements OnInit {
+export class NationalEnquiryReviewDraftComponent implements OnInit {
   blob: Blob;
   public uploadedFiles:  FileList;
   loadingText: string;
-  selectedUser: number;
-  @ViewChild('uploadFile') myInputVariable: ElementRef;
-  constructor(private formBuilder: FormBuilder,
-              private route: ActivatedRoute,
-              private router: Router,
-              private notificationService: NepPointService,
-              private notifyService : NotificationService,
-              private SpinnerService: NgxSpinnerService,
+  public preparePreliminaryDraftFormGroup!: FormGroup;
+
+  constructor(
+      private store$: Store<any>,
+      private router: Router,
+      private formBuilder: FormBuilder,
+      private notificationService: NepPointService,
+      private SpinnerService: NgxSpinnerService,
+      private notifyService : NotificationService
   ) { }
-  public enquiryFormGroup!: FormGroup;
-  public demoFormGroup!: FormGroup;
 
   ngOnInit(): void {
-    this.demoFormGroup = this.formBuilder.group({
-      uploadedFiles: ['']
-    });
-    this.enquiryFormGroup = this.formBuilder.group({
-      requesterName: ['', Validators.required],
-      requesterComment: ['', Validators.required],
-      requesterCountry: [],
-      requesterEmail: ['', Validators.required],
-      requesterInstitution: ['', Validators.required],
-      requesterPhone: ['', Validators.required],
-      requesterSubject: ['', Validators.required]
-    });
-  }
+    this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
+      title: ['', Validators.required],
+      scope: ['', Validators.required],
+      normativeReference: ['', Validators.required],
+      symbolsAbbreviatedTerms: ['', Validators.required],
+      clause: ['', Validators.required],
+      special: ['', Validators.required]
 
-  get formEnquiryFormGroup(): any {
-    return this.enquiryFormGroup.controls;
+    });
   }
 
   showToasterSuccess(title:string,message:string){
@@ -60,34 +55,30 @@ export class MakeEnquiryComponent implements OnInit {
     this.notifyService.showWarning(message, title)
 
   }
-
-  sendEnquiry(): void{
-    this.loadingText = "Saving Enquiry ...."
+  get formPreparePD(): any {
+    return this.preparePreliminaryDraftFormGroup.controls;
+  }
+  notificationOfReview(): void {
+    this.loadingText = "Saving...";
     this.SpinnerService.show();
-    this.notificationService.makeEnquiry(this.enquiryFormGroup.value).subscribe(
-        (response) => {
-          this.showToasterSuccess(response.httpStatus, `Enquiry Sent`);
+    this.notificationService.notificationOfReview(this.preparePreliminaryDraftFormGroup.value).subscribe(
+        (response ) => {
+          console.log(response);
           this.SpinnerService.hide();
-          swal.fire({
-            title: 'Thank you....',
-            html:'Your enquiry has been successfully sent. A response shall be made to your E-mail Address',
-            buttonsStyling: false,
-            customClass: {
-              confirmButton: 'btn btn-success form-wizard-next-btn ',
-            },
-            icon: 'success'
-          }).then(r => this.enquiryFormGroup.reset());
+          this.showToasterSuccess(response.httpStatus, `Preliminary Draft  Uploaded`);
+          this.preparePreliminaryDraftFormGroup.reset();
           this.onClickSaveUploads(response.body.id)
 
         },
         (error: HttpErrorResponse) => {
-          alert(error.message);
           this.SpinnerService.hide();
+          this.showToasterError('Error', `Preliminary Draft Was Not Prepared`);
+          console.log(error.message);
         }
     );
   }
 
-  onClickSaveUploads(enquiryId: string) {
+  onClickSaveUploads(draftId: string) {
     if (this.uploadedFiles.length > 0) {
       const file = this.uploadedFiles;
       const formData = new FormData();
@@ -96,26 +87,21 @@ export class MakeEnquiryComponent implements OnInit {
         formData.append('docFile', file[i], file[i].name);
       }
       this.SpinnerService.show();
-      this.notificationService.uploadAttachment(enquiryId, formData).subscribe(
+      this.notificationService.uploadDraft(draftId, formData).subscribe(
           (data: any) => {
             this.SpinnerService.hide();
             this.uploadedFiles = null;
+            console.log(data);
             swal.fire({
               title: 'Thank you....',
-              html:'Attachment has been uploaded',
+              html:'Preliminary Draft Uploaded',
               buttonsStyling: false,
               customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',
               },
               icon: 'success'
-            }).then(r => this.enquiryFormGroup.reset());
-
-            this.myInputVariable.nativeElement.value = '';
+            }).then(r => this.preparePreliminaryDraftFormGroup.reset());
           },
-          (error: HttpErrorResponse) => {
-            alert(error.message);
-            this.SpinnerService.hide();
-          }
       );
     }
 
@@ -148,7 +134,5 @@ export class MakeEnquiryComponent implements OnInit {
           '</div>'
     });
   }
-
-
 
 }

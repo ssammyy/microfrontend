@@ -40,7 +40,8 @@ export class NationalEnquiryPointResponseComponent implements OnInit {
       requestId: [],
       enquiryId:[],
       feedbackSent:[],
-      requesterEmail:[]
+      requesterEmail:[],
+        requesterSubject:[]
 
     });
     this.getNepDivisionResponse()
@@ -113,7 +114,9 @@ export class NationalEnquiryPointResponseComponent implements OnInit {
           {
             enquiryId: this.actionRequests.requesterid,
             requestId: this.actionRequests.id,
-            requesterEmail:this.actionRequests.requesterEmail
+            requesterEmail:this.actionRequests.requesterEmail,
+              feedbackSent:this.actionRequests.requesterComment,
+              requesterSubject: this.actionRequests.requesterSubject
           }
       );
 
