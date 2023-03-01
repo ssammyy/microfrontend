@@ -1,0 +1,101 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+
+                            <form (ngSubmit)="notificationOfReview()" [formGroup]="preparePreliminaryDraftFormGroup" class="form" style="width: 100%">
+                                <div class="modal-body">
+                                    <div class="row col-12">
+                                        <div class="form-group col-12">
+                                            <label>Title <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                            <input [class.is-invalid]="formPreparePD.title.invalid && formPreparePD.title.touched"
+                                                   class="form-control"   formControlName="title" name="title" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Scope <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.scope.invalid && formPreparePD.scope.touched"
+                                                  class="form-control"  formControlName="scope" name="scope" type="text"></textarea>
+
+                                    </div>
+
+                                    <div class="form-group col-12 ">
+                                        <label>Normative Reference <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.normativeReference.invalid && formPreparePD.normativeReference.touched"
+                                                  class="form-control"  formControlName="normativeReference" name="normativeReference" type="text"></textarea>
+
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Symbols Abbreviated Terms<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.symbolsAbbreviatedTerms.invalid && formPreparePD.symbolsAbbreviatedTerms.touched"
+                                                  class="form-control"  formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms" type="text"></textarea>
+
+                                    </div>
+
+                                    <div class="form-group col-12">
+                                        <label>Clause<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.clause.invalid && formPreparePD.clause.touched"
+                                                  class="form-control"  formControlName="clause" name="clause" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Special<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.special.invalid && formPreparePD.special.touched"
+                                                  class="form-control"  formControlName="special" name="special" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Type of Notification<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <select class="form-control" formControlName="typeOfNotification" name="typeOfNotification">
+                                            <option value="">Select</option>
+                                            <option value="Public Review">Public Review</option>
+                                            <option value="Technical Regulation">Technical Regulation</option>
+                                            <option value="Conformity assessment procedure">Conformity assessment procedure</option>
+                                        </select>
+                                    </div>
+                                    <div class="row col-12">
+                                        <div class="form-group col-12">
+                                            <label><b>Upload Attachment  </b> <span style="font-size: xx-small; color: blue;">(*)Optional</span></label><br>
+                                            <form #demoForm="ngForm">
+                                                <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf" ></file-upload>
+                                            </form>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                    <button *ngIf="preparePreliminaryDraftFormGroup.valid" [disabled]="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Save</button>
+                                    <button *ngIf="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                                            (click)="showNotification('top','right')">Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

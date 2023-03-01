@@ -744,6 +744,10 @@ import {NepViewEnquiriesComponent} from "./apollowebs/standards-development/nati
 import { QaSlReportsComponent } from './apollowebs/quality-assurance/reports/qa-sl-reports/qa-sl-reports.component';
 import {NationalEnquiryPointReferalComponent} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-point-referal/national-enquiry-point-referal.component";
 import {NationalEnquiryPointResponseComponent} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-point-response/national-enquiry-point-response.component";
+import {NationalEnquiryReviewDraftComponent} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-review-draft/national-enquiry-review-draft.component";
+import {NepNotificationViewComponent} from "./apollowebs/standards-development/national-enquiry-point/nep-notification-view/nep-notification-view.component";
+import {MgrNepNotificationViewComponent} from "./apollowebs/standards-development/national-enquiry-point/mgr-nep-notification-view/mgr-nep-notification-view.component";
+import {NepUploadNotificationComponent} from "./apollowebs/standards-development/national-enquiry-point/nep-upload-notification/nep-upload-notification.component";
 
 export const routes: Routes = [
     {
@@ -1950,6 +1954,28 @@ export const routes: Routes = [
         path: 'sendFeedBack', component: AdminLayoutComponent,
         children: [{path: '', component: NationalEnquiryPointResponseComponent}],
     },
+    {
+        path: 'prepareReviewDraft', component: AdminLayoutComponent,
+        children: [{path: '', component: NationalEnquiryReviewDraftComponent}],
+    },
+    {
+        path: 'viewDraftNotification', component: AdminLayoutComponent,
+        children: [{path: '', component: NepNotificationViewComponent}],
+    },
+    {
+        path: 'managerViewNotification', component: AdminLayoutComponent,
+        children: [{path: '', component: MgrNepNotificationViewComponent}],
+    },
+    {
+        path: 'uploadNotification', component: AdminLayoutComponent,
+        children: [{path: '', component: NepUploadNotificationComponent}],
+    },
+
+
+
+
+
+
 
     // {
     //     path: 'make_enquiry', component: MakeEnquiryComponent,
