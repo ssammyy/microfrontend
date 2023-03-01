@@ -235,7 +235,7 @@ class DestinationInspectionBpmn(
     ) {
         KotlinLogging.logger { }.warn("Targeting request received for ${consignmentDocument.ucrNumber}->")
         data.put("cfs_code", consignmentDocument.freightStation?.cfsCode)
-        val processInstance = runtimeService.startProcessInstanceByKey("targetConsignmentDocument", data)
+        val processInstance = runtimeService.startProcessInstanceByKey("targetConsignmentDocument2", data)
         consignmentDocument.diProcessInstanceId = processInstance.processDefinitionId
         consignmentDocument.diProcessStatus = map.activeStatus
         consignmentDocument.diProcessStartedOn = Timestamp.from(Instant.now())
