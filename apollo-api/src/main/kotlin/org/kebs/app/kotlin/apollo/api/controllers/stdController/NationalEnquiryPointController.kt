@@ -288,5 +288,49 @@ class NationalEnquiryPointController(
 
     }
 
+    @PostMapping("/National_enquiry_point/decisionOnReviewDraft")
+    fun decisionOnReviewDraft(@RequestBody nep: NepDraftDecisionDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(
+            HttpStatus.OK,"Saved",nationalEnquiryPointService.
+            decisionOnReviewDraft(nep))
+    }
+
+    @GetMapping("/National_enquiry_point/getNotificationForApproval")
+    @ResponseBody
+    fun getNotificationForApproval(): MutableList<SdNepDraft>
+    {
+        return nationalEnquiryPointService.getNotificationForApproval()
+    }
+
+    @PostMapping("/National_enquiry_point/decisionOnNotification")
+    fun decisionOnNotification(@RequestBody nep: NepDraftDecisionDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(
+            HttpStatus.OK,"Saved",nationalEnquiryPointService.
+            decisionOnNotification(nep))
+    }
+
+    @GetMapping("/National_enquiry_point/getDraftNotificationForUpload")
+    @ResponseBody
+    fun getDraftNotificationForUpload(): MutableList<SdNepDraft>
+    {
+        return nationalEnquiryPointService.getDraftNotificationForUpload()
+    }
+
+    @PostMapping("/National_enquiry_point/uploadNotification")
+    fun uploadNotification(@RequestBody nep: NepDraftWtoDto): ServerResponse? {
+        return ServerResponse(
+            HttpStatus.OK,"Successfully uploaded",nationalEnquiryPointService.
+            uploadNotification(nep))
+
+    }
+
+
+
 
 }

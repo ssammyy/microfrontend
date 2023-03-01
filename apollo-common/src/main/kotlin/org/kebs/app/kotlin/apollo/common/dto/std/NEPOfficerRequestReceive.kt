@@ -59,7 +59,8 @@ data class NepDraftDto(
     var clause: String?=null,
     var special: String?=null,
     var preparedBy: String?=null,
-    var notification: String?=null
+    var notification: String?=null,
+    var typeOfNotification: String?=null
 ){
 
 }
@@ -67,8 +68,17 @@ data class NepDraftDto(
 data class NepDraftDecisionDto(
     var draftId: Long,
     var remarks: String?=null,
-    var accentTo: String?=null
+    var accentTo: String?=null,
+    var notification: String?=null
 
+){
+
+}
+
+data class NepDraftWtoDto(
+    var notification: String?=null,
+    var draftId: Long?=null,
+    var status: Long?=null,
 ){
 
 }

@@ -46,8 +46,20 @@ interface SdNepDraftRepository : JpaRepository<SdNepDraft, Long> {
     @Query(
         value = "SELECT * FROM SD_NEP_DRAFT  WHERE STATUS=0 ORDER BY ID DESC",nativeQuery = true)
     fun getDraftNotification(): MutableList<SdNepDraft>
+
+    @Query(
+        value = "SELECT * FROM SD_NEP_DRAFT  WHERE STATUS=1 ORDER BY ID DESC",nativeQuery = true)
+    fun getNotificationForApproval(): MutableList<SdNepDraft>
+
+    @Query(
+        value = "SELECT * FROM SD_NEP_DRAFT  WHERE STATUS=2 ORDER BY ID DESC",nativeQuery = true)
+    fun getDraftNotificationForUpload(): MutableList<SdNepDraft>
 }
 interface SdNepDraftUploadsEntityRepository : JpaRepository<SdNepDraftUploadsEntity, Long> {
     fun findAllByNepDraftId(id: Long): SdNepDraftUploadsEntity
 }
+interface NEPWtoNotificationRepository : JpaRepository<NEPWtoNotification, Long> {
+
+}
+
 
