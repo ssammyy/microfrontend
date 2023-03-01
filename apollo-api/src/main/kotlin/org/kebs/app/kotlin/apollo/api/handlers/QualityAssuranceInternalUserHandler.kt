@@ -748,7 +748,7 @@ class QualityAssuranceInternalUserHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    qaDaoServices.updatePermitSaveLabPDFSelectedDetails(permitID.toLong(), body)
+                    qaDaoServices.updatePermitSaveLabPDFSelectedDetails(permitID, body)
                         .let {
                             ok().body(it)
                         }

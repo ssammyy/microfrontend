@@ -1865,17 +1865,17 @@ class QADaoServices(
         when (permit.sendApplication) {
             map.activeStatus -> {
                 batchID =
-                    if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark && permit.fmarkGenerated == 1) {
+                    if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark) {
                         val findSMarkID = findSmarkWithFmarkId(permitID).smarkId
                         val findSMark = findPermitBYCompanyIDAndId(findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"), permit.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"))
                         val invoiceFound =  findPermitInvoiceByPermitIDOrNull(permitID)
                         if(invoiceFound!=null){
                             invoiceFound.batchInvoiceNo
                         }else{
-                            findPermitInvoiceByPermitID(findSMarkID).batchInvoiceNo
+                            findPermitInvoiceByPermitIDOrNull(findSMarkID)?.batchInvoiceNo
                         }
                     } else {
-                        findPermitInvoiceByPermitID(permitID).batchInvoiceNo
+                        findPermitInvoiceByPermitIDOrNull(permitID)?.batchInvoiceNo
                     }
             }
         }
