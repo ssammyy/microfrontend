@@ -1795,7 +1795,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     this.investInspectReportForm = this.formBuilder.group({
       id: null,
-      reportReference: null,
+      reportReference: [''],
       reportClassification: ['', Validators.required],
       reportTo: ['', Validators.required],
       reportThrough: ['', Validators.required],
@@ -4921,6 +4921,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveInvestInspectReport() {
+      let reportRefinput = this.investInspectReportForm.get('reportReference');
+      reportRefinput.setValue("generatedRefNumber");
     this.submitted = true;
     this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
         'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
@@ -4951,7 +4953,15 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       );
 
     } else if (this.investInspectReportForm.invalid) {
-      this.msService.showError("PLEASE FILL IN ALL THE REQUIRED FIELDS");
+      // let invalidKeysMsg = '';
+      // Object.keys(this.investInspectReportForm.controls).forEach(key => {
+      //   const control = this.investInspectReportForm.get(key);
+      //   if (control.invalid) {
+      //     invalidKeysMsg += `${key}, `;
+      //   }
+      // });
+      // this.msService.showError(invalidKeysMsg);
+        this.msService.showError("PLEASE FILL IN ALL THE REQUIRED FIELDS");
     }
   }
 
@@ -5379,8 +5389,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     const selectedClone = this.workPlanInspection?.seizureDeclarationDto.find(pr => pr.id === this.seizureForm?.get('seizureFormValueToClone')?.value);
     this.seizureForm.patchValue(selectedClone);
     this.seizureForm?.get('id').setValue(0);
+    this.seizureForm?.get('docID').setValue(null);
     const paramDetails = selectedClone.seizureList;
-
     this.dataSaveSeizureDeclarationList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
