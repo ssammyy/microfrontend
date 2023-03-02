@@ -4975,6 +4975,8 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveInvestInspectReport() {
+    let reportRefinput = this.investInspectReportForm.get('reportReference');
+    reportRefinput.setValue("generatedRefNumber");
     this.submitted = true;
     this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
         'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
@@ -5444,6 +5446,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     const selectedClone = this.workPlanInspection?.seizureDeclarationDto.find(pr => pr.id === this.seizureForm?.get('seizureFormValueToClone')?.value);
     this.seizureForm.patchValue(selectedClone);
     this.seizureForm?.get('id').setValue(0);
+    this.seizureForm?.get('docID').setValue(null);
     const paramDetails = selectedClone.seizureList;
     this.dataSaveSeizureDeclarationList = [];
     for (let i = 0; i < paramDetails.length; i++) {
