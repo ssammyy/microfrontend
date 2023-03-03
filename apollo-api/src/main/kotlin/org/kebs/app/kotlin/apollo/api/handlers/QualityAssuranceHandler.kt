@@ -3094,7 +3094,7 @@ class QualityAssuranceHandler(
 
             }
 
-            if(permit.varField9== 2.toString()) {
+            if(permit.varField9== 2.toString() && permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
                 batchDetailDifference = qaDaoServices.findPermitInvoiceByPermitIDWithVarField10(
                     permitID, 1.toString()
                 ).batchInvoiceNo

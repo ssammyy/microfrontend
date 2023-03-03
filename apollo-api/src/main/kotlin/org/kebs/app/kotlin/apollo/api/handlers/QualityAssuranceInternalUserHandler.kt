@@ -29,6 +29,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InspectionReportDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
+import org.kebs.app.kotlin.apollo.common.dto.ms.ComplaintViewSearchValues
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -80,6 +81,32 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
+    fun putAllPermitSearchList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req, "transactionDate")
+            val reportType = req.paramOrNull("reportType") ?: throw ExpectedDataNotFound("Required reportType, check parameters")
+            val body = req.body<PermitSearchValues>()
+            val errors: Errors = BeanPropertyBindingResult(body, PermitSearchValues::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.findLoggedInUserSearch(page,body)
+                        .let {
+                            ServerResponse.ok().body(it)
+                        }
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
 
     fun getAllOngoingList(req: ServerRequest): ServerResponse {
         return try {
@@ -1032,8 +1059,7 @@ class QualityAssuranceInternalUserHandler(
 
     fun updatePermitDetailsApproveRejectPermitPCM(req: ServerRequest): ServerResponse {
         return try {
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID =req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
             val body = req.body<ApproveRejectPermitApplyDto>()
             val errors: Errors = BeanPropertyBindingResult(body, ApproveRejectPermitApplyDto::class.java.name)
