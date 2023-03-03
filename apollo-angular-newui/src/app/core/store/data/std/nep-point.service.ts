@@ -217,7 +217,7 @@ export class NepPointService {
     }
 
     public uploadDraft(draftId: string, data: FormData): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.ICT_UPLOAD_PD);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOAD_DRAFT_ATTACHMENT);
 
         return this.http.post<any>(url, data, {
             headers: {

@@ -58,7 +58,7 @@
                                             <i class="fa fa-download"></i>Download</button></td>
                                         <td *ngIf="task.uploadDocument==0"><button mat-raised-button type="button" style="width: 118px"   class="btn btn-success btn-sm ">
                                             <i class="fa fa-download"></i>NA</button></td>
-                                        <td ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Decision On Notification</a></td>
+                                        <td ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Upload Notification</a></td>
 
                                     </tr>
                                     </tbody>
@@ -92,7 +92,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" mat-raised-button class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                <button type="submit" mat-raised-button class="btn btn-primary btn-sm" (click)="uploadNotification(jcJustificationForm.value)" data-dismiss="modal">Sumbit</button>
+                                                                <button type="submit" mat-raised-button class="btn btn-primary btn-sm" (click)="uploadNotification(jcJustificationForm.value)" data-dismiss="modal">Upload</button>
                                                             </div>
 
                                                         </div>

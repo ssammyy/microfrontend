@@ -1084,7 +1084,6 @@ import { SmarkExpiredComponent } from './apollowebs/qualityAssuranceAdmin/smark-
 import { SmarkAwardedComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-awarded/smark-awarded.component';
 import { SmarkAllApplicationsComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/smark-all-applications/smark-all-applications.component';
 import { NationalEnquiryReviewDraftComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-review-draft/national-enquiry-review-draft.component';
-import { NepViewNtoficationComponent } from './apollowebs/standards-development/national-enquiry-point/nep-view-ntofication/nep-view-ntofication.component';
 import { NepNotificationViewComponent } from './apollowebs/standards-development/national-enquiry-point/nep-notification-view/nep-notification-view.component';
 import { MgrNepNotificationViewComponent } from './apollowebs/standards-development/national-enquiry-point/mgr-nep-notification-view/mgr-nep-notification-view.component';
 import { NepUploadNotificationComponent } from './apollowebs/standards-development/national-enquiry-point/nep-upload-notification/nep-upload-notification.component';
@@ -1662,7 +1661,6 @@ import { NepUploadNotificationComponent } from './apollowebs/standards-developme
         SmarkAwardedComponent,
         SmarkAllApplicationsComponent,
         NationalEnquiryReviewDraftComponent,
-        NepViewNtoficationComponent,
         NepNotificationViewComponent,
         MgrNepNotificationViewComponent,
         NepUploadNotificationComponent,

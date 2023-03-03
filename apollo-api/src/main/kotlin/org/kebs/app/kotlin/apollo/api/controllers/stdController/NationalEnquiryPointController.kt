@@ -222,7 +222,7 @@ class NationalEnquiryPointController(
     }
 
     @PostMapping("/National_enquiry_point/notificationOfReview")
-    fun notificationOfReview(@RequestBody nep: NepDraftDto): ServerResponse? {
+    fun notificationOfReview(@RequestBody nep: NepNotificationDto): ServerResponse? {
         return ServerResponse(
             HttpStatus.OK,"Successfully uploaded Review",nationalEnquiryPointService.
             notificationOfReview(nep))
@@ -231,7 +231,7 @@ class NationalEnquiryPointController(
 
     @GetMapping("/National_enquiry_point/getDraftNotification")
     @ResponseBody
-    fun getDraftNotification(): MutableList<SdNepDraft>
+    fun getDraftNotification(): MutableList<NepNotificationFormEntity>
     {
         return nationalEnquiryPointService.getDraftNotification()
     }
@@ -300,7 +300,7 @@ class NationalEnquiryPointController(
 
     @GetMapping("/National_enquiry_point/getNotificationForApproval")
     @ResponseBody
-    fun getNotificationForApproval(): MutableList<SdNepDraft>
+    fun getNotificationForApproval(): MutableList<NepNotificationFormEntity>
     {
         return nationalEnquiryPointService.getNotificationForApproval()
     }
@@ -317,7 +317,7 @@ class NationalEnquiryPointController(
 
     @GetMapping("/National_enquiry_point/getDraftNotificationForUpload")
     @ResponseBody
-    fun getDraftNotificationForUpload(): MutableList<SdNepDraft>
+    fun getDraftNotificationForUpload(): MutableList<NepNotificationFormEntity>
     {
         return nationalEnquiryPointService.getDraftNotificationForUpload()
     }
