@@ -109,6 +109,8 @@ data class AllInspectionDetailsApplyDto(
     var supervisorComments: String? = null,
     var supervisorName: String? = null,
     var supervisorDate: Date? = null,
+    var approvedRejectedStatus: Int? = null,
+    var submittedInspectionReportStatus: Int? = null,
     var permitDetails: PermitDetailsDto? = null,
 
     )

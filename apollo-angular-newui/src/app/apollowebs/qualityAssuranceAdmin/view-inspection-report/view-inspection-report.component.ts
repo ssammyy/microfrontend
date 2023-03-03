@@ -20,6 +20,7 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {QaInternalService} from "../../../core/store/data/qa/qa-internal.service";
 import * as CryptoJS from 'crypto-js';
 import swal from "sweetalert2";
+import {selectUserInfo} from "../../../core/store";
 
 declare const $: any;
 
@@ -32,6 +33,7 @@ export class ViewInspectionReportComponent implements OnInit {
     currDivLabel!: string;
     currDiv!: string;
     inspectionReportId: any;
+    roles: string[];
 
     loading = false;
     loadingText: string;
@@ -68,6 +70,10 @@ export class ViewInspectionReportComponent implements OnInit {
                 padding: CryptoJS.pad.ZeroPadding,
             });
             this.inspectionReportId = decrypted.toString(CryptoJS.enc.Utf8);
+        });
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            this.roles = u.roles;
+            return this.roles = u.roles;
         });
         this.checkIfInspectionReportExists(this.inspectionReportId)
 

@@ -509,7 +509,8 @@ class QADaoServices(
                     permit = updateResults.second
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    val permitAllDetails =
+                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
@@ -561,7 +562,8 @@ class QADaoServices(
                     permit = updateResults.second
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    val permitAllDetails =
+                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
@@ -632,6 +634,7 @@ class QADaoServices(
                         changesMadeStatus = 0
                         permitStatus = applicationMapProperties.mapQaStatusPQAOAssign
                     }
+
                     else -> {
                         resubmitApplicationStatus = 1
                         hofQamCompletenessStatus = 0
@@ -648,7 +651,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.hofQamCompletenessRemarks,
                         permit.hofQamCompletenessStatus,
                         "HOD/RM/QAM/HOF",
@@ -813,7 +817,7 @@ class QADaoServices(
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
             with(permit) {
-                if(permit.productStandard==null){
+                if (permit.productStandard == null) {
                     when (permitType.id) {
                         applicationMapProperties.mapQAPermitTypeIdSmark -> {
                             permitStatus = applicationMapProperties.mapQaStatusPShedulvisit
@@ -1110,8 +1114,13 @@ class QADaoServices(
             val sampleSubmissionDetails = QaSampleSubmissionEntity()
             with(sampleSubmissionDetails) {
                 resultsAnalysis = when {
-                    body.resultsAnalysis -> { 1 }
-                    else -> { 0 }
+                    body.resultsAnalysis -> {
+                        1
+                    }
+
+                    else -> {
+                        0
+                    }
                 }
                 complianceRemarks = body.complianceRemarks
             }
@@ -1171,7 +1180,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.recommendationRemarks,
                         null,
                         "QAO",
@@ -1234,7 +1244,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.recommendationApprovalRemarks,
                         permit.recommendationApprovalStatus,
                         "HOD/QAM",
@@ -1303,10 +1314,12 @@ class QADaoServices(
                                         permitStatus = applicationMapProperties.mapQaStatusPRecommendationApproval
                                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
                                     }
+
                                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
                                         permitStatus = applicationMapProperties.mapQaStatusPRecommendationApproval
                                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
                                     }
+
                                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
                                         userTaskId = applicationMapProperties.mapUserTaskNameHOD
                                         permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
@@ -1322,10 +1335,12 @@ class QADaoServices(
                                         permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
                                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
                                     }
+
                                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
                                         permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
                                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
                                     }
+
                                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
                                         userTaskId = applicationMapProperties.mapUserTaskNameQAO
                                         permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
@@ -1336,38 +1351,44 @@ class QADaoServices(
                         factoryInspectionReportApprovedRejectedRemarks = body.supervisorComments
                     }
                     //updating of Details in DB
-                    val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+ permitUpdateDetails(permit, map, loggedInUser)
+//
+//                    return when (updateResults.first.status) {
+//                        map.successStatus -> {
+//                            permit = updateResults.second
+//                            permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+//                                permit.factoryInspectionReportApprovedRejectedRemarks,
+//                                permit.factoryInspectionReportApprovedRejectedStatus,
+//                                "QAM/HOD",
+//                                "APPROVE/REJECT INSPECTION REPORT",
+//                                map,
+//                                loggedInUser
+//                            )
+//                            val batchID: Long? = getBatchID(permit, map, permitID)
+//                            val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
+//                            val permitAllDetails =
+//                                mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+//                            commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+//                        }
+//
+//                        else -> {
+//                            commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+//                        }
+//                    }
+//                }
+//
+//                else -> {
+//                    return commonDaoServices.setErrorResponse(
+//                        recommendationSaved.first.responseMessage ?: "UNKNOWN_ERROR"
+//                    )
+//                }
 
-                    return when (updateResults.first.status) {
-                        map.successStatus -> {
-                            permit = updateResults.second
-                            permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
-                                permit.factoryInspectionReportApprovedRejectedRemarks,
-                                permit.factoryInspectionReportApprovedRejectedStatus,
-                                "QAM/HOD",
-                                "APPROVE/REJECT INSPECTION REPORT",
-                                map,
-                                loggedInUser
-                            )
-                            val batchID: Long? = getBatchID(permit, map, permitID)
-                            val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                            val permitAllDetails =
-                                mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
-                            commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
-                        }
-
-                        else -> {
-                            commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
-                        }
-                    }
-                }
-
-                else -> {
-                    return commonDaoServices.setErrorResponse(
-                        recommendationSaved.first.responseMessage ?: "UNKNOWN_ERROR"
-                    )
                 }
             }
+            val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, 1, 1, map)
+
+            return commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+
         } catch (error: Exception) {
             return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
         }
@@ -1410,7 +1431,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.justificationReportRemarks,
                         permit.justificationReportStatus,
                         "HOD",
@@ -1471,7 +1493,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.hodApproveAssessmentRemarks,
                         permit.hodApproveAssessmentStatus,
                         "HOD",
@@ -1532,7 +1555,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.hodQamApproveRejectRemarks,
                         permit.hodQamApproveRejectStatus,
                         "HOD/QAM",
@@ -1593,7 +1617,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.pscMemberApprovalRemarks,
                         permit.pscMemberApprovalStatus,
                         "PSC",
@@ -1654,7 +1679,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.pacDecisionRemarks,
                         permit.pacDecisionStatus,
                         "PAC",
@@ -1696,7 +1722,10 @@ class QADaoServices(
                         resubmitApplicationStatus = 0
                         changesMadeStatus = 0
                         //TODO: CHANGE THE DATE OF EXPIRY IF RENEWAL
-                        val expiryDate = commonDaoServices.addYearsToCurrentDate(permitType.numberOfYears ?: throw Exception("MISSING PERMIT TYPE NUMBER O YEARS TO BE ACTIVE"))
+                        val expiryDate = commonDaoServices.addYearsToCurrentDate(
+                            permitType.numberOfYears
+                                ?: throw Exception("MISSING PERMIT TYPE NUMBER O YEARS TO BE ACTIVE")
+                        )
                         val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
                         val pcmId = loggedInUser.id
                         when {
@@ -1772,7 +1801,8 @@ class QADaoServices(
                         //Generate FMARK AFTER SMARK IS AWARDED
                         when {
                             permit.fmarkGenerateStatus == 1 && permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                                val fmarkGeneratedResults =permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permit)
+                                val fmarkGeneratedResults =
+                                    permitGenerateFMarkFromAwardedPermit(map, loggedInUser, permit)
                                 when (fmarkGeneratedResults.first.status) {
                                     map.successStatus -> {
                                         permit.fmarkGenerated = 1
@@ -1791,6 +1821,7 @@ class QADaoServices(
                             }
                         }
                     }
+
                     else -> {
                         pcmApprovalStatus = 0
                         resubmitApplicationStatus = 1
@@ -1806,7 +1837,8 @@ class QADaoServices(
             return when (updateResults.first.status) {
                 map.successStatus -> {
                     permit = updateResults.second
-                    permitAddRemarksDetails(permit.id ?: throw Exception("ID NOT FOUND"),
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
                         permit.pcmApprovalRemarks,
                         permit.pcmApprovalStatus,
                         "PCM",
@@ -1816,7 +1848,8 @@ class QADaoServices(
                     )
                     val batchID: Long? = getBatchID(permit, map, permitID)
                     val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
-                    val permitAllDetails = mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    val permitAllDetails =
+                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
                     commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
                 }
 
@@ -1867,11 +1900,14 @@ class QADaoServices(
                 batchID =
                     if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdFmark) {
                         val findSMarkID = findSmarkWithFmarkId(permitID).smarkId
-                        val findSMark = findPermitBYCompanyIDAndId(findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"), permit.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID"))
-                        val invoiceFound =  findPermitInvoiceByPermitIDOrNull(permitID)
-                        if(invoiceFound!=null){
+                        val findSMark = findPermitBYCompanyIDAndId(
+                            findSMarkID ?: throw Exception("NO SMARK ID FOUND WITH FMARK ID"),
+                            permit.companyId ?: throw ExpectedDataNotFound("MISSING COMPANY ID")
+                        )
+                        val invoiceFound = findPermitInvoiceByPermitIDOrNull(permitID)
+                        if (invoiceFound != null) {
                             invoiceFound.batchInvoiceNo
-                        }else{
+                        } else {
                             findPermitInvoiceByPermitIDOrNull(findSMarkID)?.batchInvoiceNo
                         }
                     } else {
@@ -1986,9 +2022,13 @@ class QADaoServices(
     }
 
     fun updateFmarkGeneratedBySmark(permitDetails: PermitApplicationsEntity) {
-        findFmarkWithSmarkId(permitDetails.id?: throw ExpectedDataNotFound("MISSING PERMIT ID")).let { permSmarkFmark->
-            var perm = findPermitBYID(permSmarkFmark.fmarkId?: throw  ExpectedDataNotFound("Missing Permit ID For Updating Details"))
-            with(perm){
+        findFmarkWithSmarkId(
+            permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID")
+        ).let { permSmarkFmark ->
+            var perm = findPermitBYID(
+                permSmarkFmark.fmarkId ?: throw ExpectedDataNotFound("Missing Permit ID For Updating Details")
+            )
+            with(perm) {
                 paidStatus = 1
                 permitStatus = applicationMapProperties.mapQaStatusPaymentDone
             }
@@ -4206,8 +4246,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
 
-    fun findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(permitRefNumber: String,  permitID: Long,status: Int): List<QaUploadsEntity> {
-        qaUploadsRepo.findByPermitRefNumberAndPermitIdAndSscStatus(permitRefNumber,permitID, status)?.let {
+    fun findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(
+        permitRefNumber: String,
+        permitID: Long,
+        status: Int
+    ): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitRefNumberAndPermitIdAndSscStatus(permitRefNumber, permitID, status)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
@@ -4527,7 +4571,7 @@ class QADaoServices(
     fun listRemarksDto(remarksList: List<QaRemarksEntity>): List<RemarksAndStatusDto> {
         return remarksList.map { f ->
             RemarksAndStatusDto(
-                f.remarksStatus==1,
+                f.remarksStatus == 1,
                 f.remarksDescription,
                 f.processName,
                 f.processBy,
@@ -4638,7 +4682,10 @@ class QADaoServices(
         var justificationReport: RemarksAndStatusDto? = null
         when {
             permitDetails.hofQamCompletenessStatus != null -> {
-                hofQamCompleteness = RemarksAndStatusDto(permitDetails.hofQamCompletenessStatus == 1, permitDetails.hofQamCompletenessRemarks,)
+                hofQamCompleteness = RemarksAndStatusDto(
+                    permitDetails.hofQamCompletenessStatus == 1,
+                    permitDetails.hofQamCompletenessRemarks,
+                )
             }
         }
         when {
@@ -4892,10 +4939,10 @@ class QADaoServices(
             invoiceDifferenceGenerated = permit.invoiceDifferenceGenerated == 1
             recommendationApprovalStatus = permit.recommendationApprovalStatus == 1
             hodQamApproveRejectStatus = permit.hodQamApproveRejectStatus == 1
-            pscMemberApprovalStatus  = permit.pscMemberApprovalStatus  == 1
-            pcmApprovalStatus  = permit.pcmApprovalStatus == 1
-            paidStatus  = permit.paidStatus == 10
-            changesMadeStatus  = permit.changesMadeStatus == 1
+            pscMemberApprovalStatus = permit.pscMemberApprovalStatus == 1
+            pcmApprovalStatus = permit.pcmApprovalStatus == 1
+            paidStatus = permit.paidStatus == 10
+            changesMadeStatus = permit.changesMadeStatus == 1
         }
         return p
     }
@@ -5015,9 +5062,11 @@ class QADaoServices(
             ssfListDetails.addAll(ssfListDTO)
             ssfList.forEach { samp ->
                 val ssfResultsListCompliance = mapSSFComplianceStatusDetailsDto(samp)
-                val savedPDFFilesLims = samp.id?.let { findSampleSubmittedListPdfBYSSFidWithNullValues(it)?.let { mapLabPDFFilesListDto(it) } }
+                val savedPDFFilesLims =
+                    samp.id?.let { findSampleSubmittedListPdfBYSSFidWithNullValues(it)?.let { mapLabPDFFilesListDto(it) } }
                 val limsPDFFiles = samp.bsNumber?.let { mapLIMSSavedFilesDto(it, savedPDFFilesLims) }
-                val labResultsParameters = samp.bsNumber?.let { findSampleLabTestResultsRepoBYBSNumberWithNullvalue(it) }
+                val labResultsParameters =
+                    samp.bsNumber?.let { findSampleLabTestResultsRepoBYBSNumberWithNullvalue(it) }
 
                 val labResultsDto = mapLabResultsDetailsDto(
                     ssfResultsListCompliance,
@@ -5048,7 +5097,8 @@ class QADaoServices(
                 }
             }
         }
-        val inspectionReport = qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(permitID, 1)
+        val inspectionReport =
+            qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(permitID, 1)
         val inspectionReportDetails = InspectionReportDtoPermit(
             id = inspectionReport?.id,
             refNo = inspectionReport?.refNo,
@@ -5073,19 +5123,45 @@ class QADaoServices(
             permitsRemarksDTO(permit),
             permitsInvoiceDetailsDTO(permit),
             permitsInvoiceDetailsDifferenceDTO(permit),
-            commonDaoServices.userListDto(findOfficersList(permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"), permit, map, applicationMapProperties.mapQAUserOfficerRoleId)),
-            findAllOldPermitWithPermitRefNumber(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))?.let { listPermits(it, map) },
-            findAllUploadedFileBYPermitIDAndOrdinarStatus(permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
-            findAllUploadedFileBYPermitIDAndSta3Status(permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
-            findAllUploadedFileBYPermitIDAndSta10Status(permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
-            getALLLabResultsForCertainPermit(permit, permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")),
+            commonDaoServices.userListDto(
+                findOfficersList(
+                    permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"),
+                    permit,
+                    map,
+                    applicationMapProperties.mapQAUserOfficerRoleId
+                )
+            ),
+            findAllOldPermitWithPermitRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            )?.let { listPermits(it, map) },
+            findAllUploadedFileBYPermitIDAndOrdinarStatus(
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                1
+            ).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitIDAndSta3Status(
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                1
+            ).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitIDAndSta10Status(
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                1
+            ).let { listFilesDto(it) },
+            getALLLabResultsForCertainPermit(
+                permit,
+                permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")
+            ),
             permit.sscId?.let { filesDtoDetails(findUploadedFileBYId(it)) },
             batchID,
             batchIDDifference,
             jasyptStringEncryptor.encrypt(permit.id.toString()),
             mapDtoSTA1View(permit),
-            findSTA3WithPermitIDAndRefNumber(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID)?.let { mapDtoSTA3View(it, permitID) },
-            findSTA10WithPermitRefNumberANdPermitID(permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID)?.let { listSTA10ViewDetails(permitID, it) },
+            findSTA3WithPermitIDAndRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                permitID
+            )?.let { mapDtoSTA3View(it, permitID) },
+            findSTA10WithPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number"), permitID
+            )?.let { listSTA10ViewDetails(permitID, it) },
             loadSectionDetails(departmentEntity, map),
             ssfListDetails,
             labResultsDtoList,
@@ -5093,8 +5169,14 @@ class QADaoServices(
             inspectionFeeInvoice,
             inspectionInvoiceUploaded,
             inspectionReportDetails,
-            findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),permit.id ?: throw Exception("MISSING PERMIT ID"), 1).let { listFilesDto(it) },
-            findALlRemarksDetailsPerPermit(permit.id ?: throw Exception("MISSING PERMIT ID")).let { listRemarksDto(it) },
+            findAllUploadedFileBYPermitRefNumberAndPerMitIDAndSscStatus(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                1
+            ).let { listFilesDto(it) },
+            findALlRemarksDetailsPerPermit(
+                permit.id ?: throw Exception("MISSING PERMIT ID")
+            ).let { listRemarksDto(it) },
         )
     }
 
@@ -7748,7 +7830,7 @@ class QADaoServices(
                             }
                         }
 
-                    if(permitMasterInvoiceFound.batchInvoiceNo==null){
+                    if (permitMasterInvoiceFound.batchInvoiceNo == null) {
                         invoiceQaBatchRepo.findByIdOrNull(batchID)
                             ?.let { invoiceDetails ->
 
@@ -7761,8 +7843,12 @@ class QADaoServices(
 
                                 with(invoiceDetails) {
                                     description = "${permitMasterInvoiceFound.invoiceRef},$description"
-                                    totalAmount = totalAmount?.plus( permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
-                                    totalTaxAmount = totalTaxAmount?.plus( permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT"))
+                                    totalAmount = totalAmount?.plus(
+                                        permitMasterInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT")
+                                    )
+                                    totalTaxAmount = totalTaxAmount?.plus(
+                                        permitMasterInvoiceFound.taxAmount ?: throw Exception("INVALID TAX AMOUNT")
+                                    )
 
                                 }
                                 invoiceBatchDetails = invoiceQaBatchRepo.save(invoiceDetails)

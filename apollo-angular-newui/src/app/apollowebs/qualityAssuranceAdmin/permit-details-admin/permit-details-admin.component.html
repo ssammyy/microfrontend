@@ -1619,7 +1619,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     </div>
                     <div class="card-body ">
                         <div *ngFor="let role of roles">
-                            <div *ngIf="role == 'QA_MANAGER_MODIFY' || role == 'QA_HOF_MODIFY' || role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'">
+                            <div *ngIf="role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'||role == 'QA_MANAGER_MODIFY'">
 
                                 <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
                                    data-target="#allProcessModel"
@@ -1936,7 +1936,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                              <label><b>Select Compliance Status</b></label>
                                              <mat-form-field id="complianceStatusSSF43">
                                                  <mat-select placeholder="Please Select an option"
-                                                             formControlName="resultsAnalysis"
                                                              name="resultsAnalysis">
                                                      <mat-option [value]="true">Compliant</mat-option>
                                                      <mat-option [value]="false">Non-Compliant</mat-option>
@@ -1946,7 +1945,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                  results:</b></label>
                                              <mat-form-field class="example-full-width">
                                             <textarea id="complianceRemarksSSF43" matInput type="text"
-                                                      formControlName="complianceRemarks"
                                                       name="complianceRemarks">
                                             </textarea>
                                              </mat-form-field>
