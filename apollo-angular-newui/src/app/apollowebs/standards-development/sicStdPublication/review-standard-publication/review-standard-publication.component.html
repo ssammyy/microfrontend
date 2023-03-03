@@ -60,21 +60,27 @@
                                             <thead>
                                             <tr>
                                                 <th class="task">Applicant Name</th>
+                                                <th class="task">Company Name</th>
+                                                <th class="task">Designation</th>
+                                                <th class="task">Telephone Number</th>
                                                 <th class="task">Email Address</th>
-                                                <th class="task">Occupation</th>
-                                                <th class="task">Joining Date</th>
+                                                <th class="task">Address</th>
+                                                <th class="task">Nature of Request</th>
 
                                                 <th class="action">Action</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr *ngFor="let tcTask of tcTasks let i= index; ">
+                                            <tr  >
 
-                                                <td>{{tcTask.name}}</td>
-                                                <td>{{tcTask.email}}</td>
-                                                <td>{{tcTask.designationOccupation}}</td>
-                                                <td>{{tcTask.date}}</td>
-                                                <td><a (click)="onOpenModal(tcTask,'edit')" class="btn btn-info tooltips"
+                                                <td>This is a test</td>
+                                                <td>This is a test</td>
+                                                <td>This is a test</td>
+                                                <td>072478956</td>
+                                                <td>marvinmakaua@gmail.com</td>
+                                                <td>Kebs</td>
+                                                <td>Enquiry</td>
+                                                <td><a class="btn btn-info tooltips"
                                                        data-placement="top"
                                                        data-original-title="Upload NWI">Review</a></td>
 
