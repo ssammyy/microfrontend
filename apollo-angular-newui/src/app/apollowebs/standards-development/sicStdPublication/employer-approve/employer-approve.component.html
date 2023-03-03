@@ -1,1 +1,180 @@
-<p>employer-approve works!</p>
+<style>
+    .login-button {
+        background-color: #0594FF;
+        color: #ffffff;
+        padding: 10px 35px;
+        border: none;
+        border-radius: 100px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .error-msg {
+        color: red;
+        display: inline-block;
+        position: absolute;
+        top: 34px;
+        /* font-size: 10px; */
+        font-size: 75%;
+        margin-top: 2.604167em;
+        top: calc(100% - 1.72916667em);
+    }
+
+    .fix-error-icon {
+        top: 27px;
+    }
+
+</style>
+<div *ngIf="displayError">
+    <!-- <span class="glyphicon glyphicon-remove form-control-feedback fix-error-icon"></span> -->
+    <span class="sr-only">(error)</span>
+    <div class="error-msg">
+        {{ errorMsg }}
+    </div>
+</div>
+
+<div class="container-fluid" style="margin-top: 5%">
+    <form #formDirective="ngForm" (ngSubmit)="saveStandard(formDirective)" [formGroup]="stdRequestFormGroup"
+          class="form">
+
+        <h1 style="color: #0A95FC">
+            Approve Request For A Standard/Publication
+        </h1>
+        <hr>
+        <div class="form-body">
+            <div class="form-group">
+                <label><b>Full Names:</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'name')">
+                    <input type="text"
+                           matInput
+                           id="name"
+                           placeholder="Full Names *"
+                           (ngModelChange)="textValidationType($event)"
+                           formControlName="name">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'name')"
+                                             errorMsg="Please Enter Your Full Names">
+                    </app-field-error-display>
+                </mat-form-field>
+            </div>
+
+            <div class="form-group">
+                <label><b>Company Name:</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'companyName')">
+                    <input type="text"
+                           matInput
+                           id="companyName"
+                           placeholder="Company Name *"
+                           (ngModelChange)="textValidationType($event)"
+                           formControlName="companyName">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'companyName')"
+                                             errorMsg="Please Enter Your Company Name">
+                    </app-field-error-display>
+                </mat-form-field>
+            </div>
+
+            <div class="form-group">
+                <label><b>Telephone Number</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">
+                    <input type="text" name="phone" number="true"
+                           matInput
+                           id="phone"
+                           placeholder="Phone Number *"
+                           (ngModelChange)="numberValidationType($event)"
+                           formControlName="phone">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'phone')"
+                                             errorMsg="Please Enter Your Phone Number">
+                    </app-field-error-display>
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <label><b>Email address:</b></label>
+
+                <mat-form-field class="example-full-width" [ngClass]="{'has-success':validEmailRegister===true}">
+                    <input
+                            type="email"
+                            matInput
+                            placeholder="Email Address *"
+                            [errorStateMatcher]="matcher"
+                            formControlName="email"
+                            (ngModelChange)="emailValidationRegister($event)">
+                    <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                        Please enter a valid email address
+                    </mat-error>
+                    <mat-error *ngIf="emailFormControl.hasError('required')">
+                        Email is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+
+
+            <div class="form-group">
+                <label><b>Address:</b></label>
+                <mat-form-field class="example-full-width has-label"
+                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'address')">
+                    <input type="text"
+                           matInput
+                           id="address"
+                           placeholder="Your Address *"
+                           (ngModelChange)="textValidationType($event)"
+                           formControlName="address">
+                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'address')"
+                                             errorMsg="Please Enter Your Address">
+                    </app-field-error-display>
+                </mat-form-field>
+            </div>
+
+<!--            <div class="form-group">-->
+<!--                <label><b>Nature Of Request</b></label>-->
+<!--                <mat-form-field class="example-full-width has-label"-->
+<!--                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'natureOfRequest')">-->
+<!--                    <textarea type="text" name="natureOfRequest"-->
+<!--                              matInput-->
+<!--                              id="natureOfRequest"-->
+<!--                              placeholder="Nature Of Request"-->
+<!--                              (ngModelChange)="textValidationType($event)"-->
+<!--                              formControlName="natureOfRequest"></textarea>-->
+<!--                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'natureOfRequest')"-->
+<!--                                             errorMsg="Please Enter Nature Of Request">-->
+<!--                    </app-field-error-display>-->
+<!--                </mat-form-field>-->
+<!--            </div>-->
+
+
+
+<!--            <div class="form-group">-->
+<!--                <label><b>Attach Any Additional Information</b></label>-->
+<!--                <form>-->
+<!--                    <file-upload [(ngModel)]="uploadedFiles" style="background: inherit"-->
+<!--                                 name="uploadedFiles" fileslimit="1"-->
+<!--                                 required-->
+<!--                                 accept=".pdf"></file-upload>-->
+
+<!--                </form>-->
+<!--            </div>-->
+
+
+
+
+            <div style="margin: 3em 0 2em 0">
+                <button class="login-button" type="submit">SUBMIT</button>
+
+            </div>
+
+            <!--      <div>-->
+            <!--        <span>Don't have an account ? </span><span><a routerLink="/register" >Register</a></span>-->
+            <!--      </div>-->
+            <!--      <div>-->
+            <!--        <span>Forgot username/password ? </span><span><a>Reset</a></span>-->
+            <!--      </div>-->
+        </div>
+
+
+    </form>
+    <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">
+        <p style="color: white">Please Wait. </p>
+    </ngx-spinner>
+</div>

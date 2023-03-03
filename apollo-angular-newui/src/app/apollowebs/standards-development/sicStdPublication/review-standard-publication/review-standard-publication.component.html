@@ -71,7 +71,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr  >
+                                            <tr>
 
                                                 <td>This is a test</td>
                                                 <td>This is a test</td>
@@ -80,9 +80,10 @@
                                                 <td>marvinmakaua@gmail.com</td>
                                                 <td>Kebs</td>
                                                 <td>Enquiry</td>
-                                                <td><a class="btn btn-info tooltips"
+                                                <td><a (click)="onOpenModal('edit')" class="btn btn-info tooltips"
                                                        data-placement="top"
-                                                       data-original-title="Upload NWI">Review</a></td>
+                                                       data-original-title="Upload NWI">View</a></td>
+
 
                                             </tr>
                                             </tbody>
@@ -97,9 +98,10 @@
                                     <div class="modal-dialog modal-lg modal-xl" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="updateExampleModalLabel">Review Registration
+                                                <h5 class="modal-title" id="updateExampleModalLabel">Request
                                                     Details</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -107,19 +109,29 @@
                                                 <div class="row">
                                                     <div class=" col-12">
                                                         <ul class="list-group">
-                                                            <li class="list-group-item active">Registration Details</li>
+                                                            <li class="list-group-item active">Request Details</li>
                                                             <li style="background: lightgray"
-                                                                class="list-group-item">{{"Applicant Name: " + actionRequest?.name}}</li>
+                                                                class="list-group-item">Applicant Name:This is a test
+                                                            </li>
                                                             <li style="background: lightgray"
-                                                                class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
+                                                                class="list-group-item">Company Name:This is a test
+                                                            </li>
                                                             <li style="background: lightgray"
-                                                                class="list-group-item">{{"Phone Number: " + actionRequest?.phone}}</li>
+                                                                class="list-group-item">Designation:This is a test
+                                                            </li>
                                                             <li style="background: lightgray"
-                                                                class="list-group-item">{{"Address: " + actionRequest?.address}}</li>
+                                                                class="list-group-item">Telephone Number:072478956
+                                                            </li>
                                                             <li style="background: lightgray"
-                                                                class="list-group-item">{{"Occupation: " + actionRequest?.designationOccupation}}</li>
+                                                                class="list-group-item">Email
+                                                                Address:marvinmakaua@gmail.com
+                                                            </li>
                                                             <li style="background: lightgray"
-                                                                class="list-group-item">{{"Account Type: " + actionRequest?.accountType}}</li>
+                                                                class="list-group-item">Address:This is a test
+                                                            </li>
+                                                            <li style="background: lightgray"
+                                                                class="list-group-item">Nature of Request:This is a test
+                                                            </li>
 
                                                             <br><br>
 
@@ -217,7 +229,6 @@
 
 
             </div>
-
 
 
         </div>

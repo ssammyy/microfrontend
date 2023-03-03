@@ -24,82 +24,85 @@
 
                         </div>
                         <div class="card-body">
-                            <div class="toolbar">
-
-                            </div>
-
-
                             <div class="material-datatables">
-                                <table class="table table-striped table-bordered table-hover" datatable
-                                       [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
-                                    <thead>
-                                    <tr>
-                                        <th class="task">Applicant Name</th>
-                                        <th class="task">Email Address</th>
-                                        <th class="task">Occupation</th>
-                                        <th class="task">Joining Date</th>
-                                        <th class="task">Status</th>
-                                        <th class="task">Review</th>
-                                        <th class="action">Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr *ngFor="let tcTask of tcTasks let i= index; ">
+                                <ng-template #loading class="loaderHolder">
+                                    <ngx-spinner type="ball-clip-rotate-multiple" size="medium">
+                                        <p class="loading">Loading...</p>
+                                    </ngx-spinner>
+                                </ng-template>
+                                <div *ngIf="displayUsers; else loading">
 
-                                        <td>{{tcTask.name}}</td>
-                                        <td>{{tcTask.email}}</td>
-                                        <td>{{tcTask.designationOccupation}}</td>
-                                        <td>{{tcTask.date}}</td>
-                                        <td>
-                                            <div *ngIf="tcTask.invoiceStatus ==null">
-                                                Pending Invoice Generation
-                                            </div>
-                                            <div *ngIf="tcTask.invoiceStatus =='GENERATED'">
-                                                Invoice Generated.
-                                            </div>
-                                            <div *ngIf="tcTask.invoiceStatus =='PAID' && tcTask.webStoreAccountCreationDate==null">
-                                                Invoice Paid
-                                            </div>
-                                            <div *ngIf="tcTask.invoiceStatus =='PAID' && tcTask.webStoreAccountCreationDate!=null">
-                                                Account Created
-                                            </div>
+                                    <table class="table table-striped table-bordered table-hover" datatable
+                                           [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1">
+                                        <thead>
+                                        <tr>
+                                            <th class="task">Applicant Name</th>
+                                            <th class="task">Company Name</th>
+                                            <th class="task">Designation</th>
+                                            <th class="task">Telephone Number</th>
+                                            <th class="task">Email Address</th>
+                                            <th class="task">Address</th>
+                                            <th class="task">Nature of Request</th>
 
-                                        </td>
-                                        <td>
-                                            <a (click)="onOpenModal(tcTask,'edit')" class="btn btn-info tooltips"
-                                               data-placement="top"
-                                               data-original-title="Upload NWI">Review</a>
-                                        </td>
+                                            <th class="action">Action</th>
+                                            <th class="action">Action</th>
+                                            <th class="action">Action</th>
 
-                                        <td>
-                                            <div *ngIf="tcTask.invoiceStatus ==null">
-                                                <a (click)="generateInvoice(tcTask)" class="btn btn-info tooltips"
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+
+                                            <td>This is a test</td>
+                                            <td>This is a test</td>
+                                            <td>This is a test</td>
+                                            <td>072478956</td>
+                                            <td>marvinmakaua@gmail.com</td>
+                                            <td>Kebs</td>
+                                            <td>Enquiry</td>
+                                            <td>
+                                                <a (click)="onOpenModal('edit')" class="btn btn-info tooltips"
+                                                   data-placement="top"
+                                                   data-original-title="Upload NWI">View</a>
+                                            </td>
+                                            <td>
+                                                <a (click)="invoiceGenerate()" class="btn btn-info tooltips"
                                                    data-placement="top"
                                                    data-original-title="Upload NWI">Generate Invoice</a>
-                                            </div>
-                                            <div *ngIf="tcTask.invoiceStatus =='GENERATED'">
-                                                <a (click)="confirmPayment(tcTask)" class="btn btn-info tooltips"
+                                            </td>
+                                            <td>
+                                                <a (click)="send()" class="btn btn-info tooltips"
                                                    data-placement="top"
-                                                   data-original-title="Upload NWI">Confirm Payment</a>
-                                            </div>
-                                            <div *ngIf="tcTask.invoiceStatus =='PAID' && tcTask.webStoreAccountCreationDate==null">
-                                                <a (click)="onOpenModal(tcTask,'webStore')"
-                                                   class="btn btn-info tooltips"
-                                                   data-placement="top"
-                                                   data-original-title="Upload NWI">Add On Webstore</a>
-                                            </div>
-                                            <div *ngIf="tcTask.invoiceStatus =='PAID' && tcTask.webStoreAccountCreationDate!=null">
-                                                <a (click)="onOpenModal(tcTask,'webStoreAllDetails')"
-                                                   class="btn btn-info tooltips"
-                                                   data-placement="top"
-                                                   data-original-title="Upload NWI">View All Details</a>
-                                            </div>
+                                                   data-original-title="Upload NWI">Send Standard</a>
+                                            </td>
 
-                                        </td>
 
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                        </tr>
+                                        <tr>
+
+                                            <td>This is a test</td>
+                                            <td>This is a test</td>
+                                            <td>This is a test</td>
+                                            <td>072478956</td>
+                                            <td>marvinmakaua@gmail.com</td>
+                                            <td>Kebs</td>
+                                            <td>Enquiry</td>
+                                            <td>
+                                                <a (click)="onOpenModal('edit')" class="btn btn-info tooltips"
+                                                   data-placement="top"
+                                                   data-original-title="Upload NWI">View</a>
+                                            </td>
+                                            <td>
+                                                <a (click)="shareListOfStandards()" class="btn btn-info tooltips"
+                                                   data-placement="top"
+                                                   data-original-title="Upload NWI">Send To Source</a>
+                                            </td>
+
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
 
@@ -109,270 +112,101 @@
                                 <div class="modal-dialog modal-lg modal-xl" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Review Registration
+                                            <h5 class="modal-title" id="updateExampleModalLabel">Request
                                                 Details</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
                                         <div class="modal-body">
+
                                             <div class="row">
                                                 <div class=" col-12">
                                                     <ul class="list-group">
-                                                        <li class="list-group-item active">Registration Details</li>
+                                                        <li class="list-group-item active">Request Details</li>
                                                         <li style="background: lightgray"
-                                                            class="list-group-item">{{"Applicant Name: " + actionRequest?.name}}</li>
+                                                            class="list-group-item">Applicant Name:This is a test
+                                                        </li>
                                                         <li style="background: lightgray"
-                                                            class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
+                                                            class="list-group-item">Company Name:This is a test
+                                                        </li>
                                                         <li style="background: lightgray"
-                                                            class="list-group-item">{{"Phone Number: " + actionRequest?.phone}}</li>
+                                                            class="list-group-item">Designation:This is a test
+                                                        </li>
                                                         <li style="background: lightgray"
-                                                            class="list-group-item">{{"Address: " + actionRequest?.address}}</li>
+                                                            class="list-group-item">Telephone Number:072478956
+                                                        </li>
                                                         <li style="background: lightgray"
-                                                            class="list-group-item">{{"Occupation: " + actionRequest?.designationOccupation}}</li>
+                                                            class="list-group-item">Email
+                                                            Address:marvinmakaua@gmail.com
+                                                        </li>
                                                         <li style="background: lightgray"
-                                                            class="list-group-item">{{"Account Type: " + actionRequest?.accountType}}</li>
+                                                            class="list-group-item">Address:This is a test
+                                                        </li>
+                                                        <li style="background: lightgray"
+                                                            class="list-group-item">Nature of Request:This is a test
+                                                        </li>
 
                                                         <br><br>
 
                                                     </ul>
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-12">
+                                                <div class="card ">
+                                                    <div class="card-header card-header-rose card-header-text">
+                                                        <div class="card-text">
+                                                            <h4 class="card-title">Standard Availability</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body ">
+                                                        <div class="row">
+                                                            <div class="col-sm-6 checkbox-radios">
+                                                                <label><b>Is Standard Available?</b></label>
+                                                                <mat-form-field>
+                                                                    <mat-select
+                                                                            aria-label="Small"
+                                                                            aria-describedby="inputGroup-sizing-lg"
+                                                                            class="form-control" required
+                                                                            name="sicAssignedId"
+                                                                            placeholder="Standard Availability">
+                                                                        <mat-option
+                                                                                value="Available">Available
+                                                                        </mat-option>
+                                                                        <mat-option
+                                                                                value=" Not Available">Not Available
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                </mat-form-field>
+                                                            </div>
+
+
+
+
+                                                            <div class="col-12">
+                                                                <hr/>
+                                                                <a (click)="submit()" class="btn btn-info tooltips"
+                                                                   data-placement="top"
+                                                                   data-original-title="Upload NWI">Submit</a>
+                                                            </div>
+
+
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
 
                                             <br>
 
-                                            <!-- invoice -->
-
-                                            <!-- <form
-                                                    (ngSubmit)="onReviewTask()" [formGroup]="stdHOFReview"
-                                            >
-
-
-                                                <div class="col-md-12">
-                                                    <div class="card ">
-                                                        <div class="card-header card-header-rose card-header-text">
-                                                            <div class="card-text">
-                                                                <h4 class="card-title">Generate Invoice</h4>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-body ">
-                                                            <div class="row">
-                                                                <div class="col-sm-6 checkbox-radios">
-                                                                    <label><b>Payment Tariff</b></label>
-                                                                    <mat-form-field>
-                                                                        <mat-select
-                                                                                aria-label="Small"
-                                                                                aria-describedby="inputGroup-sizing-lg"
-                                                                                class="form-control" required
-                                                                                name="tariffId"
-                                                                                formControlName="tariffId"
-                                                                                placeholder="Select Payment Tariff">
-                                                                            <mat-option
-                                                                                        value="please select" [selected]>
-                                                                            </mat-option>
-                                                                        </mat-select>
-                                                                    </mat-form-field>
-                                                                </div>
-
-
-
-
-                                                                <div class="col-12">
-                                                                    <hr/>
-                                                                </div>
-
-
-                                                            </div>
-
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <input hidden formControlName="invoiceId"
-                                                       [ngModel]="selected" name="invoiceId">
-
-                                                <br><br>
-                                                <button class="btn btn-info" type="submit">
-                                                    Generate Invoice
-                                                </button>
-
-
-                                            </form> -->
-
-
                                         </div>
 
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" #closeModal
-                                                    (click)="hideModel()"
-                                                    data-dismiss="modal">Close
-                                            </button>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="webStoreModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-xl" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Registration
-                                                Details</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class=" col-12">
-                                                    <ul class="list-group">
-                                                        <li class="list-group-item active">Registration Details</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Applicant Name: " + actionRequest?.name}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Phone Number: " + actionRequest?.phone}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Address: " + actionRequest?.address}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Occupation: " + actionRequest?.designationOccupation}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Account Type: " + actionRequest?.accountType}}</li>
-
-                                                        <br><br>
-
-                                                    </ul>
-                                                </div>
-                                            </div>
-
-                                            <br>
-                                            <form
-                                                    (ngSubmit)="onReviewTask()" [formGroup]="stdHOFReview"
-                                            >
-
-
-                                                <div class="col-md-12">
-                                                    <div class="card ">
-                                                        <div class="card-header card-header-rose card-header-text">
-                                                            <div class="card-text">
-                                                                <h4 class="card-title">Add On WebStore</h4>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-body ">
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    <h5>Please create a temporary password that will be
-                                                                        used for this user.</h5>
-                                                                </div>
-
-                                                                <div class="col-sm-6 checkbox-radios">
-                                                                    <label><b>Temporary Password</b></label>
-                                                                    <mat-form-field
-                                                                            class="example-full-width has-label">
-                                                                        <input type="text"
-                                                                               matInput
-                                                                               id="password"
-                                                                               placeholder="Temporary Password *"
-                                                                               formControlName="varField1">
-
-                                                                    </mat-form-field>
-                                                                </div>
-
-
-                                                                <div class="col-12">
-                                                                    <hr/>
-                                                                </div>
-
-
-                                                            </div>
-
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <input hidden formControlName="requestId"
-                                                       [ngModel]="selectedNwi" name="requestId">
-
-                                                <br><br>
-                                                <button class="btn btn-info" type="submit">
-                                                    Add To Webstore
-                                                </button>
-
-                                            </form>
-
-
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" #closeModal
-                                                    (click)="hideModel()"
-                                                    data-dismiss="modal">Close
-                                            </button>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="webStoreAllDetailsModal" tabindex="-1" role="dialog"
-                                 aria-labelledby="updateExampleModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-xl" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="updateExampleModalLabel">Registration
-                                                Details</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class=" col-12">
-                                                    <ul class="list-group">
-                                                        <li class="list-group-item active">Registration Details</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Applicant Name: " + actionRequest?.name}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Email: " + actionRequest?.email}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Phone Number: " + actionRequest?.phone}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Address: " + actionRequest?.address}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Occupation: " + actionRequest?.designationOccupation}}</li>
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Account Type: " + actionRequest?.accountType}}</li>
-
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Invoice Generation Date: " + formatFormDate(actionRequest?.invoiceGeneratedDate)}}</li>
-
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Invoice Amount: " + actionRequest?.invoiceAmount}}</li>
-
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Payment Date: " + formatFormDate(actionRequest?.invoicePaymentDate)}}</li>
-
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Webstore Account creation Date: " + formatFormDate(actionRequest?.webStoreAccountCreationDate)}}</li>
-
-                                                        <li style="background: lightgray"
-                                                            class="list-group-item">{{"Webstore Account Temporary Password: " + actionRequest?.varField1}}</li>
-
-                                                        <br><br>
-
-                                                    </ul>
-                                                </div>
-                                            </div>
-
-
-
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" #closeModal
+                                            <button type="button" class="btn btn-secondary" #closeViewModal
                                                     (click)="hideModel()"
                                                     data-dismiss="modal">Close
                                             </button>
