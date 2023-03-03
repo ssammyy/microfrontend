@@ -1384,6 +1384,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                                     this.SpinnerService.hide();
                                     this.loadPermitDetails(data);
 
+                                    // tslint:disable-next-line:max-line-length
                                     this.selectedLabResults = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
                                     // tslint:disable-next-line:max-line-length
                                     this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {this.closePopUpsModal2(); });

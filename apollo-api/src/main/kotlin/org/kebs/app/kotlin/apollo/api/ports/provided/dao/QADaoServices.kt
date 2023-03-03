@@ -3458,13 +3458,13 @@ class QADaoServices(
     }
 
     fun findAllQAOPermitListWithSearch(user: UsersEntity, permitSearch: PermitSearchValues): List<PermitApplicationsEntity> {
-        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
-        permitRepo.findByQaoIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitSearch)
-            ?.let { permitList ->
-                return permitList
-            }
-
-            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+//        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+//        permitRepo.findByQaoIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitSearch)
+//            ?.let { permitList ->
+//                return permitList
+//            }
+//
+//            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
     fun findAllPermitListWithPermitType(permitType: Long): List<PermitApplicationsEntity> {
