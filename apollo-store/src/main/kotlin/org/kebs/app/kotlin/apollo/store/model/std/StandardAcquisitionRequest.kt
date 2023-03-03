@@ -101,4 +101,66 @@ class StandardAcquisitionRequest {
     var emailSentToEmployer: String? = null
 
 
+    @Column(name = "STANDARD_EXISTS")
+    @Basic
+    var standardExists: String? = null
+
+    @Column(name = "INVOICE_SENT")
+    @Basic
+    var invoiceSent: String? = null
+
+    @Column(name = "PAYMENT_RECEIVED")
+    @Basic
+    var paymentReceived: String? = null
+
+    @Column(name = "STANDARD_SENT_TO_CUSTOMER")
+    @Basic
+    var standardSentToCustomer: String? = null
+
+
+    @Column(name = "STANDARD_SENT_TO_CUSTOMER_DATE")
+    @Basic
+    var standardSentToCustomerDate: Timestamp? = null
+
+    @Column(name = "SIMILAR_STANDARDS")
+    @Basic
+    var similarStandards: String? = null
+
+    @Column(name = "SIMILAR_STANDARDS_SENT_TO_CUSTOMER_DATE")
+    @Basic
+    var similarStandardsSentToCustomerDate: Timestamp? = null
+
+    @Column(name = "PROFORMA_INVOICE_SENT")
+    @Basic
+    var proformaInvoiceSent: String? = null
+
+
+    @Column(name = "PROFORMA_PAYMENT_RECEIVED")
+    @Basic
+    var proformaPaymentReceived: String? = null
+
+
+    @Column(name = "REQUIRES_PUBLISHING")
+    @Basic
+    var requiresPublishing: String? = null
+
+
+    @Column(name = "PAYMENT_TARIFF")
+    @Basic
+    var paymentTariff: String? = null
+
+    @Column(name = "PAYMENT_AMOUNT")
+    @Basic
+    var paymentAmount: String? = null
+
+    @Column(name = "SIMILAR_STANDARD_SENT_TO_CUSTOMER")
+    @Basic
+    var similarStandardSentToCustomer: String? = null
+
+    @Column(name = "SIMILAR_STANDARD_SENT_TO_CUSTOMER_DATE")
+    @Basic
+    var similarStandardSentToCustomerDate: Timestamp? = null
+
+
+
 }

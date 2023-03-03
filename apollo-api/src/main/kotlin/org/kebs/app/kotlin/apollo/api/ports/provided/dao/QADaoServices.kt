@@ -1351,7 +1351,7 @@ class QADaoServices(
                         factoryInspectionReportApprovedRejectedRemarks = body.supervisorComments
                     }
                     //updating of Details in DB
- permitUpdateDetails(permit, map, loggedInUser)
+                    permitUpdateDetails(permit, map, loggedInUser)
 //
 //                    return when (updateResults.first.status) {
 //                        map.successStatus -> {
@@ -10227,7 +10227,7 @@ class QADaoServices(
     ): List<PermitApplicationsEntity> {
 
 
-        permitRepo.findByAwardedPermitNumber(awardedPermitNumber)
+        permitRepo.findTopByAwardedPermitNumberAndPermitStatusOrderByIdDesc(awardedPermitNumber, 28)
             ?.let { permitList ->
                 return permitList
             }
