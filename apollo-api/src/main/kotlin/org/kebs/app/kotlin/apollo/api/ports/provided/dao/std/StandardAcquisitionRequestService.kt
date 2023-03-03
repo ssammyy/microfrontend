@@ -207,6 +207,41 @@ class StandardAcquisitionRequestService(
     }
 
 
+    fun sicCheckIfStandardExists(standardAcquisitionRequest: StandardAcquisitionRequest)
+    {
+        val selectedStandardAcquisitionRequest = standardAcquisitionRepository.findAllByRequestId(standardAcquisitionRequest.requestId)
+        //if standard exists
+        selectedStandardAcquisitionRequest.standardExists ="1"
+        //send invoice
+        notifications.sendEmail(
+            standardAcquisitionRequest.email!!,
+            "Standard Request Available",
+            "Hello " + standardAcquisitionRequest.name!! + ",\n Standard Request Found. Please Make Payment "
+        )
+        selectedStandardAcquisitionRequest.invoiceSent ="1"
+        standardAcquisitionRepository.save(selectedStandardAcquisitionRequest)
+
+    }
+
+    fun approvePaymentReceived(standardAcquisitionRequest: StandardAcquisitionRequest)
+    {
+        val selectedStandardAcquisitionRequest = standardAcquisitionRepository.findAllByRequestId(standardAcquisitionRequest.requestId)
+        notifications.sendEmail(
+            standardAcquisitionRequest.email!!,
+            "Standard Request Payment Received",
+            "Hello " + standardAcquisitionRequest.name!! + ",\n We have received your payment. "
+        )
+        selectedStandardAcquisitionRequest.paymentReceived ="1"
+        notifications.sendEmail(
+            standardAcquisitionRequest.email!!,
+            "Standard Request Document",
+            "Hello " + standardAcquisitionRequest.name!! + ",\n Please find Attached The Standard Request document. "
+        )
+
+        standardAcquisitionRepository.save(selectedStandardAcquisitionRequest)
+    }
+
+
 
 
 

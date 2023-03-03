@@ -748,7 +748,7 @@ class QualityAssuranceInternalUserHandler(
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {
-                    qaDaoServices.updatePermitSaveLabPDFSelectedDetails(permitID.toLong(), body)
+                    qaDaoServices.updatePermitSaveLabPDFSelectedDetails(permitID, body)
                         .let {
                             ok().body(it)
                         }
@@ -865,6 +865,7 @@ class QualityAssuranceInternalUserHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger{}.trace { e.message }
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
