@@ -781,7 +781,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
             this.currDiv = 'pdfSaveCompliance';
             window.$('#myModal2').modal('show');
-        }else {
+        } else {
                 const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
                 if (savedPdf.pdfName === null || savedPdf.pdfName === undefined) {
                 console.log('TEST 101 REF NO SAVE: ' + data.fileName);

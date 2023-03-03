@@ -2580,7 +2580,7 @@ class QADaoServices(
     fun findSmarkWithFmarkId(fmarkID: Long): QaSmarkFmarkEntity {
         smarkFmarkRepo.findByFmarkId(fmarkID)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No Fmark ID with found with the following [ID=$fmarkID]")
+        } ?: throw ExpectedDataNotFound("No FMARK ID with found with the following [ID=$fmarkID]")
     }
 
     fun findAllUserPermitWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
@@ -8595,10 +8595,7 @@ class QADaoServices(
             val permitTypeDetails = findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
 //            fmarkPermit = SerializationUtils.clone(permit)
 
-            fmarkPermit = commonDaoServices.updateDetails(
-                permit,
-                fmarkPermit
-            ) as PermitApplicationsEntity
+            fmarkPermit = commonDaoServices.updateDetails(permit, fmarkPermit) as PermitApplicationsEntity
 
             val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
 
