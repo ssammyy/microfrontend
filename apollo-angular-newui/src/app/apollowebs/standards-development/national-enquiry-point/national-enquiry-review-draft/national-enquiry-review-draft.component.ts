@@ -2,10 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
-import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
@@ -21,6 +19,11 @@ export class NationalEnquiryReviewDraftComponent implements OnInit {
   public uploadedFiles:  FileList;
   loadingText: string;
   public preparePreliminaryDraftFormGroup!: FormGroup;
+  addressOfAgency: string;
+  telephoneOfAgency: string;
+  faxOfAgency: string;
+  emailOfAgency: string;
+  websiteOfAgency: string;
 
   constructor(
       private store$: Store<any>,
@@ -33,14 +36,30 @@ export class NationalEnquiryReviewDraftComponent implements OnInit {
 
   ngOnInit(): void {
     this.preparePreliminaryDraftFormGroup = this.formBuilder.group({
-      title: ['', Validators.required],
-      scope: ['', Validators.required],
-      normativeReference: ['', Validators.required],
-      symbolsAbbreviatedTerms: ['', Validators.required],
-      clause: ['', Validators.required],
-      special: ['', Validators.required]
+      notifyingMember : ['', Validators.required],
+      agencyResponsible : ['', Validators.required],
+      addressOfAgency : ['', Validators.required],
+      telephoneOfAgency : ['', Validators.required],
+      faxOfAgency : ['', Validators.required],
+      emailOfAgency : ['', Validators.required],
+      websiteOfAgency : ['', Validators.required],
+      notifiedUnderArticle : ['', Validators.required],
+      productsCovered : ['', Validators.required],
+      descriptionOfNotifiedDoc : ['', Validators.required],
+      descriptionOfContent : ['', Validators.required],
+      objectiveAndRationale : ['', Validators.required],
+      relevantDocuments : ['', Validators.required],
+      proposedDateOfAdoption : ['', Validators.required],
+      finalDateForComments : ['', Validators.required],
+      textAvailableFrom : ['', Validators.required],
 
     });
+
+    this.addressOfAgency="P.O. Box: 54974-00200, Nairobi, Kenya"
+    this.telephoneOfAgency="+ (254) 020 605490, 605506/6948258"
+    this.faxOfAgency="+ (254) 020 609660/609665"
+    this.emailOfAgency="info@kebs.org"
+    this.websiteOfAgency="Website: http://www.kebs.org"
   }
 
   showToasterSuccess(title:string,message:string){
@@ -94,7 +113,7 @@ export class NationalEnquiryReviewDraftComponent implements OnInit {
             console.log(data);
             swal.fire({
               title: 'Thank you....',
-              html:'Preliminary Draft Uploaded',
+              html:'Uploaded',
               buttonsStyling: false,
               customClass: {
                 confirmButton: 'btn btn-success form-wizard-next-btn ',

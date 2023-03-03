@@ -710,7 +710,7 @@ GET https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedP
 
 
 ###
-POST https://kims.kebs.org:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByPermitNumberSmsRequest
+POST https://localhost:8006/api/v1/migration/anonymous/kebsWebsite/getAllAwardedPermitsByPermitNumberSmsRequest
 Content-Type: application/json
 
 {
@@ -722,7 +722,7 @@ Content-Type: application/json
     "profile_code": "2206151",
     "mobile_number": "254702882256",
     "link_id": "00006110183091557771324128",
-    "message": "SM#60122"
+    "message": "SM#9154"
   }
 }
 

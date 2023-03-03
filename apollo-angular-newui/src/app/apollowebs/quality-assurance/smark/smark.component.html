@@ -1724,8 +1724,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
                         <button style="width: -webkit-fill-available;white-space: normal;"
-                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus
-                                && allPermitDetails?.permitDetails?.oldPermitStatus
+                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true
+                                && allPermitDetails?.permitDetails?.oldPermitStatus  == false
                                 && allPermitDetails?.permitDetails?.processStatusID !=59
                                 && allPermitDetails?.permitDetails?.versionNumber == null"
                                 mat-raised-button=""

@@ -963,6 +963,9 @@ class InspectionReportDaoServices(
             inspectionReport.supervisorComments,
             inspectionReport.supervisorName,
             inspectionReport.supervisorDate,
+            inspectionReport.approvedRejectedStatus,
+            inspectionReport.submittedInspectionReportStatus,
+
             inspectionReport.permitId?.let { qaDaoServices.findPermitBYID(it) }
                 ?.let { qaDaoServices.permitDetails(it, map) }
 

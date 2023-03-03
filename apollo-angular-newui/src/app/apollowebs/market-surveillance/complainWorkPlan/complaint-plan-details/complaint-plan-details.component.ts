@@ -29,7 +29,7 @@ import {
   SeizureDeclarationDto, SeizureDto, SeizureListDto,
   SSFSaveComplianceStatusDto, SSFSendingComplianceStatus,
   WorkPlanEntityDto,
-  WorkPlanFeedBackDto,
+  WorkPlanFeedBackDto, WorkPlanFilesFoundDto,
   WorkPlanFinalRecommendationDto,
   WorkPlanInspectionDto, WorkPlanProductDto,
   WorkPlanScheduleApprovalDto, WorkPlanScheduleOnsiteDto,
@@ -165,6 +165,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveInvestInspectReport: InspectionInvestigationReportDto;
   dataSavePreliminaryReport: PreliminaryReportDto | undefined;
   dataSavePreliminaryReportParamList: PreliminaryReportItemsDto[] = [];
+  dataSaveDataReportUploadsList: WorkPlanFilesFoundDto[] = [];
   dataSavePreliminaryReportParam: PreliminaryReportItemsDto;
   dataSaveFinalRecommendation: WorkPlanFinalRecommendationDto;
   dataSaveDestructionNotification: DestructionNotificationDto;
@@ -2816,6 +2817,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveDataReportParamList.push(paramDetails[i]);
     }
+    this.dataSaveDataReportUploadsList = [];
+    for (let i = 0; i < data.docList.length; i++) {
+      const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === i);
+      this.dataSaveDataReportUploadsList.push(fileValue);
+    }
     this.dataReportForm.disable();
     this.addProductsStatus = false;
     window.$('#dataReportModal').modal('show');
@@ -4329,6 +4335,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
 
+  viewUploadsFileSaved(data: WorkPlanFilesFoundDto) {
+    this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
+  }
+
   viewSeizedProductsFileSaved(data: SeizureListDto) {
     const foundPdfFile = this.workPlanInspection?.workPlanFiles.find(lab => lab.id === data.docID);
     this.viewPdfFile(String(foundPdfFile.id), foundPdfFile.documentType, foundPdfFile.fileContentType);
@@ -4921,6 +4931,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   onClickSaveInvestInspectReport() {
+    let reportRefinput = this.investInspectReportForm.get('reportReference');
+    reportRefinput.setValue("generatedRefNumber");
     this.submitted = true;
     this.msService.showSuccessWith2Message('ARE YOU SURE YOU WANT TO SAVE THE INITIAL REPORT?', 'You can still update it later.',
         'You can click the \'ADD INITIAL REPORT\' button to update details Before Saving', 'INITIAL REPORT DETAILS SAVED SUCCESSFUL', () => {
@@ -5379,8 +5391,8 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     const selectedClone = this.workPlanInspection?.seizureDeclarationDto.find(pr => pr.id === this.seizureForm?.get('seizureFormValueToClone')?.value);
     this.seizureForm.patchValue(selectedClone);
     this.seizureForm?.get('id').setValue(0);
+    this.seizureForm?.get('docID').setValue(null);
     const paramDetails = selectedClone.seizureList;
-
     this.dataSaveSeizureDeclarationList = [];
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSeizureDeclarationList.push(paramDetails[i]);

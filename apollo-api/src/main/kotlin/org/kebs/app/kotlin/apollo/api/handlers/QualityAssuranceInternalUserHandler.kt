@@ -865,6 +865,7 @@ class QualityAssuranceInternalUserHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger{}.trace { e.message }
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }

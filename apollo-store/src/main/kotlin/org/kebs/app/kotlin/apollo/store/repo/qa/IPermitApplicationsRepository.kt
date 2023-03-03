@@ -20,6 +20,12 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByUserIdAndVarField9IsNull(userId: Long): List<PermitApplicationsEntity>?
     fun findByAwardedPermitNumber(awardedPermitNumber: String): List<PermitApplicationsEntity>?
 
+    fun findTopByAwardedPermitNumberAndPermitStatusOrderByIdDesc(
+        awardedPermitNumber: String,
+        permitStatus: Long
+    ): List<PermitApplicationsEntity>?
+
+
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
     fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
     fun countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
@@ -1186,7 +1192,12 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
 
     fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndSscStatus(permitRefNumber: String, sscStatus: Int): List<QaUploadsEntity>?
-    fun findByPermitRefNumberAndPermitIdAndSscStatus(permitRefNumber: String,permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitRefNumberAndPermitIdAndSscStatus(
+        permitRefNumber: String,
+        permitId: Long,
+        sscStatus: Int
+    ): List<QaUploadsEntity>?
+
     fun findByPermitRefNumberAndJustificationReportStatusAndPermitId(
         permitRefNumber: String,
         justificationReportStatus: Int,
@@ -1258,7 +1269,7 @@ interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<Per
     fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
-    
+
 
     fun findAllByCompanyNameContainingIgnoreCase(companyName: String): List<PermitMigrationApplicationsEntity>?
 
