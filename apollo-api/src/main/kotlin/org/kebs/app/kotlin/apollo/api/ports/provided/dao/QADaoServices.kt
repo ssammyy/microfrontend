@@ -5078,12 +5078,7 @@ class QADaoServices(
         }
 
         val inspectionReport =
-            permit.id?.let {
-                qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(
-                    it,
-                    1
-                )
-            }
+            permit.id?.let { qaInspectionReportRecommendationRepo.findByPermitIdAndSubmittedInspectionReportStatus(it, 1) }
         val inspectionReportDetails = InspectionReportDtoPermit(
             id = inspectionReport?.id,
             refNo = inspectionReport?.refNo,
@@ -7106,12 +7101,9 @@ class QADaoServices(
         var saveNewPermit = PermitApplicationsEntity()
         try {
             val pm = findPermitBYID(permitID)
-            var oldPermit =
-                findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
-            KotlinLogging.logger { }
-                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
-            val versionNumberOld =
-                oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
+            var oldPermit = findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
+            KotlinLogging.logger { }.info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
+            val versionNumberOld = oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
 
             oldPermit.oldPermitStatus = 1
             oldPermit.varField7 = null
@@ -8787,7 +8779,7 @@ class QADaoServices(
             fmarkPermit = commonDaoServices.updateDetails(permit, fmarkPermit) as PermitApplicationsEntity
 
             val awardedPermitNumberToBeAwarded = iQaAwardedPermitTrackerEntityRepository.getMaxId()?.plus(1)
-
+            val fmarkPermitFound = smarkFmarkRepo.findBySmarkId(permit.id?: throw Exception("INVALID PERMIT ID"))?.fmarkId?.let { findPermitBYID(it) }
 
             with(fmarkPermit) {
                 id = smarkFmarkRepo.findBySmarkId(permit.id?: throw Exception("INVALID PERMIT ID"))?.fmarkId
@@ -8795,14 +8787,7 @@ class QADaoServices(
                 varField6 = pcmId.toString()
                 permitType = permitTypeDetails.id
                 permitStatus = applicationMapProperties.mapQaStatusPermitAwarded
-//                permitRefNumber = "REF${permitTypeDetails.markNumber}${
-//                    generateRandomText(
-//                        5,
-//                        s.secureRandom,
-//                        s.messageDigestAlgorithm,
-//                        true
-//                    )
-//                }".toUpperCase()
+                permitRefNumber = fmarkPermitFound?.permitRefNumber
 
                 val a = awardedPermitNumberToBeAwarded?.toString()
                 val b = permitTypeDetails.markNumber?.toUpperCase()

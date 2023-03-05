@@ -685,8 +685,8 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     closePopUpsModal2() {
         window.$('#myModal2').modal('hide');
-        window.$('body').removeClass('modal-open');
-        window.$('.modal-backdrop').remove();
+        // window.$('body').removeClass('modal-open');
+        // window.$('.modal-backdrop').remove();
         window.$('#sampleLabResultsModal').modal('hide');
         window.$('body').removeClass('modal-open');
         window.$('.modal-backdrop').remove();
@@ -783,14 +783,14 @@ export class PermitDetailsAdminComponent implements OnInit {
             window.$('#myModal2').modal('show');
         } else {
                 const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
-                if (savedPdf.pdfName === null || savedPdf.pdfName === undefined) {
+          if (savedPdf.pdfName === null) {
                 console.log('TEST 101 REF NO SAVE: ' + data.fileName);
                 this.selectedPDFFileName = data.fileName;
                 this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
                 this.currDiv = 'pdfSaveCompliance';
                 window.$('#myModal2').modal('show');
             } else {
-                this.qaService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ', Already Saved');
+                this.qaService.showWarning('The Pdf selected With Name ' + savedPdf.pdfName + ', Already Saved');
             }
         }
     }
