@@ -56,6 +56,7 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
     }
 
     removeTasks(taskId: any) {
+        this.diService.showConfirmation("Are you sure you want to delete this task, deleting removes the task from the consignments and moves the consignment to hold")
         this.diService.deleteTask(taskId)
             .subscribe(
                 res => {

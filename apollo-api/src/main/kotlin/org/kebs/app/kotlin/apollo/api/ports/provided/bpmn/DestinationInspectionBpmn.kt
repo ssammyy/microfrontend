@@ -1075,14 +1075,32 @@ class DestinationInspectionBpmn(
         return false
     }
 
-    fun deleteTask(pathVariable: String): ApiResponseModel {
+    fun deleteTask(pathVariable: String, remarks: String): ApiResponseModel {
         val response = ApiResponseModel()
         try {
             val task = taskService.createTaskQuery().taskId(pathVariable)
                 .singleResult()
+            val dataMap = getTaskDetails(mutableListOf<org.flowable.task.api.Task>(task))
+            val cdUuid = dataMap.get(0).map.get("cdUuid")
             runtimeService.deleteProcessInstance(task.processInstanceId, "Not necessary")
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Success"
+            // Update consignment details
+            cdUuid?.let { uuid ->
+                daoServices.findCDWithUuid(uuid.toString()).let { updateCd ->
+                    this.auditService.addHistoryRecord(
+                        updateCd.id!!,
+                        updateCd.ucrNumber,
+                        remarks,
+                        "CONSIGNMENT TASK DELETED",
+                        "Consignment task deleted"
+                    )
+                    // Move consignment softly to onhold status to allow further inspection
+                    updateCd.diProcessStatus = 0
+                    daoServices.updateCDStatus(updateCd, ConsignmentDocumentStatus.ON_HOLD)
+                }
+
+            }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error("FAILED to DELETE", ex)
             response.responseCode = ResponseCodes.FAILED_CODE
