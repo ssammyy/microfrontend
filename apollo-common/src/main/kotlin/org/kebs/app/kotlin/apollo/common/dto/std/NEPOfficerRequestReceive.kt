@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.common.dto.std
 
+import java.sql.Timestamp
 import java.time.LocalDate
 
 class NEPOfficerRequestReceive {
@@ -59,7 +60,33 @@ data class NepDraftDto(
     var clause: String?=null,
     var special: String?=null,
     var preparedBy: String?=null,
-    var notification: String?=null
+    var notification: String?=null,
+    var typeOfNotification: String?=null
+){
+
+}
+
+data class NepNotificationDto(
+    var id: Long,
+    var datePrepared: Timestamp,
+    var notifyingMember: String?=null,
+    var agencyResponsible:String?=null,
+    var addressOfAgency:String?=null,
+    var telephoneOfAgency: String?=null,
+    var faxOfAgency: String?=null,
+    var emailOfAgency: String?=null,
+    var websiteOfAgency: String?=null,
+    var notifiedUnderArticle: String?=null,
+    var productsCovered: String?=null,
+    var descriptionOfNotifiedDoc: String?=null,
+    var objectiveAndRationale: String?=null,
+    var relevantDocuments: String?=null,
+    var proposedDateOfAdoption: Timestamp?=null,
+    var proposedDateOfEntryIntoForce: Timestamp,
+    var finalDateForComments: Timestamp,
+    var textAvailableFrom: String?=null,
+    var preparedBy: String?=null,
+    var status: Long
 ){
 
 }
@@ -67,8 +94,17 @@ data class NepDraftDto(
 data class NepDraftDecisionDto(
     var draftId: Long,
     var remarks: String?=null,
-    var accentTo: String?=null
+    var accentTo: String?=null,
+    var notification: String?=null
 
+){
+
+}
+
+data class NepDraftWtoDto(
+    var notification: String?=null,
+    var draftId: Long?=null,
+    var status: Long?=null,
 ){
 
 }

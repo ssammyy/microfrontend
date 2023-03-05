@@ -881,17 +881,42 @@ export const ROUTES: RouteInfo[] = [
             {
                 path: 'nwaJustification',
                 title: 'Prepare Justification',
-                ab: 'PJ',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']
+                ab: 'PJ', privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
             },
-            {path: 'viewJustification', title: 'View Justification', ab: 'VW',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','SPC_SEC_SD_READ']},
-            {path: 'nwaPreparePD', title: 'Preliminary Draft', ab: 'PD',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
-            {path: 'nwaViewPD', title: 'View Draft', ab: 'VD',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
-            {path: 'nwaEditPD', title: 'Make Changes on Draft', ab: 'ED',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
-            {path: 'nwaWdEditing', title: 'Submit to Publishing', ab: 'SB',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']},
+            {
+                path: 'viewJustification',
+                title: 'View Justification',
+                ab: 'VW',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']
+            },
+            {
+                path: 'nwaPreparePD',
+                title: 'Preliminary Draft',
+                ab: 'PD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
+                path: 'nwaViewPD',
+                title: 'View Draft',
+                ab: 'VD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
+                path: 'nwaEditPD',
+                title: 'Make Changes on Draft',
+                ab: 'ED',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
+                path: 'nwaWdEditing',
+                title: 'Submit to Publishing',
+                ab: 'SB',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
+            },
 
         ],
         icontype: 'handshake',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_READ', 'SPC_SEC_SD_READ', 'HOP_SD_READ', 'TC_SEC_SD_READ', 'TC_SEC_SD_MODIFY', 'SAC_SEC_SD_READ', 'HO_SIC_SD_READ', 'HOD_SIC_SD_READ','EDITOR_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_READ', 'SPC_SEC_SD_READ', 'HOP_SD_READ', 'TC_SEC_SD_READ', 'TC_SEC_SD_MODIFY', 'SAC_SEC_SD_READ', 'HO_SIC_SD_READ', 'HOD_SIC_SD_READ', 'EDITOR_SD_READ'],
         collapse: 'WA',
     },
 
@@ -901,10 +926,18 @@ export const ROUTES: RouteInfo[] = [
         type: 'sub',
         children: [
             //{path: 'make_enquiry', title: 'Make Enquiry', ab: 'ME'},
-            {path: 'nepResponse', title: 'Manage Enquiries', ab: 'EM',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NEP_OFFICER_SD_READ']},
+            {
+                path: 'nepResponse',
+                title: 'Manage Enquiries',
+                ab: 'EM',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'NEP_OFFICER_SD_READ']
+            },
             //{path: 'nep_division_response', title: 'Division Response', ab: 'DR'},
-            {path: 'divResponse', title: 'Division Response', ab: 'DR'},
             {path: 'sendFeedBack', title: 'Send Feedback', ab: 'SF'},
+            {path: 'prepareReviewDraft', title: 'Prepare Review Draft', ab: 'PR'},
+            {path: 'viewDraftNotification', title: 'View Draft', ab: 'VD'},
+            {path: 'managerViewNotification', title: 'View Notification', ab: 'VN'},
+            {path: 'uploadNotification', title: 'Upload Notification', ab: 'UN'},
 
         ],
         icontype: 'quiz',
@@ -927,13 +960,13 @@ export const ROUTES: RouteInfo[] = [
                 path: 'comStdDraft',
                 title: 'Uploaded Drafts',
                 ab: 'UD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ','EDITOR_SD_READ'],
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'EDITOR_SD_READ'],
             },
             {
                 path: 'comStdEdit',
                 title: 'Submit to Publishing',
                 ab: 'SP',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ','EDITOR_SD_READ'],
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'EDITOR_SD_READ'],
             },
             {
                 path: 'companyStandardList',
@@ -945,12 +978,12 @@ export const ROUTES: RouteInfo[] = [
                 path: 'comStdListed',
                 title: 'Standards',
                 ab: 'ST',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ','EDITOR_SD_READ'],
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ'],
             }
 
         ],
         icontype: 'business',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ','EDITOR_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ'],
         collapse: 'cs',
     },
     {
@@ -958,19 +991,59 @@ export const ROUTES: RouteInfo[] = [
         title: 'International Standards',
         type: 'sub',
         children: [
-            {path: 'isProposalForm', title: 'Prepare Proposal', ab: 'C',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
-            {path: 'isProposals', title: 'View Proposals ', ab: 'VP',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
-            {path: 'isPrepareJustification', title: 'Prepare Justification', ab: 'PJ',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
-            {path: 'isJustificationApp', title: 'View Justification', ab: 'VJ',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']},
-            {path: 'isUploadDraft', title: 'Upload Draft', ab: 'UD',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']},
-            {path: 'isSacApproval', title: 'SAC Tasks', ab: 'ST',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ']},
-            {path: 'isUploadStd', title: 'Upload Standard', ab: 'US',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']},
-            {path: 'intStandardLists', title: 'International Standards', ab: 'IS',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ','HOP_SD_READ','EDITOR_SD_READ']},
+            {
+                path: 'isProposalForm',
+                title: 'Prepare Proposal',
+                ab: 'C',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
+                path: 'isProposals',
+                title: 'View Proposals ',
+                ab: 'VP',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
+                path: 'isPrepareJustification',
+                title: 'Prepare Justification',
+                ab: 'PJ',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
+                path: 'isJustificationApp',
+                title: 'View Justification',
+                ab: 'VJ',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']
+            },
+            {
+                path: 'isUploadDraft',
+                title: 'Upload Draft',
+                ab: 'UD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
+            },
+            {
+                path: 'isSacApproval',
+                title: 'SAC Tasks',
+                ab: 'ST',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ']
+            },
+            {
+                path: 'isUploadStd',
+                title: 'Upload Standard',
+                ab: 'US',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
+            {
+                path: 'intStandardLists',
+                title: 'International Standards',
+                ab: 'IS',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'EDITOR_SD_READ']
+            },
 
 
         ],
         icontype: 'business',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ','EDITOR_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'PL_SD_READ', 'SPC_SEC_SD_READ', 'JC_SEC_SD_READ', 'COM_SEC_SD_READ', 'HOP_SD_READ', 'SAC_SEC_SD_READ', 'EDITOR_SD_READ'],
         collapse: 'is',
     },
 
@@ -979,10 +1052,30 @@ export const ROUTES: RouteInfo[] = [
         title: 'Standards Review',
         type: 'sub',
         children: [
-            {path: 'standardsForReview', title: 'View Standards', ab: 'VW',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
-            {path: 'systemicReviewComments', title: 'Comment on Systemic Review', ab: 'CP',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],},
-            {path: 'reviewStandardsTc', title: 'Review Comments', ab: 'CA',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','KNW_SEC_SD_READ']},
-            {path: 'reviewStandardsSPC', title: 'View Recommendations', ab: 'VR',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']},
+            {
+                path: 'standardsForReview',
+                title: 'View Standards',
+                ab: 'VW',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
+                path: 'systemicReviewComments',
+                title: 'Comment on Systemic Review',
+                ab: 'CP',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'SPC_SEC_SD_READ', 'SAC_SEC_SD_READ', 'HOP_SD_READ', 'HO_SIC_SD_READ', 'STAKEHOLDERS_SD_READ', 'EDITOR_SD_READ'],
+            },
+            {
+                path: 'reviewStandardsTc',
+                title: 'Review Comments',
+                ab: 'CA',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
+                path: 'reviewStandardsSPC',
+                title: 'View Recommendations',
+                ab: 'VR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']
+            },
             // {path: 'reviewStandardsSAC', title: 'SAC SEC Tasks', ab: 'SAC'},
             // {path: 'reviewStandardsProofReader', title: 'Proof Read', ab: 'PR'},
             // {path: 'reviewStandardsHOP', title: 'HOP Tasks', ab: 'HOP'},
@@ -1001,15 +1094,62 @@ export const ROUTES: RouteInfo[] = [
         type: 'sub',
 
         children: [
-            {path: 'hodReview', title: 'Review Requests', ab: 'RR',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_SIC_SD_READ']},
-            {path: 'sicReview', title: 'SIC Review', ab: 'RR',privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SIC_OFFICER_SD_READ']},
+            {
+                path: 'hodReview',
+                title: 'Review Requests',
+                ab: 'RR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_SIC_SD_READ']
+            },
+            {
+                path: 'sicReview',
+                title: 'SIC Review',
+                ab: 'RR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SIC_OFFICER_SD_READ']
+            },
             // {path: 'sdpayments', title: 'Payments', ab: 'P'},
 
 
         ],
         icontype: 'group',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','HOD_SIC_SD_READ','SIC_OFFICER_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_SIC_SD_READ', 'SIC_OFFICER_SD_READ'],
         collapse: 'sm'
+    },
+    {
+        path: '',
+        title: 'Standard Acquisition',
+        type: 'sub',
+
+        children: [
+            {
+                path: 'sicHodReviewRequest',
+                title: 'Review Requests',
+                ab: 'RR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_SIC_SD_READ']
+            },
+            {
+                path: 'sicOfficerReviewRequest',
+                title: 'SIC Review',
+                ab: 'RR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SIC_OFFICER_SD_READ']
+            },
+            {
+                path: 'sourceForStandard',
+                title: 'SIC Source',
+                ab: 'RR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SIC_OFFICER_SD_READ']
+            },
+            {
+                path: 'disseminateStandard',
+                title: 'SIC Disseminate',
+                ab: 'RR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SIC_OFFICER_SD_READ']
+            },
+
+
+        ],
+        icontype: 'group',
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_SIC_SD_READ', 'SIC_OFFICER_SD_READ'],
+        collapse: 'saq'
     },
 
     //SD reports

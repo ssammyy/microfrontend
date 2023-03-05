@@ -781,7 +781,7 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
             this.currDiv = 'pdfSaveCompliance';
             window.$('#myModal2').modal('show');
-        }else {
+        } else {
                 const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
                 if (savedPdf.pdfName === null || savedPdf.pdfName === undefined) {
                 console.log('TEST 101 REF NO SAVE: ' + data.fileName);
@@ -1377,14 +1377,17 @@ export class PermitDetailsAdminComponent implements OnInit {
                         // tslint:disable-next-line:max-line-length
                         const pdfSavedDetails = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
                         const pdfSave = pdfSavedDetails?.savedPDFFiles?.find(dat => dat?.pdfName === this.selectedPDFFileName);
-                        this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.pdfSavedId);
+                        this.pdfSaveComplianceStatusForm.get('pdfSavedID').setValue(pdfSave.id);
                         this.qaService.qaPermitSavePDFCompliance(this.pdfSaveComplianceStatusForm.value, this.permitID).subscribe(
                             (data: ApiResponseModel) => {
                                 if (data.responseCode === '00') {
                                     this.SpinnerService.hide();
                                     this.loadPermitDetails(data);
+
                                     // tslint:disable-next-line:max-line-length
-                                    this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {this.closePopUpsModal2();});
+                                    this.selectedLabResults = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
+                                    // tslint:disable-next-line:max-line-length
+                                    this.qaService.showSuccess('PDF AND COMPLIANCE STATUS, SAVED SUCCESSFULLY', () => {this.closePopUpsModal2(); });
                                 } else {
                                     this.SpinnerService.hide();
                                     this.qaService.showError(data.message);

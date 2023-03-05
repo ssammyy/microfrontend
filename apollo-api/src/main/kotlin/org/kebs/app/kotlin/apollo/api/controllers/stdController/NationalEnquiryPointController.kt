@@ -222,7 +222,7 @@ class NationalEnquiryPointController(
     }
 
     @PostMapping("/National_enquiry_point/notificationOfReview")
-    fun notificationOfReview(@RequestBody nep: NepDraftDto): ServerResponse? {
+    fun notificationOfReview(@RequestBody nep: NepNotificationDto): ServerResponse? {
         return ServerResponse(
             HttpStatus.OK,"Successfully uploaded Review",nationalEnquiryPointService.
             notificationOfReview(nep))
@@ -231,7 +231,7 @@ class NationalEnquiryPointController(
 
     @GetMapping("/National_enquiry_point/getDraftNotification")
     @ResponseBody
-    fun getDraftNotification(): MutableList<SdNepDraft>
+    fun getDraftNotification(): MutableList<NepNotificationFormEntity>
     {
         return nationalEnquiryPointService.getDraftNotification()
     }
@@ -287,6 +287,50 @@ class NationalEnquiryPointController(
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
 
     }
+
+    @PostMapping("/National_enquiry_point/decisionOnReviewDraft")
+    fun decisionOnReviewDraft(@RequestBody nep: NepDraftDecisionDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(
+            HttpStatus.OK,"Saved",nationalEnquiryPointService.
+            decisionOnReviewDraft(nep))
+    }
+
+    @GetMapping("/National_enquiry_point/getNotificationForApproval")
+    @ResponseBody
+    fun getNotificationForApproval(): MutableList<NepNotificationFormEntity>
+    {
+        return nationalEnquiryPointService.getNotificationForApproval()
+    }
+
+    @PostMapping("/National_enquiry_point/decisionOnNotification")
+    fun decisionOnNotification(@RequestBody nep: NepDraftDecisionDto
+    ) : ServerResponse
+    {
+
+        return ServerResponse(
+            HttpStatus.OK,"Saved",nationalEnquiryPointService.
+            decisionOnNotification(nep))
+    }
+
+    @GetMapping("/National_enquiry_point/getDraftNotificationForUpload")
+    @ResponseBody
+    fun getDraftNotificationForUpload(): MutableList<NepNotificationFormEntity>
+    {
+        return nationalEnquiryPointService.getDraftNotificationForUpload()
+    }
+
+    @PostMapping("/National_enquiry_point/uploadNotification")
+    fun uploadNotification(@RequestBody nep: NepDraftWtoDto): ServerResponse? {
+        return ServerResponse(
+            HttpStatus.OK,"Successfully uploaded",nationalEnquiryPointService.
+            uploadNotification(nep))
+
+    }
+
+
 
 
 }

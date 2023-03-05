@@ -694,6 +694,8 @@ export class AllInspectionDetailsApplyDto {
     supervisorComments: string;
     supervisorName: string;
     supervisorDate: Date;
+    approvedRejectedStatus: bigint;
+    submittedInspectionReportStatus: Date;
 
     permitDetails: PermitEntityDto;
 }

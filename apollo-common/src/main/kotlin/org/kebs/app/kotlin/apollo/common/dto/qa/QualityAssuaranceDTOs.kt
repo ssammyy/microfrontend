@@ -13,6 +13,17 @@ import java.time.LocalDateTime
 import javax.validation.constraints.NotNull
 
 
+
+data class PermitSearchValues(
+    var refNumber: String? = null,
+    var productName: String? = null,
+    var tradeMark: String? = null,
+    var assignedIo: Long? = null,
+    var region: Long? = null,
+    var division: Long? = null,
+    var permitType: Long? = null
+)
+
 data class SectionApplyDto(
     var sectionId: Long? = null,
     var sectionRemarks: String? = null
@@ -109,6 +120,8 @@ data class AllInspectionDetailsApplyDto(
     var supervisorComments: String? = null,
     var supervisorName: String? = null,
     var supervisorDate: Date? = null,
+    var approvedRejectedStatus: Int? = null,
+    var submittedInspectionReportStatus: Int? = null,
     var permitDetails: PermitDetailsDto? = null,
 
     )

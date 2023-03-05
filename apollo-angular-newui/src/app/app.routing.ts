@@ -704,46 +704,154 @@ import {
 } from "./apollowebs/qualityAssuranceAdmin/permit-details-admin/permit-details-admin.component";
 import {StaDetailsComponent} from "./apollowebs/qualityAssuranceAdmin/sta-details/sta-details.component";
 import {InspectionReport} from "./apollowebs/qualityAssuranceAdmin/inspection-report/inspection-report";
-import {ComStdConfirmComponent} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
-import {IntStdListComponent} from "./apollowebs/standards-development/international-standard/int-std-list/int-std-list.component";
-import { DelayedProjectsComponent } from './apollowebs/standards-development/reports/SD REPORTS/delayed-projects/delayed-projects.component';
-import { NspStatusComponent } from './apollowebs/standards-development/reports/SD REPORTS/nsp-status/nsp-status.component';
-import { NonePerformingProjectsComponent } from './apollowebs/standards-development/reports/SD REPORTS/none-preforming-projects/none-performing-projects.component';
-import { StandardsApprovalCommitteeComponent } from './apollowebs/standards-development/reports/SD REPORTS/standards-approval-committee/standards-approval-committee.component';
-import { TcMemberApplicationComponent } from './apollowebs/standards-development/reports/SD REPORTS/tc-member-application/tc-member-application.component';
-import { IndividualWeeklyReportComponent } from './apollowebs/standards-development/reports/SD REPORTS/individual-weekly-report/individual-weekly-report.component';
-import { DepartmentalWeeklyReportComponent } from './apollowebs/standards-development/reports/SD REPORTS/departmental-weekly-report/departmental-weekly-report.component';
-import { StandardsReceivedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-received/standards-received.component';
-import { StandardsEditedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-edited/standards-edited.component';
-import { StandardsProofreadComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-proofread/standards-proofread.component';
-import { StandardsTypesetComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-typeset/standards-typeset.component';
-import { SpcReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/spc-report/spc-report.component';
-import { WeeklyReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/weekly-report/weekly-report.component';
-import { DraughsmanReportComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/draughsman-report/draughsman-report.component';
-import { PublishingEnquiriestComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/publishing-enquiriest/publishing-enquiriest.component';
-import { StandardsPrintedComponent } from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-printed/standards-printed.component';
-import { InformationRequestRegisterComponent } from './apollowebs/standards-development/reports/SIRC/information-request-register/information-request-register.component';
-import { DisseminationPublicationComponent } from './apollowebs/standards-development/reports/SIRC/dissemination-publication/dissemination-publication.component';
-import { CatalogueReportComponent } from './apollowebs/standards-development/reports/SIRC/catalogue-report/catalogue-report.component';
-import { MembershipSubcriptionSchemeComponent } from './apollowebs/standards-development/reports/SIRC/membership-subcription-scheme/membership-subcription-scheme.component';
-import { KenyaStandardRequsitionFormComponent } from './apollowebs/standards-development/reports/SIRC/kenya-standard-requsition-form/kenya-standard-requsition-form.component';
-import { SaleForeignStandardRegisterComponent } from './apollowebs/standards-development/reports/SIRC/sale-foreign-standard-register/sale-foreign-standard-register.component';
-import { SalesStandardRegisterComponent } from './apollowebs/standards-development/reports/SIRC/sale-kenya-standard-register/sales-standard-register.component';
-import { PublicationOrderingRegisterComponent } from './apollowebs/standards-development/reports/SIRC/publication-ordering-register/publication-ordering-register.component';
-import { IcsAllocationComponent } from './apollowebs/standards-development/reports/SIRC/ics-allocation/ics-allocation.component';
-import { SdPaymentsComponent } from './apollowebs/standards-development/schemeMembership/sd-payments/sd-payments.component';
-import { DomesticNotificationComponent } from './apollowebs/standards-development/reports/WTO REPORTS/domestic-notification/domestic-notification.component';
-import { EnquariesHandledReportComponent } from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
-import { StandardWorkProgrammeBulletinComponent } from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
-import {NwaViewJustificationComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-view-justification/nwa-view-justification.component";
-import {NwaPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
-import {NwaViewPreliminaryComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component";
-import {NwaEditPreliminaryDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component";
-import {NwaEditingDraftComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component";
-import {NepViewEnquiriesComponent} from "./apollowebs/standards-development/national-enquiry-point/nep-view-enquiries/nep-view-enquiries.component";
-import { QaSlReportsComponent } from './apollowebs/quality-assurance/reports/qa-sl-reports/qa-sl-reports.component';
-import {NationalEnquiryPointReferalComponent} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-point-referal/national-enquiry-point-referal.component";
-import {NationalEnquiryPointResponseComponent} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-point-response/national-enquiry-point-response.component";
+import {
+    ComStdConfirmComponent
+} from "./apollowebs/standards-development/company-standard/com-std-confirm/com-std-confirm.component";
+import {
+    IntStdListComponent
+} from "./apollowebs/standards-development/international-standard/int-std-list/int-std-list.component";
+import {
+    DelayedProjectsComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/delayed-projects/delayed-projects.component';
+import {
+    NspStatusComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/nsp-status/nsp-status.component';
+import {
+    NonePerformingProjectsComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/none-preforming-projects/none-performing-projects.component';
+import {
+    StandardsApprovalCommitteeComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/standards-approval-committee/standards-approval-committee.component';
+import {
+    TcMemberApplicationComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/tc-member-application/tc-member-application.component';
+import {
+    IndividualWeeklyReportComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/individual-weekly-report/individual-weekly-report.component';
+import {
+    DepartmentalWeeklyReportComponent
+} from './apollowebs/standards-development/reports/SD REPORTS/departmental-weekly-report/departmental-weekly-report.component';
+import {
+    StandardsReceivedComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-received/standards-received.component';
+import {
+    StandardsEditedComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-edited/standards-edited.component';
+import {
+    StandardsProofreadComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-proofread/standards-proofread.component';
+import {
+    StandardsTypesetComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-typeset/standards-typeset.component';
+import {
+    SpcReportComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/spc-report/spc-report.component';
+import {
+    WeeklyReportComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/weekly-report/weekly-report.component';
+import {
+    DraughsmanReportComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/draughsman-report/draughsman-report.component';
+import {
+    PublishingEnquiriestComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/publishing-enquiriest/publishing-enquiriest.component';
+import {
+    StandardsPrintedComponent
+} from './apollowebs/standards-development/reports/PUBLISHING REPORTS/standards-printed/standards-printed.component';
+import {
+    InformationRequestRegisterComponent
+} from './apollowebs/standards-development/reports/SIRC/information-request-register/information-request-register.component';
+import {
+    DisseminationPublicationComponent
+} from './apollowebs/standards-development/reports/SIRC/dissemination-publication/dissemination-publication.component';
+import {
+    CatalogueReportComponent
+} from './apollowebs/standards-development/reports/SIRC/catalogue-report/catalogue-report.component';
+import {
+    MembershipSubcriptionSchemeComponent
+} from './apollowebs/standards-development/reports/SIRC/membership-subcription-scheme/membership-subcription-scheme.component';
+import {
+    KenyaStandardRequsitionFormComponent
+} from './apollowebs/standards-development/reports/SIRC/kenya-standard-requsition-form/kenya-standard-requsition-form.component';
+import {
+    SaleForeignStandardRegisterComponent
+} from './apollowebs/standards-development/reports/SIRC/sale-foreign-standard-register/sale-foreign-standard-register.component';
+import {
+    SalesStandardRegisterComponent
+} from './apollowebs/standards-development/reports/SIRC/sale-kenya-standard-register/sales-standard-register.component';
+import {
+    PublicationOrderingRegisterComponent
+} from './apollowebs/standards-development/reports/SIRC/publication-ordering-register/publication-ordering-register.component';
+import {
+    IcsAllocationComponent
+} from './apollowebs/standards-development/reports/SIRC/ics-allocation/ics-allocation.component';
+import {
+    SdPaymentsComponent
+} from './apollowebs/standards-development/schemeMembership/sd-payments/sd-payments.component';
+import {
+    DomesticNotificationComponent
+} from './apollowebs/standards-development/reports/WTO REPORTS/domestic-notification/domestic-notification.component';
+import {
+    EnquariesHandledReportComponent
+} from './apollowebs/standards-development/reports/WTO REPORTS/enquaries-handled-report/enquaries-handled-report.component';
+import {
+    StandardWorkProgrammeBulletinComponent
+} from './apollowebs/standards-development/reports/WTO REPORTS/standard-work-programme-bulletin/standard-work-programme-bulletin.component';
+import {
+    NwaViewJustificationComponent
+} from "./apollowebs/standards-development/workshop-agreement/nwa-view-justification/nwa-view-justification.component";
+import {
+    NwaPreliminaryDraftComponent
+} from "./apollowebs/standards-development/workshop-agreement/nwa-preliminary-draft/nwa-preliminary-draft.component";
+import {
+    NwaViewPreliminaryComponent
+} from "./apollowebs/standards-development/workshop-agreement/nwa-view-preliminary/nwa-view-preliminary.component";
+import {
+    NwaEditPreliminaryDraftComponent
+} from "./apollowebs/standards-development/workshop-agreement/nwa-edit-preliminary-draft/nwa-edit-preliminary-draft.component";
+import {
+    NwaEditingDraftComponent
+} from "./apollowebs/standards-development/workshop-agreement/nwa-editing-draft/nwa-editing-draft.component";
+import {
+    NepViewEnquiriesComponent
+} from "./apollowebs/standards-development/national-enquiry-point/nep-view-enquiries/nep-view-enquiries.component";
+import {QaSlReportsComponent} from './apollowebs/quality-assurance/reports/qa-sl-reports/qa-sl-reports.component';
+import {
+    NationalEnquiryPointReferalComponent
+} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-point-referal/national-enquiry-point-referal.component";
+import {
+    NationalEnquiryPointResponseComponent
+} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-point-response/national-enquiry-point-response.component";
+import {
+    NationalEnquiryReviewDraftComponent
+} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-review-draft/national-enquiry-review-draft.component";
+import {
+    NepNotificationViewComponent
+} from "./apollowebs/standards-development/national-enquiry-point/nep-notification-view/nep-notification-view.component";
+import {
+    MgrNepNotificationViewComponent
+} from "./apollowebs/standards-development/national-enquiry-point/mgr-nep-notification-view/mgr-nep-notification-view.component";
+import {
+    NepUploadNotificationComponent
+} from "./apollowebs/standards-development/national-enquiry-point/nep-upload-notification/nep-upload-notification.component";
+import {
+    RequestForStandardComponent
+} from "./apollowebs/standards-development/sicStdPublication/request-for-standard/request-for-standard.component";
+import {
+    EmployerApproveComponent
+} from "./apollowebs/standards-development/sicStdPublication/employer-approve/employer-approve.component";
+import {
+    ReviewStandardPublicationComponent
+} from "./apollowebs/standards-development/sicStdPublication/review-standard-publication/review-standard-publication.component";
+import {
+    ReviewStandardPublicationSicComponent
+} from "./apollowebs/standards-development/sicStdPublication/review-standard-publication-sic/review-standard-publication-sic.component";
+import {
+    SourceForStandardComponent
+} from "./apollowebs/standards-development/sicStdPublication/source-for-standard/source-for-standard.component";
+import {
+    DisseminateStandardComponent
+} from "./apollowebs/standards-development/sicStdPublication/disseminate-standard/disseminate-standard.component";
 
 export const routes: Routes = [
     {
@@ -1950,6 +2058,23 @@ export const routes: Routes = [
         path: 'sendFeedBack', component: AdminLayoutComponent,
         children: [{path: '', component: NationalEnquiryPointResponseComponent}],
     },
+    {
+        path: 'prepareReviewDraft', component: AdminLayoutComponent,
+        children: [{path: '', component: NationalEnquiryReviewDraftComponent}],
+    },
+    {
+        path: 'viewDraftNotification', component: AdminLayoutComponent,
+        children: [{path: '', component: NepNotificationViewComponent}],
+    },
+    {
+        path: 'managerViewNotification', component: AdminLayoutComponent,
+        children: [{path: '', component: MgrNepNotificationViewComponent}],
+    },
+    {
+        path: 'uploadNotification', component: AdminLayoutComponent,
+        children: [{path: '', component: NepUploadNotificationComponent}],
+    },
+
 
     // {
     //     path: 'make_enquiry', component: MakeEnquiryComponent,
@@ -2329,6 +2454,57 @@ export const routes: Routes = [
      * END OF STANDARD DEVELOPMENT - SCHEME MEMBERSHIP
      ***************************************************************/
 
+
+    /****************************************************************
+     * SIC STANDARD PUBLICATION
+     ***************************************************************/
+    {
+        path: 'sicRequestForStandard',
+        component: StandardRequestComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: RequestForStandardComponent}],
+    },
+    {
+        path: 'sicEmployerApprove',
+        component: StandardRequestComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: EmployerApproveComponent}],
+    },
+
+    {
+        path: 'sicHodReviewRequest',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewStandardPublicationComponent}],
+    },
+
+    {
+        path: 'sicOfficerReviewRequest',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: ReviewStandardPublicationSicComponent}],
+    },
+    {
+        path: 'sourceForStandard',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: SourceForStandardComponent}],
+    },
+    {
+        path: 'disseminateStandard',
+        component: AdminLayoutComponent,
+        // canActivate: [AuthGuard],
+        children: [{path: '', component: DisseminateStandardComponent}],
+    },
+
+
+    /****************************************************************
+     * END OF STANDARD DEVELOPMENT - SCHEME MEMBERSHIP
+     ***************************************************************/
+
+
+
+
     // Standard development reports
     {
         path: 'nspStatus', component: AdminLayoutComponent,
@@ -2420,7 +2596,7 @@ export const routes: Routes = [
     },
 
     // SIRC REPORTS
-    
+
 
     {
         path: 'informationRequestRegister', component: AdminLayoutComponent,
@@ -2435,7 +2611,7 @@ export const routes: Routes = [
     {
         path: 'saleKenyastandard', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-        children: [{path: '', component: SalesStandardRegisterComponent }],
+        children: [{path: '', component: SalesStandardRegisterComponent}],
     },
     {
         path: 'saleForeignstandard', component: AdminLayoutComponent,
@@ -2464,7 +2640,7 @@ export const routes: Routes = [
     },
 
     {
-      path: 'icsAllocation', component: AdminLayoutComponent,
+        path: 'icsAllocation', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IcsAllocationComponent}],
     },
@@ -2472,22 +2648,19 @@ export const routes: Routes = [
     // WOT REPORTS
     {
         path: 'domesticNotification', component: AdminLayoutComponent,
-          canActivate: [RouteGuard],
-          children: [{path: '', component: DomesticNotificationComponent}],
-      },
-      {
+        canActivate: [RouteGuard],
+        children: [{path: '', component: DomesticNotificationComponent}],
+    },
+    {
         path: 'enquiriesHandled', component: AdminLayoutComponent,
-          canActivate: [RouteGuard],
-          children: [{path: '', component: EnquariesHandledReportComponent}],
-      },
-      {
+        canActivate: [RouteGuard],
+        children: [{path: '', component: EnquariesHandledReportComponent}],
+    },
+    {
         path: 'standardworkProgramme', component: AdminLayoutComponent,
-          canActivate: [RouteGuard],
-          children: [{path: '', component: StandardWorkProgrammeBulletinComponent}],
-      },
-
-
-      
+        canActivate: [RouteGuard],
+        children: [{path: '', component: StandardWorkProgrammeBulletinComponent}],
+    },
 
 
     // STANDARDS LEVY

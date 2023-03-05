@@ -40,6 +40,12 @@ class NepRemarks {
     @Basic
     var dateOfRemark:Timestamp? =null
 
+    @Column(name="NEP_DRAFT_ID")
+    @Basic
+    var nepDraftId:Long? =null
+
+
+
 
     
 }

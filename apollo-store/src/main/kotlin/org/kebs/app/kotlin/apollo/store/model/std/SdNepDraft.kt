@@ -58,6 +58,14 @@ class SdNepDraft {
     @Basic
     var notification:String? =null
 
+    @Column(name="TYPE_NOTIFICATION")
+    @Basic
+    var typeOfNotification:String? =null
+
+    @Column(name = "UPLOAD_DOCUMENT")
+    @Basic
+    var uploadDocument: Long? = null
+
 
 
 }

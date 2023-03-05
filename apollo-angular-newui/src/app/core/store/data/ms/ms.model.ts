@@ -1536,6 +1536,7 @@ export class MSSSFPDFListDetailsDto {
     sffId: number;
     complianceRemarks: string;
     complianceStatus: boolean;
+    id: number;
 }
 
 export class EndFuelDto {

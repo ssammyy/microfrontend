@@ -608,6 +608,19 @@ export class ApiEndpointService {
         NEP_DEPARTMENT_RESPONSE: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division_response/send_response`,
         NEP_FEEDBACK_EMAIL: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/information_available/send_email`,
 
+
+        NEP_SEND_DRAFT: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/notificationOfReview`,
+        NEP_UPLOAD_DRAFT_ATTACHMENT: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/uploadNepDraftDoc`,
+        NEP_GET_DRAFT_NOTIFICATIONS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/getDraftNotification`,
+        NEP_VIEW_DRAFT_UPLOADS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/uploadNepDraftDoc`,
+        NEP_DECISION_ON_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/decisionOnReviewDraft`,
+        NEP_MGR_GET_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/getNotificationForApproval`,
+        NEP_MGR_DECISION_ON_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/decisionOnNotification`,
+        NEP_GET_UPLOAD_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/getDraftNotificationForUpload`,
+        NEP_UPLOAD_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/uploadNotification`,
+
+
+
         // SD NEP DOMESTIC NOTIFICATION
         NEP_RETRIEVE_NOTIFICATIONS: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/tasks`,
         NEP_MANAGER_RETRIEVE_NOTIFICATIONS: `${ApiEndpointService.SD_NEP_CONTEXT}/manager/tasks`,

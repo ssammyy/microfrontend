@@ -1,0 +1,158 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">{{loadingText}}</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div  style="text-align: center;">
+                                <h2 style="font-weight: bold">Notification</h2>
+                            </div>
+                            <div  style="text-align: center;">
+                                <h4>The following notification is being circulated in accordance with Article 10.6</h4>
+                            </div>
+                            <form (ngSubmit)="notificationOfReview()" [formGroup]="preparePreliminaryDraftFormGroup" class="form" style="width: 100%">
+                                <div class="modal-body">
+                                    <div class="row col-12">
+                                        <div class="form-group col-12">
+                                            <label>Notifying Member: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                            <h3>If applicable, name of local government involved (Article 3.2 and 7.2):</h3>
+                                            <textarea [class.is-invalid]="formPreparePD.notifyingMember.invalid && formPreparePD.notifyingMember.touched"
+                                                      class="form-control"  formControlName="notifyingMember" name="notifyingMember" type="text"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Agency responsible <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.agencyResponsible.invalid && formPreparePD.agencyResponsible.touched"
+                                                  class="form-control"  formControlName="agencyResponsible" name="agencyResponsible" type="text"></textarea>
+
+                                    </div>
+                                    <h3>Name and address (including telephone and fax numbers, email and website addresses, if available) of agency or
+                                        authority designated to handle comments regarding the notification shall be indicated if different from above:</h3>
+                                    <hr>
+                                    <div class="form-group col-12 ">
+                                        <label>Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.addressOfAgency.invalid && formPreparePD.addressOfAgency.touched"
+                                                  class="form-control"  formControlName="addressOfAgency" name="addressOfAgency" type="text"></textarea>
+
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.telephoneOfAgency.invalid && formPreparePD.telephoneOfAgency.touched"
+                                                  class="form-control"  formControlName="telephoneOfAgency" name="telephoneOfAgency" type="text"></textarea>
+                                    </div>
+
+                                    <div class="form-group col-12">
+                                        <label>Fax<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.faxOfAgency.invalid && formPreparePD.faxOfAgency.touched"
+                                                  class="form-control"  formControlName="faxOfAgency" name="faxOfAgency" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>E-Mail<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.emailOfAgency.invalid && formPreparePD.emailOfAgency.touched"
+                                                  class="form-control"  formControlName="emailOfAgency" name="emailOfAgency" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Website<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.websiteOfAgency.invalid && formPreparePD.websiteOfAgency.touched"
+                                                  class="form-control"  formControlName="websiteOfAgency" name="websiteOfAgency" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Notified under Article<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <select class="form-control" [class.is-invalid]="formPreparePD.notifiedUnderArticle.invalid && formPreparePD.notifiedUnderArticle.touched" formControlName="notifiedUnderArticle" name="notifiedUnderArticle">
+                                            <option value="">Select</option>
+                                            <option value=">2.9.2">2.9.2</option>
+                                            <option value="2.10.1">2.10.1</option>
+                                            <option value="5.6.2">5.6.2</option>
+                                            <option value="5.7.1">5.7.1</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Products covered (HS or CCCN where applicable, otherwise national tariff heading. ICS numbers may be provided in addition, where applicable):<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.productsCovered.invalid && formPreparePD.productsCovered.touched"
+                                                  class="form-control"  formControlName="emailOfAgency" name="emailOfAgency" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Title, number of pages and language(s) of the notified document: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.descriptionOfNotifiedDoc.invalid && formPreparePD.descriptionOfNotifiedDoc.touched"
+                                                  class="form-control" placeholder="i.e Title , 8 page(s), in English"  formControlName="descriptionOfNotifiedDoc" name="descriptionOfNotifiedDoc" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Description of content: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.descriptionOfContent.invalid && formPreparePD.descriptionOfContent.touched"
+                                                  class="form-control" placeholder=""  formControlName="descriptionOfContent" name="descriptionOfContent" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Objective and rationale, including the nature of urgent problems where applicable: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.objectiveAndRationale.invalid && formPreparePD.objectiveAndRationale.touched"
+                                                  class="form-control" placeholder=""  formControlName="objectiveAndRationale" name="objectiveAndRationale" type="text"></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Relevant documents:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.relevantDocuments.invalid && formPreparePD.relevantDocuments.touched"
+                                                  class="form-control" placeholder=""  formControlName="relevantDocuments" name="relevantDocuments" type="text"></textarea>
+                                    </div>
+                                    <div class="row col-12">
+                                        <div class="form-group col-6">
+                                            <label>Proposed date of adoption:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                            <input [class.is-invalid]="formPreparePD.proposedDateOfAdoption.invalid && formPreparePD.proposedDateOfAdoption.touched"
+                                                   class="form-control" placeholder=""  formControlName="proposedDateOfAdoption" name="proposedDateOfAdoption" type="date">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label>Final date for comments:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                            <input [class.is-invalid]="formPreparePD.finalDateForComments.invalid && formPreparePD.finalDateForComments.touched"
+                                                   class="form-control" placeholder="60 days after date of notification"  formControlName="finalDateForComments" name="finalDateForComments" type="date">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-12">
+                                        <label>Text available from:  National enquiry point [X], or address, telephone and fax numbers, e-mail and web-site addresses, if available of the other body:   <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                        <textarea [class.is-invalid]="formPreparePD.textAvailableFrom.invalid && formPreparePD.textAvailableFrom.touched"
+                                                  class="form-control" placeholder=""  formControlName="textAvailableFrom" name="textAvailableFrom" type="text"></textarea>
+                                    </div>
+                                    <div class="row col-12">
+                                        <div class="form-group col-12">
+                                            <label><b>Upload Attachment  </b> <span style="font-size: xx-small; color: blue;">(*)Optional</span></label><br>
+                                            <form #demoForm="ngForm">
+                                                <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                                                <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf" ></file-upload>
+                                            </form>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                    <button *ngIf="preparePreliminaryDraftFormGroup.valid" [disabled]="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Save</button>
+                                    <button *ngIf="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                                            (click)="showNotification('top','right')">Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

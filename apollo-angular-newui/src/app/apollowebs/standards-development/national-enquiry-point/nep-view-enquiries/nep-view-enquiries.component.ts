@@ -137,7 +137,8 @@ export class NepViewEnquiriesComponent implements OnInit {
             enquiryId: this.actionRequests.id,
             requesterEmail: this.actionRequests.requesterEmail,
             requesterSubject: this.actionRequests.requesterSubject,
-            docUploadStatus: this.actionRequests.docUploadStatus
+            docUploadStatus: this.actionRequests.docUploadStatus,
+            requesterName: this.actionRequests.requesterName,
           }
       );
 

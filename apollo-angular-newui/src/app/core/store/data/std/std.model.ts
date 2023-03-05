@@ -516,6 +516,16 @@ export interface finalSubmit {
     taskId: string;
 }
 
+export interface NepPrepareDraft{
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    typeOfNotification: string;
+}
+
 // **********************************************************International Standards Adoption**********************************************************
 export interface IstProposalComment{
     commentTitle: string;
@@ -2503,5 +2513,30 @@ export var countries: Countries [] = [
     { code: "ZW", code3: "ZWE", name: "Zimbabwe", number: "716" },
     { code: "AX", code3: "ALA", name: "Åland Islands", number: "248" }
 ];
+
+export interface NepDraftView{
+    id: number;
+    title: string;
+    scope: string;
+    normativeReference: string;
+    symbolsAbbreviatedTerms: string;
+    clause: string;
+    special: string;
+    preparedBy: number;
+    status: number;
+    datePrepared: Timestamp<any>;
+    notification: string;
+    typeOfNotification: string;
+    uploadDocument: number;
+}
+
+export interface DecisionOnNotification{
+    draftId: number;
+    remarks: string;
+    accentTo: string;
+    notification: string;
+    status: number;
+}
+
 
 

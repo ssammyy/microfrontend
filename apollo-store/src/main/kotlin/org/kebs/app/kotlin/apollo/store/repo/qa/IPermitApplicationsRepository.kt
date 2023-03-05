@@ -20,6 +20,12 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByUserIdAndVarField9IsNull(userId: Long): List<PermitApplicationsEntity>?
     fun findByAwardedPermitNumber(awardedPermitNumber: String): List<PermitApplicationsEntity>?
 
+    fun findTopByAwardedPermitNumberAndPermitStatusOrderByIdDesc(
+        awardedPermitNumber: String,
+        permitStatus: Long
+    ): List<PermitApplicationsEntity>?
+
+
     fun findTopByAwardedPermitNumberOrderByIdDesc(awardedPermitNumber: String): PermitApplicationsEntity?
     fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
     fun countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
@@ -139,7 +145,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType AND pr.SECTION_ID = :sectionID AND B.REGION = :region order by pr.ID",
+        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PERMIT_AWARD_STATUS IS NULL AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType AND pr.SECTION_ID = :sectionID AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndSectionId(
@@ -405,7 +411,13 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     fun findByQaoIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNull(
         userId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?
@@ -436,6 +448,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByAssessorIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNull(
         userId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?
@@ -1186,7 +1203,12 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
 
     fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndSscStatus(permitRefNumber: String, sscStatus: Int): List<QaUploadsEntity>?
-    fun findByPermitRefNumberAndPermitIdAndSscStatus(permitRefNumber: String,permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitRefNumberAndPermitIdAndSscStatus(
+        permitRefNumber: String,
+        permitId: Long,
+        sscStatus: Int
+    ): List<QaUploadsEntity>?
+
     fun findByPermitRefNumberAndJustificationReportStatusAndPermitId(
         permitRefNumber: String,
         justificationReportStatus: Int,
@@ -1258,7 +1280,7 @@ interface IPermitMigrationApplicationsEntityRepository : HazelcastRepository<Per
     fun findByPermitNumberOrderByDateOfExpiryDesc(permitNumber: String): List<PermitMigrationApplicationsEntity>?
 
     fun findAllByMigratedStatusIsNull(pageable: Pageable): List<PermitMigrationApplicationsEntity>?
-    
+
 
     fun findAllByCompanyNameContainingIgnoreCase(companyName: String): List<PermitMigrationApplicationsEntity>?
 
