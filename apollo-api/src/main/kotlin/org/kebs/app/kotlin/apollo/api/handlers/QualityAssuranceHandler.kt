@@ -3995,6 +3995,13 @@ class QualityAssuranceHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
+            val pmOldPermitSmark = qaDaoServices.findPermitBYID(permitID)
+            if (pmOldPermitSmark.fmarkGenerated==1){
+                val findFmarkRenew = qaDaoServices.findFmarkWithSmarkId(permitID).fmarkId
+                val myRenewedPermitFmark = qaDaoServices.permitUpdateNewWithSamePermitNumber(findFmarkRenew?: throw ExpectedDataNotFound("MISSING FMARK ID ALONG SIDE SMARK ID"), map, loggedInUser)
+                val savedSmarkFmarkId = qaDaoServices.generateSmarkFmarkEntity(myRenewedPermit.second, myRenewedPermitFmark.second, loggedInUser)
+            }
+
 
             qaDaoServices.mapAllPermitDetailsTogether(myRenewedPermit.second, null,null, map).let {
                 return ok().body(it)

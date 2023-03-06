@@ -645,6 +645,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     PUT("/permits-list-search", internalUserhandler::getAllMyTaskList)
                     GET("/permits-list-ongoing", internalUserhandler::getAllOngoingList)
                     GET("/permits-list-complete", internalUserhandler::getAllCompleteList)
+                    GET("/permits-list-all", internalUserhandler::getAllPermitList)
                     GET("/permit-detail", internalUserhandler::getPermitDetails)
 //                  GET("/standards-list", internalUserhandler::getStandardsList)
                 }

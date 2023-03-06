@@ -51,8 +51,8 @@ export class SmarkAllApplicationsComponent implements OnInit {
                 if (dataResponse.responseCode === '00') {
                     // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
                     this.allPermitTaskData = dataResponse?.data as MyTasksPermitEntityDto[];
-                    this.rerender()
-                    this.SpinnerService.hide()
+                    this.rerender();
+                    this.SpinnerService.hide();
                     this.displayUsers = true;
 
                     this.loading = false;
