@@ -1095,9 +1095,12 @@ class DestinationInspectionBpmn(
                         "CONSIGNMENT TASK DELETED",
                         "Consignment task deleted"
                     )
-                    // Move consignment softly to onhold status to allow further inspection
                     updateCd.diProcessStatus = 0
-                    daoServices.updateCDStatus(updateCd, ConsignmentDocumentStatus.ON_HOLD)
+                    // Move consignment softly to onhold status to allow further inspection
+                    // Only when not completed(Final status)
+                    if (updateCd.approveRejectCdStatusType?.finalStatus != 1) {
+                        daoServices.updateCDStatus(updateCd, ConsignmentDocumentStatus.ON_HOLD)
+                    }
                 }
 
             }
