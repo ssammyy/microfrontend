@@ -142,7 +142,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     allPermitDetails: AllPermitDetailsDto;
-    selectedLabResults: MSSSFLabResultsDto;
+    selectedLabResults!: MSSSFLabResultsDto;
     selectedSSFDetails: SSFDetailsDto;
     allSTA10Details: AllSTA10DetailsDto;
     permitEntityDetails: PermitEntityDetails;
@@ -685,8 +685,8 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     closePopUpsModal2() {
         window.$('#myModal2').modal('hide');
-        window.$('body').removeClass('modal-open');
-        window.$('.modal-backdrop').remove();
+        // window.$('body').removeClass('modal-open');
+        // window.$('.modal-backdrop').remove();
         window.$('#sampleLabResultsModal').modal('hide');
         window.$('body').removeClass('modal-open');
         window.$('.modal-backdrop').remove();
@@ -782,15 +782,16 @@ export class PermitDetailsAdminComponent implements OnInit {
             this.currDiv = 'pdfSaveCompliance';
             window.$('#myModal2').modal('show');
         } else {
+            console.log('TEST 101 REF NO SAVE: ' + data.fileName);
                 const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf?.pdfName === data?.fileName);
-                if (savedPdf.pdfName === null || savedPdf.pdfName === undefined) {
+          if (savedPdf === null || savedPdf === undefined) {
                 console.log('TEST 101 REF NO SAVE: ' + data.fileName);
                 this.selectedPDFFileName = data.fileName;
                 this.currDivLabel = `ADD COMPLIANCE STATUS FOR PDF # ${this.selectedPDFFileName}`;
                 this.currDiv = 'pdfSaveCompliance';
                 window.$('#myModal2').modal('show');
             } else {
-                this.qaService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ', Already Saved');
+                this.qaService.showWarning('The Pdf selected With Name ' + savedPdf.pdfName + ', Already Saved');
             }
         }
     }
@@ -1383,7 +1384,7 @@ export class PermitDetailsAdminComponent implements OnInit {
                                 if (data.responseCode === '00') {
                                     this.SpinnerService.hide();
                                     this.loadPermitDetails(data);
-
+                                    this.allPermitDetails = data?.data as AllPermitDetailsDto;
                                     // tslint:disable-next-line:max-line-length
                                     this.selectedLabResults = this.allPermitDetails?.sampleLabResults.find(lab => lab?.ssfResultsList?.bsNumber === this.selectedSSFDetails?.bsNumber);
                                     // tslint:disable-next-line:max-line-length

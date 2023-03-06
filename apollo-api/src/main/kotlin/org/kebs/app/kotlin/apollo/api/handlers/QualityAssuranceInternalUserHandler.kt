@@ -140,6 +140,22 @@ class QualityAssuranceInternalUserHandler(
         }
     }
 
+    fun getAllPermitList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
+            qaDaoServices.findLoggedInUserAllPermit(page, permitTypeID)
+                .let {
+                    ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun getPermitDetails(req: ServerRequest): ServerResponse {
         return try {
             val permitID =
