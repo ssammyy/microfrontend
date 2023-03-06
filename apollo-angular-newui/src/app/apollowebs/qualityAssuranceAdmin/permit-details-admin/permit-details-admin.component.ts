@@ -1881,7 +1881,10 @@ export class PermitDetailsAdminComponent implements OnInit {
         key = CryptoJS.enc.Utf8.parse(key);
         let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
-        this.router.navigate(['/permit-details-admin', encrypted]);
+        // this.router.navigate(['/permit-details-admin', encrypted]);
+        this.router.navigate(['/permit-details-admin', encrypted]).then(page => { window.location.reload(); });
+
+
 
     }
 

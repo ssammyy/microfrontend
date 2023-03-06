@@ -46,7 +46,7 @@ export class SmarkAllApplicationsComponent implements OnInit {
 
     public getMySmarkComplete(): void {
         this.SpinnerService.show();
-        this.internalService.loadMyCompleteByPermitType(this.smarkID).subscribe(
+        this.internalService.loadMyAllPermitByPermitType(this.smarkID).subscribe(
             (dataResponse: ApiResponseModel) => {
                 if (dataResponse.responseCode === '00') {
                     // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
