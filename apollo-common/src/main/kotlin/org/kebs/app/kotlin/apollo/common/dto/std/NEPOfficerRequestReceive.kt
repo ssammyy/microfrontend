@@ -68,7 +68,6 @@ data class NepDraftDto(
 
 data class NepNotificationDto(
     var id: Long,
-    var datePrepared: Timestamp,
     var notifyingMember: String?=null,
     var agencyResponsible:String?=null,
     var addressOfAgency:String?=null,
@@ -83,10 +82,8 @@ data class NepNotificationDto(
     var relevantDocuments: String?=null,
     var proposedDateOfAdoption: Timestamp?=null,
     var proposedDateOfEntryIntoForce: Timestamp,
-    var finalDateForComments: Timestamp,
     var textAvailableFrom: String?=null,
-    var preparedBy: String?=null,
-    var status: Long
+    var descriptionOfContent: String?=null,
 ){
 
 }
@@ -95,9 +92,55 @@ data class NepDraftDecisionDto(
     var draftId: Long,
     var remarks: String?=null,
     var accentTo: String?=null,
-    var notification: String?=null
+    var notification: String?=null,
+    var notifyingMember: String?=null,
+    var agencyResponsible: String?=null,
+    var addressOfAgency: String?=null,
+    var telephoneOfAgency: String?=null,
+    var faxOfAgency: String?=null,
+    var emailOfAgency: String?=null,
+    var websiteOfAgency: String?=null,
+    var notifiedUnderArticle: String?=null,
+    var productsCovered: String?=null,
+    var descriptionOfNotifiedDoc: String?=null,
+    var descriptionOfContent: String?=null,
+    var objectiveAndRationale: String?=null,
+    var relevantDocuments: String?=null,
+    //var proposedDateOfAdoption: Timestamp?=null,
+    //var proposedDateOfEntryIntoForce: Timestamp?=null,
+    var textAvailableFrom: String?=null,
+    //var finalDateForComments: Timestamp?=null,
+    var comments: String?=null,
 
 ){
+
+}
+
+data class NepDraftDecDto(
+    var draftId: Long,
+    var remarks: String?=null,
+    var accentTo: String?=null,
+    var notification: String?=null,
+    var notifyingMember: String?=null,
+    var agencyResponsible: String?=null,
+    var addressOfAgency: String?=null,
+    var telephoneOfAgency: String?=null,
+    var faxOfAgency: String?=null,
+    var emailOfAgency: String?=null,
+    var websiteOfAgency: String?=null,
+    var notifiedUnderArticle: String?=null,
+    var productsCovered: String?=null,
+    var descriptionOfNotifiedDoc: String?=null,
+    var descriptionOfContent: String?=null,
+    var objectiveAndRationale: String?=null,
+    var relevantDocuments: String?=null,
+    var proposedDateOfAdoption: Timestamp?=null,
+    var proposedDateOfEntryIntoForce: Timestamp?=null,
+    var textAvailableFrom: String?=null,
+    var finalDateForComments: Timestamp?=null,
+    var comments: String?=null,
+
+    ){
 
 }
 

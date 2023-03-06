@@ -30,7 +30,7 @@ import {
     UsersEntityList, VerifyEmailDto,
     VisitTask
 } from "./levy.model";
-import {BusinessLinesView, RegionView, UsersEntity} from "../std/std.model";
+import {BusinessLinesView, HistoricalData, RegionView, UsersEntity} from "../std/std.model";
 import swal from "sweetalert2";
 import {FilterDto} from "../qa/qa.model";
 
@@ -968,6 +968,12 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REGION_LIST);
         const params = new HttpParams();
         return this.http.get<RegionView[]>(url, {params}).pipe();
+    }
+
+    public getLevyHistoricalPayments(): Observable<HistoricalData[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_HISTORICAL_PAYMENTS);
+        const params = new HttpParams();
+        return this.http.get<HistoricalData[]>(url, {params}).pipe();
     }
 
 

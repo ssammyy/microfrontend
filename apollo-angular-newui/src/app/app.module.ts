@@ -1097,9 +1097,11 @@ import { ReviewStandardPublicationSicComponent } from './apollowebs/standards-de
 import { SourceForStandardComponent } from './apollowebs/standards-development/sicStdPublication/source-for-standard/source-for-standard.component';
 import { DisseminateStandardComponent } from './apollowebs/standards-development/sicStdPublication/disseminate-standard/disseminate-standard.component';
 import { EmployerApproveComponent } from './apollowebs/standards-development/sicStdPublication/employer-approve/employer-approve.component';
+import { StandardLevyHistoricalPaymentsComponent } from './apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component';
 import {
     RequestForStandardComponent
 } from "./apollowebs/standards-development/sicStdPublication/request-for-standard/request-for-standard.component";
+import { NepUploadedNotificationComponent } from './apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1683,6 +1685,8 @@ import {
         SourceForStandardComponent,
         DisseminateStandardComponent,
         EmployerApproveComponent,
+        StandardLevyHistoricalPaymentsComponent,
+        NepUploadedNotificationComponent,
 
       
 

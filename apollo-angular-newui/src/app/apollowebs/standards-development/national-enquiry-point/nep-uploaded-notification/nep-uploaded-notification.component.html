@@ -56,7 +56,7 @@
                                             <i class="fa fa-download"></i>Download</button></td>
                                         <td *ngIf="task.documentAttached==0"><button mat-raised-button type="button" style="width: 118px"   class="btn btn-success btn-sm ">
                                             <i class="fa fa-download"></i>NA</button></td>
-                                        <td ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Decision On Notification</a></td>
+                                        <td ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">View</a></td>
 
                                     </tr>
                                     </tbody>
@@ -67,7 +67,7 @@
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3>Notification Approval - Manager Trade Affairs</h3>
+                                                <h3>Notifications</h3>
                                                 <button type="button" class="close" #closeModalUploadJustification data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -219,33 +219,9 @@
                                                                         </a>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <div class="form-group col-12">
-                                                                        <label>Decision On Notification</label>
-                                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                                                class="form-control" required
-                                                                                ngModel
-                                                                                name="accentTo" #teams (change)="onSelected(teams.value)"
-                                                                        >
-                                                                            <option disabled>--Select Option--</option>
-                                                                            <option  value="Yes">Accept Notification</option>
-                                                                            <option value="No">Reject Notification</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="row col-12" >
-                                                                        <div class="form-group col-12">
-                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
-                                                                            <textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
-                                                                        </div>
-                                                                    </div>
 
-                                                                    <input type="hidden" name="draftId" ngModel="{{actionRequest?.id}}" >
-                                                                </div>
                                                             </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" mat-raised-button class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                <button type="submit" mat-raised-button class="btn btn-primary btn-sm" (click)="decisionOnNotification(jcJustificationForm.value)" data-dismiss="modal">Sumbit</button>
-                                                            </div>
+
 
                                                         </div>
 

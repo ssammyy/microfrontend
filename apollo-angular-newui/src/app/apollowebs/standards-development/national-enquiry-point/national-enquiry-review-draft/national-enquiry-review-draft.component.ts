@@ -24,6 +24,7 @@ export class NationalEnquiryReviewDraftComponent implements OnInit {
   faxOfAgency: string;
   emailOfAgency: string;
   websiteOfAgency: string;
+  textAvailableFrom: string;
 
   constructor(
       private store$: Store<any>,
@@ -50,16 +51,28 @@ export class NationalEnquiryReviewDraftComponent implements OnInit {
       objectiveAndRationale : ['', Validators.required],
       relevantDocuments : ['', Validators.required],
       proposedDateOfAdoption : ['', Validators.required],
-      finalDateForComments : ['', Validators.required],
+      proposedDateOfEntryIntoForce : [],
       textAvailableFrom : ['', Validators.required],
 
     });
-
     this.addressOfAgency="P.O. Box: 54974-00200, Nairobi, Kenya"
     this.telephoneOfAgency="+ (254) 020 605490, 605506/6948258"
     this.faxOfAgency="+ (254) 020 609660/609665"
     this.emailOfAgency="info@kebs.org"
     this.websiteOfAgency="Website: http://www.kebs.org"
+    this.textAvailableFrom="Kenya Bureau of Standards\n WTO/TBT National Enquiry Point\n P.O. Box: 54974-00200, Nairobi, Kenya\n Telephone: + (254) 020 605490, 605506/6948258\n Fax: + (254) 020 609660/609665\n E-mail: info@kebs.org; Website: http://www.kebs.org\n"
+    this.preparePreliminaryDraftFormGroup.patchValue(
+        {
+          addressOfAgency: this.addressOfAgency,
+          telephoneOfAgency: this.telephoneOfAgency,
+          faxOfAgency: this.faxOfAgency,
+          emailOfAgency: this.emailOfAgency,
+          websiteOfAgency: this.websiteOfAgency,
+          textAvailableFrom: this.textAvailableFrom,
+        }
+    );
+
+
   }
 
   showToasterSuccess(title:string,message:string){
@@ -85,8 +98,8 @@ export class NationalEnquiryReviewDraftComponent implements OnInit {
           console.log(response);
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Preliminary Draft  Uploaded`);
-          this.preparePreliminaryDraftFormGroup.reset();
           this.onClickSaveUploads(response.body.id)
+          this.preparePreliminaryDraftFormGroup.reset();
 
         },
         (error: HttpErrorResponse) => {

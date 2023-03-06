@@ -5,7 +5,7 @@ import {HttpClient, HttpErrorResponse, HttpEvent, HttpParams, HttpRequest} from 
 import {Observable, throwError} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import {
-    DecisionOnNotification,
+    DecisionOnNotification, DecisionOnPreparedNotification,
     DecisionOnStdDraft,
     DepartmentResponse,
     DraftNotification,
@@ -19,7 +19,7 @@ import {
     NepEnquiries,
     NepInfoCheckDto,
     NepInfoDto,
-    NepNotification,
+    NepNotification, NepNotificationForm,
     NepPrepareDraft,
     NepRequests,
     Notifications,
@@ -237,7 +237,7 @@ export class NepPointService {
     public getDraftNotification(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_GET_DRAFT_NOTIFICATIONS);
         const params = new HttpParams();
-        return this.http.get<NepDraftView>(url, {params}).pipe();
+        return this.http.get<NepNotificationForm>(url, {params}).pipe();
     }
 
     public viewDraftUpload(draftId: any): Observable<any> {
@@ -253,10 +253,10 @@ export class NepPointService {
             })
         );
     }
-    public decisionOnReviewDraft(dec: DecisionOnNotification): Observable<any> {
+    public decisionOnReviewDraft(dec: DecisionOnPreparedNotification): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_DECISION_ON_NOTIFICATION);
         const params = new HttpParams();
-        return this.http.post<DecisionOnNotification>(url, dec, {params}).pipe(
+        return this.http.post<DecisionOnPreparedNotification>(url, dec, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -268,6 +268,11 @@ export class NepPointService {
 
     public getNotificationForApproval(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_MGR_GET_NOTIFICATION);
+        const params = new HttpParams();
+        return this.http.get<NepDraftView>(url, {params}).pipe();
+    }
+    public getUploadedNotification(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOADED_NOTIFICATION);
         const params = new HttpParams();
         return this.http.get<NepDraftView>(url, {params}).pipe();
     }
@@ -291,10 +296,10 @@ export class NepPointService {
         return this.http.get<NepDraftView>(url, {params}).pipe();
     }
 
-    public uploadNotification(dec: DecisionOnNotification): Observable<any> {
+    public uploadNotification(dec: DecisionOnPreparedNotification): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOAD_NOTIFICATION);
         const params = new HttpParams();
-        return this.http.post<DecisionOnNotification>(url, dec, {params}).pipe(
+        return this.http.post<DecisionOnPreparedNotification>(url, dec, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

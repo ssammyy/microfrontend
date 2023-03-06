@@ -434,6 +434,7 @@ class NationalEnquiryPointService(
         sNep.descriptionOfNotifiedDoc=nep.descriptionOfNotifiedDoc
         sNep.objectiveAndRationale=nep.objectiveAndRationale
         sNep.relevantDocuments=nep.relevantDocuments
+        sNep.descriptionOfContent=nep.descriptionOfContent
         sNep.proposedDateOfAdoption=nep.proposedDateOfAdoption
         sNep.proposedDateOfEntryIntoForce=nep.proposedDateOfEntryIntoForce
         sNep.finalDateForComments=deadline
@@ -464,9 +465,17 @@ class NationalEnquiryPointService(
             createdBy = user
             createdOn = commonDaoServices.getTimestamp()
         }
+        val saved= nepDraftDocRepo.save(uploads)
+        nepNotificationFormEntityRepo.findByIdOrNull(saved.nepDraftId)?.let { sts ->
+
+            with(sts) {
+                documentAttached = 1
+
+            }
+        }?: throw Exception("FORM NOT FOUND")
 
 
-        return nepDraftDocRepo.save(uploads)
+        return saved
     }
 
     fun getDraftNotification(): MutableList<NepNotificationFormEntity>
@@ -482,11 +491,11 @@ class NationalEnquiryPointService(
 
     fun decisionOnReviewDraft(
         nep: NepDraftDecisionDto
-    ) : SdNepDraft {
+    ) : NepNotificationFormEntity {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val decision = nep.accentTo
         val rem= NepRemarks()
-        val snep=SdNepDraft();
+        val snep=NepNotificationFormEntity();
         val informationTracker= InformationTracker()
 
         rem.nepDraftId=nep.draftId
@@ -501,6 +510,23 @@ class NationalEnquiryPointService(
 
                 with(st) {
                     status=1
+                    notifyingMember=nep.notifyingMember
+                    agencyResponsible=nep.agencyResponsible
+                    addressOfAgency=nep.addressOfAgency
+                    telephoneOfAgency=nep.telephoneOfAgency
+                    faxOfAgency=nep.faxOfAgency
+                    emailOfAgency=nep.emailOfAgency
+                    websiteOfAgency=nep.websiteOfAgency
+                    notifiedUnderArticle=nep.notifiedUnderArticle
+                    productsCovered=nep.productsCovered
+                    descriptionOfNotifiedDoc=nep.descriptionOfNotifiedDoc
+                    objectiveAndRationale=nep.objectiveAndRationale
+                    descriptionOfContent=nep.descriptionOfContent
+                    relevantDocuments=nep.relevantDocuments
+                    //proposedDateOfAdoption=nep.proposedDateOfAdoption
+                    //proposedDateOfEntryIntoForce=nep.proposedDateOfEntryIntoForce
+                    //finalDateForComments=nep.finalDateForComments
+                    textAvailableFrom=nep.textAvailableFrom
 
                 }
                 nepNotificationFormEntityRepo.save(st)
@@ -582,33 +608,43 @@ class NationalEnquiryPointService(
         return nepNotificationFormEntityRepo.getDraftNotificationForUpload()
     }
 
-    fun uploadNotification(nep: NepDraftWtoDto): NEPWtoNotification {
+    fun uploadNotification(nep: NepDraftDecDto): NepNotificationFormEntity {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val sNep=NEPWtoNotification();
+        val sNep=NepNotificationFormEntity();
 
-        sNep.notification=nep.notification
-        sNep.draftId=nep.draftId
-        sNep.preparedBy=loggedInUser.id
-        sNep.dateUploaded=Timestamp(System.currentTimeMillis())
+        nepNotificationFormEntityRepo.findByIdOrNull(nep.draftId)?.let { st ->
 
-        nepDraftRepo.findByIdOrNull(nep.draftId)?.let { sts ->
-
-            with(sts) {
-                status=5
+            with(st) {
+                status = 4
+                notifyingMember = nep.notifyingMember
+                agencyResponsible = nep.agencyResponsible
+                addressOfAgency = nep.addressOfAgency
+                telephoneOfAgency = nep.telephoneOfAgency
+                faxOfAgency = nep.faxOfAgency
+                emailOfAgency = nep.emailOfAgency
+                websiteOfAgency = nep.websiteOfAgency
+                notifiedUnderArticle = nep.notifiedUnderArticle
+                productsCovered = nep.productsCovered
+                descriptionOfNotifiedDoc = nep.descriptionOfNotifiedDoc
+                objectiveAndRationale = nep.objectiveAndRationale
+                descriptionOfContent = nep.descriptionOfContent
+                relevantDocuments = nep.relevantDocuments
+                proposedDateOfAdoption = nep.proposedDateOfAdoption
+                proposedDateOfEntryIntoForce = nep.proposedDateOfEntryIntoForce
+                finalDateForComments = nep.finalDateForComments
+                textAvailableFrom = nep.textAvailableFrom
 
             }
-            nepDraftRepo.save(sts)
-        }?: throw Exception("DRAFT NOT FOUND")
+             nepNotificationFormEntityRepo.save(st)
 
-        return nepWtoNotificationRepo.save(sNep)
+        }
+        return sNep
     }
 
-
-
-
-
-
-
+    fun getUploadedNotification(): MutableList<NepNotificationFormEntity>
+    {
+        return nepNotificationFormEntityRepo.getUploadedNotification()
+    }
 }
 
 private fun Boolean.toBoolean() {

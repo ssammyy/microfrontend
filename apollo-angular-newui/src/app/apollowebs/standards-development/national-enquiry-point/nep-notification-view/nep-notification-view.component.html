@@ -31,31 +31,30 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th class="knw">Title</th>
-                                        <th class="action">Scope</th>
-                                            <th class="requestNumber">Clause </th>
-                                            <th class="requestNumber">Normative Reference </th>
-                                            <th class="requestNumber">Special </th>
-                                            <th class="requestNumber">Symbols Abbreviated Terms </th>
-                                            <th class="requestNumber">Notification Type </th>
-                                            <th class="requestNumber">Date Prepared </th>
-                                            <th class="requestNumber"> </th>
+                                        <th class="knw">Notifying Member</th>
+                                        <th class="action">Agency Responsible</th>
+                                            <th class="requestNumber">Article </th>
+                                            <th class="requestNumber">Products Covered </th>
+                                            <th class="requestNumber">Proposed Date of Adoption </th>
+                                            <th class="requestNumber">Proposed Date of Entry into Force </th>
+                                            <th class="requestNumber">Final Date for Comments </th>
+                                            <th class="requestNumber">Document </th>
+                                            <th class="requestNumber">Action </th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr  *ngFor="let task of tasks let i=index">
                                         <td>{{i+1}}</td>
-                                        <td>{{task.title}}</td>
-                                        <td>{{task.scope}}</td>
-                                        <td>{{task.clause}}</td>
-                                        <td>{{task.normativeReference}}</td>
-                                        <td>{{task.special}}</td>
-                                        <td>{{task.symbolsAbbreviatedTerms}}</td>
-                                        <td>{{task.typeOfNotification}}</td>
-                                        <td>{{task.datePrepared | date: 'dd/MM/yyyy'}}</td>
-                                        <td *ngIf="task.uploadDocument==1"><button mat-raised-button type="button" (click)="viewDraftUpload( task.id,'Download'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                        <td>{{task.notifyingMember}}</td>
+                                        <td>{{task.agencyResponsible}}</td>
+                                        <td>{{task.notifiedUnderArticle}}</td>
+                                        <td>{{task.productsCovered}}</td>
+                                        <td>{{task.proposedDateOfAdoption | date: 'dd/MM/yyyy'}}</td>
+                                        <td>{{task.proposedDateOfEntryIntoForce | date: 'dd/MM/yyyy'}}</td>
+                                        <td>{{task.finalDateForComments | date: 'dd/MM/yyyy'}}</td>
+                                        <td *ngIf="task.documentAttached==1"><button mat-raised-button type="button" (click)="viewDraftUpload( task.id,'Download'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
                                             <i class="fa fa-download"></i>Download</button></td>
-                                        <td *ngIf="task.uploadDocument==0"><button mat-raised-button type="button" style="width: 118px"   class="btn btn-success btn-sm ">
+                                        <td *ngIf="task.documentAttached==0"><button mat-raised-button type="button" style="width: 118px"   class="btn btn-success btn-sm ">
                                             <i class="fa fa-download"></i>NA</button></td>
                                         <td ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">Decision On Notification</a></td>
 
@@ -65,7 +64,7 @@
 
 
                                 <div class="modal fade" id="approveDraft" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
-                                    <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-dialog modal-xl" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h3>Notification Approval</h3>
@@ -75,48 +74,150 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="form-body">
-                                                    <form #jcJustificationForm="ngForm" >
+                                                    <form (ngSubmit)="decisionOnReviewDraft()" [formGroup]="preparePreliminaryDraftFormGroup" class="form" style="width: 100%">
                                                         <div class="modal-body">
-                                                            <div class="form-body">
-                                                                <div class="row">
-                                                                    <div class="form-group col-12">
-                                                                        <label>Decision On Notification</label>
-                                                                        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                                                class="form-control" required
-                                                                                ngModel
-                                                                                name="accentTo" #teams (change)="onSelected(teams.value)"
-                                                                        >
-                                                                            <option disabled>--Select Option--</option>
-                                                                            <option  value="Yes">Accept Notification</option>
-                                                                            <option value="No">Reject Notification</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="row col-12" *ngIf="selectedOption==='Yes'">
-                                                                        <div class="form-group col-12">
-                                                                            <label><b>Draft Notification</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                            <textarea class="form-control" ngModel name="notification" rows="2" ></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row col-12" *ngIf="selectedOption==='No'">
-                                                                        <div class="form-group col-12">
-                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
-                                                                            <textarea class="form-control" ngModel name="comments" rows="2" ></textarea>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <input type="hidden" name="draftId" ngModel="{{actionRequest?.id}}" >
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-12">
+                                                                    <label>Notifying Member: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <h3>If applicable, name of local government involved (Article 3.2 and 7.2):</h3>
+                                                                    <textarea [class.is-invalid]="formPreparePD.notifyingMember.invalid && formPreparePD.notifyingMember.touched"
+                                                                              class="form-control" value="{{actionRequest?.notifyingMember}}"  formControlName="notifyingMember" name="notifyingMember" type="text"></textarea>
                                                                 </div>
                                                             </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" mat-raised-button class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                <button type="submit" mat-raised-button class="btn btn-primary btn-sm" (click)="decisionOnReviewDraft(jcJustificationForm.value)" data-dismiss="modal">Sumbit</button>
+                                                            <div class="form-group col-12">
+                                                                <label>Agency responsible <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.agencyResponsible.invalid && formPreparePD.agencyResponsible.touched"
+                                                                          class="form-control" value="{{actionRequest?.agencyResponsible}}" formControlName="agencyResponsible" name="agencyResponsible" type="text"></textarea>
+
+                                                            </div>
+                                                            <h3>Name and address (including telephone and fax numbers, email and website addresses, if available) of agency or
+                                                                authority designated to handle comments regarding the notification shall be indicated if different from above:</h3>
+                                                            <hr>
+                                                            <div class="form-group col-12 ">
+                                                                <label>Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.addressOfAgency.invalid && formPreparePD.addressOfAgency.touched"
+                                                                          class="form-control" value="{{actionRequest?.addressOfAgency}}" formControlName="addressOfAgency" name="addressOfAgency" type="text"></textarea>
+
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Telephone<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.telephoneOfAgency.invalid && formPreparePD.telephoneOfAgency.touched"
+                                                                          class="form-control" value="{{actionRequest?.telephoneOfAgency}}" formControlName="telephoneOfAgency" name="telephoneOfAgency" type="text"></textarea>
+                                                            </div>
+
+                                                            <div class="form-group col-12">
+                                                                <label>Fax<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.faxOfAgency.invalid && formPreparePD.faxOfAgency.touched"
+                                                                          class="form-control" value="{{actionRequest?.faxOfAgency}}" formControlName="faxOfAgency" name="faxOfAgency" type="text"></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>E-Mail<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.emailOfAgency.invalid && formPreparePD.emailOfAgency.touched"
+                                                                          class="form-control" value="{{actionRequest?.emailOfAgency}}" formControlName="emailOfAgency" name="emailOfAgency" type="text"></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Website<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.websiteOfAgency.invalid && formPreparePD.websiteOfAgency.touched"
+                                                                          class="form-control" value="{{actionRequest?.websiteOfAgency}}" formControlName="websiteOfAgency" name="websiteOfAgency" type="text"></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Notified under Article<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <select class="form-control" [class.is-invalid]="formPreparePD.notifiedUnderArticle.invalid && formPreparePD.notifiedUnderArticle.touched" formControlName="notifiedUnderArticle" name="notifiedUnderArticle">
+                                                                    <option value="{{actionRequest?.notifiedUnderArticle}}">{{actionRequest?.notifiedUnderArticle}}</option>
+                                                                    <option value="2.9.2">2.9.2</option>
+                                                                    <option value="2.10.1">2.10.1</option>
+                                                                    <option value="5.6.2">5.6.2</option>
+                                                                    <option value="5.7.1">5.7.1</option>
+                                                                    <option value="Other">Other</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Products covered (HS or CCCN where applicable, otherwise national tariff heading. ICS numbers may be provided in addition, where applicable):<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.productsCovered.invalid && formPreparePD.productsCovered.touched"
+                                                                          class="form-control" value="{{actionRequest?.productsCovered}}" formControlName="productsCovered" name="productsCovered" type="text"></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Title, number of pages and language(s) of the notified document: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.descriptionOfNotifiedDoc.invalid && formPreparePD.descriptionOfNotifiedDoc.touched"
+                                                                          class="form-control" value="{{actionRequest?.descriptionOfNotifiedDoc}}" placeholder="i.e Title , 8 page(s), in English"  formControlName="descriptionOfNotifiedDoc" name="descriptionOfNotifiedDoc" type="text"></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Description of content: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.descriptionOfContent.invalid && formPreparePD.descriptionOfContent.touched"
+                                                                          class="form-control" placeholder="" value="{{actionRequest?.descriptionOfContent}}" formControlName="descriptionOfContent" name="descriptionOfContent" type="text"></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Objective and rationale, including the nature of urgent problems where applicable: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.objectiveAndRationale.invalid && formPreparePD.objectiveAndRationale.touched"
+                                                                          class="form-control" placeholder="" value="{{actionRequest?.objectiveAndRationale}}"  formControlName="objectiveAndRationale" name="objectiveAndRationale" type="text"></textarea>
+                                                            </div>
+                                                            <div class="form-group col-12">
+                                                                <label>Relevant documents:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.relevantDocuments.invalid && formPreparePD.relevantDocuments.touched"
+                                                                          class="form-control" placeholder="" value="{{actionRequest?.relevantDocuments}}" formControlName="relevantDocuments" name="relevantDocuments" type="text"></textarea>
+                                                            </div>
+                                                            <div class="row col-12">
+                                                                <div class="form-group col-6">
+                                                                    <label>Proposed date of adoption:  </label><br>
+                                                                    <label>{{actionRequest?.proposedDateOfAdoption | date: 'dd/MM/yyyy'}}</label>
+
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label>New Proposed date of adoption:  </label>
+                                                                    <input [class.is-invalid]="formPreparePD.proposedDateOfAdoption.invalid && formPreparePD.proposedDateOfAdoption.touched"
+                                                                           class="form-control" placeholder="" value="{{actionRequest?.proposedDateOfAdoption | date: 'dd/MM/yyyy'}}" formControlName="proposedDateOfAdoption" name="proposedDateOfAdoption" type="date">
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label>Proposed date of entry into force: </label><br>
+                                                                    <label>{{actionRequest?.proposedDateOfEntryIntoForce | date: 'dd/MM/yyyy'}}</label>
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label>New Proposed date of entry into force:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <input [class.is-invalid]="formPreparePD.proposedDateOfEntryIntoForce.invalid && formPreparePD.proposedDateOfEntryIntoForce.touched"
+                                                                           class="form-control" placeholder="" value="{{actionRequest?.proposedDateOfEntryIntoForce | date: 'dd/MM/yyyy'}}" formControlName="proposedDateOfEntryIntoForce" name="proposedDateOfEntryIntoForce" type="date">
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label>Final Date for Comments:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                    <input [class.is-invalid]="formPreparePD.finalDateForComments.invalid && formPreparePD.finalDateForComments.touched"
+                                                                           class="form-control" placeholder="" value="{{actionRequest?.finalDateForComments | date: 'dd/MM/yyyy'}}" formControlName="finalDateForComments" name="finalDateForComments" type="text" disabled>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group col-12">
+                                                                <label>Text available from:  National enquiry point [X], or address, telephone and fax numbers, e-mail and web-site addresses, if available of the other body:   <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                <textarea [class.is-invalid]="formPreparePD.textAvailableFrom.invalid && formPreparePD.textAvailableFrom.touched"
+                                                                          class="form-control" placeholder="" value="{{actionRequest?.textAvailableFrom}}"  formControlName="textAvailableFrom" name="textAvailableFrom" rows="5" type="text"></textarea>
+                                                            </div>
+                                                            <input type="hidden" name="draftId" formControlName="draftId" value="{{actionRequest?.id}}"  >
+                                                            <div class="form-group col-12">
+                                                                <label style="color: blue"><b>Make Decision On the above Notification</b></label>
+                                                                <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                                        class="form-control" required formControlName="accentTo"
+                                                                        [class.is-invalid]="formPreparePD.accentTo.invalid && formPreparePD.accentTo.touched"
+                                                                        name="accentTo" #teams (change)="onSelected(teams.value)"
+                                                                >
+                                                                    <option disabled>--Select Option--</option>
+                                                                    <option  value="Yes">Accept Notification</option>
+                                                                    <option value="No">Reject Notification</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="row col-12" *ngIf="selectedOption==='No'">
+                                                                <div class="form-group col-12">
+                                                                    <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
+                                                                    <textarea class="form-control" formControlName="comments" name="comments" rows="2" ></textarea>
+                                                                </div>
                                                             </div>
 
                                                         </div>
-
-                                                        <!--<input type="hidden" name="accentTo" ngModel="Yes" >-->
-
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                                            <button *ngIf="preparePreliminaryDraftFormGroup.valid" [disabled]="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Save</button>
+                                                            <button *ngIf="!preparePreliminaryDraftFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                                                                    (click)="showNotification('top','right')">Save
+                                                            </button>
+                                                        </div>
                                                     </form>
+
                                                 </div>
                                             </div>
 

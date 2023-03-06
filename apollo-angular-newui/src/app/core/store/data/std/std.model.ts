@@ -517,13 +517,22 @@ export interface finalSubmit {
 }
 
 export interface NepPrepareDraft{
-    title: string;
-    scope: string;
-    normativeReference: string;
-    symbolsAbbreviatedTerms: string;
-    clause: string;
-    special: string;
-    typeOfNotification: string;
+    notifyingMember: string;
+    agencyResponsible: string;
+    addressOfAgency: string;
+    telephoneOfAgency: string;
+    faxOfAgency: string;
+    emailOfAgency: string;
+    websiteOfAgency: string;
+    notifiedUnderArticle: string;
+    productsCovered: string;
+    descriptionOfNotifiedDoc: string;
+    descriptionOfContent: string;
+    objectiveAndRationale: string;
+    relevantDocuments: string;
+    proposedDateOfAdoption: Timestamp<any>;
+    proposedDateOfEntryIntoForce: Timestamp<any>;
+    textAvailableFrom: string;
 }
 
 // **********************************************************International Standards Adoption**********************************************************
@@ -2530,12 +2539,74 @@ export interface NepDraftView{
     uploadDocument: number;
 }
 
+export interface DecisionOnPreparedNotification{
+    notifyingMember: string;
+    agencyResponsible: string;
+    addressOfAgency: string;
+    telephoneOfAgency: string;
+    faxOfAgency: string;
+    emailOfAgency: string;
+    websiteOfAgency: string;
+    notifiedUnderArticle: string;
+    productsCovered: string;
+    descriptionOfNotifiedDoc: string;
+    descriptionOfContent: string;
+    objectiveAndRationale: string;
+    relevantDocuments: string;
+    proposedDateOfAdoption: Timestamp<any>;
+    proposedDateOfEntryIntoForce: Timestamp<any>;
+    textAvailableFrom: string;
+    draftId: number;
+    accentTo: string;
+    comments: string;
+}
+
 export interface DecisionOnNotification{
     draftId: number;
     remarks: string;
     accentTo: string;
     notification: string;
     status: number;
+}
+
+export interface NepNotificationForm{
+    id: number;
+    datePrepared:Timestamp<any>;
+    notifyingMember:string;
+    agencyResponsible:string;
+    addressOfAgency:string;
+    telephoneOfAgency:string;
+    faxOfAgency:string;
+    emailOfAgency:string;
+    websiteOfAgency:string;
+    notifiedUnderArticle:string;
+    productsCovered:string;
+    descriptionOfNotifiedDoc:string;
+    objectiveAndRationale:string;
+    descriptionOfContent:string;
+    relevantDocuments:string;
+    proposedDateOfAdoption:Timestamp<any>;
+    proposedDateOfEntryIntoForce: Timestamp<any>;
+    finalDateForComments: Timestamp<any>;
+    textAvailableFrom:string;
+    preparedBy:string;
+    status: number;
+    documentAttached: number;
+}
+
+export interface HistoricalData{
+    id : number;
+    entryNumber : string;
+    kraPin : string;
+    companyName : string;
+    taxHead : string;
+    paymentDate : Timestamp<any>;
+    periodFrom : Timestamp<any>;
+    periodTo : Timestamp<any>;
+    modeOfPayment : string;
+    amount : number;
+    location : string;
+    prn : string;
 }
 
 

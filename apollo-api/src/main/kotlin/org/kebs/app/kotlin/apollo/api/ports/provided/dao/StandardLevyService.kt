@@ -75,6 +75,7 @@ class StandardLevyService(
     private val companyRepo: ICompanyProfileRepository,
     private val companyStandardRepository: CompanyStandardRepository,
     private val rejectedCompanyDetailsRepository: RejectedCompanyDetailsRepository,
+    private val stdLevyHistoricalPaymentsRepo: StdLevyHistoricalPaymentsRepository
 
 
     ) {
@@ -2686,6 +2687,11 @@ return getUserTasks();
 
     fun getRegionList(): List<RegionHolder> {
         return companyProfileRepo.getRegionList()
+    }
+
+    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments>
+    {
+        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPayments()
     }
 
 

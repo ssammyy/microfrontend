@@ -1,22 +1,21 @@
-import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {DecisionOnNotification, NepDraftView, NepNotificationForm} from "../../../../core/store/data/std/std.model";
+import {NepNotificationForm} from "../../../../core/store/data/std/std.model";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {NepPointService} from "../../../../core/store/data/std/nep-point.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import swal from "sweetalert2";
 
 @Component({
-  selector: 'app-mgr-nep-notification-view',
-  templateUrl: './mgr-nep-notification-view.component.html',
-  styleUrls: ['./mgr-nep-notification-view.component.css']
+  selector: 'app-nep-uploaded-notification',
+  templateUrl: './nep-uploaded-notification.component.html',
+  styleUrls: ['./nep-uploaded-notification.component.css']
 })
-export class MgrNepNotificationViewComponent implements OnInit {
+export class NepUploadedNotificationComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
@@ -24,14 +23,9 @@ export class MgrNepNotificationViewComponent implements OnInit {
   public approveFormGroup!: FormGroup;
   tasks: NepNotificationForm[]=[];
   public actionRequest: NepNotificationForm | undefined;
-  decisionText: "";
   loadingText: string;
   blob: Blob;
   public uploadedFiles:  FileList;
-  selectedOption = '';
-  draftDecision : string;
-  draftBtn : string;
-  btnType : string;
   constructor(
       private store$: Store<any>,
       private router: Router,
@@ -42,34 +36,15 @@ export class MgrNepNotificationViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.approveFormGroup = this.formBuilder.group({
-      comments: [],
-      accentTo: [],
-      notification: [],
-      id:[]
-
-    });
-    this.getNotificationForApproval();
+    this.getUploadedNotification();
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
-  showToasterSuccess(title:string,message:string){
-    this.notifyService.showSuccess(message, title)
-
-  }
-  showToasterError(title:string,message:string){
-    this.notifyService.showError(message, title)
-
-  }
-  onSelected(value:string): void {
-    this.selectedOption = value;
-  }
-
-  public getNotificationForApproval(): void {
+  public getUploadedNotification(): void {
     this.loadingText = "Retrieving Notifications...";
     this.SpinnerService.show();
-    this.notificationService.getNotificationForApproval().subscribe(
+    this.notificationService.getUploadedNotification().subscribe(
         (response: NepNotificationForm[]) => {
           this.tasks = response;
           this.rerender();
@@ -80,6 +55,14 @@ export class MgrNepNotificationViewComponent implements OnInit {
           console.log(error.message);
         }
     );
+  }
+  showToasterSuccess(title:string,message:string){
+    this.notifyService.showSuccess(message, title)
+
+  }
+  showToasterError(title:string,message:string){
+    this.notifyService.showError(message, title)
+
   }
 
   rerender(): void {
@@ -134,52 +117,6 @@ export class MgrNepNotificationViewComponent implements OnInit {
     container.appendChild(button);
     button.click();
 
-  }
-
-  @ViewChild('closeModalUploadJustification') private closeModalUploadJustification: ElementRef | undefined;
-
-  public hideModalUploadDraft() {
-    this.closeModalUploadJustification?.nativeElement.click();
-  }
-
-  public decisionOnNotification(approveDraft: DecisionOnNotification): void{
-    this.SpinnerService.show();
-
-    if (this.selectedOption=="Yes"){
-      this.draftDecision="Notification Approved"
-      this.draftBtn="btn btn-success form-wizard-next-btn"
-      this.btnType="success"
-
-    }else if(this.selectedOption=="No"){
-      this.draftDecision="Notification was not approved"
-      this.draftBtn="btn btn-warning form-wizard-next-btn"
-      this.btnType="error"
-      //console.log(this.draftDecision)
-
-    }
-    this.notificationService.decisionOnNotification(approveDraft).subscribe(
-        (response) => {
-          this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, this.draftDecision);
-          swal.fire({
-            text: this.draftDecision,
-            buttonsStyling: false,
-            customClass: {
-              confirmButton: this.draftBtn,
-            },
-            icon: 'success'
-          });
-          this.getNotificationForApproval();
-        },
-        (error: HttpErrorResponse) => {
-          this.SpinnerService.hide();
-          this.showToasterError('Error', `Error Processing Action`);
-          console.log(error.message);
-          this.getNotificationForApproval();
-          //alert(error.message);
-        }
-    );
-    this.hideModalUploadDraft();
   }
 
 }
