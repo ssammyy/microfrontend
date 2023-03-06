@@ -939,6 +939,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'viewDraftNotification', title: 'View Draft', ab: 'VD'},
             {path: 'managerViewNotification', title: 'View Notification', ab: 'VN'},
             {path: 'uploadNotification', title: 'Upload Notification', ab: 'UN'},
+            {path: 'uploadedNotification', title: 'Uploaded Notification', ab: 'UN'},
 
         ],
         icontype: 'quiz',

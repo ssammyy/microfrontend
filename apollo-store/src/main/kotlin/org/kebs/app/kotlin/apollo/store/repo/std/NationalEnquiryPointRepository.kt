@@ -75,6 +75,10 @@ interface NepNotificationFormEntityRepository : JpaRepository<NepNotificationFor
         value = "SELECT * FROM SD_NEP_NOTIFICATION_FORM  WHERE STATUS=2 ORDER BY ID DESC",nativeQuery = true)
     fun getDraftNotificationForUpload(): MutableList<NepNotificationFormEntity>
 
+    @Query(
+        value = "SELECT * FROM SD_NEP_NOTIFICATION_FORM  WHERE STATUS=4 ORDER BY ID DESC",nativeQuery = true)
+    fun getUploadedNotification(): MutableList<NepNotificationFormEntity>
+
 }
 
 

@@ -271,6 +271,11 @@ export class NepPointService {
         const params = new HttpParams();
         return this.http.get<NepDraftView>(url, {params}).pipe();
     }
+    public getUploadedNotification(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOADED_NOTIFICATION);
+        const params = new HttpParams();
+        return this.http.get<NepDraftView>(url, {params}).pipe();
+    }
 
     public decisionOnNotification(dec: DecisionOnNotification): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_MGR_DECISION_ON_NOTIFICATION);
@@ -291,10 +296,10 @@ export class NepPointService {
         return this.http.get<NepDraftView>(url, {params}).pipe();
     }
 
-    public uploadNotification(dec: DecisionOnNotification): Observable<any> {
+    public uploadNotification(dec: DecisionOnPreparedNotification): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NEP_UPLOAD_NOTIFICATION);
         const params = new HttpParams();
-        return this.http.post<DecisionOnNotification>(url, dec, {params}).pipe(
+        return this.http.post<DecisionOnPreparedNotification>(url, dec, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

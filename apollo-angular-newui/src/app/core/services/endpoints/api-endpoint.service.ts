@@ -618,6 +618,7 @@ export class ApiEndpointService {
         NEP_MGR_DECISION_ON_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/decisionOnNotification`,
         NEP_GET_UPLOAD_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/getDraftNotificationForUpload`,
         NEP_UPLOAD_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/uploadNotification`,
+        NEP_UPLOADED_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/getUploadedNotification`,
         NEP_VIEW_DRAFT_NOTIFICATION: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/viewDraftUpload`,
 
 

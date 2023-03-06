@@ -326,13 +326,19 @@ class NationalEnquiryPointController(
     }
 
     @PostMapping("/National_enquiry_point/uploadNotification")
-    fun uploadNotification(@RequestBody nep: NepDraftWtoDto): ServerResponse? {
+    fun uploadNotification(@RequestBody nep: NepDraftDecDto): ServerResponse? {
         return ServerResponse(
             HttpStatus.OK,"Successfully uploaded",nationalEnquiryPointService.
             uploadNotification(nep))
 
     }
 
+    @GetMapping("/National_enquiry_point/getUploadedNotification")
+    @ResponseBody
+    fun getUploadedNotification(): MutableList<NepNotificationFormEntity>
+    {
+        return nationalEnquiryPointService.getUploadedNotification()
+    }
 
 
 

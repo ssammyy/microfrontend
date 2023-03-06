@@ -33,10 +33,11 @@ export class NepNotificationViewComponent implements OnInit {
   public preparePreliminaryDraftFormGroup!: FormGroup;
   tasks: NepNotificationForm[]=[];
   public actionRequest: NepNotificationForm | undefined;
-  decisionText: "";
+
   loadingText: string;
   blob: Blob;
   public uploadedFiles:  FileList;
+    decisionText: "";
   selectedOption = '';
   draftDecision : string;
   constructor(
