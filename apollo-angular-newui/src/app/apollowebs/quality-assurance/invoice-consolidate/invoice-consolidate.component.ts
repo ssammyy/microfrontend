@@ -87,6 +87,8 @@ export class InvoiceConsolidateComponent implements OnInit {
   checked(item) {
     if (this.selected.indexOf(item) !== -1) {
       return true;
+    } else {
+      return false;
     }
   }
 

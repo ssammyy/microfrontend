@@ -4072,6 +4072,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       const valueInControl = standardsArrayControl.value;
       if (!valueInControl.includes(selectedStandard)) {
         newValues.push(selectedStandard);
+        newValues.push(" ");
       }
     }
 
@@ -4079,6 +4080,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       const updatedValue = standardsArrayControl.value.concat(newValues);
       standardsArrayControl.patchValue(updatedValue);
     }
+
 
     console.log("Data in the form control after: "+standardsArrayControl.value);
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {

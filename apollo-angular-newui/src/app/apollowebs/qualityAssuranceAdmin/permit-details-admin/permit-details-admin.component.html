@@ -1470,7 +1470,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                             <td>{{oldVersionDetails?.awardedPermitNumber }}</td>
                                                                                             <td>{{oldVersionDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
-                                                                                                <a (click)="goToFmarkPermitDetails(oldVersionDetails?.id)"
+                                                                                                <a (click)="goToFmarkPermitDetails(oldVersionDetails?.id?.toString())"
                                                                                                    class="btn btn-info"
                                                                                                    style="background: rgba(0, 0, 0, 0)
                                                                                                     linear-gradient(60deg,#1b75bc,#1b75bc);width: 100px;">View</a>
@@ -1607,7 +1607,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <div>
                             <div>
                                 <a  *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
-                                    (click)="goToFmarkPermitDetails(allPermitDetails?.permitDetails?.fmarkGeneratedID)"
+                                    (click)="goToFmarkPermitDetails(allPermitDetails?.permitDetails?.fmarkGeneratedID?.toString())"
                                    class="btn btn-kebs mat-raised-button mat-button-base">FMARK APPLICATION DETAILS</a>
                             </div>
                         </div>
@@ -5920,7 +5920,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                         <div class="form-body">
                                             <div class="form-group">
                                                 <div>
-                                                    <!--                                                    <input id="pdfSavedID#" matInput type="text" formControlName="pdfSavedID" name="pdfSavedID" ngModel="{{totalComplianceValue}}" [hidden]="true" >-->
+                                                    <!-- <input id="pdfSavedID#" matInput type="text" formControlName="pdfSavedID" name="pdfSavedID" ngModel="{{totalComplianceValue}}" [hidden]="true" >-->
                                                     <input id="bsNumber#" matInput type="text"
                                                            formControlName="bsNumber" name="bsNumber"
                                                            ngModel="{{selectedSSFDetails?.bsNumber}}" [hidden]="true">
@@ -5934,7 +5934,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                         Status</b></label>
                                                     <mat-form-field id="complianceStatusPdf5">
                                                         <mat-select placeholder="Please Select an option"
-                                                                    formControlName="complianceStatus"
+                                                                    formControlName="complianceStatus" required
                                                                     name="complianceStatus">
                                                             <mat-option [value]="true">Compliant</mat-option>
                                                             <mat-option [value]="false">Non-Compliant</mat-option>
@@ -5944,7 +5944,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                         feedback for Selecting the PDF:</b></label>
                                                     <mat-form-field class="example-full-width">
                                             <textarea id="complianceRemarksPDF6" matInput type="text"
-                                                      formControlName="complianceRemarks"
+                                                      formControlName="complianceRemarks" required
                                                       name="complianceRemarks">
                                             </textarea>
                                                     </mat-form-field>

@@ -1032,6 +1032,7 @@ interface IQaSta10EntityRepository : HazelcastRepository<QaSta10Entity, Long> {
     fun findByPermitId(permitId: Long): QaSta10Entity?
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): QaSta10Entity?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): QaSta10Entity?
+    fun findTopByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): QaSta10Entity?
 
     @Query(
         value = "UPDATE APOLLO.DAT_KEBS_QA_STA10  t1\n" +

@@ -1873,9 +1873,9 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     }
 
-    goToFmarkPermitDetails(permitId: number) {
-
-        let text = String(permitId);
+    goToFmarkPermitDetails(permitId: string) {
+        console.log('Permit ID ', permitId);
+        let text = permitId;
         let key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
