@@ -4362,7 +4362,7 @@ class QADaoServices(
 
 
     fun findSTA10WithPermitRefNumberANdPermitID(permitRefNumber: String, permitID: Long): QaSta10Entity? {
-        return sta10Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)
+        return sta10Repo.findTopByPermitRefNumberAndPermitId(permitRefNumber, permitID)
     }
 
 //    fun findSTA10WithPermitRefNumberBY(permitRefNumber: String): QaSta10Entity {
