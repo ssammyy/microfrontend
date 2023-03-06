@@ -24,23 +24,17 @@
                                     BACK TO PERMIT</a>
                             </div>
                             <div *ngFor="let role of roles">
-
                                 <div *ngIf="role == 'QA_OFFICER_MODIFY'">
-                                    <div class="col-md-3 ">
+                                    <a class="btn btn-kebs mat-raised-button mat-button-base"
+                                       (click)="gotoInspectionReport(allInspectionReportDetails.permitDetails.id.toString())"
+                                    >EDIT
+                                        INSPECTION REPORT</a>
 
-                                        <a class="btn btn-kebs mat-raised-button mat-button-base"
-                                           (click)="gotoInspectionReport(allInspectionReportDetails.permitDetails.id.toString())"
-
-                                           style=" width: -moz-available; white-space:normal; width: -webkit-fill-available;">EDIT
-                                            INSPECTION REPORT</a>
-                                    </div>
-                                    <div class="col-md-3"
-                                         *ngIf="allInspectionReportDetails?.submittedInspectionReportStatus== null">
-                                        <a class="btn btn-kebs mat-raised-button mat-button-base"
-                                           (click)="submitInspectionReport(allInspectionReportDetails.id)"
-                                           style=" width: -moz-available; white-space:normal; width: -webkit-fill-available;">SUBMIT
-                                            INSPECTION REPORT</a>
-                                    </div>
+                                    <a *ngIf="allInspectionReportDetails?.submittedInspectionReportStatus== null"
+                                       class="btn btn-kebs mat-raised-button mat-button-base"
+                                       (click)="submitInspectionReport(allInspectionReportDetails.id)"
+                                    >SUBMIT
+                                        INSPECTION REPORT</a>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +124,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="col-md-9" style="background-color: #eeeeee8a;">
+                                <div class="col-md-10" style="background-color: #eeeeee8a;">
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="link1">
                                             <h3>General Details</h3>
@@ -214,9 +208,8 @@
                                             <div class="row">
                                                 <div class="card-body" style="margin-top: 20px;">
 
-                                                    <div class="material-datatables"
-                                                         style="width: 100%; word-break: break-word">
-                                                        <table class=" table table-bordered table-hover table-striped">
+
+                                                        <table class="table table-striped w-auto">
                                                             <thead style="text-align: left;">
                                                             <tr>
 
@@ -248,7 +241,6 @@
 
                                                             </tbody>
                                                         </table>
-                                                    </div>
 
                                                 </div>
                                             </div>
@@ -261,7 +253,7 @@
 
                                                     <div class="material-datatables"
                                                          style="width: 100%; word-break: break-word">
-                                                        <table class=" table table-bordered table-hover table-striped">
+                                                        <table class="table table-striped w-auto">
                                                             <thead style="text-align: left;">
                                                             <tr>
 
@@ -359,7 +351,7 @@
                                                     <div class="material-datatables"
                                                          style="width: 100%; word-break: break-word">
                                                         <div class="table-responsive">
-                                                            <table class="table table-striped table-bordered table-hover">
+                                                            <table class="table table-striped w-auto">
                                                                 <thead>
                                                                 <tr>
                                                                     <th style="width: 40%"><strong>Standard
@@ -395,7 +387,7 @@
 
                                                     <div class="material-datatables"
                                                          style="width: 100%; word-break: break-word">
-                                                        <table class=" table table-bordered table-hover table-striped">
+                                                        <table class="table table-striped w-auto">
                                                             <thead style="text-align: left;">
                                                             <tr>
 
@@ -463,7 +455,7 @@
                                                     <div class="material-datatables"
                                                          style="width: 100%; word-break: break-word">
                                                         <div class="table-responsive">
-                                                            <table class="table table-striped table-bordered table-hover">
+                                                            <table class="table table-striped w-auto">
                                                                 <thead>
                                                                 <tr>
                                                                     <th style="width: 40%"><strong>Process
@@ -502,7 +494,7 @@
 
                                                     <div class="material-datatables"
                                                          style="width: 100%; word-break: break-word">
-                                                        <table class=" table table-bordered table-hover table-striped">
+                                                        <table class="table table-striped w-auto">
                                                             <thead style="text-align: left;">
                                                             <tr>
 
