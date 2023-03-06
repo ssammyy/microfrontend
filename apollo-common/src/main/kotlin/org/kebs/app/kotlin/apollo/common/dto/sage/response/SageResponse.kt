@@ -55,6 +55,8 @@ class RequestBody {
 }
 
 class SageNotificationResponse {
+    @JsonProperty("header")
     var header: RequestHeader? = null
+    @JsonProperty("request")
     var request: RequestBody? = null
 }
