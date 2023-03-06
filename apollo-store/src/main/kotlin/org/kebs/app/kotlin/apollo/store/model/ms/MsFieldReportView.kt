@@ -1,14 +1,12 @@
 package org.kebs.app.kotlin.apollo.store.model.ms
 
 import java.io.Serializable
+import java.sql.Date
 import javax.persistence.*
 
 @Entity
 @Table(name = "MS_FIELD_REPORT", schema = "APOLLO", catalog = "")
 class MsFieldReportView : Serializable {
-    @Column(name = "ID")
-    @Id
-    var id: String? = null
 
     @Basic
     @Column(name = "MS_WORKPLAN_GENERATED_ID")
@@ -18,13 +16,13 @@ class MsFieldReportView : Serializable {
     @Column(name = "CREATED_USER_ID")
     var createdUserId: String? = null
 
+    @Column(name = "ID")
+    @Id
+    var id: String? = null
+
     @Basic
     @Column(name = "REPORT_REFERENCE")
     var reportReference: String? = null
-
-    @Basic
-    @Column(name = "REPORT_CLASSIFICATION")
-    var reportClassification: String? = null
 
     @Basic
     @Column(name = "REPORT_TO")
@@ -129,5 +127,9 @@ class MsFieldReportView : Serializable {
     @Basic
     @Column(name = "MODIFIED_ON")
     var modifiedOn: String? = null
+
+    @Basic
+    @Column(name = "REPORT_CLASSIFICATION")
+    var reportClassification: String? = null
 
 }

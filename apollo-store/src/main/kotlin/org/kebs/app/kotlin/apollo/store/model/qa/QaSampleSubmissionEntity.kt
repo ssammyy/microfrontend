@@ -189,4 +189,8 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Basic
+    @Column(name = "FAILED_PARAMETERS")
+    var failedParameters: String? = null
+
 }

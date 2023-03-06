@@ -2169,6 +2169,7 @@ class MarketSurveillanceFuelDaoServices(
                 resultsAnalysis = when {body.complianceStatus -> {1}else -> {0}}
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
+                failedParameters = body.failedParameters
             }
 
             saveSSF = sampleSubmissionLabRepo.save(saveSSF)
