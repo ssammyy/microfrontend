@@ -1014,6 +1014,7 @@ data class MSSSFPDFListDetailsDto(
         var sffId: Long? = null,
         var complianceRemarks: String? = null,
         var complianceStatus: Boolean? = null,
+        var id: Long? = null,
 )
 
 

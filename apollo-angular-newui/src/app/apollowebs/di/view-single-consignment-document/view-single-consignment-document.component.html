@@ -1027,6 +1027,9 @@
                                                 class="btn btn-sm btn-warning"
                                                 (click)="supervisorTargetConsignment()">SUPERVISOR TARGET
                                         </button>
+                                    </div>
+                                    <div class="separator"></div>
+                                    <div *ngIf="consignment.ui.supervisor">
                                         <div class="card" *ngFor="let task of supervisorTasks">
                                             <div class="text-center pt-2" style="color: green;">
                                                 {{task.task}}
@@ -1059,10 +1062,10 @@
                                                 <button class="btn btn-sm btn-primary" *ngIf="task.map.demandNoteId"
                                                         (click)="viewDemandNote(task.map.demandNoteId)">VIEW DEMAND NOTE
                                                 </button>
-                                                <!--                                                <button class="btn btn-sm  btn-danger"btn-primary-->
-                                                <!--                                                        (click)="removeTasks(task.objectId)">-->
-                                                <!--                                                    DELETE-->
-                                                <!--                                                </button>-->
+                                                <button class="btn btn-sm  btn-danger" btn-primary
+                                                        (click)="removeTasks(task.objectId)">
+                                                    DELETE
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

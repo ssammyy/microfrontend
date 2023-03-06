@@ -1600,7 +1600,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                     <div class="card-body ">
                         <button style="width: -webkit-fill-available;white-space: normal;"
                                 *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails?.batchID != null"
-                                mat-raised-button=""
+                                    mat-raised-button=""
                                 (click)="goToInvoiceGenerated()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">View Generated Invoice</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -1651,7 +1651,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'
-                        && allPermitDetails?.permitDetails?.invoiceGenerated && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
+                          && allPermitDetails?.permitDetails?.invoiceGenerated && !allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
                                 mat-raised-button=""
                                 (click)="goToPayment()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">Proceed To Payment</span>
@@ -1660,7 +1660,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.processStatusName == 'PENDING PAYMENT'
-                        && allPermitDetails?.permitDetails?.invoiceGenerated && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
+                          && allPermitDetails?.permitDetails?.invoiceGenerated && allPermitDetails?.permitDetails?.invoiceDifferenceGenerated"
                                 mat-raised-button=""
                                 (click)="goToPayment()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">Proceed To Payment Difference</span>
@@ -1668,18 +1668,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <a style="width: -webkit-fill-available;white-space: normal;"
-                           *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true
+                        <a style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.fmarkGenerated == true
                            && allPermitDetails?.permitDetails?.fmarkGeneratedID != null"
                            href="/smarkpermitdetails#{{allPermitDetails?.permitDetails?.fmarkGeneratedID}}"
-                           mat-raised-button=""
-                           class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">FMARK APPLICATION DETAILS</span>
+                           mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">F-MARK APPLICATION DETAILS</span>
                             <div matripple="" class="mat-ripple mat-button-ripple"></div>
                             <div class="mat-button-focus-overlay"></div>
                         </a>
 
                         <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && !allPermitDetails?.permitDetails?.permitGenerateDifference
-                        && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
+                          && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
                             <a style="width: -webkit-fill-available;white-space: normal;" href="/smark/newSmarkPermit#{{sta1?.id}}"
                                mat-raised-button=""
                                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
@@ -1709,18 +1707,14 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <!--                    class="btn btn-info {{row[3]}}">-->
                             <!--                <i class="material-icons">visibility</i>-->
                             <!--            </button>-->
-
-                            <!--            <button *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"-->
-                            <!--                    (click)="openModalUpload('resubmitDetails', 'resubmitHofQamCompletenessResults')" mat-raised-button="" data-target="#myModal1"-->
-                            <!--                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION</span>-->
-                            <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-                            <!--                <div class="mat-button-focus-overlay"></div>-->
-                            <!--            </button>-->
                         </div>
 
 
                         <button style="width: -webkit-fill-available;white-space: normal;"
-                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true && allPermitDetails?.permitDetails?.oldPermitStatus == false && allPermitDetails?.permitDetails?.processStatusID !=59 && allPermitDetails?.permitDetails?.versionNumber != null"
+                                *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus
+                                && allPermitDetails?.permitDetails?.oldPermitStatus == false
+                                 && allPermitDetails?.permitDetails?.processStatusID !=59
+                                 && allPermitDetails?.permitDetails?.versionNumber != null"
                                 mat-raised-button=""
                                 (click)="submitRenewalApplication()"
                                 class="btn btn-kebs mat-raised-button mat-button-base"><span
@@ -1742,7 +1736,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <button style="width: -webkit-fill-available;white-space: normal;"
-                                *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
+                                *ngIf="allPermitDetails?.remarksDetails?.labResultsCompleteness?.remarksStatus == false
+                                 && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
                                 (click)="openModalUpload('resubmitDetails', 'resubmitLabNonComplianceResults')"
                                 mat-raised-button="" data-toggle="modal"
                                 data-target="#myModal1"
@@ -1753,7 +1748,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         </button>
 
                         <div *ngIf="allPermitDetails?.permitDetails?.sendApplication == false  && allPermitDetails?.permitDetails?.versionNumber != null
-                        && allPermitDetails?.permitDetails?.varField7 == null ">
+                          && allPermitDetails?.permitDetails?.varField7 == null ">
                             <a style="width: -webkit-fill-available;white-space: normal;" href="/smark/newSmarkPermit#{{sta1?.id}}"
                                mat-raised-button=""
                                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>

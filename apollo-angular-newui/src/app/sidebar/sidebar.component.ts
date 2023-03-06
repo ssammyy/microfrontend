@@ -1135,13 +1135,13 @@ export const ROUTES: RouteInfo[] = [
             },
             {
                 path: 'sourceForStandard',
-                title: 'SIC Review',
+                title: 'SIC Source',
                 ab: 'RR',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SIC_OFFICER_SD_READ']
             },
             {
                 path: 'disseminateStandard',
-                title: 'SIC Review',
+                title: 'SIC Disseminate',
                 ab: 'RR',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SIC_OFFICER_SD_READ']
             },
@@ -1150,7 +1150,7 @@ export const ROUTES: RouteInfo[] = [
         ],
         icontype: 'group',
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_SIC_SD_READ', 'SIC_OFFICER_SD_READ'],
-        collapse: 'sm'
+        collapse: 'saq'
     },
 
     //SD reports

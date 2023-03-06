@@ -13,19 +13,21 @@ import org.kebs.app.kotlin.apollo.api.service.ConsignmentDocumentStatus
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Date
 
 @Service
 class DestinationInspectionActionsHandler(
-        private val daoServices: DestinationInspectionDaoServices,
-        private val commonDaoServices: CommonDaoServices,
-        private val consignmentAuditService: ConsignmentDocumentAuditService,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val diBpmn: DestinationInspectionBpmn,
-        private val diService: DestinationInspectionService
+    private val daoServices: DestinationInspectionDaoServices,
+    private val commonDaoServices: CommonDaoServices,
+    private val consignmentAuditService: ConsignmentDocumentAuditService,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val diBpmn: DestinationInspectionBpmn,
+    private val diService: DestinationInspectionService
 ) {
     fun blacklistConsignment(req: ServerRequest): ServerResponse {
         val response = ApiResponseModel()
@@ -164,28 +166,34 @@ class DestinationInspectionActionsHandler(
                 val consignmentDocument = this.daoServices.findCDWithUuid(cdUuid)
                 val loggedInUser = commonDaoServices.loggedInUserDetails()
                 commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
-                        .let { map ->
-                            KotlinLogging.logger { }.info { "approveRejectCdStatusType = ${form.sendCoiStatus}" }
-                            // Update consignment details
-                            with(consignmentDocument) {
-                                sendCoiStatus = form.sendCoiStatus
-                                sendCoiRemarks = form.remarks
-                                localCocOrCorDate = Date(java.util.Date().time)
-                            }
-                            //updating of Details in DB
-                            val updatedCDDetails = daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
-                            //Send Coi message To Single Window
-                            val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it, "coi") }
-                            if (localCoi != null) {
-                                daoServices.localCocCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
-                                daoServices.sendLocalCoi(localCoi)
-                                daoServices.updateCDStatus(updatedCDDetails, ConsignmentDocumentStatus.COI_ISSUED)
-                            }
-                            consignmentAuditService.addHistoryRecord(updatedCDDetails.id, updatedCDDetails.ucrNumber, form.remarks, "KEBS_COI", "Send Certificate of Inspection")
-                            response.data = ConsignmentDocumentDao.fromEntity(consignmentDocument)
-                            response.responseCode = ResponseCodes.SUCCESS_CODE
-                            response.message = "Success"
+                    .let { map ->
+                        KotlinLogging.logger { }.info { "approveRejectCdStatusType = ${form.sendCoiStatus}" }
+                        // Update consignment details
+                        with(consignmentDocument) {
+                            sendCoiStatus = form.sendCoiStatus
+                            sendCoiRemarks = form.remarks
+                            localCocOrCorDate = Date(java.util.Date().time)
                         }
+                        //updating of Details in DB
+                        val updatedCDDetails = daoServices.updateCdDetailsInDB(consignmentDocument, loggedInUser)
+                        //Send Coi message To Single Window
+                        val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it, "coi") }
+                        if (localCoi != null) {
+                            daoServices.localCocCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
+                            daoServices.sendLocalCoi(localCoi)
+                            daoServices.updateCDStatus(updatedCDDetails, ConsignmentDocumentStatus.COI_ISSUED)
+                        }
+                        consignmentAuditService.addHistoryRecord(
+                            updatedCDDetails.id,
+                            updatedCDDetails.ucrNumber,
+                            form.remarks,
+                            "KEBS_COI",
+                            "Send Certificate of Inspection"
+                        )
+                        response.data = ConsignmentDocumentDao.fromEntity(consignmentDocument)
+                        response.responseCode = ResponseCodes.SUCCESS_CODE
+                        response.message = "Success"
+                    }
             }
         } catch (ex: Exception) {
             KotlinLogging.logger { }.error { ex }
@@ -237,7 +245,13 @@ class DestinationInspectionActionsHandler(
                             daoServices.createCDTransactionLog(map, loggedInUser, consignmentDocument.id!!, it, it1)
                         }
                     }
-                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_ASSIGN_PORT", "Assign Port To consignment")
+                    consignmentAuditService.addHistoryRecord(
+                        consignmentDocument.id,
+                        consignmentDocument.ucrNumber,
+                        form.remarks,
+                        "KEBS_ASSIGN_PORT",
+                        "Assign Port To consignment"
+                    )
                     response.message = "Port assigned"
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                 } else {
@@ -301,13 +315,15 @@ class DestinationInspectionActionsHandler(
         return ServerResponse.ok().body(response)
     }
 
+    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ') || hasAuthority('DI_OFFICER_CHARGE_READ') || hasAuthority('DI_DIRECTOR_READ')")
     fun deleteSupervisorTasks(req: ServerRequest): ServerResponse {
-        return ServerResponse.ok().body(this.diBpmn.deleteTask(req.pathVariable("taskId")))
+        val remarks = req.paramOrNull("remarks")
+        return ServerResponse.ok().body(this.diBpmn.deleteTask(req.pathVariable("taskId"), remarks ?: "Deleted task"))
     }
 
     fun supervisorTasks(req: ServerRequest): ServerResponse {
         return ServerResponse.ok()
-                .body(this.diBpmn.listUserTasks())
+            .body(this.diBpmn.listUserTasks())
     }
 
     // Supervisor approve targeted consignment
@@ -331,7 +347,7 @@ class DestinationInspectionActionsHandler(
             } else {
                 req.pathVariable("taskId").let {
                     return ServerResponse.ok()
-                            .body(this.diBpmn.consignmentDocumentProcessUpdate(it, data, consignmentDocument))
+                        .body(this.diBpmn.consignmentDocumentProcessUpdate(it, data, consignmentDocument))
                 }
             }
         } catch (ex: ExpectedDataNotFound) {
@@ -343,7 +359,7 @@ class DestinationInspectionActionsHandler(
             response.message = "Request failed, please try again later"
         }
         return ServerResponse.ok()
-                .body(response)
+            .body(response)
     }
 
     fun pickConsignmentInspectionOfficer(req: ServerRequest): ServerResponse {
@@ -357,7 +373,13 @@ class DestinationInspectionActionsHandler(
                     KotlinLogging.logger { }.error("FAILED to PICK FOR IO, MODIFICATION disabled")
                 } else {
                     diService.selfAssign(consignmentDocument, form.remarks)
-                    consignmentAuditService.addHistoryRecord(consignmentDocument.id, consignmentDocument.ucrNumber, form.remarks, "KEBS_MANUAL_ASSIGN_IO", "Manual pick consignment")
+                    consignmentAuditService.addHistoryRecord(
+                        consignmentDocument.id,
+                        consignmentDocument.ucrNumber,
+                        form.remarks,
+                        "KEBS_MANUAL_ASSIGN_IO",
+                        "Manual pick consignment"
+                    )
                     response.responseCode = ResponseCodes.SUCCESS_CODE
                     response.message = "Inspection officer assigned"
                 }

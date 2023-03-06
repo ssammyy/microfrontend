@@ -145,7 +145,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType AND pr.SECTION_ID = :sectionID AND B.REGION = :region order by pr.ID",
+        "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PERMIT_AWARD_STATUS IS NULL AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType AND pr.SECTION_ID = :sectionID AND B.REGION = :region order by pr.ID",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndSectionId(
@@ -411,7 +411,13 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     fun findByQaoIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNull(
         userId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?
@@ -442,6 +448,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByAssessorIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNull(
         userId: Long,
         permitType: Long
     ): List<PermitApplicationsEntity>?

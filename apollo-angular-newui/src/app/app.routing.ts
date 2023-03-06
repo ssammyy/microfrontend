@@ -2461,13 +2461,13 @@ export const routes: Routes = [
      ***************************************************************/
     {
         path: 'sicRequestForStandard',
-        component: RequestForStandardComponent,
+        component: StandardRequestComponent,
         // canActivate: [AuthGuard],
         children: [{path: '', component: RequestForStandardComponent}],
     },
     {
         path: 'sicEmployerApprove',
-        component: RequestForStandardComponent,
+        component: StandardRequestComponent,
         // canActivate: [AuthGuard],
         children: [{path: '', component: EmployerApproveComponent}],
     },
