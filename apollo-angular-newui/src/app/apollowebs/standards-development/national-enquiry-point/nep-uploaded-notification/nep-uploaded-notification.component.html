@@ -1,0 +1,247 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <div class="card-title float-right"><button type="button" class="btn btn-sm btn-outline-warning">
+                                Tasks <span class="badge badge-primary">{{tasks.length}}</span>
+                            </button></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="material-datatables table-responsive">
+                                <table  class="table table-striped table-bordered table-hover " datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  cellspacing="0" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="knw">Notifying Member</th>
+                                        <th class="action">Agency Responsible</th>
+                                        <th class="requestNumber">Article </th>
+                                        <th class="requestNumber">Products Covered </th>
+                                        <th class="requestNumber">Proposed Date of Adoption </th>
+                                        <th class="requestNumber">Proposed Date of Entry into Force </th>
+                                        <th class="requestNumber">Final Date for Comments </th>
+                                        <th class="requestNumber">Document </th>
+                                        <th class="requestNumber">Action </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr  *ngFor="let task of tasks let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{task.notifyingMember}}</td>
+                                        <td>{{task.agencyResponsible}}</td>
+                                        <td>{{task.notifiedUnderArticle}}</td>
+                                        <td>{{task.productsCovered}}</td>
+                                        <td>{{task.proposedDateOfAdoption | date: 'dd/MM/yyyy'}}</td>
+                                        <td>{{task.proposedDateOfEntryIntoForce | date: 'dd/MM/yyyy'}}</td>
+                                        <td>{{task.finalDateForComments | date: 'dd/MM/yyyy'}}</td>
+                                        <td *ngIf="task.documentAttached==1"><button mat-raised-button type="button" (click)="viewDraftUpload( task.id,'Download'+task.id, 'application/pdf')" target="_blank" class="btn btn-info btn-sm ">
+                                            <i class="fa fa-download"></i>Download</button></td>
+                                        <td *ngIf="task.documentAttached==0"><button mat-raised-button type="button" style="width: 118px"   class="btn btn-success btn-sm ">
+                                            <i class="fa fa-download"></i>NA</button></td>
+                                        <td ><a  (click)="onOpenModal(task,'approveDraft',task.id)" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 130px " data-original-title="preparePD">View</a></td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+                                <div class="modal fade" id="approveDraft" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3>Notifications</h3>
+                                                <button type="button" class="close" #closeModalUploadJustification data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-body">
+                                                    <form #jcJustificationForm="ngForm" >
+                                                        <div class="modal-body">
+                                                            <div class="form-body">
+                                                                <div class="container col-md-12" >
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Notifying Member</b></label>
+                                                                        <h3>If applicable, name of local government involved (Article 3.2 and 7.2):</h3>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.notifyingMember}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Agency responsible</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.agencyResponsible}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Name and address (including telephone and fax numbers, email and website addresses, if available) of agency or authority designated to handle comments regarding the notification shall be indicated if different from above:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between row" >
+                                                                                <div class="d-flex w-100 align-items-center col-12" >
+                                                                                    <b>{{actionRequest?.addressOfAgency}}</b><br>
+                                                                                </div>
+                                                                                <div class="d-flex w-100 align-items-center col-12" >
+                                                                                    <b>{{actionRequest?.telephoneOfAgency}}</b><br>
+                                                                                </div>
+                                                                                <div class="d-flex w-100 align-items-center col-12" >
+                                                                                    <b>{{actionRequest?.faxOfAgency}}</b><br>
+                                                                                </div>
+                                                                                <div class="d-flex w-100 align-items-center col-12" >
+                                                                                    <b>{{actionRequest?.emailOfAgency}}; {{actionRequest?.websiteOfAgency}}</b><br>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Notified under Article</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.notifiedUnderArticle}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Products covered (HS or CCCN where applicable, otherwise national tariff heading. ICS numbers may be provided in addition, where applicable):</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.productsCovered}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Title, number of pages and language(s) of the notified document:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.descriptionOfNotifiedDoc}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Description of content:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.descriptionOfContent}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Objective and rationale, including the nature of urgent problems where applicable:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.objectiveAndRationale}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Relevant documents:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.relevantDocuments}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-6">
+                                                                        <label><b>Proposed date of adoption:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.proposedDateOfAdoption | date: 'dd/MM/yyyy'}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-6">
+                                                                        <label><b>Proposed date of entry into force:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.proposedDateOfEntryIntoForce | date: 'dd/MM/yyyy'}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-6">
+                                                                        <label><b>Final Date for Comments:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.finalDateForComments | date: 'dd/MM/yyyy'}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="form-group col-12">
+                                                                        <label><b>Text available from:  National enquiry point [X], or address, telephone and fax numbers, e-mail and web-site addresses, if available of the other body:</b></label>
+                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                    <b>{{actionRequest?.textAvailableFrom}}</b>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                        </div>
+
+
+
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
