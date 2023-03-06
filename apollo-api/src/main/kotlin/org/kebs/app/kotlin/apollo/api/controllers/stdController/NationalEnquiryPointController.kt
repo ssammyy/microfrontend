@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import com.google.gson.Gson
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
@@ -223,6 +224,8 @@ class NationalEnquiryPointController(
 
     @PostMapping("/National_enquiry_point/notificationOfReview")
     fun notificationOfReview(@RequestBody nep: NepNotificationDto): ServerResponse? {
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "INVOICE CALCULATED" + gson.toJson(nep) }
         return ServerResponse(
             HttpStatus.OK,"Successfully uploaded Review",nationalEnquiryPointService.
             notificationOfReview(nep))

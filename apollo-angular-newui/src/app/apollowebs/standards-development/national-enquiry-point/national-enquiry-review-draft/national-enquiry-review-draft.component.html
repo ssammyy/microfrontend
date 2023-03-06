@@ -78,8 +78,7 @@
                                     <div class="form-group col-12">
                                         <label>Notified under Article<span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                         <select class="form-control" [class.is-invalid]="formPreparePD.notifiedUnderArticle.invalid && formPreparePD.notifiedUnderArticle.touched" formControlName="notifiedUnderArticle" name="notifiedUnderArticle">
-                                            <option value="">Select</option>
-                                            <option value=">2.9.2">2.9.2</option>
+                                            <option value="2.9.2">2.9.2</option>
                                             <option value="2.10.1">2.10.1</option>
                                             <option value="5.6.2">5.6.2</option>
                                             <option value="5.7.1">5.7.1</option>
@@ -89,7 +88,7 @@
                                     <div class="form-group col-12">
                                         <label>Products covered (HS or CCCN where applicable, otherwise national tariff heading. ICS numbers may be provided in addition, where applicable):<span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                         <textarea [class.is-invalid]="formPreparePD.productsCovered.invalid && formPreparePD.productsCovered.touched"
-                                                  class="form-control"  formControlName="emailOfAgency" name="emailOfAgency" type="text"></textarea>
+                                                  class="form-control"  formControlName="productsCovered" name="productsCovered" type="text"></textarea>
                                     </div>
                                     <div class="form-group col-12">
                                         <label>Title, number of pages and language(s) of the notified document: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
@@ -118,16 +117,16 @@
                                                    class="form-control" placeholder=""  formControlName="proposedDateOfAdoption" name="proposedDateOfAdoption" type="date">
                                         </div>
                                         <div class="form-group col-6">
-                                            <label>Final date for comments:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                            <input [class.is-invalid]="formPreparePD.finalDateForComments.invalid && formPreparePD.finalDateForComments.touched"
-                                                   class="form-control" placeholder="60 days after date of notification"  formControlName="finalDateForComments" name="finalDateForComments" type="date">
+                                            <label>Proposed date of entry into force:  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                            <input [class.is-invalid]="formPreparePD.proposedDateOfEntryIntoForce.invalid && formPreparePD.proposedDateOfEntryIntoForce.touched"
+                                                   class="form-control" placeholder=""  formControlName="proposedDateOfEntryIntoForce" name="proposedDateOfEntryIntoForce" type="date">
                                         </div>
                                     </div>
 
                                     <div class="form-group col-12">
                                         <label>Text available from:  National enquiry point [X], or address, telephone and fax numbers, e-mail and web-site addresses, if available of the other body:   <span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                         <textarea [class.is-invalid]="formPreparePD.textAvailableFrom.invalid && formPreparePD.textAvailableFrom.touched"
-                                                  class="form-control" placeholder=""  formControlName="textAvailableFrom" name="textAvailableFrom" type="text"></textarea>
+                                                  class="form-control" placeholder=""  formControlName="textAvailableFrom" name="textAvailableFrom" rows="5" type="text"></textarea>
                                     </div>
                                     <div class="row col-12">
                                         <div class="form-group col-12">

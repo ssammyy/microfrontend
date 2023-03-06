@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEnti
 import org.kebs.app.kotlin.apollo.store.model.StdLevyEntryNoDataMigrationEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.CompleteTasksDetailHolder
+import org.kebs.app.kotlin.apollo.store.model.std.StdLevyHistoricalPayments
 import org.kebs.app.kotlin.apollo.store.model.std.UserDetailHolder
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
@@ -40,4 +41,10 @@ interface StdLevyEntryNoDataMigrationEntityRepository : HazelcastRepository<StdL
     fun getEntryNo(@Param("kraPin") kraPin: String?): Long?
 
 }
+interface StdLevyHistoricalPaymentsRepository : HazelcastRepository<StdLevyHistoricalPayments, Long>{
+
+    @Query(value = "SELECT *  FROM STANDARD_LEVY_HISTORICAL_PAYMENTS ", nativeQuery = true)
+    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments>
+}
+
 

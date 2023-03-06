@@ -852,6 +852,7 @@ import {
 import {
     DisseminateStandardComponent
 } from "./apollowebs/standards-development/sicStdPublication/disseminate-standard/disseminate-standard.component";
+import {StandardLevyHistoricalPaymentsComponent} from "./apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component";
 
 export const routes: Routes = [
     {
@@ -2689,6 +2690,10 @@ export const routes: Routes = [
     {
         path: 'stdLevyHome', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyDashboardComponent}],
+    },
+    {
+        path: 'stdLevyHistoricalPayments', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardLevyHistoricalPaymentsComponent}],
     },
 
     // {

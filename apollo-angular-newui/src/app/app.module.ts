@@ -1098,6 +1098,7 @@ import { ReviewStandardPublicationSicComponent } from './apollowebs/standards-de
 import { SourceForStandardComponent } from './apollowebs/standards-development/sicStdPublication/source-for-standard/source-for-standard.component';
 import { DisseminateStandardComponent } from './apollowebs/standards-development/sicStdPublication/disseminate-standard/disseminate-standard.component';
 import { EmployerApproveComponent } from './apollowebs/standards-development/sicStdPublication/employer-approve/employer-approve.component';
+import { StandardLevyHistoricalPaymentsComponent } from './apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1681,6 +1682,7 @@ import { EmployerApproveComponent } from './apollowebs/standards-development/sic
         SourceForStandardComponent,
         DisseminateStandardComponent,
         EmployerApproveComponent,
+        StandardLevyHistoricalPaymentsComponent,
 
       
 

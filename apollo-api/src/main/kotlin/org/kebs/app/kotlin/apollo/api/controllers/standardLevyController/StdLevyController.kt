@@ -2135,6 +2135,13 @@ class StdLevyController(
 //        }
 //    }
 
+    @GetMapping("/getLevyHistoricalPayments")
+    @ResponseBody
+    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments>
+    {
+        return standardLevyService.getLevyHistoricalPayments()
+    }
+
 
 
 

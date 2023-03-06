@@ -68,7 +68,6 @@ data class NepDraftDto(
 
 data class NepNotificationDto(
     var id: Long,
-    var datePrepared: Timestamp,
     var notifyingMember: String?=null,
     var agencyResponsible:String?=null,
     var addressOfAgency:String?=null,
@@ -83,10 +82,8 @@ data class NepNotificationDto(
     var relevantDocuments: String?=null,
     var proposedDateOfAdoption: Timestamp?=null,
     var proposedDateOfEntryIntoForce: Timestamp,
-    var finalDateForComments: Timestamp,
     var textAvailableFrom: String?=null,
-    var preparedBy: String?=null,
-    var status: Long
+    var descriptionOfContent: String?=null,
 ){
 
 }

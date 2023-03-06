@@ -434,6 +434,7 @@ class NationalEnquiryPointService(
         sNep.descriptionOfNotifiedDoc=nep.descriptionOfNotifiedDoc
         sNep.objectiveAndRationale=nep.objectiveAndRationale
         sNep.relevantDocuments=nep.relevantDocuments
+        sNep.descriptionOfContent=nep.descriptionOfContent
         sNep.proposedDateOfAdoption=nep.proposedDateOfAdoption
         sNep.proposedDateOfEntryIntoForce=nep.proposedDateOfEntryIntoForce
         sNep.finalDateForComments=deadline
@@ -464,9 +465,17 @@ class NationalEnquiryPointService(
             createdBy = user
             createdOn = commonDaoServices.getTimestamp()
         }
+        val saved= nepDraftDocRepo.save(uploads)
+        nepNotificationFormEntityRepo.findByIdOrNull(saved.nepDraftId)?.let { sts ->
+
+            with(sts) {
+                documentAttached = 1
+
+            }
+        }?: throw Exception("FORM NOT FOUND")
 
 
-        return nepDraftDocRepo.save(uploads)
+        return saved
     }
 
     fun getDraftNotification(): MutableList<NepNotificationFormEntity>
