@@ -1565,6 +1565,14 @@ export class SSFSaveComplianceStatusDto {
     totalCompliance: string;
 }
 
+export class SSFSaveFinalComplianceStatusDto {
+    ssfID: number;
+    bsNumber: string;
+    complianceStatus: boolean;
+    complianceRemarks: string;
+    totalCompliance: string;
+}
+
 export class LabResultsParamDto {
     param: string;
     result: string;

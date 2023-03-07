@@ -2101,7 +2101,7 @@
                         </form>
                     </div>
                     <div *ngIf="(currDiv == 'finalLabComplianceStatus')">
-                        <form [formGroup]="ssfSaveComplianceStatusForm" class="form">
+                        <form [formGroup]="ssfSaveFinalComplianceStatusForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
@@ -2115,7 +2115,7 @@
                                         <mat-form-field id="complianceStatusSSF">
                                             <mat-select placeholder="Please Select an option"
                                                         formControlName="complianceStatus"
-                                                        [class.is-invalid]="formSSFSaveComplianceStatusForm.complianceStatus.invalid && formSSFSaveComplianceStatusForm.complianceStatus.touched"
+                                                        [class.is-invalid]="formSSFSaveFinalComplianceStatusForm.complianceStatus.invalid && formSSFSaveFinalComplianceStatusForm.complianceStatus.touched"
                                                         name="complianceStatus">
                                                 <mat-option [value]="true">Compliant</mat-option>
                                                 <mat-option [value]="false">Non-Compliant</mat-option>
@@ -2426,8 +2426,8 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'finalLabComplianceStatus')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveFinalLabComplianceStatus(ssfSaveComplianceStatusForm.valid);"
-                            [disabled]="!ssfSaveComplianceStatusForm.valid"
+                            (click)="onClickSaveFinalLabComplianceStatus(ssfSaveFinalComplianceStatusForm.valid);"
+                            [disabled]="!ssfSaveFinalComplianceStatusForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>

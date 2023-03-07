@@ -31,7 +31,7 @@ import {
   SampleCollectionItemsDto,
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
-  SSFSaveComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto, OGAEntity,
+  SSFSaveComplianceStatusDto, SSFSaveFinalComplianceStatusDto, WorkPlanEntityDto, WorkPlanListDto, OGAEntity,
 } from '../../../../core/store/data/ms/ms.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {

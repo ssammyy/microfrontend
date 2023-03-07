@@ -34,6 +34,7 @@ import {
     SampleSubmissionDto,
     SampleSubmissionItemsDto,
     SSFSaveComplianceStatusDto,
+    SSFSaveFinalComplianceStatusDto,
     AllComplaintsDetailsDto,
     MsDepartment,
     MsDivisionDetails,
@@ -2134,7 +2135,7 @@ export class MsService {
     }
 
     // tslint:disable-next-line:max-line-length
-    public msWorkPlanInspectionScheduledSaveFinalSSFComplianceStatus(batchReferenceNo: string, referenceNo: string, data: SSFSaveComplianceStatusDto): Observable<WorkPlanInspectionDto> {
+    public msWorkPlanInspectionScheduledSaveFinalSSFComplianceStatus(batchReferenceNo: string, referenceNo: string, data: SSFSaveFinalComplianceStatusDto): Observable<WorkPlanInspectionDto> {
         console.log(data);
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.INSPECTION_SCHEDULED_ADD_FINAL_SSF_COMPLIANCE_STATUS_SAVE);
