@@ -2142,6 +2142,30 @@ class StdLevyController(
         return standardLevyService.getLevyHistoricalPayments()
     }
 
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @PostMapping("/getLevyHistoricalPaymentsFilter")
+
+    fun getLevyHistoricalPaymentsFilter(
+        @RequestBody levyFilterDTO: LevyFilterDTO
+    ): MutableList<StdLevyHistoricalPayments>
+    {
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+
+        return standardLevyService.getLevyHistoricalPaymentsFilter(startDate ,endDate )
+    }
+
+    @GetMapping("/getLevyPaymentStatus")
+    @ResponseBody
+    fun getLevyPaymentStatus(): PaymentStatus
+    {
+        return standardLevyService.getLevyPaymentStatus()
+    }
+
+
 
 
 

@@ -2694,6 +2694,36 @@ return getUserTasks();
         return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPayments()
     }
 
+    fun getLevyHistoricalPaymentsFilter(periodFrom : Date?,periodTo : Date?): MutableList<StdLevyHistoricalPayments> {
+        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPaymentsFilter(periodFrom,periodTo)
+    }
+
+    fun getLevyPaymentStatus(): PaymentStatus{
+        var prevDate=LocalDate.now().minusMonths(1);
+        var prevMonth=prevDate.getMonthValue()
+        var toCheckYear=prevDate.getYear()
+        var recordCount: Long
+                val gson = Gson()
+//        KotlinLogging.logger { }.info { "Month" + gson.toJson(prevMonth) }
+//        KotlinLogging.logger { }.info { "Year" + gson.toJson(toCheckYear) }
+        var userId=commonDaoServices.loggedInUserDetailsEmail().id
+        var companyPin=companyProfileRepo.getManufactureKraPin(userId)
+        recordCount= stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin,toCheckYear,prevMonth)
+
+//        commonDaoServices.loggedInUserDetailsEmail().id
+//            ?.let { id ->
+//                companyProfileRepo.getManufactureKraPin(id)
+//                    .let {
+//
+//                        recordCount= stdLevyHistoricalPaymentsRepo.getPaymentStatus(it,toCheckYear,prevMonth)
+//                    }
+//
+//            }
+//            ?: throw ExpectedDataNotFound("No Data Found")
+
+        return PaymentStatus(recordCount)
+    }
+
 
 
 }

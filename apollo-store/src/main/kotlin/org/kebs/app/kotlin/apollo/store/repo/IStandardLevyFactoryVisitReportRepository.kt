@@ -5,12 +5,16 @@ import org.kebs.app.kotlin.apollo.store.model.SlUpdatecompanyDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
 import org.kebs.app.kotlin.apollo.store.model.StdLevyEntryNoDataMigrationEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.std.AllLevyPayments
 import org.kebs.app.kotlin.apollo.store.model.std.CompleteTasksDetailHolder
 import org.kebs.app.kotlin.apollo.store.model.std.StdLevyHistoricalPayments
 import org.kebs.app.kotlin.apollo.store.model.std.UserDetailHolder
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.sql.Date
+import java.time.LocalDate
+import java.time.Month
 
 interface IStandardLevyFactoryVisitReportRepository: HazelcastRepository<StandardLevyFactoryVisitReportEntity, Long> {
     fun findByManufacturerEntity(manufacturerEntity: Long): StandardLevyFactoryVisitReportEntity?
@@ -45,6 +49,23 @@ interface StdLevyHistoricalPaymentsRepository : HazelcastRepository<StdLevyHisto
 
     @Query(value = "SELECT *  FROM STANDARD_LEVY_HISTORICAL_PAYMENTS ", nativeQuery = true)
     fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments>
+
+    @Query(value = "SELECT *  FROM STANDARD_LEVY_HISTORICAL_PAYMENTS WHERE  " +
+            " (:periodFrom is null or PERIOD_FROM >=TO_DATE(:periodFrom))  and " +
+            "(:periodTo is null or PERIOD_TO >=TO_DATE(:periodTo)) ", nativeQuery = true)
+    fun getLevyHistoricalPaymentsFilter(
+        @Param("periodFrom") periodFrom: Date?,
+        @Param("periodTo") periodTo: Date?,
+    ): MutableList<StdLevyHistoricalPayments>
+
+    @Query(value = "SELECT COUNT(KRA_PIN) as noOfRecords  FROM STANDARD_LEVY_HISTORICAL_PAYMENTS WHERE KRA_PIN=:kraPin AND EXTRACT(YEAR FROM PERIOD_TO) =:toCheckYear AND EXTRACT(MONTH FROM PERIOD_TO) =:prevMonth   ", nativeQuery = true)
+    fun getPaymentStatus(
+        @Param("kraPin") kraPin: String?,
+        @Param("toCheckYear") toCheckYear: Int?,
+        @Param("prevMonth") prevMonth: Int?,
+
+    ): Long
+
 }
 
 

@@ -139,7 +139,11 @@ interface StdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotific
         nativeQuery = true )
     fun findTopByManufactureIdOrderByIdDesc(@Param("id") id: Long?): Long?
   //  fun findFirstByManufactureIdOrderByIdDesc(manufactureId: Long): StdLevyNotificationForm
-  fun countByManufacturerId(manufacturerId: Long): Long
+  //fun countByManufacturerId(manufacturerId: Long): Long
+    @Query(value = "SELECT COUNT(ID) as noOfRecords  FROM DAT_KEBS_STD_LEVY_NOTIFICATION_FORM_TBL WHERE MANUFACTURER_ID=:manufacturerId ", nativeQuery = true)
+    fun countByManufacturerId(
+        @Param("manufacturerId") manufacturerId: Long
+        ): Long
 
 
     @Query(

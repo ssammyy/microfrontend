@@ -5,7 +5,12 @@ import {BusinessLinesView, HistoricalData, RegionView} from "../../../core/store
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
 import {LevyService} from "../../../core/store/data/levy/levy.service";
-import {PaymentDetails, PenaltyDetails} from "../../../core/store/data/levy/levy.model";
+import {
+  NotificationStatus,
+  PaymentDetails,
+  PaymentStatus,
+  PenaltyDetails
+} from "../../../core/store/data/levy/levy.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter} from "@angular/material/core";
 import {formatDate} from "@angular/common";
@@ -66,6 +71,7 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
   @ViewChild('dateRangeEnd') endDateRef: ElementRef;
   businessLines !: BusinessLinesView[];
   regions !: RegionView[];
+  paymentStatus !: PaymentStatus;
   constructor(
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
@@ -84,10 +90,11 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     this.filterFormGroup = this.formBuilder.group({
       periodFrom:'',
       periodTo : '',
-      businessLines : '',
-      region : '',
+      //businessLines : '',
+      //region : '',
     });
-    this.getLevyHistoricalPayments()
+    this.getLevyHistoricalPayments();
+    this.getLevyPaymentStatus();
   }
 
   ngOnDestroy(): void {
@@ -160,9 +167,9 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     this.error = false;
     //let us do validation
     if (this.filterFormGroup.get("periodFrom").value == '' &&
-        this.filterFormGroup.get("periodTo").value == '' &&
-        this.filterFormGroup.get("businessLines").value == '' &&
-        this.filterFormGroup.get("region").value == ''
+        this.filterFormGroup.get("periodTo").value == ''
+        //this.filterFormGroup.get("businessLines").value == '' &&
+       // this.filterFormGroup.get("region").value == ''
     ) {
       this.error = true;
       this.spinnerService.hide();
@@ -196,23 +203,23 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     }
     if (!this.error) {
       this.arr = []
-      if (this.filterFormGroup.get("region").value != '') {
-        const region = parseInt(this.filterFormGroup.get("region").value);
-        const regionName = this.regions.find(x => x.id == region).region;
-        this.arr.push("Region: " + regionName)
-      }
-      if (this.filterFormGroup.get("businessLines").value != '') {
-        const businessLines = parseInt(this.filterFormGroup.get("businessLines").value);
-        const businessLineName = this.regions.find(x => x.id == businessLines).region;
-        this.arr.push("Department: " + businessLineName)
-      }
+      // if (this.filterFormGroup.get("region").value != '') {
+      //   const region = parseInt(this.filterFormGroup.get("region").value);
+      //   const regionName = this.regions.find(x => x.id == region).region;
+      //   this.arr.push("Region: " + regionName)
+      // }
+      // if (this.filterFormGroup.get("businessLines").value != '') {
+      //   const businessLines = parseInt(this.filterFormGroup.get("businessLines").value);
+      //   const businessLineName = this.regions.find(x => x.id == businessLines).region;
+      //   this.arr.push("Department: " + businessLineName)
+      // }
       if (this.filterFormGroup.get("periodFrom").value != '') {
         this.arr.push("Period From: " + this.formatFormDate(this.filterFormGroup.get("periodFrom").value)
             + " To " + this.formatFormDate(this.filterFormGroup.get("periodFrom").value))
 
       }
 
-      this.levyService.getPenaltyReportFilter(this.filterFormGroup.value).subscribe(
+      this.levyService.getLevyHistoricalPaymentsFilter(this.filterFormGroup.value).subscribe(
           (response: HistoricalData[]) => {
             this.historicalPayments = response;
             this.spinnerService.hide();
@@ -248,8 +255,8 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     this.filterFormGroup = this.formBuilder.group({
       periodFrom:'',
       periodTo : '',
-      businessLines : '',
-      region : ''
+      //businessLines : '',
+      //region : ''
 
     });
   }
@@ -259,6 +266,19 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     this.periodFrom = dateRangeStart.value
     this.periodTo = dateRangeEnd.value
 
+  }
+
+  public getLevyPaymentStatus(): void{
+    this.levyService.getLevyPaymentStatus().subscribe(
+        (response: PaymentStatus)=> {
+          this.paymentStatus = response;
+          console.log(this.paymentStatus);
+        },
+        (error: HttpErrorResponse)=>{
+          console.log(error.message)
+          //alert(error.message);
+        }
+    );
   }
 
 
