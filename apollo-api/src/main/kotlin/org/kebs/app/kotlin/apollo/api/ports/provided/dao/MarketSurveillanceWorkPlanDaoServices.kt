@@ -3618,7 +3618,7 @@ class MarketSurveillanceWorkPlanDaoServices(
     fun addWorkPlanInspectionDetailsSSFFinalSaveComplianceStatus(
         referenceNo: String,
         batchReferenceNo: String,
-        body: SSFSaveComplianceStatusDto
+        body: SSFSaveFinalComplianceStatusDto
     ): WorkPlanInspectionDto {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)

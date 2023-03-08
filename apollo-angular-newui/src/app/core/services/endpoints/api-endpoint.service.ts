@@ -753,6 +753,7 @@ export class ApiEndpointService {
     public static QA_INTERNAL_USER_ENDPOINT = {
         LOAD_ONGOING_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-ongoing`,
         LOAD_COMPLETE_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-complete`,
+        LOAD_ALL_PERMIT_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-all`,
         LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list`,
         LOAD_PERMIT_DETAIL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permit-detail`,
         UPDATE_SECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/section`,

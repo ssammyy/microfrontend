@@ -27,7 +27,7 @@ import {
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
   SeizureDeclarationDto, SeizureDto, SeizureListDto,
-  SSFSaveComplianceStatusDto, SSFSendingComplianceStatus, WorkPlanCountyTownDto,
+  SSFSaveComplianceStatusDto,SSFSaveFinalComplianceStatusDto, SSFSendingComplianceStatus, WorkPlanCountyTownDto,
   WorkPlanEntityDto,
   WorkPlanFeedBackDto, WorkPlanFilesFoundDto,
   WorkPlanFinalRecommendationDto,
@@ -147,6 +147,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   sampleSubmitBSNumberForm!: FormGroup;
   pdfSaveComplianceStatusForm!: FormGroup;
   ssfSaveComplianceStatusForm!: FormGroup;
+  ssfSaveFinalComplianceStatusForm!: FormGroup;
   verificationPermitForm!: FormGroup;
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
@@ -197,6 +198,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   dataSaveSampleSubmitBSNumber: BSNumberSaveDto;
   dataPDFSaveComplianceStatus: PDFSaveComplianceStatusDto;
   dataSSFSaveComplianceStatus: SSFSaveComplianceStatusDto;
+  dataSSFSaveFinalComplianceStatus: SSFSaveFinalComplianceStatusDto;
   dataSSFSendComplianceStatus: SSFSendingComplianceStatus;
   dataSaveScheduleRemediation: CompliantRemediationDto;
   dataSaveNotCompliantInvoice: CompliantRemediationDto;
@@ -1977,6 +1979,13 @@ export class WorkPlanDetailsComponent implements OnInit {
       failedParameters: [''],
     });
 
+    this.ssfSaveFinalComplianceStatusForm = this.formBuilder.group({
+      complianceStatus: ['', Validators.required],
+      complianceRemarks: ['', Validators.required],
+      totalCompliance: null,
+      totalComplianceTest: null,
+    });
+
     this.verificationPermitForm = this.formBuilder.group({
       id: null,
       permitNumber: null,
@@ -2399,6 +2408,10 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   get formSSFSaveComplianceStatusForm(): any {
     return this.ssfSaveComplianceStatusForm.controls;
+  }
+
+  get formSSFSaveFinalComplianceStatusForm(): any {
+    return this.ssfSaveFinalComplianceStatusForm.controls;
   }
 
   get formStartOnsiteActivitiesForm(): any {
@@ -4357,14 +4370,14 @@ export class WorkPlanDetailsComponent implements OnInit {
   saveFinalLabResultsComplianceStatus(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
-      this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
-      this.dataSSFSaveComplianceStatus.ssfID = 0;
-      this.dataSSFSaveComplianceStatus.bsNumber = 'TEST BS NUMBER';
+      this.dataSSFSaveFinalComplianceStatus = {...this.dataSSFSaveFinalComplianceStatus, ...this.ssfSaveFinalComplianceStatusForm.value};
+      this.dataSSFSaveFinalComplianceStatus.ssfID = 0;
+      this.dataSSFSaveFinalComplianceStatus.bsNumber = 'TEST BS NUMBER';
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
       this.msService.msWorkPlanInspectionScheduledSaveFinalSSFComplianceStatus(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
-          this.dataSSFSaveComplianceStatus,
+          this.dataSSFSaveFinalComplianceStatus,
       ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
