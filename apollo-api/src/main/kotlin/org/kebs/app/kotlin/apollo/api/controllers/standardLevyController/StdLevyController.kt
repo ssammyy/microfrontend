@@ -2160,7 +2160,7 @@ class StdLevyController(
 
     @GetMapping("/getLevyPaymentStatus")
     @ResponseBody
-    fun getLevyPaymentStatus(): PaymentStatus
+    fun getLevyPaymentStatus(): Boolean
     {
         return standardLevyService.getLevyPaymentStatus()
     }

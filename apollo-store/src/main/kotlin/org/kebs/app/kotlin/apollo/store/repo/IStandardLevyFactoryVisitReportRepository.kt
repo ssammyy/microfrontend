@@ -58,13 +58,14 @@ interface StdLevyHistoricalPaymentsRepository : HazelcastRepository<StdLevyHisto
         @Param("periodTo") periodTo: Date?,
     ): MutableList<StdLevyHistoricalPayments>
 
-    @Query(value = "SELECT COUNT(KRA_PIN) as noOfRecords  FROM STANDARD_LEVY_HISTORICAL_PAYMENTS WHERE KRA_PIN=:kraPin AND EXTRACT(YEAR FROM PERIOD_TO) =:toCheckYear AND EXTRACT(MONTH FROM PERIOD_TO) =:prevMonth   ", nativeQuery = true)
+
+    @Query(value = "SELECT KRA_PIN  FROM STANDARD_LEVY_HISTORICAL_PAYMENTS WHERE KRA_PIN=:kraPin AND EXTRACT(YEAR FROM PERIOD_TO) =:toCheckYear AND EXTRACT(MONTH FROM PERIOD_TO) =:prevMonth   ", nativeQuery = true)
     fun getPaymentStatus(
         @Param("kraPin") kraPin: String?,
         @Param("toCheckYear") toCheckYear: Int?,
         @Param("prevMonth") prevMonth: Int?,
 
-    ): Long
+    ): String?
 
 }
 

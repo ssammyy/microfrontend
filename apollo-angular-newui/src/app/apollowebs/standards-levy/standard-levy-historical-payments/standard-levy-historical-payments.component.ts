@@ -94,7 +94,7 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
       //region : '',
     });
     this.getLevyHistoricalPayments();
-    this.getLevyPaymentStatus();
+    //this.getLevyPaymentStatus();
   }
 
   ngOnDestroy(): void {
