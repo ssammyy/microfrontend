@@ -109,6 +109,7 @@ export class WorkPlanTownsDto {
 export class RecommendationDto {
     recommendationId: number;
     recommendationName: string;
+
 }
 
 export class AllWorkPlanDetails {
@@ -1560,6 +1561,14 @@ export class SSFSaveComplianceStatusDto {
     ssfID: number;
     bsNumber: string;
     failedParameters: string;
+    complianceStatus: boolean;
+    complianceRemarks: string;
+    totalCompliance: string;
+}
+
+export class SSFSaveFinalComplianceStatusDto {
+    ssfID: number;
+    bsNumber: string;
     complianceStatus: boolean;
     complianceRemarks: string;
     totalCompliance: string;

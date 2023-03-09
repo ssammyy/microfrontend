@@ -36,7 +36,7 @@ export class StandardTaskComponent implements OnInit {
     seasons: string[] = ['Develop a standard through committee draft', 'Adopt existing International Standard', 'Review existing Kenyan Standard',
         'Development of publicly available specification', 'Development of national workshop agreement', 'Adoption of EA and other regions standards'];
 
-    outputs: string[] = ['Approve For Review', 'Reject For Review'];
+    outputs: string[] = ['Approve For Review', 'Reject','On Hold'];
 
 
     // selected item

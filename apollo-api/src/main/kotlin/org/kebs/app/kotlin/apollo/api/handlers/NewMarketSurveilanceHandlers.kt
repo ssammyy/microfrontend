@@ -2800,8 +2800,8 @@ class NewMarketSurveillanceHandler(
         return try {
             val batchReferenceNo = req.paramOrNull("batchReferenceNo") ?: throw ExpectedDataNotFound("Required Batch RefNumber, check parameters")
             val referenceNo = req.paramOrNull("referenceNo") ?: throw ExpectedDataNotFound("Required  referenceNo, check parameters")
-            val body = req.body<SSFSaveComplianceStatusDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, SSFSaveComplianceStatusDto::class.java.name)
+            val body = req.body<SSFSaveFinalComplianceStatusDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SSFSaveFinalComplianceStatusDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {

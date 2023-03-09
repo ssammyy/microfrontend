@@ -27,7 +27,7 @@ import {
   SampleSubmissionDto,
   SampleSubmissionItemsDto,
   SeizureDeclarationDto, SeizureDto, SeizureListDto,
-  SSFSaveComplianceStatusDto, SSFSendingComplianceStatus,
+  SSFSaveComplianceStatusDto, SSFSaveFinalComplianceStatusDto, SSFSendingComplianceStatus,
   WorkPlanEntityDto,
   WorkPlanFeedBackDto, WorkPlanFilesFoundDto,
   WorkPlanFinalRecommendationDto,
@@ -74,6 +74,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   averageCompliance: number = 0;
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
+  showOther: boolean = false;
   selectedFile: File;
   selectedRefNo: string;
   totalComplianceValue: Number = 0;
@@ -141,6 +142,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   sampleSubmitBSNumberForm!: FormGroup;
   pdfSaveComplianceStatusForm!: FormGroup;
   ssfSaveComplianceStatusForm!: FormGroup;
+  ssfSaveFinalComplianceStatusForm!: FormGroup;
   verificationPermitForm!: FormGroup;
   scheduleRemediationForm!: FormGroup;
   notCompliantInvoiceForm!: FormGroup;
@@ -191,6 +193,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   dataSaveSampleSubmitBSNumber: BSNumberSaveDto;
   dataPDFSaveComplianceStatus: PDFSaveComplianceStatusDto;
   dataSSFSaveComplianceStatus: SSFSaveComplianceStatusDto;
+  dataSSFSaveFinalComplianceStatus: SSFSaveFinalComplianceStatusDto;
   dataSSFSendComplianceStatus: SSFSendingComplianceStatus;
   dataSaveScheduleRemediation: CompliantRemediationDto;
   dataSaveNotCompliantInvoice: CompliantRemediationDto;
@@ -1966,6 +1969,13 @@ export class ComplaintPlanDetailsComponent implements OnInit {
       totalComplianceTest: null,
     });
 
+    this.ssfSaveFinalComplianceStatusForm = this.formBuilder.group({
+      complianceStatus: ['', Validators.required],
+      complianceRemarks: ['', Validators.required],
+      totalCompliance: null,
+      totalComplianceTest: null,
+    });
+
     this.verificationPermitForm = this.formBuilder.group({
       id: null,
       permitNumber: null,
@@ -1977,7 +1987,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
-      otherRecommendationName: [''],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -2098,24 +2107,32 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         && this.workPlanInspection?.preliminaryReport?.rejectedStatusHod === false
     ) {
       this.preliminaryReportForm.patchValue(this.workPlanInspection?.preliminaryReport);
-      this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
-        this.dataSaveDataInspectorInvestList.push(inspector);
-      });
-      this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
-        this.dataSavePreliminaryReportParamList.push(param);
-      });
+      if(this.workPlanInspection?.preliminaryReport?.kebsOfficersName) {
+        this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
+          this.dataSaveDataInspectorInvestList.push(inspector);
+        });
+      }
+      if(this.workPlanInspection?.preliminaryReport?.parametersList) {
+        this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
+          this.dataSavePreliminaryReportParamList.push(param);
+        });
+      }
     }
 // Hod Reject
     if (this.workPlanInspection?.preliminaryReport?.rejectedStatusHod
         && this.workPlanInspection?.preliminaryReport?.rejectedStatus
         && this.workPlanInspection?.preliminaryReport?.approvedStatusHod === false ) {
       this.preliminaryReportForm.patchValue(this.workPlanInspection?.preliminaryReport);
-      this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
-        this.dataSaveDataInspectorInvestList.push(inspector);
-      });
-      this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
-        this.dataSavePreliminaryReportParamList.push(param);
-      });
+      if(this.workPlanInspection?.preliminaryReport?.kebsOfficersName) {
+        this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
+          this.dataSaveDataInspectorInvestList.push(inspector);
+        });
+      }
+      if(this.workPlanInspection?.preliminaryReport?.parametersList) {
+        this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
+          this.dataSavePreliminaryReportParamList.push(param);
+        });
+      }
     }
 
     if (this.workPlanInspection?.productList?.length > 0 && this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
@@ -2373,6 +2390,10 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     return this.ssfSaveComplianceStatusForm.controls;
   }
 
+  get formSSFSaveFinalComplianceStatusForm(): any {
+    return this.ssfSaveFinalComplianceStatusForm.controls;
+  }
+
   get formSampleCollectForm(): any {
     return this.sampleCollectForm.controls;
   }
@@ -2424,15 +2445,23 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
     // this.selectedRecommendationName = ;
     const valueFound = this.recommendationList?.filter(x => Number(this.selectedRecommendationID) === Number(x.id));
-    for (let h = 0; h < valueFound.length; h++) {
-      this.selectedRecommendationName = valueFound[h].recommendationName;
-      console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
+    if (this.selectedRecommendationID == 61){
+      this.showOther = true;
     }
-    console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
+    else {
+      for (let h = 0; h < valueFound.length; h++) {
+        this.selectedRecommendationName = valueFound[h].recommendationName;
+        console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
+      }
+      console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
+    }
   }
 
 
   onClickAddDataRecommendationDetails() {
+    if(this.showOther){
+      this.selectedRecommendationName = this.finalRecommendationDetailsForm?.get('recommendationName')?.value;
+    }
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
     // tslint:disable-next-line:max-line-length
     const  resourceName = this.dataSaveFinalRecommendationList.filter(x => String(this.dataSaveFinalRecommendationDetails.recommendationName) === String(x.recommendationName)).length;
@@ -4301,14 +4330,14 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   saveFinalLabResultsComplianceStatus(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
-      this.dataSSFSaveComplianceStatus = {...this.dataSSFSaveComplianceStatus, ...this.ssfSaveComplianceStatusForm.value};
-      this.dataSSFSaveComplianceStatus.ssfID = 0;
-      this.dataSSFSaveComplianceStatus.bsNumber = 'TEST BS NUMBER';
+      this.dataSSFSaveFinalComplianceStatus = {...this.dataSSFSaveFinalComplianceStatus, ...this.ssfSaveFinalComplianceStatusForm.value};
+      this.dataSSFSaveFinalComplianceStatus.ssfID = 0;
+      this.dataSSFSaveFinalComplianceStatus.bsNumber = 'TEST BS NUMBER';
       // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
       this.msService.msWorkPlanInspectionScheduledSaveFinalSSFComplianceStatus(
           this.workPlanInspection.batchDetails.referenceNumber,
           this.workPlanInspection.referenceNumber,
-          this.dataSSFSaveComplianceStatus,
+          this.dataSSFSaveFinalComplianceStatus,
       ).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
