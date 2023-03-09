@@ -41,7 +41,7 @@ class SageIntegrationTests {
     @Test
     fun encryptPasswords() {
         KotlinLogging.logger { }.info("USER: " + jasyptStringEncryptor.encrypt("apollo"))
-        KotlinLogging.logger { }.info("PWD: " + jasyptStringEncryptor.encrypt("Ap0ll0_P922w0rd"))
+        KotlinLogging.logger { }.info("PWD: " + jasyptStringEncryptor.encrypt("Ap0ll0pr3_P922w0rd"))
     }
 
     @Test
