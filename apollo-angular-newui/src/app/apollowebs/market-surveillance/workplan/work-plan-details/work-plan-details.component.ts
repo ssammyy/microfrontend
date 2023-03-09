@@ -2134,24 +2134,32 @@ export class WorkPlanDetailsComponent implements OnInit {
         && this.workPlanInspection?.preliminaryReport?.rejectedStatusHod === false
     ) {
       this.preliminaryReportForm.patchValue(this.workPlanInspection?.preliminaryReport);
-      this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
-        this.dataSaveDataInspectorInvestList.push(inspector);
-      });
-      this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
-        this.dataSavePreliminaryReportParamList.push(param);
-      });
+      if(this.workPlanInspection?.preliminaryReport?.kebsOfficersName) {
+        this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
+          this.dataSaveDataInspectorInvestList.push(inspector);
+        });
+      }
+      if(this.workPlanInspection?.preliminaryReport?.parametersList) {
+        this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
+          this.dataSavePreliminaryReportParamList.push(param);
+        });
+      }
     }
 // Hod Reject
     if (this.workPlanInspection?.preliminaryReport?.rejectedStatusHod
         && this.workPlanInspection?.preliminaryReport?.rejectedStatus
         && this.workPlanInspection?.preliminaryReport?.approvedStatusHod === false ) {
       this.preliminaryReportForm.patchValue(this.workPlanInspection?.preliminaryReport);
-      this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
-        this.dataSaveDataInspectorInvestList.push(inspector);
-      });
-      this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
-        this.dataSavePreliminaryReportParamList.push(param);
-      });
+      if(this.workPlanInspection?.preliminaryReport?.kebsOfficersName) {
+        this.workPlanInspection?.preliminaryReport?.kebsOfficersName.forEach(inspector => {
+          this.dataSaveDataInspectorInvestList.push(inspector);
+        });
+      }
+      if(this.workPlanInspection?.preliminaryReport?.parametersList) {
+        this.workPlanInspection?.preliminaryReport?.parametersList.forEach(param => {
+          this.dataSavePreliminaryReportParamList.push(param);
+        });
+      }
     }
 
     if (this.workPlanInspection?.productList?.length > 0 && this.workPlanInspection?.preliminaryReportFinal?.approvedStatusHodFinal) {
@@ -2520,7 +2528,7 @@ export class WorkPlanDetailsComponent implements OnInit {
           this.workPlanInspection = data;
           this.loadDataToBeUsed();
           this.SpinnerService.hide();
-          console.log(data);
+          console.log("Data from load data: "+data);
         },
         error => {
           this.SpinnerService.hide();
