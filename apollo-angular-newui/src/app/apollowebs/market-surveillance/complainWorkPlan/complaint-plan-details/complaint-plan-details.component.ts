@@ -74,6 +74,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   averageCompliance: number = 0;
   selectedValueOfDataSheet: string;
   selectedDataSheet: DataReportDto;
+  showOther: boolean = false;
   selectedFile: File;
   selectedRefNo: string;
   totalComplianceValue: Number = 0;
@@ -1986,7 +1987,6 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
-      otherRecommendationName: [''],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -2445,15 +2445,23 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
     // this.selectedRecommendationName = ;
     const valueFound = this.recommendationList?.filter(x => Number(this.selectedRecommendationID) === Number(x.id));
-    for (let h = 0; h < valueFound.length; h++) {
-      this.selectedRecommendationName = valueFound[h].recommendationName;
-      console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
+    if (this.selectedRecommendationID == 61){
+      this.showOther = true;
     }
-    console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
+    else {
+      for (let h = 0; h < valueFound.length; h++) {
+        this.selectedRecommendationName = valueFound[h].recommendationName;
+        console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
+      }
+      console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
+    }
   }
 
 
   onClickAddDataRecommendationDetails() {
+    if(this.showOther){
+      this.selectedRecommendationName = this.finalRecommendationDetailsForm?.get('recommendationName')?.value;
+    }
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
     // tslint:disable-next-line:max-line-length
     const  resourceName = this.dataSaveFinalRecommendationList.filter(x => String(this.dataSaveFinalRecommendationDetails.recommendationName) === String(x.recommendationName)).length;

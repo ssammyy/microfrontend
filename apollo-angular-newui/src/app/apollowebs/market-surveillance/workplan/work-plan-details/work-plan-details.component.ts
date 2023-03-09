@@ -75,6 +75,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
   selectedDataSheet: DataReportDto;
+  showOther: boolean = false;
   active: Number = 0;
   selectedFile: File;
   selectedRefNo: string;
@@ -1997,7 +1998,6 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm = this.formBuilder.group({
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
-      otherRecommendationName: [''],
     });
 
     this.preliminaryReportForm = this.formBuilder.group({
@@ -2498,18 +2498,29 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   updateSelectedRecommendation() {
-    this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
-    // this.selectedRecommendationName = ;
-    const valueFound = this.recommendationList?.filter(x => Number(this.selectedRecommendationID) === Number(x.id));
-    for (let h = 0; h < valueFound.length; h++) {
-      this.selectedRecommendationName = valueFound[h].recommendationName;
-      console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
-    }
-    console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
+
+      this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
+      // this.selectedRecommendationName = ;
+      const valueFound = this.recommendationList?.filter(x => Number(this.selectedRecommendationID) === Number(x.id));
+      if (this.selectedRecommendationID == 61){
+        this.showOther = true;
+      }
+      else {
+        for (let h = 0; h < valueFound.length; h++) {
+          this.selectedRecommendationName = valueFound[h].recommendationName;
+          console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
+        }
+        console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
+      }
+
+
   }
 
 
   onClickAddDataRecommendationDetails() {
+    if(this.showOther){
+      this.selectedRecommendationName = this.finalRecommendationDetailsForm?.get('recommendationName')?.value;
+    }
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
     // tslint:disable-next-line:max-line-length
     const  resourceName = this.dataSaveFinalRecommendationList.filter(x => String(this.dataSaveFinalRecommendationDetails.recommendationName) === String(x.recommendationName)).length;

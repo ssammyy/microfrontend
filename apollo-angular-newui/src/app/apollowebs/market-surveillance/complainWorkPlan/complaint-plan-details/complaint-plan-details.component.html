@@ -4710,10 +4710,9 @@
                                                 class="form-control" formControlName="recommendationId" name="recommendationId" required>
                                             <option [value]="" selected disabled>Please select</option>
                                             <option *ngFor="let app of recommendationList | filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
-                                            <option value="other">Other</option>
                                         </select>
-                                        <input *ngIf="finalRecommendationDetailsForm.get('recommendationId').value === 'other'" class="form-control two-column-input" type="text"
-                                               formControlName="otherRecommendationName" name="recommendationName" placeholder="Enter other recommendation name">
+                                        <input *ngIf="showOther" class="form-control two-column-input" type="text"
+                                               formControlName="recommendationName" name="recommendationName" placeholder="Enter other recommendation name">
                                     </div>
                                 </div>
 

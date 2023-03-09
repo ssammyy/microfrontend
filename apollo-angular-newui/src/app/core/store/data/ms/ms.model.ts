@@ -109,6 +109,7 @@ export class WorkPlanTownsDto {
 export class RecommendationDto {
     recommendationId: number;
     recommendationName: string;
+
 }
 
 export class AllWorkPlanDetails {
