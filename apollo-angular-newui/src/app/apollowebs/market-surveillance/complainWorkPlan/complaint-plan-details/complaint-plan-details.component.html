@@ -2974,39 +2974,7 @@
                                 </div>
 
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Person met</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.personMet.invalid && formDataReportForm.personMet.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="personMet"
-                                               name="personMet" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.personMet.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.personMet.errors.required">Person met is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label><b>Most Recurring Non-Compliant</b> </label>
-                                        <input [class.is-invalid]="formDataReportForm.mostRecurringNonCompliant.invalid && formDataReportForm.mostRecurringNonCompliant.errors"
-                                               class="form-control two-column-input"
-                                               formControlName="mostRecurringNonCompliant"
-                                               name="mostRecurringNonCompliant" required type="text">
-                                        <div *ngIf="submitted && formDataReportForm.mostRecurringNonCompliant.errors" class="invalid-feedback">
-                                            <div *ngIf="formDataReportForm.mostRecurringNonCompliant.errors.required">Person met is
-                                                required
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
-
-
-                            </div>
 
                             <div class="row">
                                 <div class="col">
@@ -7313,10 +7281,93 @@
                             <p class="list-paragraph-accordion"><span>
                                                     {{selectedPreliminaryReportDetails?.methodologyEmployed}}</span></p>
                             <br/>
-<!--                            <b class="text-secondary">Findings</b>-->
-<!--                            <p class="list-paragraph-accordion"><span>-->
-<!--                                                    {{selectedPreliminaryReportDetails?.findings}}</span></p>-->
-<!--                            <br/>-->
+                            <h4 class="mb-3" style="color: #0066B1">Outlets Visited and Summary of Findings</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Data Collection Form reference</th>
+                                    <th>Outlet details</th>
+                                    <th>Summary of findings</th>
+                                    <th>Remarks</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let app of workPlanInspection?.dataReportDto; let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{app.referenceNumber}}</td>
+                                    <td>{{app.outletName}}</td>
+                                    <td>{{app.summaryFindingsActionsTaken}}</td>
+                                    <td>{{app.remarks}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Samples Drawn</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>S/NO.</th>
+                                        <th>Name of outlet</th>
+                                        <th>PRODUCT NAME</th>
+                                        <th>PRODUCT BRAND</th>
+                                        <th>Name & Address of Manufacturer</th>
+                                        <th>Country of Origin</th>
+                                        <th>Expiry Date</th>
+                                        <th>Batch Number</th>
+                                        <th>Permit No. / UCR Code</th>
+                                        <th>Sampling Officer</th>
+                                        <th>Date COLLECTED</th>
+                                        <th>Date Submitted</th>
+                                        <th>Sample Ref Number</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
+                                        <td>{{app.fileRefNumber}}</td>
+                                        <td></td>
+                                        <td>{{app.nameProduct}}</td>
+                                        <td>{{app.lbIdTradeMark}}</td>
+                                        <td>{{app.address}}</td>
+                                        <td>{{app.countryOfOrigin}}</td>
+                                        <td>{{app.lbIdExpiryDate}}</td>
+                                        <td>{{app.lbIdBatchNo}}</td>
+                                        <td></td>
+                                        <td>{{app.sendersName}}</td>
+                                        <td>{{app.sampleCollectionDate}}</td>
+                                        <td>{{app.sendersDate}}</td>
+                                        <td>{{app.bsNumber}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br/>
+                            <h4 class="mb-3" style="color: #0066B1">Summary of Seized Goods</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>MARKET TOWN CENTER</th>
+                                    <th>NAME OF OUTLET</th>
+                                    <th>NAME OF SEIZING OFFICER</th>
+                                    <th>VIEW ALL RECORDS</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let app of workPlanInspection?.seizureDeclarationDto">
+                                    <td>{{app.marketTownCenter}}</td>
+                                    <td>{{app.nameOfOutlet}}</td>
+                                    <td>{{app.nameSeizingOfficer}}</td>
+                                    <td><button (click)="viewSeizedDetails(app, false)"
+                                                type="button"
+                                                class="btn btn-warning btn-sm">
+                                                <span class=""
+                                                      aria-hidden="true">VIEW</span>
+                                    </button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <br/>
                             <b class="text-secondary">Conclusion</b>
                             <p class="list-paragraph-accordion"><span>
                                                     {{selectedPreliminaryReportDetails?.conclusion}}</span></p>
