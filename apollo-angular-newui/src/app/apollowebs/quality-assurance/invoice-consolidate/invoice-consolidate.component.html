@@ -70,7 +70,7 @@
                             <div class="card-icon">
                                 <div class="card-body">
                                     <button style="width:-webkit-fill-available; font-size: 8.1px;"
-                                            type="button" class="btn btn-primary" (click)="submit()">
+                                            type="button" class="btn btn-primary"  *ngIf="selected.length != 0" (click)="submit()">
                                         Consolidate
                                     </button>
                                 </div>

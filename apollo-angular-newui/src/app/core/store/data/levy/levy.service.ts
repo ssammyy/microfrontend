@@ -18,7 +18,7 @@ import {
     ManufacturePenalty,
     ManufacturePendingTask,
     ManufacturingStatus, NotificationStatus, OperationStatus,
-    PaidLevy, PaymentDetails, PenaltyDetails, RejectedComDetails,
+    PaidLevy, PaymentDetails, PaymentStatus, PenaltyDetails, RejectedComDetails,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo, SendEmailDto,
     SiteVisitFeedBack,
@@ -30,7 +30,7 @@ import {
     UsersEntityList, VerifyEmailDto,
     VisitTask
 } from "./levy.model";
-import {BusinessLinesView, RegionView, UsersEntity} from "../std/std.model";
+import {BusinessLinesView, HistoricalData, RegionView, UsersEntity} from "../std/std.model";
 import swal from "sweetalert2";
 import {FilterDto} from "../qa/qa.model";
 
@@ -968,6 +968,31 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_REGION_LIST);
         const params = new HttpParams();
         return this.http.get<RegionView[]>(url, {params}).pipe();
+    }
+
+    public getLevyHistoricalPayments(): Observable<HistoricalData[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_HISTORICAL_PAYMENTS);
+        const params = new HttpParams();
+        return this.http.get<HistoricalData[]>(url, {params}).pipe();
+    }
+
+    public getLevyHistoricalPaymentsFilter(data: LevyFiltersDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_HISTORICAL_PAYMENTS_FILTER);
+
+        return this.http.post<LevyFiltersDto>(url, data, {}).pipe(
+            map(function (response: LevyFiltersDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public getLevyPaymentStatus(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_HISTORICAL_PAYMENTS_STATUS);
+        const params = new HttpParams();
+        return this.http.get<PaymentStatus>(url, {params}).pipe();
     }
 
 

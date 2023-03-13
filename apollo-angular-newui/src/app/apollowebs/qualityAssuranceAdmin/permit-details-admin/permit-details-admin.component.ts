@@ -1873,15 +1873,18 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     }
 
-    goToFmarkPermitDetails(permitId: number) {
-
-        let text = String(permitId);
+    goToFmarkPermitDetails(permitId: string) {
+        console.log('Permit ID ', permitId);
+        let text = permitId;
         let key = '11A1764225B11AA1';
         text = CryptoJS.enc.Utf8.parse(text);
         key = CryptoJS.enc.Utf8.parse(key);
         let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
         encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
-        this.router.navigate(['/permit-details-admin', encrypted]);
+        // this.router.navigate(['/permit-details-admin', encrypted]);
+        this.router.navigate(['/permit-details-admin', encrypted]).then(page => { window.location.reload(); });
+
+
 
     }
 

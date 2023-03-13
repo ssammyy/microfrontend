@@ -111,6 +111,7 @@ class PermitApplicationsEntity : Serializable {
     var userTaskId: Long? = null
 
 
+
     @Column(name = "VAT_NO")
     @Basic
     var vatNo: String? = null
@@ -344,6 +345,8 @@ class PermitApplicationsEntity : Serializable {
     @Column(name = "ASSESSOR_ID")
     @Basic
     var assessorId: Long? = null
+
+
 
     @Column(name = "PAC_SEC_ID")
     @Basic

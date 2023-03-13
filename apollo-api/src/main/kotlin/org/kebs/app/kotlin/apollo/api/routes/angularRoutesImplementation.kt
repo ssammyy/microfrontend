@@ -1010,5 +1010,17 @@ class AngularRoutes(private val daoService: DaoFluxService) {
 
         }
     }
+    @Bean
+    fun KebsMobileApiRoutes(handler: QualityAssuranceHandler) = router {
+        "/api/v1/migration/anonymous/mobile".nest {
+            GET("/Smarks", handler::loadAllSmarksAwardedPermitsForReportsApi)
+            GET("/Fmarks", handler::loadAllFmarksAwardedPermitsForReportsApi)
+            GET("/Dmarks", handler::loadAllDmarksAwardedPermitsForReportsApi)
+            GET("/permitNo", handler::getAllAwardedPermitsByPermitNumber)
+            GET("/company", handler::getAllAwardedPermitsByCompanyName)
+            GET("/companies", handler::getAllCompanies)
+
+        }
+    }
 
 }

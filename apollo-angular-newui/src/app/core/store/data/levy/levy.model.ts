@@ -132,6 +132,10 @@ export class LevyFilterDto {
     region : number;
 
 }
+export class HistoricalFiltersDto{
+    periodFrom: Timestamp<any>;
+    periodTo: Timestamp<any>;
+}
 
 export class LevyFiltersDto {
     periodFrom: Timestamp<any>;
@@ -644,6 +648,9 @@ export interface OperationStatus {
 }
 export interface NotificationStatus {
     responseMessage: number;
+}
+export interface PaymentStatus {
+    responseStatus: number;
 }
 
 export interface SlFormStatus{

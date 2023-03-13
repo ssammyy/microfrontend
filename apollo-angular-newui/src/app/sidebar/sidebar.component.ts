@@ -545,6 +545,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'slClosedFirms', title: 'Closed Firms', ab: 'CF'},
             {path: 'slAllLevyPayments', title: 'Levy Payments', ab: 'LP'},
             {path: 'slPenaltyReport', title: 'Penalties', ab: 'PE'},
+            {path: 'stdLevyHistoricalPayments', title: 'Payments Made', ab: 'PM'},
 
         ],
     },
@@ -938,6 +939,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'viewDraftNotification', title: 'View Draft', ab: 'VD'},
             {path: 'managerViewNotification', title: 'View Notification', ab: 'VN'},
             {path: 'uploadNotification', title: 'Upload Notification', ab: 'UN'},
+            {path: 'uploadedNotification', title: 'Uploaded Notification', ab: 'UN'},
 
         ],
         icontype: 'quiz',

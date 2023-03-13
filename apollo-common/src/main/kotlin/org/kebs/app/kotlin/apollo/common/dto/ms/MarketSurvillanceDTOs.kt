@@ -919,7 +919,6 @@ data class PDFSaveComplianceStatusDto(
         var ssfID: Long,
         @NotNull(message = "Required field")
         var bsNumber: String,
-        var failedParameters: String,
         @NotNull(message = "Required field")
         var PDFFileName: String,
         @NotNull(message = "Required field")
@@ -934,6 +933,18 @@ data class SSFSaveComplianceStatusDto(
         @NotNull(message = "Required field")
         var bsNumber: String,
         var failedParameters: String,
+        @NotNull(message = "Required field")
+        var complianceStatus: Boolean,
+        @NotNull(message = "Required field")
+        var complianceRemarks: String,
+        @NotNull(message = "Required field")
+        var totalCompliance: String,
+)
+data class SSFSaveFinalComplianceStatusDto(
+        @NotNull(message = "Required field")
+        var ssfID: Long,
+        @NotNull(message = "Required field")
+        var bsNumber: String,
         @NotNull(message = "Required field")
         var complianceStatus: Boolean,
         @NotNull(message = "Required field")

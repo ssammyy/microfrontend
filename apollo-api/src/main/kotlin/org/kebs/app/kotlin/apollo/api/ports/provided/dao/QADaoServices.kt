@@ -696,9 +696,8 @@ class QADaoServices(
             var permit = findPermitBYID(permitID)
 
             with(permit) {
-                divisionId = commonDaoServices.findSectionWIthId(
-                    body.sectionId ?: throw Exception("SECTION ID IS MISSING")
-                ).divisionId?.id
+                sectionId = body.sectionId
+                divisionId = commonDaoServices.findSectionWIthId(body.sectionId ?: throw Exception("SECTION ID IS MISSING")).divisionId?.id
             }
 
             //updating of Details in DB
@@ -928,14 +927,14 @@ class QADaoServices(
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
             with(permit) {
+                if(assignOfficerStatus!=1){
+                    permitStatus = applicationMapProperties.mapQaStatusPStandardsAdding
+                    userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                    factoryVisit = commonDaoServices.getCalculatedDate(permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}"))
+                }
                 assignOfficerStatus = 1
                 qaoId = commonDaoServices.findUserByID(body.assignOfficerID).id
-                permitStatus = applicationMapProperties.mapQaStatusPStandardsAdding
-                userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                factoryVisit = commonDaoServices.getCalculatedDate(
-                    permitType.factoryVisitDate
-                        ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}")
-                )
+
             }
             //updating of Details in DB
             val updateResults = permitUpdateDetails(permit, map, loggedInUser)
@@ -4362,7 +4361,7 @@ class QADaoServices(
 
 
     fun findSTA10WithPermitRefNumberANdPermitID(permitRefNumber: String, permitID: Long): QaSta10Entity? {
-        return sta10Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)
+        return sta10Repo.findTopByPermitRefNumberAndPermitId(permitRefNumber, permitID)
     }
 
 //    fun findSTA10WithPermitRefNumberBY(permitRefNumber: String): QaSta10Entity {
@@ -10285,10 +10284,10 @@ class QADaoServices(
                 }, p.awardedPermitNumber,
                 p.productName,
                 p.tradeMark,
-                p.ksNumber,
-                p.commodityDescription,
+                p.productStandard?.let { findStandardsByID(it).standardNumber },
+                p.productStandard?.let { findStandardsByID(it).standardTitle },
                 p.effectiveDate.toString(),
-                p.dateOfExpiry.toString()
+                p.dateOfExpiry.toString(),
 
             )
         }

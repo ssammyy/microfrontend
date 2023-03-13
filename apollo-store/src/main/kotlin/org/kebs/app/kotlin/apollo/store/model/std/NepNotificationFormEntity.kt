@@ -100,5 +100,11 @@ class NepNotificationFormEntity  : Serializable {
     @Basic
     var status: Long? = 0
 
+    @Column(name = "DOCUMENT_ATTACHED")
+    @Basic
+    var documentAttached: Long? = 0
+
+
+
 
 }

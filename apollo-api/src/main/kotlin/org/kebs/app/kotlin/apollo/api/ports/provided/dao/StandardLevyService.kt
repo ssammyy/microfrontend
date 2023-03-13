@@ -75,6 +75,7 @@ class StandardLevyService(
     private val companyRepo: ICompanyProfileRepository,
     private val companyStandardRepository: CompanyStandardRepository,
     private val rejectedCompanyDetailsRepository: RejectedCompanyDetailsRepository,
+    private val stdLevyHistoricalPaymentsRepo: StdLevyHistoricalPaymentsRepository
 
 
     ) {
@@ -2686,6 +2687,32 @@ return getUserTasks();
 
     fun getRegionList(): List<RegionHolder> {
         return companyProfileRepo.getRegionList()
+    }
+
+    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments>
+    {
+        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPayments()
+    }
+
+    fun getLevyHistoricalPaymentsFilter(periodFrom : Date?,periodTo : Date?): MutableList<StdLevyHistoricalPayments> {
+        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPaymentsFilter(periodFrom,periodTo)
+    }
+
+    fun getLevyPaymentStatus(): Boolean{
+        var prevDate=LocalDate.now().minusMonths(1);
+        var prevMonth=prevDate.getMonthValue()
+        var toCheckYear=prevDate.getYear()
+        var recordCount: Long
+        var userId=commonDaoServices.loggedInUserDetailsEmail().id
+        var companyPin=companyProfileRepo.getManufactureKraPin(userId)
+        //recordCount= stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin,toCheckYear,prevMonth)
+        stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin,toCheckYear,prevMonth)?.let {
+            return true
+        }
+            ?: return false
+
+
+        //return PaymentStatus(recordCount)
     }
 
 
