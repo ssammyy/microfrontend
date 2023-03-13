@@ -696,9 +696,8 @@ class QADaoServices(
             var permit = findPermitBYID(permitID)
 
             with(permit) {
-                divisionId = commonDaoServices.findSectionWIthId(
-                    body.sectionId ?: throw Exception("SECTION ID IS MISSING")
-                ).divisionId?.id
+                sectionId = body.sectionId
+                divisionId = commonDaoServices.findSectionWIthId(body.sectionId ?: throw Exception("SECTION ID IS MISSING")).divisionId?.id
             }
 
             //updating of Details in DB
@@ -928,14 +927,14 @@ class QADaoServices(
             val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
             with(permit) {
+                if(assignOfficerStatus!=1){
+                    permitStatus = applicationMapProperties.mapQaStatusPStandardsAdding
+                    userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                    factoryVisit = commonDaoServices.getCalculatedDate(permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}"))
+                }
                 assignOfficerStatus = 1
                 qaoId = commonDaoServices.findUserByID(body.assignOfficerID).id
-                permitStatus = applicationMapProperties.mapQaStatusPStandardsAdding
-                userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                factoryVisit = commonDaoServices.getCalculatedDate(
-                    permitType.factoryVisitDate
-                        ?: throw Exception("MISSING FACTORY INSPECTION DATE FOR ${permitType.descriptions}")
-                )
+
             }
             //updating of Details in DB
             val updateResults = permitUpdateDetails(permit, map, loggedInUser)

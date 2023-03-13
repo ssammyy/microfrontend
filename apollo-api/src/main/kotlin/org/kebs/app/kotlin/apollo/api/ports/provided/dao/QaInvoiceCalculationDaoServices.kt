@@ -623,7 +623,7 @@ class QaInvoiceCalculationDaoServices(
 
                 qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
 
-            }commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
+            }commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() > plantDetail.endingDate && plantDetail.invoiceInspectionGenerated == 1 -> {
                 throw ExpectedDataNotFound("Kindly Pay/Generate this Year Inspection fees First before submitting current application")
             }
             else -> {
