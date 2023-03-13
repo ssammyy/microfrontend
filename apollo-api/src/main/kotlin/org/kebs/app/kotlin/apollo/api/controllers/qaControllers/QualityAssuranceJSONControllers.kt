@@ -777,6 +777,10 @@ class QualityAssuranceJSONControllers(
 
 
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
+        val company = foundPermitDetails.companyId?.let { companyProfileRepo.findById(it) }
+        val branchAddress = permit.attachedPlantId?.let { qaDaoServices.findPlantDetails(it).physicalAddress }
+
+
 
         val q = foundPermitDetails.permitNumber
         val url =
@@ -806,7 +810,8 @@ class QualityAssuranceJSONControllers(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
 //        map["QrCode"] = url
-        map["QrCode"] = "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
+        map["QrCode"] =
+            "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
 
 
         val user = permit.varField6?.toLong().let { it?.let { it1 -> commonDaoServices.findUserByID(it1) } }
@@ -822,8 +827,7 @@ class QualityAssuranceJSONControllers(
                 map["Signature"] = image
 
             }
-        }
-        else {
+        } else {
             val signature = usersSignatureRepository.findByUserId(2775)
             mySignature = signature?.signature
             image = ByteArrayInputStream(mySignature)
