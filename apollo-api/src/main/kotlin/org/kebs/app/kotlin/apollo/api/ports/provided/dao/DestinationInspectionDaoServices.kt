@@ -1726,7 +1726,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun findDemandNoteWithReference(dnRef: String): CdDemandNoteEntity? {
-        return iDemandNoteRepo.findByDemandNoteNumber(dnRef)
+        return iDemandNoteRepo.findByPostingReference(dnRef)
     }
 
     fun findDemandNoteItemByID(itemId: Long): CdDemandNoteItemsDetailsEntity? {

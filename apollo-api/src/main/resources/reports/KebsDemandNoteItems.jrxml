@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="KebsDemandNoteItems" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="2f5a263b-e55d-4648-b365-c14d3dbdfc5b">
-	<style name="TextStatic" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman" fontSize="12" isBold="false"/>
-	<style name="TextParamater" hTextAlign="Left" vTextAlign="Middle" rotation="None" isBlankWhenNull="true" fontName="Times New Roman" fontSize="12" isBold="false">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+			  name="KebsDemandNoteItems" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail"
+			  columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
+			  isSummaryWithPageHeaderAndFooter="true" uuid="2f5a263b-e55d-4648-b365-c14d3dbdfc5b">
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+	<style name="TextStatic" hTextAlign="Left" vTextAlign="Middle" rotation="None" fontName="Times New Roman"
+		   fontSize="12" isBold="false"/>
+	<style name="TextParamater" hTextAlign="Left" vTextAlign="Middle" rotation="None" isBlankWhenNull="true"
+		   fontName="Times New Roman" fontSize="12" isBold="false">
 		<box>
 			<bottomPen lineWidth="1.0" lineStyle="Dotted"/>
 		</box>
