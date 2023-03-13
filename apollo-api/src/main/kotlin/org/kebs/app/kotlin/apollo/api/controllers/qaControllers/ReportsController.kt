@@ -14,7 +14,6 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import java.io.ByteArrayInputStream
 import javax.servlet.http.HttpServletResponse
-import kotlin.collections.HashMap
 
 @RestController
 @RequestMapping("/api/qa/report/")
@@ -29,7 +28,7 @@ class ReportsController(
     private val usersSignatureRepository: UserSignatureRepository
 
 
-    ) {
+) {
 
     final val dMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapDmarkImagePath)
     val dMarkImageFile = dMarkImageResource.file.toString()
@@ -213,22 +212,25 @@ class ReportsController(
 
         val user = permit.varField6?.toLong().let { it?.let { it1 -> commonDaoServices.findUserByID(it1) } }
 
-
+        val mySignature: ByteArray?
+        val image: ByteArrayInputStream?
         if (user != null) {
-            val mySignature: ByteArray?
-            val image: ByteArrayInputStream?
-            println("UserID is" + user.id)
             val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
             if (signatureFromDb != null) {
-                mySignature= signatureFromDb.signature
+                mySignature = signatureFromDb.signature
                 image = ByteArrayInputStream(mySignature)
                 map["Signature"] = image
 
             }
+        } else {
+            val signature = usersSignatureRepository.findByUserId(2775)
+            mySignature = signature?.signature
+            image = ByteArrayInputStream(mySignature)
+            map["Signature"] = image
         }
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
         var filePath: String? = null
-        var permitType:String? = null
+        var permitType: String? = null
 
 
         when (foundPermitDetails.permitTypeID) {
@@ -236,21 +238,23 @@ class ReportsController(
                 map["DmarkLogo"] = dMarkImageFile
                 map["backGroundImage"] = dMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportDmarkPermitReportPath
-                permitType ="DM#"
+                permitType = "DM#"
 
             }
+
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
                 map["backGroundImage"] = sMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportSmarkPermitReportPath
-                permitType ="SM#"
+                permitType = "SM#"
 
             }
+
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
                 map["backGroundImage"] = fMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportFmarkPermitReportPath
-                permitType ="FM#"
+                permitType = "FM#"
 
             }
         }
@@ -274,12 +278,11 @@ class ReportsController(
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
 
-      //  map["QrCode"] = "${applicationMapProperties.baseEndPointValue}getAllAwardedPermits?permitNumber=${foundPermitDetails.permitNumber}"
+        //  map["QrCode"] = "${applicationMapProperties.baseEndPointValue}getAllAwardedPermits?permitNumber=${foundPermitDetails.permitNumber}"
 
 
-
-
-        map["QrCode"] = "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
+        map["QrCode"] =
+            "${applicationMapProperties.baseUrlQRValue}qr-code-qa-permit-scan#${foundPermitDetails.permitNumber}"
 
         return Pair(map, filePath ?: throw ExpectedDataNotFound("MISSING FILE PATH"))
     }
@@ -359,7 +362,7 @@ class ReportsController(
             println("UserID is" + user.id)
             val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
             if (signatureFromDb != null) {
-               mySignature= signatureFromDb.signature
+                mySignature = signatureFromDb.signature
                 image = ByteArrayInputStream(mySignature)
                 map["Signature"] = image
 
@@ -428,12 +431,14 @@ class ReportsController(
                 filePath = applicationMapProperties.mapReportDmarkPermitReportPath
 
             }
+
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 map["SmarkLogo"] = sMarkImageFile
                 map["backGroundImage"] = sMarkImageBackGroundFile
                 filePath = applicationMapProperties.mapReportSmarkPermitReportPath
 
             }
+
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
                 map["FmarkLogo"] = fMarkImageFile
                 map["backGroundImage"] = fMarkImageBackGroundFile

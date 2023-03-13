@@ -209,7 +209,7 @@
             </div>
 
             <div class="form-group">
-                <label><b>Priority Fill in ranks 1 - 5 (where 1 is the Highest Priority and 5 the Lowest
+                <label><b>Priority Fill in ranks 1 - 5 (where 1 is the Lowest Priority and 5 the Highest
                     Priority)</b></label>
                 <div class="form-group">
                     <label><b>Potential to contribute to economic efficiency :
@@ -306,7 +306,8 @@
                                 class="form-control" required
                                 formControlName="levelOfStandard"
                                 name="levelOfStandard"
-                                placeholder="Select Level Of Standard">
+                                placeholder="Select Level Of Standard"
+                                [(ngModel)]="selectedStandard">
                         <mat-option *ngFor="let lvs of levelOfStandards"
                                     value="{{lvs}}">{{lvs}}</mat-option>
                     </mat-select>

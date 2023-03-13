@@ -810,11 +810,11 @@ class QualityAssuranceJSONControllers(
 
 
         val user = permit.varField6?.toLong().let { it?.let { it1 -> commonDaoServices.findUserByID(it1) } }
-
+        val mySignature: ByteArray?
+        val image: ByteArrayInputStream?
 
         if (user != null) {
-            val mySignature: ByteArray?
-            val image: ByteArrayInputStream?
+
             val signatureFromDb = user.id?.let { usersSignatureRepository.findByUserId(it) }
             if (signatureFromDb != null) {
                 mySignature = signatureFromDb.signature
@@ -822,6 +822,12 @@ class QualityAssuranceJSONControllers(
                 map["Signature"] = image
 
             }
+        }
+        else {
+            val signature = usersSignatureRepository.findByUserId(2775)
+            mySignature = signature?.signature
+            image = ByteArrayInputStream(mySignature)
+            map["Signature"] = image
         }
 
 

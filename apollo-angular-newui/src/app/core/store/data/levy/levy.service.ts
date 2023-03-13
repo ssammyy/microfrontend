@@ -18,7 +18,7 @@ import {
     ManufacturePenalty,
     ManufacturePendingTask,
     ManufacturingStatus, NotificationStatus, OperationStatus,
-    PaidLevy, PaymentDetails, PenaltyDetails, RejectedComDetails,
+    PaidLevy, PaymentDetails, PaymentStatus, PenaltyDetails, RejectedComDetails,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo, SendEmailDto,
     SiteVisitFeedBack,
@@ -974,6 +974,25 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_HISTORICAL_PAYMENTS);
         const params = new HttpParams();
         return this.http.get<HistoricalData[]>(url, {params}).pipe();
+    }
+
+    public getLevyHistoricalPaymentsFilter(data: LevyFiltersDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_HISTORICAL_PAYMENTS_FILTER);
+
+        return this.http.post<LevyFiltersDto>(url, data, {}).pipe(
+            map(function (response: LevyFiltersDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public getLevyPaymentStatus(): any {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_HISTORICAL_PAYMENTS_STATUS);
+        const params = new HttpParams();
+        return this.http.get<PaymentStatus>(url, {params}).pipe();
     }
 
 

@@ -1102,6 +1102,14 @@ import {
     RequestForStandardComponent
 } from "./apollowebs/standards-development/sicStdPublication/request-for-standard/request-for-standard.component";
 import { NepUploadedNotificationComponent } from './apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component';
+import { DmarkOngoingComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-ongoing/dmark-ongoing.component';
+import { DmarkAllApplicationsComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-all-applications/dmark-all-applications.component';
+import { DmarkAwardedComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-awarded/dmark-awarded.component';
+import { DmarkExpiredComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/dmark-expired/dmark-expired.component';
+import { FmarkExpiredComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-expired/fmark-expired.component';
+import { FmarkAwardedComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-awarded/fmark-awarded.component';
+import { FmarkAllApplicationsComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-all-applications/fmark-all-applications.component';
+import { FmarkOngoingComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/fmark-ongoing/fmark-ongoing.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1687,6 +1695,14 @@ import { NepUploadedNotificationComponent } from './apollowebs/standards-develop
         EmployerApproveComponent,
         StandardLevyHistoricalPaymentsComponent,
         NepUploadedNotificationComponent,
+        DmarkOngoingComponent,
+        DmarkAllApplicationsComponent,
+        DmarkAwardedComponent,
+        DmarkExpiredComponent,
+        FmarkExpiredComponent,
+        FmarkAwardedComponent,
+        FmarkAllApplicationsComponent,
+        FmarkOngoingComponent,
 
       
 

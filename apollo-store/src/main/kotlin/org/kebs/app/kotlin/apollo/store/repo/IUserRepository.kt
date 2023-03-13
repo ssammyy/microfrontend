@@ -589,6 +589,12 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun getManufactureEntryNo(@Param("id") id: Long?): Long?
 
     @Query(
+        value = "SELECT KRA_PIN  FROM DAT_KEBS_COMPANY_PROFILE WHERE USER_ID= :id",
+        nativeQuery = true
+    )
+    fun getManufactureKraPin(@Param("id") id: Long?): String?
+
+    @Query(
         value = "SELECT ENTRY_NUMBER  FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS ",
         nativeQuery = true
     )

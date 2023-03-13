@@ -738,6 +738,8 @@ export class ApiEndpointService {
         STD_LEVY_BUSINESS_LINE_LIST: `${ApiEndpointService.STL_CONTEXT}/getBusinessLineList`,
         STD_LEVY_REGION_LIST: `${ApiEndpointService.STL_CONTEXT}/getRegionList`,
         STD_LEVY_HISTORICAL_PAYMENTS: `${ApiEndpointService.STL_CONTEXT}/getLevyHistoricalPayments`,
+        STD_LEVY_HISTORICAL_PAYMENTS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getLevyHistoricalPaymentsFilter`,
+        STD_LEVY_HISTORICAL_PAYMENTS_STATUS: `${ApiEndpointService.STL_CONTEXT}/getLevyPaymentStatus`,
 
 
     };

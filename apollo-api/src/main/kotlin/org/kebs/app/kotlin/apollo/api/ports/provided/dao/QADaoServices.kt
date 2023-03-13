@@ -10284,10 +10284,10 @@ class QADaoServices(
                 }, p.awardedPermitNumber,
                 p.productName,
                 p.tradeMark,
-                p.ksNumber,
-                p.commodityDescription,
+                p.productStandard?.let { findStandardsByID(it).standardNumber },
+                p.productStandard?.let { findStandardsByID(it).standardTitle },
                 p.effectiveDate.toString(),
-                p.dateOfExpiry.toString()
+                p.dateOfExpiry.toString(),
 
             )
         }
