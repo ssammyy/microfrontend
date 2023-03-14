@@ -48,6 +48,7 @@ export class IntStdProposalCommentsComponent implements OnInit {
     dataSaveResourcesRequired: PredefinedSDCommentsFields;
     dataSaveResourcesRequiredList: PredefinedSDCommentsFields[] = [];
     predefinedSDCommentsDataAdded: boolean = false
+    selectedOption = '';
 
   constructor(
       private store$: Store<any>,
@@ -71,26 +72,20 @@ export class IntStdProposalCommentsComponent implements OnInit {
     //console.log(this.proposalId);
 
     this.uploadCommentsFormGroup = this.formBuilder.group({
-        commentTitle:null,
-        scope:null,
-        clause:null,
-        proposalID:null,
-        standardNumber:null,
-        commentDocumentType:null,
-        recommendations:null,
-        nameOfRespondent:null,
-        positionOfRespondent:null,
-        nameOfOrganization:null,
-        preparedDate:null,
-        paragraph:null,
-        typeOfComment:null,
-        comment:null,
-        proposedChange:null,
-        observation:null,
-        emailOfRespondent:null,
-        phoneOfRespondent:null,
-        draftID: null,
-        requestID:null
+        commentDocumentType: null,
+        circulationDate: null,
+        closingDate: null,
+        standardNumber: null,
+        commentTitle: null,
+        scope: null,
+        reasons: null,
+        recommendations: null,
+        nameOfRespondent: null,
+        positionOfRespondent: null,
+        nameOfOrganization: null,
+        requestId: null,
+        draftId: null,
+        adoptionAcceptableAsPresented:null
     });
 
     this.store$.select(selectUserInfo).pipe().subscribe((u) => {
@@ -171,26 +166,29 @@ export class IntStdProposalCommentsComponent implements OnInit {
     if (mode==='comment'){
       this.actionRequest=isAdoptionProposal;
       button.setAttribute('data-target','#commentModal');
-      this.stdIntStandardService.getDraftDocumentList(comStdDraftID).subscribe(
-          (response: DocumentDTO[]) => {
-            this.documentDTOs = response;
-            this.SpinnerService.hide();
-            //console.log(this.documentDTOs)
-          },
-          (error: HttpErrorResponse) => {
-            this.SpinnerService.hide();
-            //console.log(error.message);
-          }
-      );
+      // this.stdIntStandardService.getDraftDocumentList(comStdDraftID).subscribe(
+      //     (response: DocumentDTO[]) => {
+      //       this.documentDTOs = response;
+      //       this.SpinnerService.hide();
+      //       //console.log(this.documentDTOs)
+      //     },
+      //     (error: HttpErrorResponse) => {
+      //       this.SpinnerService.hide();
+      //       //console.log(error.message);
+      //     }
+      // );
       this.uploadCommentsFormGroup.patchValue(
           {
+
               commentTitle: this.actionRequest.title,
-              requestID: this.actionRequest.id,
-              draftID: this.actionRequest.draftId,
+              circulationDate:this.actionRequest.circulationDate,
+              closingDate: this.actionRequest.closingDate,
+              title:this.actionRequest.title,
+              scope:this.actionRequest.scope,
+              requestId: this.actionRequest.id,
+              draftId: this.actionRequest.draftId,
               commentDocumentType: this.actionRequest.docName,
-              uploadDate: this.actionRequest.preparedDate,
               standardNumber: this.actionRequest.standardNumber,
-              preparedDate: this.actionRequest.preparedDate,
               nameOfRespondent:this.fullname,
               emailOfRespondent:this.email,
               nameOfOrganization:this.organization,
@@ -208,7 +206,7 @@ export class IntStdProposalCommentsComponent implements OnInit {
         this.loadingText = "Saving...";
         this.SpinnerService.show();
         //console.log(this.uploadCommentsFormGroup.value);
-        this.stdIntStandardService.submitDraftComment(this.dataSaveResourcesRequiredList).subscribe(
+        this.stdIntStandardService.submitDraftComment(this.uploadCommentsFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 this.SpinnerService.hide();

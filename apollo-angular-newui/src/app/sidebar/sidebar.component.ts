@@ -546,6 +546,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'slAllLevyPayments', title: 'Levy Payments', ab: 'LP'},
             {path: 'slPenaltyReport', title: 'Penalties', ab: 'PE'},
             {path: 'stdLevyHistoricalPayments', title: 'Payments Made', ab: 'PM'},
+            {path: 'reports/qa-sl-report', title: 'QA-SL Reports', ab: 'QSR'},
 
         ],
     },

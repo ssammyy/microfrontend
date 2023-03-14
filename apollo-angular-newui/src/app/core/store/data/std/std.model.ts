@@ -46,6 +46,7 @@ export interface UsersEntity {
     firstName: string;
     userTypes: number;
     email: string;
+    telephone: string;
 
 
 }
@@ -626,6 +627,22 @@ export class PredefinedSdIntCommentsFields{
     requestID: number;
     draftID: number;
 }
+export class ProposalComments{
+    commentDocumentType: string;
+    circulationDate: Timestamp<any>;
+    closingDate: Timestamp<any>;
+    standardNumber: string;
+    commentTitle: string;
+    scope: string;
+    reasons: string;
+    recommendations: string;
+    nameOfRespondent: string;
+    positionOfRespondent: string;
+    nameOfOrganization: string;
+    requestId: number;
+    draftId: number;
+    adoptionAcceptableAsPresented: string;
+}
 export class PredefinedSDCommentsFields {
     standardNumber: string;
     commentTitle: string;
@@ -650,9 +667,11 @@ export class PredefinedSDCommentsFields {
 export interface ISAdoptionProposal {
     taskId: string;
     id: number;
+    requestId: number;
     docName: string;
     title: string;
     tcSecName: string;
+    tcSecEmail: string;
     circulationDate: string;
     closingDate: string;
     scope: string;
@@ -667,7 +686,8 @@ export interface ISAdoptionProposal {
     dateOfApplication: string;
     proposalNumber: string;
     stakeholdersList: string[];
-    addStakeholdersList: string[];
+    addStakeholdersList: StakeHoldersFields[]
+    //addStakeholdersList: string[];
     iStandardNumber: string;
     deadlineDate: Timestamp<any>;
     noOfComments: number;
@@ -685,6 +705,8 @@ export interface ISAdoptionProposal {
     description: string;
     special: string;
     normativeReference: string;
+    adoptionProposalLink: string;
+    adoptionLink: string;
 }
 
 export interface ISJustificationProposal {
@@ -2607,6 +2629,11 @@ export interface HistoricalData{
     amount : number;
     location : string;
     prn : string;
+}
+export class StakeHoldersFields{
+    stakeHolderName: string;
+    stakeHolderEmail: string;
+    stakeHolderPhone: string;
 }
 
 
