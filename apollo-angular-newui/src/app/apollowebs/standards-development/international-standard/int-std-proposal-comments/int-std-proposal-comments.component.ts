@@ -45,10 +45,10 @@ export class IntStdProposalCommentsComponent implements OnInit {
   proposalId: string;
   documentDTOs: DocumentDTO[] = [];
   docDetails: DocView[] = [];
+    selectedOption = '';
     dataSaveResourcesRequired: PredefinedSDCommentsFields;
     dataSaveResourcesRequiredList: PredefinedSDCommentsFields[] = [];
     predefinedSDCommentsDataAdded: boolean = false
-    selectedOption = '';
 
   constructor(
       private store$: Store<any>,
@@ -307,6 +307,9 @@ export class IntStdProposalCommentsComponent implements OnInit {
             this.dtTrigger.next();
             this.dtTrigger1.next();
         });
+    }
+    onSelected(value:string): void {
+        this.selectedOption = value;
     }
 
 }
