@@ -5,3 +5,5 @@
 ul li {
     padding-bottom: 3%;
 }
+::ng-deep ngx-intl-tel-input .iti{ width: 100% !important; }
+

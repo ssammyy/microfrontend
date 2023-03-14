@@ -45,6 +45,12 @@ export class ApiEndpointService {
         DI_DEPARTMENT_ID: 2,
     };
 
+    public static QA_SITE_VERIFICATION =
+        {
+            siteKey:"6Lesl_kkAAAAACshhuu57Xagl-v0o1W3k85tZPeY",
+            secretKey:"6Lesl_kkAAAAAOupAgV8ep-PhzQLJkhVFfc-uSqI"
+        }
+
 
     public static MS_APPLICATION_MAP_PROPERTIES = {
         epraRoles: ['EPRA'],

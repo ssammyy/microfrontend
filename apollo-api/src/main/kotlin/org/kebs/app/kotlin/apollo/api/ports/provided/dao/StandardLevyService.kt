@@ -2699,12 +2699,12 @@ return getUserTasks();
     }
 
     fun getLevyPaymentStatus(): Boolean{
-        var prevDate=LocalDate.now().minusMonths(1);
-        var prevMonth=prevDate.getMonthValue()
-        var toCheckYear=prevDate.getYear()
+        val prevDate=LocalDate.now().minusMonths(1);
+        val prevMonth=prevDate.getMonthValue()
+        val toCheckYear=prevDate.getYear()
         var recordCount: Long
-        var userId=commonDaoServices.loggedInUserDetailsEmail().id
-        var companyPin=companyProfileRepo.getManufactureKraPin(userId)
+        val userId=commonDaoServices.loggedInUserDetailsEmail().id
+        val companyPin=companyProfileRepo.getManufactureKraPin(userId)
         //recordCount= stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin,toCheckYear,prevMonth)
         stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin,toCheckYear,prevMonth)?.let {
             return true

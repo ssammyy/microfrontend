@@ -37,12 +37,15 @@ class SearchInitialization(
             if (jcp.searchInitEnabled) {
                 mode = CacheMode.REFRESH
             }
+            KotlinLogging.logger { }.info("Cache mode: $mode")
             // Create index
-            fullTextEntityManager.createIndexer()
-                .cacheMode(mode)
-                .purgeAllOnStart(false)
-                .optimizeOnFinish(true)
-                .startAndWait()
+            if (jcp.searchInitEnabled) {
+                fullTextEntityManager.createIndexer()
+                    .cacheMode(mode)
+                    .purgeAllOnStart(false)
+                    .optimizeOnFinish(true)
+                    .startAndWait()
+            }
         } catch (e: InterruptedException) {
             KotlinLogging.logger { }.error("Error occurred trying to build Hibernate Search indexes ", e)
         }

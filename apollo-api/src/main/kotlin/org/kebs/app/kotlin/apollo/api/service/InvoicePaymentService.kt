@@ -78,7 +78,7 @@ class InvoicePaymentService(
         var map = hashMapOf<String, Any>()
         var demandNoteId: Long = 0
         daoServices.findDemandNoteWithReference(demandNoteRef)?.let { demandNote ->
-            if (demandNote.ucrNumber?.equals(ucrNumber, true) == true) {
+            if (demandNote.entryNo?.equals(ucrNumber, true) == true) {
                 demandNoteId = demandNote.id ?: 0
                 map = this.invoidDetailsMap(demandNote)
             } else {
