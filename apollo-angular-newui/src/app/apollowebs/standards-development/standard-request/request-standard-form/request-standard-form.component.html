@@ -92,18 +92,22 @@
             </div>
             <div class="form-group">
                 <label><b>Telephone Number</b></label>
-                <mat-form-field class="example-full-width has-label"
-                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">
-                    <input type="text" name="phone" number="true"
-                           matInput
-                           id="phone"
-                           placeholder="Phone Number *"
-                           (ngModelChange)="numberValidationType($event)"
-                           formControlName="phone">
-                    <app-field-error-display [displayError]="isFieldValid(stdRequestFormGroup, 'phone')"
-                                             errorMsg="Please Enter Your Phone Number">
-                    </app-field-error-display>
-                </mat-form-field>
+<!--                <mat-form-field class="example-full-width has-label"-->
+<!--                                [ngClass]="displayFieldCss(stdRequestFormGroup, 'phone')">-->
+
+
+                <ngx-intl-tel-input class="example-full-width" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                                    [selectedCountryISO]="CountryISO.Kenya" [maxLength]="15"
+                                    [phoneValidation]="true"
+                                    required
+                                    [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone">
+                </ngx-intl-tel-input>
+                <mat-error
+                        *ngIf="isFormSubmitted && stdRequestFormGroup.controls['phone'].errors?.required">
+                    Please Enter Your Phone Number
+                </mat-error>
+<!--                </mat-form-field>-->
             </div>
             <div class="form-group">
                 <label><b>Email address:</b></label>
@@ -322,6 +326,15 @@
                                  accept=".pdf"></file-upload>
 
                 </form>
+            </div>
+            <div class="form-group">
+
+            <re-captcha formControlName="captcha" name="captcha" required></re-captcha>
+                <mat-error
+                        *ngIf="isFormSubmitted && stdRequestFormGroup.controls['captcha'].errors?.required">
+                    Captcha must be solved
+                </mat-error>
+            <button class="button-row" (click)="validateCaptcha()">Reset Captcha</button>
             </div>
 
 

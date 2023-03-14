@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletResponse
 
 /**
- * Used to expose endpoints that do not need authentication
+ * Used to expose endpoints that do not need authentication to a public
  *
  * @author jmungai
  */

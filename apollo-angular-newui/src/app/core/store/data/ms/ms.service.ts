@@ -2613,6 +2613,9 @@ export class MsService {
             case 'new-complaint':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.NEW_COMPLAINT_LIST);
                 break;
+            case 'region-change-complaint':
+                url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.REGION_CHANGED_COMPLAINT_LIST);
+                break;
             case 'completed':
                 url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMPLAINT.COMPLETED_COMPLAINT_LIST);
                 break;

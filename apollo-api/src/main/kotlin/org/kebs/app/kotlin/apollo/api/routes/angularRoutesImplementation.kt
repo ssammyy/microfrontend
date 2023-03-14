@@ -642,7 +642,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "internal-users".nest {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
-                    PUT("/permits-list-search", internalUserhandler::getAllMyTaskList)
+                    PUT("/permits-list-search", internalUserhandler::putAllPermitSearchList)
                     GET("/permits-list-ongoing", internalUserhandler::getAllOngoingList)
                     GET("/permits-list-complete", internalUserhandler::getAllCompleteList)
                     GET("/permits-list-all", internalUserhandler::getAllPermitList)
@@ -782,6 +782,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/list-new", handler::getAllComplaintNewList)
                 GET("/list-on-going", handler::getAllComplaintOnGoingList)
                 GET("/list-my-task", handler::getAllComplaintMyTaskList)
+                GET("/list-new-region", handler::getAllComplaintMyTaskListRegionChanged)
                 GET("/allocated-task-view", handler::getAllComplaintAllocatedTaskList)
                 GET("/pending-allocation-view", handler::getAllComplaintPendingAllocationList)
                 GET("/allocated-task-overDue-view", handler::getAllComplaintAllocatedOverDueTaskList)
@@ -997,16 +998,28 @@ class AngularRoutes(private val daoService: DaoFluxService) {
     @Bean
     fun KebsWebsiteApiRoutes(handler: QualityAssuranceHandler) = router {
         "/api/v1/migration/anonymous/kebsWebsite".nest {
-            GET("/getAwardedSmarkPermits", handler::loadAllSmarksAwardedPermitsForReportsApi)
-            GET("/getAwardedFmarkPermits", handler::loadAllFmarksAwardedPermitsForReportsApi)
-            GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
-            GET("/getAllAwardedPermits", handler::getAllAwardedPermitsByPermitNumber)
-            GET("/getAllAwardedPermitsByCompanyName", handler::getAllAwardedPermitsByCompanyName)
-            GET("/getAllCompanies", handler::getAllCompanies)
+//            GET("/getAwardedSmarkPermits", handler::loadAllSmarksAwardedPermitsForReportsApi)
+//            GET("/getAwardedFmarkPermits", handler::loadAllFmarksAwardedPermitsForReportsApi)
+//            GET("/getAwardedDmarkPermits", handler::loadAllDmarksAwardedPermitsForReportsApi)
+//            GET("/getAllAwardedPermits", handler::getAllAwardedPermitsByPermitNumber)
+//            GET("/getAllAwardedPermitsByCompanyName", handler::getAllAwardedPermitsByCompanyName)
+//            GET("/getAllCompanies", handler::getAllCompanies)
 //          GET("/getAllAwardedPermitsByPermitNumberSms", handler::getAllAwardedPermitsByPermitNumberSms)
             //POST("/receiveSL2Payment", handler::processReceiveSL2Payment)
             POST("/getAllAwardedPermitsByPermitNumberSmsRequest", handler::processReceiveMessageBody)
 
+
+        }
+    }
+    @Bean
+    fun KebsMobileApiRoutes(handler: QualityAssuranceHandler) = router {
+        "/api/v1/migration/anonymous/mobile".nest {
+            GET("/Smarks", handler::loadAllSmarksAwardedPermitsForReportsApi)
+            GET("/Fmarks", handler::loadAllFmarksAwardedPermitsForReportsApi)
+            GET("/Dmarks", handler::loadAllDmarksAwardedPermitsForReportsApi)
+            GET("/permitNo", handler::getAllAwardedPermitsByPermitNumber)
+            GET("/company", handler::getAllAwardedPermitsByCompanyName)
+            GET("/companies", handler::getAllCompanies)
 
         }
     }

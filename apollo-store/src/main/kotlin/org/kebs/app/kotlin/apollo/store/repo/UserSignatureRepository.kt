@@ -12,6 +12,8 @@ interface UserSignatureRepository : HazelcastRepository<UsersSignatureEntity, Lo
 
     fun findByUserId(userId: Long): UsersSignatureEntity?
 
+    fun findTopByEnabled(enabled: Int): UsersSignatureEntity
+
 
 
 }

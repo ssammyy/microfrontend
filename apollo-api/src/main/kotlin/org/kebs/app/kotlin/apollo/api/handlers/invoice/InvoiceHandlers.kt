@@ -226,6 +226,7 @@ class InvoiceHandlers(
             }
 
             demandRequest.entryNo = cdDetails.ucrNumber ?: ""
+            demandRequest.ucrNumber = cdDetails.ucrNumber ?: ""
             cdDetails.freightStation?.let {
                 demandRequest.revenueLineNumber = it.revenueLineNumber
                 if ("JKIA".equals(demandRequest.customsOffice, true)) {
