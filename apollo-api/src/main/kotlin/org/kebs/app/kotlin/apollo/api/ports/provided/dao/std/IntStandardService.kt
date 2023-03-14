@@ -455,7 +455,7 @@ class IntStandardService(
 //                val gson = Gson()
 //              KotlinLogging.logger { }.info { "WORKSHOP DRAFT" + gson.toJson(comStdDraft) }
 
-        if (commentNumber>0){
+       // if (commentNumber>0){
             if (decision == "Yes") {
                 comStdDraftRepository.findByIdOrNull(comStdDraft.id)?.let { comStdDraft ->
                     with(comStdDraft) {
@@ -483,9 +483,9 @@ class IntStandardService(
 
             }
 
-        }else{
-            response="A Decision cannot be made on the Draft since none of the Stakeholders has commented on it."
-        }
+      //  }else{
+      //      response="A Decision cannot be made on the Draft since none of the Stakeholders has commented on it."
+      //  }
 
         return ResponseMsg(response)
     }

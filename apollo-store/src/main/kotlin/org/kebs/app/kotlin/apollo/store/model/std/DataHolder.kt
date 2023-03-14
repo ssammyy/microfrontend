@@ -281,6 +281,7 @@ interface ManufactureListHolder {
     fun getClosureOfOperations(): String?
     fun getTypeOfManufacture(): Long?
     fun getOtherBusinessNatureType(): String?
+    fun getAssignStatus(): String?
 }
 
 interface CompleteTasksDetailHolder {
