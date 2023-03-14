@@ -69,8 +69,7 @@ class QualityAssuranceInternalUserHandler(
     fun getAllMyTaskList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
-            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-                ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
             qaDaoServices.findLoggedInUserTask(page, permitTypeID)
                 .let {
                     ok().body(it)

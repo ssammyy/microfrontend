@@ -921,6 +921,7 @@ export class ApiEndpointService {
         ALL_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list`,
         COMPLETED_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-completed`,
         NEW_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-new`,
+        REGION_CHANGED_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-new-region`,
         MY_TASK_COMPLAINT_LIST: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/list-my-task`,
         PENDING_ALLOCATION_TASK_VIEW: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/pending-allocation-view`,
         ALLOCATED_TASK_VIEW: `${ApiEndpointService.MS_COMPLAINT_CONTEXT}/allocated-task-view`,

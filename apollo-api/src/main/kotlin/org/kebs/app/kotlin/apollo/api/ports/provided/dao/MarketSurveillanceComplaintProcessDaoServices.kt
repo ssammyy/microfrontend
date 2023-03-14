@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.json.JSONObject
@@ -162,15 +163,9 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
             )
             val complainantEmailComposed = complaintSubmittedDTOEmailCompose(updatedComplaint)
-            runBlocking {
-                commonDaoServices.sendEmailWithUserEmail(
-                    customerEmail,
-                    applicationMapProperties.mapMsComplaintAcknowledgementNotification,
-                    complainantEmailComposed,
-                    map,
-                    sr
-                )
-            }
+
+                commonDaoServices.sendEmailWithUserEmail(customerEmail, applicationMapProperties.mapMsComplaintAcknowledgementNotification, complainantEmailComposed, map, sr)
+
 
             val hod = commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatus(
                 designationsEntity,
@@ -178,7 +173,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 map.activeStatus
             )
 
-            runBlocking {
+
 
             hod.forEach {hd->
                 val taskNotify = NotificationBodyDto().apply {
@@ -201,7 +196,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                         }
                     }
                 }
-            }
+
 
             /**
              * TODO: Lets discuss to understand better how to keep track of schedules
@@ -622,6 +617,36 @@ class MarketSurveillanceComplaintProcessDaoServices(
 
         return  response
     }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintMyTaskListsRegionReassigned(page: PageRequest): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val userProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        when {
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_IO_READ" } -> {
+                response = listMsComplaints(complaintsRepo.findByAssignedIoAndUserTaskId(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO,page), map)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOD_READ" } -> {
+                response = listMsComplaints(complaintsRepo.findByHodAssignedAndUserTaskId(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm,page), map)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_RM_READ" } -> {
+                response = listMsComplaints(complaintsRepo.findByHodAssignedAndUserTaskId(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm,page), map)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_HOF_READ" } -> {
+                response =  listMsComplaints(complaintsRepo.findByHofAssignedAndUserTaskId(loggedInUser.id ?: throw ExpectedDataNotFound("Missing Logged In User ID"),applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof,page), map)
+            }
+            auth.authorities.stream().anyMatch { authority -> authority.authority == "MS_DIRECTOR_READ" } -> {
+                response = listMsComplaints(complaintsRepo.findAllByOrderByIdDesc(page), map)
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return  response
+    }
     
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -639,6 +664,31 @@ class MarketSurveillanceComplaintProcessDaoServices(
                         || authority.authority == "MS_DIRECTOR_READ"
                         || authority.authority == "MS_RM_READ" } -> {
                 val complaintList = complaintsRepo.findNewComplaint(applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm, applicationMapProperties.msComplaintProcessOnlineSubmitted?: throw ExpectedDataNotFound("Missing Process ID, Complaint Submitted"),userProfile.regionId?.id ?: throw ExpectedDataNotFound("Missing Logged In Region ID"))
+                val usersPage: Page<ComplaintEntity> = PageImpl(complaintList, page, complaintList.size.toLong())
+                response = listMsComplaints(usersPage,map)
+            }
+            else -> throw ExpectedDataNotFound("Can't access this page Due to Invalid authority")
+        }
+
+        return  response
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun msComplaintNewListsRegionChanged(page: PageRequest): ApiResponseModel {
+        val response: ApiResponseModel
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val userProfile = commonDaoServices.findUserProfileByUserID(loggedInUser)
+        when {
+            auth.authorities.stream().anyMatch { authority ->
+                authority.authority == "MS_IO_READ"
+                        || authority.authority == "MS_HOD_READ"
+                        || authority.authority == "MS_HOF_READ"
+                        || authority.authority == "MS_DIRECTOR_READ"
+                        || authority.authority == "MS_RM_READ" } -> {
+                val complaintList = complaintsRepo.findNewComplaintDueToRegionChange(applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm, applicationMapProperties.msComplaintRegionReAssigned.toString(),userProfile.regionId?.id ?: throw ExpectedDataNotFound("Missing Logged In Region ID"))
                 val usersPage: Page<ComplaintEntity> = PageImpl(complaintList, page, complaintList.size.toLong())
                 response = listMsComplaints(usersPage,map)
             }
@@ -745,7 +795,6 @@ class MarketSurveillanceComplaintProcessDaoServices(
                  when (remarksSaved.first.status) {
                     map.successStatus -> {
                         val complainantEmailComposed = complaintRejectedDTOEmailCompose(complaintUpdated.second)
-                        runBlocking {
                             commonDaoServices.sendEmailWithUserEmail(
                                 findComplaintCustomerByComplaintID(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID")).emailAddress?: throw ExpectedDataNotFound("Missing Complainant Email Address"),
                                 applicationMapProperties.mapMsComplaintAcknowledgementAcceptedNotification,
@@ -755,7 +804,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 null,
                                 complainantEmailComposed.refNumber
                             )
-                        }
+
 
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
                     }
@@ -870,7 +919,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                  when (remarksSaved.first.status) {
                     map.successStatus -> {
                         val complainantEmailComposed = complaintRejectedDTOEmailCompose(complaintUpdated.second)
-                        runBlocking {
+
                             commonDaoServices.sendEmailWithUserEmail(
                                 findComplaintCustomerByComplaintID(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID")).emailAddress?: throw ExpectedDataNotFound("Missing Complainant Email Address"),
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionNotification,
@@ -880,7 +929,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 null,
                                 complainantEmailComposed.refNumber
                             )
-                        }
+
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
                     }
                     else -> {
@@ -936,7 +985,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                  when (remarksSaved.first.status) {
                     map.successStatus -> {
                         val complainantEmailComposed = complaintRejectedWithAdviceOGADTOEmailCompose(complaintUpdated.second)
-                        runBlocking {
+
                             commonDaoServices.sendEmailWithUserEmail(
                                 findComplaintCustomerByComplaintID(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID")).emailAddress?: throw ExpectedDataNotFound("Missing Complainant Email Address"),
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionRejectedForAmendmentNotification,
@@ -946,7 +995,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 null,
                                 complainantEmailComposed.refNumber
                             )
-                        }
+
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
                     }
                     else -> {
@@ -1001,7 +1050,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                  when (remarksSaved.first.status) {
                     map.successStatus -> {
                         val complainantEmailComposed = complaintRejectedWithAdviceOGADTOEmailCompose(complaintUpdated.second)
-                        runBlocking {
+
                             commonDaoServices.sendEmailWithUserEmail(
                                 findComplaintCustomerByComplaintID(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID")).emailAddress?: throw ExpectedDataNotFound("Missing Complainant Email Address"),
                                 applicationMapProperties.mapMsComplaintAcknowledgementRejectionWIthOGANotification,
@@ -1011,7 +1060,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 null,
                                 complainantEmailComposed.refNumber
                             )
-                        }
+
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
                     }
                     else -> {
@@ -1038,20 +1087,28 @@ class MarketSurveillanceComplaintProcessDaoServices(
         val complaintFound = findComplaintByRefNumber(referenceNo)
         var complaintLocationDetails = findComplaintLocationByComplaintID(complaintFound.id?: throw ExpectedDataNotFound("Missing complaint ID"))
 
+        val regionDto = RegionReAssignDto()
+        with(regionDto){
+            reassignedRemarks= body.reassignedRemarks
+            regionID= complaintLocationDetails.region
+            countyID = complaintLocationDetails.county
+            townID= complaintLocationDetails.town
+        }
+
         with(complaintLocationDetails) {
             county = body.countyID
             town = body.townID
-
-//            region = body.regionID
             region = body.regionID?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).id }
+            varField1= commonDaoServices.convertClassToJson(regionDto)
         }
         complaintLocationDetails = complaintLocationRepo.save(complaintLocationDetails)
 
         with(complaintFound){
             hodAssigned = null
             userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHodRm
+            varField1 = applicationMapProperties.msComplaintRegionReAssigned.toString()
 //            msProcessId = applicationMapProperties.msComplaintProcessAssignHOF
-            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
+//            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameHof
         }
 
         val remarksDto = RemarksToAddDto()
@@ -1123,7 +1180,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 val remarksSaved = fuelAddRemarksDetails(complaintFound.id?: throw ExpectedDataNotFound("Missing Complaint ID"),remarksDto, map, loggedInUser)
                  when (remarksSaved.first.status) {
                     map.successStatus -> {
-                        runBlocking {
+
                             val taskNotify = NotificationBodyDto().apply {
                                 fromName = commonDaoServices.concatenateName(loggedInUser)
                                 toName = commonDaoServices.concatenateName(hofDetailsFound)
@@ -1143,7 +1200,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                                 map,
                                 complaintUpdated.first
                             )
-                        }
+
                         return complaintInspectionMappingCommonDetails(complaintUpdated.second, map)
                     }
                     else -> {

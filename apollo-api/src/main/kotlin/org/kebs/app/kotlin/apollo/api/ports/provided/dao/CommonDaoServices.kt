@@ -766,7 +766,7 @@ class CommonDaoServices(
     ) {
         val map = serviceMapDetails(appID)
         val sr = mapServiceRequestForSuccess(map, payload, user)
-        runBlocking { user.email?.let { sendEmailWithUserEmail(it, emailTemplateUuid, emailEntity, map, sr) } }
+         user.email?.let { sendEmailWithUserEmail(it, emailTemplateUuid, emailEntity, map, sr) }
 
 //        user.email?.let { commonDaoServices.sendEmailWithUserEmail(it, applicationMapProperties.mapMsComplaintAcknowledgementRejectionWIthOGANotification, userRegisteredSuccessfulEmailCompose(user), commonDaoServices.serviceMapDetails(appId), commonDaoServices.mapServiceRequestForSuccess(map, payload, user)) }
     }
@@ -1541,7 +1541,7 @@ class CommonDaoServices(
         return sr
     }
 
-    suspend fun sendEmailWithUserEntity(
+    fun sendEmailWithUserEntity(
         user: UsersEntity,
         uuid: String,
         valuesMapped: Any,
@@ -1583,7 +1583,7 @@ class CommonDaoServices(
         return true
     }
 
-    suspend fun sendEmailWithUserEmail(
+    fun sendEmailWithUserEmail(
         userEmail: String,
         uuid: String,
         valuesMapped: Any,

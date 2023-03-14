@@ -642,7 +642,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "internal-users".nest {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
-                    PUT("/permits-list-search", internalUserhandler::getAllMyTaskList)
+                    PUT("/permits-list-search", internalUserhandler::putAllPermitSearchList)
                     GET("/permits-list-ongoing", internalUserhandler::getAllOngoingList)
                     GET("/permits-list-complete", internalUserhandler::getAllCompleteList)
                     GET("/permits-list-all", internalUserhandler::getAllPermitList)
@@ -782,6 +782,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                 GET("/list-new", handler::getAllComplaintNewList)
                 GET("/list-on-going", handler::getAllComplaintOnGoingList)
                 GET("/list-my-task", handler::getAllComplaintMyTaskList)
+                GET("/list-new-region", handler::getAllComplaintMyTaskListRegionChanged)
                 GET("/allocated-task-view", handler::getAllComplaintAllocatedTaskList)
                 GET("/pending-allocation-view", handler::getAllComplaintPendingAllocationList)
                 GET("/allocated-task-overDue-view", handler::getAllComplaintAllocatedOverDueTaskList)

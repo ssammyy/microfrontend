@@ -650,7 +650,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
-                runBlocking {
                     hodList
                         ?.forEach { mp ->
                             val scheduleEmailDetails = WorkPlanScheduledDTO()
@@ -689,7 +688,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 fileSaved.first
                             )
                         }
-                }
+
 
                 val workBatchList = workPlanCreatedRepository.findByUserCreatedId(loggedInUser, page)
                 return mapWorkPlanBatchListDto(workBatchList)
@@ -774,7 +773,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                     loggedInUserProfile.regionId?.id ?: throw ExpectedDataNotFound("MISSING BATCH REGION ID")
                 )
 
-                runBlocking {
                     hodList
                         ?.forEach { mp ->
                             val scheduleEmailDetails = WorkPlanScheduledDTO()
@@ -855,7 +853,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 fileSaved.first
                             )
                         }
-                }
+
 
                 return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetail)
             }
@@ -1213,7 +1211,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id, remarksDto, map, loggedInUser)
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
-                        runBlocking {
+
                             val userDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val taskNotify = NotificationBodyDto().apply {
                                 fromName = commonDaoServices.concatenateName(loggedInUser)
@@ -1249,7 +1247,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                     fileSaved.first
                                 )
                             }
-                        }
+
 
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }
@@ -1757,7 +1755,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
 
-                        runBlocking {
                             if (body.approvalStatus) {
                                 val hodDetails =workPlanScheduled.hodRmAssigned?.let { commonDaoServices.findUserByID(it) }
                                 val taskNotify = NotificationBodyDto().apply {
@@ -1840,7 +1837,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 }
                             }
 
-                        }
+
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }
                     else -> {
@@ -2030,7 +2027,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id, remarksDto, map, loggedInUser)
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
-                        runBlocking {
+
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val taskNotify = NotificationBodyDto().apply {
                                 fromName = commonDaoServices.concatenateName(loggedInUser)
@@ -2068,7 +2065,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                     remarksSaved.first
                                 )
                             }
-                        }
+
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }
                     else -> {
@@ -2202,7 +2199,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id, remarksDto, map, loggedInUser)
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
-                        runBlocking {
+
                             val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
                             val taskNotify = NotificationBodyDto().apply {
                                 fromName = commonDaoServices.concatenateName(loggedInUser)
@@ -2240,7 +2237,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                     remarksSaved.first
                                 )
                             }
-                        }
+
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }
                     else -> {
@@ -2323,7 +2320,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val remarksSaved = workPlanAddRemarksDetails(workPlanScheduled.id, remarksDto, map, loggedInUser)
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
-//                        runBlocking {
+
 //                            val ioDetails = workPlanScheduled.officerId?.let { commonDaoServices.findUserByID(it) }
 //                            with(scheduleEmailDetails){
 //                                baseUrl= applicationMapProperties.baseUrlValue
@@ -2337,7 +2334,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 //                            if (ioDetails != null) {
 //                                commonDaoServices.sendEmailWithUserEntity(ioDetails, emailDetails, scheduleEmailDetails, map, remarksSaved.first)
 //                            }
-//                        }
+
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }
                     else -> {
@@ -2534,7 +2531,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val remarksSaved = workPlanAddRemarksDetails(fileSaved.second.id, remarksDto, map, loggedInUser)
                 when (remarksSaved.first.status) {
                     map.successStatus -> {
-                        runBlocking {
+
                             val compliant =
                                 complaintDetailsFound?.id?.let { complaintsCustomerRepo.findByComplaintId(it) }
 //                            val compliant = complaintDetailsFound?.id?.let { complaintsCustomerRepo.findByComplaintId(it) } ?: throw ExpectedDataNotFound("Missing compliant Bio Details")
@@ -2653,7 +2650,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                                     remarksSaved.first
                                 )
                             }
-                        }
 
                         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                     }
@@ -2758,7 +2754,6 @@ class MarketSurveillanceWorkPlanDaoServices(
             when (fileSaved.first.status) {
                 map.successStatus -> {
                     workPlanScheduled = fileSaved.second
-                    runBlocking {
                         val hofDetails = workPlanScheduled.hofAssigned?.let { commonDaoServices.findUserByID(it) }
                         val scheduleEmailDetails = WorkPlanScheduledDTO()
                         with(scheduleEmailDetails) {
@@ -2780,7 +2775,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                             )
                         }
 
-                    }
+
                 }
                 else -> {
                     throw ExpectedDataNotFound(commonDaoServices.failedStatusDetails(fileSaved.first))
@@ -3186,7 +3181,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 workPlanScheduled.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
                             )
 
-                            runBlocking {
                                 hofList
                                     ?.forEach { mp ->
                                         val taskNotify = NotificationBodyDto().apply {
@@ -3225,7 +3219,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                             remarksSaved.first
                                         )
                                     }
-                            }
+
                             return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
                         }
                         else -> {
@@ -3541,7 +3535,6 @@ class MarketSurveillanceWorkPlanDaoServices(
                 val complianceStatus = savedSSfComplianceStatus.resultsAnalysis == 1
                 var sr = commonDaoServices.createServiceRequest(map)
                 if (complianceStatus) {
-                    runBlocking {
                         body.outLetEmail?.let {
                             commonDaoServices.sendEmailWithUserEmail(
                                 it,
@@ -3572,9 +3565,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 fileContent.path
                             )
                         }
-                    }
+
                 } else {
-                    runBlocking {
                         body.outLetEmail?.let {
                             commonDaoServices.sendEmailWithUserEmail(
                                 it,
@@ -3605,7 +3597,7 @@ class MarketSurveillanceWorkPlanDaoServices(
                                 fileContent.path
                             )
                         }
-                    }
+
                 }
 
             }

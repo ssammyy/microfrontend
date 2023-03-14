@@ -1402,6 +1402,20 @@ class NewMarketSurveillanceHandler(
         }
     }
 
+    fun getAllComplaintMyTaskListRegionChanged(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            marketSurveillanceComplaintDaoServices.msComplaintNewListsRegionChanged(page)
+                .let {
+                    ServerResponse.ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     fun getAllComplaintCompletedList(req: ServerRequest): ServerResponse {
         return try {
             val page = commonDaoServices.extractPageRequest(req)
@@ -1429,6 +1443,7 @@ class NewMarketSurveillanceHandler(
             ServerResponse.badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+
 
     fun getAllWorkPlanAllocatedTaskList(req: ServerRequest): ServerResponse {
         return try {
