@@ -3098,7 +3098,6 @@ class QualityAssuranceHandler(
                 batchDetailDifference = qaDaoServices.findPermitInvoiceByPermitIDWithVarField10(
                     permitID, 1.toString()
                 ).batchInvoiceNo
-
             }
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, batchDetail,batchDetailDifference, map).let {
