@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import java.io.Serializable
 import java.sql.Timestamp
 import javax.persistence.*
 
