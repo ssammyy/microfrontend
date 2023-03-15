@@ -246,9 +246,9 @@ class StandardRequestService(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val standardRequest: List<StandardRequest> =
-            standardRequestRepository.findAllByStatusAndNwiStatusIsNullAndTcSecAssigned(
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNullAndProcess(
                 "Assigned To TC Sec",
-                loggedInUser.id.toString()
+                "Develop a standard through committee draft"
             )
 
         return standardRequest.map { p ->
@@ -272,8 +272,9 @@ class StandardRequestService(
                 p.exportMarkets,
                 p.levelOfStandard,
                 p.status,
-                departmentRepository.findNameById(p.departmentId?.toLong()),
+                returnDepartmentName(p.departmentId!!.toLong()),
                 //Feedback Segment From Review
+
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.lastName,
@@ -314,7 +315,7 @@ class StandardRequestService(
                 p.exportMarkets,
                 p.levelOfStandard,
                 p.status,
-                departmentRepository.findNameById(p.departmentId?.toLong()),
+                returnDepartmentName(p.departmentId!!.toLong()),
                 //Feedback Segment From Review
                 p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
                     ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
@@ -508,7 +509,10 @@ class StandardRequestService(
     fun getAllNwiSApprovedForJustification(): List<StandardNWI> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardNWIRepository.findAllByStatusAndProcessStatusIsNullAndTcSec("Upload Justification",loggedInUser.id.toString())
+        return standardNWIRepository.findAllByStatusAndProcessStatusIsNullAndTcSec(
+            "Upload Justification",
+            loggedInUser.id.toString()
+        )
     }
 
 
@@ -573,25 +577,37 @@ class StandardRequestService(
     fun getJustificationsPendingDecision(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Created. Awaiting Decision", loggedInUser.id.toString())
+        return standardJustificationRepository.findByStatusAndTcSecretary(
+            "Justification Created. Awaiting Decision",
+            loggedInUser.id.toString()
+        )
     }
 
     fun getApprovedJustifications(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Approved", loggedInUser.id.toString())
+        return standardJustificationRepository.findByStatusAndTcSecretary(
+            "Justification Approved",
+            loggedInUser.id.toString()
+        )
     }
 
     fun getRejectedJustifications(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Rejected", loggedInUser.id.toString())
+        return standardJustificationRepository.findByStatusAndTcSecretary(
+            "Justification Rejected",
+            loggedInUser.id.toString()
+        )
     }
 
     fun getRejectedAmendmentJustifications(): List<StandardJustification> {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        return standardJustificationRepository.findByStatusAndTcSecretary("Justification Rejected With Amendments", loggedInUser.id.toString())
+        return standardJustificationRepository.findByStatusAndTcSecretary(
+            "Justification Rejected With Amendments",
+            loggedInUser.id.toString()
+        )
     }
 
     fun getJustificationByNwiId(nwiId: Long): List<StandardJustification> {
@@ -986,6 +1002,18 @@ class StandardRequestService(
             user?.firstName + " " + user?.lastName
         } else {
             "Not Assigned"
+        }
+
+
+    }
+
+    fun returnDepartmentName(departmentId: Long): String? {
+        val department= departmentRepository.findById(departmentId)
+
+        return if (department.isEmpty) {
+            "Not Assigned"
+        } else {
+            department.get().name
         }
 
 

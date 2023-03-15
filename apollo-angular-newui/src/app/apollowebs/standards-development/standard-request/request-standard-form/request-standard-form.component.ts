@@ -40,7 +40,7 @@ export class RequestStandardFormComponent implements OnInit {
     exportMarkets: string;
 
     ratings: string[] = ['1', '2', '3', '4', '5'];
-    levelOfStandards: string[] = ['East Africa Standard', 'ARSO Standard', 'AFSEC Standard', 'Company Standard', 'Kenya Standard']
+    levelOfStandards: string[] = ['East Africa Standard', 'ARSO Standard', 'AFSEC Standard', 'Company Standard', 'Kenya Standard', 'International Standard']
     selectedStandard = 'Kenya Standard';
     title = 'toaster-not';
     public uploadedFiles: Array<File> = [];
@@ -182,7 +182,9 @@ export class RequestStandardFormComponent implements OnInit {
             // if (this.uploadedFiles != null && this.uploadedFiles.length > 0) {
             //     this.onClickSaveUploads("568","Marvin")
             // }
-
+           // e164Number:"+254702882256"
+            let Data:any = this.stdRequestFormGroup.controls['phone'].value;
+            this.stdRequestFormGroup.controls['phone'].setValue(Data.e164Number)
             this.SpinnerService.show();
             this.standardDevelopmentService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
                 (response) => {
