@@ -61,7 +61,8 @@
                                                                 <td>{{manufactureList.entryNumber}}</td>
                                                                 <td>{{manufactureList.kraPin}}</td>
                                                                 <td>{{manufactureList.registrationNumber}}</td>
-                                                                <td><button class="btn btn-sm btn-primary">Not Assigned</button></td>
+                                                                <td *ngIf="manufactureList.assignStatus==0"><button class="btn btn-sm btn-primary">Not Assigned</button></td>
+                                                                <td *ngIf="manufactureList.assignStatus==1"><button class="btn btn-sm btn-warning">Assigned</button></td>
                                                                 <td><button (click)="onOpenModalList(manufactureList,'viewList')" type="submit" class="btn btn-success btn-sm">View More</button></td>
                                                                 <div class="modal fade" id="viewList" tabindex="-1" role="dialog" aria-labelledby="viewListExampleModalLabel" aria-hidden="true">a
                                                                     <div class="modal-dialog modal-lg" role="document">
@@ -111,6 +112,7 @@
 
 
                                                                                     <div class="container col-md-12" [hidden]="isShowAssignForm">
+                                                                                        <div *ngIf="actionRequestList?.assignStatus==0">
                                                                                         <form (ngSubmit)="assignCompanyTask()" [formGroup]="assignCompanyTaskFormGroup"  class="form">
                                                                                             <hr style="color: red">
                                                                                             <p ><b>The Selected Task will be assigned to You. Click Assign to Proceed.</b></p>
@@ -143,8 +145,13 @@
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
                                                                                             <button  class="btn btn-sm btn-primary float-right" type="submit">Assign</button>
                                                                                         </form>
+                                                                                        </div>
+                                                                                        <div *ngIf="actionRequestList?.assignStatus==1">
+                                                                                            <p ><b>The Selected Manufacturer is already assigned to an Officer</b></p>
+                                                                                        </div>
                                                                                     </div>
                                                                                     <div class="container col-md-12" [hidden]="isShowAssign1Form">
+                                                                                        <div *ngIf="actionRequestList?.assignStatus==0">
                                                                                         <form (ngSubmit)="assignCompanyTaskOne()" [formGroup]="assignCompanyTask1FormGroup"  class="form">
                                                                                             <hr style="color: red">
                                                                                             <p ><b>Please Select Person to assign task to. Click Assign to Proceed.</b></p>
@@ -195,8 +202,13 @@
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
                                                                                             <button  class="btn btn-sm btn-primary float-right" type="submit">Assign</button>
                                                                                         </form>
+                                                                                        </div>
+                                                                                        <div *ngIf="actionRequestList?.assignStatus==1">
+                                                                                            <p ><b>The Selected Manufacturer is already assigned to an Officer</b></p>
+                                                                                        </div>
                                                                                     </div>
                                                                                     <div class="container col-md-12" [hidden]="isShowAssign2Form">
+                                                                                        <div *ngIf="actionRequestList?.assignStatus==0">
                                                                                         <form (ngSubmit)="assignCompanyTaskTwo()" [formGroup]="assignCompanyTask2FormGroup"  class="form">
                                                                                             <hr style="color: red">
                                                                                             <p ><b>Please Select Person to assign task to. Click Assign to Proceed.</b></p>
@@ -248,8 +260,13 @@
                                                                                             <input type="hidden" ngModel="{{actionRequestList?.userId}}" formControlName="contactId" name="contactId" value="{{actionRequestList?.userId}}" >
                                                                                             <button  class="btn btn-sm btn-primary float-right" type="submit">Assign</button>
                                                                                         </form>
+                                                                                        </div>
+                                                                                        <div *ngIf="actionRequestList?.assignStatus==1">
+                                                                                            <p ><b>The Selected Manufacturer is already assigned to an Officer</b></p>
+                                                                                        </div>
                                                                                     </div>
                                                                                     <div class="container col-md-12" [hidden]="isShowEditForm">
+                                                                                        <div *ngIf="actionRequestList?.assignStatus==0">
                                                                                         <form (ngSubmit)="editCompany()" [formGroup]="editCompanyFormGroup"  class="form">
                                                                                             <hr style="color: red">
                                                                                             <p ><b>Edit Company Details.</b></p>
@@ -290,6 +307,10 @@
                                                                                             </div>
                                                                                             <button  class="btn btn-sm btn-primary float-right" type="submit">Save</button>
                                                                                         </form>
+                                                                                        </div>
+                                                                                        <div *ngIf="actionRequestList?.assignStatus==1">
+                                                                                            <p ><b>The Selected Manufacturer is already assigned to an Officer</b></p>
+                                                                                        </div>
                                                                                     </div>
                                                                                     <div class="container col-md-12" [hidden]="isShowEditedForm">
                                                                                         <form (ngSubmit)="editedCompany()" [formGroup]="editedCompanyFormGroup"  class="form">

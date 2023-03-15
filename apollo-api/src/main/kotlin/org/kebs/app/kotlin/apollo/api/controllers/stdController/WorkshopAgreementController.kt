@@ -47,7 +47,7 @@ class WorkshopAgreementController(
     }
 
     //Get KNW Committee
-    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('KNW_SEC_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/getWorkshopStandards")
     @ResponseBody
     fun getWorkshopStandards(): MutableList<StandardRequest>

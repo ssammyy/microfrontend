@@ -54,6 +54,11 @@ interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
         value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Preliminary Draft Prepared' ORDER BY ID DESC",nativeQuery = true)
     fun getPreparedPD(): MutableList<StandardRequest>
 
+    //International Standards
+    @Query(
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='International Standard' AND STATUS='Assigned To TC Sec' ORDER BY ID DESC",nativeQuery = true)
+    fun getIntStandardProposals(): MutableList<StandardRequest>
+
 
 
 

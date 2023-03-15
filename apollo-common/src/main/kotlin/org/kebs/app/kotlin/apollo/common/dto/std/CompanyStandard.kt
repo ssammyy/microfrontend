@@ -92,6 +92,22 @@ class ComStdDraftDecisionDto(
 ){
 
 }
+class ProposalCommentsDto(
+    var commentDocumentType: String?=null,
+    var circulationDate: Timestamp?=null,
+    var closingDate: Timestamp?=null,
+    var standardNumber: String?=null,
+    var commentTitle: String?=null,
+    var scope: String?=null,
+    var reasons: String?=null,
+    var recommendations: String?=null,
+    var nameOfRespondent: String?=null,
+    var positionOfRespondent: String?=null,
+    var nameOfOrganization: String?=null,
+    var requestId: Long?=null,
+    var draftId: Long?=null,
+    var adoptionAcceptableAsPresented: String?=null,
+){}
 
 class IntDraftCommentDto(
     var standardNumber: String?=null,

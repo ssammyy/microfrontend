@@ -16,17 +16,25 @@ class ISAdoptionProposal {
     @Basic
     var proposal_doc_name: String? = null
 
+    @Column(name = "ADOPTION_LINK")
+    @Basic
+    var adoptionProposalLink: String? = null
+
     @Column(name = "CIRCULATION_DATE")
     @Basic
-    var circulationDate: String? = null
+    var circulationDate: Timestamp? = null
 
     @Column(name = "CLOSING_DATE")
     @Basic
-    var closingDate: String? = null
+    var closingDate: Timestamp? = null
 
     @Column(name = "TC_SEC_NAME")
     @Basic
     var tcSecName: String? = null
+
+    @Column(name = "TC_SEC_EMAIL")
+    @Basic
+    var tcSecEmail: String? = null
 
     @Column(name = "STAKEHOLDER_LIST")
     @Basic
@@ -56,6 +64,7 @@ class ISAdoptionProposal {
     @Column(name = "ADOPTION_ACCEPTABLE_AS_PRESENTED")
     @Basic
     var adoptionAcceptableAsPresented: String? = null
+
 
     @Column(name = "REASONS_FOR_NOT_ACCEPTANCE")
     @Basic
@@ -89,6 +98,10 @@ class ISAdoptionProposal {
     @Basic
     var remarks: String? = null
 
+    @Column(name = "REQUEST_ID")
+    @Basic
+    var requestId: Long? = null
+
     @Transient
     @Column(name = "ACCENT_TO")
     @Basic
@@ -116,5 +129,13 @@ class ISAdoptionProposal {
     @Column(name = "NUMBER_OF_COMMENTS")
     @Basic
     var noOfComments: Long? = null
+
+    @Column(name = "ADOPT")
+    @Basic
+    var adopt: Long? = null
+
+    @Column(name = "NOT_ADOPT")
+    @Basic
+    var notAdopt: Long? = null
 
 }

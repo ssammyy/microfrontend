@@ -53,37 +53,24 @@ class IntStandardController(
         return internationalStandardService.findStandardStakeholders()
     }
 
+    //Get KNW Committee
+    @PreAuthorize("hasAuthority('TC_SEC_SD_READ') or hasAuthority('KNW_SEC_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @GetMapping("/international_standard/getIntStandardProposals")
+    @ResponseBody
+    fun getIntStandardProposals(): MutableList<StandardRequest>
+    {
+        return internationalStandardService.getIntStandardProposals()
+    }
+
 
     //********************************************************** process upload Justification **********************************************************
-    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY') or hasAuthority('KNW_SEC_MODIFY') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @PostMapping("/international_standard/prepareAdoptionProposal")
     @ResponseBody
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun prepareAdoptionProposal(@RequestBody iSAdoptionProposalDto: ISAdoptionProposalDto): ServerResponse{
 
-        val iSAdoptionProposal=ISAdoptionProposal().apply {
-            proposal_doc_name=iSAdoptionProposalDto.proposal_doc_name
-            circulationDate=iSAdoptionProposalDto.circulationDate
-            closingDate=iSAdoptionProposalDto.closingDate
-            tcSecName=iSAdoptionProposalDto.tcSecName
-            title=iSAdoptionProposalDto.title
-            scope=iSAdoptionProposalDto.scope
-            iStandardNumber=iSAdoptionProposalDto.iStandardNumber
-            //stakeholdersList= iSAdoptionProposalDto.stakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
-            addStakeholdersList= iSAdoptionProposalDto.addStakeholdersList?.let { commonDaoServices.convertClassToJson(it) }
-//            adoptionAcceptableAsPresented=iSAdoptionProposalDto.adoptionAcceptableAsPresented
-//            reasonsForNotAcceptance=iSAdoptionProposalDto.reasonsForNotAcceptance
-//            recommendations=iSAdoptionProposalDto.recommendations
-//            nameOfRespondent=iSAdoptionProposalDto.nameOfRespondent
-//            positionOfRespondent=iSAdoptionProposalDto.positionOfRespondent
-//            nameOfOrganization=iSAdoptionProposalDto.nameOfOrganization
-//            dateOfApplication=iSAdoptionProposalDto.dateOfApplication
-            uploadedBy=iSAdoptionProposalDto.uploadedBy
-        }
-        val stakeholders = iSAdoptionProposalDto.stakeholdersList
-//        val gson = Gson()
-//        KotlinLogging.logger { }.info { "Request Proposal:" + gson.toJson(iSAdoptionProposalDto) }
-        return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal,stakeholders))
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposalDto))
     }
 
     @PostMapping("/international_standard/draft-file-upload")
@@ -248,7 +235,7 @@ class IntStandardController(
     }
 
     @PostMapping("/anonymous/international_standard/submitDraftComments")
-    fun submitDraftComments(@RequestBody intDraftCommentDto: List<IntDraftCommentDto>
+    fun submitDraftComments(@RequestBody intDraftCommentDto: ProposalCommentsDto
     ) : ServerResponse
     {
 
@@ -256,8 +243,8 @@ class IntStandardController(
 
     }
 
-    @PostMapping("/international_standard/submitDraftComments")
-    fun submitDraftComment(@RequestBody intDraftCommentDto: List<IntDraftCommentDto>
+    @PostMapping("/international_standard/submitDraftComment")
+    fun submitDraftComment(@RequestBody intDraftCommentDto: ProposalCommentsDto
     ) : ServerResponse
     {
 

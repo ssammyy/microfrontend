@@ -73,6 +73,7 @@ interface UserDetailHolder {
     fun getName(): String?
     fun getLastName(): String?
     fun getEmail(): String?
+    fun getTelephone(): String?
 }
 
 interface UserHolder {
@@ -280,6 +281,7 @@ interface ManufactureListHolder {
     fun getClosureOfOperations(): String?
     fun getTypeOfManufacture(): Long?
     fun getOtherBusinessNatureType(): String?
+    fun getAssignStatus(): String?
 }
 
 interface CompleteTasksDetailHolder {
@@ -436,12 +438,13 @@ interface ProposalDetails{
     fun getRemarks(): String?
     fun getAssignedTo(): Long?
     fun getTitle(): String?
-    fun getCirculationDate(): String?
+    fun getCirculationDate(): Timestamp?
     fun getNameOfOrganization(): String?
     fun getNameOfRespondent(): String?
-    fun getClosingDate(): String?
+    fun getClosingDate(): Timestamp?
     fun getScope(): String?
     fun getTcSecName(): String?
+    fun getTcSecEmail(): String?
     fun getAdoptionAcceptableAsPresented(): String?
     fun getReasonsForNotAcceptance(): String?
     fun getStandardNumber(): String?
@@ -455,6 +458,7 @@ interface ProposalDetails{
     fun getContactOneEmail(): String?
     fun getContactOneFullName(): String?
     fun getContactOneTelephone(): String?
+    fun getAdoptionLink(): String?
 }
 
 interface RegisteredFirms{

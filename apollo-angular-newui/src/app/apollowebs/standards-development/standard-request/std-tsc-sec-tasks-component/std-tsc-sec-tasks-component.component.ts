@@ -98,8 +98,8 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     @Input() errorMsg: string;
     @Input() displayError: boolean;
     stdNwiFormGroup: FormGroup;
-    public uploadedFiles: Array<File> = [];
-    public uploadedFilesB: Array<File> = [];
+    // public uploadedFiles: Array<File> = [];
+    // public uploadedFilesB: Array<File> = [];
     public uploadedFilesC: Array<File> = [];
     validTextType: boolean = false;
     validNumberType: boolean = false;
@@ -174,18 +174,18 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             proposalTitle: ['', Validators.required],
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
-            targetDate: ['', Validators.required],
-            similarStandards: ['', Validators.required],
+            // targetDate: ['', Validators.required],
+            similarStandards: [''],
             liaisonOrganisationData: [this.selectedItems, Validators.required],
-            draftAttached: [''],
-            outlineAttached: [''],
-            draftOutlineImpossible: [''],
-            outlineSentLater: [''],
+            // draftAttached: [''],
+            // outlineAttached: [''],
+            // draftOutlineImpossible: [''],
+            // outlineSentLater: [''],
             nameOfProposer: ['', Validators.required],
             organization: ['', Validators.required],
             circulationDate: ['', Validators.required],
             closingDate: ['', Validators.required],
-            dateOfPresentation: ['', Validators.required],
+            // dateOfPresentation: ['', Validators.required],
             nameOfTC: ['', Validators.required],
             referenceNumber: ['', Validators.required],
             standardId: ['', Validators.required],
@@ -283,13 +283,13 @@ export class StdTscSecTasksComponentComponent implements OnInit {
                 console.log(response.body.savedRowID);
                 this.showToasterSuccess(response.httpStatus, `New Work Item Uploaded`);
 
-                if (this.uploadedFiles.length > 0) {
-                    this.uploadDocuments(response.body.savedRowID, "Annex Documents")
-                }
-                if (this.uploadedFilesB.length > 0) {
-                    this.uploadDocuments(response.body.savedRowID
-                        , "Relevant Documents")
-                }
+                // if (this.uploadedFiles.length > 0) {
+                //     this.uploadDocuments(response.body.savedRowID, "Annex Documents")
+                // }
+                // if (this.uploadedFilesB.length > 0) {
+                //     this.uploadDocuments(response.body.savedRowID
+                //         , "Relevant Documents")
+                // }
                 if (this.uploadedFilesC.length > 0) {
                     this.uploadDocuments(response.body.savedRowID, "Reference Documents")
                 } else {
@@ -320,8 +320,8 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         button.setAttribute('data-toggle', 'modal');
         if (mode === 'edit') {
             this.stdNwiFormGroup.reset()
-            this.uploadedFiles = [];
-            this.uploadedFilesB = [];
+            // this.uploadedFiles = [];
+            // this.uploadedFilesB = [];
             this.uploadedFilesC = [];
             console.log(secTask.id)
             this.itemId = String(secTask.id);
@@ -408,12 +408,12 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     public uploadDocuments(nwiId: number, additionalInfo: string) {
 
         let file = null;
-        if (additionalInfo == "Annex Documents") {
-            file = this.uploadedFiles;
-        }
-        if (additionalInfo == "Relevant Documents") {
-            file = this.uploadedFilesB;
-        }
+        // if (additionalInfo == "Annex Documents") {
+        //     file = this.uploadedFiles;
+        // }
+        // if (additionalInfo == "Relevant Documents") {
+        //     file = this.uploadedFilesB;
+        // }
         if (additionalInfo == "Reference Documents") {
             file = this.uploadedFilesC;
         }
@@ -427,8 +427,8 @@ export class StdTscSecTasksComponentComponent implements OnInit {
                 (data: any) => {
                     this.SpinnerService.hide();
 
-                    this.uploadedFiles = [];
-                    this.uploadedFilesB = [];
+                    // this.uploadedFiles = [];
+                    // this.uploadedFilesB = [];
                     this.uploadedFilesC = [];
 
 

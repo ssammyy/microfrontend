@@ -169,5 +169,13 @@ class ComStdDraft {
     @Basic
     var workShopDate: Timestamp?=null
 
+    @Column(name = "ADOPT")
+    @Basic
+    var adopt: Long? = null
+
+    @Column(name = "NOT_ADOPT")
+    @Basic
+    var notAdopt: Long? = null
+
 
 }

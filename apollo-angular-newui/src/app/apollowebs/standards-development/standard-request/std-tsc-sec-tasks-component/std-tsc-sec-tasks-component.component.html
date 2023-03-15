@@ -430,42 +430,42 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="row col-12">
-                                        <div class="form-group col-12">
-                                            <label><b>Upload annex for Purpose &
-                                                application(optional)</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedFiles"
-                                                             name="uploadedFiles" fileslimit="2"
-                                                             accept=".pdf, .doc, .docx"></file-upload>
-                                                <input class="form-control one-column-input"
-                                                       ngModel="TSCSEC Annex Upload"
-                                                       name="DocDescription" type="hidden">
-                                            </form>
-                                        </div>
-                                    </div>
+<!--                                    <div class="row col-12">-->
+<!--                                        <div class="form-group col-12">-->
+<!--                                            <label><b>Upload annex for Purpose &-->
+<!--                                                application(optional)</b></label>-->
+<!--                                            <form #demoForm="ngForm">-->
+<!--                                                <file-upload [(ngModel)]="uploadedFiles"-->
+<!--                                                             name="uploadedFiles" fileslimit="2"-->
+<!--                                                             accept=".pdf, .doc, .docx"></file-upload>-->
+<!--                                                <input class="form-control one-column-input"-->
+<!--                                                       ngModel="TSCSEC Annex Upload"-->
+<!--                                                       name="DocDescription" type="hidden">-->
+<!--                                            </form>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
 
                                 </div>
 
                                 <div class="row">
-                                    <div class="form-group col-6">
-                                        <label><b>Target Date</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'targetDate')">
-                                            <input type="date"
-                                                   matInput
-                                                   id="targetDate"
-                                                   placeholder="Target Date"
-                                                   formControlName="targetDate">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'targetDate')"
-                                                    errorMsg="Please Enter Target Date">
-                                            </app-field-error-display>
-                                        </mat-form-field>
+<!--                                    <div class="form-group col-6">-->
+<!--                                        <label><b>Target Date</b></label>-->
+<!--                                        <mat-form-field class="example-full-width has-label"-->
+<!--                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'targetDate')">-->
+<!--                                            <input type="date"-->
+<!--                                                   matInput-->
+<!--                                                   id="targetDate"-->
+<!--                                                   placeholder="Target Date"-->
+<!--                                                   formControlName="targetDate">-->
+<!--                                            <app-field-error-display-->
+<!--                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'targetDate')"-->
+<!--                                                    errorMsg="Please Enter Target Date">-->
+<!--                                            </app-field-error-display>-->
+<!--                                        </mat-form-field>-->
 
 
-                                    </div>
+<!--                                    </div>-->
                                     <div class="form-group col-6">
                                         <label><b>Similar Standards/Subject of
                                             Standardization</b></label>
@@ -480,19 +480,19 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="row col-12">
-                                        <div class="form-group col-12">
-                                            <label><b>Upload All Relevant Documents</b></label>
-                                            <form #demoForm="ngForm">
-                                                <file-upload [(ngModel)]="uploadedFilesB"
-                                                             name="uploadedFilesB"
-                                                             accept=".pdf, .doc, .docx"></file-upload>
-                                                <input class="form-control one-column-input"
-                                                       ngModel="RelevantDocumentsNWI Upload"
-                                                       name="DocDescription" type="hidden">
-                                            </form>
-                                        </div>
-                                    </div>
+<!--                                    <div class="row col-12">-->
+<!--                                        <div class="form-group col-12">-->
+<!--                                            <label><b>Upload All Relevant Documents</b></label>-->
+<!--                                            <form #demoForm="ngForm">-->
+<!--                                                <file-upload [(ngModel)]="uploadedFilesB"-->
+<!--                                                             name="uploadedFilesB"-->
+<!--                                                             accept=".pdf, .doc, .docx"></file-upload>-->
+<!--                                                <input class="form-control one-column-input"-->
+<!--                                                       ngModel="RelevantDocumentsNWI Upload"-->
+<!--                                                       name="DocDescription" type="hidden">-->
+<!--                                            </form>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
                                     <div class="form-group col-6">
                                         <label><b>Liaison Organization/or interested parties</b></label>
@@ -528,58 +528,58 @@
                                     </div>
                                 </div>
 
-                                <h5><b>Preparatory Work</b></h5>
-                                <div class="row">
-                                    <div class="form-check col-6">
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="one-column-input"
-                                                formControlName="draftAttached" value="0"
-                                                id="defaultCheck1" type="checkbox">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                            A draft is attached
-                                        </label>
+<!--                                <h5><b>Preparatory Work</b></h5>-->
+<!--                                <div class="row">-->
+<!--                                    <div class="form-check col-6">-->
+<!--                                        <input-->
+<!--                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                aria-label="Small"-->
+<!--                                                class="one-column-input"-->
+<!--                                                formControlName="draftAttached" value="0"-->
+<!--                                                id="defaultCheck1" type="checkbox">-->
+<!--                                        <label class="form-check-label" for="defaultCheck1">-->
+<!--                                            A draft is attached-->
+<!--                                        </label>-->
 
-                                    </div>
-                                    <div class="form-check col-6">
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class=" one-column-input"
-                                                formControlName="outlineAttached"
-                                                id="defaultCheck2" type="checkbox">
-                                        <label class="form-check-label" for="defaultCheck2">
-                                            An outline is attached
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-check col-6">
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class="one-column-input"
-                                                formControlName="draftOutlineImpossible"
-                                                id="defaultCheck3" type="checkbox">
-                                        <label class="form-check-label" for="defaultCheck3">
-                                            It is not possible to attach either a draft or
-                                            outline
-                                        </label>
-                                    </div>
-                                    <div class="form-check col-6">
-                                        <input
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                aria-label="Small"
-                                                class=" one-column-input"
-                                                formControlName="outlineSentLater"
-                                                id="defaultCheck4" type="checkbox">
-                                        <label class="form-check-label" for="defaultCheck4">
-                                            An outline will be sent later
-                                        </label>
-                                    </div>
+<!--                                    </div>-->
+<!--                                    <div class="form-check col-6">-->
+<!--                                        <input-->
+<!--                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                aria-label="Small"-->
+<!--                                                class=" one-column-input"-->
+<!--                                                formControlName="outlineAttached"-->
+<!--                                                id="defaultCheck2" type="checkbox">-->
+<!--                                        <label class="form-check-label" for="defaultCheck2">-->
+<!--                                            An outline is attached-->
+<!--                                        </label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="row">-->
+<!--                                    <div class="form-check col-6">-->
+<!--                                        <input-->
+<!--                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                aria-label="Small"-->
+<!--                                                class="one-column-input"-->
+<!--                                                formControlName="draftOutlineImpossible"-->
+<!--                                                id="defaultCheck3" type="checkbox">-->
+<!--                                        <label class="form-check-label" for="defaultCheck3">-->
+<!--                                            It is not possible to attach either a draft or-->
+<!--                                            outline-->
+<!--                                        </label>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-check col-6">-->
+<!--                                        <input-->
+<!--                                                aria-describedby="inputGroup-sizing-sm"-->
+<!--                                                aria-label="Small"-->
+<!--                                                class=" one-column-input"-->
+<!--                                                formControlName="outlineSentLater"-->
+<!--                                                id="defaultCheck4" type="checkbox">-->
+<!--                                        <label class="form-check-label" for="defaultCheck4">-->
+<!--                                            An outline will be sent later-->
+<!--                                        </label>-->
+<!--                                    </div>-->
 
-                                </div>
+<!--                                </div>-->
                                 <div class="row">
                                     <div class="form-group col-6">
                                         <label><b>Enter Name of proposer</b></label>
@@ -641,23 +641,23 @@
                                 </div>
 
                                 <div class="row">
+<!--                                    <div class="form-group col-6">-->
+<!--                                        <label><b>Date of presentation</b></label>-->
+<!--                                        <mat-form-field class="example-full-width has-label"-->
+<!--                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'dateOfPresentation')">-->
+<!--                                            <input type="date"-->
+<!--                                                   matInput-->
+<!--                                                   id="dateOfPresentation"-->
+<!--                                                   placeholder="Presentation Date"-->
+<!--                                                   formControlName="dateOfPresentation">-->
+<!--                                            <app-field-error-display-->
+<!--                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'dateOfPresentation')"-->
+<!--                                                    errorMsg="Please Enter Presentation Date">-->
+<!--                                            </app-field-error-display>-->
+<!--                                        </mat-form-field>-->
+<!--                                    </div>-->
                                     <div class="form-group col-6">
-                                        <label><b>Date of presentation</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'dateOfPresentation')">
-                                            <input type="date"
-                                                   matInput
-                                                   id="dateOfPresentation"
-                                                   placeholder="Presentation Date"
-                                                   formControlName="dateOfPresentation">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'dateOfPresentation')"
-                                                    errorMsg="Please Enter Presentation Date">
-                                            </app-field-error-display>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="form-group col-6">
-                                        <label><b>Name of TC</b></label>
+                                        <label><b>Sector</b></label>
                                         <input
                                                 aria-describedby="inputGroup-sizing-sm"
                                                 aria-label="Small"
@@ -668,9 +668,6 @@
                                                 placeholder="" name="nameOfTC"
                                                 type="text">
                                     </div>
-                                </div>
-
-                                <div class="row">
 
                                     <div class="form-group col-6">
                                         <label><b>Reference Number given by
@@ -687,6 +684,11 @@
                                                 type="text">
 
                                     </div>
+                                </div>
+
+                                <div class="row">
+
+
                                 </div>
 
                                 <div class="form-group">
@@ -738,20 +740,20 @@
                                                 class="list-group-item">{{"Scope: " + nwiActionRequest?.scope}}</li>
                                             <li style="background: lightgray"
                                                 class="list-group-item">{{"Purpose: " + nwiActionRequest?.purpose}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"Target Date: " + nwiActionRequest?.targetDate}}</li>-->
                                             <li style="background: lightgray"
                                                 class="list-group-item">{{"Similar Standards: " + nwiActionRequest?.similarStandards}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"Liaison Organization: " + nwiActionRequest?.liaisonOrganisation}}</li>-->
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"Preparatory Work-A draft is attached: " + nwiActionRequest?.draftAttached}}</li>-->
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"An outline is attached: " + nwiActionRequest?.outlineAttached}}</li>-->
                                             <li style="background: lightgray"
                                                 class="list-group-item">{{"It is not possible to attach either a draft or outline: " + nwiActionRequest?.outlineAttached}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"An outline will be sent later: " + nwiActionRequest?.outlineSentLater}}</li>-->
                                             <li style="background: lightgray"
                                                 class="list-group-item">{{"Name of proposer: " + nwiActionRequest?.nameOfProposer}}</li>
                                             <li style="background: lightgray"
@@ -760,10 +762,10 @@
                                                 class="list-group-item">{{"Date of Circulation: " + nwiActionRequest?.circulationDate}}</li>
                                             <li style="background: lightgray"
                                                 class="list-group-item">{{"Closing Date: " + nwiActionRequest?.closingDate}}</li>
+<!--                                            <li style="background: lightgray"-->
+<!--                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>-->
                                             <li style="background: lightgray"
-                                                class="list-group-item">{{"Date of Presentation: " + nwiActionRequest?.dateOfPresentation}}</li>
-                                            <li style="background: lightgray"
-                                                class="list-group-item">{{"Name of TC: " + nwiActionRequest?.nameOfTC}}</li>
+                                                class="list-group-item">{{"Sector: " + nwiActionRequest?.nameOfTC}}</li>
                                             <li style="background: lightgray"
                                                 class="list-group-item">{{"Reference Number given by Secretariat: " + nwiActionRequest?.id}}</li>
                                         </div>

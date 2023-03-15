@@ -353,10 +353,11 @@ class NwaPDraftAction(
 }
 data class ISAdoptionProposalDto(
     var proposal_doc_name: String?=null,
-    var circulationDate: String?=null,
+    var circulationDate: Timestamp,
     var closingDate: String?=null,
     var tcSecName: String?=null,
     var title: String?=null,
+    var requestId: Long?=null,
     var scope: String?=null,
     var iStandardNumber: String?=null,
     var adoptionAcceptableAsPresented: String?=null,
@@ -366,10 +367,21 @@ data class ISAdoptionProposalDto(
     var positionOfRespondent: String?=null,
     var nameOfOrganization: String?=null,
     var dateOfApplication: String?=null,
+    var adoptionProposalLink: String?=null,
     var uploadedBy: String?=null,
     var stakeholdersList: MutableList<NamesList>?=null,
-    var addStakeholdersList: List<String>?=null,
+    //var addStakeholdersList: List<String>?=null,
+    var addStakeholdersList: MutableList<IStakeholderDTO>?=null
 
+){
+
+}
+
+data class IStakeholderDTO(
+
+    var stakeHolderEmail: String?=null,
+    var stakeHolderName: String?=null,
+    var stakeHolderPhone: String?=null
 ){
 
 }
