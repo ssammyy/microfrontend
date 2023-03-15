@@ -707,6 +707,8 @@ export interface ISAdoptionProposal {
     normativeReference: string;
     adoptionProposalLink: string;
     adoptionLink: string;
+    voteFor: number;
+    voteAgainst: number;
 }
 
 export interface ISJustificationProposal {

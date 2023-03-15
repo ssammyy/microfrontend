@@ -459,6 +459,8 @@ interface ProposalDetails{
     fun getContactOneFullName(): String?
     fun getContactOneTelephone(): String?
     fun getAdoptionLink(): String?
+    fun getVoteFor(): Long?
+    fun getVoteAgainst(): Long?
 }
 
 interface RegisteredFirms{
