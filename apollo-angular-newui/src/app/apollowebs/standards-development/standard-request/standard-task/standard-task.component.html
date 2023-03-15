@@ -458,6 +458,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-sm-12 checkbox-radios">
                                                             <mat-radio-group
+                                                                    (change)="onRadiobuttonchange($event)"
                                                                     aria-labelledby="example-radio-group-label"
                                                                     class="example-radio-group"
                                                                     name="sdResult"
@@ -465,10 +466,14 @@
                                                                 <mat-radio-button
                                                                         aria-describedby="inputGroup-sizing-sm"
                                                                         aria-label="Small"
-                                                                        *ngFor="let season of outputs"
-                                                                        [value]="season">
-                                                                    {{season}}
-
+                                                                        [value]="'Approve For Review'">
+                                                                    Approve For Review
+                                                                </mat-radio-button>
+                                                                <mat-radio-button
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        [value]="'Reject For Review'">
+                                                                    Reject
                                                                 </mat-radio-button>
                                                             </mat-radio-group>
                                                             <br>
@@ -477,10 +482,12 @@
                                                         </div>
                                                     </div>
 
-                                                    <mat-form-field class="example-full-width">
-                                                        <input matInput type="text" placeholder="Reason For Decision"
-                                                               formControlName="reason">
-                                                    </mat-form-field>
+                                                    <div *ngIf="onApproveApplication">
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput type="text" placeholder="Reason For Decision"
+                                                                   formControlName="reason">
+                                                        </mat-form-field>
+                                                    </div>
 
                                                 </div>
 
@@ -692,9 +699,11 @@
                                         <li style="background: lightgray"
                                             class="list-group-item"><b>Desired
                                             Result: </b>{{actionRequest?.desiredResult}}</li>
-                                        <li style="background: lightgray"
-                                            class="list-group-item"><b>Reason For Result: </b>{{actionRequest?.reason}}
-                                        </li>
+                                        <div *ngIf="actionRequest?.reason != null">
+                                            <li style="background: lightgray"
+                                                class="list-group-item"><b>Reason For Result: </b>{{actionRequest?.reason}}
+                                            </li>
+                                        </div>
                                         <li style="background: lightgray"
                                             class="list-group-item"><b>Reviewed By: </b>{{actionRequest?.reviewedBy}}
                                         </li>

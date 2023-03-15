@@ -15,6 +15,7 @@ import {formatDate} from "@angular/common";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
+import {MatRadioChange} from '@angular/material/radio';
 
 @Component({
     selector: 'app-standard-task',
@@ -32,11 +33,12 @@ export class StandardTaskComponent implements OnInit {
     dtTrigger5: Subject<any> = new Subject<any>();
     dtTrigger6: Subject<any> = new Subject<any>();
 
+    onApproveApplication: boolean = false;
     // data source for the radio buttons:
     seasons: string[] = ['Develop a standard through committee draft', 'Adopt existing International Standard', 'Review existing Kenyan Standard',
         'Development of publicly available specification', 'Development of national workshop agreement', 'Adoption of EA and other regions standards'];
 
-    outputs: string[] = ['Approve For Review', 'Reject','On Hold'];
+    outputs: string[] = ['Approve For Review', 'Reject For Review'];
 
 
     // selected item
@@ -123,7 +125,7 @@ export class StandardTaskComponent implements OnInit {
             id: ['', Validators.required],
             sdRequestID: ['', Validators.required],
             sdResult: ['', Validators.required],
-            reason: ['', Validators.required],
+            reason: [''],
 
         });
 
@@ -459,6 +461,15 @@ export class StandardTaskComponent implements OnInit {
         if (this.dataSourceC.paginator) {
             this.dataSourceC.paginator.firstPage();
         }
+    }
+
+    onRadiobuttonchange($event: MatRadioChange) {
+        if ($event.value === 'Reject For Review') {
+            this.onApproveApplication = true;
+        } else {
+            this.onApproveApplication = false;
+        }
+
     }
 
 
