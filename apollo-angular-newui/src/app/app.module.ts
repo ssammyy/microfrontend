@@ -1234,6 +1234,7 @@ import {
 import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
 import {RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings} from "ng-recaptcha";
 import {ApiEndpointService} from "./core/services/endpoints/api-endpoint.service";
+import { StandardsLevyQaPermitsComponent } from './apollowebs/standards-levy/standards-levy-qa-permits/standards-levy-qa-permits.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1839,6 +1840,7 @@ import {ApiEndpointService} from "./core/services/endpoints/api-endpoint.service
         FmarkAwardedComponent,
         FmarkAllApplicationsComponent,
         FmarkOngoingComponent,
+        StandardsLevyQaPermitsComponent,
 
 
     ],

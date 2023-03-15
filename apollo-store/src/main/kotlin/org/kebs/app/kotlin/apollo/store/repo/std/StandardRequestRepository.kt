@@ -56,7 +56,7 @@ interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
 
     //International Standards
     @Query(
-        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='International Standard' AND STATUS='Assigned To TC Sec' ORDER BY ID DESC",nativeQuery = true)
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='International Standard' AND STATUS='Assigned To TC Sec' AND PROCESS='Adopt existing International Standard' ORDER BY ID DESC",nativeQuery = true)
     fun getIntStandardProposals(): MutableList<StandardRequest>
 
 

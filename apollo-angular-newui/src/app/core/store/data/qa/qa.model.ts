@@ -135,6 +135,9 @@ export class ReportsPermitEntityDto {
     email: string;
     inspectionDate: Date;
     pscApprovalDate: Date;
+    kraPin: string;
+    entryNumber: string;
+    postalAddress: string;
 
 
 }

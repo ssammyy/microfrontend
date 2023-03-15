@@ -293,6 +293,7 @@ export class ApiEndpointService {
 
         PERMIT_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsWithNoFmarkGenerated`,
         PERMIT_REPORTS_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwarded`,
+        PERMIT_REPORTS_ALL_AWARDED_SL: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwardedSl`,
         PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
         PERMIT_REPORTS_ALL_SAMPLES_SUBMITTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allSamplesSubmitted`,
         PERMIT_REPORTS_ALL_DEJECTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allDejectedPermits`,

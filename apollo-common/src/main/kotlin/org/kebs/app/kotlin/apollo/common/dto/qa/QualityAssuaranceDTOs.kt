@@ -753,6 +753,10 @@ data class ReportPermitEntityDto(
     var email: String? = null,
     var pscApprovalDate: Timestamp? = null,
     var inspectionDate: Date? = null,
+    var kraPin: String? = null,
+    var entryNumber: String? = null,
+    var postalAddress: String? = null,
+    var postalCode: String? = null
 
 
     )
