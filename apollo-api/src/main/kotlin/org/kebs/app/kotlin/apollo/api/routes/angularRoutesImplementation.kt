@@ -605,7 +605,6 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
                         GET("/batch-invoice-balance-details", handler::invoiceBatchDetailsBalanceMigration)
                         GET("/batch-invoice-pdf-details", handler::invoiceBatchDetailsPDFMigration)
-
                     }
                 }
                 "/invoice".nest {
