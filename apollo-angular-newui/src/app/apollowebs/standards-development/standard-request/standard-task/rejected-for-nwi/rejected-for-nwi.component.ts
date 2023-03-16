@@ -1,29 +1,30 @@
 import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
-import {Document, HOFFeedback, StandardRequestB, TaskData} from "../../../../core/store/data/std/request_std.model";
-import {HttpErrorResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
+import {Document, HOFFeedback, StandardRequestB, TaskData} from "../../../../../core/store/data/std/request_std.model";
 import {DataTableDirective} from "angular-datatables";
-import {NotificationService} from "../../../../core/store/data/std/notification.service";
-import {NgxSpinnerService} from "ngx-spinner";
-import {CommitteeService} from "../../../../core/store/data/std/committee.service";
-import {Department, StandardRequest, UsersEntity} from "../../../../core/store/data/std/std.model";
-import {MatSelect} from "@angular/material/select";
-import {MatOption} from "@angular/material/core";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {formatDate} from "@angular/common";
+import {Subject} from "rxjs";
+import {Department, StandardRequest, UsersEntity} from "../../../../../core/store/data/std/std.model";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MatRadioChange} from '@angular/material/radio';
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {StandardDevelopmentService} from "../../../../../core/store/data/std/standard-development.service";
+import {NotificationService} from "../../../../../core/store/data/std/notification.service";
+import {NgxSpinnerService} from "ngx-spinner";
+import {CommitteeService} from "../../../../../core/store/data/std/committee.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MatSelect} from "@angular/material/select";
+import {MatOption} from "@angular/material/core";
+import {formatDate} from "@angular/common";
+import {MatRadioChange} from "@angular/material/radio";
 
 @Component({
-    selector: 'app-standard-task',
-    templateUrl: './standard-task.component.html',
-    styleUrls: ['./standard-task.component.css']
+  selector: 'app-rejected-for-nwi',
+  templateUrl: './rejected-for-nwi.component.html',
+  styleUrls: ['./rejected-for-nwi.component.css']
 })
-export class StandardTaskComponent implements OnInit {
-    dtOptions: DataTables.Settings = {};
+export class RejectedForNwiComponent implements OnInit {
+
+  dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
@@ -32,13 +33,6 @@ export class StandardTaskComponent implements OnInit {
     dtTrigger4: Subject<any> = new Subject<any>();
     dtTrigger5: Subject<any> = new Subject<any>();
     dtTrigger6: Subject<any> = new Subject<any>();
-
-    onApproveApplication: boolean = false;
-    // data source for the radio buttons:
-    seasons: string[] = ['Develop a standard through committee draft', 'Adopt existing International Standard', 'Review existing Kenyan Standard',
-        'Development of publicly available specification', 'Development of national workshop agreement', 'Adoption of EA and other regions standards'];
-
-    outputs: string[] = ['Approve For Review', 'Reject For Review'];
 
 
     // selected item
@@ -62,7 +56,6 @@ export class StandardTaskComponent implements OnInit {
     p2 = 1;
     countLine = 0;
     tasks: StandardRequestB[] = [];
-    approvedTasks: StandardRequestB[] = [];
     rejectedTasks: StandardRequestB[] = [];
 
 
@@ -110,7 +103,6 @@ export class StandardTaskComponent implements OnInit {
 
     ngOnInit(): void {
         this.getHOFTasks();
-        this.getApprovedTasks();
         this.getRejectedTasks();
 
         this.stdDepartmentChange = this.formBuilder.group({
@@ -132,15 +124,7 @@ export class StandardTaskComponent implements OnInit {
 
     }
 
-    id: any = 'Pending Review';
-
-    tabChange(ids: any) {
-        this.id = ids;
-        console.log(this.id);
-    }
-
-
-
+ 
     ngAfterViewInit(): void {
 
 
@@ -189,21 +173,6 @@ export class StandardTaskComponent implements OnInit {
         );
     }
 
-    public getApprovedTasks(): void {
-        this.standardDevelopmentService.getTCSECTasks().subscribe(
-            (response: StandardRequestB[]) => {
-                this.approvedTasks = response;
-                this.dataSourceB = new MatTableDataSource(this.approvedTasks);
-
-                this.dataSourceB.paginator = this.paginator;
-                this.dataSourceB.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-            }
-        );
-    }
-
     public getRejectedTasks(): void {
         this.standardDevelopmentService.getRejectedReviewsForStandards().subscribe(
             (response: StandardRequestB[]) => {
@@ -228,58 +197,6 @@ export class StandardTaskComponent implements OnInit {
                 alert(error.message);
             }
         );
-    }
-
-    public onReviewTask(): void {
-
-        if (this.stdHOFReview.controls['sdResult'].value == 'Reject For Review') {
-            if (this.stdHOFReview.controls['reason'].value != '') {
-                this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
-                    (response) => {
-                        this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
-                        this.SpinnerService.hide();
-                        this.getHOFTasks();
-                        this.getApprovedTasks();
-                        this.getRejectedTasks();
-                        this.stdHOFReview.reset();
-                        this.hideModel()
-                    },
-                    (error: HttpErrorResponse) => {
-                        alert(error.message);
-                        this.SpinnerService.hide();
-
-                    }
-                )
-            } else {
-                this.showToasterError("Error", `Please Enter A Reason For Rejection.`);
-
-            }
-        } else {
-
-            if (this.stdHOFReview.valid) {
-                this.SpinnerService.show();
-
-                this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
-                    (response) => {
-                        this.showToasterSuccess(response.httpStatus, `Your Feedback Has Been Submitted to the TC Secretary.`);
-                        this.SpinnerService.hide();
-                        this.getHOFTasks();
-                        this.getApprovedTasks();
-                        this.getRejectedTasks();
-                        this.stdHOFReview.reset();
-                        this.hideModel()
-                    },
-                    (error: HttpErrorResponse) => {
-                        alert(error.message);
-                        this.SpinnerService.hide();
-
-                    }
-                )
-            } else {
-                this.showToasterError("Error", `Please Fill In All The Fields.`);
-
-            }
-        }
     }
 
     public updateDepartment(): void {
@@ -472,15 +389,5 @@ export class StandardTaskComponent implements OnInit {
         }
     }
 
-    onRadiobuttonchange($event: MatRadioChange) {
-        if ($event.value === 'Reject For Review') {
-            this.onApproveApplication = true;
-        } else {
-            this.onApproveApplication = false;
-        }
-
-    }
-
 
 }
-

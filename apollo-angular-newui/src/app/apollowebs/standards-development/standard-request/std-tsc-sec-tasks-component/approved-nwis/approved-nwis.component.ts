@@ -1,59 +1,60 @@
 import {
-    Component,
-    ElementRef,
-    Input,
-    OnInit,
-    QueryList,
-    ViewChild,
-    ViewChildren,
-    ViewEncapsulation
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+  ViewEncapsulation
 } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import {
-    Document,
-    LiaisonOrganization,
-    NwiItem,
-    NWIsForVoting,
-    StandardRequestB,
-    Stdtsectask
-} from "../../../../core/store/data/std/request_std.model";
-import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
+  Document,
+  LiaisonOrganization,
+  NwiItem,
+  NWIsForVoting,
+  StandardRequestB,
+  Stdtsectask
+} from "src/app/core/store/data/std/request_std.model";
+import {StandardDevelopmentService} from "src/app/core/store/data/std/standard-development.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {IDropdownSettings} from 'ng-multiselect-dropdown';
 import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {NgxSpinnerService} from "ngx-spinner";
-import {NotificationService} from "../../../../core/store/data/std/notification.service";
+
+// import {NotificationService} from "../../../../core/store/data/std/notification.service";
+import { NotificationService } from 'src/app/core/store/data/std/notification.service';
 import {ErrorStateMatcher} from "@angular/material/core";
 import swal from "sweetalert2";
 import Swal from "sweetalert2";
 import {formatDate} from "@angular/common";
-import {VoteNwiRetrieved, VotesNwiTally} from "../../../../core/store/data/std/commitee-model";
-import {CommitteeService} from "../../../../core/store/data/std/committee.service";
+import {VoteNwiRetrieved, VotesNwiTally} from "src/app/core/store/data/std/commitee-model";
+import {CommitteeService} from "src/app/core/store/data/std/committee.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {StandardsDto} from "../../../../core/store/data/master/master.model";
-import {QaService} from "../../../../core/store/data/qa/qa.service";
-import {MsService} from "../../../../core/store/data/ms/ms.service";
+import {StandardsDto} from "src/app/core/store/data/master/master.model";
+import {QaService} from "src/app/core/store/data/qa/qa.service";
+import {MsService} from "src/app/core/store/data/ms/ms.service";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-        const isSubmitted = form && form.submitted;
-        return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-    }
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+      const isSubmitted = form && form.submitted;
+      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
 }
 
 @Component({
-    selector: 'app-std-tsc-sec-tasks-component',
-    templateUrl: './std-tsc-sec-tasks-component.component.html',
-    styleUrls: ['../../../../../../node_modules/@ng-select/ng-select/themes/material.theme.css'],
-    encapsulation: ViewEncapsulation.None,
-
+  selector: 'app-approved-nwis',
+  templateUrl: './approved-nwis.component.html',
+  styleUrls: ['./approved-nwis.component.css']
 })
-export class StdTscSecTasksComponentComponent implements OnInit {
-    dtOptions: DataTables.Settings = {};
+export class ApprovedNwisComponent implements OnInit {
+
+ dtOptions: DataTables.Settings = {};
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
@@ -193,13 +194,6 @@ export class StdTscSecTasksComponentComponent implements OnInit {
         });
 
 
-    }
-
-    id: any = 'Prepare NWI';
-
-    tabChange(ids: any) {
-        this.id = ids;
-        console.log(this.id);
     }
 
     get formStdRequest(): any {
