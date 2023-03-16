@@ -432,7 +432,7 @@ data class ISAdoptionProposalComments(
 }
 
 data class ISProposalJustification(
-   var  meetingDate: String?=null,
+    var meetingDate: String?=null,
     var slNumber: String?=null,
     var edition: String?=null,
     var department: String?=null,
@@ -445,7 +445,12 @@ data class ISProposalJustification(
     var tcAcceptanceDate: String?=null,
     var proposalId: Long?=null,
     var draftId: Long?=null,
-    var issuesAddressed: String?
+    var issuesAddressed: String?=null,
+    var title: String?=null,
+    var referenceMaterial: String?=null,
+    var tcSecName: String?=null
+
+
 ){
 
 }

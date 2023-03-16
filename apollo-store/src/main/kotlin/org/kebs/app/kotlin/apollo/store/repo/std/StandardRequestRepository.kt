@@ -22,19 +22,19 @@ interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
     fun getReceivedStandardsReport(): MutableList<ReceivedStandards>
 
     @Query(
-        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Assigned To TC Sec' ORDER BY ID DESC",nativeQuery = true)
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Assigned To TC Sec' AND PROCESS='Development of national workshop agreement' ORDER BY ID DESC",nativeQuery = true)
     fun getWorkshopStandards(): MutableList<StandardRequest>
 
     @Query(
-        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Workshop Justification Approval' ORDER BY ID DESC",nativeQuery = true)
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Workshop Justification Approval' AND PROCESS='Development of national workshop agreement' ORDER BY ID DESC",nativeQuery = true)
     fun getWorkshopJustification(): MutableList<StandardRequest>
 
     @Query(
-        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Prepare Preliminary Draft' ORDER BY ID DESC",nativeQuery = true)
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Prepare Preliminary Draft' AND PROCESS='Development of national workshop agreement' ORDER BY ID DESC",nativeQuery = true)
     fun getWorkshopForPDraft(): MutableList<StandardRequest>
 
     @Query(
-        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Make Changes to Preliminary Draft' ORDER BY ID DESC",nativeQuery = true)
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Make Changes to Preliminary Draft' AND PROCESS='Development of national workshop agreement' ORDER BY ID DESC",nativeQuery = true)
     fun getWorkshopForEditing(): MutableList<StandardRequest>
 
     @Query(
@@ -46,17 +46,17 @@ interface StandardRequestRepository:JpaRepository<StandardRequest, Long> {
             "r.TECHNICAL_COMMITTEE_ID as tcId,r.PRODUCT_ID as productId,r.ORGANISATION_NAME as organisationName," +
             "r.ECONOMIC_EFFICIENCY as economicEfficiency,r.HEALTH_SAFETY as healthSafety,r.ENVIRONMENT as environment,r.INTEGRATION as integration," +
             "r.EXPORT_MARKETS as exportMarkets,r.LEVEL_OF_STANDARD as levelOfStandard,r.NWA_CD_NUMBER as nwaCdNumber " +
-            "FROM SD_STANDARD_REQUEST r LEFT JOIN SD_COM_STD_DRAFT d ON r.ID=d.REQUEST_ID WHERE d.STATUS=1 AND r.LEVEL_OF_STANDARD='Kenya Standard' AND r.STATUS='Make Changes to Preliminary Draft'",nativeQuery = true )
+            "FROM SD_STANDARD_REQUEST r LEFT JOIN SD_COM_STD_DRAFT d ON r.ID=d.REQUEST_ID WHERE d.STATUS=1 AND r.LEVEL_OF_STANDARD='Kenya Standard' AND PROCESS='Development of national workshop agreement' AND  r.STATUS='Make Changes to Preliminary Draft'",nativeQuery = true )
 
     fun getWorkShopDraftForEditing(): MutableList<NwaRequest>
 
     @Query(
-        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Preliminary Draft Prepared' ORDER BY ID DESC",nativeQuery = true)
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Preliminary Draft Prepared' AND PROCESS='Development of national workshop agreement' ORDER BY ID DESC",nativeQuery = true)
     fun getPreparedPD(): MutableList<StandardRequest>
 
     //International Standards
     @Query(
-        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='International Standard' AND STATUS='Assigned To TC Sec' AND PROCESS='Adopt existing International Standard' ORDER BY ID DESC",nativeQuery = true)
+        value = "SELECT * FROM SD_STANDARD_REQUEST  WHERE LEVEL_OF_STANDARD='Kenya Standard' AND STATUS='Assigned To TC Sec' AND PROCESS='Adopt existing International Standard' ORDER BY ID DESC",nativeQuery = true)
     fun getIntStandardProposals(): MutableList<StandardRequest>
 
 

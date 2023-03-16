@@ -709,6 +709,7 @@ export interface ISAdoptionProposal {
     adoptionLink: string;
     voteFor: number;
     voteAgainst: number;
+    requesterName: string;
 }
 
 export interface ISJustificationProposal {
@@ -949,7 +950,11 @@ export interface ISProposalJustification{
     closingDate : Timestamp<any>;
     tcAcceptanceDate : string;
     proposalId : number;
-    draftId : number;  
+    draftId : number;
+    tcSecName: string;
+    standardNumber: string;
+    title: string;
+    referenceMaterial: string;
 }
 
 export interface ISAdoptionJustification {

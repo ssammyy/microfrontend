@@ -461,6 +461,7 @@ interface ProposalDetails{
     fun getAdoptionLink(): String?
     fun getVoteFor(): Long?
     fun getVoteAgainst(): Long?
+    fun getRequesterName(): String?
 }
 
 interface RegisteredFirms{

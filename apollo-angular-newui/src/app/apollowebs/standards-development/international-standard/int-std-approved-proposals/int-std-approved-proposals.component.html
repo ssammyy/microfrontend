@@ -120,8 +120,8 @@
                                         <td>{{i+1}}</td>
                                         <td>{{isAdoptionProposal.docName}}</td>
                                         <td>{{isAdoptionProposal.title}}</td>
-                                        <td>{{isAdoptionProposal.circulationDate}}</td>
-                                        <td>{{isAdoptionProposal.closingDate}}</td>
+                                        <td>{{isAdoptionProposal.circulationDate | date: 'dd/MM/yyyy'}}</td>
+                                        <td>{{isAdoptionProposal.closingDate | date: 'dd/MM/yyyy'}}</td>
                                         <td>{{isAdoptionProposal.standardNumber}}</td>
                                         <td>{{isAdoptionProposal.tcSecName}}</td>
                                         <td><a  (click)="onOpenModal(isAdoptionProposal,'prepareJustification',isAdoptionProposal.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Prepare Justification</a></td>
@@ -344,18 +344,6 @@
                                                                                                 placeholder="Date" type="date">
                                                                                     </div>
                                                                                     <div class="form-group col-6">
-                                                                                        <label><b>Proposal Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.proposalNumber}}" formControlName="slNumber" name="slNumber"
-                                                                                                placeholder="Name" type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
-                                                                                        <label><b>Edition</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
-                                                                                        <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"  formControlName="edition" name="edition"
-                                                                                                placeholder="Edition" type="text">
-                                                                                    </div>
-                                                                                    <div class="form-group col-6">
                                                                                         <label>Department/Sector</label>
                                                                                         <select class="form-control" formControlName="department" name="department" required   >
                                                                                             <option disabled>--Select Department--</option>
@@ -363,11 +351,44 @@
                                                                                         </select>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
-                                                                                        <label><b>Requested By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <label><b>Name of officer</b><span style="font-size: xx-small; color: red;"></span></label>
                                                                                         <input
-                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.tcSecName}}" formControlName="requestedBy" name="requestedBy"
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.tcSecName}}" formControlName="tcSecName" name="tcSecName"
+                                                                                                placeholder="Name" type="text" disabled>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr>
+                                                                                <h3>STANDARDS DEVELOPED</h3>
+                                                                                <div class="row col-12">
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>KS Number</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.standardNumber}}" formControlName="standardNumber" name="standardNumber"
                                                                                                 placeholder="Name" type="text">
                                                                                     </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                  class="form-control one-column-input" value="{{actionRequest?.title}}" formControlName="title" name="title"
+                                                                                                  placeholder="International Standard Title" type="text" ></textarea>
+
+                                                                                    </div>
+
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Edition</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"  formControlName="edition" name="edition"
+                                                                                                placeholder="Edition" type="text">
+                                                                                    </div>
+
+                                                                                    <div class="form-group col-6">
+                                                                                        <label><b>Requested By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <input
+                                                                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.requesterName}}" formControlName="requestedBy" name="requestedBy"
+                                                                                                placeholder="Name" type="text">
+                                                                                    </div>
+                                                                                    <hr>
+                                                                                    <h3>Issues Addressed</h3>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                                                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -389,20 +410,27 @@
                                                                                                   placeholder="International Standard Scope" type="text" ></textarea>
 
                                                                                     </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Reference Material</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                  class="form-control one-column-input"  formControlName="referenceMaterial" name="referenceMaterial"
+                                                                                                  placeholder="Reference Material" type="text" ></textarea>
 
-
+                                                                                    </div>
 
                                                                                 </div>
+                                                                                <hr>
+                                                                                <h2>Background Information</h2>
                                                                                 <h3>Date of Circulation of Adoption Proposal Form</h3>
                                                                                 <div class="row">
                                                                                     <div class="form-group col-6">
-                                                                                        <label><b>Circulation Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <label><b>Circulation Date</b><span style="font-size: xx-small; color: red;"></span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.circulationDate}}" formControlName="circulationDate" name="circulationDate"
                                                                                                 placeholder="Name" type="text" disabled>
                                                                                     </div>
                                                                                     <div class="form-group col-6">
-                                                                                        <label><b>Closing Date</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                        <label><b>Closing Date</b><span style="font-size: xx-small; color: red;"></span></label>
                                                                                         <input
                                                                                                 aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input" value="{{actionRequest?.closingDate}}" formControlName="closingDate" name="closingDate"
                                                                                                 placeholder="Name" type="text" disabled>
@@ -417,6 +445,7 @@
 
                                                                                         <input type="hidden" formControlName="proposalId" name="proposalId" value="{{actionRequest?.id}}" >
                                                                                         <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequest?.draftId}}" >
+                                                                                        <input type="hidden" formControlName="slNumber" name="slNumber" value="{{actionRequest?.proposalNumber}}" >
 
                                                                                 </div>
                                                                             </div>

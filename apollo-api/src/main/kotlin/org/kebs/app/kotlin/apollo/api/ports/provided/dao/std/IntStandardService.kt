@@ -520,7 +520,6 @@ class IntStandardService(
         justification.issuesAddressed=isProposalJustification.issuesAddressed
         justification.tcAcceptanceDate=isProposalJustification.tcAcceptanceDate
         justification.department=isProposalJustification.department
-        justification.status=isProposalJustification.toString()
         justification.proposalId=isProposalJustification.proposalId
         justification.draftId=isProposalJustification.draftId
         justification.scope=isProposalJustification.scope
@@ -528,6 +527,9 @@ class IntStandardService(
         justification.intendedUsers=isProposalJustification.intendedUsers
         justification.circulationDate=isProposalJustification.circulationDate
         justification.closingDate=isProposalJustification.closingDate
+        justification.tcSec_id=isProposalJustification.tcSecName
+        justification.title=isProposalJustification.title
+        justification.referenceMaterial=isProposalJustification.referenceMaterial
         justification.status= 0.toString()
 
         justification.submissionDate = Timestamp(System.currentTimeMillis())

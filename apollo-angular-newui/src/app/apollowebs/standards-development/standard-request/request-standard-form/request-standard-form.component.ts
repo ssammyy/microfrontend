@@ -40,7 +40,7 @@ export class RequestStandardFormComponent implements OnInit {
     exportMarkets: string;
 
     ratings: string[] = ['1', '2', '3', '4', '5'];
-    levelOfStandards: string[] = ['East Africa Standard', 'ARSO Standard', 'AFSEC Standard', 'Company Standard', 'Kenya Standard', 'International Standard']
+    levelOfStandards: string[] = ['East Africa Standard', 'ARSO Standard', 'AFSEC Standard', 'Company Standard', 'Kenya Standard']
     selectedStandard = 'Kenya Standard';
     title = 'toaster-not';
     public uploadedFiles: Array<File> = [];
