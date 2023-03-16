@@ -200,6 +200,13 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     )
     fun getUsersWithAuthorizationId(@Param("authorityId") authorityId: Long): List<UsersEntity>?
 
+    @Query(
+        value = "SELECT ID  FROM DAT_KEBS_USERS WHERE EMAIL= :email",
+        nativeQuery = true
+    )
+    fun getUserId(@Param("email") email: String?): Long?
+
+
 
 }
 
@@ -580,6 +587,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getCompanyName(@Param("id") id: Long?): String?
+
 
 
     @Query(

@@ -38,6 +38,9 @@ class IStandardStakeHolders {
     @Basic
     var dateOfCreation: Timestamp?=null
 
+    @Column(name="USER_ID")
+    @Basic
+    var userId: Long?=null
 
 
 
