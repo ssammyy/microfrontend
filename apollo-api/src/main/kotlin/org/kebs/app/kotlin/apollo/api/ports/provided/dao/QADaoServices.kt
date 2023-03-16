@@ -4767,7 +4767,7 @@ class QADaoServices(
                 p.permitType,
                 p.permitStatus,
                 p.versionNumber,
-                encryptedPermitId = jasyptStringEncryptor.encrypt(p.id.toString()),
+
                 encryptedUserId = jasyptStringEncryptor.encrypt(p.userId.toString())
 
             )
