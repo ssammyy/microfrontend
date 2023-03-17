@@ -1234,6 +1234,15 @@ import {
 import {NgxIntlTelInputModule} from "ngx-intl-tel-input";
 import {RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings} from "ng-recaptcha";
 import {ApiEndpointService} from "./core/services/endpoints/api-endpoint.service";
+import { StandardsLevyQaPermitsComponent } from './apollowebs/standards-levy/standards-levy-qa-permits/standards-levy-qa-permits.component';
+import { ApprovedForNwiComponent } from './apollowebs/standards-development/standard-request/standard-task/approved-for-nwi/approved-for-nwi.component';
+import { RejectedForNwiComponent } from './apollowebs/standards-development/standard-request/standard-task/rejected-for-nwi/rejected-for-nwi.component';
+import { VotesOnNwisComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/votes-on-nwis/votes-on-nwis.component';
+import { ApprovedNwisComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/approved-nwis/approved-nwis.component';
+import { RejectedNwisComponent } from './apollowebs/standards-development/standard-request/std-tsc-sec-tasks-component/rejected-nwis/rejected-nwis.component';
+import { ApprovedJustificationComponent } from './apollowebs/standards-development/standard-request/std-justification/approved-justification/approved-justification.component';
+import { RejectedJustificationComponent } from './apollowebs/standards-development/standard-request/std-justification/rejected-justification/rejected-justification.component';
+import { RejectedWithAmendmentsComponent } from './apollowebs/standards-development/standard-request/std-justification/rejected-with-amendments/rejected-with-amendments.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1839,6 +1848,15 @@ import {ApiEndpointService} from "./core/services/endpoints/api-endpoint.service
         FmarkAwardedComponent,
         FmarkAllApplicationsComponent,
         FmarkOngoingComponent,
+        StandardsLevyQaPermitsComponent,
+        ApprovedForNwiComponent,
+        RejectedForNwiComponent,
+        VotesOnNwisComponent,
+        ApprovedNwisComponent,
+        RejectedNwisComponent,
+        ApprovedJustificationComponent,
+        RejectedJustificationComponent,
+        RejectedWithAmendmentsComponent,
 
 
     ],

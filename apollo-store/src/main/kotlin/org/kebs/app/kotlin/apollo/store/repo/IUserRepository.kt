@@ -200,6 +200,13 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     )
     fun getUsersWithAuthorizationId(@Param("authorityId") authorityId: Long): List<UsersEntity>?
 
+    @Query(
+        value = "SELECT ID  FROM DAT_KEBS_USERS WHERE EMAIL= :email",
+        nativeQuery = true
+    )
+    fun getUserId(@Param("email") email: String?): Long?
+
+
 
 }
 
@@ -394,7 +401,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
                 "c.COMPANY_TELEPHONE as companyTelephone,c.YEARLY_TURNOVER as yearlyTurnover,l.NAME as businessLineName,n.NAME as businessNatureName,c.BUILDING_NAME as buildingName,c.STREET_NAME as streetName,r.REGION as regionName,s.COUNTY as countyName,c.FIRM_CATEGORY as firmCategory,t.TOWN as townName," +
                 "c.BUSINESS_LINES as businessLines,c.BUSINESS_NATURES as businessNatures,c.REGION as region,c.TOWN as town,c.COUNTY as county,c.USER_ID as userId," +
                 "c.DIRECTOR_ID_NUMBER as directorIdNumber,c.ENTRY_NUMBER as entryNumber,c.STATUS as status,c.CLOSED_COMMODITY_MANUFACTURED as closedCommodityManufactured,c.CLOSED_CONTRACTS_UNDERTAKEN as closedContractsUndertaken,c.TASK_TYPE as taskType,c.TASK_ID as taskId,c.OWNERSHIP as ownership,c.BRANCH_NAME as branchName," +
-                "c.CLOSURE_OF_OPERATIONS as closureOfOperations,c.TYPE_OF_MANUFACTURE as typeOfManufacture,c.OTHER_BUSINESS_NATURE_TYPE as otherBusinessNatureType,c.ASSIGN_STATUS as assignStatus" +
+                "c.CLOSURE_OF_OPERATIONS as closureOfOperations,c.TYPE_OF_MANUFACTURE as typeOfManufacture,c.OTHER_BUSINESS_NATURE_TYPE as otherBusinessNatureType,NVL (c.ASSIGN_STATUS,0) as assignStatus" +
                 " FROM DAT_KEBS_COMPANY_PROFILE c Join CFG_KEBS_BUSINESS_NATURE n ON c.BUSINESS_NATURES = n.ID JOIN CFG_KEBS_BUSINESS_LINES l ON c.BUSINESS_LINES = l.ID JOIN CFG_KEBS_REGIONS r ON c.REGION = r.ID JOIN CFG_KEBS_TOWNS t ON c.TOWN = t.ID JOIN CFG_KEBS_COUNTIES s ON c.COUNTY = s.ID ",
         nativeQuery = true
     )
@@ -580,6 +587,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
         nativeQuery = true
     )
     fun getCompanyName(@Param("id") id: Long?): String?
+
 
 
     @Query(

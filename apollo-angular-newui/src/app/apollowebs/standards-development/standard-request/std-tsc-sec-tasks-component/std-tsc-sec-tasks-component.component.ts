@@ -195,6 +195,13 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
     }
 
+    id: any = 'Prepare NWI';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        console.log(this.id);
+    }
+
     get formStdRequest(): any {
         return this.stdNwiFormGroup.controls;
     }

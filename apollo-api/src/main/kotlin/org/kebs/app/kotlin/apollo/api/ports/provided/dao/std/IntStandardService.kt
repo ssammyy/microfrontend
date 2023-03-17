@@ -17,6 +17,8 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
@@ -62,7 +64,8 @@ class IntStandardService(
     private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
     private val iStdStakeHoldersRepository: IStdStakeHoldersRepository,
     private val sdWorkshopStdRepository: SDWorkshopStdRepository,
-    private val standardRequestRepository: StandardRequestRepository
+    private val standardRequestRepository: StandardRequestRepository,
+    private val usersRepo: IUserRepository,
 
 
     ) {
@@ -154,12 +157,13 @@ class IntStandardService(
         //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-        val targetUrl = "https://kimsint.kebs.org/isPropComments/$draftNumber";
+        val targetUrl = "https://kimsint.kebs.org/isPropComments";
         val stakeholdersOne= isAdoptionProposalDto.stakeholdersList
         stakeholdersOne?.forEach { s ->
             val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
             val recipient = s.email
             val user = s.name
+            val userId=usersRepo.getUserId(s.email)
 
             val shs = IStandardStakeHolders()
             shs.name=user
@@ -167,9 +171,10 @@ class IntStandardService(
             shs.draftId=draftNumber
             shs.dateOfCreation=Timestamp(System.currentTimeMillis())
             shs.telephone="NA"
+            shs.userId=userId
             iStdStakeHoldersRepository.save(shs)
 
-            val messageBody= "Dear $user,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl "
+            val messageBody= "Dear $user,An adoption document has been uploaded.Log in to KIEMS to make Comment "
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
@@ -520,7 +525,6 @@ class IntStandardService(
         justification.issuesAddressed=isProposalJustification.issuesAddressed
         justification.tcAcceptanceDate=isProposalJustification.tcAcceptanceDate
         justification.department=isProposalJustification.department
-        justification.status=isProposalJustification.toString()
         justification.proposalId=isProposalJustification.proposalId
         justification.draftId=isProposalJustification.draftId
         justification.scope=isProposalJustification.scope
@@ -528,6 +532,9 @@ class IntStandardService(
         justification.intendedUsers=isProposalJustification.intendedUsers
         justification.circulationDate=isProposalJustification.circulationDate
         justification.closingDate=isProposalJustification.closingDate
+        justification.tcSec_id=isProposalJustification.tcSecName
+        justification.title=isProposalJustification.title
+        justification.referenceMaterial=isProposalJustification.referenceMaterial
         justification.status= 0.toString()
 
         justification.submissionDate = Timestamp(System.currentTimeMillis())

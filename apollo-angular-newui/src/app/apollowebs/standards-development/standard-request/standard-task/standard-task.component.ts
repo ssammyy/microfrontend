@@ -132,6 +132,15 @@ export class StandardTaskComponent implements OnInit {
 
     }
 
+    id: any = 'Pending Review';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        console.log(this.id);
+    }
+
+
+
     ngAfterViewInit(): void {
 
 

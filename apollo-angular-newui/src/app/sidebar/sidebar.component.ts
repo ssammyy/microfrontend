@@ -223,7 +223,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'reports/permits_renewed', title: 'Permits Renewed', ab: 'PR'},
             {path: 'reports/samples_submitted', title: 'Samples Submitted', ab: 'SS'},
             {path: 'reports/permits_deferred', title: 'Permits Deferred', ab: 'PD'},
-            {path: 'reports/qa-sl-report', title: 'QA-SL Reports', ab: 'QSR'},
+            {path: 'stdLevyQaReports', title: 'QA-SL Reports', ab: 'QSR'},
 
 
         ],
@@ -546,7 +546,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'slAllLevyPayments', title: 'Levy Payments', ab: 'LP'},
             {path: 'slPenaltyReport', title: 'Penalties', ab: 'PE'},
             {path: 'stdLevyHistoricalPayments', title: 'Payments Made', ab: 'PM'},
-            {path: 'reports/qa-sl-report', title: 'QA-SL Reports', ab: 'QSR'},
+            {path: 'stdLevyQaReports', title: 'QA-SL Reports', ab: 'QSR'},
 
         ],
     },
@@ -1028,7 +1028,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'isSacApproval',
                 title: 'SAC Tasks',
                 ab: 'ST',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ','SAC_SEC_SD_READ']
             },
             {
                 path: 'isUploadStd',

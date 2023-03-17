@@ -854,6 +854,7 @@ import {
 } from "./apollowebs/standards-development/sicStdPublication/disseminate-standard/disseminate-standard.component";
 import {StandardLevyHistoricalPaymentsComponent} from "./apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component";
 import {NepUploadedNotificationComponent} from "./apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component";
+import {StandardsLevyQaPermitsComponent} from "./apollowebs/standards-levy/standards-levy-qa-permits/standards-levy-qa-permits.component";
 
 export const routes: Routes = [
     {
@@ -2701,6 +2702,11 @@ export const routes: Routes = [
         path: 'stdLevyHistoricalPayments', component: AdminLayoutComponent,
         children: [{path: '', component: StandardLevyHistoricalPaymentsComponent}],
     },
+    {
+        path: 'stdLevyQaReports', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardsLevyQaPermitsComponent}],
+    },
+
 
     // {
     //     path: 'epra', component: AdminLayoutComponent,

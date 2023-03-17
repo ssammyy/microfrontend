@@ -2,6 +2,8 @@ import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from 
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {
+  ComStdCommitteeRemarks,
+  ComStdRemarks,
   InternationalStandardsComments,
   ISCheckRequirements,
   StakeholderProposalComments
@@ -14,6 +16,8 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 
 @Component({
   selector: 'app-int-std-check-requirements',
@@ -26,22 +30,44 @@ export class IntStdCheckRequirementsComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   dtTrigger1: Subject<any> = new Subject<any>();
+  dtTrigger2: Subject<any> = new Subject<any>();
+  comStdRemarks: ComStdRemarks[] = [];
   stakeholderProposalComments: StakeholderProposalComments[] = [];
   internationalStandardsComments: InternationalStandardsComments[] = [];
+  comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   isCheckRequirements:ISCheckRequirements[]=[];
+  public actionRequests: ISCheckRequirements | undefined;
   public actionRequest: ISCheckRequirements | undefined;
-  loadingText: string;
   approve: string;
   reject: string;
+  isShowRemarksTabs= true;
   isShowRemarksTab= true;
   isShowCommentsTab= true;
+  isShowCommentsTabs= true;
+  isShowMainTab= true;
+  isShowMainTabs= true;
+  public uploadDraftStandardFormGroup!: FormGroup;
   public approveRequirementsFormGroup!: FormGroup;
   public rejectRequirementsFormGroup!: FormGroup;
+  public editDraughtFormGroup!: FormGroup;
+  public draughtFormGroup!: FormGroup;
+  public proofReadFormGroup!: FormGroup;
+  documentDTOs: DocumentDTO[] = [];
+  fullname = '';
+  blob: Blob;
+  public uploadedFiles:  FileList;
+  public uploadedFile:  FileList;
+  public uploadDrafts:  FileList;
+  public uploadProofReads:  FileList;
+  public uploadStandardFile:  FileList;
+  loadingText: string;
+
   constructor(
       private store$: Store<any>,
       private router: Router,
       private stdIntStandardService:StdIntStandardService,
       private standardDevelopmentService : StandardDevelopmentService,
+      private stdComStandardService:StdComStandardService,
       private SpinnerService: NgxSpinnerService,
       private notifyService : NotificationService,
       private formBuilder: FormBuilder
@@ -84,7 +110,7 @@ export class IntStdCheckRequirementsComponent implements OnInit {
   public getUploadedDraft(): void {
     this.loadingText = "Retrieving Drafts...";
     this.SpinnerService.show();
-    this.stdIntStandardService.getUploadedDraft().subscribe(
+    this.stdComStandardService.getComPublishingTasks().subscribe(
         (response: ISCheckRequirements[]) => {
           this.isCheckRequirements = response;
           console.log(this.isCheckRequirements)

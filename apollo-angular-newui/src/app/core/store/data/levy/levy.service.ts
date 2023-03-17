@@ -32,7 +32,7 @@ import {
 } from "./levy.model";
 import {BusinessLinesView, HistoricalData, RegionView, UsersEntity} from "../std/std.model";
 import swal from "sweetalert2";
-import {FilterDto} from "../qa/qa.model";
+import {FilterDto, ReportsPermitEntityDto} from "../qa/qa.model";
 
 @Injectable({
   providedIn: 'root'
@@ -646,6 +646,20 @@ export class LevyService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PENALTY_DETAIL);
         const params = new HttpParams();
         return this.http.get<PenaltyDetails>(url, {params}).pipe();
+    }
+
+    public loadPermitGrantedReports(): Observable<ReportsPermitEntityDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED_SL);
+        const params = new HttpParams();
+        return this.http.get<ReportsPermitEntityDto[]>(url, {params}).pipe(
+            map(function (response: ReportsPermitEntityDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
     }
 
     public getManufacturesLevyPenalty(): any {

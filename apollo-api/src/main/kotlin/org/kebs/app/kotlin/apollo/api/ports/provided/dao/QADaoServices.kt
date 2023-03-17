@@ -4809,7 +4809,7 @@ class QADaoServices(
                 p.permitType,
                 p.permitStatus,
                 p.versionNumber,
-                encryptedPermitId = jasyptStringEncryptor.encrypt(p.id.toString()),
+
                 encryptedUserId = jasyptStringEncryptor.encrypt(p.userId.toString())
 
             )
@@ -10085,6 +10085,22 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findReportAllAwardedPermitsSl(
+        user: UsersEntity,
+        status: Int,
+        fmarkGeneratedStatus: Int
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByOldPermitStatusIsNullAndPermitAwardStatus(
+            status
+        )
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
 
     fun findReportAllAwardedPermits(
         user: UsersEntity,
@@ -10220,7 +10236,23 @@ class QADaoServices(
                 telephoneNo = p.attachedPlantId?.let { findPlantDetails(it) }?.telephone,
                 email = p.attachedPlantId?.let { findPlantDetails(it) }?.emailAddress,
                 pscApprovalDate = p.id?.let { findPermitPscDate(it).createdOn },
-                p.inspectionDate
+                p.inspectionDate,
+                p.attachedPlantId?.let {
+                    commonDaoServices.findCompanyProfileWithID(
+                        findPlantDetails(it).companyProfileId ?: -1L
+                    ).kraPin
+                },
+                p.attachedPlantId?.let {
+                    commonDaoServices.findCompanyProfileWithID(
+                        findPlantDetails(it).companyProfileId ?: -1L
+                    ).entryNumber
+                },
+                p.attachedPlantId?.let {
+                    commonDaoServices.findCompanyProfileWithID(
+                        findPlantDetails(it).companyProfileId ?: -1L
+                    ).postalAddress
+                }
+
             )
         }
 

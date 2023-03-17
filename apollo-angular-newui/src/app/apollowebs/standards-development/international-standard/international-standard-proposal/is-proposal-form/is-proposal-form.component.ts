@@ -182,7 +182,7 @@ export class IsProposalFormComponent implements OnInit {
 
   uploadProposal(): void {
     this.SpinnerService.show();
-    console.log(this.isProposalFormGroup.value);
+   // console.log(this.isProposalFormGroup.value);
     //const valueString=this.isProposalFormGroup.get("addStakeholdersList")
     //const valueString=this.isProposalFormGroup.get("addStakeholdersList").value.split(",")
     this.stdIntStandardService.prepareAdoptionProposal(this.isProposalFormGroup.value,this.dataSaveResourcesRequiredList).subscribe(
@@ -192,6 +192,7 @@ export class IsProposalFormComponent implements OnInit {
             this.showToasterSuccess(response.httpStatus, `Proposal Uploaded`);
           //this.onClickSaveUPLOADS(response.body.id)
           this.isProposalFormGroup.reset();
+          this.getIntStandardProposals();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();

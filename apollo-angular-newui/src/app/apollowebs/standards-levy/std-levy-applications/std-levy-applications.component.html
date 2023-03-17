@@ -128,12 +128,13 @@
                                             <td>{{manufactureList.name}}</td>
                                             <td>{{manufactureList.entryNumber}}</td>
                                             <td>{{manufactureList.kraPin}}</td>
-                                            <td>{{manufactureList.registrationNumber}}</td>
+                                            <td>{{manufactureList.registrationNumber}}-{{manufactureList.assignStatus}}</td>
                                             <td *ngIf="manufactureList.status==1"><span class="badge badge-info" style="width: 94px;">Active</span></td>
                                             <td *ngIf="manufactureList.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>
                                             <td *ngIf="manufactureList.status==0"><span class="badge badge-info" style="width: 94px;">Closed</span></td>
                                             <td *ngIf="manufactureList.status==4"><span class="badge badge-warning" style="width: 94px;">In-Active</span></td>
-                                            <td><span class="badge badge-rose">Not Assigned</span></td>
+                                            <td *ngIf="manufactureList.assignStatus==0"><span class="badge badge-rose">Not Assigned</span></td>
+                                            <td *ngIf="manufactureList.assignStatus==1"><span class="badge badge-success" style="width: 94px">Assigned</span></td>
                                             <td>
                                                 <button (click)="onOpenModalList(manufactureList,'viewList')"
                                                         type="submit" class="btn btn-success btn-sm" style="border-radius: 40px;">More
@@ -164,7 +165,10 @@
                                     <div *ngIf="actionRequestList?.typeOfManufacture==1" class="row">
                                         <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
                                             <button (click)=toggleDisplayAssignForm() type="button"
-                                                    class="btn btn-primary btn-sm">Assign To Self
+                                                    class="btn btn-primary btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Self
+                                            </button>
+                                            <button  type="button"
+                                                    class="btn btn-danger btn-sm" *ngIf="actionRequestList?.assignStatus==1">Task is Assigned
                                             </button>
                                             <button (click)=toggleDisplayEditForm() type="button"
                                                     class="btn btn-success btn-sm">Edit Company Details
@@ -179,10 +183,13 @@
 
                                         <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
                                             <button (click)=toggleDisplayAssignForm() type="button"
-                                                    class="btn btn-primary btn-sm">Assign To Self
+                                                    class="btn btn-primary btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Self
                                             </button>
                                             <button (click)=toggleDisplayAssignTo1Form() type="button"
-                                                    class="btn btn-success btn-sm">Assign To Other
+                                                    class="btn btn-success btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Other
+                                            </button>
+                                            <button  type="button"
+                                                     class="btn btn-danger btn-sm" *ngIf="actionRequestList?.assignStatus==1">Task is Assigned
                                             </button>
                                             <button (click)=toggleDisplayEditForm() type="button"
                                                     class="btn btn-info btn-sm">Edit Company Details
@@ -196,10 +203,13 @@
 
                                         <div *ngIf="roles?.includes('SL_IS_MANAGER')">
                                             <button (click)=toggleDisplayAssignForm() type="button"
-                                                    class="btn btn-primary btn-sm">Assign To Self
+                                                    class="btn btn-primary btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Self
                                             </button>
                                             <button (click)=toggleDisplayAssignTo2Form() type="button"
-                                                    class="btn btn-success btn-sm">Assign To Other
+                                                    class="btn btn-success btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Other
+                                            </button>
+                                            <button  type="button"
+                                                     class="btn btn-danger btn-sm" *ngIf="actionRequestList?.assignStatus==1">Task is Assigned
                                             </button>
                                             <button (click)=toggleDisplayEditForm() type="button"
                                                     class="btn btn-info btn-sm">Edit Company Details
@@ -214,7 +224,7 @@
                                         </div>
                                         <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
                                             <button (click)=toggleDisplayAssignTo2Form() type="button"
-                                                    class="btn btn-success btn-sm">Assign To Other
+                                                    class="btn btn-success btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Other
                                             </button>
                                             <button (click)=toggleDisplayEditForm() type="button"
                                                     class="btn btn-info btn-sm">Edit Company Details
@@ -231,7 +241,10 @@
                                     <div *ngIf="actionRequestList?.typeOfManufacture==2" class="row">
                                         <div *ngIf="roles?.includes('SL_IS_PL_OFFICER')">
                                             <button (click)=toggleDisplayAssignForm() type="button"
-                                                    class="btn btn-primary btn-sm">Assign To Self
+                                                    class="btn btn-primary btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Self
+                                            </button>
+                                            <button  type="button"
+                                                     class="btn btn-danger btn-sm" *ngIf="actionRequestList?.assignStatus==1">Task is Assigned
                                             </button>
                                             <button (click)=toggleDisplayEditForm() type="button"
                                                     class="btn btn-success btn-sm">Edit Company Details
@@ -246,10 +259,13 @@
 
                                         <div *ngIf="roles?.includes('SL_IS_ASST_MANAGER')">
                                             <button (click)=toggleDisplayAssignForm() type="button"
-                                                    class="btn btn-primary btn-sm">Assign To Self
+                                                    class="btn btn-primary btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Self
                                             </button>
                                             <button (click)=toggleDisplayAssignTo1Form() type="button"
-                                                    class="btn btn-success btn-sm">Assign To Other
+                                                    class="btn btn-success btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Other
+                                            </button>
+                                            <button  type="button"
+                                                     class="btn btn-danger btn-sm" *ngIf="actionRequestList?.assignStatus==1">Task is Assigned
                                             </button>
                                             <button (click)=toggleDisplayEditForm() type="button"
                                                     class="btn btn-info btn-sm">Edit Company Details
@@ -263,10 +279,13 @@
 
                                         <div *ngIf="roles?.includes('SL_IS_MANAGER')">
                                             <button (click)=toggleDisplayAssignForm() type="button"
-                                                    class="btn btn-primary btn-sm">Assign To Self
+                                                    class="btn btn-primary btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Self
                                             </button>
                                             <button (click)=toggleDisplayAssignTo2Form() type="button"
-                                                    class="btn btn-success btn-sm">Assign To Other
+                                                    class="btn btn-success btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Other
+                                            </button>
+                                            <button  type="button"
+                                                     class="btn btn-danger btn-sm" *ngIf="actionRequestList?.assignStatus==1">Task is Assigned
                                             </button>
                                             <button (click)=toggleDisplayEditForm() type="button"
                                                     class="btn btn-info btn-sm">Edit Company Details
@@ -281,10 +300,13 @@
                                         </div>
                                         <div *ngIf="roles?.includes('SL_IS_CHIEF_MANAGER')">
                                             <button (click)=toggleDisplayAssignTo2Form() type="button"
-                                                    class="btn btn-success btn-sm">Assign To Other
+                                                    class="btn btn-success btn-sm" *ngIf="actionRequestList?.assignStatus==0">Assign To Other
+                                            </button>
+                                            <button  type="button"
+                                                     class="btn btn-danger btn-sm" *ngIf="actionRequestList?.assignStatus==1">Task is Assigned
                                             </button>
                                             <button (click)=toggleDisplayEditForm() type="button"
-                                                    class="btn btn-info btn-sm">Edit Company Details
+                                                    class="btn btn-info btn-sm" >Edit Company Details
                                             </button>
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1-C Form
