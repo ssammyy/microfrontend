@@ -537,10 +537,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     POST("/process-step-add", handler::permitProcessStepMigration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
-                    POST(
-                        "/generate-difference-invoice",
-                        handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration
-                    )
+                    POST("/generate-difference-invoice", handler::permitSubmitApplicationInvoiceDifferenceGenerationMigration)
                     POST("/re-generate-invoice", handler::permitSubmitApplicationInvoiceReGenerationMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)

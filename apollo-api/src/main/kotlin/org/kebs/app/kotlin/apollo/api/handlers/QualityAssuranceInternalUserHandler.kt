@@ -996,8 +996,8 @@ class QualityAssuranceInternalUserHandler(
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
-            val body = req.body<ApproveRejectPermitApplyDto>()
-            val errors: Errors = BeanPropertyBindingResult(body, ApproveRejectPermitApplyDto::class.java.name)
+            val body = req.body<ApproveInspectionReportApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ApproveInspectionReportApplyDto::class.java.name)
             validator.validate(body, errors)
             when {
                 errors.allErrors.isEmpty() -> {

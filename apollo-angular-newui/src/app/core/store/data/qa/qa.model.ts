@@ -454,6 +454,7 @@ export class AllPermitDetailsDto {
     inspectionReportDetails: InspectionReportDetailsDto;
     schemeOfSuperVisionList: FilesListDto[];
     remarksDetailsList: RemarksAndStatusDto[];
+    inspectionInvoiceUpload: InspectionInvoiceUploadedDto;
 
 }
 
@@ -493,6 +494,12 @@ export class InspectionReportDetailsDto {
     refNo: string;
     submittedInspectionReportStatus: string;
     createdOn: Date;
+}
+
+export class InspectionInvoiceUploadedDto {
+    uploadID: number;
+    paidDate: Date;
+    endingDate: Date;
 }
 
 export class StgInvoiceBalanceDto {

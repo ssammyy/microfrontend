@@ -90,9 +90,7 @@ class QualityAssuranceJSONControllers(
                 val ratesMap = iPermitRatingRepo.findAllByStatus(map.activeStatus)
                     ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
                 val selectedRate = ratesMap.firstOrNull {
-                    manufacture.yearlyTurnover!! > (it.min
-                        ?: BigDecimal.ZERO) && manufacture.yearlyTurnover!! <= (it.max
-                        ?: throw NullValueNotAllowedException("Max needs to be defined"))
+                    manufacture.yearlyTurnover!! > (it.min ?: BigDecimal.ZERO) && manufacture.yearlyTurnover!! <= (it.max ?: throw NullValueNotAllowedException("Max needs to be defined"))
                 } ?: throw NullValueNotAllowedException("Rate not found")
                 with(branchDetails) {
                     varField9 = fileDoc.id.toString()
@@ -100,24 +98,17 @@ class QualityAssuranceJSONControllers(
                     invoiceInspectionGenerated = 1
                     paidDate = userPaidDate
                     val validityInYears = selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS")
-                    val yearsGotten = commonDaoServices.getCalculatedDateInLong(userPaidDate)
-                    endingDate = when {
-                        validityInYears == yearsGotten -> {
-                            throw NullValueNotAllowedException("Inspection Fee has already reach The validity date for $validityInYears years after payment date")
-                        }
-
+                    val yearsGotten = commonDaoServices.getCalculatedYearInLong(userPaidDate)
+                    endingDate = when {validityInYears == yearsGotten.toLong() -> { throw NullValueNotAllowedException("Inspection Fee has already reach The validity date for $validityInYears years after payment date") }
                         yearsGotten > validityInYears -> {
                             throw NullValueNotAllowedException("Inspection Fee has already passed, The validity date for $validityInYears years after payment date")
                         }
-
                         else -> {
-                            commonDaoServices.addYearsToCurrentDate(yearsGotten)
+                            commonDaoServices.addYearsToCurrentDate(yearsGotten.toLong())
                         }
                     }
-
                 }
                 manufacturePlantRepository.save(branchDetails)
-//                return  ServerResponse.ok().body("INSPECTION INVOICE UPLOADED SUCCESSFUL")
             } ?: throw NullValueNotAllowedException("No Company Record not found")
     }
 

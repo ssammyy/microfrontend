@@ -493,14 +493,14 @@ class PostInvoiceToSageServices(
             when (response.second?.header?.statusCode) {
                 200 -> {
                     with(invoiceFound) {
-                        sageInvoiceNumber = response.second?.response?.documentNo
+                        sageInvoiceNumber = response.second?.response?.documentNo ?: throw  ExpectedDataNotFound("Missing Invoice Number Due to Connectivity issues")
                     }
                     val stgReconDetails = invoiceDaoService.updateStgReconciliationTableDetails(invoiceFound, user)
 
                     var batchInvoiceDetails = invoiceDaoService.findInvoiceBatchDetails(stgReconDetails.invoiceId
                             ?: throw  ExpectedDataNotFound("Missing Invoice Batch ID"))
                     with(batchInvoiceDetails) {
-                        sageInvoiceNumber = response.second?.response?.documentNo
+                        sageInvoiceNumber = response.second?.response?.documentNo ?: throw  ExpectedDataNotFound("Missing Invoice Number Due to Connectivity issues")
                         KotlinLogging.logger { }.error { "Sage Invoice Number: $sageInvoiceNumber" }
 
                     }
@@ -509,15 +509,15 @@ class PostInvoiceToSageServices(
                     val qaBatchInvoice = qaDaoServices.findBatchInvoicesWithRefNO(batchInvoiceDetails.batchNumber
                             ?: throw  ExpectedDataNotFound("Missing Invoice QA Ref No"))
                     with(qaBatchInvoice) {
-                        sageInvoiceNumber = response.second?.response?.documentNo
+                        sageInvoiceNumber = response.second?.response?.documentNo ?: throw  ExpectedDataNotFound("Missing Invoice Number Due to Connectivity issues")
                     }
-
 
                     qaDaoServices.updateQAInvoiceBatchDetails(qaBatchInvoice, user)
                 }
                 else -> {
                     val gson = Gson()
                     KotlinLogging.logger { }.error { "Request Response: ${gson.toJson(response.second)}" }
+                        throw  ExpectedDataNotFound("An Error Occurred trying to connect to sage ")
                 }
             }
 

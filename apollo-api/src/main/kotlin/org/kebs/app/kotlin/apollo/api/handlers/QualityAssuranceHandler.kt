@@ -3084,12 +3084,9 @@ class QualityAssuranceHandler(
                     }else{
                         qaDaoServices.findPermitInvoiceByPermitID(findSMarkID).batchInvoiceNo
                     }
-
                 }
                 else {
-                    qaDaoServices.findPermitInvoiceByPermitID(
-                        permitID
-                    ).batchInvoiceNo
+                    qaDaoServices.findPermitInvoiceByPermitID(permitID).batchInvoiceNo
                 }
 
             }

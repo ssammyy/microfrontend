@@ -265,7 +265,9 @@ data class ApproveInspectionReportApplyDto(
     var approvedRejectedStatus: Boolean,
     @NotNull(message = "Required inspectionReportID Status")
     var inspectionReportID: Long,
-    var supervisorComments: String? = null
+    var supervisorComments: String? = null,
+    var approvedRejectedRemarks: String? = null,
+    var recommendationApprovalRemarks: String? = null
 )
 
 data class AssignOfficerApplyDto(
@@ -556,6 +558,12 @@ data class InvoiceDetailsDto(
     var subTotalBeforeTax: BigDecimal? = null,
     var totalAmount: BigDecimal? = null,
     var invoiceDetailsList: List<InvoicePerDetailsDto>? = null,
+)
+
+data class InspectionInvoiceUploadedDto(
+    var uploadID: Long? = null,
+    var paidDate: Date? = null,
+    var endingDate: Date? = null
 )
 
 data class PermitUploads(
@@ -867,6 +875,7 @@ data class AllPermitDetailsDto(
     val inspectionReportDetails: InspectionReportDtoPermit? = null,
     var schemeOfSuperVisionList: List<FilesListDto>? = null,
     var remarksDetailsList: List<RemarksAndStatusDto>? = null,
+    var inspectionInvoiceUpload: InspectionInvoiceUploadedDto? = null
 
     )
 

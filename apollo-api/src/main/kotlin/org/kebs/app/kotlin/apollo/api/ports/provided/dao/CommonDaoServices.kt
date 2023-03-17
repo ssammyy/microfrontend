@@ -105,10 +105,7 @@ import java.security.SecureRandom
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
@@ -1774,6 +1771,13 @@ class CommonDaoServices(
     fun getCalculatedDateInLong(d1: Date): Long {
         val differenceInTime: Long = getCurrentDate().time - d1.time
         return (differenceInTime / (1000L * 60 * 60 * 24 * 365))
+    }
+
+    fun getCalculatedYearInLong(d1: Date): Int {
+        val givenLocalDate = d1.toLocalDate()
+        val currentDate = LocalDate.now()
+        val yearsBetween = Period.between(givenLocalDate, currentDate).years
+        return yearsBetween
     }
 
     fun getCalculatedDaysInLong(d1: Date,d2: Date): Long {
