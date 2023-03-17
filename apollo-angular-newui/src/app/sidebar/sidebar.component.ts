@@ -1028,7 +1028,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'isSacApproval',
                 title: 'SAC Tasks',
                 ab: 'ST',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SAC_SD_READ','SAC_SEC_SD_READ']
             },
             {
                 path: 'isUploadStd',
