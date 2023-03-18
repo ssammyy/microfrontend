@@ -1642,7 +1642,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                             <div class="mat-button-focus-overlay"></div>
                         </button>
 
-                        <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null"
+                        <button style="width: -webkit-fill-available;white-space: normal;" *ngIf="allPermitDetails?.permitDetails?.invoiceDifferenceGenerated && allPermitDetails?.invoiceDifferenceDetails != null
+                        && allPermitDetails.batchIDDifference != null"
                                 mat-raised-button=""
                                 (click)="goToInvoiceGeneratedDifference()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                                 class="mat-button-wrapper">View Generate Difference Invoice</span>

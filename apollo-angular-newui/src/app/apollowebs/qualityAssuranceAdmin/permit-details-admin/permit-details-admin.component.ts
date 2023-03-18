@@ -131,9 +131,11 @@ export class PermitDetailsAdminComponent implements OnInit {
     recommendationForm: FormGroup;
     recommendationApproveRejectForm: FormGroup;
     approveRejectPermitForm: FormGroup;
+    approveRejectRecommendationInspectionReportPermitForm: FormGroup;
     approveRejectInspectionReportForm: FormGroup;
     pdfSaveComplianceStatusForm!: FormGroup;
     ssfSaveComplianceStatusForm!: FormGroup;
+    viewInspectionInvoiceDetailsForm!: FormGroup;
 
 
     // DTOS
@@ -552,6 +554,20 @@ export class PermitDetailsAdminComponent implements OnInit {
             approvedRejectedRemarks: null,
         });
 
+        this.viewInspectionInvoiceDetailsForm = this.formBuilder.group({
+            uploadID: null,
+            paidDate: null,
+            endingDate: null,
+        });
+
+        this.approveRejectRecommendationInspectionReportPermitForm = this.formBuilder.group({
+            approvedRejectedStatus: ['', Validators.required],
+            approvedRejectedRemarks: ['', Validators.required],
+            recommendationApprovalRemarks: ['', Validators.required],
+            inspectionReportID: ['', Validators.required],
+            supervisorComments: ['', Validators.required],
+        });
+
         this.approveRejectInspectionReportForm = this.formBuilder.group({
             approvedRejectedStatus: ['', Validators.required],
             inspectionReportID: ['', Validators.required],
@@ -832,13 +848,13 @@ export class PermitDetailsAdminComponent implements OnInit {
 
     openModalAddDetails(divVal: string): void {
 
-        const arrHead = ['updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
+        const arrHead = ['viewInspectionInvoiceDetails', 'updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
             'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'approveRejectRecommendation', 'uploadSSF', 'approveRejectInspectionReport',
-            'approvePermitQAMHOD', 'approvePermitPSCMember', 'approvePermitPCM', 'updateBrand'];
+            'approvePermitQAMHOD', 'approvePermitQAMHODRecommendationInspectionReport', 'approvePermitPSCMember', 'approvePermitPCM', 'updateBrand'];
 
-        const arrHeadSave = ['Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
+        const arrHeadSave = ['Uploaded Inspection Invoice Details', 'Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
             'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'APPROVE/REJECT RECOMMENDATION', 'UPLOAD SSF', 'APPROVE/REJECT GENERATED INSPECTION REPORT',
-            'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM', 'UPDATE BRAND'];
+            'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT (PERMIT,RECOMMENDATION,GENERATED INSPECTION REPORT) BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM', 'UPDATE BRAND'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (divVal === arrHead[h]) {
@@ -1236,7 +1252,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     SaveApprovePermitQAMHOD(valid: boolean) {
         if (valid) {
             this.SpinnerService.show();
-            this.qaService.qaApprovePermitQAMHOD(this.approveRejectPermitForm.value, this.permitID).subscribe(
+            this.qaService.qaApprovePermitQAMHOD(this.approveRejectRecommendationInspectionReportPermitForm.value, this.permitID).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
