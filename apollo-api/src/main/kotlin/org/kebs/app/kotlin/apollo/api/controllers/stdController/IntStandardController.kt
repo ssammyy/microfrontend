@@ -624,6 +624,8 @@ class IntStandardController(
     fun approveInternationalStandard(@RequestBody iSDraftDecisions: ISDraftDecisionsStd
     ) : ServerResponse
     {
+        val gson = Gson()
+        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(iSDraftDecisions) }
 
         return ServerResponse(HttpStatus.OK,"Decision",internationalStandardService.approveInternationalStandard(iSDraftDecisions))
 

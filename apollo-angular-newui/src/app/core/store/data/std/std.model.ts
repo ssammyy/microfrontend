@@ -1049,6 +1049,7 @@ export interface ISDraftDecisionStd {
     scope: string;
     special: string;
     standardNumber: string;
+    standardType: string;
 }
 
 export interface ISSacSecTASKS {
