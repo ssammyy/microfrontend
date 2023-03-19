@@ -10229,7 +10229,7 @@ class QADaoServices(
                         it
                     )
                 }?.firmCategory?.let { findFirmTypeById(it).firmType },
-                p.id?.let { invoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(it)?.totalAmount },
+                p.id?.let { invoiceMasterDetailsRepo.findTopByPermitIdAndVarField10IsNull(it)?.totalAmount },
                 standardNumber = p.productStandard?.let { findStandardsByID(it).standardNumber },
                 standardTitle = p.productStandard?.let { findStandardsByID(it).standardTitle },
                 physicalAddress = p.attachedPlantId?.let { findPlantDetails(it) }?.physicalAddress,
