@@ -42,16 +42,18 @@ export const ROUTES: RouteInfo[] = [
         path: '/admin',
         title: 'Admin',
         type: 'sub',
-        icontype: 'dashboard',
-        collapse: 'admin',
-        privilege: ['SYSADMIN_VIEW'],
         children: [
-            {path: 'user_management', title: 'User Management', ab: 'UM'},
-            {path: 'tivet_management', title: 'Tivet Management', ab: 'TM'},
-            {path: 'business_management', title: 'Business Management', ab: 'BM'},
+            {path: 'user_management', title: 'User Management', ab: 'UM',privilege: ['SYSADMIN_VIEW']},
+            {path: 'tivet_management', title: 'Tivet Management', ab: 'TM',privilege: ['SYSADMIN_VIEW', 'TIVET_MANAGE']},
+            {path: 'business_management', title: 'Business Management', ab: 'BM',privilege: ['SYSADMIN_VIEW']},
 
         ],
+        icontype: 'dashboard',
+        collapse: 'admin',
+        privilege: ['SYSADMIN_VIEW','TIVET_MANAGE'],
+
     },
+
 
     {
         path: '/company',
