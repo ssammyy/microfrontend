@@ -294,6 +294,7 @@ export class ApiEndpointService {
         PERMIT_REPORTS: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsWithNoFmarkGenerated`,
         PERMIT_REPORTS_ALL_AWARDED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwarded`,
         PERMIT_REPORTS_ALL_AWARDED_SL: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwardedSl`,
+        PERMIT_REPORTS_ALL_AWARDED_SL_FILTER: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsAwardedSlFilter`,
         PERMIT_REPORTS_ALL_RENEWED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allPermitsRenewed`,
         PERMIT_REPORTS_ALL_SAMPLES_SUBMITTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allSamplesSubmitted`,
         PERMIT_REPORTS_ALL_DEJECTED: `${ApiEndpointService.QA_CONTEXT}/permit/reports/allDejectedPermits`,
@@ -748,6 +749,7 @@ export class ApiEndpointService {
         STD_LEVY_HISTORICAL_PAYMENTS: `${ApiEndpointService.STL_CONTEXT}/getLevyHistoricalPayments`,
         STD_LEVY_HISTORICAL_PAYMENTS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getLevyHistoricalPaymentsFilter`,
         STD_LEVY_HISTORICAL_PAYMENTS_STATUS: `${ApiEndpointService.STL_CONTEXT}/getLevyPaymentStatus`,
+        STD_LEVY_PAYMENTS_STATUS: `${ApiEndpointService.STL_CONTEXT}/updateExemptionStatus`,
 
 
     };

@@ -12,7 +12,7 @@ import {
     ConfirmEditCompanyDTO, DefaulterDetails,
     DirectorsList,
     DocumentDTO,
-    EditCompanyDTO, EmailVerificationStatus, LevyFilterDto, LevyFiltersDto,
+    EditCompanyDTO, EmailVerificationStatus, ExemptionDto, LevyFilterDto, LevyFiltersDto,
     ManufactureCompletedTask,
     ManufactureDetailList,
     ManufacturePenalty,
@@ -1009,6 +1009,32 @@ export class LevyService {
         return this.http.get<PaymentStatus>(url, {params}).pipe();
     }
 
+    public changeLevyStatus(exemptionDto: ExemptionDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PAYMENTS_STATUS);
+        const params = new HttpParams();
+        return this.http.post<ExemptionDto>(url, exemptionDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadPermitGrantedReportsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED_SL_FILTER);
+
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
 
 

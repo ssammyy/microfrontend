@@ -146,6 +146,8 @@ export class IsProposalFormComponent implements OnInit {
             this.isProposalFormGroup.patchValue(
                 {
                     requestId: this.actionRequests.id,
+                    title: this.actionRequests.subject,
+                    scope: this.actionRequests.description,
                     proposal_doc_name: this.proposal_doc_name,
                     tcSecName: this.fullname
                 }

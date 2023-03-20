@@ -104,7 +104,6 @@ class StandardLevyService(
 //    }
 
 
-
     fun getManufacturerPenaltyHistory(): MutableIterable<StagingStandardsLevyManufacturerPenalty> {
         return iStagingStandardsLevyManufacturerPenaltyRepository.findAll()
     }
@@ -140,19 +139,19 @@ class StandardLevyService(
         companyProfileEditEntity.userType?.let { variables["userType"] = it }
         companyProfileEditEntity.assignedTo?.let { variables["assignedTo"] = it }
         companyProfileEditEntity.createdBy = loggedInUser.id.toString()
-        companyProfileEditEntity.createdBy?.let{variables.put("originator", it)}
+        companyProfileEditEntity.createdBy?.let { variables.put("originator", it) }
         companyProfileEditEntity.createdOn = commonDaoServices.getTimestamp()
-        companyProfileEditEntity.createdOn?.let{variables.put("createdOn", it)}
-        companyProfileEditEntity.typeOfManufacture?.let{variables.put("typeOfManufacture", it)}
-        companyProfileEditEntity.otherBusinessNatureType?.let{variables.put("otherBusinessNatureType", it)}
-        companyProfileEditEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
-        companyProfileEntity.yearlyTurnover?.let{variables.put("yearlyTurnover", it)}
-        companyProfileEditEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
-        companyProfileEntity.companyTelephone?.let{variables.put("companyTelephone", it)}
-        companyProfileEditEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
-        companyProfileEntity.companyEmail?.let{variables.put("companyEmail", it)}
+        companyProfileEditEntity.createdOn?.let { variables.put("createdOn", it) }
+        companyProfileEditEntity.typeOfManufacture?.let { variables.put("typeOfManufacture", it) }
+        companyProfileEditEntity.otherBusinessNatureType?.let { variables.put("otherBusinessNatureType", it) }
+        companyProfileEditEntity.yearlyTurnover?.let { variables.put("yearlyTurnoverEdit", it) }
+        companyProfileEntity.yearlyTurnover?.let { variables.put("yearlyTurnover", it) }
+        companyProfileEditEntity.companyTelephone?.let { variables.put("companyTelephoneEdit", it) }
+        companyProfileEntity.companyTelephone?.let { variables.put("companyTelephone", it) }
+        companyProfileEditEntity.companyEmail?.let { variables.put("companyEmailEdit", it) }
+        companyProfileEntity.companyEmail?.let { variables.put("companyEmail", it) }
 
-        companyProfileEditEntity.status=1
+        companyProfileEditEntity.status = 1
         val userIntType = companyProfileEditEntity.userType
         val plUserTypes = 61L
         val asManagerUserTypes = 62L
@@ -161,11 +160,11 @@ class StandardLevyService(
 
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
 
-        val approverFname=loggedInUser.firstName
-        val approverLname=loggedInUser.lastName
-        val approveName= "$approverFname  $approverLname"
-        standardLevySiteVisitRemarks.siteVisitId= editDetails.id
-        standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+        val approverFname = loggedInUser.firstName
+        val approverLname = loggedInUser.lastName
+        val approveName = "$approverFname  $approverLname"
+        standardLevySiteVisitRemarks.siteVisitId = editDetails.id
+        standardLevySiteVisitRemarks.remarks = standardLevySiteVisitRemarks.remarks
         standardLevySiteVisitRemarks.role = "Levy Officer"
         standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         standardLevySiteVisitRemarks.remarkBy = approveName
@@ -188,11 +187,12 @@ class StandardLevyService(
             }
             ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
 
-        var userList= companyStandardRepository.getUserEmail(companyProfileEditEntity?.assignedTo)
-        userList.forEach { item->
-            val recipient= item.getUserEmail()
+        var userList = companyStandardRepository.getUserEmail(companyProfileEditEntity?.assignedTo)
+        userList.forEach { item ->
+            val recipient = item.getUserEmail()
             val subject = "Company Details Edited"
-            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details for ${companyProfileEditEntity.name} have been edited. Kindly login to the KIMS System to Confirm "
+            val messageBody =
+                "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details for ${companyProfileEditEntity.name} have been edited. Kindly login to the KIMS System to Confirm "
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
@@ -222,6 +222,7 @@ class StandardLevyService(
 
 
     }
+
     fun getComEditRemarks(editID: Long): List<CompanyRemarks> {
         standardLevySiteVisitRemarksRepository.findCompanyRemarks(editID)?.let {
             return it
@@ -243,39 +244,39 @@ class StandardLevyService(
                 companyProfileEntity.physicalAddress?.let { variables["physicalAddressEdit"] = it }
                 companyProfileEntity.postalAddress?.let { variables["postalAddressEdit"] = it }
                 companyProfileEntity.ownership?.let { variables["ownershipEdit"] = it }
-                companyProfileEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
-                companyProfileEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
-                companyProfileEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
+                companyProfileEntity.yearlyTurnover?.let { variables.put("yearlyTurnoverEdit", it) }
+                companyProfileEntity.companyTelephone?.let { variables.put("companyTelephoneEdit", it) }
+                companyProfileEntity.companyEmail?.let { variables.put("companyEmailEdit", it) }
                 companyProfileEntity.createdBy = loggedInUser.userName
-                companyProfileEntity.createdBy?.let{variables.put("createdBy", it)}
+                companyProfileEntity.createdBy?.let { variables.put("createdBy", it) }
                 companyProfileEntity.modifiedOn = commonDaoServices.getTimestamp()
-                companyProfileEntity.modifiedOn?.let{variables.put("modifiedOn", it)}
+                companyProfileEntity.modifiedOn?.let { variables.put("modifiedOn", it) }
                 companyProfileEntity.taskId?.let { variables.put("taskId", it) }
                 companyProfileEntity.slBpmnProcessInstance?.let { variables.put("processId", it) }
                 companyProfileEntity.assignedTo?.let { variables.put("assignedTo", it) }
 
-                rejectedCompanyDetailsEntity.companyId=companyProfileEntity.id
-                rejectedCompanyDetailsEntity.companyEmailEdit=companyProfileEntity.companyEmail
-                rejectedCompanyDetailsEntity.editID= standardLevySiteVisitRemarks.siteVisitId
-                rejectedCompanyDetailsEntity.physicalAddressEdit=companyProfileEntity.physicalAddress
-                rejectedCompanyDetailsEntity.postalAddressEdit=companyProfileEntity.postalAddress
-                rejectedCompanyDetailsEntity.ownershipEdit=companyProfileEntity.ownership
-                rejectedCompanyDetailsEntity.companyTelephoneEdit=companyProfileEntity.companyTelephone
-                rejectedCompanyDetailsEntity.assignedTo=companyProfileEntity.assignedTo
+                rejectedCompanyDetailsEntity.companyId = companyProfileEntity.id
+                rejectedCompanyDetailsEntity.companyEmailEdit = companyProfileEntity.companyEmail
+                rejectedCompanyDetailsEntity.editID = standardLevySiteVisitRemarks.siteVisitId
+                rejectedCompanyDetailsEntity.physicalAddressEdit = companyProfileEntity.physicalAddress
+                rejectedCompanyDetailsEntity.postalAddressEdit = companyProfileEntity.postalAddress
+                rejectedCompanyDetailsEntity.ownershipEdit = companyProfileEntity.ownership
+                rejectedCompanyDetailsEntity.companyTelephoneEdit = companyProfileEntity.companyTelephone
+                rejectedCompanyDetailsEntity.assignedTo = companyProfileEntity.assignedTo
 
 
-                val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
+                val companyDetails = companyProfileRepo.getCompanyData(companyProfileEntity.id)
 
 
 
                 companyProfileEntity.accentTo?.let { variables["No"] = it }
                 companyProfileEntity.accentTo?.let { variables["Yes"] = it }
                 standardLevySiteVisitRemarks.siteVisitId?.let { variables.put("editID", it) }
-                val approverFname=loggedInUser.firstName
-                val approverLname=loggedInUser.lastName
-                val approveName= "$approverFname  $approverLname"
-                standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
-                standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+                val approverFname = loggedInUser.firstName
+                val approverLname = loggedInUser.lastName
+                val approveName = "$approverFname  $approverLname"
+                standardLevySiteVisitRemarks.siteVisitId = standardLevySiteVisitRemarks.siteVisitId
+                standardLevySiteVisitRemarks.remarks = standardLevySiteVisitRemarks.remarks
                 standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
                 standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
                 standardLevySiteVisitRemarks.remarkBy = approveName
@@ -298,18 +299,18 @@ class StandardLevyService(
                     }
 
                     companyProfileRepo.save(entity)
-                    for(companyDetail in companyDetails){
-                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    for (companyDetail in companyDetails) {
+                        rejectedCompanyDetailsEntity.companyTelephone = companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership = companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName = companyDetail.getCompanyName()
                         rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                        rejectedCompanyDetailsEntity.status=1
+                        rejectedCompanyDetailsEntity.status = 1
                     }
                     rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
 
-                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
                     userList.forEach { item ->
                         val recipient = item.getUserEmail()
                         val subject = "Company Details Approved"
@@ -323,21 +324,22 @@ class StandardLevyService(
                     taskService.complete(companyProfileEntity.taskId, variables)
                 }
                 if (variables["No"] == false) {
-                    for(companyDetail in companyDetails){
-                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    for (companyDetail in companyDetails) {
+                        rejectedCompanyDetailsEntity.companyTelephone = companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership = companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName = companyDetail.getCompanyName()
                         rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                        rejectedCompanyDetailsEntity.status=0
+                        rejectedCompanyDetailsEntity.status = 0
                     }
 
-                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
-                    userList.forEach { item->
-                        val recipient= item.getUserEmail()
+                    var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item ->
+                        val recipient = item.getUserEmail()
                         val subject = "Company Details Rejected"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details Edited for ${companyProfileEntity.name} were rejected."
+                        val messageBody =
+                            "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details Edited for ${companyProfileEntity.name} were rejected."
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -350,7 +352,7 @@ class StandardLevyService(
                 }
 
             } ?: throw Exception("COMPANY NOT FOUND")
-return getUserTasks();
+        return getUserTasks();
 
     }
 
@@ -368,60 +370,61 @@ return getUserTasks();
                 companyProfileEntity.physicalAddress?.let { variables["physicalAddressEdit"] = it }
                 companyProfileEntity.postalAddress?.let { variables["postalAddressEdit"] = it }
                 companyProfileEntity.ownership?.let { variables["ownershipEdit"] = it }
-                companyProfileEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
-                companyProfileEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
-                companyProfileEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
+                companyProfileEntity.yearlyTurnover?.let { variables.put("yearlyTurnoverEdit", it) }
+                companyProfileEntity.companyTelephone?.let { variables.put("companyTelephoneEdit", it) }
+                companyProfileEntity.companyEmail?.let { variables.put("companyEmailEdit", it) }
                 companyProfileEntity.createdBy = loggedInUser.id.toString()
-                companyProfileEntity.createdBy?.let{variables.put("createdBy", it)}
+                companyProfileEntity.createdBy?.let { variables.put("createdBy", it) }
                 companyProfileEntity.modifiedOn = commonDaoServices.getTimestamp()
-                companyProfileEntity.modifiedOn?.let{variables.put("modifiedOn", it)}
+                companyProfileEntity.modifiedOn?.let { variables.put("modifiedOn", it) }
                 companyProfileEntity.taskId?.let { variables.put("taskId", it) }
                 companyProfileEntity.slBpmnProcessInstance?.let { variables.put("processId", it) }
                 companyProfileEntity.assignedTo?.let { variables.put("assignedTo", it) }
                 companyProfileEntity.accentTo?.let { variables["No"] = it }
                 companyProfileEntity.accentTo?.let { variables["Yes"] = it }
                 standardLevySiteVisitRemarks.siteVisitId?.let { variables.put("editID", it) }
-                val approverFname=loggedInUser.firstName
-                val approverLname=loggedInUser.lastName
-                val approveName= "$approverFname  $approverLname"
-                standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
-                standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+                val approverFname = loggedInUser.firstName
+                val approverLname = loggedInUser.lastName
+                val approveName = "$approverFname  $approverLname"
+                standardLevySiteVisitRemarks.siteVisitId = standardLevySiteVisitRemarks.siteVisitId
+                standardLevySiteVisitRemarks.remarks = standardLevySiteVisitRemarks.remarks
                 standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
                 standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
                 standardLevySiteVisitRemarks.remarkBy = approveName
 
                 standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
 
-                rejectedCompanyDetailsEntity.companyId=companyProfileEntity.id
-                rejectedCompanyDetailsEntity.companyEmailEdit=companyProfileEntity.companyEmail
-                rejectedCompanyDetailsEntity.editID= standardLevySiteVisitRemarks.siteVisitId
-                rejectedCompanyDetailsEntity.physicalAddressEdit=companyProfileEntity.physicalAddress
-                rejectedCompanyDetailsEntity.postalAddressEdit=companyProfileEntity.postalAddress
-                rejectedCompanyDetailsEntity.ownershipEdit=companyProfileEntity.ownership
-                rejectedCompanyDetailsEntity.companyTelephoneEdit=companyProfileEntity.companyTelephone
-                rejectedCompanyDetailsEntity.assignedTo=companyProfileEntity.assignedTo
+                rejectedCompanyDetailsEntity.companyId = companyProfileEntity.id
+                rejectedCompanyDetailsEntity.companyEmailEdit = companyProfileEntity.companyEmail
+                rejectedCompanyDetailsEntity.editID = standardLevySiteVisitRemarks.siteVisitId
+                rejectedCompanyDetailsEntity.physicalAddressEdit = companyProfileEntity.physicalAddress
+                rejectedCompanyDetailsEntity.postalAddressEdit = companyProfileEntity.postalAddress
+                rejectedCompanyDetailsEntity.ownershipEdit = companyProfileEntity.ownership
+                rejectedCompanyDetailsEntity.companyTelephoneEdit = companyProfileEntity.companyTelephone
+                rejectedCompanyDetailsEntity.assignedTo = companyProfileEntity.assignedTo
 
 
-                val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
+                val companyDetails = companyProfileRepo.getCompanyData(companyProfileEntity.id)
 
 
 
                 if (variables["Yes"] == true) {
-                    for(companyDetail in companyDetails){
-                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    for (companyDetail in companyDetails) {
+                        rejectedCompanyDetailsEntity.companyTelephone = companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership = companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName = companyDetail.getCompanyName()
                         rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                        rejectedCompanyDetailsEntity.status=1
+                        rejectedCompanyDetailsEntity.status = 1
                     }
                     rejectedCompanyDetailsRepository.save(rejectedCompanyDetailsEntity)
-                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
-                    userList.forEach { item->
-                        val recipient= item.getUserEmail()
+                    var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item ->
+                        val recipient = item.getUserEmail()
                         val subject = "Company Details Approved"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been approved"
+                        val messageBody =
+                            "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been approved"
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -464,20 +467,21 @@ return getUserTasks();
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${companyProfileEntity.slBpmnProcessInstance} ")
                 }
                 if (variables["No"] == false) {
-                    for(companyDetail in companyDetails){
-                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    for (companyDetail in companyDetails) {
+                        rejectedCompanyDetailsEntity.companyTelephone = companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership = companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName = companyDetail.getCompanyName()
                         rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                        rejectedCompanyDetailsEntity.status=0
+                        rejectedCompanyDetailsEntity.status = 0
                     }
-                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
-                    userList.forEach { item->
-                        val recipient= item.getUserEmail()
+                    var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item ->
+                        val recipient = item.getUserEmail()
                         val subject = "Company Details Rejected"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been rejected."
+                        val messageBody =
+                            "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been rejected."
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -508,38 +512,38 @@ return getUserTasks();
                 companyProfileEntity.physicalAddress?.let { variables["physicalAddressEdit"] = it }
                 companyProfileEntity.postalAddress?.let { variables["postalAddressEdit"] = it }
                 companyProfileEntity.ownership?.let { variables["ownershipEdit"] = it }
-                companyProfileEntity.yearlyTurnover?.let{variables.put("yearlyTurnoverEdit", it)}
-                companyProfileEntity.companyTelephone?.let{variables.put("companyTelephoneEdit", it)}
-                companyProfileEntity.companyEmail?.let{variables.put("companyEmailEdit", it)}
+                companyProfileEntity.yearlyTurnover?.let { variables.put("yearlyTurnoverEdit", it) }
+                companyProfileEntity.companyTelephone?.let { variables.put("companyTelephoneEdit", it) }
+                companyProfileEntity.companyEmail?.let { variables.put("companyEmailEdit", it) }
                 companyProfileEntity.createdBy = loggedInUser.userName
-                companyProfileEntity.createdBy?.let{variables.put("createdBy", it)}
+                companyProfileEntity.createdBy?.let { variables.put("createdBy", it) }
                 companyProfileEntity.modifiedOn = commonDaoServices.getTimestamp()
-                companyProfileEntity.modifiedOn?.let{variables.put("modifiedOn", it)}
+                companyProfileEntity.modifiedOn?.let { variables.put("modifiedOn", it) }
                 companyProfileEntity.taskId?.let { variables.put("taskId", it) }
                 companyProfileEntity.assignedTo?.let { variables.put("assignedTo", it) }
                 companyProfileEntity.accentTo?.let { variables["No"] = it }
                 companyProfileEntity.accentTo?.let { variables["Yes"] = it }
                 standardLevySiteVisitRemarks.siteVisitId?.let { variables.put("editID", it) }
-                val approverFname=loggedInUser.firstName
-                val approverLname=loggedInUser.lastName
-                val approveName= "$approverFname  $approverLname"
-                standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
-                standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+                val approverFname = loggedInUser.firstName
+                val approverLname = loggedInUser.lastName
+                val approveName = "$approverFname  $approverLname"
+                standardLevySiteVisitRemarks.siteVisitId = standardLevySiteVisitRemarks.siteVisitId
+                standardLevySiteVisitRemarks.remarks = standardLevySiteVisitRemarks.remarks
                 standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
                 standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
                 standardLevySiteVisitRemarks.remarkBy = approveName
 
-                rejectedCompanyDetailsEntity.companyId=companyProfileEntity.id
-                rejectedCompanyDetailsEntity.companyEmailEdit=companyProfileEntity.companyEmail
-                rejectedCompanyDetailsEntity.editID= standardLevySiteVisitRemarks.siteVisitId
-                rejectedCompanyDetailsEntity.physicalAddressEdit=companyProfileEntity.physicalAddress
-                rejectedCompanyDetailsEntity.postalAddressEdit=companyProfileEntity.postalAddress
-                rejectedCompanyDetailsEntity.ownershipEdit=companyProfileEntity.ownership
-                rejectedCompanyDetailsEntity.companyTelephoneEdit=companyProfileEntity.companyTelephone
-                rejectedCompanyDetailsEntity.assignedTo=companyProfileEntity.assignedTo
+                rejectedCompanyDetailsEntity.companyId = companyProfileEntity.id
+                rejectedCompanyDetailsEntity.companyEmailEdit = companyProfileEntity.companyEmail
+                rejectedCompanyDetailsEntity.editID = standardLevySiteVisitRemarks.siteVisitId
+                rejectedCompanyDetailsEntity.physicalAddressEdit = companyProfileEntity.physicalAddress
+                rejectedCompanyDetailsEntity.postalAddressEdit = companyProfileEntity.postalAddress
+                rejectedCompanyDetailsEntity.ownershipEdit = companyProfileEntity.ownership
+                rejectedCompanyDetailsEntity.companyTelephoneEdit = companyProfileEntity.companyTelephone
+                rejectedCompanyDetailsEntity.assignedTo = companyProfileEntity.assignedTo
 
 
-                val companyDetails=companyProfileRepo.getCompanyData(companyProfileEntity.id)
+                val companyDetails = companyProfileRepo.getCompanyData(companyProfileEntity.id)
 
 
 
@@ -549,20 +553,21 @@ return getUserTasks();
 
 
                 if (variables["Yes"] == true) {
-                    for(companyDetail in companyDetails){
-                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    for (companyDetail in companyDetails) {
+                        rejectedCompanyDetailsEntity.companyTelephone = companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership = companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName = companyDetail.getCompanyName()
                         rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                        rejectedCompanyDetailsEntity.status=1
+                        rejectedCompanyDetailsEntity.status = 1
                     }
-                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
-                    userList.forEach { item->
-                        val recipient= item.getUserEmail()
+                    var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item ->
+                        val recipient = item.getUserEmail()
                         val subject = "Company Details Approved"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been approved."
+                        val messageBody =
+                            "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been approved."
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -584,20 +589,21 @@ return getUserTasks();
                     taskService.complete(companyProfileEntity.taskId, variables)
                 }
                 if (variables["No"] == false) {
-                    for(companyDetail in companyDetails){
-                        rejectedCompanyDetailsEntity.companyTelephone=companyDetail.getCompanyTelephone()
-                        rejectedCompanyDetailsEntity.ownership=companyDetail.getOwnership()
-                        rejectedCompanyDetailsEntity.postalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.physicalAddress=companyDetail.getPostalAddress()
-                        rejectedCompanyDetailsEntity.companyName=companyDetail.getCompanyName()
+                    for (companyDetail in companyDetails) {
+                        rejectedCompanyDetailsEntity.companyTelephone = companyDetail.getCompanyTelephone()
+                        rejectedCompanyDetailsEntity.ownership = companyDetail.getOwnership()
+                        rejectedCompanyDetailsEntity.postalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.physicalAddress = companyDetail.getPostalAddress()
+                        rejectedCompanyDetailsEntity.companyName = companyDetail.getCompanyName()
                         rejectedCompanyDetailsEntity.companyEmail = companyDetail.getCompanyEmail()
-                        rejectedCompanyDetailsEntity.status=0
+                        rejectedCompanyDetailsEntity.status = 0
                     }
-                    var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
-                    userList.forEach { item->
-                        val recipient= item.getUserEmail()
+                    var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+                    userList.forEach { item ->
+                        val recipient = item.getUserEmail()
                         val subject = "Company Details Rejected"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been rejected."
+                        val messageBody =
+                            "Dear ${item.getFirstName()} ${item.getLastName()}, Company Details edited for ${companyProfileEntity.name} have been rejected."
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -652,86 +658,84 @@ return getUserTasks();
         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
 
         val variables: MutableMap<String, Any> = mutableMapOf()
-                    companyProfileEntity.assignedTo?.let { variables["assignedTo"] = it }
-                    companyProfileEntity.name?.let { variables["companyName"] = it }
-                    companyProfileEntity.kraPin?.let { variables["kraPin"] = it }
-                    companyProfileEntity.status?.let { variables["status"] = it }
-                    companyProfileEntity.registrationNumber?.let { variables["registrationNumber"] = it }
-                    companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
-                    companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
-                    companyProfileEntity.plotNumber?.let { variables["plotNumber"] = it }
-                    companyProfileEntity.companyEmail?.let { variables["companyEmail"] = it }
-                    companyProfileEntity.companyTelephone?.let { variables["companyTelephone"] = it }
-                    companyProfileEntity.yearlyTurnover?.let { variables["yearlyTurnover"] = it }
-                    companyProfileEntity.buildingName?.let { variables["buildingName"] = it }
-                    companyProfileEntity.directorIdNumber?.let { variables["directorIdNumber"] = it }
-                    companyProfileEntity.businessLineName?.let { variables["businessLineName"] = it }
-                    companyProfileEntity.businessLines?.let { variables["businessLines"] = it }
-                    companyProfileEntity.businessNatureName?.let { variables["businessNatureName"] = it }
-                    companyProfileEntity.businessNatures?.let { variables["businessNatures"] = it }
-                    companyProfileEntity.regionName?.let { variables["regionName"] = it }
-                    companyProfileEntity.region?.let { variables["region"] = it }
-                    companyProfileEntity.countyName?.let { variables["countyName"] = it }
-                    companyProfileEntity.county?.let { variables["county"] = it }
-                    companyProfileEntity.townName?.let { variables["townName"] = it }
-                    companyProfileEntity.town?.let { variables["town"] = it }
-                    companyProfileEntity.branchName?.let { variables["branchName"] = it }
-                    companyProfileEntity.streetName?.let { variables["streetName"] = it }
-                    companyProfileEntity.manufactureStatus?.let { variables["manufactureStatus"] = it }
-                    companyProfileEntity.entryNumber?.let { variables["entryNumber"] = it }
-                    companyProfileEntity.id?.let { variables["manufacturerEntity"] = it }
-                        ?: throw Exception("COMPANY NOT FOUND")
-                    companyProfileEntity.userId?.let { variables["contactId"] = it }
-                    companyProfileEntity.taskType?.let { variables["taskType"] = it }
-                    companyProfileEntity.typeOfManufacture?.let { variables["typeOfManufacture"] = it }
-                    companyProfileEntity.otherBusinessNatureType?.let { variables["otherBusinessNatureType"] = it }
+        companyProfileEntity.assignedTo?.let { variables["assignedTo"] = it }
+        companyProfileEntity.name?.let { variables["companyName"] = it }
+        companyProfileEntity.kraPin?.let { variables["kraPin"] = it }
+        companyProfileEntity.status?.let { variables["status"] = it }
+        companyProfileEntity.registrationNumber?.let { variables["registrationNumber"] = it }
+        companyProfileEntity.postalAddress?.let { variables["postalAddress"] = it }
+        companyProfileEntity.physicalAddress?.let { variables["physicalAddress"] = it }
+        companyProfileEntity.plotNumber?.let { variables["plotNumber"] = it }
+        companyProfileEntity.companyEmail?.let { variables["companyEmail"] = it }
+        companyProfileEntity.companyTelephone?.let { variables["companyTelephone"] = it }
+        companyProfileEntity.yearlyTurnover?.let { variables["yearlyTurnover"] = it }
+        companyProfileEntity.buildingName?.let { variables["buildingName"] = it }
+        companyProfileEntity.directorIdNumber?.let { variables["directorIdNumber"] = it }
+        companyProfileEntity.businessLineName?.let { variables["businessLineName"] = it }
+        companyProfileEntity.businessLines?.let { variables["businessLines"] = it }
+        companyProfileEntity.businessNatureName?.let { variables["businessNatureName"] = it }
+        companyProfileEntity.businessNatures?.let { variables["businessNatures"] = it }
+        companyProfileEntity.regionName?.let { variables["regionName"] = it }
+        companyProfileEntity.region?.let { variables["region"] = it }
+        companyProfileEntity.countyName?.let { variables["countyName"] = it }
+        companyProfileEntity.county?.let { variables["county"] = it }
+        companyProfileEntity.townName?.let { variables["townName"] = it }
+        companyProfileEntity.town?.let { variables["town"] = it }
+        companyProfileEntity.branchName?.let { variables["branchName"] = it }
+        companyProfileEntity.streetName?.let { variables["streetName"] = it }
+        companyProfileEntity.manufactureStatus?.let { variables["manufactureStatus"] = it }
+        companyProfileEntity.entryNumber?.let { variables["entryNumber"] = it }
+        companyProfileEntity.id?.let { variables["manufacturerEntity"] = it }
+            ?: throw Exception("COMPANY NOT FOUND")
+        companyProfileEntity.userId?.let { variables["contactId"] = it }
+        companyProfileEntity.taskType?.let { variables["taskType"] = it }
+        companyProfileEntity.typeOfManufacture?.let { variables["typeOfManufacture"] = it }
+        companyProfileEntity.otherBusinessNatureType?.let { variables["otherBusinessNatureType"] = it }
 
-                    companyProfileEntity.assignedTo = companyProfileEntity.assignedTo
-                    companyProfileEntity.assignStatus = 1
-                    companyProfileEntity.createdBy = loggedInUser.userName
-                    companyProfileEntity.createdOn = commonDaoServices.getTimestamp()
-                    val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-                    companyProfileEntity.slBpmnProcessInstance = processInstance?.processInstanceId
+        companyProfileEntity.assignedTo = companyProfileEntity.assignedTo
+        companyProfileEntity.assignStatus = 1
+        companyProfileEntity.createdBy = loggedInUser.userName
+        companyProfileEntity.createdOn = commonDaoServices.getTimestamp()
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
+        companyProfileEntity.slBpmnProcessInstance = processInstance?.processInstanceId
 
 //                val gson = Gson()
 //                 KotlinLogging.logger { }.info { "Save Entity" + gson.toJson(companyProfileEntity) }
 
-        var userList= companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
-        userList.forEach { item->
-            val recipient= item.getUserEmail()
+        var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+        userList.forEach { item ->
+            val recipient = item.getUserEmail()
             val subject = "Schedule Site Visit"
-            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Company  ${companyProfileEntity.name} has been assigned to you. Kindly Log into the KIMS System to schedule a site visit. NB. Auto Generated E-Mail From KEBS "
+            val messageBody =
+                "Dear ${item.getFirstName()} ${item.getLastName()}, Company  ${companyProfileEntity.name} has been assigned to you. Kindly Log into the KIMS System to schedule a site visit. NB. Auto Generated E-Mail From KEBS "
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
         }
 
-                    companyProfileRepo.save(companyProfileEntity)
-                    taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
-                        ?.let { t ->
-                            t.list()[0]
-                                ?.let { task ->
-                                    task.assignee =
-                                        "${companyProfileEntity.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
+        companyProfileRepo.save(companyProfileEntity)
+        taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
+            ?.let { t ->
+                t.list()[0]
+                    ?.let { task ->
+                        task.assignee =
+                            "${companyProfileEntity.assignedTo ?: throw NullValueNotAllowedException(" invalid user id provided")}"  //set the assignee}"
 
-                                    taskService.saveTask(task)
-                                }
-                                ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
+                        taskService.saveTask(task)
+                    }
+                    ?: KotlinLogging.logger { }.error("Task list empty for $PROCESS_DEFINITION_KEY ")
 
 
-                        }
-                        ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
-                    bpmnService.slAssignTask(
-                        processInstance.processInstanceId,
-                        "Schedule Site Visit",
-                        companyProfileEntity?.assignedTo
-                            ?: throw NullValueNotAllowedException("invalid user id provided")
-                    )
-                    return ProcessInstanceSiteResponse(processInstance.id, processInstance.isEnded)
+            }
+            ?: KotlinLogging.logger { }.error("No task found for $PROCESS_DEFINITION_KEY ")
+        bpmnService.slAssignTask(
+            processInstance.processInstanceId,
+            "Schedule Site Visit",
+            companyProfileEntity?.assignedTo
+                ?: throw NullValueNotAllowedException("invalid user id provided")
+        )
+        return ProcessInstanceSiteResponse(processInstance.id, processInstance.isEnded)
     }
-
-
-
 
 
     fun scheduleSiteVisit(
@@ -759,23 +763,28 @@ return getUserTasks();
                     .processInstanceId(standardLevyFactoryVisitReportEntity.slProcessInstanceId).list()
                     ?.let { l ->
                         val processInstance = l[0]
-                        var userList= companyStandardRepository.getUserEmail(loggedInUser.id)
-                        userList.forEach { item->
-                            val recipient= item.getUserEmail()
+                        var userList = companyStandardRepository.getUserEmail(loggedInUser.id)
+                        userList.forEach { item ->
+                            val recipient = item.getUserEmail()
                             val subject = "Site Visit"
-                            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, You have scheduled a site visit to ${standardLevyFactoryVisitReportEntity.companyName} for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} . NB. Auto Generated E-Mail From KEBS "
+                            val messageBody =
+                                "Dear ${item.getFirstName()} ${item.getLastName()}, You have scheduled a site visit to ${standardLevyFactoryVisitReportEntity.companyName} for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} . NB. Auto Generated E-Mail From KEBS "
                             if (recipient != null) {
                                 notifications.sendEmail(recipient, subject, messageBody)
                             }
                         }
+                        val firstName=loggedInUser.firstName
+                        val secondName=loggedInUser.lastName
+                        val emailAddress=loggedInUser.email
 
-                        val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
-                        var manufacturerList= companyStandardRepository.getUserEmail(userID)
+                        val userID =
+                            companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                        var manufacturerList = companyStandardRepository.getUserEmail(userID)
                         manufacturerList.forEach { item ->
                             val recipient = item.getUserEmail()
                             val subject = "Site Visit"
                             val messageBody =
-                                "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers From KEBS. NB. Auto Generated E-Mail From KEBS "
+                                "Dear ${item.getFirstName()} ${item.getLastName()}, Your Firm,  ${standardLevyFactoryVisitReportEntity.companyName} has a scheduled site visit on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers by the name ${firstName + secondName} and of Email Address ${emailAddress} From KEBS.. NB. Auto Generated E-Mail From KEBS "
                             if (recipient != null) {
                                 notifications.sendEmail(recipient, subject, messageBody)
                             }
@@ -834,7 +843,7 @@ return getUserTasks();
                 ?.let { entity ->
 
                     entity.apply {
-                        scheduledVisitDate=standardLevyFactoryVisitReportEntity.scheduledVisitDate
+                        scheduledVisitDate = standardLevyFactoryVisitReportEntity.scheduledVisitDate
                     }
                     standardLevyFactoryVisitReportRepo.save(entity)
                 } ?: throw Exception("TASK NOT FOUND")
@@ -854,7 +863,7 @@ return getUserTasks();
                                     t.list()[0]
                                         ?.let { task ->
                                             task.assignee = "${
-                                                loggedInUser.id?: throw NullValueNotAllowedException(
+                                                loggedInUser.id ?: throw NullValueNotAllowedException(
                                                     " invalid user id provided"
                                                 )
                                             }"  //set the assignee}"
@@ -877,22 +886,25 @@ return getUserTasks();
                         }
                         ?: throw NullValueNotAllowedException("No Process Instance found with ID = ${standardLevyFactoryVisitReportEntity.slProcessInstanceId} ")
 
-                    val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
-                    var userList= companyStandardRepository.getUserEmail(loggedInUser.id)
-                    userList.forEach { item->
-                        val recipient= item.getUserEmail()
+                    val userID =
+                        companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                    var userList = companyStandardRepository.getUserEmail(loggedInUser.id)
+                    userList.forEach { item ->
+                        val recipient = item.getUserEmail()
                         val subject = "Site Visit"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${comProfileEntity.name} has been confirmed for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} Kindly make time. NB. Auto Generated E-Mail From KEBS "
+                        val messageBody =
+                            "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${comProfileEntity.name} has been confirmed for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} Kindly make time. NB. Auto Generated E-Mail From KEBS "
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
                     }
 
-                    var manufacturerList= companyStandardRepository.getUserEmail(userID)
-                    manufacturerList.forEach { item->
-                        val recipient= item.getUserEmail()
+                    var manufacturerList = companyStandardRepository.getUserEmail(userID)
+                    manufacturerList.forEach { item ->
+                        val recipient = item.getUserEmail()
                         val subject = "Site Visit"
-                        val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},Scheduled site visit to Your Firm,  ${comProfileEntity.name}  on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers has been confirmed. NB. Auto Generated E-Mail From KEBS "
+                        val messageBody =
+                            "Dear ${item.getFirstName()} ${item.getLastName()},Scheduled site visit to Your Firm,  ${comProfileEntity.name}  on ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} by Standards Levy Officers has been confirmed. NB. Auto Generated E-Mail From KEBS "
                         if (recipient != null) {
                             notifications.sendEmail(recipient, subject, messageBody)
                         }
@@ -901,18 +913,19 @@ return getUserTasks();
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
 
-            try{
+            try {
                 companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                     ?.let { comEntity ->
 
                         comEntity.apply {
-                            assignStatus=0
-                            assignedTo=0
+                            assignStatus = 0
+                            assignedTo = 0
                         }
                         companyProfileRepo.save(comEntity)
                     } ?: throw Exception("COMPANY NOT FOUND")
-                val userID= companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
-                var manufacturerList= companyStandardRepository.getUserEmail(userID)
+                val userID =
+                    companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
+                var manufacturerList = companyStandardRepository.getUserEmail(userID)
                 manufacturerList.forEach { item ->
                     val recipient = item.getUserEmail()
                     val subject = "Site Visit"
@@ -925,7 +938,7 @@ return getUserTasks();
                 KotlinLogging.logger { }
                     .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                 taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 KotlinLogging.logger { }.error(e.message)
                 KotlinLogging.logger { }.trace(e.message, e)
 
@@ -941,7 +954,7 @@ return getUserTasks();
         val taskDetails: MutableList<TaskDetailsBody> = ArrayList()
         for (task in tasks) {
             val processVariables = taskService.getVariables(task.id)
-            taskDetails.add(TaskDetailsBody(task.id, task.name,task.processInstanceId, processVariables))
+            taskDetails.add(TaskDetailsBody(task.id, task.name, task.processInstanceId, processVariables))
 
         }
         return taskDetails
@@ -963,7 +976,7 @@ return getUserTasks();
             .list()
         val tasksDetails = mutableListOf<TaskDetailsBody>()
         tasks.forEach { it ->
-            val t = TaskDetailsBody(it.taskId, it.data,it.processInstanceId, mutableMapOf())
+            val t = TaskDetailsBody(it.taskId, it.data, it.processInstanceId, mutableMapOf())
             tasksDetails.add(t)
 
         }
@@ -1062,11 +1075,13 @@ return getUserTasks();
                             .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                         taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
-                        var userList= companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
-                        userList.forEach { item->
-                            val recipient= item.getUserEmail()
+                        var userList =
+                            companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
+                        userList.forEach { item ->
+                            val recipient = item.getUserEmail()
                             val subject = "Site Visit Report"
-                            val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A report for site visit to,  ${standardLevyFactoryVisitReportEntity.companyName} has been prepared.Kindly Log into the KIMS to view. NB. Auto Generated E-Mail From KEBS "
+                            val messageBody =
+                                "Dear ${item.getFirstName()} ${item.getLastName()}, A report for site visit to,  ${standardLevyFactoryVisitReportEntity.companyName} has been prepared.Kindly Log into the KIMS to view. NB. Auto Generated E-Mail From KEBS "
                             if (recipient != null) {
                                 notifications.sendEmail(recipient, subject, messageBody)
                             }
@@ -1204,11 +1219,11 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         variables["status"] = 1
-        val approverFname=loggedInUser.firstName
-        val approverLname=loggedInUser.lastName
-        val approveName= "$approverFname  $approverLname"
-        standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
-        standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+        val approverFname = loggedInUser.firstName
+        val approverLname = loggedInUser.lastName
+        val approveName = "$approverFname  $approverLname"
+        standardLevySiteVisitRemarks.siteVisitId = standardLevySiteVisitRemarks.siteVisitId
+        standardLevySiteVisitRemarks.remarks = standardLevySiteVisitRemarks.remarks
         standardLevySiteVisitRemarks.status = standardLevySiteVisitRemarks.status
         standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
         standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
@@ -1216,22 +1231,23 @@ return getUserTasks();
 
 //        val gson = Gson()
 //         KotlinLogging.logger { }.info { "Manufacturer" + gson.toJson(standardLevyFactoryVisitReportEntity) }
-        variables["approvalStatus"]= "Approved by $approverFname  $approverLname"
+        variables["approvalStatus"] = "Approved by $approverFname  $approverLname"
         loggedInUser.id?.let { variables["levelOneId"] = it }
         if (variables["Yes"] == true) {
 
-            var userList= companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
-            userList.forEach { item->
-                val recipient= item.getUserEmail()
+            var userList = companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
+            userList.forEach { item ->
+                val recipient = item.getUserEmail()
                 val subject = "Site Visit Report Approved"
-                val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Report for site visit to,  ${standardLevyFactoryVisitReportEntity.companyName} has been approved. NB. Auto Generated E-Mail From KEBS "
+                val messageBody =
+                    "Dear ${item.getFirstName()} ${item.getLastName()}, Report for site visit to,  ${standardLevyFactoryVisitReportEntity.companyName} has been approved. NB. Auto Generated E-Mail From KEBS "
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)
                 }
             }
 
-            variables["approvalStatus"]= "Approved by $approverFname  $approverLname"
-            variables["approvalStatusId"]=1
+            variables["approvalStatus"] = "Approved by $approverFname  $approverLname"
+            variables["approvalStatusId"] = 1
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { entity ->
 
@@ -1289,8 +1305,8 @@ return getUserTasks();
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
 
-            variables["rejectStatus"]= "Rejected by $approverFname  $approverLname"
-            variables["approvalStatusId"]=0
+            variables["rejectStatus"] = "Rejected by $approverFname  $approverLname"
+            variables["approvalStatusId"] = 0
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { entity ->
 
@@ -1305,9 +1321,10 @@ return getUserTasks();
                     standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
             //val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val recipient= standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
             val subject = "Site Visit Report Rejected  "
-            val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetailsEmail().userName+".Log in to KIMS to make recommended changes."
+            val messageBody =
+                "Site visit report has been rejected by  " + commonDaoServices.loggedInUserDetailsEmail().userName + ".Log in to KIMS to make recommended changes."
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
@@ -1369,8 +1386,10 @@ return getUserTasks();
         return getTaskDetails(tasks)
     }
 
-    fun decisionOnSiteReportLevelTwo(standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
-                                     standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks): List<TaskDetailsBody> {
+    fun decisionOnSiteReportLevelTwo(
+        standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity,
+        standardLevySiteVisitRemarks: StandardLevySiteVisitRemarks
+    ): List<TaskDetailsBody> {
         val variables: MutableMap<String, Any> = mutableMapOf()
         val loggedInUser = commonDaoServices.loggedInUserDetailsEmail()
         standardLevyFactoryVisitReportEntity.accentTo?.let { variables["Yes"] = it }
@@ -1380,25 +1399,26 @@ return getUserTasks();
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["assigneeId"] = it }
         val userIntType = standardLevyFactoryVisitReportEntity.userType
         val userIntTypes = userIntType.toString()
-        val approverFname=loggedInUser.firstName
-        val approverLname=loggedInUser.lastName
-        val approveName= "$approverFname  $approverLname"
-        standardLevySiteVisitRemarks.siteVisitId= standardLevySiteVisitRemarks.siteVisitId
-        standardLevySiteVisitRemarks.remarks= standardLevySiteVisitRemarks.remarks
+        val approverFname = loggedInUser.firstName
+        val approverLname = loggedInUser.lastName
+        val approveName = "$approverFname  $approverLname"
+        standardLevySiteVisitRemarks.siteVisitId = standardLevySiteVisitRemarks.siteVisitId
+        standardLevySiteVisitRemarks.remarks = standardLevySiteVisitRemarks.remarks
         standardLevySiteVisitRemarks.status = standardLevySiteVisitRemarks.status
         standardLevySiteVisitRemarks.role = standardLevySiteVisitRemarks.role
         standardLevySiteVisitRemarks.dateOfRemark = Timestamp(System.currentTimeMillis())
         standardLevySiteVisitRemarks.remarkBy = approveName
 
         if (variables["Yes"] == true) {
-            val recipient= standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
             val subject = "Site Visit Report Approved  "
-            val messageBody= "Site visit report has been approved by  "+ commonDaoServices.loggedInUserDetailsEmail().userName+"."
+            val messageBody =
+                "Site visit report has been approved by  " + commonDaoServices.loggedInUserDetailsEmail().userName + "."
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
-            variables["approvalStatusLevelTwo"]= "Approved by $approverFname  $approverLname"
-            variables["approvalStatusId"]=1
+            variables["approvalStatusLevelTwo"] = "Approved by $approverFname  $approverLname"
+            variables["approvalStatusId"] = 1
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { entity ->
 
@@ -1454,8 +1474,8 @@ return getUserTasks();
                 }
                 ?: throw NullValueNotAllowedException("COMPANY NOT FOUND")
         } else if (variables["No"] == false) {
-            variables["rejectStatusLevelTwo"]= "Rejected by $approverFname  $approverLname"
-            variables["approvalStatusId"]=0
+            variables["rejectStatusLevelTwo"] = "Rejected by $approverFname  $approverLname"
+            variables["approvalStatusId"] = 0
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
                 ?.let { entity ->
 
@@ -1469,9 +1489,10 @@ return getUserTasks();
                 } ?: throw Exception("TASK NOT FOUND")
 
             //val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val recipient= standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
             val subject = "Report Rejected  "
-            val messageBody= "Site visit report has been rejected by  "+ commonDaoServices.loggedInUserDetailsEmail().userName+".Log in to KIMS to make recommended changes."
+            val messageBody =
+                "Site visit report has been rejected by  " + commonDaoServices.loggedInUserDetailsEmail().userName + ".Log in to KIMS to make recommended changes."
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
@@ -1571,6 +1592,7 @@ return getUserTasks();
 
         return "Saved"
     }
+
     fun siteVisitReportFeedbacksTest(
         standardLevyFactoryVisitReportEntity: StandardLevyFactoryVisitReportEntity
     ): String {
@@ -1592,7 +1614,7 @@ return getUserTasks();
         val dateConducted =
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.visitDate
         var emailBody = ""
-        var thisMail=""
+        var thisMail = ""
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
             ?.let { entity ->
                 entity.apply {
@@ -1605,12 +1627,12 @@ return getUserTasks();
                 standardLevyFactoryVisitReportRepo.save(entity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
         if (complianceStatus != null) {
-            if (complianceStatus =="1".toLong()) {
+            if (complianceStatus == "1".toLong()) {
                 emailBody =
                     "Following a visit  ${companyName},Registration Number ${registrationNumber},and  KRA pin $kraPin on date ${dateConducted} by ${conductedByFName},${conductedByLName}. $companyName  was found to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
 
-                thisMail="Saved"
-            } else if (complianceStatus=="0".toLong()) {
+                thisMail = "Saved"
+            } else if (complianceStatus == "0".toLong()) {
                 emailBody =
                     "Following a visit  ${companyName}, registration number ${registrationNumber}, and  KRA pin ${kraPin} on date ${dateConducted} by  ${conductedByFName},${conductedByLName}.\n" +
                             "\n" +
@@ -1657,11 +1679,13 @@ return getUserTasks();
         val companyName = companyRepo.getComName(standardLevyFactoryVisitReportEntity.assigneeId)
         val registrationNumber = companyRepo.getRegNo(standardLevyFactoryVisitReportEntity.assigneeId)
         val kraPin = companyRepo.getKraPin(standardLevyFactoryVisitReportEntity.assigneeId)
-        val conductedById= standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.conductedBy
-        val conductedByFName= iUserRepository.findByIdOrNull(conductedById)?.firstName
-        val conductedByLName= iUserRepository.findByIdOrNull(conductedById)?.lastName
-        val dateConducted = standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.visitDate
-        var emailBody =""
+        val conductedById =
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.conductedBy
+        val conductedByFName = iUserRepository.findByIdOrNull(conductedById)?.firstName
+        val conductedByLName = iUserRepository.findByIdOrNull(conductedById)?.lastName
+        val dateConducted =
+            standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)?.visitDate
+        var emailBody = ""
         standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
             ?.let { entity ->
                 entity.apply {
@@ -1674,28 +1698,30 @@ return getUserTasks();
                 standardLevyFactoryVisitReportRepo.save(entity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
         if (complianceStatus != null) {
-            if (complianceStatus =="1".toLong()) {
-                 emailBody="Following a visit  ${companyName},Registration Number ${registrationNumber},and  KRA pin $kraPin on date ${dateConducted} by ${conductedByFName},${conductedByLName}.\n" +
-                         "\n" +
-                         "$companyName  was found to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999.\n" +
-                         "\n" +
-                         " Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.\n" +
-                         "\n" +
-                         "Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
+            if (complianceStatus == "1".toLong()) {
+                emailBody =
+                    "Following a visit  ${companyName},Registration Number ${registrationNumber},and  KRA pin $kraPin on date ${dateConducted} by ${conductedByFName},${conductedByLName}.\n" +
+                            "\n" +
+                            "$companyName  was found to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999.\n" +
+                            "\n" +
+                            " Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.\n" +
+                            "\n" +
+                            "Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
 
-            }else if(complianceStatus =="0".toLong()){
-                 emailBody="Following a visit  ${companyName}, registration number ${registrationNumber}, and  KRA pin ${kraPin} on date ${dateConducted} by  ${conductedByFName},${conductedByLName}.\n" +
-                        "\n" +
-                        "$companyName was found NOT to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. \n" +
-                        "\n" +
-                        "The standards levy is payable at the rate of 0.2% of your monthly turnover excluding VAT and discounts where applicable, subject to a minimum of KSh. 1,000 per month and a maximum of KSh. 400,000 per annum.\n" +
-                         "\n" +
-                         " Failure to pay the levy attracts a penalty at a rate of 5% per month cumulatively. \n" +
-                        " \n" +
-                        "In line with the above, you are required to remit all outstanding arrears of XXXXX and penalties of XXXX through the ITAX system to avoid further accrual of penalties. \n" +
-                        "\n" +
-                        "For any clarification, do not hesitate to contact us through standardslevy@kebs.org\n" +
-                        "\n"
+            } else if (complianceStatus == "0".toLong()) {
+                emailBody =
+                    "Following a visit  ${companyName}, registration number ${registrationNumber}, and  KRA pin ${kraPin} on date ${dateConducted} by  ${conductedByFName},${conductedByLName}.\n" +
+                            "\n" +
+                            "$companyName was found NOT to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999. \n" +
+                            "\n" +
+                            "The standards levy is payable at the rate of 0.2% of your monthly turnover excluding VAT and discounts where applicable, subject to a minimum of KSh. 1,000 per month and a maximum of KSh. 400,000 per annum.\n" +
+                            "\n" +
+                            " Failure to pay the levy attracts a penalty at a rate of 5% per month cumulatively. \n" +
+                            " \n" +
+                            "In line with the above, you are required to remit all outstanding arrears of XXXXX and penalties of XXXX through the ITAX system to avoid further accrual of penalties. \n" +
+                            "\n" +
+                            "For any clarification, do not hesitate to contact us through standardslevy@kebs.org\n" +
+                            "\n"
             }
         }
 
@@ -1857,7 +1883,7 @@ return getUserTasks();
 //        return result
 //    }
 
-    fun getNotificationFormDetails(): NotificationFormDetailsHolder{
+    fun getNotificationFormDetails(): NotificationFormDetailsHolder {
 
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
@@ -1873,7 +1899,7 @@ return getUserTasks();
 
     }
 
-    fun getBranchName(): BranchNameHolder{
+    fun getBranchName(): BranchNameHolder {
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureId(id)
@@ -1892,11 +1918,11 @@ return getUserTasks();
     fun getSlForm(): CompanySlFormDto? {
         val user = commonDaoServices.loggedInUserDetailsEmail()
         user.companyId?.let {
-        val countSlForm = user.companyId?.let {
-            stdLevyNotificationFormRepository.countByManufacturerId(
-                it
-            )
-        }
+            val countSlForm = user.companyId?.let {
+                stdLevyNotificationFormRepository.countByManufacturerId(
+                    it
+                )
+            }
             return CompanySlFormDto(countSlForm)
         }
         return null
@@ -1940,7 +1966,7 @@ return getUserTasks();
 
     }
 
-//    fun getManufacturerStatuss(userID:Long): BusinessTypeHolder {
+    //    fun getManufacturerStatuss(userID:Long): BusinessTypeHolder {
 //        val businessNature = companyProfileRepo.getBusinessNature(userID)
 //        return iBusinessNatureRepository.getManufacturerStatus(businessNature)
 //    }
@@ -1948,12 +1974,12 @@ return getUserTasks();
         return commonDaoServices.loggedInUserDetailsEmail().emailActivationStatus
     }
 
-    fun getManufacturerStatus(): BusinessTypeHolder{
+    fun getManufacturerStatus(): BusinessTypeHolder {
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getBusinessNature(id)
                     .let {
-                    return  iBusinessNatureRepository.getManufacturerStatus(it)
+                        return iBusinessNatureRepository.getManufacturerStatus(it)
 
                     }
             } ?: throw NullValueNotAllowedException("User Not Found")
@@ -1985,7 +2011,6 @@ return getUserTasks();
     }
 
 
-
     fun getCompanyDirectors(): List<DirectorListHolder>? {
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
@@ -1997,14 +2022,14 @@ return getUserTasks();
 
                     }
 
-            }?: throw ExpectedDataNotFound("No Data Found")
+            } ?: throw ExpectedDataNotFound("No Data Found")
 
     }
 
 
     fun getSiteVisitRemarks(siteVisitId: Long): List<StandardLevySiteVisitRemarks> {
         standardLevySiteVisitRemarksRepository.findAllBySiteVisitIdOrderByIdDesc(siteVisitId)?.let {
-          return it
+            return it
         }
             ?: throw ExpectedDataNotFound("No Data Found")
     }
@@ -2015,11 +2040,9 @@ return getUserTasks();
     }
 
 
-
     fun getCompleteTasks(): List<CompleteTasksDetailHolder> {
         return standardLevyFactoryVisitReportRepo.getCompleteTasks()
     }
-
 
 
     fun closeTask(taskId: String) {
@@ -2038,14 +2061,13 @@ return getUserTasks();
     }
 
 
-
     fun suspendCompanyOperations(
         standardLevyOperationsSuspension: StandardLevyOperationsSuspension
     ): StandardLevyOperationsSuspension {
-        standardLevyOperationsSuspension.companyId= standardLevyOperationsSuspension.companyId
+        standardLevyOperationsSuspension.companyId = standardLevyOperationsSuspension.companyId
         standardLevyOperationsSuspension.reason = standardLevyOperationsSuspension.reason
-        standardLevyOperationsSuspension.dateOfSuspension= standardLevyOperationsSuspension.dateOfSuspension
-        standardLevyOperationsSuspension.status= 0
+        standardLevyOperationsSuspension.dateOfSuspension = standardLevyOperationsSuspension.dateOfSuspension
+        standardLevyOperationsSuspension.status = 0
 
         return standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
     }
@@ -2053,10 +2075,10 @@ return getUserTasks();
     fun resumeCompanyOperations(
         standardLevyOperationsSuspension: StandardLevyOperationsSuspension
     ): StandardLevyOperationsSuspension {
-        standardLevyOperationsSuspension.companyId= standardLevyOperationsSuspension.companyId
+        standardLevyOperationsSuspension.companyId = standardLevyOperationsSuspension.companyId
         standardLevyOperationsSuspension.reason = standardLevyOperationsSuspension.reason
-        standardLevyOperationsSuspension.dateOfSuspension= standardLevyOperationsSuspension.dateOfSuspension
-        standardLevyOperationsSuspension.status= 2
+        standardLevyOperationsSuspension.dateOfSuspension = standardLevyOperationsSuspension.dateOfSuspension
+        standardLevyOperationsSuspension.status = 2
 
         return standardLevyOperationsSuspensionRepository.save(standardLevyOperationsSuspension)
     }
@@ -2075,23 +2097,24 @@ return getUserTasks();
             ?.let { entity ->
 
                 entity.apply {
-                   status=2
+                    status = 2
                 }
                 companyProfileRepo.save(entity)
 
-            }?: throw Exception("COMPANY NOT FOUND")
+            } ?: throw Exception("COMPANY NOT FOUND")
         standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
             ?.let { entity ->
 
                 entity.apply {
-                    status=1
+                    status = 1
                 }
                 standardLevyOperationsSuspensionRepository.save(entity)
-                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
-                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val companyName = companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID = companyProfileRepo.getContactPersonId(companyProfileEntity.id)
                 val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
                 val subject = "Request For Suspension of Company"
-                val messageBody= "Dear ${companyName}, Your request for suspension of company operations has been approved. Regards, KEBS,"
+                val messageBody =
+                    "Dear ${companyName}, Your request for suspension of company operations has been approved. Regards, KEBS,"
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)
 
@@ -2100,6 +2123,7 @@ return getUserTasks();
 
         return "Company Suspended"
     }
+
     fun confirmCompanyResumption(
         companyProfileEntity: CompanyProfileEntity,
         standardLevyOperationsSuspension: StandardLevyOperationsSuspension
@@ -2110,23 +2134,24 @@ return getUserTasks();
             ?.let { entity ->
 
                 entity.apply {
-                    status=1
+                    status = 1
                 }
                 companyProfileRepo.save(entity)
 
-            }?: throw Exception("COMPANY NOT FOUND")
+            } ?: throw Exception("COMPANY NOT FOUND")
         standardLevyOperationsSuspensionRepository.findByIdOrNull(standardLevyOperationsSuspension.id)
             ?.let { entity ->
 
                 entity.apply {
-                    status=1
+                    status = 1
                 }
                 standardLevyOperationsSuspensionRepository.save(entity)
-                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
-                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val companyName = companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID = companyProfileRepo.getContactPersonId(companyProfileEntity.id)
                 val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
                 val subject = "Request For Resumption of Company Operations"
-                val messageBody= "Dear ${companyName}, Your request for resumption of company operations has been approved. Regards, KEBS,"
+                val messageBody =
+                    "Dear ${companyName}, Your request for resumption of company operations has been approved. Regards, KEBS,"
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)
 
@@ -2146,14 +2171,15 @@ return getUserTasks();
             ?.let { entity ->
 
                 entity.apply {
-                    status=1
+                    status = 1
                 }
                 standardLevyOperationsSuspensionRepository.save(entity)
-                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
-                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val companyName = companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID = companyProfileRepo.getContactPersonId(companyProfileEntity.id)
                 val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
                 val subject = "Request For Suspension of Company"
-                val messageBody= "Dear ${companyName}, Your request for suspension of company operations has been declined. Regards, KEBS,"
+                val messageBody =
+                    "Dear ${companyName}, Your request for suspension of company operations has been declined. Regards, KEBS,"
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)
 
@@ -2173,14 +2199,15 @@ return getUserTasks();
             ?.let { entity ->
 
                 entity.apply {
-                    status=1
+                    status = 1
                 }
                 standardLevyOperationsSuspensionRepository.save(entity)
-                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
-                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val companyName = companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID = companyProfileRepo.getContactPersonId(companyProfileEntity.id)
                 val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
                 val subject = "Request For Suspension of Company"
-                val messageBody= "Dear ${companyName}, Your request for resumption of company operations has been declined. Regards, KEBS,"
+                val messageBody =
+                    "Dear ${companyName}, Your request for resumption of company operations has been declined. Regards, KEBS,"
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)
 
@@ -2189,7 +2216,6 @@ return getUserTasks();
 
         return "Company Resumption Rejected"
     }
-
 
 
     fun closeCompanyOperations(
@@ -2250,23 +2276,24 @@ return getUserTasks();
             ?.let { entity ->
 
                 entity.apply {
-                    status=0
+                    status = 0
                 }
                 companyProfileRepo.save(entity)
 
-            }?: throw Exception("COMPANY NOT FOUND")
+            } ?: throw Exception("COMPANY NOT FOUND")
         standardLevyOperationsClosureRepository.findByIdOrNull(standardLevyOperationsClosure.id)
             ?.let { entity ->
                 entity.apply {
-                    status=1
+                    status = 1
                 }
                 standardLevyOperationsClosureRepository.save(entity)
 
-                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
-                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val companyName = companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID = companyProfileRepo.getContactPersonId(companyProfileEntity.id)
                 val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
                 val subject = "Request For Close of Company"
-                val messageBody= "Dear ${companyName}, Your request for closure of company operations has been approved. Regards, KEBS,"
+                val messageBody =
+                    "Dear ${companyName}, Your request for closure of company operations has been approved. Regards, KEBS,"
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)
 
@@ -2288,15 +2315,16 @@ return getUserTasks();
         standardLevyOperationsClosureRepository.findByIdOrNull(standardLevyOperationsClosure.id)
             ?.let { entity ->
                 entity.apply {
-                    status=1
+                    status = 1
                 }
                 standardLevyOperationsClosureRepository.save(entity)
 
-                val companyName= companyProfileRepo.getCompanyName(companyProfileEntity.id)
-                val userID= companyProfileRepo.getContactPersonId(companyProfileEntity.id)
+                val companyName = companyProfileRepo.getCompanyName(companyProfileEntity.id)
+                val userID = companyProfileRepo.getContactPersonId(companyProfileEntity.id)
                 val recipient = userID?.let { commonDaoServices.getUserEmail(it) };
                 val subject = "Request For Close of Company"
-                val messageBody= "Dear ${companyName}, Your request for closure of company operations has been declined. Regards, KEBS,"
+                val messageBody =
+                    "Dear ${companyName}, Your request for closure of company operations has been declined. Regards, KEBS,"
                 if (recipient != null) {
                     notifications.sendEmail(recipient, subject, messageBody)
 
@@ -2309,18 +2337,18 @@ return getUserTasks();
     }
 
 
-
     fun getCompanyClosureRequest(): MutableList<CompanyClosureList> {
         return standardLevyOperationsClosureRepository.getCompanyClosureRequest()
     }
 
     fun sendLevyPaymentReminders(): String {
-        var companylist= companyProfileRepo.getManufactureEmailAddressList()
+        var companylist = companyProfileRepo.getManufactureEmailAddressList()
 
-        companylist.forEach { item->
-           val recipient= item.getCompanyEmail()
+        companylist.forEach { item ->
+            val recipient = item.getCompanyEmail()
             val subject = "Levy Payment"
-            val messageBody= "Dear ${item.getCompanyName()},You are reminded to Remit your levy for month ended. Ignore if paid"
+            val messageBody =
+                "Dear ${item.getCompanyName()},You are reminded to Remit your levy for month ended. Ignore if paid"
             if (recipient != null) {
                 notifications.sendEmail(recipient, subject, messageBody)
             }
@@ -2333,11 +2361,11 @@ return getUserTasks();
         return companyProfileRepo.getLevyPenalty()
     }
 
-    fun getManufacturesLevyPenaltyList(companyId: Long): MutableList<LevyPenalty>{
+    fun getManufacturesLevyPenaltyList(companyId: Long): MutableList<LevyPenalty> {
         return companyProfileRepo.getManufacturesLevyPenaltyList(companyId)
     }
 
-    fun getManufacturesLevyPenalty(): MutableList<LevyPenalty>{
+    fun getManufacturesLevyPenalty(): MutableList<LevyPenalty> {
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureEntryNo(id)
@@ -2349,7 +2377,7 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
-    fun getManufacturesPayments(): MutableList<LevyPayment>{
+    fun getManufacturesPayments(): MutableList<LevyPayment> {
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureEntryNo(id)
@@ -2362,17 +2390,16 @@ return getUserTasks();
             ?: throw ExpectedDataNotFound("No Data Found")
     }
 
-    fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments>{
+    fun getManufacturesLevyPaymentsList(companyId: Long): MutableList<LevyPayments> {
         return companyProfileRepo.getManufacturesLevyPaymentsList(companyId)
     }
 
-    fun getLevyPaymentsReceipt(id: Long): MutableList<LevyPayments>{
+    fun getLevyPaymentsReceipt(id: Long): MutableList<LevyPayments> {
         return companyProfileRepo.getLevyPaymentsReceipt(id)
     }
 
 
-
-    fun getManufacturesLevyPayments(): MutableList<LevyPayments>{
+    fun getManufacturesLevyPayments(): MutableList<LevyPayments> {
         commonDaoServices.loggedInUserDetailsEmail().id
             ?.let { id ->
                 companyProfileRepo.getManufactureEntryNo(id)
@@ -2400,8 +2427,8 @@ return getUserTasks();
         usersEntity: UsersEntity,
         emailVerificationTokenEntity: EmailVerificationTokenEntity
     ): ResponseMessage {
-        var slResponse=""
-        emailVerificationTokenEntity.token=emailVerificationTokenEntity.token
+        var slResponse = ""
+        emailVerificationTokenEntity.token = emailVerificationTokenEntity.token
         usersEntity.id = usersEntity.id
         emailVerificationTokenEntity.token?.let {
             emailVerificationTokenEntityRepo.findFirstByToken(it)
@@ -2409,14 +2436,14 @@ return getUserTasks();
                     iUserRepository.findByIdOrNull(usersEntity.id)
                         ?.let { entity ->
                             entity.apply {
-                                emailActivationStatus=1
+                                emailActivationStatus = 1
                             }
                             iUserRepository.save(entity)
 
                         }
-                    slResponse="Email Verified"
-                }?: throw Exception("Token Used is Incorrect")
-            slResponse="Token Used is Incorrect"
+                    slResponse = "Email Verified"
+                } ?: throw Exception("Token Used is Incorrect")
+            slResponse = "Token Used is Incorrect"
         }
 
         return ResponseMessage(slResponse)
@@ -2426,9 +2453,9 @@ return getUserTasks();
     fun sendEmailVerificationToken(
         emailVerificationTokenEntity: EmailVerificationTokenEntity
     ): String? {
-        emailVerificationTokenEntity.createdBy= emailVerificationTokenEntity.createdBy
+        emailVerificationTokenEntity.createdBy = emailVerificationTokenEntity.createdBy
         emailVerificationTokenEntity.email = emailVerificationTokenEntity.email
-        val verificationToken= getRandomToken()
+        val verificationToken = getRandomToken()
         val tokensEntity = EmailVerificationTokenEntity()
         with(tokensEntity) {
             token = verificationToken
@@ -2446,11 +2473,12 @@ return getUserTasks();
 //        KotlinLogging.logger { }.info { "Save Entity" + gson.toJson(tokensEntity) }
 
 
-        val firstName=  commonDaoServices.loggedInUserDetailsEmail().firstName
-        val secondName=  commonDaoServices.loggedInUserDetailsEmail().lastName
+        val firstName = commonDaoServices.loggedInUserDetailsEmail().firstName
+        val secondName = commonDaoServices.loggedInUserDetailsEmail().lastName
         val recipient = emailVerificationTokenEntity.email
         val subject = "Email Verification"
-        val messageBody= "Dear $firstName $secondName , Use this code $verificationToken to verify email. Regards, KEBS,"
+        val messageBody =
+            "Dear $firstName $secondName , Use this code $verificationToken to verify email. Regards, KEBS,"
         if (recipient != null) {
             notifications.sendEmail(recipient, subject, messageBody)
 
@@ -2460,15 +2488,16 @@ return getUserTasks();
 
 
     }
-    fun getPenaltyDetails(): MutableList<PenaltyDetails>{
-       return companyProfileRepo.getPenaltyDetails();
+
+    fun getPenaltyDetails(): MutableList<PenaltyDetails> {
+        return companyProfileRepo.getPenaltyDetails();
     }
 
     fun getAllCompany(): MutableIterable<CompanyProfileEntity> {
         return companyProfileRepo.findAll()
     }
 
-    fun mapPaymentDetails(data: List<LevyPayments>): List<LevyPaymentDTO>{
+    fun mapPaymentDetails(data: List<LevyPayments>): List<LevyPaymentDTO> {
         return data.map {
             LevyPaymentDTO(
                 it.getId(),
@@ -2495,10 +2524,10 @@ return getUserTasks();
         }
     }
 
-    fun mapActiveFirms(data: List<RegisteredFirms>):List<ActiveFirmsDTO>{
+    fun mapActiveFirms(data: List<RegisteredFirms>): List<ActiveFirmsDTO> {
         return data.map {
             ActiveFirmsDTO(
-              it.getId(),
+                it.getId(),
                 it.getEntryNumber(),
                 it.getKraPin(),
                 it.getName(),
@@ -2513,7 +2542,7 @@ return getUserTasks();
 
     }
 
-    fun mapRegisteredFirms(data: List<RegisteredFirms>):List<RegisteredFirmsDTO>{
+    fun mapRegisteredFirms(data: List<RegisteredFirms>): List<RegisteredFirmsDTO> {
         return data.map {
             RegisteredFirmsDTO(
                 it.getId(),
@@ -2535,7 +2564,7 @@ return getUserTasks();
 
     }
 
-    fun mapDormantFirms(data: List<RegisteredFirms>):List<DormantFirmsDTO>{
+    fun mapDormantFirms(data: List<RegisteredFirms>): List<DormantFirmsDTO> {
         return data.map {
             DormantFirmsDTO(
                 it.getId(),
@@ -2553,7 +2582,7 @@ return getUserTasks();
 
     }
 
-    fun mapClosedFirms(data: List<RegisteredFirms>):List<ClosedFirmsDTO>{
+    fun mapClosedFirms(data: List<RegisteredFirms>): List<ClosedFirmsDTO> {
         return data.map {
             ClosedFirmsDTO(
                 it.getId(),
@@ -2571,7 +2600,8 @@ return getUserTasks();
         }
 
     }
-    fun mapLevyPenaltyReport(data: List<AllLevyPayments>):List<LevyPenaltyReportDTO>{
+
+    fun mapLevyPenaltyReport(data: List<AllLevyPayments>): List<LevyPenaltyReportDTO> {
         return data.map {
             LevyPenaltyReportDTO(
                 it.getId(),
@@ -2591,7 +2621,7 @@ return getUserTasks();
 
     }
 
-    fun mapLevyPaymentReport(data: List<AllLevyPayments>):List<LevyPaymentReportDTO>{
+    fun mapLevyPaymentReport(data: List<AllLevyPayments>): List<LevyPaymentReportDTO> {
         return data.map {
             LevyPaymentReportDTO(
                 it.getId(),
@@ -2612,9 +2642,9 @@ return getUserTasks();
 
 
     fun updatePenaltyDetails(): String {
-        var updatedPenalties= companyProfileRepo.updatedPenalty()
-        updatedPenalties.forEach { item->
-            val penaltyId=item.getPenaltyOrderNo()
+        var updatedPenalties = companyProfileRepo.updatedPenalty()
+        updatedPenalties.forEach { item ->
+            val penaltyId = item.getPenaltyOrderNo()
             if (penaltyId != null) {
                 companyProfileRepo.updatePenaltyStatus(penaltyId)
             }
@@ -2622,10 +2652,11 @@ return getUserTasks();
 
         return "Updated"
     }
+
     fun updatePenaltyDetailsNotSent(): String {
-        var updatedPenalties= companyProfileRepo.updatedPenalty()
-        updatedPenalties.forEach { item->
-            val penaltyId=item.getPenaltyOrderNo()
+        var updatedPenalties = companyProfileRepo.updatedPenalty()
+        updatedPenalties.forEach { item ->
+            val penaltyId = item.getPenaltyOrderNo()
             if (penaltyId != null) {
                 companyProfileRepo.updatePenaltyStatusNotSent(penaltyId)
             }
@@ -2642,43 +2673,79 @@ return getUserTasks();
         return companyProfileRepo.getAllLevyPayments()
     }
 
-    fun getRejectedCompanyDetails(): MutableList<RejectedComDetails>{
+    fun getRejectedCompanyDetails(): MutableList<RejectedComDetails> {
         return rejectedCompanyDetailsRepository.getRejectedCompanyDetails()
     }
 
     fun getPenaltyReport(): MutableList<AllLevyPayments> {
         return companyProfileRepo.getPenaltyReport()
     }
+
     fun getActiveFirms(): MutableList<RegisteredFirms> {
         return companyProfileRepo.getActiveFirms()
     }
+
     fun getDormantFirms(): MutableList<RegisteredFirms> {
         return companyProfileRepo.getDormantFirms()
     }
+
     fun getClosedFirms(): MutableList<RegisteredFirms> {
         return companyProfileRepo.getClosedFirms()
     }
 
-    fun getRegisteredFirmsFilter(startDate : Date?,endDate : Date?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
-        return companyProfileRepo.getRegisteredFirmsFilter(startDate,endDate, businessLines,region)
+    fun getRegisteredFirmsFilter(
+        startDate: Date?,
+        endDate: Date?,
+        businessLines: Long?,
+        region: Long?
+    ): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getRegisteredFirmsFilter(startDate, endDate, businessLines, region)
 
     }
 
-    fun getAllLevyPaymentsFilter(periodFrom : Date?,periodTo : Date?, businessLines : Long?,region : Long?): MutableList<AllLevyPayments> {
-        return companyProfileRepo.getAllLevyPaymentsFilter(periodFrom,periodTo, businessLines,region)
+    fun getAllLevyPaymentsFilter(
+        periodFrom: Date?,
+        periodTo: Date?,
+        businessLines: Long?,
+        region: Long?
+    ): MutableList<AllLevyPayments> {
+        return companyProfileRepo.getAllLevyPaymentsFilter(periodFrom, periodTo, businessLines, region)
     }
 
-    fun getPenaltyReportFilter(periodFrom : Date?,periodTo : Date?, businessLines : Long?,region : Long?): MutableList<AllLevyPayments> {
-        return companyProfileRepo.getPenaltyReportFilter(periodFrom,periodTo, businessLines,region)
+    fun getPenaltyReportFilter(
+        periodFrom: Date?,
+        periodTo: Date?,
+        businessLines: Long?,
+        region: Long?
+    ): MutableList<AllLevyPayments> {
+        return companyProfileRepo.getPenaltyReportFilter(periodFrom, periodTo, businessLines, region)
     }
-    fun getActiveFirmsFilter(startDate : Date?,endDate : Date?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
-        return companyProfileRepo.getActiveFirmsFilter(startDate,endDate, businessLines,region)
+
+    fun getActiveFirmsFilter(
+        startDate: Date?,
+        endDate: Date?,
+        businessLines: Long?,
+        region: Long?
+    ): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getActiveFirmsFilter(startDate, endDate, businessLines, region)
     }
-    fun getDormantFirmsFilter(startDate : Date?,endDate : Date?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
-        return companyProfileRepo.getDormantFirmsFilter(startDate,endDate, businessLines,region)
+
+    fun getDormantFirmsFilter(
+        startDate: Date?,
+        endDate: Date?,
+        businessLines: Long?,
+        region: Long?
+    ): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getDormantFirmsFilter(startDate, endDate, businessLines, region)
     }
-    fun getClosedFirmsFilter(startDate : Date?,endDate : Date?, businessLines : Long?,region : Long?): MutableList<RegisteredFirms> {
-        return companyProfileRepo.getClosedFirmsFilter(startDate,endDate, businessLines,region)
+
+    fun getClosedFirmsFilter(
+        startDate: Date?,
+        endDate: Date?,
+        businessLines: Long?,
+        region: Long?
+    ): MutableList<RegisteredFirms> {
+        return companyProfileRepo.getClosedFirmsFilter(startDate, endDate, businessLines, region)
     }
 
     fun getBusinessLineList(): List<BusinessLineHolder> {
@@ -2689,32 +2756,48 @@ return getUserTasks();
         return companyProfileRepo.getRegionList()
     }
 
-    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments>
-    {
+    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments> {
         return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPayments()
     }
 
-    fun getLevyHistoricalPaymentsFilter(periodFrom : Date?,periodTo : Date?): MutableList<StdLevyHistoricalPayments> {
-        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPaymentsFilter(periodFrom,periodTo)
+    fun getLevyHistoricalPaymentsFilter(periodFrom: Date?, periodTo: Date?,company: String?,kraPin: String?): MutableList<StdLevyHistoricalPayments> {
+        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPaymentsFilter(periodFrom, periodTo,company,kraPin)
     }
 
-    fun getLevyPaymentStatus(): Boolean{
-        val prevDate=LocalDate.now().minusMonths(1);
-        val prevMonth=prevDate.getMonthValue()
-        val toCheckYear=prevDate.getYear()
+    fun getLevyPaymentStatus(): Boolean {
+        val prevDate = LocalDate.now().minusMonths(2);
+        val prevMonth = prevDate.getMonthValue()
+        val toCheckYear = prevDate.getYear()
         var recordCount: Long
-        val userId=commonDaoServices.loggedInUserDetailsEmail().id
-        val companyPin=companyProfileRepo.getManufactureKraPin(userId)
+        val userId = commonDaoServices.loggedInUserDetailsEmail().id
+        val companyPin = companyProfileRepo.getManufactureKraPin(userId)
+        val exemptionStatus = companyProfileRepo.getExemptionStatus(userId)
         //recordCount= stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin,toCheckYear,prevMonth)
-        stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin,toCheckYear,prevMonth)?.let {
+        if (exemptionStatus.equals(0)) {
+            stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin, toCheckYear, prevMonth)?.let {
+                return true
+            }
+                ?: return false
+        } else {
             return true
         }
-            ?: return false
 
 
         //return PaymentStatus(recordCount)
     }
 
+    fun updateExemptionStatus(exemptionStatusDto: ExemptionStatusDto): String {
 
+        companyProfileRepo.findByIdOrNull(exemptionStatusDto.companyId)
+            ?.let { entity ->
+                entity.apply {
+                    exemptionStatus = exemptionStatusDto.exemptionStatus
+                }
+                companyProfileRepo.save(entity)
+            }
+            ?: throw ExpectedDataNotFound("No Data Found")
+
+        return "Updated"
+    }
 
 }

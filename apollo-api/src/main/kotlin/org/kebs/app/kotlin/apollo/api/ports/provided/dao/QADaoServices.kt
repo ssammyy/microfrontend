@@ -10101,6 +10101,26 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findReportAllAwardedPermitsSlFilter(
+        user: UsersEntity,
+        status: Int,
+        fmarkGeneratedStatus: Int,
+        periodFrom: Date?, periodTo: Date?,region: String?
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.getPermitsApplicationsFilter(
+            periodFrom,
+            periodTo,
+            region,
+            status
+        )
+            .let { permitList ->
+                return permitList
+            }
+
+
+    }
+
 
     fun findReportAllAwardedPermits(
         user: UsersEntity,

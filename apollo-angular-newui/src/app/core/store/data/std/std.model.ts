@@ -50,6 +50,12 @@ export interface UsersEntity {
 
 
 }
+export interface CompanyView {
+    company: string;
+}
+export interface KraPinView {
+    kraPin: string;
+}
 
 export interface BusinessLinesView {
     id: number;

@@ -282,6 +282,7 @@ interface ManufactureListHolder {
     fun getTypeOfManufacture(): Long?
     fun getOtherBusinessNatureType(): String?
     fun getAssignStatus(): String?
+    fun getExemptionStatus(): Long?
 }
 
 interface CompleteTasksDetailHolder {

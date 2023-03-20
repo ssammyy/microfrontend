@@ -1092,11 +1092,11 @@ class RegistrationDaoServices(
        val countOfSlForm= stdLevyNotificationFormDTO.companyProfileID?.let { stdLevyNotificationFormRepository.countByManufacturerId(it) }
         val toCheckSl: Long = 0
 
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
         //println("SL FORM ID$countOfSlForm");
         if (countOfSlForm == toCheckSl) {
-            val eNumber = getEntryNumber(map, loggedInUser)
+            val eNumber = generateEntryNumber(map, loggedInUser)
 
 
             val resultFound = eNumber.id?.let { sendEntryNumberToKraServices.postEntryNumberTransactionToKra(it, commonDaoServices.getUserName(loggedInUser), map) }

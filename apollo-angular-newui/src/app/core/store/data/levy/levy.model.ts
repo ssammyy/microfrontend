@@ -142,6 +142,8 @@ export class LevyFiltersDto {
     periodTo: Timestamp<any>;
     businessLines: number;
     region : number;
+    company : string;
+    kraPin : string;
 
 }
 export interface StdLevyScheduleSiteVisitDTO {
@@ -452,6 +454,7 @@ export interface DefaulterDetails{
 }
 export interface ManufactureDetailList {
     id: number;
+    exemptionStatus: number;
     name: string;
     kraPin: string;
     status: number;
@@ -737,5 +740,10 @@ export interface RejectedComDetails{
     companyTelephone: string;
     assignedTo: number;
     status: number;
+}
+
+export interface ExemptionDto{
+    companyId: number;
+    exemptionStatus: number;
 }
 

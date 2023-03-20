@@ -2152,10 +2152,12 @@ class StdLevyController(
     {
         val startDate= levyFilterDTO.startDate
         val endDate = levyFilterDTO.endDate
+        val company = levyFilterDTO.company
+        val kraPin = levyFilterDTO.kraPin
 
         val dateFormat = SimpleDateFormat("mm/dd/yyyy")
 
-        return standardLevyService.getLevyHistoricalPaymentsFilter(startDate ,endDate )
+        return standardLevyService.getLevyHistoricalPaymentsFilter(startDate ,endDate,company,kraPin )
     }
 
     @GetMapping("/getLevyPaymentStatus")
@@ -2163,6 +2165,18 @@ class StdLevyController(
     fun getLevyPaymentStatus(): Boolean
     {
         return standardLevyService.getLevyPaymentStatus()
+    }
+
+    @PostMapping("/updateExemptionStatus")
+    @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateExemptionStatus(
+        @RequestBody exemptionStatusDto: ExemptionStatusDto
+    ): ServerResponse
+    {
+
+        return ServerResponse(HttpStatus.OK,"Company Status Approved",standardLevyService.updateExemptionStatus(exemptionStatusDto))
+
     }
 
 

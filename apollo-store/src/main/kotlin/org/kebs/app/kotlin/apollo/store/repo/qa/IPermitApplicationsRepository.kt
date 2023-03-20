@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.store.repo.qa
 import org.jetbrains.annotations.Nullable
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.kebs.app.kotlin.apollo.store.model.std.RegisteredFirms
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -386,6 +387,20 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long,
         permitAwardStatus: Int,
     ): List<PermitApplicationsEntity>?
+
+    @Query(
+        value = "SELECT * FROM DAT_KEBS_PERMIT_TRANSACTION" +
+                " WHERE (:startDate is null or DATE_OF_ISSUE >=TO_DATE(:startDate)) and " +
+                "(:endDate is null or DATE_OF_ISSUE <=TO_DATE(:endDate)) and" +
+                " (:region is null or  REGION LIKE  '%'||TO_CHAR(:region)||'%') and PERMIT_AWARD_STATUS=:permitAwardStatus ",
+        nativeQuery = true
+    )
+    fun getPermitsApplicationsFilter(
+        @Param("startDate") startDate: java.sql.Date?,
+        @Param("endDate") endDate: java.sql.Date?,
+        @Param("region") region: String?,
+        permitAwardStatus: Int
+    ): List<PermitApplicationsEntity>
 
     fun findByOldPermitStatusIsNullAndPermitAwardStatus(
         permitAwardStatus: Int,
