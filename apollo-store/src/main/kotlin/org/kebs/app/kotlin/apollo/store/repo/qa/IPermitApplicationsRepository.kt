@@ -1052,6 +1052,9 @@ interface IQaInspectionOpcEntityRepository : HazelcastRepository<QaInspectionOpc
 
     fun findTopByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionOpcEntity>?
 
+    fun findAllByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionOpcEntity>?
+
+
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionOpcEntity>?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionOpcEntity>?
 }
@@ -1067,6 +1070,8 @@ interface IQaInspectionProductLabelEntityRepository : HazelcastRepository<QaInsp
 
     fun findByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
     fun findTopByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
+
+    fun findAllByInspectionRecommendationId(inspectionRecommendationId: Long): List<QaInspectionProductLabelEntity>?
 
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): List<QaInspectionProductLabelEntity>?
     fun findByPermitRefNumberAndPermitId(permitRefNumber: String, permitId: Long): List<QaInspectionProductLabelEntity>?
