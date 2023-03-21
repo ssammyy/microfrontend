@@ -282,7 +282,7 @@ export class HofReviewProposalComponent implements OnInit {
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-success'
+                    cancelButton: 'btn btn-danger'
                 },
                 buttonsStyling: false
             });
@@ -292,8 +292,8 @@ export class HofReviewProposalComponent implements OnInit {
                 text: 'You won\'t be able to reverse this!',
                 icon: 'success',
                 showCancelButton: true,
-                confirmButtonText: 'Yes!',
-                cancelButtonText: 'No!',
+                confirmButtonText: 'Approve!',
+                cancelButtonText: 'Reject!',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
