@@ -167,37 +167,11 @@ export class VotesOnNwisComponent implements OnInit {
           selectAllText: 'Select All',
           unSelectAllText: 'UnSelect All',
           itemsShowLimit: 3,
-          allowSearchFilter: true
+          allowSearchFilter: true,
       };
-
-      this.stdNwiFormGroup = this.formBuilder.group({
-
-          proposalTitle: ['', Validators.required],
-          scope: ['', Validators.required],
-          purpose: ['', Validators.required],
-          // targetDate: ['', Validators.required],
-          similarStandards: [''],
-          liaisonOrganisationData: [this.selectedItems, Validators.required],
-          // draftAttached: [''],
-          // outlineAttached: [''],
-          // draftOutlineImpossible: [''],
-          // outlineSentLater: [''],
-          nameOfProposer: ['', Validators.required],
-          organization: ['', Validators.required],
-          circulationDate: ['', Validators.required],
-          closingDate: ['', Validators.required],
-          // dateOfPresentation: ['', Validators.required],
-          nameOfTC: ['', Validators.required],
-          referenceNumber: ['', Validators.required],
-          standardId: ['', Validators.required],
-
-      });
 
 
   }
-
-
-
   get formStdRequest(): any {
       return this.stdNwiFormGroup.controls;
   }
@@ -597,7 +571,7 @@ export class VotesOnNwisComponent implements OnInit {
       const swalWithBootstrapButtons = Swal.mixin({
           customClass: {
               confirmButton: 'btn btn-success',
-              cancelButton: 'btn btn-success'
+              cancelButton: 'btn btn-danger'
           },
           buttonsStyling: false
       });

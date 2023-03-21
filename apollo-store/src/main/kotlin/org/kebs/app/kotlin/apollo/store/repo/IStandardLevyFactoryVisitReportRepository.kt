@@ -38,7 +38,7 @@ interface ISlUpdatecompanyDetailsEntityRepository : HazelcastRepository<SlUpdate
 }
 
 interface StdLevyEntryNoDataMigrationEntityRepository : HazelcastRepository<StdLevyEntryNoDataMigrationEntity, Long>{
-    @Query(value = "SELECT max(ENTRY_NUMBER)  FROM SL_ENTRY_NO_DATA_MIGRATION", nativeQuery = true)
+    @Query(value = "SELECT max(ENTRY_COUNT)  FROM SL_ENTRY_NO_DATA_MIGRATION", nativeQuery = true)
     fun getMaxEntryNo(): Long
 
     @Query(value = "SELECT ENTRY_NUMBER  FROM SL_ENTRY_NO_DATA_MIGRATION WHERE KRA_PIN=:kraPin", nativeQuery = true)
@@ -52,10 +52,14 @@ interface StdLevyHistoricalPaymentsRepository : HazelcastRepository<StdLevyHisto
 
     @Query(value = "SELECT *  FROM STANDARD_LEVY_HISTORICAL_PAYMENTS WHERE  " +
             " (:periodFrom is null or PERIOD_FROM >=TO_DATE(:periodFrom))  and " +
-            "(:periodTo is null or PERIOD_TO >=TO_DATE(:periodTo)) ", nativeQuery = true)
+            "(:periodTo is null or PERIOD_TO >=TO_DATE(:periodTo)) and" +
+            "(:company is null or  COMPANY_NAME LIKE  '%'||TO_CHAR(:company)||'%') and" +
+            "(:kraPin is null or  KRA_PIN = TO_CHAR(:kraPin))", nativeQuery = true)
     fun getLevyHistoricalPaymentsFilter(
         @Param("periodFrom") periodFrom: Date?,
         @Param("periodTo") periodTo: Date?,
+        @Param("company") company: String?,
+        @Param("kraPin") kraPin: String?
     ): MutableList<StdLevyHistoricalPayments>
 
 

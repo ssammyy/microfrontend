@@ -1519,6 +1519,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kebs.msg.config.integration}")
     val mapKebsMsgConfigIntegration: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value.sd}")
+    val mapKebsLevyUrl: String? = null
+
     /**
      * TODO: Why do we need this
      */

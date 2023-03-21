@@ -26,8 +26,129 @@
                             </button></div>
                         </div>
                         <div class="card-body">
-                            <div class="toolbar">
+                            <div id="accordion" role="tablist">
+                                <div class="card-collapse">
+                                    <div class="card-header" role="tab" id="headingThree">
+                                        <h5 class="mb-0">
+                                            <a class="collapsed" data-toggle="collapse"
+                                               href="#collapseThree" aria-expanded="false"
+                                               aria-controls="collapseThree" style="color: red">
+                                                Click to Apply Filter
+                                                <i class="material-icons">keyboard_arrow_down</i>
+                                            </a>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="collapseThree" class="collapse" role="tabpanel"
+                                             aria-labelledby="headingThree" data-parent="#accordion">
+                                            <form #formDirective="ngForm"
+                                                  (ngSubmit)="applyPermitsFirmsFilter(formDirective)"
+                                                  [formGroup]="filterFormGroup" class="form">
+                                                <div class="row">
+                                                    <!--Custom Filters -->
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label><b>By Region:</b></label>
+                                                            <mat-select aria-label="Small"
+                                                                        aria-describedby="inputGroup-sizing-lg"
+                                                                        class="form-control"
+                                                                        formControlName="region"
+                                                                        placeholder="By Region">
+                                                                <mat-option
+                                                                        *ngFor="let region of regions"
+                                                                        value="{{region.id}}">{{region.region}}</mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label><b>By Date
+                                                                Date:</b></label>
+                                                            <mat-form-field appearance="fill">
+                                                                <mat-label>Enter a date range
+                                                                </mat-label>
+                                                                <mat-date-range-input
 
+                                                                        [max]="today"
+                                                                        [rangePicker]="picker">
+                                                                    <input matStartDate
+                                                                           #dateRangeStart
+                                                                           placeholder="Start date"
+
+                                                                    >
+                                                                    <input matEndDate
+                                                                           #dateRangeEnd
+                                                                           placeholder="End date"
+                                                                           (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)"
+
+                                                                    >
+                                                                </mat-date-range-input>
+                                                                <mat-hint>MM/DD/YYYY –
+                                                                    MM/DD/YYYY
+                                                                </mat-hint>
+                                                                <mat-datepicker-toggle matSuffix
+                                                                                       [for]="picker"></mat-datepicker-toggle>
+                                                                <mat-date-range-picker
+                                                                    #picker></mat-date-range-picker>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <input type="hidden"
+                                                           id="start"
+                                                           formControlName="startDate"
+                                                           ngModel="{{startDate}}"
+                                                    >
+                                                    <input type="hidden"
+                                                           id="end"
+                                                           formControlName="endDate"
+                                                           ngModel="{{endDate}}"
+                                                    >
+                                                    <div class="col-sm-3">
+                                                        <button mat-raised-button
+                                                                class="btn btn-info btn-sm"
+                                                                style="width: inherit" type="submit">
+                                                            Filter
+                                                            results
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <button mat-raised-button
+                                                                class="btn btn-warning btn-sm"
+                                                                type="button"
+                                                                (click)="resetForm()"
+                                                                style="float:right;
+                                                                                width: inherit">
+                                                            Reset Filter
+
+                                                        </button>
+                                                    </div>
+                                                    <div *ngIf="filterApplied" class="col-sm-3">
+                                                        <h3>
+                                                            <!--                                            <span class="nowrap"><strong>Filter Applied: </strong> </span>-->
+                                                            <!--                                            <span class="nowrap" *ngFor="let menu of arr">{{ menu }}, </span>-->
+                                                            <span class="nowrap">  <button mat-raised-button
+                                                                                           class="btn btn-danger btn-sm"
+                                                                                           type="button"
+                                                                                           (click)="clearFilter()"
+                                                                                           style="float:right;
+                                                     width: inherit">
+                                                    Clear Filter
+
+                                                </button></span>
+                                                            <br><br>
+                                                        </h3>
+
+                                                    </div>
+                                                </div>
+
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
 
@@ -58,17 +179,17 @@
                                             <td >{{i+1}} </td>
                                             <td>{{allSMarkPermitData.kraPin}}</td>
                                             <td>{{allSMarkPermitData.entryNumber}}</td>
-                                            <td>{{allSMarkPermitData.firmName}}</td>
-                                            <td>{{allSMarkPermitData.telephoneNo}}</td>
-                                            <td>{{allSMarkPermitData.email}}</td>
+                                            <td>{{allSMarkPermitData.name}}</td>
+                                            <td>{{allSMarkPermitData.telephone}}</td>
+                                            <td>{{allSMarkPermitData.companyEmail}}</td>
                                             <td>{{allSMarkPermitData.physicalAddress}}</td>
                                             <td>{{allSMarkPermitData.postalAddress}}</td>
                                             <td></td>
                                             <td>{{allSMarkPermitData.town}}</td>
                                             <td>{{allSMarkPermitData.region}}</td>
                                             <td>{{allSMarkPermitData.productName}}</td>
-                                            <td>{{allSMarkPermitData.dateOfIssue | date: 'dd/MM/yyyy'}}</td>
-                                            <td>{{allSMarkPermitData.dateOfExpiry | date: 'dd/MM/yyyy'}}</td>
+                                            <td>{{allSMarkPermitData.issueDate | date: 'dd/MM/yyyy'}}</td>
+                                            <td>{{allSMarkPermitData.expiryDate | date: 'dd/MM/yyyy'}}</td>
                                         </tr>
                                         </tbody>
                                     </table>

@@ -19,6 +19,8 @@ import {UserRegister} from "../../../../shared/models/user";
 import {MasterService} from "../../../../core/store/data/master/master.service";
 import {ActivatedRoute} from "@angular/router";
 import {formatDate} from "@angular/common";
+import {ListItem} from "ng-multiselect-dropdown/multiselect.model";
+import {IDropdownSettings} from 'ng-multiselect-dropdown';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -39,6 +41,9 @@ export class RequestForFormationOfTCComponent implements OnInit {
     public itemId: string = "1";
     public groupId: string = "draft";
     public type: string = "TCRelevantDocument";
+
+    public dropdownSettings: IDropdownSettings = {};
+    dropdownList: any[] = [];
 
     tasks: JustificationForTc[] = [];
     displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
@@ -147,6 +152,16 @@ export class RequestForFormationOfTCComponent implements OnInit {
         this.getAllHofJustificationsRejected()
         this.getDepartments();
 
+        this.dropdownSettings = {
+            singleSelection: false,
+            idField: 'id',
+            textField: 'name',
+            selectAllText: 'Select All',
+            unSelectAllText: 'UnSelect All',
+            itemsShowLimit: 3,
+            allowSearchFilter: true
+        };
+
         this.formationRequestFormGroup = this.formBuilder.group({
             dateOfPresentation: ['', Validators.required],
             nameOfTC: ['', Validators.required],
@@ -182,6 +197,14 @@ export class RequestForFormationOfTCComponent implements OnInit {
 
 
         });
+    }
+
+    onItemSelect(item: ListItem) {
+        console.log(item);
+    }
+
+    onSelectAll(items: any) {
+        console.log(items);
     }
 
     public uploadProposalForTC(formDirective): void {

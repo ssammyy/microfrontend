@@ -678,10 +678,11 @@ export class InspectionReport implements OnInit {
 
 
     private checkIfInspectionReportExists(permitId: string) {
+        this.loading = true
+        this.loadingText = "Loading"
+        this.SpinnerService.show();
         if (permitId) {
-            this.loading = true
-            this.loadingText = "Loading"
-            this.SpinnerService.show();
+
 
             this.internalService.checkIfInspectionReportExists(this.permitId).subscribe(
                 (data: ApiResponseModel) => {
@@ -724,8 +725,7 @@ export class InspectionReport implements OnInit {
                 },
             );
         }
-        this.SpinnerService.hide()
-        this.loading = false
+
 
     }
 
@@ -774,16 +774,55 @@ export class InspectionReport implements OnInit {
                 if (data.responseCode === '00') {
                     this.allInspectionReportDetails = data?.data as AllInspectionDetailsApplyDto;
 
-                    this.technicalForm.patchValue(this.allInspectionReportDetails.technicalDetailsDto);
-                    this.inspectionDetails.patchValue(this.allInspectionReportDetails.inspectionDetailsDto);
-                    this.inspectionDetailsB.patchValue(this.allInspectionReportDetails.inspectionDetailsDtoB);
-                    this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
-                    this.standardizationMarkSchemeFormGroup.patchValue(this.allInspectionReportDetails.standardizationMarkScheme);
-                    this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
-                    this.haccpImplementationDetailsApplyFormGroup.patchValue(this.allInspectionReportDetails.haccpImplementationDetails);
+                    if (this.allInspectionReportDetails.technicalDetailsDto != null) {
+                        this.technicalForm.patchValue(this.allInspectionReportDetails.technicalDetailsDto);
+                    }
+                    if (this.allInspectionReportDetails.inspectionDetailsDto != null) {
+
+                        this.inspectionDetails.patchValue(this.allInspectionReportDetails.inspectionDetailsDto);
+                    }
+                    if (this.allInspectionReportDetails.inspectionDetailsDtoB != null) {
+
+                        this.inspectionDetailsB.patchValue(this.allInspectionReportDetails.inspectionDetailsDtoB);
+                    }
+                    if (this.allInspectionReportDetails.productLabelling != null) {
+
+                        this.productLabellingDtos = this.allInspectionReportDetails.productLabelling
+                    }
+                    if (this.allInspectionReportDetails.standardizationMarkScheme != null) {
+
+                        this.standardizationMarkSchemeFormGroup.patchValue(this.allInspectionReportDetails.standardizationMarkScheme);
+                    }
+                    if (this.allInspectionReportDetails.operationProcessAndControls != null) {
+
+                        this.operationProcessAndControlsDetailsDtos = this.allInspectionReportDetails.operationProcessAndControls
+                    }
+                    if (this.allInspectionReportDetails.haccpImplementationDetails != null) {
+
+                        this.haccpImplementationDetailsApplyFormGroup.patchValue(this.allInspectionReportDetails.haccpImplementationDetails);
+                    }
                     this.recommendationsFormGroup.patchValue(this.allInspectionReportDetails);
 
                     this.technicalForm.controls['id'].setValue('')
+
+                    this.inspectionDetails.controls['id'].setValue('')
+                    this.inspectionDetails.controls['inspectionRecommendationId'].setValue('')
+
+                    this.inspectionDetailsB.controls['id'].setValue('')
+                    this.inspectionDetailsB.controls['inspectionRecommendationId'].setValue('')
+
+                    this.standardizationMarkSchemeFormGroup.controls['id'].setValue('')
+                    this.standardizationMarkSchemeFormGroup.controls['inspectionRecommendationId'].setValue('')
+
+                    this.haccpImplementationDetailsApplyFormGroup.controls['id'].setValue('')
+                    this.haccpImplementationDetailsApplyFormGroup.controls['inspectionRecommendationId'].setValue('')
+
+
+
+
+
+
+
 
                     this.SpinnerService.hide()
                     this.loading = false

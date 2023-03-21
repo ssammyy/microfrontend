@@ -65,7 +65,7 @@ export class IsProposalFormComponent implements OnInit {
   ngOnInit(): void {
       this.getIntStandardProposals();
       this.findStandardStakeholders();
-      this.proposal_doc_name='International Standard Adoption Proposal'
+      this.proposal_doc_name='Adoption Proposal'
     this.isProposalFormGroup = this.formBuilder.group({
         proposal_doc_name: null,
         uploadedBy: null,
@@ -146,6 +146,8 @@ export class IsProposalFormComponent implements OnInit {
             this.isProposalFormGroup.patchValue(
                 {
                     requestId: this.actionRequests.id,
+                    title: this.actionRequests.subject,
+                    scope: this.actionRequests.description,
                     proposal_doc_name: this.proposal_doc_name,
                     tcSecName: this.fullname
                 }

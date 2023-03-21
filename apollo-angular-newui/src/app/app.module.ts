@@ -1858,7 +1858,6 @@ import { RejectedWithAmendmentsComponent } from './apollowebs/standards-developm
         RejectedJustificationComponent,
         RejectedWithAmendmentsComponent,
 
-
     ],
     entryComponents: [LoaderComponent],
     // providers: [DatePipe, MatNativeDateModule],

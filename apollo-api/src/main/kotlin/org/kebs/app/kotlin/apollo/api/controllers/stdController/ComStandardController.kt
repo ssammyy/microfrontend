@@ -671,7 +671,7 @@ class ComStandardController (val comStandardService: ComStandardService,
         return comStandardService.getComStdPublishing()
     }
 
-    @PreAuthorize("hasAuthority('SAC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
+    @PreAuthorize("hasAuthority('SAC_SD_READ') or hasAuthority('SAC_SEC_SD_READ') or hasAuthority('STANDARDS_DEVELOPMENT_FULL_ADMIN')")
     @GetMapping("/company_standard/getAppStdPublishing")
     @ResponseBody
     fun getAppStdPublishing(): MutableList<ComStandard>

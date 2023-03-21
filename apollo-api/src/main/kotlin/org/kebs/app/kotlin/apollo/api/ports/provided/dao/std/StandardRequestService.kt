@@ -22,6 +22,7 @@ import org.kebs.app.kotlin.apollo.api.web.config.EmailConfig
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
@@ -70,6 +71,7 @@ class StandardRequestService(
     private val usersRepo: IUserRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
 
+
     ) {
 
     val PROCESS_DEFINITION_KEY = "requestModule"
@@ -78,6 +80,7 @@ class StandardRequestService(
     val TASK_CANDIDATE_GROUP_TC = "TC"
     val TASK_CANDIDATE_GROUP_SPC_SEC = "SPC-sec"
     val variable: MutableMap<String, Any> = HashMap()
+
 
     fun deployProcessDefinition(): Deployment = repositoryService
         .createDeployment()

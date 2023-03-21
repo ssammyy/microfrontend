@@ -60,7 +60,7 @@ type="ball-scale-multiple"
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="prepareJustificationLabel">View Standard</h3>
+                    <h3 class="modal-title" id="prepareJustificationLabel">ADOPTION PROPOSAL FORM</h3>
                     <button type="button" #closeModalUploadJustification class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -108,14 +108,14 @@ type="ball-scale-multiple"
                                     <div class="form-group col-12">
                                         <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                  class="form-control one-column-input" formControlName="title" name="title"
+                                                  class="form-control one-column-input" value="{{actionRequests?.subject}}" formControlName="title" name="title"
                                                   placeholder="International Standard Title" type="text"></textarea>
 
                                     </div>
                                     <div class="form-group col-12">
                                         <label><b>Scope</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                         <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                  class="form-control one-column-input" formControlName="scope" name="scope"
+                                                  class="form-control one-column-input" value="{{actionRequests?.description}}" formControlName="scope" name="scope"
                                                   placeholder="International Standard Scope" type="text"></textarea>
 
                                     </div>

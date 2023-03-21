@@ -624,6 +624,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                     GET("/allPermitsWithNoFmarkGenerated", handler::loadAllPermitsForReports)
                     GET("/allPermitsAwarded", handler::loadAllAwardedPermitsForReports)
                     GET("/allPermitsAwardedSl", handler::loadAllAwardedPermitsForReportsSl)
+                    GET("/allPermitsAwardedSlFilter", handler::loadAllAwardedPermitsForReportsSlFilter)
                     GET("/allPermitsRenewed", handler::loadAllRenewedPermitsForReports)
                     GET("/allSamplesSubmitted", handler::loadAllSamplesSubmittedForReports)
                     GET("/allDejectedPermits", handler::loadAllDejectedPermitsForReports)

@@ -37,6 +37,7 @@ import {MatSort} from "@angular/material/sort";
 import {StandardsDto} from "../../../../core/store/data/master/master.model";
 import {QaService} from "../../../../core/store/data/qa/qa.service";
 import {MsService} from "../../../../core/store/data/ms/ms.service";
+import {Department, UsersEntity} from '../../../../core/store/data/std/std.model';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -54,6 +55,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class StdTscSecTasksComponentComponent implements OnInit {
     dtOptions: DataTables.Settings = {};
+
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger1: Subject<any> = new Subject<any>();
@@ -69,7 +71,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     blob: Blob;
     voteRetrieved !: VoteNwiRetrieved[];
 
-    public actionRequest: NWIsForVoting | undefined;
+    public actionRequest: StandardRequestB;
 
     dateFormat = "yyyy-MM-dd";
     language = "en";
@@ -109,7 +111,11 @@ export class StdTscSecTasksComponentComponent implements OnInit {
     //public stdTSecFormGroup!: FormGroup;
 
     public liaisonOrganizations !: LiaisonOrganization[];
-
+    selectedDepartment: string;
+    selectedStandard: number;
+    public departments !: Department[];
+    public tcSecs !: UsersEntity[];
+    dtOptionsB: DataTables.Settings = {};
     dropdownList: any[] = [];
     selectedItems?: LiaisonOrganization;
 
@@ -174,7 +180,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             proposalTitle: ['', Validators.required],
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
-            // targetDate: ['', Validators.required],
+            targetDate: ['', Validators.required],
             similarStandards: [''],
             liaisonOrganisationData: [this.selectedItems, Validators.required],
             // draftAttached: [''],
@@ -192,6 +198,70 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
         });
 
+
+    }
+    @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
+    public hideModelC() {
+        this.closeModalC?.nativeElement.click();
+    }
+    public getTcSecs(): void {
+        this.standardDevelopmentService.getTcSec().subscribe(
+            (response: UsersEntity[]) => {
+                this.tcSecs = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
+    public getDepartments(): void {
+        this.standardDevelopmentService.getDepartmentsb().subscribe(
+            (response: Department[]) => {
+                this.departments = response;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+    public onOpenModalTask(task: StandardRequestB, mode: string): void {
+        const container = document.getElementById('main-container');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.style.display = 'none';
+        button.setAttribute('data-toggle', 'modal');
+        if (mode === 'edit') {
+            this.actionRequest = task;
+            button.setAttribute('data-target', '#updateRequestModal');
+            this.getAllDocs(String(this.actionRequest.id))
+            this.getTcSecs()
+            this.selectedStandard = this.actionRequest.id
+
+
+        }
+        if (mode === 'divisions') {
+            this.actionRequest = task;
+            button.setAttribute('data-target', '#divisionChange');
+            this.getDepartments()
+            this.selectedDepartment = this.actionRequest.departmentName
+            this.selectedStandard = this.actionRequest.id
+
+
+        }
+        if (mode === 'view') {
+            this.actionRequest = task;
+            button.setAttribute('data-target', '#viewRequestModal');
+            this.getAllDocs(String(this.actionRequest.id))
+            this.getTcSecs()
+            this.selectedStandard = this.actionRequest.id
+
+
+        }
+
+        // @ts-ignore
+        container.appendChild(button);
+        button.click();
 
     }
 

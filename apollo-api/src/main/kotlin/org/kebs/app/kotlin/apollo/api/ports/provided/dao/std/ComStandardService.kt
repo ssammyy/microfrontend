@@ -12,6 +12,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
@@ -54,8 +55,10 @@ class ComStandardService(
     private val comStdJointCommitteeRepository: ComStdJointCommitteeRepository,
     private val comStandardDraftCommentsRepository: ComStandardDraftCommentsRepository,
     private val sdDocumentsRepository: StandardsDocumentsRepository,
-    private val comContactDetailsRepository: ComContactDetailsRepository
+    private val comContactDetailsRepository: ComContactDetailsRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
 ) {
+    val callUrl=applicationMapProperties.mapKebsLevyUrl
     //request for company standard
     fun requestForStandard(isComStdRequestDto: ISComStdRequestDto): CompanyStandardRequest{
         val variables: MutableMap<String, Any> = HashMap()
@@ -499,7 +502,7 @@ class ComStandardService(
         }?: throw Exception("REQUEST NOT FOUND")
 
 
-        val targetUrl = "https://kimsint.kebs.org/comStdDraftComment/$draftNo";
+        val targetUrl = "${callUrl}/$draftNo";
         committeeLists.forEach { c ->
             val subject = "Company Standard Draft"
             val messageBody= "Hope You are Well,A Draft for a company standard has been uploaded. Click on the Link below to comment. $targetUrl  "
@@ -677,7 +680,7 @@ class ComStandardService(
                 val draftId=comStdDraft.id
 //
 
-                val targetUrl = "https://kimsint.kebs.org/comStdApproved/$draftId";
+                val targetUrl = "${callUrl}/$draftId";
                 contactLists.forEach { c ->
                     val contactName= c.getName()
                     val subject = "Company Standard Draft"
@@ -775,7 +778,7 @@ class ComStandardService(
                 var userList= companyStandardRepository.getHopEmailList()
 
                 //email to Head of publishing
-                val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                val targetUrl = "${callUrl}/hopTasks";
                 userList.forEach { item->
                     //val recipient="stephenmuganda@gmail.com"
                     val recipient= item.getUserEmail()
@@ -857,7 +860,7 @@ class ComStandardService(
         var userList= companyStandardRepository.getHopEmailList()
 
         //email to Head of publishing
-        val targetUrl = "https://kimsint.kebs.org/";
+        val targetUrl = "${callUrl}/";
         userList.forEach { item->
             //val recipient="stephenmuganda@gmail.com"
             val recipient= item.getUserEmail()
@@ -1206,7 +1209,7 @@ class ComStandardService(
                 standardRepository.save(standard)
                 companyStandardRemarksRepository.save(companyStandardRemarks)
                 var userList= companyStandardRepository.getSacSecEmailList()
-                val targetUrl = "https://kimsint.kebs.org/";
+                val targetUrl = "${callUrl}/";
                 userList.forEach { item->
                     //val recipient="stephenmuganda@gmail.com"
                     val recipient= item.getUserEmail()

@@ -70,7 +70,6 @@ export class RejectedNwisComponent implements OnInit {
 
   docs !: Document[];
   blob: Blob;
-  voteRetrieved !: VoteNwiRetrieved[];
 
   public actionRequest: NWIsForVoting | undefined;
 
@@ -80,13 +79,10 @@ export class RejectedNwisComponent implements OnInit {
   public itemId: string = "";
   public filePurposeAnnex: string = "FilePurposeAnnex";
   public relevantDocumentsNWI: string = "RelevantDocumentsNWI";
-
-  public secTasks: StandardRequestB[] = [];
   public tscsecRequest !: Stdtsectask | undefined;
   public nwiItem!: NwiItem[];
-  approvedNwiS: NwiItem[] = [];
+
   rejectedNwiS: NwiItem[] = [];
-  public nwiForVotes: VotesNwiTally[] = [];
 
   loadedStandards: StandardsDto[] = [];
   loading = false;
@@ -111,12 +107,10 @@ export class RejectedNwisComponent implements OnInit {
 
   //public stdTSecFormGroup!: FormGroup;
 
-  public liaisonOrganizations !: LiaisonOrganization[];
+
 
   dropdownList: any[] = [];
-  selectedItems?: LiaisonOrganization;
 
-  //selectedItems = "";
 
   public dropdownSettings: IDropdownSettings = {};
 
@@ -155,13 +149,9 @@ export class RejectedNwisComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.getTCSECTasks();
-      this.getAllNwisUnderVote();
       this.getRejectedNwis();
-      this.getApprovedNwis();
       this.loadAllStandards();
 
-      this.getLiasisonOrganization();
       this.dropdownSettings = {
           singleSelection: false,
           idField: 'id',
@@ -172,30 +162,6 @@ export class RejectedNwisComponent implements OnInit {
           allowSearchFilter: true
       };
 
-      this.stdNwiFormGroup = this.formBuilder.group({
-
-          proposalTitle: ['', Validators.required],
-          scope: ['', Validators.required],
-          purpose: ['', Validators.required],
-          // targetDate: ['', Validators.required],
-          similarStandards: [''],
-          liaisonOrganisationData: [this.selectedItems, Validators.required],
-          // draftAttached: [''],
-          // outlineAttached: [''],
-          // draftOutlineImpossible: [''],
-          // outlineSentLater: [''],
-          nameOfProposer: ['', Validators.required],
-          organization: ['', Validators.required],
-          circulationDate: ['', Validators.required],
-          closingDate: ['', Validators.required],
-          // dateOfPresentation: ['', Validators.required],
-          nameOfTC: ['', Validators.required],
-          referenceNumber: ['', Validators.required],
-          standardId: ['', Validators.required],
-
-      });
-
-
   }
 
 
@@ -204,17 +170,6 @@ export class RejectedNwisComponent implements OnInit {
       return this.stdNwiFormGroup.controls;
   }
 
-  public getLiasisonOrganization(): void {
-      this.standardDevelopmentService.getLiaisonOrganization().subscribe(
-          (response: LiaisonOrganization[]) => {
-              this.liaisonOrganizations = response;
-              this.dropdownList = response;
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-          }
-      );
-  }
 
   onItemSelect(item: ListItem) {
       console.log(item);
@@ -227,41 +182,6 @@ export class RejectedNwisComponent implements OnInit {
   // get formStdTSec(): any {
   //return this.stdTSecFormGroup.controls;
   // }
-
-  public getTCSECTasks(): void {
-      this.loading = true;
-      this.SpinnerService.show()
-      this.standardDevelopmentService.getTCSECTasks().subscribe(
-          (response: StandardRequestB[]) => {
-              this.secTasks = response;
-              this.rerender()
-              this.SpinnerService.hide()
-              this.loading = false;
-
-
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-              this.SpinnerService.hide()
-              this.loading = false;
-
-
-          }
-      )
-  }
-
-
-  public getAllNwisUnderVote(): void {
-      this.standardDevelopmentService.getAllVotesTally().subscribe(
-          (response: VotesNwiTally[]) => {
-              this.nwiForVotes = response;
-              this.rerender()
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-          }
-      )
-  }
 
   @ViewChild('closeModal') private closeModal: ElementRef | undefined;
 
@@ -300,8 +220,6 @@ export class RejectedNwisComponent implements OnInit {
               } else {
                   this.hideModel();
                   this.SpinnerService.hide();
-                  this.getTCSECTasks();
-                  this.getApprovedNwis()
                   this.getRejectedNwis()
 
 
@@ -332,33 +250,6 @@ export class RejectedNwisComponent implements OnInit {
           this.itemId = String(secTask.id);
           this.nwiRequest = secTask
           button.setAttribute('data-target', '#updateNWIModal');
-      }
-
-
-      // @ts-ignore
-      container.appendChild(button);
-      button.click();
-
-  }
-
-  public onOpenModalVote(task: VotesNwiTally, mode: string): void {
-      const container = document.getElementById('main-container');
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.style.display = 'none';
-      button.setAttribute('data-toggle', 'modal');
-
-      if (mode === 'edit') {
-
-          this.getSpecificNwi(String(task.nwi_ID))
-          this.getAllDocs(String(task.nwi_ID))
-
-          button.setAttribute('data-target', '#viewNwi');
-      }
-      if (mode === 'viewVotes') {
-          this.getAllVotes(task.nwi_ID)
-
-          button.setAttribute('data-target', '#viewVotes');
       }
 
 
@@ -447,7 +338,6 @@ export class RejectedNwisComponent implements OnInit {
                       icon: 'success'
                   });
                   this.hideModel();
-                  this.getTCSECTasks();
 
                   this.SpinnerService.hide();
 
@@ -467,12 +357,9 @@ export class RejectedNwisComponent implements OnInit {
               });
       });
       setTimeout(() => {
-          this.dtTrigger1.next();
-          this.dtTrigger2.next();
-          this.dtTrigger3.next();
-          this.dtTrigger4.next();
+
           this.dtTrigger5.next();
-          this.dtTrigger6.next();
+
 
       });
 
@@ -480,12 +367,8 @@ export class RejectedNwisComponent implements OnInit {
 
   ngOnDestroy(): void {
       // Do not forget to unsubscribe the event
-      this.dtTrigger1.unsubscribe();
-      this.dtTrigger2.unsubscribe();
-      this.dtTrigger3.unsubscribe();
-      this.dtTrigger4.unsubscribe();
       this.dtTrigger5.unsubscribe();
-      this.dtTrigger6.unsubscribe();
+
 
   }
 
@@ -511,23 +394,6 @@ export class RejectedNwisComponent implements OnInit {
       this.standardDevelopmentService.getNwiById(nwiId).subscribe(
           (response: NwiItem[]) => {
               this.nwiItem = response;
-
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-          }
-      )
-  }
-
-  public getApprovedNwis(): void {
-      this.standardDevelopmentService.getApprovedNwiS().subscribe(
-          (response: NwiItem[]) => {
-              console.log(response);
-              this.approvedNwiS = response;
-              this.dataSourceB = new MatTableDataSource(this.approvedNwiS);
-              this.dataSourceB.paginator = this.paginator;
-              this.dataSourceB.sort = this.sort;
-
 
           },
           (error: HttpErrorResponse) => {
@@ -569,19 +435,6 @@ export class RejectedNwisComponent implements OnInit {
       );
   }
 
-  private getAllVotes(nwiId: number) {
-      this.standardDevelopmentService.getAllVotesOnNwi(nwiId).subscribe(
-          (response: VoteNwiRetrieved[]) => {
-
-              this.voteRetrieved = response;
-              this.rerender()
-
-          },
-          (error: HttpErrorResponse) => {
-              alert(error.message);
-          }
-      );
-  }
 
   loadAllStandards() {
       this.msService.msStandardsListDetails().subscribe(
@@ -593,66 +446,6 @@ export class RejectedNwisComponent implements OnInit {
               this.msService.showError('AN ERROR OCCURRED');
           },
       );
-  }
-
-  approveNwi(nwiId: number): void {
-      const swalWithBootstrapButtons = Swal.mixin({
-          customClass: {
-              confirmButton: 'btn btn-success',
-              cancelButton: 'btn btn-success'
-          },
-          buttonsStyling: false
-      });
-
-      swalWithBootstrapButtons.fire({
-          title: 'You are about to approve/reject this New Work Item?',
-          text: 'You won\'t be able to reverse this!',
-          icon: 'success',
-          showCancelButton: true,
-          confirmButtonText: 'Approve!',
-          cancelButtonText: 'Reject!',
-          reverseButtons: true
-      }).then((result) => {
-          if (result.isConfirmed) {
-              this.SpinnerService.show();
-              this.standardDevelopmentService.approveNwi(String(nwiId)).subscribe(
-                  (response) => {
-                      this.SpinnerService.hide();
-                      swalWithBootstrapButtons.fire(
-                          'Approved!',
-                          'New Work Item Successfully Approved!',
-                          'success'
-                      );
-                      this.getAllNwisUnderVote();
-                      this.SpinnerService.hide();
-                      this.showToasterSuccess(response.httpStatus, 'New Work Item Successfully Approved');
-                  },
-              );
-          } else if (
-              /* Read more about handling dismissals below */
-              result.dismiss === swal.DismissReason.cancel
-          ) {
-              this.SpinnerService.show();
-              this.standardDevelopmentService.rejectNwi(String(nwiId)).subscribe(
-                  (response) => {
-                      this.SpinnerService.hide();
-                      swalWithBootstrapButtons.fire(
-                          'Rejected!',
-                          'New Work Item Successfully Rejected!',
-                          'success'
-                      );
-                      this.getAllNwisUnderVote();
-                      this.SpinnerService.hide();
-                      this.showToasterSuccess(response.httpStatus, 'New Work Item Successfully Rejected');
-                  },
-              );
-              // swalWithBootstrapButtons.fire(
-              //     'Cancelled',
-              //     'You have cancelled this operation',
-              //     'error'
-              // );
-          }
-      });
   }
 
   applyFilter(event: Event) {

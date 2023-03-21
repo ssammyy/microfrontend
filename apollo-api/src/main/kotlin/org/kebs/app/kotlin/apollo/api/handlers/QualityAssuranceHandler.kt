@@ -37,6 +37,7 @@ import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvi
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.kra.request.RootMsg
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
+import org.kebs.app.kotlin.apollo.common.dto.stdLevy.LevyFiltersDTOs
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -65,6 +66,7 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
+import java.sql.Date
 import java.text.SimpleDateFormat
 
 
@@ -4515,6 +4517,39 @@ class QualityAssuranceHandler(
 
                     map.activeStatus,
                     map.inactiveStatus
+                ), map
+            )
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun loadAllAwardedPermitsForReportsSlFilter(req: ServerRequest): ServerResponse {
+        try {
+
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val levyFiltersDTOs= LevyFiltersDTOs()
+            var permitListAllApplications: List<ReportPermitEntityDto>? = null
+            val region = levyFiltersDTOs.region?.let { req.paramOrNull(it) }
+            val startDate: Date = SimpleDateFormat("dd/MM/yyyy").parse(levyFiltersDTOs.startDate.toString()) as Date
+            val endDate: Date = SimpleDateFormat("dd/MM/yyyy").parse(levyFiltersDTOs.endDate.toString()) as Date
+
+            permitListAllApplications = qaDaoServices.listPermitsReports(
+                qaDaoServices.findReportAllAwardedPermitsSlFilter(
+                    loggedInUser,
+
+                    map.activeStatus,
+                    map.inactiveStatus,
+                    startDate ,endDate,region
                 ), map
             )
 

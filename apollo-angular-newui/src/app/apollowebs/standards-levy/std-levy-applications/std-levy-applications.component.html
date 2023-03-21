@@ -128,7 +128,7 @@
                                             <td>{{manufactureList.name}}</td>
                                             <td>{{manufactureList.entryNumber}}</td>
                                             <td>{{manufactureList.kraPin}}</td>
-                                            <td>{{manufactureList.registrationNumber}}-{{manufactureList.assignStatus}}</td>
+                                            <td>{{manufactureList.registrationNumber}}</td>
                                             <td *ngIf="manufactureList.status==1"><span class="badge badge-info" style="width: 94px;">Active</span></td>
                                             <td *ngIf="manufactureList.status==2"><span class="badge badge-default" style="width: 94px;">Suspended</span></td>
                                             <td *ngIf="manufactureList.status==0"><span class="badge badge-info" style="width: 94px;">Closed</span></td>
@@ -178,6 +178,9 @@
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1 Form
                                             </button>
+                                            <button  (click)=toggleDisplayLevyForm() type="button"
+                                                     class="btn btn-info btn-sm">Edit Levy Status
+                                            </button>
                                         </div>
 
 
@@ -197,7 +200,9 @@
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1 Form
                                             </button>
-
+                                            <button  (click)=toggleDisplayLevyForm() type="button"
+                                                     class="btn btn-info btn-sm">Edit Levy Status
+                                            </button>
 
                                         </div>
 
@@ -217,6 +222,9 @@
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1 Form
                                             </button>
+                                            <button  (click)=toggleDisplayLevyForm() type="button"
+                                                     class="btn btn-info btn-sm">Edit Levy Status
+                                            </button>
                                             <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
                                             <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
                                             <!--                                        </button>-->
@@ -231,6 +239,9 @@
                                             </button>
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1 Form
+                                            </button>
+                                            <button  (click)=toggleDisplayLevyForm() type="button"
+                                                     class="btn btn-info btn-sm">Edit Levy Status
                                             </button>
                                             <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
                                             <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
@@ -254,6 +265,9 @@
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1-C Form
                                             </button>
+                                            <button  (click)=toggleDisplayLevyForm() type="button"
+                                                     class="btn btn-info btn-sm">Edit Levy Status
+                                            </button>
                                         </div>
 
 
@@ -272,6 +286,9 @@
                                             </button>
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1-C Form
+                                            </button>
+                                            <button  (click)=toggleDisplayLevyForm() type="button"
+                                                     class="btn btn-info btn-sm">Edit Levy Status
                                             </button>
 
 
@@ -293,6 +310,9 @@
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1-C Form
                                             </button>
+                                            <button  (click)=toggleDisplayLevyForm() type="button"
+                                                     class="btn btn-info btn-sm">Edit Levy Status
+                                            </button>
                                             <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
                                             <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
                                             <!--                                        </button>-->
@@ -311,11 +331,51 @@
                                             <button  (click)=toggleDisplaySLForm(actionRequestList?.id) type="button"
                                                     class="btn btn-info btn-sm">View SL1-C Form
                                             </button>
+                                            <button  (click)=toggleDisplayLevyForm() type="button"
+                                                     class="btn btn-info btn-sm">Edit Levy Status
+                                            </button>
                                             <!--                                        <button (click)=toggleDisplayEditedForm(actionRequestList.id) type="button"-->
                                             <!--                                                class="btn btn-warning btn-sm">Approve Edited Company-->
                                             <!--                                        </button>-->
 
                                         </div>
+                                    </div>
+                                    <div class="container col-md-12" [hidden]="isShowLevyForm">
+                                        <form (ngSubmit)="changeLevyStatus()" [formGroup]="changeStatusFormGroup"
+                                              class="form">
+                                            <label>Company Name</label>
+                                            <div class="form-group col-12">
+                                             <label>{{actionRequestList?.name}}</label>
+                                            </div>
+                                            <label>Current Status</label>
+                                            <div class="form-group col-12" *ngIf="actionRequestList?.exemptionStatus==0">
+                                                <label>Should Pay for Levy</label>
+                                            </div>
+                                            <div class="form-group col-12" *ngIf="actionRequestList?.exemptionStatus==1">
+                                                <label>Exempted from paying levy</label>
+                                            </div>
+                                            <div class="form-group col-12" *ngIf="actionRequestList?.exemptionStatus==2">
+                                                <label>Exempted from paying levy</label>
+                                            </div>
+                                            <div class="form-group col-12" *ngIf="actionRequestList?.exemptionStatus==3">
+                                                <label>Exempted from paying levy</label>
+                                            </div>
+                                            <label>Current Status</label>
+                                            <div class="form-group col-12" >
+                                                <input type="hidden" ngModel="{{actionRequestList?.id}}"
+                                                       formControlName="companyId" name="companyId"
+                                                       value="{{actionRequestList?.id}}">
+                                             <select class="form-control" name="exemptionStatus" formControlName="exemptionStatus" class="">
+                                               <option value="0">Should Pay</option>
+                                               <option value="1">Exempted</option>
+<!--                                               <option value="2">Should Pay</option>  -->
+<!--                                               <option value="3">Should Pay</option>  -->
+                                             </select>
+                                            </div>
+
+                                        </form>
+
+
                                     </div>
 
                                     <div class="container col-md-12" [hidden]="isShowAssignForm">

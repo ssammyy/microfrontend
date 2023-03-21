@@ -12,13 +12,13 @@ import {
     ConfirmEditCompanyDTO, DefaulterDetails,
     DirectorsList,
     DocumentDTO,
-    EditCompanyDTO, EmailVerificationStatus, LevyFilterDto, LevyFiltersDto,
+    EditCompanyDTO, EmailVerificationStatus, ExemptionDto, LevyFilterDto, LevyFiltersDto,
     ManufactureCompletedTask,
     ManufactureDetailList,
     ManufacturePenalty,
     ManufacturePendingTask,
     ManufacturingStatus, NotificationStatus, OperationStatus,
-    PaidLevy, PaymentDetails, PaymentStatus, PenaltyDetails, RejectedComDetails,
+    PaidLevy, PaymentDetails, PaymentStatus, PenaltyDetails, QAPermitsDto, RejectedComDetails,
     ReportDecisionLevelOne,
     ReportDecisionLevelTwo, SendEmailDto,
     SiteVisitFeedBack,
@@ -648,19 +648,7 @@ export class LevyService {
         return this.http.get<PenaltyDetails>(url, {params}).pipe();
     }
 
-    public loadPermitGrantedReports(): Observable<ReportsPermitEntityDto[]> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED_SL);
-        const params = new HttpParams();
-        return this.http.get<ReportsPermitEntityDto[]>(url, {params}).pipe(
-            map(function (response: ReportsPermitEntityDto[]) {
-                return response;
-            }),
-            catchError((fault: HttpErrorResponse) => {
-                // console.warn(`getAllFault( ${fault.message} )`);
-                return throwError(fault);
-            }),
-        );
-    }
+
 
     public getManufacturesLevyPenalty(): any {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_MANUFACTURE_PENALTY_DETAILS);
@@ -1009,6 +997,47 @@ export class LevyService {
         return this.http.get<PaymentStatus>(url, {params}).pipe();
     }
 
+    public changeLevyStatus(exemptionDto: ExemptionDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_PAYMENTS_STATUS);
+        const params = new HttpParams();
+        return this.http.post<ExemptionDto>(url, exemptionDto, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
+    public loadPermitGrantedReports(): Observable<QAPermitsDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_AWARDED_PERMITS);
+        // const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED_SL);
+        const params = new HttpParams();
+        return this.http.get<QAPermitsDto[]>(url, {params}).pipe(
+            map(function (response: QAPermitsDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public loadPermitGrantedReportsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_AWARDED_PERMITS_FILTER);
+        //const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_REPORTS_ALL_AWARDED_SL_FILTER);
+
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
 
 
 

@@ -1077,7 +1077,7 @@ class InspectionReportDaoServices(
         inspectionId: Long,
     ): List<QaInspectionProductLabelEntity>? {
 
-        qaInspectionProductLabelRepo.findTopByInspectionRecommendationId(inspectionId)
+        qaInspectionProductLabelRepo.findAllByInspectionRecommendationId(inspectionId)
             ?.let {
                 return it
             } ?: return null
@@ -1138,7 +1138,7 @@ class InspectionReportDaoServices(
     fun findAllOperationProcessAndControlsListId(
         inspectionId: Long
     ): List<QaInspectionOpcEntity>? {
-        qaInspectionOPCRepo.findTopByInspectionRecommendationId(inspectionId)
+        qaInspectionOPCRepo.findAllByInspectionRecommendationId(inspectionId)
             ?.let {
                 return it
             } ?: return null

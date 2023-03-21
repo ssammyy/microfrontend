@@ -79,6 +79,8 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
 
@@ -791,21 +793,27 @@ class RegistrationDaoServices(
         var kraPin= cp.kraPin
         var allRequests =stdLevyEntryNoDataMigrationEntityRepository.getMaxEntryNo()
         allRequests = allRequests.plus(1)
-        var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
-        if (entryNumbers==null){
+        val genNumber= String.format("%06d", allRequests)
+        var prefixText = DateTimeFormatter.ofPattern("yyyyMMdd").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now())
+
+        // this will convert any number sequence into 6 character.
+        val entry= "${prefixText}${genNumber}"
+
+        //var entryNumbers= stdLevyEntryNoDataMigrationEntityRepository.getEntryNo(kraPin)
+       // if (entryNumbers==null){
             sm.manufacturer=cp.name
             sm.registrationNumber=cp.registrationNumber
             sm.directorId=cp.directorIdNumber
             sm.kraPin=cp.kraPin
-            sm.entryNumber=allRequests
+            sm.entryCount=allRequests
 
             stdLevyEntryNoDataMigrationEntityRepository.save(sm)
-        }
-        entryNumbers = entryNumbers ?: allRequests
+       // }
+       // entryNumbers = (entryNumbers ?: entry) as Long?
 
 
         with(cp) {
-            entryNumber = entryNumbers.toString()
+            entryNumber = entry
             modifiedBy = commonDaoServices.concatenateName(u)
             modifiedOn = commonDaoServices.getTimestamp()
         }
@@ -1092,8 +1100,8 @@ class RegistrationDaoServices(
        val countOfSlForm= stdLevyNotificationFormDTO.companyProfileID?.let { stdLevyNotificationFormRepository.countByManufacturerId(it) }
         val toCheckSl: Long = 0
 
-        val gson = Gson()
-        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "SL ID" + gson.toJson(countOfSlForm) }
         //println("SL FORM ID$countOfSlForm");
         if (countOfSlForm == toCheckSl) {
             val eNumber = getEntryNumber(map, loggedInUser)

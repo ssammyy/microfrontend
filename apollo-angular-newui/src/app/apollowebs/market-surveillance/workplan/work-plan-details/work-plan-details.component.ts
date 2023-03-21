@@ -2646,6 +2646,12 @@ export class WorkPlanDetailsComponent implements OnInit {
       console.log(divVal);
     }
 
+    if (divVal === "openSampleSubmitModal"){
+      if(this.standardsArray.length > 0){
+        this.standardsInput.nativeElement.value = '';
+      }
+    }
+
     this.updateFieldReport();
     this.updateWorkPlan();
     // this.addFinalPreliminaryReport();
@@ -2939,6 +2945,16 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   updateSSFRecord(data: SampleSubmissionDto) {
     this.sampleSubmitForm.patchValue(data);
+    let refStandards = data?.referencesStandards;
+    let arrayOfStandards = refStandards.split(";")
+    this.standardsArray = [];
+    for (let arrayOfStandard of arrayOfStandards){
+      let trimmedStandard = arrayOfStandard.trim();
+      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
+        this.standardsArray.push(trimmedStandard);
+      }
+    }
+    this.standardsInput.nativeElement.value = '';
     const paramDetails = data.parametersList;
     this.dataSaveSampleSubmitParamList = [];
     for (let i = 0; i < paramDetails.length; i++) {
@@ -4099,20 +4115,17 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     const standardsArrayControl = this.sampleSubmitForm.get('referencesStandards');
     console.log("Data in the form control before: "+standardsArrayControl.value);
-    const newValues = [];
+
     for (let selectedStandard of this.standardsArray) {
       const valueInControl = standardsArrayControl.value;
       if (!valueInControl.includes(selectedStandard)) {
-        newValues.push(selectedStandard);
-        newValues.push(" ");
+        standardsArrayControl.setValue(valueInControl + " " + selectedStandard + "; ");
       }
     }
 
-    if (newValues.length > 0) {
-      const updatedValue = standardsArrayControl.value.concat(newValues);
-      standardsArrayControl.patchValue(updatedValue);
+    if(this.standardsArray.length < 1 && (standardsArrayControl.value != null || standardsArrayControl.value != '')) {
+      this.standardsArray.push(standardsArrayControl.value);
     }
-
 
     console.log("Data in the form control after: "+standardsArrayControl.value);
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0 && this.standardsArray.length > 0) {
@@ -5453,6 +5466,16 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     const selectedClone = this.workPlanInspection?.sampleSubmitted.find(pr => pr.id === this.sampleSubmitForm?.get('valueToClone')?.value);
     this.sampleSubmitForm.patchValue(selectedClone);
+    let refStandards = selectedClone?.referencesStandards;
+    let arrayOfStandards = refStandards.split(";")
+    this.standardsArray = [];
+    for (let arrayOfStandard of arrayOfStandards){
+      let trimmedStandard = arrayOfStandard.trim();
+      if (trimmedStandard !== "" && trimmedStandard !== " " && !this.standardsArray.includes(trimmedStandard)) {
+        this.standardsArray.push(trimmedStandard);
+      }
+    }
+    this.standardsInput.nativeElement.value = '';
     this.sampleSubmitForm?.get('id').setValue(0);
     const paramDetails = selectedClone.parametersList;
     this.dataSaveSampleSubmitParamList = [];

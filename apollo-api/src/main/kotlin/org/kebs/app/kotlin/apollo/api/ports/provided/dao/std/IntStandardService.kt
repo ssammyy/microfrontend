@@ -15,6 +15,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
@@ -66,9 +67,11 @@ class IntStandardService(
     private val sdWorkshopStdRepository: SDWorkshopStdRepository,
     private val standardRequestRepository: StandardRequestRepository,
     private val usersRepo: IUserRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
 
 
     ) {
+    val callUrl=applicationMapProperties.mapKebsLevyUrl
     val PROCESS_DEFINITION_KEY = "sd_InternationalStandardsForAdoption"
     val gson = Gson()
     //deploy bpmn file
@@ -157,7 +160,7 @@ class IntStandardService(
         //val listOne= iSAdoptionProposal.stakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
         val listTwo= iSAdoptionProposal.addStakeholdersList?.let { mapKEBSOfficersNameListDto(it) }
 
-        val targetUrl = "https://kimsint.kebs.org/isPropComments";
+        val targetUrl = "${callUrl}/isPropComments";
         val stakeholdersOne= isAdoptionProposalDto.stakeholdersList
         stakeholdersOne?.forEach { s ->
             val subject = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
@@ -180,7 +183,7 @@ class IntStandardService(
             }
         }
 
-        val targetUrl2 = "https://kimsint.kebs.org/isProposalComments/$draftNumber";
+        val targetUrl2 = "${callUrl}/isProposalComments/$draftNumber";
         val stakeholdersTwo = isAdoptionProposalDto.addStakeholdersList
         stakeholdersTwo?.forEach { t ->
             val sub = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
@@ -558,7 +561,7 @@ class IntStandardService(
         var userList= companyStandardRepository.getHopEmailList()
 
         //email to Head of publishing
-        val targetUrl = "https://kimsint.kebs.org/";
+        val targetUrl = "${callUrl}/";
         userList.forEach { item->
           //  val recipient="stephenmuganda@gmail.com"
             val recipient= item.getUserEmail()
@@ -710,7 +713,7 @@ class IntStandardService(
         var userList= companyStandardRepository.getHopEmailList()
 
         //email to Head of publishing
-        val targetUrl = "https://kimsint.kebs.org/";
+        val targetUrl = "${callUrl}/";
         userList.forEach { item->
             //val recipient="stephenmuganda@gmail.com"
             val recipient= item.getUserEmail()
@@ -1162,7 +1165,7 @@ class IntStandardService(
                 companyStandardRepository.save(companyStandard)
                 companyStandardRemarksRepository.save(comRemarks)
                 var userList= companyStandardRepository.getSacSecEmailList()
-                val targetUrl = "https://kimsint.kebs.org/$url";
+                val targetUrl = "${callUrl}/$url";
                 userList.forEach { item->
                     //val recipient="stephenmuganda@gmail.com"
                     val recipient= item.getUserEmail()
@@ -1226,7 +1229,7 @@ class IntStandardService(
                     companyStandardRepository.save(companyStandard)
                     companyStandardRemarksRepository.save(comRemarks)
                     var userList= iStdStakeHoldersRepository.getStakeHoldersList(iSDraftDecisions.draftId)
-                    val targetUrl = "https://kimsint.kebs.org/";
+                    val targetUrl = "${callUrl}/";
                     userList.forEach { item->
                         //val recipient="stephenmuganda@gmail.com"
                         val recipient= item.getEmail()

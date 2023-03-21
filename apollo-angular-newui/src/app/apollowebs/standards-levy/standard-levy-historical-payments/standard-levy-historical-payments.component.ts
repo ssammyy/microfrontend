@@ -1,7 +1,13 @@
 import {Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {BusinessLinesView, HistoricalData, RegionView} from "../../../core/store/data/std/std.model";
+import {
+  BusinessLinesView,
+  CompanyView,
+  HistoricalData,
+  KraPinView,
+  RegionView
+} from "../../../core/store/data/std/std.model";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
 import {LevyService} from "../../../core/store/data/levy/levy.service";
@@ -71,6 +77,8 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
   @ViewChild('dateRangeEnd') endDateRef: ElementRef;
   businessLines !: BusinessLinesView[];
   regions !: RegionView[];
+  company !: CompanyView[];
+  kraPin !: KraPinView[];
   paymentStatus !: PaymentStatus;
   constructor(
       private SpinnerService: NgxSpinnerService,
@@ -90,8 +98,8 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     this.filterFormGroup = this.formBuilder.group({
       periodFrom:'',
       periodTo : '',
-      //businessLines : '',
-      //region : '',
+      company : '',
+      kraPin : '',
     });
     this.getLevyHistoricalPayments();
     //this.getLevyPaymentStatus();
@@ -167,9 +175,9 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     this.error = false;
     //let us do validation
     if (this.filterFormGroup.get("periodFrom").value == '' &&
-        this.filterFormGroup.get("periodTo").value == ''
-        //this.filterFormGroup.get("businessLines").value == '' &&
-       // this.filterFormGroup.get("region").value == ''
+        this.filterFormGroup.get("periodTo").value == ''&&
+        this.filterFormGroup.get("kraPin").value == '' &&
+        this.filterFormGroup.get("company").value == ''
     ) {
       this.error = true;
       this.spinnerService.hide();
@@ -203,16 +211,16 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     }
     if (!this.error) {
       this.arr = []
-      // if (this.filterFormGroup.get("region").value != '') {
-      //   const region = parseInt(this.filterFormGroup.get("region").value);
-      //   const regionName = this.regions.find(x => x.id == region).region;
-      //   this.arr.push("Region: " + regionName)
-      // }
-      // if (this.filterFormGroup.get("businessLines").value != '') {
-      //   const businessLines = parseInt(this.filterFormGroup.get("businessLines").value);
-      //   const businessLineName = this.regions.find(x => x.id == businessLines).region;
-      //   this.arr.push("Department: " + businessLineName)
-      // }
+      if (this.filterFormGroup.get("company").value != '') {
+        const company = this.filterFormGroup.get("company").value;
+        //const companyName = this.company.find(x => x.company == company).company;
+        this.arr.push("Company: " + company)
+      }
+      if (this.filterFormGroup.get("kraPin").value != '') {
+        const kraPin = this.filterFormGroup.get("kraPin").value;
+        ///const kraPinName = this.kraPin.find(x => x.kraPin == kraPin).kraPin;
+        this.arr.push("Kra Pin: " + kraPin)
+      }
       if (this.filterFormGroup.get("periodFrom").value != '') {
         this.arr.push("Period From: " + this.formatFormDate(this.filterFormGroup.get("periodFrom").value)
             + " To " + this.formatFormDate(this.filterFormGroup.get("periodFrom").value))
@@ -255,6 +263,8 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     this.filterFormGroup = this.formBuilder.group({
       periodFrom:'',
       periodTo : '',
+      company:'',
+      kraPin:''
       //businessLines : '',
       //region : ''
 
