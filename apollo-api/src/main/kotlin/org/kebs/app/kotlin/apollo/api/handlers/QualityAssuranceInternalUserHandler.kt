@@ -33,10 +33,14 @@ import org.kebs.app.kotlin.apollo.common.dto.ms.ComplaintViewSearchValues
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.springframework.stereotype.Component
+import org.springframework.ui.Model
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.badRequest
