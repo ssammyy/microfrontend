@@ -395,6 +395,16 @@ class CommonDaoServices(
         return hashedList
     }
 
+    fun UnhashString(plainText: List<HashedStringDto>): List<HashedStringDto> {
+        val hashedList = mutableListOf<HashedStringDto>()
+        plainText.forEach {
+            val hashed = jasyptStringEncryptor.decrypt(it.stringHashed)
+            KotlinLogging.logger { }.info { "my unhash value =$it =  $hashed" }
+            hashedList.add(HashedStringDto(hashed))
+        }
+        return hashedList
+    }
+
     fun findAllPlantDetails(userId: Long): List<ManufacturePlantDetailsEntity> {
         manufacturePlantRepository.findByUserId(userId)?.let {
             return it
