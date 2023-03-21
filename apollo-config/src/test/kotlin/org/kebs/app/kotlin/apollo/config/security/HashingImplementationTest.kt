@@ -66,7 +66,7 @@ internal class HashingImplementationTest {
 
     @Test
     fun unHashString() {
-        val hashed = listOf("dFhgKhM5B5/yPo4DvYbkCKmHyJFDQ0nV", "uQ6uxuJLdjEOaApMv00tizwvUebxyb5X", "+0g7lS8oyuCxMf/0VLWElg==")
+        val hashed = listOf("AbqmSDf+HCN58dVia0M7jA==", "AbqmSDf+HCN58dVia0M7jA==")
         hashed.forEach {
             val plainText = jasyptStringEncryptor.decrypt(it)
             KotlinLogging.logger { }.info { plainText }

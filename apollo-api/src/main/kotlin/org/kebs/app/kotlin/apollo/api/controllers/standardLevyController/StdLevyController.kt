@@ -2208,6 +2208,33 @@ class StdLevyController(
         return standardLevyService.getPermitsApplicationsFilters(startDate ,endDate  ,region)
     }
 
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getSiteVisits")
+    @ResponseBody
+    fun getSiteVisits(
+
+    ): List<SiteVisits>
+    {
+        return standardLevyService.getSiteVisits()
+    }
+
+
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @PostMapping("/getSiteVisitsFilter")
+    fun getSiteVisitsFilter(
+        @RequestBody levyFilterDTO: LevyFilterDTO
+
+    ): List<SiteVisits>
+    {
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+        val businessLines = levyFilterDTO.businessLines
+        val region = levyFilterDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        return standardLevyService.getSiteVisitsFilter(startDate ,endDate,businessLines  ,region)
+    }
+
 
 
 

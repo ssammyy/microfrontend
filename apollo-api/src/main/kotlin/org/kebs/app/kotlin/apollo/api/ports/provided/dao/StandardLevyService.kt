@@ -748,14 +748,16 @@ class StandardLevyService(
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { variables["manufacturerEntity"] = it }
         standardLevyFactoryVisitReportEntity.scheduledVisitDate?.let { variables["scheduledVisitDate"] = it }
-        standardLevyFactoryVisitReportEntity.createdBy?.let { variables["createdBy"] = it }
+       // standardLevyFactoryVisitReportEntity.createdBy?.let { variables["createdBy"] = it }
         standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["originator"] = it }
         standardLevyFactoryVisitReportEntity.companyName?.let { variables["companyName"] = it }
         standardLevyFactoryVisitReportEntity.entryNumber?.let { variables["entryNumber"] = it }
         standardLevyFactoryVisitReportEntity.kraPin?.let { variables["kraPin"] = it }
         standardLevyFactoryVisitReportEntity.registrationNumber?.let { variables["registrationNumber"] = it }
-
+        val userName= loggedInUser.firstName + loggedInUser.lastName
+        standardLevyFactoryVisitReportEntity.createdBy=userName
+        userName.let { variables["createdBy"] = it }
         val visitDetails = standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
         visitDetails.id?.let { variables["visitID"] = it }
 
@@ -2821,6 +2823,20 @@ class StandardLevyService(
         region: Long?
     ): List<PermitsAwarded> {
         return permitRepo.getPermitsApplicationsFilters(startDate, endDate, region)
+
+    }
+
+    fun getSiteVisits(): MutableList<SiteVisits> {
+        return standardLevyFactoryVisitReportRepo.getSiteVisits()
+    }
+
+    fun getSiteVisitsFilter(
+        startDate: Date?,
+        endDate: Date?,
+        businessLines: Long?,
+        region: Long?
+    ): MutableList<SiteVisits> {
+        return standardLevyFactoryVisitReportRepo.getSiteVisitsFilter(startDate, endDate, businessLines, region)
 
     }
 
