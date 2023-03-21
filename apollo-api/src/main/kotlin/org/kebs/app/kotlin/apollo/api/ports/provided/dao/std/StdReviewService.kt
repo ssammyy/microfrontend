@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,7 +36,9 @@ class StdReviewService(
     private val standardRequestRepository: StandardRequestRepository,
     private val comStdDraftRepository: ComStdDraftRepository,
     private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
 ) {
+    val callUrl=applicationMapProperties.mapKebsLevyUrl
     fun getStandardsForReview(): MutableList<ReviewStandards> {
         return standardRepository.getStandardsForReview()
     }
@@ -81,7 +84,7 @@ class StdReviewService(
         }?: throw Exception("STANDARD NOT FOUND")
 
         //email to stakeholders
-        val targetUrl = "https://kimsint.kebs.org/systemicReview/$reviewId";
+        val targetUrl="${callUrl}/systemicReview/$reviewId"
         userList.forEach { item->
             //val recipient="stephenmuganda@gmail.com"
             val recipient= item.getUserEmail()
@@ -237,7 +240,7 @@ class StdReviewService(
                     var userList= companyStandardRepository.getHopEmailList()
 
                     //email to Head of publishing
-                    val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                    val targetUrl="${callUrl}/hopTasks"
                     userList.forEach { item->
                         //val recipient="stephenmuganda@gmail.com"
                         val recipient= item.getUserEmail()
@@ -266,7 +269,7 @@ class StdReviewService(
                     var userList= companyStandardRepository.getHopEmailList()
 
                     //email to Head of publishing
-                    val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                    val targetUrl = "${callUrl}/hopTasks";
                     userList.forEach { item->
                         //val recipient="stephenmuganda@gmail.com"
                         val recipient= item.getUserEmail()
@@ -314,7 +317,7 @@ class StdReviewService(
                     var userList= companyStandardRepository.getHopEmailList()
 
                     //email to Head of publishing
-                    val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                    val targetUrl = "${callUrl}/hopTasks";
                     userList.forEach { item->
                         //val recipient="stephenmuganda@gmail.com"
                         val recipient= item.getUserEmail()
@@ -382,7 +385,7 @@ class StdReviewService(
         var userList= companyStandardRepository.getHopEmailList()
 
         //email to Head of publishing
-        val targetUrl = "https://kimsint.kebs.org/";
+        val targetUrl = "${callUrl}/";
         userList.forEach { item->
             //val recipient="stephenmuganda@gmail.com"
             val recipient= item.getUserEmail()

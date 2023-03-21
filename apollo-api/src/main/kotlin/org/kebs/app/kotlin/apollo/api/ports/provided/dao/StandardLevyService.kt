@@ -75,7 +75,8 @@ class StandardLevyService(
     private val companyRepo: ICompanyProfileRepository,
     private val companyStandardRepository: CompanyStandardRepository,
     private val rejectedCompanyDetailsRepository: RejectedCompanyDetailsRepository,
-    private val stdLevyHistoricalPaymentsRepo: StdLevyHistoricalPaymentsRepository
+    private val stdLevyHistoricalPaymentsRepo: StdLevyHistoricalPaymentsRepository,
+
 
 
     ) {
@@ -84,6 +85,7 @@ class StandardLevyService(
     val TASK_CANDIDATE_SL_Assistant_Manager = "SL_Assistant_Manager"
     val TASK_CANDIDATE_SL_Manager = "SL_Manager"
     val TASK_CANDIDATE_Manufacturer = "Manufacturer"
+    val callUrl=applicationMapProperties.mapKraConfigIntegration
 
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment = repositoryService
@@ -1697,6 +1699,7 @@ class StandardLevyService(
                 }
                 standardLevyFactoryVisitReportRepo.save(entity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
+        val targetUrl="${callUrl}/viewSiteVisitsFeedBack"
         if (complianceStatus != null) {
             if (complianceStatus == "1".toLong()) {
                 emailBody =
@@ -1705,6 +1708,8 @@ class StandardLevyService(
                             "$companyName  was found to be in compliance with the Levy Order of 1st July 1990 and Standards Levy (amendment) of 1999.\n" +
                             "\n" +
                             " Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.\n" +
+                            "\n" +
+                            "Click on this link ${targetUrl} to view the report.\n"+
                             "\n" +
                             "Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
 
@@ -1719,6 +1724,9 @@ class StandardLevyService(
                             " Failure to pay the levy attracts a penalty at a rate of 5% per month cumulatively. \n" +
                             " \n" +
                             "In line with the above, you are required to remit all outstanding arrears of XXXXX and penalties of XXXX through the ITAX system to avoid further accrual of penalties. \n" +
+                            "\n" +
+                            "\n" +
+                            "Click on this link ${targetUrl} to view the report.\n"+
                             "\n" +
                             "For any clarification, do not hesitate to contact us through standardslevy@kebs.org\n" +
                             "\n"

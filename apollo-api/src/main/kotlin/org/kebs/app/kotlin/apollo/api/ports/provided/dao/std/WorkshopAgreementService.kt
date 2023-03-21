@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
@@ -53,7 +54,11 @@ class WorkshopAgreementService
      private val comStdDraftRepository: ComStdDraftRepository,
      private val comStandardDraftUploadsRepository: ComStandardDraftUploadsRepository,
      private val companyStandardRemarksRepository: CompanyStandardRemarksRepository,
-     private val standardRequestRepository: StandardRequestRepository) {
+     private val standardRequestRepository: StandardRequestRepository,
+     private val applicationMapProperties: ApplicationMapProperties,
+     ) {
+
+    val callUrl=applicationMapProperties.mapKebsLevyUrl
 
     fun getWorkshopStandards(): MutableList<StandardRequest>
     {
@@ -297,7 +302,7 @@ class WorkshopAgreementService
                 var userList= companyStandardRepository.getHopEmailList()
 
                 //email to Head of publishing
-                val targetUrl = "https://kimsint.kebs.org/hopTasks";
+                val targetUrl="${callUrl}/hopTasks"
                 userList.forEach { item->
                     //val recipient="stephenmuganda@gmail.com"
                     val recipient= item.getUserEmail()
@@ -374,7 +379,7 @@ class WorkshopAgreementService
         var userList= companyStandardRepository.getHopEmailList()
 
         //email to Head of publishing
-        val targetUrl = "https://kimsint.kebs.org/";
+        //val targetUrl = "https://kimsint.kebs.org/";
         userList.forEach { item->
             //val recipient="stephenmuganda@gmail.com"
             val recipient= item.getUserEmail()
