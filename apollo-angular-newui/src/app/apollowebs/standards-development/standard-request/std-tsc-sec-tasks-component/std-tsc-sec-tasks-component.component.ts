@@ -174,7 +174,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             proposalTitle: ['', Validators.required],
             scope: ['', Validators.required],
             purpose: ['', Validators.required],
-            // targetDate: ['', Validators.required],
+            targetDate: ['', Validators.required],
             similarStandards: [''],
             liaisonOrganisationData: [this.selectedItems, Validators.required],
             // draftAttached: [''],
