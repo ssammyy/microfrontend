@@ -20,6 +20,7 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.RejectedCompanyDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.CompanyStandardRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.UserListRepository
 import org.springframework.beans.factory.annotation.Qualifier
@@ -76,7 +77,7 @@ class StandardLevyService(
     private val companyStandardRepository: CompanyStandardRepository,
     private val rejectedCompanyDetailsRepository: RejectedCompanyDetailsRepository,
     private val stdLevyHistoricalPaymentsRepo: StdLevyHistoricalPaymentsRepository,
-
+    private val permitRepo: IPermitApplicationsRepository,
 
 
     ) {
@@ -2701,6 +2702,8 @@ class StandardLevyService(
         return companyProfileRepo.getClosedFirms()
     }
 
+
+
     fun getRegisteredFirmsFilter(
         startDate: Date?,
         endDate: Date?,
@@ -2806,6 +2809,19 @@ class StandardLevyService(
             ?: throw ExpectedDataNotFound("No Data Found")
 
         return "Updated"
+    }
+
+    fun getPermitsAwardedApplications(): List<PermitsAwarded> {
+        return permitRepo.getPermitsAwardedApplications()
+    }
+
+    fun getPermitsApplicationsFilters(
+        startDate: Date?,
+        endDate: Date?,
+        region: Long?
+    ): List<PermitsAwarded> {
+        return permitRepo.getPermitsApplicationsFilters(startDate, endDate, region)
+
     }
 
 }

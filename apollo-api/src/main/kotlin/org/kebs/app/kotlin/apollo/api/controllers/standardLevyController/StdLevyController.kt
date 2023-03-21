@@ -1796,6 +1796,8 @@ class StdLevyController(
         return standardLevyService.getClosedFirms()
     }
 
+
+
     //Get List of Manufactures
     @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
     @PostMapping("/getRegisteredFirmsFilter")
@@ -2179,7 +2181,33 @@ class StdLevyController(
 
     }
 
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @GetMapping("/getPermitsAwardedApplications")
+    @ResponseBody
+    fun getPermitsAwardedApplications(
 
+    ): List<PermitsAwarded>
+    {
+        return standardLevyService.getPermitsAwardedApplications()
+    }
+
+    //Get List of Manufactures
+    @PreAuthorize("hasAuthority('SL_MANUFACTURE_VIEW')")
+    @PostMapping("/getPermitsApplicationsFilters")
+    fun getPermitsApplicationsFilters(
+        @RequestBody levyFilterDTO: LevyFilterDTO
+
+    ): List<PermitsAwarded>
+    {
+        val startDate= levyFilterDTO.startDate
+        val endDate = levyFilterDTO.endDate
+        val businessLines = levyFilterDTO.businessLines
+        val region = levyFilterDTO.region
+
+        val dateFormat = SimpleDateFormat("mm/dd/yyyy")
+        return standardLevyService.getPermitsApplicationsFilters(startDate ,endDate  ,region)
+    }
 
 
 

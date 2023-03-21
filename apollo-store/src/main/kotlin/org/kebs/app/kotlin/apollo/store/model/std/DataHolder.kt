@@ -464,6 +464,21 @@ interface ProposalDetails{
     fun getVoteAgainst(): Long?
     fun getRequesterName(): String?
 }
+interface PermitsAwarded{
+    fun getId(): Long?
+    fun getKraPin(): String?
+    fun getEntryNumber(): String?
+    fun getName(): String?
+    fun getTelephone(): String?
+    fun getCompanyEmail(): String?
+    fun getPhysicalAddress(): String?
+    fun getPostalAddress(): String?
+    fun getTown(): String?
+    fun getRegion(): String?
+    fun getProductName(): String?
+    fun getIssueDate(): String?
+    fun getExpiryDate(): String?
+}
 
 interface RegisteredFirms{
     fun getId(): Long?
