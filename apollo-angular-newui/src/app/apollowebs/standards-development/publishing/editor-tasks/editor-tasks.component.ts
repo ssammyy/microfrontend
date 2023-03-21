@@ -189,7 +189,7 @@ export class EditorTasksComponent implements OnInit {
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-success'
+                cancelButton: 'btn btn-danger'
             },
             buttonsStyling: false
         });
