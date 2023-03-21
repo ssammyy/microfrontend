@@ -2202,7 +2202,6 @@ class StdLevyController(
     {
         val startDate= levyFilterDTO.startDate
         val endDate = levyFilterDTO.endDate
-        val businessLines = levyFilterDTO.businessLines
         val region = levyFilterDTO.region
 
         val dateFormat = SimpleDateFormat("mm/dd/yyyy")

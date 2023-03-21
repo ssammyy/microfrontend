@@ -747,3 +747,19 @@ export interface ExemptionDto{
     exemptionStatus: number;
 }
 
+export interface QAPermitsDto{
+    id: number;
+    kraPin: string;
+    entryNumber: string;
+    name: string;
+    telephone: string;
+    companyEmail: string;
+    physicalAddress: string;
+    postalAddress: string;
+    town: string;
+    region: string;
+    productName: string;
+    issueDate: Timestamp<any>;
+    expiryDate: Timestamp<any>;
+}
+

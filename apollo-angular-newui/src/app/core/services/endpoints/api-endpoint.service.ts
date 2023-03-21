@@ -750,6 +750,8 @@ export class ApiEndpointService {
         STD_LEVY_HISTORICAL_PAYMENTS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getLevyHistoricalPaymentsFilter`,
         STD_LEVY_HISTORICAL_PAYMENTS_STATUS: `${ApiEndpointService.STL_CONTEXT}/getLevyPaymentStatus`,
         STD_LEVY_PAYMENTS_STATUS: `${ApiEndpointService.STL_CONTEXT}/updateExemptionStatus`,
+        STD_LEVY_AWARDED_PERMITS: `${ApiEndpointService.STL_CONTEXT}/getPermitsAwardedApplications`,
+        STD_LEVY_AWARDED_PERMITS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getPermitsApplicationsFilters`,
 
 
     };

@@ -5,7 +5,7 @@ import {ReportsPermitEntityDto} from "../../../core/store/data/qa/qa.model";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
 import {LevyService} from "../../../core/store/data/levy/levy.service";
-import {CompanyModel, PenaltyDetails} from "../../../core/store/data/levy/levy.model";
+import {CompanyModel, PenaltyDetails, QAPermitsDto} from "../../../core/store/data/levy/levy.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter} from "@angular/material/core";
 import {formatDate} from "@angular/common";
@@ -47,7 +47,7 @@ export class StandardsLevyQaPermitsComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtTrigger1: Subject<any> = new Subject<any>();
-  public allSMarkPermitDatas: ReportsPermitEntityDto[] = [];
+  public allSMarkPermitDatas: QAPermitsDto[] = [];
   loadingText: string;
   regions !: RegionView[];
   filterFormGroup: FormGroup;
@@ -83,13 +83,11 @@ export class StandardsLevyQaPermitsComponent implements OnInit {
     this.filterFormGroup = this.formBuilder.group({
       startDate:'',
       endDate : '',
-      region : '',
-
-
+      region : ''
     });
     this.loadPermitGrantedReports();
-    //this.loadAllRegions();
-    //this.getRegionList();
+    this.loadAllRegions();
+    this.getRegionList();
   }
 
   ngOnDestroy(): void {
@@ -100,7 +98,7 @@ export class StandardsLevyQaPermitsComponent implements OnInit {
     this.loadingText = "Retrieving Data ...."
     this.SpinnerService.show();
     this.levyService.loadPermitGrantedReports().subscribe(
-        (response: ReportsPermitEntityDto[]) => {
+        (response: QAPermitsDto[]) => {
           this.allSMarkPermitDatas = response;
           //console.log(this.allSMarkPermitDatas);
           this.SpinnerService.hide();
@@ -184,8 +182,8 @@ export class StandardsLevyQaPermitsComponent implements OnInit {
       this.arr = []
       if (this.filterFormGroup.get("region").value != '') {
         const region = parseInt(this.filterFormGroup.get("region").value);
-        //const regionName = this.regions.find(x => x.id == region).region;
-        this.arr.push("Region: " + region)
+        const regionName = this.regions.find(x => x.id == region).region;
+        this.arr.push("Region: " + regionName)
       }
       if (this.filterFormGroup.get("startDate").value != '') {
         this.arr.push("Start Date: " + this.formatFormDate(this.filterFormGroup.get("startDate").value)
@@ -194,7 +192,7 @@ export class StandardsLevyQaPermitsComponent implements OnInit {
       }
 
       this.levyService.loadPermitGrantedReportsFilter(this.filterFormGroup.value).subscribe(
-          (response: ReportsPermitEntityDto[]) => {
+          (response: QAPermitsDto[]) => {
             this.allSMarkPermitDatas = response;
             this.spinnerService.hide();
             this.rerender();

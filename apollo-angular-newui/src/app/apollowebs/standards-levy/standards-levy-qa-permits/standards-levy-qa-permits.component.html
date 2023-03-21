@@ -49,12 +49,15 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label><b>By Region:</b></label>
-                                                            <input aria-label="Small"
-                                                                   aria-describedby="inputGroup-sizing-lg"
-                                                                   class="form-control"
-                                                                   formControlName="region"
-                                                                   placeholder="By Region">
-
+                                                            <mat-select aria-label="Small"
+                                                                        aria-describedby="inputGroup-sizing-lg"
+                                                                        class="form-control"
+                                                                        formControlName="region"
+                                                                        placeholder="By Region">
+                                                                <mat-option
+                                                                        *ngFor="let region of regions"
+                                                                        value="{{region.id}}">{{region.region}}</mat-option>
+                                                            </mat-select>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
@@ -176,17 +179,17 @@
                                             <td >{{i+1}} </td>
                                             <td>{{allSMarkPermitData.kraPin}}</td>
                                             <td>{{allSMarkPermitData.entryNumber}}</td>
-                                            <td>{{allSMarkPermitData.firmName}}</td>
-                                            <td>{{allSMarkPermitData.telephoneNo}}</td>
-                                            <td>{{allSMarkPermitData.email}}</td>
+                                            <td>{{allSMarkPermitData.name}}</td>
+                                            <td>{{allSMarkPermitData.telephone}}</td>
+                                            <td>{{allSMarkPermitData.companyEmail}}</td>
                                             <td>{{allSMarkPermitData.physicalAddress}}</td>
                                             <td>{{allSMarkPermitData.postalAddress}}</td>
                                             <td></td>
                                             <td>{{allSMarkPermitData.town}}</td>
                                             <td>{{allSMarkPermitData.region}}</td>
                                             <td>{{allSMarkPermitData.productName}}</td>
-                                            <td>{{allSMarkPermitData.dateOfIssue | date: 'dd/MM/yyyy'}}</td>
-                                            <td>{{allSMarkPermitData.dateOfExpiry | date: 'dd/MM/yyyy'}}</td>
+                                            <td>{{allSMarkPermitData.issueDate | date: 'dd/MM/yyyy'}}</td>
+                                            <td>{{allSMarkPermitData.expiryDate | date: 'dd/MM/yyyy'}}</td>
                                         </tr>
                                         </tbody>
                                     </table>

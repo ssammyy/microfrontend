@@ -390,7 +390,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     @Query(
-        value = "SELECT t.ATTACHED_PLANT_ID as id,c.KRA_PIN as kraPin,c,ENTRY_NUMBER as entryNumber,c.NAME as name,c.COMPANY_TELEPHONE as telephone,c.COMPANY_EMAIL as companyEmail," +
+        value = "SELECT t.ATTACHED_PLANT_ID as id,c.KRA_PIN as kraPin,c.ENTRY_NUMBER as entryNumber,c.NAME as name,c.COMPANY_TELEPHONE as telephone,c.COMPANY_EMAIL as companyEmail," +
                 "c.PHYSICAL_ADDRESS as physicalAddress,c.POSTAL_ADDRESS as postalAddress,s.TOWN as town,r.REGION as region,t.PRODUCT_NAME as productName,t.DATE_OF_ISSUE as issueDate," +
                 "t.DATE_OF_EXPIRY as expiryDate FROM DAT_KEBS_PERMIT_TRANSACTION t LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON t.ATTACHED_PLANT_ID=c.ID " +
                 "LEFT JOIN CFG_KEBS_TOWNS s ON c.TOWN=s.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION =r.ID" +
@@ -401,7 +401,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitsAwarded>
 
     @Query(
-        value = "SELECT t.ATTACHED_PLANT_ID as id,c.KRA_PIN as kraPin,c,ENTRY_NUMBER as entryNumber,c.NAME as name,c.COMPANY_TELEPHONE as telephone,c.COMPANY_EMAIL as companyEmail," +
+        value = "SELECT t.ATTACHED_PLANT_ID as id,c.KRA_PIN as kraPin,c.ENTRY_NUMBER as entryNumber,c.NAME as name,c.COMPANY_TELEPHONE as telephone,c.COMPANY_EMAIL as companyEmail," +
                 "c.PHYSICAL_ADDRESS as physicalAddress,c.POSTAL_ADDRESS as postalAddress,s.TOWN as town,r.REGION as region,t.PRODUCT_NAME as productName,t.DATE_OF_ISSUE as issueDate," +
                 "t.DATE_OF_EXPIRY as expiryDate FROM DAT_KEBS_PERMIT_TRANSACTION t LEFT JOIN DAT_KEBS_COMPANY_PROFILE c ON t.ATTACHED_PLANT_ID=c.ID " +
                 "LEFT JOIN CFG_KEBS_TOWNS s ON c.TOWN=s.ID LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION =r.ID" +
