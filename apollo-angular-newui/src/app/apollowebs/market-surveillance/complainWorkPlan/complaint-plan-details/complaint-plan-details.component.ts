@@ -4380,6 +4380,11 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
 
+  viewComplainCreated(referenceNumber: string) {
+    // tslint:disable-next-line:max-line-length
+    this.router.navigate([`/complaint/details/`, referenceNumber]);
+  }
+
   viewUploadsFileSaved(data: WorkPlanFilesFoundDto) {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }

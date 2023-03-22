@@ -49,6 +49,7 @@ class MarketSurveillanceFuelDaoServices(
     private val fuelTeamsCountyRepo: IMsFuelTeamsCountyEntityRepository,
     private val processNameRepo: IMsProcessNamesRepository,
     private val limsServices: LimsServices,
+    private val dataReportRepo: IDataReportRepository,
     private val remarksRepo: IMsRemarksComplaintRepository,
     private val laboratoryRepo: ILaboratoryRepository,
     private val fuelRemediationInvoiceChargesRepo: IFuelRemediationChargesRepository,
@@ -1884,6 +1885,7 @@ class MarketSurveillanceFuelDaoServices(
                 fileRefNumber ="REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
 
             } else if (workPlanInspectionDetail != null) {
+                dataReportID = body.dataReportID
                 workPlanGeneratedID = workPlanInspectionDetail.id
                 fileRefNumber ="REF/SSF/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
             }
@@ -3652,7 +3654,9 @@ class MarketSurveillanceFuelDaoServices(
             data.bsNumber,
             data.productDescription,
             data.sourceProductEvidence,
-            data2
+            data2,
+            data.dataReportID,
+            dataReportRepo.findByIdOrNull(data.dataReportID)?.outletName
         )
     }
 

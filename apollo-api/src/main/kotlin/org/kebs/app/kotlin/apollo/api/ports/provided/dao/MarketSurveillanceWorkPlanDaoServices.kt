@@ -3050,8 +3050,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val sampleCollected = findSampleCollectedDetailByWorkPlanInspectionID(workPlanScheduled.id)
-        val savedSampleSubmission =
-            msFuelDaoServices.addSampleSubmissionAdd(body, null, workPlanScheduled, sampleCollected, map, loggedInUser)
+        val savedSampleSubmission = msFuelDaoServices.addSampleSubmissionAdd(body, null, workPlanScheduled, sampleCollected, map, loggedInUser)
 
         when (savedSampleSubmission.first.status) {
             map.successStatus -> {
@@ -3497,8 +3496,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        var savedSSfComplianceStatus =
-            msFuelDaoServices.findSampleSubmittedBYID(body.ssfID ?: throw ExpectedDataNotFound("Missing SSF ID"))
+        var savedSSfComplianceStatus = msFuelDaoServices.findSampleSubmittedBYID(body.ssfID ?: throw ExpectedDataNotFound("Missing SSF ID"))
         with(savedSSfComplianceStatus) {
             resultSentDate = commonDaoServices.getCurrentDate()
             resultsSent = map.activeStatus
@@ -3601,6 +3599,29 @@ class MarketSurveillanceWorkPlanDaoServices(
                 }
 
             }
+        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun NotSendWorkPlanInspectionDetailsSSFSavedComplianceStatusFile(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: SSFSendingComplianceStatus
+    ): WorkPlanInspectionDto {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var savedSSfComplianceStatus = msFuelDaoServices.findSampleSubmittedBYID(body.ssfID ?: throw ExpectedDataNotFound("Missing SSF ID"))
+        with(savedSSfComplianceStatus) {
+//            resultSentDate = commonDaoServices.getCurrentDate()
+            resultsSent = map.activeStatus
+//            varField1 = body.failedParameters
+        }
+
+        savedSSfComplianceStatus = sampleSubmissionLabRepo.save(savedSSfComplianceStatus)
+
         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
 
     }
@@ -5698,7 +5719,9 @@ class MarketSurveillanceWorkPlanDaoServices(
                     progressStep = it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
                     timeActivityDate = it.timeActivityDate,
                     timeActivityEndDate = it.timeActivityEndDate,
-                    referenceNumber = it.referenceNumber
+                    referenceNumber = it.referenceNumber,
+                    product = it.productString,
+
                 )
             )
         }
@@ -6123,15 +6146,13 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanScheduledDetails.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
         )
 
-
         val chargeSheet = findChargeSheetByWorkPlanInspectionID(workPlanScheduledDetails.id)
         val chargeSheetDto = chargeSheet?.let { mapChargeSheetDetailsDto(it) }
 
         val seizureDtoList = mutableListOf<SeizureListDto>()
         findSeizureByWorkPlanInspectionID(workPlanScheduledDetails.id)
             ?.forEach { seizure ->
-                val seizureDeclarationList =
-                    findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduledDetails.id, seizure.id)
+                val seizureDeclarationList = findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduledDetails.id, seizure.id)
                 val seizureDeclarationDtoList = seizureDeclarationList?.let { mapSeizureDeclarationDetailsDto(it) }
                 val seizureDto = seizureDeclarationDtoList?.let { mapSeizureDetailsDto(seizure, it) }
                 if (seizureDto != null) {
@@ -6490,7 +6511,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.totalCompliance,
             commonDaoServices.getCurrentDate(),
             wKP.latestPreliminaryReport,
-            wKP.latestFinalPreliminaryReport
+            wKP.latestFinalPreliminaryReport,
+            complaintsRepo.findByIdOrNull(wKP.complaintId)?.referenceNumber
         )
     }
 

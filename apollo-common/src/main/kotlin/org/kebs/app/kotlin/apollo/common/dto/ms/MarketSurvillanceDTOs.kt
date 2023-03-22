@@ -297,6 +297,7 @@ data class WorkPlanInspectionDto(
         var currentDate : Date? = null,
         var latestPreliminaryReport : Long? = null,
         var latestFinalPreliminaryReport : Long? = null,
+        var complaintReferenceNumber : String? = null,
 )
 
 data class FuelEntityDto(
@@ -775,6 +776,8 @@ data class SampleSubmissionDto(
         var productDescription: String? = null,
         var sourceProductEvidence: String? = null,
         var parametersList: List<SampleSubmissionItemsDto>? = null,
+        var dataReportID: Long?= null,
+        var nameOutlet: String?= null,
 )
 
 data class SampleSubmissionItemsDto(

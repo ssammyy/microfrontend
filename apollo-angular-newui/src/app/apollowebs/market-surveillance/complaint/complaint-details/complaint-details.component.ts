@@ -652,6 +652,7 @@ export class ComplaintDetailsComponent implements OnInit {
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('LOCATION DETAILS UPDATED SUCCESSFULLY');
+            this.router.navigate([`/complaint`]);
           },
           error => {
             this.SpinnerService.hide();

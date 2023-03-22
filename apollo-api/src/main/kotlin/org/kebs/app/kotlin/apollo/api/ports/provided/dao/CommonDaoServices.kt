@@ -51,7 +51,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.io.Files
 import com.google.gson.Gson
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.apache.commons.text.StringEscapeUtils
 import org.jasypt.encryption.StringEncryptor
@@ -1588,6 +1591,92 @@ class CommonDaoServices(
             }
 
         return true
+    }
+
+    suspend fun sendEmailWithUserEntityAsync(
+        user: UsersEntity,
+        uuid: String,
+        valuesMapped: Any,
+        map: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        attachmentFilePath: String? = null
+    )= coroutineScope {
+        async {
+            withContext(Dispatchers.IO) {
+            KotlinLogging.logger { }.info { "Started Mail process" }
+            notificationsUseCase(map, mutableListOf(user.email), uuid, valuesMapped, sr)
+                ?.let { list ->
+                    list.forEach { buffer ->
+                        /**
+                         * TODO: Make topic a field on the Buffer table
+                         */
+                        buffer.recipient?.let { recipient ->
+                            KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                            buffer.subject?.let { subject ->
+                                KotlinLogging.logger { }.info { "Started subject $subject" }
+                                buffer.messageBody?.let { messageBody ->
+                                    KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                    if (attachmentFilePath != null) {
+                                        KotlinLogging.logger { }.info { "Started attached body $attachmentFilePath" }
+                                        notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                    } else {
+                                        notifications.sendEmail(recipient, subject, messageBody)
+                                    }
+//                                    notifications.processEmail(recipient, subject, messageBody)
+                                    KotlinLogging.logger { }.info { "Email sent" }
+                                }
+                            }
+                        }
+                    }
+                    sr.processingEndDate = getTimestamp()
+                    serviceRequestsRepository.save(sr)
+                }
+            }
+        }
+    }
+
+    suspend fun sendEmailWithUserEmailAsync(
+        userEmail: String,
+        uuid: String,
+        valuesMapped: Any,
+        map: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        attachmentFilePath: String? = null,
+        subjectAppendValue: String? = null
+    )= coroutineScope {
+        async {
+            withContext(Dispatchers.IO) {
+                KotlinLogging.logger { }.info { "Started Mail process" }
+                notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr, subjectAppendValue)
+                    ?.let { list ->
+                        list.forEach { buffer ->
+                            /**
+                             * TODO: Make topic a field on the Buffer table
+                             */
+                            buffer.recipient?.let { recipient ->
+                                KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                                buffer.subject?.let { subject ->
+                                    KotlinLogging.logger { }.info { "Started subject $subject" }
+                                    buffer.messageBody?.let { messageBody ->
+                                        KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                        if (attachmentFilePath != null) {
+                                            KotlinLogging.logger { }
+                                                .info { "Started attached body $attachmentFilePath" }
+                                            notifications.sendEmail(recipient, subject, messageBody, attachmentFilePath)
+                                        } else {
+                                            notifications.sendEmail(recipient, subject, messageBody)
+                                        }
+//                                    notifications.processEmail(recipient, subject, messageBody)
+                                        KotlinLogging.logger { }.info { "Email sent" }
+                                    }
+                                }
+                            }
+                        }
+                        sr.processingEndDate = getTimestamp()
+                        serviceRequestsRepository.save(sr)
+                    }
+            }
+        }
     }
 
     fun sendEmailWithUserEmail(

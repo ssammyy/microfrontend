@@ -682,7 +682,7 @@
                                                         <tbody>
                                                         <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
                                                             <td>{{app.fileRefNumber}}</td>
-                                                            <td></td>
+                                                            <td>{{app.nameOutlet}}</td>
                                                             <td>{{app.nameProduct}}</td>
                                                             <td>{{app.lbIdTradeMark}}</td>
                                                             <td>{{app.address}}</td>
@@ -1236,7 +1236,7 @@
                                                         class="mat-button-wrapper">END DATA REPORT ADDING</span>
                                                     <div class="mat-button-focus-overlay"></div>
                                                 </button>
-                                                <button  *ngIf="workPlanInspection?.scfDocId ==null"  (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
+                                                <button (click)="openModalAddDetails('uploadSCFFiles')" mat-raised-button="" data-toggle="modal"
                                                          data-target="#myModalUpload"
                                                          class="btn btn-sm btn-primary mr-2"><span
                                                         class="mat-button-wrapper">UPLOAD SAMPLE COLLECTION FORM</span>
@@ -1288,8 +1288,12 @@
                                                 <!--                                                    </div>-->
                                                 <!--                                                </div>-->
                                             </div>
-                                            <button  *ngIf="workPlanInspection?.approvedStatus && workPlanInspection?.onsiteStartStatus
-                                                && workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
+                                            <button  *ngIf="workPlanInspection?.approvedStatus &&
+                                                workPlanInspection?.onsiteStartStatus &&
+                                               workPlanInspection?.sampleSubmittedStatus &&
+                                               workPlanInspection?.seizureDeclarationStatus &&
+                                               workPlanInspection?.dataReportStatus &&
+                                             workPlanInspection?.sampleSubmittedStatus && workPlanInspection?.onsiteEndStatus ==false"
                                                      (click)="onClickEndOnsiteActivities()" mat-raised-button="" data-toggle="modal"
                                                      class="btn btn-sm btn-primary mr-2"><span
                                                     class="mat-button-wrapper">END ONSITE ACTIVITIES</span>
@@ -1522,6 +1526,7 @@
                                 <br/>
                                 <b>Document Details:</b>
                                 <div>
+
                                     <div *ngIf="workPlanInspection.scfDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.scfDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
@@ -3483,8 +3488,8 @@
                                         <mat-form-field class="example-full-width">
                                             <mat-select id="validityStatus" matInput type="text" disabled
                                                         formControlName="validityStatus" name="validityStatus">
-                                                <mat-option [value]="true">VALID(ACTIVE)</mat-option>
-                                                <mat-option [value]="false">NOT-VALID(EXPIRED/SUSPENDED)</mat-option>
+                                                <mat-option [value]="false">VALID(ACTIVE)</mat-option>
+                                                <mat-option [value]="true">NOT-VALID(EXPIRED/SUSPENDED)</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
@@ -3923,7 +3928,7 @@
                                     <tbody>
                                     <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
                                         <td>{{app.fileRefNumber}}</td>
-                                        <td></td>
+                                        <td>{{app.nameOutlet}}</td>
                                         <td>{{app.nameProduct}}</td>
                                         <td>{{app.lbIdTradeMark}}</td>
                                         <td>{{app.address}}</td>
@@ -5196,7 +5201,7 @@
                                     <tbody>
                                     <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
                                         <td>{{app.fileRefNumber}}</td>
-                                        <td></td>
+                                        <td>{{app.nameOutlet}}</td>
                                         <td>{{app.nameProduct}}</td>
                                         <td>{{app.lbIdTradeMark}}</td>
                                         <td>{{app.address}}</td>
@@ -7478,7 +7483,7 @@
                                     <tbody>
                                     <tr *ngFor="let app of workPlanInspection?.sampleSubmitted">
                                         <td>{{app.fileRefNumber}}</td>
-                                        <td></td>
+                                        <td>{{app.nameOutlet}}</td>
                                         <td>{{app.nameProduct}}</td>
                                         <td>{{app.lbIdTradeMark}}</td>
                                         <td>{{app.address}}</td>
@@ -7666,6 +7671,18 @@
                                              data-target="#myModal2"
                                              class="btn btn-sm btn-primary mr-3"><span
                                             class="mat-button-wrapper">SEND RESULTS</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+
+                                    <button  *ngIf="role == 'MS_IO_MODIFY' && workPlanInspection?.bsNumberStatus
+                                    && selectedLabResults?.ssfResultsList?.analysisDone
+                                    && selectedLabResults?.ssfResultsList?.resultsSent == false
+                                    && workPlanInspection?.officerDetails?.id == userLoggedInID
+                                    && selectedLabResults?.savedPDFFiles?.length != 0"
+                                             (click)="onClickNotSendSSFLabResultsComplianceStatus()" mat-raised-button=""
+                                             class="btn btn-sm btn-primary mr-3"><span
+                                            class="mat-button-wrapper">DON'T SEND RESULTS</span>
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>

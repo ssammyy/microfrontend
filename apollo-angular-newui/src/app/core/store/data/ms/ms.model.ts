@@ -300,6 +300,7 @@ export class WorkPlanListDto {
     budget: string;
     progressStep: string;
     batchRefNumber: string;
+    product: string;
 }
 
 export class CountriesEntityDto {
@@ -1064,6 +1065,7 @@ export class WorkPlanInspectionDto {
     currentDate: Date;
     latestPreliminaryReport: number;
     latestFinalPreliminaryReport: number;
+    complaintReferenceNumber: string;
 }
 
 export class CountryListDto {
@@ -1631,6 +1633,8 @@ export class SampleSubmissionDto {
     productDescription: string;
     sourceProductEvidence: string;
     parametersList: SampleSubmissionItemsDto[];
+    dataReportID: number;
+    nameOutlet: string;
 }
 
 export class SampleSubmissionItemsDto {

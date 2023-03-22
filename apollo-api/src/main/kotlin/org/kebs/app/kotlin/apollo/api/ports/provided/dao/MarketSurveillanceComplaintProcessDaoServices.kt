@@ -164,40 +164,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 payload,
                 "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
             )
-            val complainantEmailComposed = complaintSubmittedDTOEmailCompose(updatedComplaint)
 
-                commonDaoServices.sendEmailWithUserEmail(customerEmail, applicationMapProperties.mapMsComplaintAcknowledgementNotification, complainantEmailComposed, map, sr)
-
-
-            val hod = commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatus(
-                designationsEntity,
-                regionsEntity?: throw ExpectedDataNotFound("No region value In the Complaint Location where [complaint ID =${complaint.second.id}]"),
-                map.activeStatus
-            )
-
-
-
-            hod.forEach {hd->
-                val taskNotify = NotificationBodyDto().apply {
-                    fromName = "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
-                    toName = hd.userId?.let { commonDaoServices.concatenateName(it) }
-                    referenceNoFound = complaint.second.referenceNumber
-                    dateAssigned = commonDaoServices.getCurrentDate()
-                    processType = "COMPLAINT"
-                }
-
-                hd.userId?.let {
-                    msWorkPlanDaoServices.createNotificationTask(taskNotify,applicationMapProperties.mapMsNotificationNewTask,map,taskNotify.fromName,
-                        it,hd.userId)
-                }
-
-                val complaintReceivedEmailComposed = hd.userId?.let { complaintReceivedDTOEmailCompose(updatedComplaint, it) }
-                    hd.userId?.let {
-                        if (complaintReceivedEmailComposed != null) {
-                            commonDaoServices.sendEmailWithUserEntity(it, applicationMapProperties.mapMsComplaintSubmittedHodNotification, complaintReceivedEmailComposed, map, sr)
-                        }
-                    }
-                }
+            sendingEmailForNewComplaint(updatedComplaint, customerEmail, map, sr, designationsEntity, regionsEntity, complaint, body)
 
 
             /**
@@ -212,6 +180,69 @@ class MarketSurveillanceComplaintProcessDaoServices(
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
             return MSComplaintSubmittedSuccessful(null,false,null, e.message ?: "Unknown Error")
+        }
+    }
+
+    fun sendingEmailForNewComplaint(
+        updatedComplaint: ComplaintEntity,
+        customerEmail: String,
+        map: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity?,
+        complaint: Pair<ServiceRequestsEntity, ComplaintEntity>,
+        body: NewComplaintDto
+    ) {
+        runBlocking {
+            val complainantEmailComposed = complaintSubmittedDTOEmailCompose(updatedComplaint)
+
+            commonDaoServices.sendEmailWithUserEmailAsync(customerEmail,
+                applicationMapProperties.mapMsComplaintAcknowledgementNotification,
+                complainantEmailComposed,
+                map,
+                sr
+            )
+
+
+            val hod = commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatus(
+                designationsEntity,
+                regionsEntity
+                    ?: throw ExpectedDataNotFound("No region value In the Complaint Location where [complaint ID =${complaint.second.id}]"),
+                map.activeStatus
+            )
+
+
+
+            hod.forEach { hd ->
+                val taskNotify = NotificationBodyDto().apply {
+                    fromName = "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
+                    toName = hd.userId?.let { commonDaoServices.concatenateName(it) }
+                    referenceNoFound = complaint.second.referenceNumber
+                    dateAssigned = commonDaoServices.getCurrentDate()
+                    processType = "COMPLAINT"
+                }
+
+                hd.userId?.let {
+                    msWorkPlanDaoServices.createNotificationTask(
+                        taskNotify, applicationMapProperties.mapMsNotificationNewTask, map, taskNotify.fromName,
+                        it, hd.userId
+                    )
+                }
+
+                val complaintReceivedEmailComposed =
+                    hd.userId?.let { complaintReceivedDTOEmailCompose(updatedComplaint, it) }
+                hd.userId?.let {
+                    if (complaintReceivedEmailComposed != null) {
+                        commonDaoServices.sendEmailWithUserEntityAsync(
+                            it,
+                            applicationMapProperties.mapMsComplaintSubmittedHodNotification,
+                            complaintReceivedEmailComposed,
+                            map,
+                            sr
+                        )
+                    }
+                }
+            }
         }
     }
 

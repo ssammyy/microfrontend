@@ -1493,6 +1493,11 @@
                                 <br/>
                                 <b>Document Details:</b>
                                 <div>
+
+                                    <i *ngIf="workPlanInspection?.complaintId != null"
+                                       (click)="viewComplainCreated(workPlanInspection?.complaintReferenceNumber )"
+                                       class="btn btn-sm btn-primary">VIEW COMPLAINT</i>
+
                                     <div *ngIf="workPlanInspection.scfDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.scfDocId}"
                                            (click)="viewWorkPlanFileSaved(data)"
