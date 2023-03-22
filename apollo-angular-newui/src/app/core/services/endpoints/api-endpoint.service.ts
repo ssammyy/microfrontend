@@ -752,6 +752,8 @@ export class ApiEndpointService {
         STD_LEVY_PAYMENTS_STATUS: `${ApiEndpointService.STL_CONTEXT}/updateExemptionStatus`,
         STD_LEVY_AWARDED_PERMITS: `${ApiEndpointService.STL_CONTEXT}/getPermitsAwardedApplications`,
         STD_LEVY_AWARDED_PERMITS_FILTER: `${ApiEndpointService.STL_CONTEXT}/getPermitsApplicationsFilters`,
+        STD_LEVY_SITE_VISITS: `${ApiEndpointService.STL_CONTEXT}/getSiteVisits`,
+        STD_LEVY_SITE_VISITS_FILTERS: `${ApiEndpointService.STL_CONTEXT}/getSiteVisitsFilter`,
 
 
     };

@@ -10,6 +10,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.data.repository.findByIdOrNull
@@ -37,10 +38,11 @@ class NationalEnquiryPointService(
     private val nepDraftRepo: SdNepDraftRepository,
     private val nepDraftDocRepo: SdNepDraftUploadsEntityRepository,
     private val nepWtoNotificationRepo: NEPWtoNotificationRepository,
-    private val nepNotificationFormEntityRepo: NepNotificationFormEntityRepository
+    private val nepNotificationFormEntityRepo: NepNotificationFormEntityRepository,
+    private val applicationMapProperties: ApplicationMapProperties
 
-) {
-
+    ) {
+    val callUrl=applicationMapProperties.mapKebsLevyUrl
     var PROCESS_DEFINITION_KEY: String = "nationalEnquiryPoint"
     val requesterId: String = "requesterId"
     val TASK_CANDIDATE_GROUP_NEP = "SD_NEP_OFFICER"
@@ -179,7 +181,7 @@ class NationalEnquiryPointService(
                 nepRemarksRepository.save(rem)
                 val up=nationalEnquiryEntityRepository.save(nationalEnquiry)
                 informationTrackerRepository.save(informationTracker)
-                val targetUrl = "https://kimsint.kebs.org/divResponse/${up.id}";
+                val targetUrl = "${callUrl}/${up.id}";
                 val subject = nepInfoCheckDto.requesterSubject
                 val messageBody= "Dear Sir/Madam, find below an enquiry for your review and response; <br><br> ${nepInfoCheckDto.requesterComment}.<br><br> Click on the link below to respond.<br><br> ${targetUrl}<br><br><br>"
                 nepInfoCheckDto.emailAddress.let {

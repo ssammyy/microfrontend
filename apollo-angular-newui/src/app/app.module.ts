@@ -1243,6 +1243,7 @@ import { RejectedNwisComponent } from './apollowebs/standards-development/standa
 import { ApprovedJustificationComponent } from './apollowebs/standards-development/standard-request/std-justification/approved-justification/approved-justification.component';
 import { RejectedJustificationComponent } from './apollowebs/standards-development/standard-request/std-justification/rejected-justification/rejected-justification.component';
 import { RejectedWithAmendmentsComponent } from './apollowebs/standards-development/standard-request/std-justification/rejected-with-amendments/rejected-with-amendments.component';
+import { StandardsLevySitesComponent } from './apollowebs/standards-levy/standards-levy-sites/standards-levy-sites.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1857,6 +1858,7 @@ import { RejectedWithAmendmentsComponent } from './apollowebs/standards-developm
         ApprovedJustificationComponent,
         RejectedJustificationComponent,
         RejectedWithAmendmentsComponent,
+        StandardsLevySitesComponent,
 
     ],
     entryComponents: [LoaderComponent],
