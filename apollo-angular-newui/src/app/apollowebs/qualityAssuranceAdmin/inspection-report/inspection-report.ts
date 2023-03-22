@@ -88,7 +88,7 @@ export class InspectionReport implements OnInit {
     selectedPermitIdInspectionReport: number;
     cloned: boolean;
 
-    sta10FilesList: FilesListDto[] = [];
+    inspectionReportFilesList: FilesListDto[] = [];
     public uploadedFiles: FileList;
 
 
@@ -468,9 +468,11 @@ export class InspectionReport implements OnInit {
     onClickUpdateStandardizationMarkScheme(valid: boolean) {
         if (valid) {
             this.loading = true
-            this.loadingText = "Updating Standardization Mark Scheme"
+
             this.SpinnerService.show();
             this.standardizationMarkSchemeFormGroup.controls['inspectionRecommendationId'].setValue(this.allInspectionReportDetails.id)
+            this.standardizationMarkSchemeFormGroup.controls['id'].setValue(this.allInspectionReportDetails.technicalDetailsDto.id)
+
             this.internalService.updateInspectionReportStandardization(this.permitId, this.standardizationMarkSchemeFormGroup.value).subscribe(
                 (data: ApiResponseModel) => {
                     if (data.responseCode === '00') {
@@ -507,6 +509,8 @@ export class InspectionReport implements OnInit {
 
             if (this.operationProcessAndControlsDetailsDtos.length > 0) {
                 this.SpinnerService.show();
+                this.loadingText = "Saving Operation Processes"
+
                 //(this.sta10Details.id.toString());
                 this.internalService.updateInspectionReportOperation(this.permitId, this.allInspectionReportDetails.id.toString(), this.operationProcessAndControlsDetailsDtos).subscribe(
                     (data) => {
@@ -841,7 +845,7 @@ export class InspectionReport implements OnInit {
     }
 
     onClickSaveInspectionReportDocs() {
-        if (this.sta10FilesList.length > 0) {
+        if (this.inspectionReportFilesList.length > 0) {
             if (this?.uploadedFiles) {
                 this.fileListSaveDetails();
             }
@@ -857,7 +861,6 @@ export class InspectionReport implements OnInit {
             const file = this.uploadedFiles;
             const formData = new FormData();
             formData.append('permitID', String(this.permitId));
-            formData.append('permitID', String(this.inspectionDetails));
             formData.append('inspectionReportId', this.allInspectionReportDetails.id.toString())
             formData.append('data', 'INSPECTION_REPORT'); //will be saved under varField1
             for (let i = 0; i < file.length; i++) {

@@ -1,11 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
-import java.math.BigDecimal
-import java.sql.Date
-import java.sql.Time
-import java.sql.Timestamp
-import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -33,9 +28,13 @@ class StdLevyEntryNoDataMigrationEntity : Serializable{
     @Basic
     var kraPin: String? = null
 
+    @Column(name = "ENTRY_NUMBERS")
+    @Basic
+    var entryNumbers: Long? = null
+
     @Column(name = "ENTRY_NUMBER")
     @Basic
-    var entryNumber: Long? = null
+    var entryNumber: String? = null
 
     @Column(name = "ENTRY_COUNT")
     @Basic

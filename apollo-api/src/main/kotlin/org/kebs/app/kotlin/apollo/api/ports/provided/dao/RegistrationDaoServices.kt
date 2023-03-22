@@ -806,6 +806,9 @@ class RegistrationDaoServices(
             sm.directorId=cp.directorIdNumber
             sm.kraPin=cp.kraPin
             sm.entryCount=allRequests
+            sm.entryNumbers=allRequests
+            sm.entryNumber=entry
+
 
             stdLevyEntryNoDataMigrationEntityRepository.save(sm)
        // }
@@ -1217,6 +1220,7 @@ class RegistrationDaoServices(
             }else{
                 throw ExpectedDataNotFound("Error has occurred, Try again")
             }
+
         }
         else{
             slFormResponse="Operation is not allowed..Form Has Already been Filled.."

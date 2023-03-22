@@ -224,8 +224,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     @Query(
         "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE " +
                 "pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.PERMIT_TYPE = :permitType AND pr.SECTION_ID = :sectionID " +
-                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID " +
-                "FETCH FIRST 50 ROWS ONLY ORDER BY pr.ID DESC",
+                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID ",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndPermitTypeAndSectionId(
@@ -239,8 +238,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     @Query(
         "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE " +
                 "pr.ATTACHED_PLANT_ID = B.ID AND pr.USER_TASK_ID = :userTaskId AND pr.SECTION_ID = :sectionID " +
-                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID " +
-                "FETCH FIRST 50 ROWS ONLY ORDER BY pr.ID DESC",
+                "AND pr.PAID_STATUS = :paidStatus AND pr.OLD_PERMIT_STATUS is null AND B.REGION = :region order by pr.ID ",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndUserTaskIDAndSectionId(
@@ -1314,6 +1312,12 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
         permitRefNumber: String,
         permitId: Long,
         sscStatus: Int
+    ): List<QaUploadsEntity>?
+
+
+    fun findByPermitIdAndInspectionReportId(
+        permitId: Long,
+        inspectionReportId: Long
     ): List<QaUploadsEntity>?
 
     fun findByPermitRefNumberAndJustificationReportStatusAndPermitId(
