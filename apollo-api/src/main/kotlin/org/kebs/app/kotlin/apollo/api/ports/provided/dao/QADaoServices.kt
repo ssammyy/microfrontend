@@ -8591,8 +8591,7 @@ class QADaoServices(
                 batchInvoiceDetail
             )
 
-            val manufactureDetails =
-                commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
+            val manufactureDetails = commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
 //                reveneCode = paymentRevenueCode.revenueCode
