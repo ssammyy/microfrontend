@@ -156,6 +156,17 @@ export class PermitUcrSearch {
     validityStatus: boolean;
 }
 
+export class UcrNumberSearch {
+    itemId: number;
+    ucrNumber: string;
+    itemDescription: string;
+    quantity: number;
+    packageQuantity: number;
+    itemGrossWeight: string;
+    hsDescription: string;
+    itemHsCode: string;
+}
+
 export class NotificationBodyDto {
     taskRefNumber: string;
     fromName: string;

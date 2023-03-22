@@ -44,11 +44,11 @@ class KappaPaymentsDaoService(
                         result.billReferenceCode = record.referenceCode
                         result.currency = record.currency
                         result.responseDate = Timestamp.from(Instant.now())
-                        result.statusCode = invoiceStatus.success
+                        result.statusCode = invoiceStatus?.success
                         result.statusDescription = record.statusDescription
                         result.totalAmount = record.invoiceAmount
                         log.integrationResponse = daoService.mapper().writeValueAsString(result)
-                        log.responseStatus = invoiceStatus.success
+                        log.responseStatus = invoiceStatus?.success
                         log.responseMessage = result.billReferenceCode
                         log.transactionCompletedDate = Timestamp.from(Instant.now())
                         logsRepo.save(log)
@@ -56,7 +56,7 @@ class KappaPaymentsDaoService(
 
                     }
                     ?: run {
-                        result.statusCode = invoiceStatus.notFound
+                        result.statusCode = invoiceStatus?.notFound
                         result.responseDate = Timestamp.from(Instant.now())
                         result.accountName = ""
                         result.accountNumber = ""
@@ -71,12 +71,12 @@ class KappaPaymentsDaoService(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            log.responseStatus = invoiceStatus.error
+            log.responseStatus = invoiceStatus?.error
             log.responseMessage = e.message
 
 
             result.responseDate = Timestamp.from(Instant.now())
-            result.statusCode = invoiceStatus.error
+            result.statusCode = invoiceStatus?.error
             result.statusDescription = log.responseMessage
             log.integrationResponse = daoService.mapper().writeValueAsString(result)
             log.transactionCompletedDate = result.responseDate
@@ -95,7 +95,7 @@ class KappaPaymentsDaoService(
                                 ?.let { record ->
                                     if (record.transactionId != null) {
                                         result.responseDate = Timestamp.from(Instant.now())
-                                        result.statusCode = invoiceStatus.duplicateTransaction
+                                        result.statusCode = invoiceStatus?.duplicateTransaction
                                         result.statusDescription = record.statusDescription
                                         return result
 
@@ -118,13 +118,13 @@ class KappaPaymentsDaoService(
                                          */
 
                                         result.responseDate = Timestamp.from(Instant.now())
-                                        result.statusCode = invoiceStatus.success
+                                        result.statusCode = invoiceStatus?.success
                                         result.statusDescription = record.statusDescription
 
 
 
                                         log.integrationResponse = daoService.mapper().writeValueAsString(result)
-                                        log.responseStatus = invoiceStatus.success
+                                        log.responseStatus = invoiceStatus?.success
                                         log.responseMessage = result.billReferenceCode
                                         log.transactionCompletedDate = Timestamp.from(Instant.now())
                                         logsRepo.save(log)
@@ -135,7 +135,7 @@ class KappaPaymentsDaoService(
                                 }
                             ?: run {
                                 result.responseDate = Timestamp.from(Instant.now())
-                                result.statusCode = invoiceStatus.notFound
+                                result.statusCode = invoiceStatus?.notFound
                                 result.statusDescription = ""
                                 return result
                             }
@@ -146,7 +146,7 @@ class KappaPaymentsDaoService(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            log.responseStatus = invoiceStatus.error
+            log.responseStatus = invoiceStatus?.error
             log.responseMessage = e.message
 
 
@@ -185,7 +185,7 @@ class KappaPaymentsDaoService(
                             ?.let { record ->
                                 if (record.transactionId != null) {
                                     result.responseDate = Timestamp.from(Instant.now())
-                                    result.statusCode = invoiceStatus.duplicateTransaction
+                                    result.statusCode = invoiceStatus?.duplicateTransaction
                                     result.statusDescription = record.statusDescription
                                     return result
 
@@ -218,13 +218,13 @@ class KappaPaymentsDaoService(
                                      */
 
                                     result.responseDate = Timestamp.from(Instant.now())
-                                    result.statusCode = invoiceStatus.success
+                                    result.statusCode = invoiceStatus?.success
                                     result.statusDescription = record.statusDescription
 
 
 
                                     log.integrationResponse = daoService.mapper().writeValueAsString(result)
-                                    log.responseStatus = invoiceStatus.success
+                                    log.responseStatus = invoiceStatus?.success
                                     log.responseMessage = result.billReferenceCode
                                     log.transactionCompletedDate = Timestamp.from(Instant.now())
                                     logsRepo.save(log)
@@ -235,7 +235,7 @@ class KappaPaymentsDaoService(
                             }
                             ?: run {
                                 result.responseDate = Timestamp.from(Instant.now())
-                                result.statusCode = invoiceStatus.notFound
+                                result.statusCode = invoiceStatus?.notFound
                                 result.statusDescription = ""
                                 return result
                             }
@@ -257,7 +257,7 @@ class KappaPaymentsDaoService(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            log.responseStatus = invoiceStatus.error
+            log.responseStatus = invoiceStatus?.error
             log.responseMessage = e.message
 
 

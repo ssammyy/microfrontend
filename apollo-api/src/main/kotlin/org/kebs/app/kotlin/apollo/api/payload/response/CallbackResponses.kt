@@ -1,8 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.payload.response
 
 class CallbackResponses {
-    lateinit var status: String
-    lateinit var message: String
+    var status: String? = null
+    var message: String? = null
     var data: Any? = null
     var errors: Any? = null
 }

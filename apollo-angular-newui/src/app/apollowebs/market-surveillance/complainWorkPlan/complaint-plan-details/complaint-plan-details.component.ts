@@ -4638,24 +4638,24 @@ export class ComplaintPlanDetailsComponent implements OnInit {
         );
         break;
       case 'Import':
-        this.msService.loadUCRDetailsSearch(this.dataSaveDataReportParam.ucrNumber).subscribe(
-            (data: any) => {
-              this.SpinnerService.hide();
-              // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
-              this.verificationPermitForm.patchValue(data);
-              this.currDivLabel = `UCR FOUND WITH FOLLOWING DETAILS`;
-              this.currDiv = 'verificationPermitDetails';
-              this.verificationPermitForm.disabled;
-
-              window.$('#myModal3').modal('show');
-
-            },
-            error => {
-              this.SpinnerService.hide();
-              console.log(error);
-              // this.msService.showError('AN ERROR OCCURRED');
-            },
-        );
+        // this.msService.loadUCRDetailsSearch(this.dataSaveDataReportParam.ucrNumber).subscribe(
+        //     (data: any) => {
+        //       this.SpinnerService.hide();
+        //       // this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');
+        //       this.verificationPermitForm.patchValue(data);
+        //       this.currDivLabel = `UCR FOUND WITH FOLLOWING DETAILS`;
+        //       this.currDiv = 'verificationPermitDetails';
+        //       this.verificationPermitForm.disabled;
+        //
+        //       window.$('#myModal3').modal('show');
+        //
+        //     },
+        //     error => {
+        //       this.SpinnerService.hide();
+        //       console.log(error);
+        //       // this.msService.showError('AN ERROR OCCURRED');
+        //     },
+        // );
         break;
     }
   }
