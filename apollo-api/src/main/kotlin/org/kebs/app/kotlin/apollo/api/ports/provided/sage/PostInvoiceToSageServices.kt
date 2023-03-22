@@ -401,7 +401,7 @@ class PostInvoiceToSageServices(
 
             val headerBody = SageQAHeaderB().apply {
                 serviceName = "BSKApp"
-                messageID = "BSK"
+                messageID = "BSK KIMS REF- ${invoiceFound.referenceCode} on ${commonDaoServices.convertTimestampToKeswsValidDate(commonDaoServices.getTimestamp())}"
                 connectionID = jasyptStringEncryptor.decrypt(config.username)
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
 
@@ -414,7 +414,7 @@ class PostInvoiceToSageServices(
                 CurrencyCode = "KES"
                 CustomerCode = null
                 CustomerName = invoiceAccountDetails.accountName
-                InvoiceDesc = "QA ${invoiceFound.referenceCode} Billing"
+                InvoiceDesc = "Quality Assurance Bill -$DocumentDate"
                 InvoiceAmnt = invoiceFound.invoiceAmount
                 TaxPINNo = invoiceAccountDetails.accountNumber
                 Withholding = invoiceAccountDetails.isWithHolding

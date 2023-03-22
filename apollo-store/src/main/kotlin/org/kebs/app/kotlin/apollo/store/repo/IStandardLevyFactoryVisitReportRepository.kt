@@ -67,7 +67,7 @@ interface StdLevyEntryNoDataMigrationEntityRepository : HazelcastRepository<StdL
     @Query(value = "SELECT max(ENTRY_COUNT)  FROM SL_ENTRY_NO_DATA_MIGRATION", nativeQuery = true)
     fun getMaxEntryNo(): Long
 
-    @Query(value = "SELECT ENTRY_NUMBER  FROM SL_ENTRY_NO_DATA_MIGRATION WHERE KRA_PIN=:kraPin", nativeQuery = true)
+    @Query(value = "SELECT ENTRY_NUMBERS  FROM SL_ENTRY_NO_DATA_MIGRATION WHERE KRA_PIN=:kraPin", nativeQuery = true)
     fun getEntryNo(@Param("kraPin") kraPin: String?): Long?
 
 }

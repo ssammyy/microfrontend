@@ -294,3 +294,11 @@ interface IMsTasksPendingAllocationWpViewRepository : HazelcastRepository<MsTask
     fun countByOfficerIdAndTaskOverDueAndComplaintIdIsNull(officerId: Long, taskOverDue: String): Long
     fun findAllByReferenceNumber(referenceNumber: String): List<MsTasksPendingAllocationWpViewEntity>
 }
+
+@Repository
+interface IWorkPlanViewUcrNumberItemsRepository : HazelcastRepository<WorkPlanViewUcrNumberItemsEntity, Long> {
+    override fun findAll(pageable: Pageable): Page<WorkPlanViewUcrNumberItemsEntity>
+
+    fun findAllByUcrNumber(ucrNumber: String): List<WorkPlanViewUcrNumberItemsEntity>?
+
+}

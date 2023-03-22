@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.*
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
@@ -47,6 +48,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
     private val complaintsRepo: IComplaintRepository,
     private val complaintCustomersRepo: IComplaintCustomersRepository,
     private val complaintLocationRepo: IComplaintLocationRepository,
+    private val viewUcrNumberItemsRepo: IWorkPlanViewUcrNumberItemsRepository,
     private val remarksRepo: IMsRemarksComplaintRepository,
     private val processNameRepo: IMsProcessNamesRepository,
     private val marketSurveillanceBpmn: MarketSurveillanceBpmn,
@@ -306,15 +308,8 @@ class MarketSurveillanceComplaintProcessDaoServices(
         )
     }
 
-    fun msSearchUCRNumber(ucrNumber: String): PermitUcrSearch {
-        val ucrDetails = desInspDaoServices.findCdWithUcrNumberLatest(ucrNumber)?:throw ExpectedDataNotFound("No UCR found with the following ucr number = $ucrNumber")
-        return PermitUcrSearch(
-            id= ucrDetails.id,
-//            permitNumber= ucrDetails.awardedPermitNumber,
-            ucrNumber= ucrDetails.ucrNumber,
-//            productName= ucrDetails.cdStandard.,
-//            validityStatus= ucrDetails.permitExpiredStatus ==1,
-        )
+    fun msSearchUCRNumber(ucrNumber: String): List<WorkPlanViewUcrNumberItemsEntity> {
+        return findCdWithUcrNumberIItems(ucrNumber)?:throw ExpectedDataNotFound("No Items found with the following ucr number = $ucrNumber")
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
@@ -1140,6 +1135,11 @@ class MarketSurveillanceComplaintProcessDaoServices(
         }
 
     }
+
+    fun findCdWithUcrNumberIItems(ucrNumber: String): List<WorkPlanViewUcrNumberItemsEntity>?{
+        return  viewUcrNumberItemsRepo.findAllByUcrNumber(ucrNumber)
+    }
+
 
     @PreAuthorize("hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

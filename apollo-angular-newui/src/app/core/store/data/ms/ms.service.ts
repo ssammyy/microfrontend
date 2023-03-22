@@ -89,7 +89,7 @@ import {
     ConsumerComplaintViewSearchValues,
     SeizeViewSearchValues,
     SubmittedSamplesSummaryViewSearchValues,
-    OGAEntity, WorkPlanScheduleOnsiteDto,
+    OGAEntity, WorkPlanScheduleOnsiteDto, UcrNumberSearch,
 } from './ms.model';
 import swal from 'sweetalert2';
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
@@ -726,13 +726,13 @@ export class MsService {
         );
     }
 
-    public loadUCRDetailsSearch(ucrNumber: string): Observable<PermitUcrSearch> {
+    public loadUCRDetailsSearch(ucrNumber: string): Observable<UcrNumberSearch[]> {
         // console.log(data);
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.MARKET_SURVEILLANCE_COMMON.MS_SEARCH_UCR_NUMBER);
         const params = new HttpParams()
             .set('ucrNumber', ucrNumber);
-        return this.http.get<PermitUcrSearch>(url, {params}).pipe(
-            map(function (response: PermitUcrSearch) {
+        return this.http.get<UcrNumberSearch[]>(url, {params}).pipe(
+            map(function (response: UcrNumberSearch[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
