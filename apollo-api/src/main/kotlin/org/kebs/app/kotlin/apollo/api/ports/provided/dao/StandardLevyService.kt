@@ -86,7 +86,7 @@ class StandardLevyService(
     val TASK_CANDIDATE_SL_Assistant_Manager = "SL_Assistant_Manager"
     val TASK_CANDIDATE_SL_Manager = "SL_Manager"
     val TASK_CANDIDATE_Manufacturer = "Manufacturer"
-    val callUrl=applicationMapProperties.mapKraConfigIntegration
+    val callUrl=applicationMapProperties.mapKebsLevyUrl
 
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment = repositoryService
