@@ -12,7 +12,7 @@ import {
     ConfirmEditCompanyDTO, DefaulterDetails,
     DirectorsList,
     DocumentDTO,
-    EditCompanyDTO, EmailVerificationStatus, ExemptionDto, LevyFilterDto, LevyFiltersDto,
+    EditCompanyDTO, EmailVerificationStatus, ExemptionDto, LevyFilterDto, LevyFiltersDto, LevySites,
     ManufactureCompletedTask,
     ManufactureDetailList,
     ManufacturePenalty,
@@ -1034,6 +1034,32 @@ export class LevyService {
             }),
             catchError((fault: HttpErrorResponse) => {
                 // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+
+    public getSiteVisits(): Observable<LevySites[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISITS);
+        const params = new HttpParams();
+        return this.http.get<LevySites[]>(url, {params}).pipe(
+            map(function (response: LevySites[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
+
+    public getSiteVisitsFilter(data: LevyFilterDto[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.STD_LEVY_SITE_VISITS_FILTERS);
+        return this.http.post<LevyFilterDto>(url, data, {}).pipe(
+            map(function (response: LevyFilterDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
                 return throwError(fault);
             })
         );

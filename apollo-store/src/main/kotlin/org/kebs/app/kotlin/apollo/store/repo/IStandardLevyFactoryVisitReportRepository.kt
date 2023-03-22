@@ -5,10 +5,7 @@ import org.kebs.app.kotlin.apollo.store.model.SlUpdatecompanyDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
 import org.kebs.app.kotlin.apollo.store.model.StdLevyEntryNoDataMigrationEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
-import org.kebs.app.kotlin.apollo.store.model.std.AllLevyPayments
-import org.kebs.app.kotlin.apollo.store.model.std.CompleteTasksDetailHolder
-import org.kebs.app.kotlin.apollo.store.model.std.StdLevyHistoricalPayments
-import org.kebs.app.kotlin.apollo.store.model.std.UserDetailHolder
+import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -26,6 +23,35 @@ interface IStandardLevyFactoryVisitReportRepository: HazelcastRepository<Standar
         nativeQuery = true
     )
     fun getCompleteTasks(): List<CompleteTasksDetailHolder>
+
+    @Query(
+        value = "SELECT c.NAME AS companyName,c.ENTRY_NUMBER AS entryNumber,c.KRA_PIN AS kraPin," +
+                "s.ID as id,s.CREATED_BY as officerName,s.VISIT_DATE AS dateOfVisit,s.PURPOSE AS purpose," +
+                "r.REGION AS region,l.NAME as businessLine FROM DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT s " +
+                "JOIN DAT_KEBS_COMPANY_PROFILE c ON s.MANUFACTURER_ENTITY = c.ID " +
+                "LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l on l.ID=c.BUSINESS_LINES",
+        nativeQuery = true
+    )
+    fun getSiteVisits(): MutableList<SiteVisits>
+
+    @Query(
+        value = "SELECT c.NAME AS companyName,c.ENTRY_NUMBER AS entryNumber,c.KRA_PIN AS kraPin," +
+                "s.ID as id,s.CREATED_BY as officerName,s.VISIT_DATE AS dateOfVisit,s.PURPOSE AS purpose," +
+                "r.REGION AS region,l.NAME as businessLine FROM DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT s " +
+                "JOIN DAT_KEBS_COMPANY_PROFILE c ON s.MANUFACTURER_ENTITY = c.ID " +
+                "LEFT JOIN CFG_KEBS_REGIONS r ON c.REGION=r.ID LEFT JOIN CFG_KEBS_BUSINESS_LINES l on l.ID=c.BUSINESS_LINES " +
+                "WHERE (:startDate is null or s.VISIT_DATE >=TO_DATE(:startDate)) and (:endDate is null or s.VISIT_DATE <=TO_DATE(:endDate)) " +
+                "and (:businessLines is null or c.BUSINESS_LINES =TO_NUMBER(:businessLines)) and (:region is null or c.REGION =TO_NUMBER(:region))",
+        nativeQuery = true
+    )
+    fun getSiteVisitsFilter(
+        @Param("startDate") startDate: Date?,
+        @Param("endDate") endDate: Date?,
+        @Param("businessLines") businessLines: Long?,
+        @Param("region") region: Long?
+    ): MutableList<SiteVisits>
+
+
 
 }
 

@@ -855,6 +855,7 @@ import {
 import {StandardLevyHistoricalPaymentsComponent} from "./apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component";
 import {NepUploadedNotificationComponent} from "./apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component";
 import {StandardsLevyQaPermitsComponent} from "./apollowebs/standards-levy/standards-levy-qa-permits/standards-levy-qa-permits.component";
+import {StandardsLevySitesComponent} from "./apollowebs/standards-levy/standards-levy-sites/standards-levy-sites.component";
 
 export const routes: Routes = [
     {
@@ -2705,6 +2706,10 @@ export const routes: Routes = [
     {
         path: 'stdLevyQaReports', component: AdminLayoutComponent,
         children: [{path: '', component: StandardsLevyQaPermitsComponent}],
+    },
+    {
+        path: 'stdLevySiteVisitReport', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardsLevySitesComponent}],
     },
 
 

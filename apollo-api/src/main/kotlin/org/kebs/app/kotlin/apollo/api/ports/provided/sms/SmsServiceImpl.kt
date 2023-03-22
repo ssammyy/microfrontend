@@ -35,6 +35,8 @@ class SmsServiceImpl(
         //Create Header
         val username = username
         val password = password
+//        KotlinLogging.logger {  }.info { "password received: ${password}" }
+//        KotlinLogging.logger {  }.info { "username received: ${username}" }
         val headers = HttpHeaders()
         headers.setBasicAuth(username, password)
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED

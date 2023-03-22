@@ -763,3 +763,15 @@ export interface QAPermitsDto{
     expiryDate: Timestamp<any>;
 }
 
+export interface LevySites{
+    id: number;
+    companyName: string;
+    entryNumber: string;
+    kraPin: string;
+    officerName: string;
+    dateOfVisit: Timestamp<any>;
+    purpose: string;
+    region: string;
+    businessLine: string;
+    otherBusinessNatureType: string;
+}

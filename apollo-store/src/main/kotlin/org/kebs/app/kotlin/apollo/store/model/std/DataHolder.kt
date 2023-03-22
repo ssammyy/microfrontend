@@ -284,7 +284,18 @@ interface ManufactureListHolder {
     fun getAssignStatus(): String?
     fun getExemptionStatus(): Long?
 }
-
+interface SiteVisits{
+    fun getId(): Long?
+    fun getCompanyName(): String?
+    fun getEntryNumber(): String?
+    fun getKraPin(): String?
+    fun getOfficerName(): String?
+    fun getDateOfVisit(): String?
+    fun getPurpose(): String?
+    fun getRegion(): String?
+    fun getBusinessLine(): String?
+    fun getOtherBusinessNatureType(): String?
+}
 interface CompleteTasksDetailHolder {
     fun getPurpose(): String?
     fun getPerson(): String?

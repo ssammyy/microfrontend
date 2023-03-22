@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.Header
@@ -672,13 +673,13 @@ class PostInvoiceToSageServices(
                                         invoiceLogPaymentRepo.findByTransactionId(value.request?.paymentReferenceNo?: throw Exception("Missing paymentReferenceNo, can't be null"))
                                             ?.let {
                                                 result.responseDate = Timestamp.from(Instant.now())
-                                                result.statusCode = invoiceStatus.duplicateTransaction
+                                                result.statusCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
                                                 result.statusDescription = "THE RECIPE ALREADY EXIST (${it.transactionId}), FOR INVOICE NUMBER ${it.sageInvoiceNumber}"
                                                 return result
                                             }?: kotlin.run {
                                                 if (record.transactionId != null) {
                                                     result.responseDate = Timestamp.from(Instant.now())
-                                                    result.statusCode = invoiceStatus.duplicateTransaction
+                                                    result.statusCode = ResponseCodes.DUPLICATE_ENTRY_STATUS
                                                     result.statusDescription = record.statusDescription
                                                     return result
                                                 }
@@ -709,8 +710,7 @@ class PostInvoiceToSageServices(
                                                     /**
                                                      * Sage Update Details on sage logs
                                                      * */
-                                                    sageRepo.findByStgPaymentId(record.id
-                                                        ?: throw Exception("MISSING STAGING ID"))
+                                                    sageRepo.findByStgPaymentId(record.id ?: throw Exception("MISSING STAGING ID"))
                                                         ?.let { sage ->
                                                             sage.status = 10
                                                             sage.description = daoService.mapper().writeValueAsString(value)
@@ -732,12 +732,12 @@ class PostInvoiceToSageServices(
                                                      */
 
                                                     result.responseDate = Timestamp.from(Instant.now())
-                                                    result.statusCode = invoiceStatus.success
+                                                    result.statusCode = ResponseCodes.SUCCESS_CODE
                                                     result.statusDescription = record.statusDescription
 
 
                                                     log.integrationResponse = daoService.mapper().writeValueAsString(result)
-                                                    log.responseStatus = invoiceStatus.success
+                                                    log.responseStatus = ResponseCodes.SUCCESS_CODE
                                                     log.responseMessage = result.billReferenceCode
                                                     log.transactionCompletedDate = Timestamp.from(Instant.now())
                                                     logsRepo.save(log)
@@ -748,7 +748,7 @@ class PostInvoiceToSageServices(
                                     }
                                     ?: run {
                                         result.responseDate = Timestamp.from(Instant.now())
-                                        result.statusCode = invoiceStatus.notFound
+                                        result.statusCode = ResponseCodes.NOT_FOUND
                                         result.statusDescription = ""
                                         return result
                                     }
@@ -770,7 +770,7 @@ class PostInvoiceToSageServices(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            log.responseStatus = invoiceStatus.error
+            log.responseStatus = ResponseCodes.EXCEPTION_STATUS
             log.responseMessage = e.message
 
 
