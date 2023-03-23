@@ -190,14 +190,22 @@ export class StdTscSecTasksComponentComponent implements OnInit {
             nameOfProposer: ['', Validators.required],
             organization: ['', Validators.required],
             circulationDate: ['', Validators.required],
-            closingDate: ['', Validators.required],
+            closingDate: [''],
             // dateOfPresentation: ['', Validators.required],
             nameOfTC: ['', Validators.required],
             referenceNumber: ['', Validators.required],
             standardId: ['', Validators.required],
 
         });
+        this.stdNwiFormGroup.get('circulationDate').valueChanges.subscribe(circulationDate => {
+            const closingDate = new Date(circulationDate);
+            closingDate.setDate(closingDate.getDate() + 14);
+            const closingDateString = closingDate.toISOString().substring(0, 10);
 
+            this.stdNwiFormGroup.patchValue({
+                closingDate: closingDateString
+            });
+        });
 
     }
     @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;

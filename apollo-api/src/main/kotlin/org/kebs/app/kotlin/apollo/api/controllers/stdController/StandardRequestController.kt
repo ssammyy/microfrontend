@@ -544,6 +544,11 @@ class StandardRequestController(
         return standardRequestService.getAllRejectedStandardRequestsToPrepareNWI()
     }
 
+    @GetMapping("standard/getAllOnHoldStdsForNwi")
+    fun getAllOnHoldStdsForNwi(): List<StandardsDto> {
+        return standardRequestService.getAllOnHoldStandardRequestsToPrepareNWI()
+    }
+
     @PostMapping("standard/deleteDepartment")
     @ResponseBody
     fun deleteDepartment(@RequestBody department: Department): ServerResponse {
