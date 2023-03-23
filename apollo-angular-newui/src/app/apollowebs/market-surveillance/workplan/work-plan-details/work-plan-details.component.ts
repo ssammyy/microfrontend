@@ -465,6 +465,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">VIEW RECORD</i>'},
+        {name: 'downloadRecord', title: '<i class="btn btn-sm btn-primary">DOWNLOAD RECORD</i>'},
       ],
       position: 'right', // left|right
     },
@@ -506,11 +507,11 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      // createdOn: {
-      //   title: 'CREATED ON',
-      //   type: 'date',
-      //   filter: false,
-      // },
+      changesMade: {
+        title: 'CHANGES MADE',
+        type: 'string',
+        filter: false,
+      },
     },
     pager: {
       display: true,
@@ -1829,6 +1830,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       statusActivity: ['', Validators.required],
       finalRemarkHod: null,
       // remarks: ['', Validators.required],
+      changesMade: null,
     });
 
     this.dataReportParamForm = this.formBuilder.group({
@@ -4478,6 +4480,11 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
 
+  viewComplainCreated(referenceNumber: string) {
+    // tslint:disable-next-line:max-line-length
+    this.router.navigate([`/complaint/details/`, referenceNumber]);
+  }
+
   viewUploadsFileSaved(data: WorkPlanFilesFoundDto) {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
   }
@@ -4656,6 +4663,9 @@ export class WorkPlanDetailsComponent implements OnInit {
         break;
       case 'viewUpload':
         this.viewSeizedProductsFileSaved(event.data);
+        break;
+      case 'downloadRecord':
+        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, "application/pdf");
         break;
     }
   }

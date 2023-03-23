@@ -659,6 +659,7 @@ export class InspectionInvestigationReportDto {
     version: number;
     createdBy: string;
     createdOn: Date;
+    changesMade: string;
 }
 
 export class FieldReportAdditionalInfo {
