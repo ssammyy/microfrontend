@@ -1,10 +1,8 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
 import org.jetbrains.annotations.Nullable
-import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.std.PermitsAwarded
-import org.kebs.app.kotlin.apollo.store.model.std.RegisteredFirms
 import org.kebs.app.kotlin.apollo.store.model.std.SampleSubmissionDTO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -20,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Repository
-interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long>, JpaSpecificationExecutor<PermitApplicationsEntity> {
+interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long>,
+    JpaSpecificationExecutor<PermitApplicationsEntity> {
     fun findByUserIdAndVarField9IsNull(userId: Long): List<PermitApplicationsEntity>?
     fun findByAwardedPermitNumber(awardedPermitNumber: String): List<PermitApplicationsEntity>?
 
@@ -75,8 +74,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitType(
         userTaskId: Long,
-        permitType: Long
-        ,pageable: Pageable
+        permitType: Long, pageable: Pageable
     ): Page<PermitApplicationsEntity>?
 
 
@@ -156,8 +154,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     @Query(
         "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PERMIT_AWARD_STATUS IS NULL AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType " +
-                "AND pr.SECTION_ID = :sectionID AND B.REGION = :region " +
-                "FETCH FIRST 50 ROWS ONLY ORDER BY pr.ID DESC",
+                "AND pr.SECTION_ID = :sectionID AND B.REGION = :region ",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndSectionId(
@@ -180,8 +177,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     @Query(
         "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_AWARD_STATUS = :permitAwardStatus " +
-                "AND pr.PERMIT_TYPE = :permitType  AND pr.SECTION_ID = :sectionID AND B.REGION = :region " +
-                "FETCH FIRST 50 ROWS ONLY ORDER BY pr.ID DESC",
+                "AND pr.PERMIT_TYPE = :permitType  AND pr.SECTION_ID = :sectionID AND B.REGION = :region ",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndAwardedStatusAndSectionId(
@@ -296,15 +292,16 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndPermitAwardStatusAndOldPermitStatusIsNull(
-        permitType: Long, permitAwardStatus: Int,pageable: Pageable): Page<PermitApplicationsEntity>?
+        permitType: Long, permitAwardStatus: Int, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int
     ): List<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndPaidStatusAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
-        permitType: Long, paidStatus: Int
-        ,pageable: Pageable): Page<PermitApplicationsEntity>?
+        permitType: Long, paidStatus: Int, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndPaidStatusAndCompanyIdAndInvoiceGeneratedAndPermitAwardStatusIsNullAndOldPermitStatusIsNull(
         permitType: Long, paidStatus: Int, companyId: Long, invoiceGenerated: Int
@@ -490,7 +487,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNull(
         userId: Long,
-        permitType: Long,pageable: Pageable): Page<PermitApplicationsEntity>?
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndOldPermitStatusIsNull(
         permitType: Long
@@ -521,8 +519,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         userId: Long,
-        permitType: Long
-        ,pageable: Pageable): Page<PermitApplicationsEntity>?
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         permitType: Long
@@ -541,7 +539,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNull(
         userId: Long,
-        permitType: Long,pageable: Pageable): Page<PermitApplicationsEntity>?
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
         assessorId: Long,
@@ -568,7 +567,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
 
     fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         userId: Long,
-        permitType: Long,pageable: Pageable): Page<PermitApplicationsEntity>?
+        permitType: Long, pageable: Pageable
+    ): Page<PermitApplicationsEntity>?
 
     fun findByPacSecIdAndPermitTypeAndOldPermitStatusIsNull(
         userId: Long,
