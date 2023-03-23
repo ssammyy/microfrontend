@@ -6512,7 +6512,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             commonDaoServices.getCurrentDate(),
             wKP.latestPreliminaryReport,
             wKP.latestFinalPreliminaryReport,
-            complaintsRepo.findByIdOrNull(wKP.complaintId)?.referenceNumber
+            complaintsRepo.findByIdOrNull(wKP.complaintId?: -1L)?.referenceNumber
+
         )
     }
 
