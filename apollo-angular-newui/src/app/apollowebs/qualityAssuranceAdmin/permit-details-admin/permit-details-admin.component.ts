@@ -828,14 +828,6 @@ export class PermitDetailsAdminComponent implements OnInit {
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 // if (applicationType === 'application/pdf') {
                     window.open(downloadURL, '_blank');
-
-                // } else {
-                //     const link = document.createElement('a');
-                //     link.href = downloadURL;
-                //     link.download = fileName;
-                //     link.click();
-                // }
-                // this.pdfUploadsView = dataPdf;
             },
             error => {
                 this.SpinnerService.hide();
@@ -860,6 +852,10 @@ export class PermitDetailsAdminComponent implements OnInit {
             if (divVal === arrHead[h]) {
                 this.currDivLabel = arrHeadSave[h];
             }
+        }
+
+        if(divVal==='viewInspectionInvoiceDetails'){
+            this.viewInspectionInvoiceDetailsForm.patchValue(this.allPermitDetails?.inspectionInvoiceUpload);
         }
 
         this.currDiv = divVal;

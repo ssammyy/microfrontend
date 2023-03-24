@@ -2274,9 +2274,10 @@ class QualityAssuranceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
-                        ?.let { ok().body(it) }
+                        ?.let {
+                            ok().body(it)
+                        }
                         ?: onErrors("We could not process your request at the moment")
-
                 }
                 else -> {
                     onValidationErrors(errors)
@@ -2448,8 +2449,7 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
             val auth = commonDaoServices.loggedInUserAuthentication()
-            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
             val permitType = qaDaoServices.findPermitType(permitTypeID)
 
             val dto = req.body<STA1Dto>()
@@ -2465,7 +2465,6 @@ class QualityAssuranceHandler(
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } -> {
                         dto.attachedPlant
                     }
-
                     else -> {
                         loggedInUser.plantId
                     }

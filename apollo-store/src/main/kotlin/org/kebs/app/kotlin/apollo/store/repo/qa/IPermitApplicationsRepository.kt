@@ -157,7 +157,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     @Query(
         "SELECT DISTINCT pr.* FROM DAT_KEBS_PERMIT_TRANSACTION pr, DAT_KEBS_MANUFACTURE_PLANT_DETAILS B WHERE pr.ATTACHED_PLANT_ID = B.ID AND pr.PERMIT_AWARD_STATUS IS NULL AND pr.PAID_STATUS = :paidStatus AND pr.PERMIT_TYPE = :permitType " +
                 "AND pr.SECTION_ID = :sectionID AND B.REGION = :region " +
-                "FETCH FIRST 50 ROWS ONLY ORDER BY pr.ID DESC",
+                "FETCH FIRST 20 ROWS ONLY ORDER BY pr.ID DESC",
         nativeQuery = true
     )
     fun findRbacPermitByRegionIDPaymentStatusAndPermitTypeIDAndSectionId(
