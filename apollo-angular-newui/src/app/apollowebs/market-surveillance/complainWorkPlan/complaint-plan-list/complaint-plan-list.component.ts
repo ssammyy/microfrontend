@@ -107,11 +107,11 @@ export class ComplaintPlanListComponent implements OnInit {
         type: 'date',
         filter: true,
       },
-      // complaintCategory: {
-      //   title: 'Complaint Category',
-      //   type: 'string',
-      //   filter: false
-      // },
+      product: {
+        title: 'Product',
+        type: 'string',
+        filter: false,
+      },
       budget: {
         title: 'BUDGET',
         type: 'string',

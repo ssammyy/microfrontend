@@ -86,7 +86,7 @@ class StandardLevyService(
     val TASK_CANDIDATE_SL_Assistant_Manager = "SL_Assistant_Manager"
     val TASK_CANDIDATE_SL_Manager = "SL_Manager"
     val TASK_CANDIDATE_Manufacturer = "Manufacturer"
-    val callUrl=applicationMapProperties.mapKebsLevyUrl
+    val callUrl = applicationMapProperties.mapKebsLevyUrl
 
     //deploy bpmn file
     fun deployProcessDefinition(): Deployment = repositoryService
@@ -211,6 +211,7 @@ class StandardLevyService(
                 )
 
             }
+
             asManagerUserTypes -> {
                 bpmnService.slAssignTask(
                     processInstance.processInstanceId,
@@ -748,15 +749,15 @@ class StandardLevyService(
         val variables: MutableMap<String, Any> = java.util.HashMap()
         standardLevyFactoryVisitReportEntity.manufacturerEntity?.let { variables["manufacturerEntity"] = it }
         standardLevyFactoryVisitReportEntity.scheduledVisitDate?.let { variables["scheduledVisitDate"] = it }
-       // standardLevyFactoryVisitReportEntity.createdBy?.let { variables["createdBy"] = it }
+        // standardLevyFactoryVisitReportEntity.createdBy?.let { variables["createdBy"] = it }
         standardLevyFactoryVisitReportEntity.status?.let { variables["visitStatus"] = it }
         standardLevyFactoryVisitReportEntity.assigneeId?.let { variables["originator"] = it }
         standardLevyFactoryVisitReportEntity.companyName?.let { variables["companyName"] = it }
         standardLevyFactoryVisitReportEntity.entryNumber?.let { variables["entryNumber"] = it }
         standardLevyFactoryVisitReportEntity.kraPin?.let { variables["kraPin"] = it }
         standardLevyFactoryVisitReportEntity.registrationNumber?.let { variables["registrationNumber"] = it }
-        val userName= loggedInUser.firstName + loggedInUser.lastName
-        standardLevyFactoryVisitReportEntity.createdBy=userName
+        val userName = loggedInUser.firstName + loggedInUser.lastName
+        standardLevyFactoryVisitReportEntity.createdBy = userName
         userName.let { variables["createdBy"] = it }
         val visitDetails = standardLevyFactoryVisitReportRepo.save(standardLevyFactoryVisitReportEntity)
         visitDetails.id?.let { variables["visitID"] = it }
@@ -778,9 +779,9 @@ class StandardLevyService(
                                 notifications.sendEmail(recipient, subject, messageBody)
                             }
                         }
-                        val firstName=loggedInUser.firstName
-                        val secondName=loggedInUser.lastName
-                        val emailAddress=loggedInUser.email
+                        val firstName = loggedInUser.firstName
+                        val secondName = loggedInUser.lastName
+                        val emailAddress = loggedInUser.email
 
                         val userID =
                             companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
@@ -1136,6 +1137,7 @@ class StandardLevyService(
                                         ?: throw NullValueNotAllowedException("invalid user id provided")
                                 )
                             }
+
                             asManagerUserTypes -> {
                                 bpmnService.slAssignTask(
                                     processInstance.processInstanceId,
@@ -1702,7 +1704,7 @@ class StandardLevyService(
                 }
                 standardLevyFactoryVisitReportRepo.save(entity)
             } ?: throw Exception("SCHEDULED VISIT NOT FOUND")
-        val targetUrl="${callUrl}/viewSiteVisitsFeedBack"
+        val targetUrl = "${callUrl}/viewSiteVisitsFeedBack"
         if (complianceStatus != null) {
             if (complianceStatus == "1".toLong()) {
                 emailBody =
@@ -1712,7 +1714,7 @@ class StandardLevyService(
                             "\n" +
                             " Standards Levy is for the development and promotion of Standardization, Metrology and conformity assessment services.\n" +
                             "\n" +
-                            "Click on this link ${targetUrl} to view the report.\n"+
+                            "Click on this link ${targetUrl} to view the report.\n" +
                             "\n" +
                             "Thank you for the continued cooperation, for any further clarifications do not hesitate to contact us through standardslevy@kebs.org"
 
@@ -1729,7 +1731,7 @@ class StandardLevyService(
                             "In line with the above, you are required to remit all outstanding arrears of XXXXX and penalties of XXXX through the ITAX system to avoid further accrual of penalties. \n" +
                             "\n" +
                             "\n" +
-                            "Click on this link ${targetUrl} to view the report.\n"+
+                            "Click on this link ${targetUrl} to view the report.\n" +
                             "\n" +
                             "For any clarification, do not hesitate to contact us through standardslevy@kebs.org\n" +
                             "\n"
@@ -1960,6 +1962,28 @@ class StandardLevyService(
 
             }
             ?: return ResponseNotification(0)
+    }
+
+    fun getSLNotificationStatusB(): Boolean {
+
+        commonDaoServices.loggedInUserDetailsEmail().id
+            ?.let { id ->
+                companyProfileRepo.getManufactureId(id)
+                    .let {
+                        stdLevyNotificationFormRepository.findTopByManufactureIdOrderByIdDesc(it)
+                            ?.let {
+
+                                //Manufacturer
+                                return true
+                            }
+                            ?: run {
+                                //Contractor
+                                return false
+                            }
+                    }
+
+            }
+            ?: return false
     }
 
 
@@ -2705,7 +2729,6 @@ class StandardLevyService(
     }
 
 
-
     fun getRegisteredFirmsFilter(
         startDate: Date?,
         endDate: Date?,
@@ -2773,8 +2796,13 @@ class StandardLevyService(
         return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPayments()
     }
 
-    fun getLevyHistoricalPaymentsFilter(periodFrom: Date?, periodTo: Date?,company: String?,kraPin: String?): MutableList<StdLevyHistoricalPayments> {
-        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPaymentsFilter(periodFrom, periodTo,company,kraPin)
+    fun getLevyHistoricalPaymentsFilter(
+        periodFrom: Date?,
+        periodTo: Date?,
+        company: String?,
+        kraPin: String?
+    ): MutableList<StdLevyHistoricalPayments> {
+        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPaymentsFilter(periodFrom, periodTo, company, kraPin)
     }
 
     fun getLevyPaymentStatus(): Boolean {

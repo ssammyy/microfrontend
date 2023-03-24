@@ -3050,8 +3050,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val sampleCollected = findSampleCollectedDetailByWorkPlanInspectionID(workPlanScheduled.id)
-        val savedSampleSubmission =
-            msFuelDaoServices.addSampleSubmissionAdd(body, null, workPlanScheduled, sampleCollected, map, loggedInUser)
+        val savedSampleSubmission = msFuelDaoServices.addSampleSubmissionAdd(body, null, workPlanScheduled, sampleCollected, map, loggedInUser)
 
         when (savedSampleSubmission.first.status) {
             map.successStatus -> {
@@ -3497,8 +3496,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         val map = commonDaoServices.serviceMapDetails(appId)
         val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
-        var savedSSfComplianceStatus =
-            msFuelDaoServices.findSampleSubmittedBYID(body.ssfID ?: throw ExpectedDataNotFound("Missing SSF ID"))
+        var savedSSfComplianceStatus = msFuelDaoServices.findSampleSubmittedBYID(body.ssfID ?: throw ExpectedDataNotFound("Missing SSF ID"))
         with(savedSSfComplianceStatus) {
             resultSentDate = commonDaoServices.getCurrentDate()
             resultsSent = map.activeStatus
@@ -3601,6 +3599,29 @@ class MarketSurveillanceWorkPlanDaoServices(
                 }
 
             }
+        return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
+
+    }
+
+    @PreAuthorize("hasAuthority('MS_IO_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun NotSendWorkPlanInspectionDetailsSSFSavedComplianceStatusFile(
+        referenceNo: String,
+        batchReferenceNo: String,
+        body: SSFSendingComplianceStatus
+    ): WorkPlanInspectionDto {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
+        val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
+        var savedSSfComplianceStatus = msFuelDaoServices.findSampleSubmittedBYID(body.ssfID ?: throw ExpectedDataNotFound("Missing SSF ID"))
+        with(savedSSfComplianceStatus) {
+//            resultSentDate = commonDaoServices.getCurrentDate()
+            resultsSent = map.activeStatus
+//            varField1 = body.failedParameters
+        }
+
+        savedSSfComplianceStatus = sampleSubmissionLabRepo.save(savedSSfComplianceStatus)
+
         return workPlanInspectionMappingCommonDetails(workPlanScheduled, map, batchDetails)
 
     }
@@ -4957,7 +4978,34 @@ class MarketSurveillanceWorkPlanDaoServices(
         update: Boolean
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
-            reportReference = "REF/INT/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+            when (body.reportFunction) {
+                "Food" -> {
+                    reportReference = "KEBS/MS/XXX/FOO/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Agriculture" -> {
+                    reportReference = "KEBS/MS/XXX/AGR/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Chemical" -> {
+                    reportReference = "KEBS/MS/XXX/CHEM/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Civil" -> {
+                    reportReference = "KEBS/MS/XXX/CIV/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Electrical" -> {
+                    reportReference = "KEBS/MS/XXX/ELEC/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Mechanical" -> {
+                    reportReference = "KEBS/MS/XXX/MECH/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Textile" -> {
+                    reportReference = "KEBS/MS/XXX/TEX/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                else -> {
+                    reportReference = "REF/INITIAL/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+            }
+
+
             reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough
@@ -4998,6 +5046,15 @@ class MarketSurveillanceWorkPlanDaoServices(
         return saveData
     }
 
+    fun String.changeToR2(): String {
+        if (this.contains("R1")){
+            return this.replace("R1", "R2")
+        }else{
+            return this
+        }
+    }
+
+
     fun msFieldReportWhichIsPreliminaryReport(
         saveData: MsInspectionInvestigationReportEntity,
         body: InspectionInvestigationReportDto,
@@ -5008,7 +5065,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         update: Boolean
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
-            reportReference = "REF/INT/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+            reportReference = body.reportReference?.changeToR2()
             reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough
@@ -5036,6 +5093,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             version = versionValue
             isPreliminaryReport = map.activeStatus
             status = map.activeStatus
+            changesMade = body.changesMade
             when {
                 update -> {
                     modifiedBy = commonDaoServices.concatenateName(user)
@@ -5698,7 +5756,9 @@ class MarketSurveillanceWorkPlanDaoServices(
                     progressStep = it.msProcessId?.let { it1 -> findProcessNameByID(it1, 1).processName },
                     timeActivityDate = it.timeActivityDate,
                     timeActivityEndDate = it.timeActivityEndDate,
-                    referenceNumber = it.referenceNumber
+                    referenceNumber = it.referenceNumber,
+                    product = it.productString,
+
                 )
             )
         }
@@ -5960,7 +6020,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.bsNumbersList?.let { it2 -> mapBSNumberListDto(it2) },
                 it.version,
                 it.createdBy,
-                it.createdOn
+                it.createdOn,
+                it.changesMade
             )
         }
     }
@@ -6123,15 +6184,13 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanScheduledDetails.region ?: throw ExpectedDataNotFound("MISSING WORK-PLAN REGION ID")
         )
 
-
         val chargeSheet = findChargeSheetByWorkPlanInspectionID(workPlanScheduledDetails.id)
         val chargeSheetDto = chargeSheet?.let { mapChargeSheetDetailsDto(it) }
 
         val seizureDtoList = mutableListOf<SeizureListDto>()
         findSeizureByWorkPlanInspectionID(workPlanScheduledDetails.id)
             ?.forEach { seizure ->
-                val seizureDeclarationList =
-                    findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduledDetails.id, seizure.id)
+                val seizureDeclarationList = findSeizureDeclarationByWorkPlanInspectionID(workPlanScheduledDetails.id, seizure.id)
                 val seizureDeclarationDtoList = seizureDeclarationList?.let { mapSeizureDeclarationDetailsDto(it) }
                 val seizureDto = seizureDeclarationDtoList?.let { mapSeizureDetailsDto(seizure, it) }
                 if (seizureDto != null) {
@@ -6490,7 +6549,9 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.totalCompliance,
             commonDaoServices.getCurrentDate(),
             wKP.latestPreliminaryReport,
-            wKP.latestFinalPreliminaryReport
+            wKP.latestFinalPreliminaryReport,
+            complaintsRepo.findByIdOrNull(wKP.complaintId?: -1L)?.referenceNumber
+
         )
     }
 

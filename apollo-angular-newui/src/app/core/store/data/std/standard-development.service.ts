@@ -317,6 +317,10 @@ export class StandardDevelopmentService {
         return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllRejectedStdsForNwi')
     }
 
+    public getOnHoldReviewsForStandards(): Observable<StandardRequestB[]> {
+        return this.http.get<StandardRequestB[]>(`${this.apiServerUrl}` + 'getAllOnHoldStdsForNwi')
+    }
+
     public uploadNWI(uploadNWI: Stdtsectask): Observable<any> {
 
         return this.http.post<Stdtsectask>(`${this.apiServerUrl}` + 'uploadNWI', uploadNWI)

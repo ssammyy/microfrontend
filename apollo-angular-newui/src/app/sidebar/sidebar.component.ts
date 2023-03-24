@@ -675,6 +675,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'receipt',
+        // tslint:disable-next-line:max-line-length
         privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ', 'HOF_SD_READ', 'TC_SEC_SD_READ', 'TC_SD_READ', 'SPC_SEC_SD_READ'],
         collapse: 'requestModule',
 

@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InspectionReportDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
@@ -46,9 +47,11 @@ class QualityAssuranceJSONControllers(
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
     private val limsServices: LimsServices,
-    private val usersSignatureRepository: UserSignatureRepository
+    private val usersSignatureRepository: UserSignatureRepository,
+    private val inspectionReportDaoServices: InspectionReportDaoServices,
 
-) {
+
+    ) {
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
@@ -195,7 +198,7 @@ class QualityAssuranceJSONControllers(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadInspectionReport(
         @RequestParam("permitID") permitID: Long,
-        @RequestParam("inspectionReportId") inspectionReportId: String,
+        @RequestParam("inspectionReportID") inspectionReportID: Long,
         @RequestParam("data") data: String,
         @RequestParam("docFile") docFile: List<MultipartFile>?,
         model: Model
@@ -218,7 +221,7 @@ class QualityAssuranceJSONControllers(
                 with(uploads) {
                     ordinaryStatus = 0
                     inspectionReportStatus = 1
-                    varField1 = inspectionReportId
+                    inspectionReportId = inspectionReportID
                 }
                 val fileDocSaved = qaDaoServices.saveQaFileUploads(
                     fileDoc,
@@ -1112,5 +1115,38 @@ class QualityAssuranceJSONControllers(
         return sm
 //        return commonDaoServices.returnValues(result ?: throw Exception("invalid results"), map, sm)
 
+    }
+
+    @PostMapping("/permit/upload/inspection-report")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFilesInspectionReport(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("inspectionReportId") inspectionReportId: Long,
+
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+        docFile.forEach { u ->
+            val upload = QaUploadsEntity()
+            with(upload) {
+                permitId = permitDetails.id
+            }
+            inspectionReportDaoServices.uploadInspectionReportDocs(
+                upload,
+                u,
+                "INSPECTION-REPORT-UPLOADS",
+                permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                inspectionReportId,
+                loggedInUser
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successful"
+
+        return sm
     }
 }

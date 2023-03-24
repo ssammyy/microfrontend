@@ -123,8 +123,10 @@ data class AllInspectionDetailsApplyDto(
     var approvedRejectedStatus: Int? = null,
     var submittedInspectionReportStatus: Int? = null,
     var permitDetails: PermitDetailsDto? = null,
+    var inspectionReportDocs: List<FilesListDto>? = null
 
-    )
+
+)
 
 data class StandardizationMarkScheme(
     var id: Long? = null,

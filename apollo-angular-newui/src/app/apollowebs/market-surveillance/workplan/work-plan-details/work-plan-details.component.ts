@@ -465,6 +465,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       custom: [
         // {name: 'requestMinistryChecklist', title: '<i class="btn btn-sm btn-primary">MINISTRY CHECKLIST</i>'},
         {name: 'viewRecord', title: '<i class="btn btn-sm btn-primary">VIEW RECORD</i>'},
+        {name: 'downloadRecord', title: '<i class="btn btn-sm btn-primary">DOWNLOAD RECORD</i>'},
       ],
       position: 'right', // left|right
     },
@@ -506,11 +507,11 @@ export class WorkPlanDetailsComponent implements OnInit {
         type: 'string',
         filter: false,
       },
-      // createdOn: {
-      //   title: 'CREATED ON',
-      //   type: 'date',
-      //   filter: false,
-      // },
+      changesMade: {
+        title: 'CHANGES MADE',
+        type: 'string',
+        filter: false,
+      },
     },
     pager: {
       display: true,
@@ -1829,6 +1830,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       statusActivity: ['', Validators.required],
       finalRemarkHod: null,
       // remarks: ['', Validators.required],
+      changesMade: null,
     });
 
     this.dataReportParamForm = this.formBuilder.group({
@@ -1912,6 +1914,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       valueToClone: null,
       id: null,
       dataReportSelected: null,
+      dataReportID: null,
       nameProduct: ['', Validators.required],
       packaging: ['', Validators.required],
       labellingIdentification: null,
@@ -2915,7 +2918,7 @@ export class WorkPlanDetailsComponent implements OnInit {
 
     this.dataSaveDataReportUploadsList = [];
     for (let i = 0; i < data.docList.length; i++) {
-      const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === i);
+      const fileValue = this.workPlanInspection?.workPlanFiles.find(file => file.id === data.docList[i]);
       this.dataSaveDataReportUploadsList.push(fileValue);
     }
 
@@ -4143,6 +4146,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.sampleSubmitForm.valid && this.dataSaveSampleSubmitParamList.length !== 0) {
       this.SpinnerService.show();
       this.dataSaveSampleSubmit = {...this.dataSaveSampleSubmit, ...this.sampleSubmitForm.value};
+      this.dataSaveSampleSubmit.dataReportID = this.sampleSubmitForm?.get('dataReportSelected').value;
       this.dataSaveSampleSubmit.parametersList = this.dataSaveSampleSubmitParamList;
 
       this.msService.msWorkPlanInspectionScheduledAddSampleSubmission(
@@ -4203,6 +4207,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
 
+
   onClickSavePDFSelected(valid: boolean) {
     this.submitted = true;
     if (valid) {
@@ -4251,7 +4256,7 @@ export class WorkPlanDetailsComponent implements OnInit {
         );
       } else {
         const savedPdf  = this.selectedLabResults.savedPDFFiles.find(pdf => pdf.pdfName === this.selectedPDFFileName);
-        if (savedPdf === null) {
+        if (savedPdf === null || savedPdf === undefined) {
           this.msService.msWorkPlanInspectionScheduledSavePDFLIMS(this.workPlanInspection.batchDetails.referenceNumber,
               this.workPlanInspection.referenceNumber, this.dataPDFSaveComplianceStatus).subscribe(
               (data: any) => {
@@ -4286,7 +4291,7 @@ export class WorkPlanDetailsComponent implements OnInit {
           window.$('body').removeClass('modal-open');
           window.$('.modal-backdrop').remove();
           this.SpinnerService.hide();
-          this.msService.showError('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved',
+          this.msService.showWarning('The Pdf selected With Name ' + this.selectedPDFFileName + ' Already Saved',
               () => {
                 this.viewSSFLabResultsRecord(this.selectedSSFDetails);
               });
@@ -4326,6 +4331,17 @@ export class WorkPlanDetailsComponent implements OnInit {
     }
   }
 
+  onClickNotSendSSFLabResultsComplianceStatus(valid: boolean) {
+    this.submitted = true;
+    // if (valid) {
+      this.msService.showSuccessWith2Message('Are you sure your do not want to Send the Details?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          `You can click \'SEND RESULTS\' button to updated the Details before saving`, 'SAMPLE SUBMISSION ADDED/UPDATED SUCCESSFUL', () => {
+            this.sendNotSSFLabResultsComplianceStatus();
+          });
+    // }
+  }
+
   sendSSFLabResultsComplianceStatus(valid: boolean) {
     if (valid) {
       this.SpinnerService.show();
@@ -4353,6 +4369,35 @@ export class WorkPlanDetailsComponent implements OnInit {
           },
       );
     }
+  }
+
+  sendNotSSFLabResultsComplianceStatus() {
+    // if (valid) {
+      this.SpinnerService.show();
+      this.dataSSFSendComplianceStatus = {...this.dataSSFSendComplianceStatus, ...this.ssfClientEmailNotificationForm.value};
+      this.dataSSFSendComplianceStatus.ssfID = this.selectedLabResults?.ssfResultsList?.sffId;
+      // this.dataPDFSaveComplianceStatus.PDFFileName = this.selectedPDFFileName;
+      this.msService.msWorkPlanInspectionScheduledSendSSFComplianceStatus(
+          this.workPlanInspection.batchDetails.referenceNumber,
+          this.workPlanInspection.referenceNumber,
+          this.dataSSFSendComplianceStatus,
+      ).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            console.log(data);
+            this.SpinnerService.hide();
+            this.closeSSFLabResultsRecord();
+            this.msService.showSuccess('SSF LAB RESULTS NOT SENT', () => {
+              this.viewSSFLabResultsRecord(this.selectedSSFDetails);
+            });
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    // }
   }
 
 
@@ -4433,6 +4478,11 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   viewWorkPlanFileSaved(data: ComplaintsFilesFoundDto) {
     this.viewPdfFile(String(data.id), data.documentType, data.fileContentType);
+  }
+
+  viewComplainCreated(referenceNumber: string) {
+    // tslint:disable-next-line:max-line-length
+    this.router.navigate([`/complaint/details/`, referenceNumber]);
   }
 
   viewUploadsFileSaved(data: WorkPlanFilesFoundDto) {
@@ -4613,6 +4663,9 @@ export class WorkPlanDetailsComponent implements OnInit {
         break;
       case 'viewUpload':
         this.viewSeizedProductsFileSaved(event.data);
+        break;
+      case 'downloadRecord':
+        this.viewFieldReportPdfFile(event.data.id, event.data.fileName, "application/pdf");
         break;
     }
   }
@@ -4936,6 +4989,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.msService.msWorkPlanScheduleSaveDataReport(formData).subscribe(
           (data: any) => {
             this.workPlanInspection = data;
+            this.calculateAverageCompliance();
             console.log(data);
             this.SpinnerService.hide();
             this.msService.showSuccess('DATA REPORT DETAILS SAVED SUCCESSFULLY');

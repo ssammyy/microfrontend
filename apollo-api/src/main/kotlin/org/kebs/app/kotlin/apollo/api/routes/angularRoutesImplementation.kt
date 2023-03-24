@@ -918,6 +918,7 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         PUT("/lab-results-pdf-save", handler::saveWorkPlanScheduleLabResultsPDFSelected)
                         PUT("/ssf-compliance-status-save", handler::saveWorkPlanScheduleSSFComplianceStatusAdd)
                         PUT("/ssf-send-result-saved", handler::saveWorkPlanScheduleSSFComplianceStatusSend)
+                        PUT("/ssf-not-send-result-saved", handler::saveWorkPlanScheduleSSFComplianceStatusNotSend)
                         PUT(
                             "/final-ssf-compliance-status-save",
                             handler::saveWorkPlanScheduleFinalSSFComplianceStatusAdd

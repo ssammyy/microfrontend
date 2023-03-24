@@ -2863,7 +2863,7 @@ export const routes: Routes = [
         ],
     },
     {
-        path: 'complain',
+        path: 'complaint-new',
         component: RegistrationComponent,
         children: [
             {

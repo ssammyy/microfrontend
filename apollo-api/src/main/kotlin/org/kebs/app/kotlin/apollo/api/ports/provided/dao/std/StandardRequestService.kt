@@ -226,6 +226,11 @@ class StandardRequestService(
                 standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
                 standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
 
+            } else if (hofFeedback.sdResult == "On Hold") {
+                standardRequestToUpdate.status = "On Hold"
+                standardRequestToUpdate.modifiedOn = Timestamp(System.currentTimeMillis())
+                standardRequestToUpdate.modifiedBy = loggedInUser.id.toString()
+
             }
             standardRequestRepository.save(standardRequestToUpdate)
         }
@@ -297,6 +302,50 @@ class StandardRequestService(
     fun getAllRejectedStandardRequestsToPrepareNWI(): List<StandardsDto> {
         val standardRequest: List<StandardRequest> =
             standardRequestRepository.findAllByStatusAndNwiStatusIsNull("Rejected For Review")
+        return standardRequest.map { p ->
+            StandardsDto(
+                p.id,
+                p.requestNumber,
+                p.rank,
+                p.name,
+                p.phone,
+                p.email,
+                p.submissionDate,
+                p.departmentId,
+                p.tcId,
+                p.organisationName,
+                p.subject,
+                p.description,
+                p.economicEfficiency,
+                p.healthSafety,
+                p.environment,
+                p.integration,
+                p.exportMarkets,
+                p.levelOfStandard,
+                p.status,
+                returnDepartmentName(p.departmentId!!.toLong()),
+                //Feedback Segment From Review
+                p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.firstName + " " + p.tcSecAssigned?.toLong()?.let { usersRepo.findById(it) }
+                    ?.get()?.lastName,
+
+                returnUsername(p.id.toString()),
+                p.id.let { findHofFeedbackDetails(it.toString())?.createdOn },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdOutput },
+                p.id.let { findHofFeedbackDetails(it.toString())?.sdResult },
+                p.id.let { findHofFeedbackDetails(it.toString())?.reason },
+
+
+                )
+        }
+
+
+    }
+
+
+    fun getAllOnHoldStandardRequestsToPrepareNWI(): List<StandardsDto> {
+        val standardRequest: List<StandardRequest> =
+            standardRequestRepository.findAllByStatusAndNwiStatusIsNull("On Hold")
         return standardRequest.map { p ->
             StandardsDto(
                 p.id,

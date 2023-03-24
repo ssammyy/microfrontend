@@ -1245,6 +1245,7 @@ import { RejectedJustificationComponent } from './apollowebs/standards-developme
 import { RejectedWithAmendmentsComponent } from './apollowebs/standards-development/standard-request/std-justification/rejected-with-amendments/rejected-with-amendments.component';
 import { StandardsLevySitesComponent } from './apollowebs/standards-levy/standards-levy-sites/standards-levy-sites.component';
 import { IntStdApproveChangesComponent } from './apollowebs/standards-development/international-standard/int-std-approve-changes/int-std-approve-changes.component';
+import { OnholdForNwiComponent } from './apollowebs/standards-development/standard-request/standard-task/onhold-for-nwi/onhold-for-nwi.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1861,6 +1862,7 @@ import { IntStdApproveChangesComponent } from './apollowebs/standards-developmen
         RejectedWithAmendmentsComponent,
         StandardsLevySitesComponent,
         IntStdApproveChangesComponent,
+        OnholdForNwiComponent,
 
     ],
     entryComponents: [LoaderComponent],
