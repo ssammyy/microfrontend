@@ -781,8 +781,8 @@ class PostInvoiceToSageServices(
 
 
             result.responseDate = Timestamp.from(Instant.now())
-            result.statusCode = log.responseStatus
-            result.statusDescription = log.responseMessage
+            result.status = log.responseStatus
+            result.message = log.responseMessage
 
             log.integrationResponse = daoService.mapper().writeValueAsString(result)
 
