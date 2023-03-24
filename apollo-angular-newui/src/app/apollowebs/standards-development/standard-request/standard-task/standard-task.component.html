@@ -37,6 +37,14 @@
                                         <span class="badge badge-primary" style="position: absolute; top: 0; right: 0;">{{rejectedTasks.length}}</span>
                                     </a>
                                 </li>
+
+                    <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" id="onhold-fornwi"
+                       (click)="tabChange('On Hold For NWI')" role="tablist">
+                        <i class="material-icons"></i>On Hold For NWI
+                        <span class="badge badge-primary" style="position: absolute; top: 0; right: 0;">{{onHoldTasks.length}}</span>
+                    </a>
+                    </li>
                                
                             </ul>
 
@@ -150,6 +158,14 @@
 
 
                             </div>
+
+                        <div *ngIf="id == 'On Hold For NWI'" class="w-100">
+
+
+                            <app-onhold-for-nwi></app-onhold-for-nwi>
+
+
+                        </div>
 
             <div class="modal fade" id="updateRequestModal" tabindex="-1" role="dialog"
                  aria-labelledby="updateRequestModalLabel"
@@ -351,6 +367,12 @@
                                                                         aria-label="Small"
                                                                         [value]="'Reject For Review'">
                                                                     Reject
+                                                                </mat-radio-button>
+                                                                <mat-radio-button
+                                                                        aria-describedby="inputGroup-sizing-sm"
+                                                                        aria-label="Small"
+                                                                        [value]="'On Hold'">
+                                                                    On Hold
                                                                 </mat-radio-button>
                                                             </mat-radio-group>
                                                             <br>

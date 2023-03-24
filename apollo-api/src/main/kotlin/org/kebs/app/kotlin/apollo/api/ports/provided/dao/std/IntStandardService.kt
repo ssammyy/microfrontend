@@ -179,7 +179,7 @@ class IntStandardService(
 
             val messageBody= "Dear $user,An adoption document has been uploaded.Log in to KIEMS to make Comment "
             if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
+               // notifications.sendEmail(recipient, subject, messageBody)
             }
         }
 
@@ -201,7 +201,7 @@ class IntStandardService(
 
             val messageBody= "Dear $userN,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "
             if (rec != null) {
-                notifications.sendEmail(rec, sub, messageBody)
+               // notifications.sendEmail(rec, sub, messageBody)
             }
 
         }
@@ -568,7 +568,7 @@ class IntStandardService(
             val subject = "Justification"
             val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, Justification for International Standard has been prepared."
             if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
+               // notifications.sendEmail(recipient, subject, messageBody)
             }
         }
 
@@ -720,7 +720,7 @@ class IntStandardService(
             val subject = "Standard"
             val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, A standard has been uploaded."
             if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
+               // notifications.sendEmail(recipient, subject, messageBody)
             }
         }
         return draftStandard
@@ -806,7 +806,7 @@ class IntStandardService(
                 val subject = "International Standard"
                 val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()}, International Standard Adoption Proposal has been approved for publishing."
                 if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
+                   // notifications.sendEmail(recipient, subject, messageBody)
                 }
             }
             isJustificationDecision.assignedTo= companyStandardRepository.getHopId()
@@ -979,10 +979,10 @@ class IntStandardService(
         return iSUploadStandardRepository.getApprovedDraft()
     }
 
-    fun editStandardDraft(isDraftDto: ISDraftDto) : ISUploadStandard {
+    fun editStandardDraft(isDraftDto: ISDraftDto) : CompanyStandard {
         val variable: MutableMap<String, Any> = HashMap()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val standard= ISUploadStandard()
+        val standard= CompanyStandard()
 
 
         val draught=isDraftDto.draughting
@@ -1172,7 +1172,7 @@ class IntStandardService(
                     val subject = "New Standard"
                     val messageBody= "Dear ${item.getFirstName()} ${item.getLastName()},A New standard has been approved and uploaded for SAC Decision.Click on the link below to view $targetUrl "
                     if (recipient != null) {
-                        notifications.sendEmail(recipient, subject, messageBody)
+                       // notifications.sendEmail(recipient, subject, messageBody)
                     }
                 }
             }?: throw Exception("DRAFT NOT FOUND")
@@ -1236,7 +1236,7 @@ class IntStandardService(
                         val subject = "New International Standard"+ standard.standardNumber
                         val messageBody= "Dear ${item.getName()} ,Adoption for New standard has been approved "
                         if (recipient != null) {
-                            notifications.sendEmail(recipient, subject, messageBody)
+                           // notifications.sendEmail(recipient, subject, messageBody)
                         }
                     }
 

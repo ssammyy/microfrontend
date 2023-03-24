@@ -64,6 +64,7 @@ export class StandardTaskComponent implements OnInit {
     tasks: StandardRequestB[] = [];
     approvedTasks: StandardRequestB[] = [];
     rejectedTasks: StandardRequestB[] = [];
+    onHoldTasks: StandardRequestB[] = [];
 
 
     displayedColumns: string[] = ['requestNumber', 'departmentName', 'subject', 'name', 'actions'];
@@ -71,6 +72,8 @@ export class StandardTaskComponent implements OnInit {
     dataSource!: MatTableDataSource<StandardRequestB>;
     dataSourceB!: MatTableDataSource<StandardRequestB>;
     dataSourceC!: MatTableDataSource<StandardRequestB>;
+
+    dataSourceD!: MatTableDataSource<StandardRequestB>;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
 
@@ -112,6 +115,7 @@ export class StandardTaskComponent implements OnInit {
         this.getHOFTasks();
         this.getApprovedTasks();
         this.getRejectedTasks();
+        this.getOnHoldTasks();
 
         this.stdDepartmentChange = this.formBuilder.group({
             departmentId: ['', Validators.required],
@@ -219,6 +223,22 @@ export class StandardTaskComponent implements OnInit {
         );
     }
 
+
+    public getOnHoldTasks(): void {
+        this.standardDevelopmentService.getOnHoldReviewsForStandards().subscribe(
+            (response: StandardRequestB[]) => {
+                this.onHoldTasks = response;
+                this.dataSourceD = new MatTableDataSource(this.onHoldTasks);
+
+                this.dataSourceD.paginator = this.paginator;
+                this.dataSourceD.sort = this.sort;
+            },
+            (error: HttpErrorResponse) => {
+                alert(error.message);
+            }
+        );
+    }
+
     public getTechnicalCommitteeName(id: number): void {
         this.standardDevelopmentService.getTechnicalCommitteeName(id).subscribe(
             (response: string) => {
@@ -232,7 +252,7 @@ export class StandardTaskComponent implements OnInit {
 
     public onReviewTask(): void {
 
-        if (this.stdHOFReview.controls['sdResult'].value == 'Reject For Review') {
+        if (this.stdHOFReview.controls['sdResult'].value == 'Reject For Review' || this.stdHOFReview.controls['sdResult'].value == 'On Hold') {
             if (this.stdHOFReview.controls['reason'].value != '') {
                 this.standardDevelopmentService.reviewTask(this.stdHOFReview.value).subscribe(
                     (response) => {
@@ -460,6 +480,7 @@ export class StandardTaskComponent implements OnInit {
         this.dataSource.filter = filterValue.trim().toLowerCase();
         this.dataSourceB.filter = filterValue.trim().toLowerCase();
         this.dataSourceC.filter = filterValue.trim().toLowerCase();
+        this.dataSourceD.filter = filterValue.trim().toLowerCase();
 
         if (this.dataSource.paginator) {
             this.dataSource.paginator.firstPage();
@@ -470,10 +491,14 @@ export class StandardTaskComponent implements OnInit {
         if (this.dataSourceC.paginator) {
             this.dataSourceC.paginator.firstPage();
         }
+
+        if (this.dataSourceD.paginator) {
+            this.dataSourceD.paginator.firstPage();
+        }
     }
 
     onRadiobuttonchange($event: MatRadioChange) {
-        if ($event.value === 'Reject For Review') {
+        if ($event.value === 'Reject For Review' || $event.value === 'On Hold') {
             this.onApproveApplication = true;
         } else {
             this.onApproveApplication = false;

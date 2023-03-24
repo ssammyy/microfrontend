@@ -1320,7 +1320,8 @@
                                                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                                 <div class="mat-button-focus-overlay"></div>
                                             </button>
-                                            <button *ngIf="workPlanInspection?.compliantStatusAdded && workPlanInspection?.onsiteEndStatus &&
+<!--                                            workPlanInspection?.compliantStatusAdded &&-->
+                                            <button *ngIf="workPlanInspection?.onsiteEndStatus &&
                                                     workPlanInspection?.msPreliminaryReportStatus == false"
                                                     (click)="openModalAddDetails('createPreliminary')" mat-raised-button="" data-toggle="modal"
                                                     data-target="#preliminaryReportModal"
@@ -1526,6 +1527,9 @@
                                 <br/>
                                 <b>Document Details:</b>
                                 <div>
+                                    <i *ngIf="workPlanInspection?.complaintId != null"
+                                       (click)="viewComplainCreated(workPlanInspection?.complaintReferenceNumber )"
+                                       class="btn btn-sm btn-primary">VIEW COMPLAINT</i>
 
                                     <div *ngIf="workPlanInspection.scfDocId != null">
                                         <i *ngFor="let data of workPlanInspection.workPlanFiles| filterPipe: {id: workPlanInspection?.scfDocId}"
@@ -5311,8 +5315,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div *ngIf="workPlanInspection?.msPreliminaryReportStatus" class="col">
                                     <div class="form-group">
+                                        <label><b>Changes Made (Eg: Fields Updated)</b> </label>
+                                        <textarea
+                                                class="form-control two-column-input"
+                                                formControlName="changesMade"
+                                                name="changesMade" type="text"></textarea>
                                     </div>
                                 </div>
 

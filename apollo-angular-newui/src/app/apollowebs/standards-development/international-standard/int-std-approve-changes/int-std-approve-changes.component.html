@@ -53,34 +53,34 @@
                                         <td>{{isCheckRequirement.normativeReference}}</td>
                                         <td>{{isCheckRequirement.clause}}</td>
                                         <td>{{isCheckRequirement.uploadDate}}</td>
-                                        <td><a  (click)="onOpenModal(isCheckRequirement,'checkRequirementsMet',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Check Requirements</a></td>
+                                        <td><a  (click)="onOpenModal(isCheckRequirement,'approveChanges',isCheckRequirement.draftId)" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Approve Draft Changes</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div class="modal fade" id="checkRequirementsMet" tabindex="-1" role="dialog" aria-labelledby="checkRequirementsMetLabel" aria-hidden="true">a
+                                <div class="modal fade" id="approveChanges" tabindex="-1" role="dialog" aria-labelledby="approveChangesLabel" aria-hidden="true">a
                                     <div class="modal-dialog modal-xl" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="checkRequirementsMetLabel">Confirm Requirements are Met</h3>
-                                                <button type="button" #closeModalRequirements class="close" data-dismiss="modal" aria-label="Close">
+                                                <h3 class="modal-title" id="approveChangesLabel">Decision on Draft by Head of Publishing</h3>
+                                                <button type="button" #closeModalChanges class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <hr>
-                                            <section id="requirements-tabs">
+                                            <section id="changes-tabs">
                                                 <div class="container">
                                                     <div class="row">
                                                         <div class="col-xs-12 col-md-12 col-lg-12 col-xl-12">
                                                             <nav>
-                                                                <div class="nav nav-tabs nav-fill" id="nav-requirements-tab" role="tablist">
-                                                                    <a class="nav-item nav-link active" id="nav-hop-view-justification-tab"  data-toggle="tab" href="#nav-hop-view-justification" role="tab" aria-controls="nav-hop-view-justification" aria-selected="false">View Draft</a>
-                                                                    <a class="nav-item nav-link " id="nav-hop-approve-justification-tab" (click)=toggleDisplayMainTab() data-toggle="tab" href="#nav-hop-approve-justification" role="tab" aria-controls="nav-hop-approve-justification" aria-selected="false">Approve / Reject</a>
-                                                                    <a class="nav-item nav-link" id="nav-hop-proposal-list-comments-tab" (click)=displayDraftComments(actionRequests?.draftId) data-toggle="tab" href="#nav-hop-proposal-list-comments" role="tab" aria-controls="nav-hop-proposal-list-comments" aria-selected="false">Joint Committee Comments</a>
-                                                                    <a class="nav-item nav-link " id="nav-hop-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequests?.draftId) data-toggle="tab" href="#nav-hop-justification-list-comments" role="tab" aria-controls="nav-hop-justification-list-comments" aria-selected="false">Remarks</a>
+                                                                <div class="nav nav-tabs nav-fill" id="nav-changes-tab" role="tablist">
+                                                                    <a class="nav-item nav-link active" id="nav-changes-view-tab"  data-toggle="tab" href="#nav-changes-view" role="tab" aria-controls="nav-changes-view" aria-selected="false">Standard Draft</a>
+                                                                    <a class="nav-item nav-link " id="nav-changes-approve-justification-tab" (click)=toggleDisplayMainTab() data-toggle="tab" href="#nav-changes-approve-justification" role="tab" aria-controls="nav-changes-approve-justification" aria-selected="false">Decision On Draft</a>
+                                                                    <a class="nav-item nav-link" id="nav-changes-proposal-list-comments-tab" (click)=displayDraftComments(actionRequests?.draftId) data-toggle="tab" href="#nav-changes-proposal-list-comments" role="tab" aria-controls="nav-changes-proposal-list-comments" aria-selected="false">Joint Committee Comments</a>
+                                                                    <a class="nav-item nav-link " id="nav-changes-justification-list-comments-tab" (click)=toggleDisplayRemarksTab(actionRequests?.draftId) data-toggle="tab" href="#nav-changes-justification-list-comments" role="tab" aria-controls="nav-changes-justification-list-comments" aria-selected="false">Remarks</a>
                                                                 </div>
                                                             </nav>
-                                                            <div class="tab-content py-3 px-3 px-sm-0" id="nav-hop-justification-content">
-                                                                <div class="tab-pane fade show active" id="nav-hop-view-justification" role="tabpanel" aria-labelledby="nav-hop-view-justification-tab">
+                                                            <div class="tab-content py-3 px-3 px-sm-0" id="nav-changes-justification-content">
+                                                                <div class="tab-pane fade show active" id="nav-changes-view" role="tabpanel" aria-labelledby="nav-changes-view-tab">
                                                                     <div class="container col-md-12" >
                                                                         <div class="form-group col-12">
                                                                             <label><b>Standard Type</b></label>
@@ -185,11 +185,37 @@
 
                                                                     </div>
                                                                 </div>
-                                                                <div class="tab-pane fade " id="nav-hop-approve-justification" role="tabpanel" aria-labelledby="nav-hop-approve-justification-tab">
+                                                                <div class="tab-pane fade" id="nav-changes-approve-justification" role="tabpanel" aria-labelledby="nav-changes-approve-justification-tab">
                                                                     <div class="container col-md-12" [hidden]="isShowMainTab">
-                                                                        <form (ngSubmit)="approveRequirements()" [formGroup]="approveRequirementsFormGroup" class="form">
+                                                                        <form (ngSubmit)="approveProofReadStandard()" [formGroup]="approveRequirementsFormGroup" class="form">
                                                                             <div class="modal-body">
                                                                                 <div class="form-body">
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Standard Number</b></label>
+                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                                <div class="d-flex w-100 align-items-center" >
+                                                                                                    <b>{{actionRequests?.comStdNumber}}</b>
+                                                                                                </div>
+                                                                                            </div>
+
+
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div class="form-group col-12">
+                                                                                        <label><b>Title</b></label>
+                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                                                                                            <div class="d-flex w-100 justify-content-between" >
+                                                                                                <div>
+                                                                                                    <div class="d-flex w-100 align-items-center" >
+                                                                                                        <b>{{actionRequests?.title}}</b>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+
+
+                                                                                        </a>
+                                                                                    </div>
                                                                                     <div class="form-group col-12">
                                                                                         <label><b>Standard Draft</b></label>
                                                                                         <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
@@ -209,67 +235,84 @@
 
                                                                                         </a>
                                                                                     </div>
-                                                                                    <div class="form-group col-12">
-                                                                                        <label><b>Standard Number</b></label>
-                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                            <div class="d-flex w-100 justify-content-between" >
-                                                                                                <div class="d-flex w-100 align-items-center" >
-                                                                                                    <b>{{actionRequests?.comStdNumber}}</b>
-                                                                                                </div>
-                                                                                            </div>
+                                                                                    <div class="row col-12">
+                                                                                        <div class="form-group col-12">
+                                                                                            <label><b>Document Type</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                      class="form-control one-column-input" value="{{actionRequests?.documentType}}" formControlName="docName" name="docName"
+                                                                                                      placeholder="Document Standard Type" type="text" >{{actionRequests?.documentType}}</textarea>
+                                                                                        </div>
+                                                                                        <div class="form-group col-12">
+                                                                                            <label><b>Title</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                      class="form-control one-column-input" value="{{actionRequests?.title}}" formControlName="title" name="title"
+                                                                                                      placeholder="International Standard Scope" type="text" >{{actionRequests?.title}}</textarea>
 
-                                                                                        </a>
+                                                                                        </div>
+
+                                                                                        <div class="form-group col-12">
+                                                                                            <label><b>Scope</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                      class="form-control one-column-input" value="{{actionRequests?.scope}}" formControlName="scope" name="scope"
+                                                                                                      placeholder="Scope" type="text" >{{actionRequests?.scope}}</textarea>
+                                                                                        </div>
+                                                                                        <div class="form-group col-12">
+                                                                                            <label><b>Normative Reference</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                      class="form-control one-column-input" value="{{actionRequests?.normativeReference}}" formControlName="normativeReference" name="normativeReference"
+                                                                                                      placeholder="Normative Reference" type="text" >{{actionRequests?.normativeReference}}</textarea>
+                                                                                        </div>
+                                                                                        <div class="form-group col-12">
+                                                                                            <label><b>Symbols Abbreviated Terms</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                      class="form-control one-column-input" value="{{actionRequests?.symbolsAbbreviatedTerms}}" formControlName="symbolsAbbreviatedTerms" name="symbolsAbbreviatedTerms"
+                                                                                                      placeholder="Normative Reference" type="text" >{{actionRequests?.symbolsAbbreviatedTerms}}</textarea>
+                                                                                        </div>
+                                                                                        <div class="form-group col-12">
+                                                                                            <label><b>Clause</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                      class="form-control one-column-input" value="{{actionRequests?.clause}}" formControlName="clause" name="clause"
+                                                                                                      placeholder="Clause" type="text" >{{actionRequests?.clause}}</textarea>
+                                                                                        </div>
+                                                                                        <div class="form-group col-12">
+                                                                                            <label><b>Special</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                      class="form-control one-column-input" value="{{actionRequests?.special}}" formControlName="special" name="special"
+                                                                                                      placeholder="Special" type="text" >{{actionRequests?.special}}</textarea>
+                                                                                        </div>
+                                                                                        <div class="form-group col-12">
+                                                                                            <label><b>Standard Type</b><span style="font-size: xx-small; color: red;"></span></label>
+                                                                                            <textarea aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                                                                      class="form-control one-column-input" value="{{actionRequests?.standardType}}" formControlName="standardType" name="standardType"
+                                                                                                      placeholder="Standard Type" type="text" disabled>{{actionRequests?.standardType}}</textarea>
+                                                                                        </div>
+
                                                                                     </div>
-                                                                                    <div class="form-group col-12">
-                                                                                        <label><b>Title</b></label>
-                                                                                        <a  class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
-                                                                                            <div class="d-flex w-100 justify-content-between" >
-                                                                                                <div>
-                                                                                                    <div class="d-flex w-100 align-items-center" >
-                                                                                                        <b>{{actionRequests?.title}}</b>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-
-
-                                                                                        </a>
-                                                                                    </div>
-
-
                                                                                     <div class="row">
                                                                                         <div class="form-group col-12">
-                                                                                            <label>Were the Draft Requirements Met</label>
-                                                                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                                                                    class="form-control" required
-                                                                                                    formControlName="accentTo"
-                                                                                                    name="accentTo"
-                                                                                            >
-                                                                                                <option disabled>--Select Option--</option>
-                                                                                                <option  value="Yes">Yes</option>
-                                                                                                <option value="No">No</option>
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <div class="form-group col-12">
-                                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: blue;">(*)Optional</span></label>
+                                                                                            <label><b>Comments/Remarks</b><span style="font-size: xx-small; color: orangered;">(*)Optional</span></label>
                                                                                             <textarea class="form-control" formControlName="comments"  name="comments" rows="2" ></textarea>
                                                                                         </div>
+
                                                                                     </div>
-
-                                                                                    <input type="hidden" formControlName="id" value="{{actionRequests?.id}}" name="id" >
-                                                                                    <input type="hidden" formControlName="requestId" value="{{actionRequests?.requestId}}" name="requestId" >
                                                                                     <input type="hidden" formControlName="draftId" name="draftId" value="{{actionRequests?.draftId}}" >
+                                                                                    <input type="hidden" formControlName="requestId" name="requestId" value="{{actionRequests?.requestId}}" >
+                                                                                    <input type="hidden" formControlName="id" name="id" value="{{actionRequests?.id}}" >
 
-                                                                                    <input type="hidden" formControlName="standardType" name="standardType" value="{{actionRequests?.standardType}}" >
+
+                                                                                    <input type="hidden" formControlName="subject" name="subject" value="{{actionRequests?.subject}}" >
+                                                                                    <input type="hidden" formControlName="description" name="description" value="{{actionRequests?.description}}" >
+
                                                                                 </div>
                                                                             </div>
                                                                             <div class="modal-footer">
                                                                                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                                                                <button type="submit" class="btn btn-primary btn-sm"  >Save</button>
+                                                                                <button type="submit" class="btn btn-primary btn-sm"  >Approve</button>
                                                                             </div>
                                                                         </form>
                                                                     </div>
                                                                 </div>
-                                                                <div class="tab-pane fade" id="nav-hop-proposal-list-comments" role="tabpanel" aria-labelledby="nav-hop-proposal-list-comments-tab">
+                                                                <div class="tab-pane fade" id="nav-changes-proposal-list-comments" role="tabpanel" aria-labelledby="nav-changes-proposal-list-comments-tab">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">
                                                                             <div class="container col-md-12" [hidden]="isShowRemarksTab">
@@ -315,7 +358,7 @@
                                                                     </div>
 
                                                                 </div>
-                                                                <div class="tab-pane fade" id="nav-hop-justification-list-comments" role="tabpanel" aria-labelledby="nav-hop-justification-list-comments-tab">
+                                                                <div class="tab-pane fade" id="nav-changes-justification-list-comments" role="tabpanel" aria-labelledby="nav-changes-justification-list-comments-tab">
                                                                     <div class="modal-body">
                                                                         <div class="form-body">
                                                                             <div class="container col-md-12" [hidden]="isShowCommentsTab">
@@ -341,6 +384,7 @@
                                                                     </div>
 
                                                                 </div>
+
 
                                                             </div>
 

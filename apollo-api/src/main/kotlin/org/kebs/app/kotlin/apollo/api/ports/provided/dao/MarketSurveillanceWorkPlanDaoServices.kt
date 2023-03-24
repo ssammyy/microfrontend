@@ -4978,7 +4978,34 @@ class MarketSurveillanceWorkPlanDaoServices(
         update: Boolean
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
-            reportReference = "REF/INT/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+            when (body.reportFunction) {
+                "Food" -> {
+                    reportReference = "KEBS/MS/XXX/FOO/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Agriculture" -> {
+                    reportReference = "KEBS/MS/XXX/AGR/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Chemical" -> {
+                    reportReference = "KEBS/MS/XXX/CHEM/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Civil" -> {
+                    reportReference = "KEBS/MS/XXX/CIV/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Electrical" -> {
+                    reportReference = "KEBS/MS/XXX/ELEC/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Mechanical" -> {
+                    reportReference = "KEBS/MS/XXX/MECH/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                "Textile" -> {
+                    reportReference = "KEBS/MS/XXX/TEX/R1/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+                else -> {
+                    reportReference = "REF/INITIAL/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+                }
+            }
+
+
             reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough
@@ -5019,6 +5046,15 @@ class MarketSurveillanceWorkPlanDaoServices(
         return saveData
     }
 
+    fun String.changeToR2(): String {
+        if (this.contains("R1")){
+            return this.replace("R1", "R2")
+        }else{
+            return this
+        }
+    }
+
+
     fun msFieldReportWhichIsPreliminaryReport(
         saveData: MsInspectionInvestigationReportEntity,
         body: InspectionInvestigationReportDto,
@@ -5029,7 +5065,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         update: Boolean
     ): MsInspectionInvestigationReportEntity {
         with(saveData) {
-            reportReference = "REF/INT/${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
+            reportReference = body.reportReference?.changeToR2()
             reportClassification = body.reportClassification
             reportTo = body.reportTo
             reportThrough = body.reportThrough
@@ -5057,6 +5093,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             version = versionValue
             isPreliminaryReport = map.activeStatus
             status = map.activeStatus
+            changesMade = body.changesMade
             when {
                 update -> {
                     modifiedBy = commonDaoServices.concatenateName(user)
@@ -5983,7 +6020,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                 it.bsNumbersList?.let { it2 -> mapBSNumberListDto(it2) },
                 it.version,
                 it.createdBy,
-                it.createdOn
+                it.createdOn,
+                it.changesMade
             )
         }
     }
@@ -6512,7 +6550,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             commonDaoServices.getCurrentDate(),
             wKP.latestPreliminaryReport,
             wKP.latestFinalPreliminaryReport,
-            complaintsRepo.findByIdOrNull(wKP.complaintId)?.referenceNumber
+            complaintsRepo.findByIdOrNull(wKP.complaintId?: -1L)?.referenceNumber
+
         )
     }
 

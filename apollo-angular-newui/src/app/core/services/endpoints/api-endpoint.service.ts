@@ -557,6 +557,12 @@ export class ApiEndpointService {
         ICT_SUBMIT_DRAFT_COMMENT: `${ApiEndpointService.SD_ICT_CONTEXT}/submitDraftComment`,
         ICT_CONTACT_DETAILS: `${ApiEndpointService.SD_ICT_CONTEXT}/getCompanyContactDetails`,
         ICT_COMMITTEE_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getCommitteeList`,
+        ICT_REQUIREMENTS_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdRequirements`,
+        ICT_STD_EDITING_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdEditing`,
+        ICT_STD_DRAFTING_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdEditDrafting`,
+        ICT_STD_PROOF_READING_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdEditProofreading`,
+        ICT_STD_APPROVAL_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdForApproval`,
+        ICT_STD_APPROVED_LIST: `${ApiEndpointService.SD_ICT_CONTEXT}/getStdApproved`,
 
 
         // SD SYSTEMIC REVIEW

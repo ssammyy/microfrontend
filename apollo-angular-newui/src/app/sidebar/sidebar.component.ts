@@ -802,6 +802,49 @@ export const ROUTES: RouteInfo[] = [
                 ab: 'PDS',
                 privilege: ['HOP_SD_READ', 'PROOFREADER_SD_READ']
             },
+            {
+                path: 'isUploadDraft',
+                title: 'Upload Draft For Editing',
+                ab: 'UD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
+            },
+            {
+                path: 'isCheckRequirements',
+                title: 'Check Requirements',
+                ab: 'CR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
+            {
+                path: 'isApproveDraftStd',
+                title: 'Edit Draft',
+                ab: 'ED',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOP_SD_READ']
+            },
+            {
+                path: 'isStdDraughting',
+                title: 'Drafting',
+                ab: 'SD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'DRAUGHTSMAN_SD_READ','EDITOR_SD_READ']
+            },
+            {
+                path: 'isStdProofReading',
+                title: 'Proof-Reading',
+                ab: 'PR',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','PROOFREADER_SD_READ']
+            },
+            {
+                path: 'isApproveChanges',
+                title: 'Approve Draft Changes',
+                ab: 'AP',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','HOP_SD_READ']
+            },
+            {
+                path: 'isApprovedEdits',
+                title: 'Edited Standards',
+                ab: 'ES',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN','HOP_SD_READ']
+            },
+
             // {path: 'hopApproval', title: 'Approve Draft Standards', ab: 'ADS'},
         ],
         icontype: 'publish',
@@ -1022,12 +1065,6 @@ export const ROUTES: RouteInfo[] = [
                 title: 'View Justification',
                 ab: 'VJ',
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'SPC_SEC_SD_READ']
-            },
-            {
-                path: 'isUploadDraft',
-                title: 'Upload Draft',
-                ab: 'UD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
             },
             {
                 path: 'isSacApproval',

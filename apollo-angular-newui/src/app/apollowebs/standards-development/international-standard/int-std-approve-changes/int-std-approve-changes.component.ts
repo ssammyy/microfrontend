@@ -4,27 +4,26 @@ import {Subject} from "rxjs";
 import {
   ComStdCommitteeRemarks,
   ComStdRemarks,
-  InternationalStandardsComments,
-  ISCheckRequirements,
+  InternationalStandardsComments, ISCheckRequirements,
   StakeholderProposalComments
 } from "../../../../core/store/data/std/std.model";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
 import {Store} from "@ngrx/store";
 import {Router} from "@angular/router";
 import {StdIntStandardService} from "../../../../core/store/data/std/std-int-standard.service";
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
+import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
-import {DocumentDTO} from "../../../../core/store/data/levy/levy.model";
-import {StdComStandardService} from "../../../../core/store/data/std/std-com-standard.service";
 
 @Component({
-  selector: 'app-int-std-check-requirements',
-  templateUrl: './int-std-check-requirements.component.html',
-  styleUrls: ['./int-std-check-requirements.component.css']
+  selector: 'app-int-std-approve-changes',
+  templateUrl: './int-std-approve-changes.component.html',
+  styleUrls: ['./int-std-approve-changes.component.css']
 })
-export class IntStdCheckRequirementsComponent implements OnInit {
+export class IntStdApproveChangesComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtOptions: DataTables.Settings = {};
@@ -74,9 +73,7 @@ export class IntStdCheckRequirementsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.approve='Yes';
-    this.reject='No';
-    this.getStdRequirements();
+    this.getStdForApproval();
     this.approveRequirementsFormGroup = this.formBuilder.group({
       id:[],
       comments:null,
@@ -106,15 +103,6 @@ export class IntStdCheckRequirementsComponent implements OnInit {
       draughting:[],
       requestNumber:[],
     });
-
-    this.rejectRequirementsFormGroup = this.formBuilder.group({
-      comments: ['', Validators.required],
-      accentTo: [],
-        justificationId:[],
-      proposalId:[],
-        draftId:[]
-
-    });
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -128,13 +116,13 @@ export class IntStdCheckRequirementsComponent implements OnInit {
 
   }
 
-  public getStdRequirements(): void {
+  public getStdForApproval(): void {
     this.loadingText = "Retrieving Drafts...";
     this.SpinnerService.show();
-    this.stdComStandardService.getStdRequirements().subscribe(
+    this.stdComStandardService.getStdForApproval().subscribe(
         (response: ISCheckRequirements[]) => {
           this.isCheckRequirements = response;
-          console.log(this.isCheckRequirements)
+          //console.log(this.isCheckRequirements)
           this.rerender();
           this.SpinnerService.hide();
 
@@ -198,17 +186,31 @@ export class IntStdCheckRequirementsComponent implements OnInit {
           //console.log(error.message);
         }
     );
-    if (mode==='checkRequirementsMet'){
+    if (mode==='approveChanges'){
       this.actionRequests=iSCheckRequirement;
-      button.setAttribute('data-target','#checkRequirementsMet');
+      button.setAttribute('data-target','#approveChanges');
 
       this.approveRequirementsFormGroup.patchValue(
           {
-
             requestId: this.actionRequests.requestId,
             id: this.actionRequests.id,
             draftId: this.actionRequests.draftId,
-            standardType: this.actionRequests.standardType
+            title: this.actionRequests.title,
+            scope:this.actionRequests.scope,
+            normativeReference: this.actionRequests.normativeReference,
+            symbolsAbbreviatedTerms: this.actionRequests.symbolsAbbreviatedTerms,
+            clause:this.actionRequests.clause,
+            special:this.actionRequests.special,
+            standardNumber:this.actionRequests.comStdNumber,
+            departmentId:this.actionRequests.departmentId,
+            subject:this.actionRequests.subject,
+            description:this.actionRequests.description,
+            contactOneFullName:this.actionRequests.contactOneFullName,
+            contactOneTelephone:this.actionRequests.contactOneTelephone,
+            contactOneEmail:this.actionRequests.contactOneEmail,
+            companyName:this.actionRequests.companyName,
+            companyPhone:this.actionRequests.companyPhone,
+            standardType:this.actionRequests.standardType,
           }
       );
 
@@ -219,10 +221,10 @@ export class IntStdCheckRequirementsComponent implements OnInit {
 
   }
 
-  @ViewChild('closeModalRequirements') private closeModalRequirements: ElementRef | undefined;
+  @ViewChild('closeModalChanges') private closeModalChanges: ElementRef | undefined;
 
-  public hideModalRequirements() {
-    this.closeModalRequirements?.nativeElement.click();
+  public hideModalChanges() {
+    this.closeModalChanges?.nativeElement.click();
   }
 
   rerender(): void {
@@ -265,13 +267,13 @@ export class IntStdCheckRequirementsComponent implements OnInit {
     this.isShowMainTabs= true;
 
   }
-  approveRequirements(): void {
+  approveProofReadStandard(): void {
     this.loadingText = "Approving Draft...";
     this.SpinnerService.show();
-    this.stdComStandardService.checkRequirements(this.approveRequirementsFormGroup.value).subscribe(
+    this.stdComStandardService.approveProofReadStandard(this.approveRequirementsFormGroup.value).subscribe(
         (response ) => {
           //console.log(response);
-          this.getStdRequirements();
+          this.getStdForApproval();
           this.SpinnerService.hide();
           this.showToasterSuccess('Success', `Draft Approved`);
         },
@@ -281,7 +283,7 @@ export class IntStdCheckRequirementsComponent implements OnInit {
           console.log(error.message);
         }
     );
-    this.hideModalRequirements();
+    this.hideModalChanges();
   }
   viewDraftFile(pdfId: number, fileName: string, applicationType: string): void {
     this.SpinnerService.show();
@@ -302,9 +304,10 @@ export class IntStdCheckRequirementsComponent implements OnInit {
           this.SpinnerService.hide();
           this.showToasterError('Error', `Error Processing Request`);
           console.log(error.message);
-          this.getStdRequirements();
+          this.getStdForApproval();
           //alert(error.message);
         }
     );
   }
+
 }

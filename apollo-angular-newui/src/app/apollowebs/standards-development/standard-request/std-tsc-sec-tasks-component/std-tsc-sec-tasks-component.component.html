@@ -214,7 +214,7 @@
                                                 <div class="material-datatables table-responsive">
                                                     <table class="table table-striped table-bordered table-hover"
                                                            datatable
-                                                           [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger5">
+                                                           [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger4">
                                                         <thead>
                                                         <tr>
                                                             <th class="task">Document Name</th>
@@ -251,7 +251,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">Review Details che</li>
+                                            <li class="list-group-item active">Review Details</li>
                                             <li style="background: lightgray"
                                                 class="list-group-item"><b>Approved By:</b>{{ actionRequest?.tcSecAssigned}}</li>
 
@@ -455,11 +455,13 @@
                                                 [data]="dropdownList"
                                                 (onSelect)="onItemSelect($event)"
                                                 (onSelectAll)="onSelectAll($event)"
-                                                [class.is-invalid]="formStdRequest?.liaisonOrganisationData?.errors?.required && formStdRequest?.liaisonOrganisationData?.touched"
+                                                [class.is-invalid]="formStdRequest?.liaisonOrganisationData?.errors?.required
+                                                 && formStdRequest?.liaisonOrganisationData?.touched"
                                                 formControlName="liaisonOrganisationData"
                                                 name="liaisonOrganisationData">
                                         </ng-multiselect-dropdown>
-                                        <span *ngIf="formStdRequest?.liaisonOrganisationData?.errors?.required && formStdRequest?.liaisonOrganisationData?.touched"
+                                        <span *ngIf="formStdRequest?.liaisonOrganisationData?.errors?.required
+                                        && formStdRequest?.liaisonOrganisationData?.touched"
                                               style="color: red;">Liaison Organization is required </span>
 
                                     </div>
@@ -559,40 +561,31 @@
                                                 type="text">
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="form-group col-6">
                                         <label><b>Date of Circulation</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'circulationDate')">
+                                        <mat-form-field class="example-full-width has-label" [ngClass]="displayFieldCss(stdNwiFormGroup, 'circulationDate')">
                                             <input type="date"
-                                                   matInput
-                                                   id="circulationDate"
+                                                   matInput id="circulationDate"
                                                    placeholder="Circulation Date"
                                                    formControlName="circulationDate">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'circulationDate')"
-                                                    errorMsg="Please Enter Circulation Date">
-                                            </app-field-error-display>
+                                            <app-field-error-display [displayError]="isFieldValid(stdNwiFormGroup, 'circulationDate')" errorMsg="Please Enter Circulation Date"></app-field-error-display>
                                         </mat-form-field>
                                     </div>
                                     <div class="form-group col-6">
                                         <label><b>Closing Date</b></label>
-                                        <mat-form-field class="example-full-width has-label"
-                                                        [ngClass]="displayFieldCss(stdNwiFormGroup, 'closingDate')">
+                                        <mat-form-field class="example-full-width has-label" [ngClass]="displayFieldCss(stdNwiFormGroup, 'closingDate')">
                                             <input type="date"
-                                                   matInput
-                                                   id="closingDate"
+                                                   matInput id="closingDate"
                                                    placeholder="Closing Date"
                                                    formControlName="closingDate">
-                                            <app-field-error-display
-                                                    [displayError]="isFieldValid(stdNwiFormGroup, 'closingDate')"
-                                                    errorMsg="Please Enter Closing Date">
-                                            </app-field-error-display>
+                                            <app-field-error-display [displayError]="isFieldValid(stdNwiFormGroup, 'closingDate')" errorMsg="Please Enter Closing Date"></app-field-error-display>
                                         </mat-form-field>
                                     </div>
                                 </div>
 
-                                <div class="row">
+                       <div class="row">
 <!--                                    <div class="form-group col-6">-->
 <!--                                        <label><b>Date of presentation</b></label>-->
 <!--                                        <mat-form-field class="example-full-width has-label"-->
@@ -637,8 +630,41 @@
 
                                     </div>
                                 </div>
+                                <br>
+                                <label><b>Attached Information</b></label>
+                                <div class="row" style="background: lightgray">
 
-                                <div class="row">
+                                        <div class="material-datatables table-responsive">
+                                            <table class="table table-striped table-bordered table-hover"
+                                                   datatable
+                                                   [dtOptions]="dtOptionsB" [dtTrigger]="dtTrigger4">
+                                                <thead>
+                                                <tr>
+                                                    <th class="task">Document Name</th>
+                                                    <th class="task">Action</th>
+
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr *ngFor="let doc of docs let i= index; ">
+
+                                                    <td>{{doc.name}}</td>
+                                                    <td>
+                                                        <button class="btn btn-info tooltips"
+                                                                style="width: inherit"
+                                                                (click)="viewPdfFile( doc.id,doc?.name, 'application/pdf')"
+                                                                data-placement="top"
+                                                        ><i
+                                                                class="fa fa-eye"></i> View
+                                                        </button>
+                                                    </td>
+
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
 
 
                                 </div>

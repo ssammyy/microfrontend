@@ -530,6 +530,8 @@ class IntStandardController(
     @ResponseBody
     fun editStandardDraft(@RequestBody isDraftDto: ISDraftDto): ServerResponse
     {
+//        val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(isDraftDto) }
 
         return ServerResponse(HttpStatus.OK,"Successfully Edited Workshop Draft",internationalStandardService.editStandardDraft(isDraftDto))
     }

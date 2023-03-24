@@ -3656,7 +3656,7 @@ class MarketSurveillanceFuelDaoServices(
             data.sourceProductEvidence,
             data2,
             data.dataReportID,
-            dataReportRepo.findByIdOrNull(data.dataReportID)?.outletName
+            dataReportRepo.findByIdOrNull(data.dataReportID?: -1L)?.outletName
         )
     }
 
