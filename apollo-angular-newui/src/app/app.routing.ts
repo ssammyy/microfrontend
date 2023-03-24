@@ -856,6 +856,7 @@ import {StandardLevyHistoricalPaymentsComponent} from "./apollowebs/standards-le
 import {NepUploadedNotificationComponent} from "./apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component";
 import {StandardsLevyQaPermitsComponent} from "./apollowebs/standards-levy/standards-levy-qa-permits/standards-levy-qa-permits.component";
 import {StandardsLevySitesComponent} from "./apollowebs/standards-levy/standards-levy-sites/standards-levy-sites.component";
+import {IntStdApproveChangesComponent} from "./apollowebs/standards-development/international-standard/int-std-approve-changes/int-std-approve-changes.component";
 
 export const routes: Routes = [
     {
@@ -1838,10 +1839,16 @@ export const routes: Routes = [
         children: [{path: '', component: IntStdProofReadComponent}],
     },
     {
+        path: 'isApproveChanges', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdApproveChangesComponent}],
+    },
+    {
         path: 'isApproveDraftStd', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
         children: [{path: '', component: IntStdApproveDraftComponent}],
     },
+
     {
         path: 'isApprovedEdits', component: AdminLayoutComponent,
         canActivate: [RouteGuard],

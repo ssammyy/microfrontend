@@ -883,6 +883,30 @@ class ComStandardService(
         return companyStandardRepository.getComStdPublishing()
     }
 
+    fun getStdRequirements(): MutableList<ComStandard> {
+        return companyStandardRepository.getStdRequirements()
+    }
+
+    fun getStdEditing(): MutableList<ComStandard> {
+        return companyStandardRepository.getStdEditing()
+    }
+
+    fun getStdEditDrafting(): MutableList<ComStandard> {
+        return companyStandardRepository.getStdEditDrafting()
+    }
+
+    fun getStdEditProofreading(): MutableList<ComStandard> {
+        return companyStandardRepository.getStdEditProofreading()
+    }
+
+    fun getStdForApproval(): MutableList<ComStandard> {
+        return companyStandardRepository.getStdForApproval()
+    }
+
+    fun getStdApproved(): MutableList<ComStandard> {
+        return companyStandardRepository.getStdApproved()
+    }
+
 
 
 
