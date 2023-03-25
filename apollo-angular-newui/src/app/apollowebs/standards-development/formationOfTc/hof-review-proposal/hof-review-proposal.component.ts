@@ -200,10 +200,14 @@ export class HofReviewProposalComponent implements OnInit {
   }
 
   @ViewChild('closeModalC') private closeModalC: ElementRef | undefined;
-
   public hideModelC() {
     this.closeModalC?.nativeElement.click();
   }
+
+    @ViewChild('closeModalD') private closeModalD: ElementRef | undefined;
+    public hideModelD() {
+        this.closeModalD?.nativeElement.click();
+    }
     get formApproveOrRejectWithReason(): any {
         return this.stdApproveOrRejectWithReason.controls;
     }
@@ -349,8 +353,8 @@ export class HofReviewProposalComponent implements OnInit {
                 text: 'You won\'t be able to reverse this!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Approve!',
-                cancelButtonText: 'Reject!',
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No!',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -364,7 +368,7 @@ export class HofReviewProposalComponent implements OnInit {
                                 'success'
                             );
                             this.SpinnerService.hide();
-                            this.hideModelC()
+                            this.hideModelD()
                             this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
                             this.getAllHofJustifications(false);
                             this.getAllHofJustificationsApproved()
