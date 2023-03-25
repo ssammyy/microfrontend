@@ -54,7 +54,10 @@
                                     </div>
                                     <h4 class="card-title">Request For Formation Of Technical Committee
                                     </h4>
-                                    <div (click)="openModal()">
+                                    <div *ngFor="let role of roles">
+                                        <div *ngIf="role == 'HOF_SD_READ' || role == 'STANDARDS_DEVELOPMENT_FULL_ADMIN'">
+
+                                        <div (click)="openModal()">
                                         <div style="float: right; margin: inherit" class="card-icon">
                                             <i class="material-icons">add</i>
                                         </div>
@@ -63,6 +66,8 @@
                                                 Proposal</h4>
                                         </div>
 
+                                    </div>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -110,7 +115,7 @@
                                                     <div *ngIf="row.status=='1'; then thenBlock else elseBlock"></div>
                                                     <ng-template #thenBlock>
                                                         <span style=" font-size: 10px;"
-                                                              class="badge badge-info">Awaiting Decision By HOF</span>
+                                                              class="badge badge-info">Awaiting Decision By HOD</span>
                                                     </ng-template>
                                                     <ng-template #elseBlock>
                                                       <span style="font-size: 10px;"
@@ -215,7 +220,7 @@
                                                     <ng-container [ngSwitch]="row.status">
                                                         <ng-container *ngSwitchCase="'2'">
 <span style=" font-size: 10px;"
-      class="badge badge-success">Approved By HOF</span></ng-container>
+      class="badge badge-success">Approved By HOD</span></ng-container>
                                                         <ng-container *ngSwitchCase="'4'"><span
                                                                 style=" font-size: 10px;"
                                                                 class="badge badge-success">Approved By SPC</span>
@@ -524,21 +529,21 @@
                                         </app-field-error-display>
                                     </mat-form-field>
                                 </div>
-                                <div class="form-group col-6">
-                                    <label><b>Proposed TC Representation</b></label>
-                                    <mat-form-field class="example-full-width has-label"
-                                                    [ngClass]="displayFieldCss(formationRequestFormGroup, 'proposedRepresentation')">
-                                        <input
-                                                matInput
 
-                                                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-                                                class="form-control one-column-input"
-                                                formControlName="proposedRepresentation"
-                                                placeholder="Proposed TC Representation *" type="text">
-                                        <app-field-error-display
-                                                [displayError]="isFieldValid(formationRequestFormGroup, 'proposedRepresentation')"
-                                                errorMsg="Please Enter Proposed TC Representation">
-                                        </app-field-error-display>
+
+                                <div class="form-group col-6">
+                                    <label><b>Department</b></label>
+                                    <mat-form-field>
+
+                                        <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    formControlName="departmentId"
+                                                    name="departmentId"
+                                                    placeholder="Select Department"
+                                                    [class.is-invalid]="formFormationRequest.departmentId.invalid && formFormationRequest.departmentId.touched">
+                                            <mat-option *ngFor="let department of departments"
+                                                        value="{{department.id}}">{{department.name}}</mat-option>
+                                        </mat-select>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -581,7 +586,7 @@
 
                             <div class="row">
                                 <div class="form-group col-6">
-                                    <label><b>Liaison Organization</b></label>
+                                    <label><b>Liaison Organization</b><small> (Add multiple by separating with comma)</small></label>
                                     <mat-form-field class="example-full-width has-label"
                                                     [ngClass]="displayFieldCss(formationRequestFormGroup, 'liaisonOrganization')">
                                         <input
@@ -631,22 +636,29 @@
 
 
                                 </div>
-
                                 <div class="form-group col-6">
-                                    <label><b>Department</b></label>
-                                    <mat-form-field>
+                                    <label><b>Proposed TC Representation</b></label>
+                                    <ng-multiselect-dropdown
+                                            [placeholder]="'Select Proposed TC Representation'"
+                                            [settings]="dropdownSettings"
+                                            [data]="dropdownList"
+                                            (onSelect)="onItemSelect($event)"
+                                            (onSelectAll)="onSelectAll($event)"
+                                            [class.is-invalid]="formFormationRequest?.proposedRepresentationArray?.errors?.required
+                                                 && formFormationRequest?.proposedRepresentationArray?.touched"
+                                            formControlName="proposedRepresentationArray"
+                                            name="proposedRepresentationArray">
+                                    </ng-multiselect-dropdown>
 
-                                        <mat-select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
-                                                    class="form-control" required
-                                                    formControlName="departmentId"
-                                                    name="departmentId"
-                                                    placeholder="Select Department"
-                                                    [class.is-invalid]="formFormationRequest.departmentId.invalid && formFormationRequest.departmentId.touched">
-                                            <mat-option *ngFor="let department of departments"
-                                                        value="{{department.id}}">{{department.name}}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+
+                                    <span *ngIf="formFormationRequest?.proposedRepresentationArray?.errors?.required
+                                        && formFormationRequest?.proposedRepresentationArray?.touched"
+                                          style="color: red;">Proposed TC Representation is required </span>
                                 </div>
+
+                                <input type="hidden" formControlName="proposedRepresentation">
+
+
                             </div>
 
                             <div class="form-group">
@@ -998,7 +1010,7 @@
                                     <div class="row">
                                         <div class=" col-12">
                                             <ul class="list-group">
-                                                <li style="background-color: red" class="list-group-item active">HOF REJECTION
+                                                <li style="background-color: red" class="list-group-item active">HOD REJECTION
                                                 </li>
 
                                                 <li style="background: lightgray"
@@ -1342,7 +1354,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">HOF APPROVAL
+                                            <li class="list-group-item active">HOD APPROVAL
                                             </li>
 
                                             <li style="background: lightgray"
@@ -1361,7 +1373,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">HOF APPROVAL
+                                            <li class="list-group-item active">HOD APPROVAL
                                             </li>
 
                                             <li style="background: lightgray"
@@ -1407,7 +1419,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">HOF APPROVAL
+                                            <li class="list-group-item active">HOD APPROVAL
                                             </li>
 
                                             <li style="background: lightgray"
@@ -1476,7 +1488,7 @@
                                 <div class="row">
                                     <div class=" col-12">
                                         <ul class="list-group">
-                                            <li class="list-group-item active">HOF APPROVAL
+                                            <li class="list-group-item active">HOD APPROVAL
                                             </li>
 
                                             <li style="background: lightgray"

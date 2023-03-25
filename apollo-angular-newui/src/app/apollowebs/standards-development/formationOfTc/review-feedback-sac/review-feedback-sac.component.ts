@@ -30,6 +30,8 @@ declare const $: any;
 export class ReviewFeedbackSacComponent implements OnInit {
 
     tasks: JustificationForTc[] = [];
+    approvedJustifications: JustificationForTc[] = [];
+
     displayedColumns: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions'];
     displayedColumn: string[] = ['subject', 'proposer', 'purpose', 'nameOfTC', 'status', 'actions', 'approve', 'reject'];
 
@@ -51,8 +53,6 @@ export class ReviewFeedbackSacComponent implements OnInit {
 
 
     dtOptions: DataTables.Settings = {};
-    dtOptionsB: DataTables.Settings = {};
-
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
     dtTrigger: Subject<any> = new Subject<any>();
@@ -98,7 +98,7 @@ export class ReviewFeedbackSacComponent implements OnInit {
 
     ngOnInit(): void {
         this.getAllSacJustifications(true);
-        this.getAllSacJustificationsApproved()
+        this.getAllSacJustificationsForWebsite()
         this.getAllSacJustificationsRejected()
         this.stdApproveOrRejectWithReason = this.formBuilder.group({
             commentsSac: ['', Validators.required],
@@ -134,12 +134,10 @@ export class ReviewFeedbackSacComponent implements OnInit {
         this.SpinnerService.show()
         this.formationOfTcService.sacGetAllForWebsite().subscribe(
             (response: JustificationForTc[]) => {
-                this.tasks = response;
+                this.approvedJustifications = response;
+                this.rerender()
                 this.SpinnerService.hide()
-                this.dataSourceD = new MatTableDataSource(this.tasks);
 
-                this.dataSourceD.paginator = this.paginator;
-                this.dataSourceD.sort = this.sort;
             },
             (error: HttpErrorResponse) => {
                 alert(error.message);
@@ -149,24 +147,24 @@ export class ReviewFeedbackSacComponent implements OnInit {
         );
     }
 
-    public getAllSacJustificationsApproved(): void {
-        this.SpinnerService.show()
-        this.formationOfTcService.sacGetAllForWebsite().subscribe(
-            (response: JustificationForTc[]) => {
-                this.tasks = response;
-                this.SpinnerService.hide()
-                this.dataSourceB = new MatTableDataSource(this.tasks);
-
-                this.dataSourceB.paginator = this.paginator;
-                this.dataSourceB.sort = this.sort;
-            },
-            (error: HttpErrorResponse) => {
-                alert(error.message);
-                this.SpinnerService.hide()
-
-            }
-        );
-    }
+    // public getAllSacJustificationsApproved(): void {
+    //     this.SpinnerService.show()
+    //     this.formationOfTcService.sacGetAllForWebsite().subscribe(
+    //         (response: JustificationForTc[]) => {
+    //             this.tasks = response;
+    //             this.SpinnerService.hide()
+    //             this.dataSourceB = new MatTableDataSource(this.tasks);
+    //
+    //             this.dataSourceB.paginator = this.paginator;
+    //             this.dataSourceB.sort = this.sort;
+    //         },
+    //         (error: HttpErrorResponse) => {
+    //             alert(error.message);
+    //             this.SpinnerService.hide()
+    //
+    //         }
+    //     );
+    // }
 
 
     public getAllSacJustificationsRejected(): void {
@@ -290,14 +288,22 @@ export class ReviewFeedbackSacComponent implements OnInit {
         this.dtElements.forEach((dtElement: DataTableDirective) => {
             if (dtElement.dtInstance)
                 dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                    dtInstance.clear();
                     dtInstance.destroy();
                 });
         });
         setTimeout(() => {
             this.dtTrigger.next();
             this.dtTrigger4.next();
+
+
         });
+
+    }
+    ngOnDestroy(): void {
+        // Do not forget to unsubscribe the event
+
+        this.dtTrigger4.unsubscribe();
+        this.dtTrigger.unsubscribe();
 
     }
 
@@ -366,7 +372,6 @@ export class ReviewFeedbackSacComponent implements OnInit {
                             this.showToasterSuccess(response.httpStatus, 'Proposal Approved And Advertised To Website');
                             this.getAllSacJustifications(false);
                             this.getAllSacJustificationsForWebsite()
-                            this.getAllSacJustificationsApproved()
                             this.getAllSacJustificationsRejected()
                             formDirective.resetForm()
                         },
@@ -424,7 +429,6 @@ export class ReviewFeedbackSacComponent implements OnInit {
                             this.showToasterSuccess(response.httpStatus, 'Proposal Successfully Rejected');
                             this.getAllSacJustifications(false);
                             this.getAllSacJustificationsForWebsite()
-                            this.getAllSacJustificationsApproved()
                             this.getAllSacJustificationsRejected()
                             formDirective.resetForm()
 

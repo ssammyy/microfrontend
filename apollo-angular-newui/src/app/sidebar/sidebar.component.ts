@@ -861,13 +861,13 @@ export const ROUTES: RouteInfo[] = [
                 path: 'requestForFormationOfTC',
                 title: 'Request For Formation',
                 ab: 'RFF',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ','HOF_SD_READ']
             },
             {
                 path: 'hofReviewJustificationOfTC',
-                title: 'HOF Review',
-                ab: 'HOF',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOF_SD_READ']
+                title: 'HOD Review',
+                ab: 'HOD',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'HOD_TWO_SD_READ']
             },
             {
                 path: 'reviewJustificationOfTC',
@@ -885,7 +885,7 @@ export const ROUTES: RouteInfo[] = [
 
         ],
         icontype: 'group',
-        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'SAC_SEC_SD_READ'],
+        privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'HOF_SD_READ', 'SPC_SD_READ', 'SAC_SEC_SD_READ','HOD_TWO_SD_READ'],
         collapse: 'formation',
     },
     {
