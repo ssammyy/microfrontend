@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.lang.reflect.Type
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -6196,7 +6197,7 @@ class MarketSurveillanceWorkPlanDaoServices(
 
 
         val dataReportDtoList = mutableListOf<DataReportDto>()
-        var overAllCompliance = 0
+        var overAllCompliance = BigDecimal.ZERO
         findDataReportListByWorkPlanInspectionID(workPlanScheduledDetails.id)
             ?.forEach { dataReport ->
                 val dataReportParameters = dataReport.id.let { findDataReportParamsByDataReportID(it) }
@@ -6205,12 +6206,11 @@ class MarketSurveillanceWorkPlanDaoServices(
                 if (dataReportDto != null) {
                     dataReportDtoList.add(dataReportDto)
                 }
-                overAllCompliance= overAllCompliance.plus(dataReport.totalComplianceScore?.toInt()!!)
+                overAllCompliance= dataReport.totalComplianceScore?.toBigDecimal()?.let { overAllCompliance.plus(it) }!!
             }
 
 
-        val preliminaryReportList =
-            findPreliminaryReportListByWorkPlanInspectionID(workPlanScheduledDetails.id, map.activeStatus)
+        val preliminaryReportList = findPreliminaryReportListByWorkPlanInspectionID(workPlanScheduledDetails.id, map.activeStatus)
         val preliminaryReportListDto = preliminaryReportList?.let { mapInspectionInvestigationDetailsListDto(it) }
 
         val inspectionInvestigation =
@@ -6343,7 +6343,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanProductsDto?.second,
             workPlanProductsDto?.first,
             preliminaryReportDtoValuesFinal,
-            overAllCompliance.div(dataReportDtoList.size)
+            overAllCompliance.div(dataReportDtoList.size.toBigDecimal())
         )
     }
 
@@ -6405,7 +6405,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         productListRecommendationAddedCount: Int?,
         productList: List<WorkPlanProductDto>?,
         preliminaryReportFinal: PreliminaryReportDto?,
-        overAllCompliance: Int,
+        overAllCompliance: BigDecimal,
     ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
             wKP.id,

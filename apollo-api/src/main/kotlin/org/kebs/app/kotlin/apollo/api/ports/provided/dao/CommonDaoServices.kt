@@ -1593,16 +1593,15 @@ class CommonDaoServices(
         return true
     }
 
-    suspend fun sendEmailWithUserEntityAsync(
+    fun sendEmailWithUserEntityAsync(
         user: UsersEntity,
         uuid: String,
         valuesMapped: Any,
         map: ServiceMapsEntity,
         sr: ServiceRequestsEntity,
         attachmentFilePath: String? = null
-    )= coroutineScope {
-        async {
-            withContext(Dispatchers.IO) {
+    ){
+
             KotlinLogging.logger { }.info { "Started Mail process" }
             notificationsUseCase(map, mutableListOf(user.email), uuid, valuesMapped, sr)
                 ?.let { list ->
@@ -1631,11 +1630,10 @@ class CommonDaoServices(
                     sr.processingEndDate = getTimestamp()
                     serviceRequestsRepository.save(sr)
                 }
-            }
-        }
+
     }
 
-    suspend fun sendEmailWithUserEmailAsync(
+     fun sendEmailWithUserEmailAsync(
         userEmail: String,
         uuid: String,
         valuesMapped: Any,
@@ -1643,9 +1641,7 @@ class CommonDaoServices(
         sr: ServiceRequestsEntity,
         attachmentFilePath: String? = null,
         subjectAppendValue: String? = null
-    )= coroutineScope {
-        async {
-            withContext(Dispatchers.IO) {
+    ) {
                 KotlinLogging.logger { }.info { "Started Mail process" }
                 notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr, subjectAppendValue)
                     ?.let { list ->
@@ -1675,8 +1671,6 @@ class CommonDaoServices(
                         sr.processingEndDate = getTimestamp()
                         serviceRequestsRepository.save(sr)
                     }
-            }
-        }
     }
 
     fun sendEmailWithUserEmail(
