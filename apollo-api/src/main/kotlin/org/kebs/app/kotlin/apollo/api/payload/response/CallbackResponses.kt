@@ -5,4 +5,5 @@ class CallbackResponses {
     var message: String? = null
     var data: Any? = null
     var errors: Any? = null
+    var responseDate: Any? = null
 }

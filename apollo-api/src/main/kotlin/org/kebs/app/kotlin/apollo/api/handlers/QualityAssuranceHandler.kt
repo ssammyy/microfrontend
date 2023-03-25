@@ -2282,9 +2282,10 @@ class QualityAssuranceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
-                        ?.let { ok().body(it) }
+                        ?.let {
+                            ok().body(it)
+                        }
                         ?: onErrors("We could not process your request at the moment")
-
                 }
 
                 else -> {

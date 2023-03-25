@@ -1971,6 +1971,28 @@ export class MsService {
         );
     }
 
+    public saveWorkPlanFilesFinalENDWorkPlan(data: FormData): Observable<any> {
+         // tslint:disable-next-line:max-line-length
+        const url = ApiEndpointService.getEndpoint(
+            ApiEndpointService.MARKET_SURVEILLANCE_WORK_PLAN.UPDATE_FINAL_COMPLAINT_REMARKS_WORK_PLAN_FILE,
+        );
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data',
+            }, params: {'refNumber': 'refNumber'},
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            }),
+        );
+    }
+
     public saveWorkPlanFilesFinalReportHOFHOD(data: FormData): Observable<any> {
         // tslint:disable-next-line:max-line-length
         const url = ApiEndpointService.getEndpoint(

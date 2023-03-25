@@ -277,7 +277,6 @@ class QADaoServices(
                     ).let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_ASSESSORS_READ" -> {
                     listPermits(
@@ -289,7 +288,6 @@ class QADaoServices(
                     ).let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_HOD_READ" -> {
                     findAllApplicationsQAMHODRMHOFByRegion(
@@ -301,7 +299,6 @@ class QADaoServices(
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_HOF_READ" -> {
                     findAllApplicationsQAMHODRMHOFByRegion(
@@ -313,7 +310,6 @@ class QADaoServices(
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_RM_READ" -> {
                     findAllApplicationsQAMHODRMHOFByRegion(
@@ -325,7 +321,6 @@ class QADaoServices(
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_MANAGER_READ" -> {
                     findAllApplicationsQAMHODRMHOFByRegion(
@@ -1745,15 +1740,11 @@ class QADaoServices(
                                 recommendationApprovalStatus = 1
                                 resubmitApplicationStatus = 0
                                 changesMadeStatus = 0
-                                userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                                permitStatus = applicationMapProperties.mapQaStatusPHodQamApproval
                             }
 
                             else -> {
                                 recommendationApprovalStatus = 0
                                 resubmitApplicationStatus = 1
-                                userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                permitStatus = applicationMapProperties.mapQaStatusDeferredRecommendationQAM
                             }
                         }
                         recommendationApprovalRemarks = body.recommendationApprovalRemarks
@@ -1762,43 +1753,11 @@ class QADaoServices(
                                 resubmitApplicationStatus = 0
                                 changesMadeStatus = 0
                                 factoryInspectionReportApprovedRejectedStatus = 1
-                                when (permitType.id) {
-                                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                                        permitStatus = applicationMapProperties.mapQaStatusPRecommendationApproval
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                    }
-
-                                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                                        permitStatus = applicationMapProperties.mapQaStatusPRecommendationApproval
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                    }
-
-                                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                                        permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
-                                    }
-                                }
                             }
 
                             else -> {
                                 resubmitApplicationStatus = 1
                                 factoryInspectionReportApprovedRejectedStatus = 0
-                                when (permitType.id) {
-                                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                    }
-
-                                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                    }
-
-                                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
-                                    }
-                                }
                             }
                         }
                         factoryInspectionReportApprovedRejectedRemarks = body.supervisorComments
