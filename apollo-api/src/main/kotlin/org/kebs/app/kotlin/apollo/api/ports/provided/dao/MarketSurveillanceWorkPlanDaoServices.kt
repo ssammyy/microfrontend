@@ -6343,7 +6343,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             workPlanProductsDto?.second,
             workPlanProductsDto?.first,
             preliminaryReportDtoValuesFinal,
-            overAllCompliance.div(dataReportDtoList.size.toBigDecimal())
+            overAllCompliance = when {overAllCompliance != BigDecimal.ZERO -> { overAllCompliance.div(dataReportDtoList.size.toBigDecimal()) }else -> { BigDecimal.ZERO } }
+
         )
     }
 
