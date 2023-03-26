@@ -107,7 +107,7 @@ class QualityAssuranceJSONControllers(
                             throw NullValueNotAllowedException("Inspection Fee has already passed, The validity date for $validityInYears years after payment date")
                         }
                         else -> {
-                            commonDaoServices.addYearsToCurrentDate(yearsGotten.toLong())
+                            commonDaoServices.addYearsToWithDate(yearsGotten.toLong(), userPaidDate)
                         }
                     }
                 }

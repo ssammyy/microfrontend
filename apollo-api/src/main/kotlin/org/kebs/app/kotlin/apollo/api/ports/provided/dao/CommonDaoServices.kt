@@ -1868,6 +1868,11 @@ class CommonDaoServices(
         return Period.between(givenLocalDate, currentDate).years
     }
 
+    fun addYearsToWithDate(noOfYears: Long, d1: Date): Date {
+        val givenLocalDate = d1.toLocalDate()
+        return Date.valueOf(givenLocalDate.plusYears(noOfYears))
+    }
+
     fun getCalculatedDaysInLong(d1: Date,d2: Date): Long {
         val differenceInTime: Long = d2.time - d1.time
         return ((differenceInTime / (1000 * 60 * 60 * 24)) % 365)
