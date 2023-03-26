@@ -336,7 +336,8 @@ class QADaoServices(
             if (a.authority == "QA_PAC_SECRETARY_READ" || a.authority == "QA_PSC_MEMBERS_READ" || a.authority == "QA_PCM_READ") {
                 findAllFirmsInKenyaPermitsApplicationsWithPermitTypeAndPaidStatus(
                     permitTypeID,
-                    map.initStatus
+                    map.initStatus,
+                    page
                 ).let { listPermits(it, map) }.let { permitListMyTasksAddedTogether.addAll(it) }
             }
 
@@ -3437,7 +3438,8 @@ class QADaoServices(
             userId,
             permitType,
             status,
-            fmarkGeneratedStatus
+            fmarkGeneratedStatus,
+            sendApplication
         )
             ?.let { permitList ->
                 return permitList
