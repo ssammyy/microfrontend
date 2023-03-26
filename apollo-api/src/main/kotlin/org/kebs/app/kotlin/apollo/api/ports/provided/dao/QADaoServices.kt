@@ -3437,7 +3437,6 @@ class QADaoServices(
         permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndFmarkGeneratedAndSendApplication(
             userId,
             permitType,
-            status,
             fmarkGeneratedStatus,
             sendApplication
         )

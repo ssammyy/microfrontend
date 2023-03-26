@@ -51,10 +51,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.io.Files
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.apache.commons.text.StringEscapeUtils
 import org.jasypt.encryption.StringEncryptor
@@ -1869,8 +1865,7 @@ class CommonDaoServices(
     fun getCalculatedYearInLong(d1: Date): Int {
         val givenLocalDate = d1.toLocalDate()
         val currentDate = LocalDate.now()
-        val yearsBetween = Period.between(givenLocalDate, currentDate).years
-        return yearsBetween
+        return Period.between(givenLocalDate, currentDate).years
     }
 
     fun getCalculatedDaysInLong(d1: Date,d2: Date): Long {
