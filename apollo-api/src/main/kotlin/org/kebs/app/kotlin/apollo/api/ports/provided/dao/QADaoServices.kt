@@ -2026,7 +2026,6 @@ class QADaoServices(
                                     }
                                 }
                             }
-
                             else -> {
                                 permit.fmarkGenerated = 0
                             }
@@ -2272,19 +2271,6 @@ class QADaoServices(
         companyProfileRepo.findByIdOrNull(dto.companyProfileID)
             ?.let { entity ->
 //                if(entity.updateFirmType==dto.selectedFirmTypeID){
-                entity.apply {
-                    val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
-                    updateDetailsStatus = null
-                    updateDetailsComment = null
-                    requesterComment = null
-                    updateFirmType = null
-                    requesterId = null
-                    firmCategory = firmTypeDetails.id
-                    yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
-                    modifiedBy = user.userName
-                    modifiedOn = Timestamp.from(Instant.now())
-                }
-
                 when {
                     entity.firmCategory == 1L && dto.selectedFirmTypeID > 1 -> {
                         entity.upgradeType = 1
@@ -2306,6 +2292,20 @@ class QADaoServices(
                         entity.upgradeType = 0
                     }
                 }
+
+                entity.apply {
+                    val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
+                    updateDetailsStatus = null
+                    updateDetailsComment = null
+                    requesterComment = null
+                    updateFirmType = null
+                    requesterId = null
+                    firmCategory = firmTypeDetails.id
+                    yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
+                    modifiedBy = user.userName
+                    modifiedOn = Timestamp.from(Instant.now())
+                }
+
 
                 when (entity.upgradeType) {
                     1 -> {
@@ -2348,7 +2348,9 @@ class QADaoServices(
                         )
                         allPermitDetails?.forEach { pm ->
                             with(pm) {
-                                sendApplication = 1
+                                endOfProductionStatus = map.inactiveStatus
+                                invoiceGenerated = 0
+                                sendApplication = 0
                                 varField8 = 1.toString()
                                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                                 permitStatus = applicationMapProperties.mapQaStatusPManufactureReGenerateInvoice
@@ -3427,10 +3429,11 @@ class QADaoServices(
         user: UsersEntity,
         permitType: Long,
         status: Int,
-        fmarkGeneratedStatus: Int
+        fmarkGeneratedStatus: Int,
+        sendApplication: Int
     ): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
-        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndFmarkGenerated(
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndFmarkGeneratedAndSendApplication(
             userId,
             permitType,
             status,

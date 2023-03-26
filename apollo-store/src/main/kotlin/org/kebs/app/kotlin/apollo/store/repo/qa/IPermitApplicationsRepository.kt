@@ -371,6 +371,14 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         fmarkGenerated: Int
     ): List<PermitApplicationsEntity>?
 
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndFmarkGeneratedAndSendApplication(
+        userId: Long,
+        permitType: Long,
+        permitAwardStatus: Int,
+        fmarkGenerated: Int,
+        sendApplication: Int
+    ): List<PermitApplicationsEntity>?
+
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPaidStatus(
         userId: Long,
         permitType: Long,
