@@ -340,6 +340,7 @@ export class ComplaintNewComponent implements OnInit {
 
   reviewComplaint() {
     if (this.uploadedFiles) {
+      this.arrayOfUploadedFiles.splice(0);
       for ( let i = 0; i < this.uploadedFiles.length; i++) {
         this.arrayOfUploadedFiles.push(this.uploadedFiles[i]);
       }
