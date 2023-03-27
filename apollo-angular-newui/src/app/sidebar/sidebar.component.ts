@@ -806,7 +806,7 @@ export const ROUTES: RouteInfo[] = [
                 path: 'isUploadDraft',
                 title: 'Upload Draft For Editing',
                 ab: 'UD',
-                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ']
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'EDITOR_SD_READ','TC_SEC_SD_READ']
             },
             {
                 path: 'isCheckRequirements',

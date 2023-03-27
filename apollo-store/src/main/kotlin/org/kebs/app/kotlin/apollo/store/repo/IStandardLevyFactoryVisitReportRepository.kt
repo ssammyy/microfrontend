@@ -1,9 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import org.kebs.app.kotlin.apollo.store.model.SdlFactoryVisitReportsUploadEntity
-import org.kebs.app.kotlin.apollo.store.model.SlUpdatecompanyDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
-import org.kebs.app.kotlin.apollo.store.model.StdLevyEntryNoDataMigrationEntity
+import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -96,6 +93,32 @@ interface StdLevyHistoricalPaymentsRepository : HazelcastRepository<StdLevyHisto
         @Param("prevMonth") prevMonth: Int?,
 
     ): String?
+
+}
+interface LogKebsLevyPaymentsRepository : HazelcastRepository<LogKebsLevyPayments, Long>{
+    @Query(value = "SELECT *  FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS ", nativeQuery = true)
+    fun getLevyHistoricalPayments(): MutableList<LogKebsLevyPayments>
+
+    @Query(value = "SELECT *  FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS WHERE  " +
+            " (:periodFrom is null or PERIOD_FROM >=TO_DATE(:periodFrom))  and " +
+            "(:periodTo is null or PERIOD_TO >=TO_DATE(:periodTo)) and" +
+            "(:company is null or  NAME_OF_FIRM LIKE  '%'||TO_CHAR(:company)||'%') and" +
+            "(:kraPin is null or  KRA_PIN = TO_CHAR(:kraPin))", nativeQuery = true)
+    fun getLevyHistoricalPaymentsFilter(
+        @Param("periodFrom") periodFrom: Date?,
+        @Param("periodTo") periodTo: Date?,
+        @Param("company") company: String?,
+        @Param("kraPin") kraPin: String?
+    ): MutableList<LogKebsLevyPayments>
+
+
+    @Query(value = "SELECT KRA_PIN  FROM LOG_KEBS_STANDARD_LEVY_PAYMENTS WHERE KRA_PIN=:kraPin AND EXTRACT(YEAR FROM PERIOD_TO) =:toCheckYear AND EXTRACT(MONTH FROM PERIOD_TO) =:prevMonth   ", nativeQuery = true)
+    fun getPaymentStatus(
+        @Param("kraPin") kraPin: String?,
+        @Param("toCheckYear") toCheckYear: Int?,
+        @Param("prevMonth") prevMonth: Int?,
+
+        ): String?
 
 }
 

@@ -4,7 +4,7 @@ import {Subject} from "rxjs";
 import {
   BusinessLinesView,
   CompanyView,
-  HistoricalData,
+  HistoricalData, HistoricalPayments,
   KraPinView,
   RegionView
 } from "../../../core/store/data/std/std.model";
@@ -59,7 +59,7 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtTrigger1: Subject<any> = new Subject<any>();
-  historicalPayments: HistoricalData[]=[];
+  historicalPayments: HistoricalPayments[]=[];
   loadingText: string;
   filterFormGroup: FormGroup;
   today: any;
@@ -113,7 +113,7 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
     this.loadingText = "Retrieving Payments ...."
     this.SpinnerService.show();
     this.levyService.getLevyHistoricalPayments().subscribe(
-        (response: HistoricalData[]) => {
+        (response: HistoricalPayments[]) => {
           this.historicalPayments = response;
           console.log(this.historicalPayments);
           this.SpinnerService.hide();
@@ -228,7 +228,7 @@ export class StandardLevyHistoricalPaymentsComponent implements OnInit {
       }
 
       this.levyService.getLevyHistoricalPaymentsFilter(this.filterFormGroup.value).subscribe(
-          (response: HistoricalData[]) => {
+          (response: HistoricalPayments[]) => {
             this.historicalPayments = response;
             this.spinnerService.hide();
             this.rerender();

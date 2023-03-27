@@ -2650,5 +2650,25 @@ export class StakeHoldersFields{
     stakeHolderPhone: string;
 }
 
+export interface HistoricalPayments{
+    id: number;
+    paymentDate: Timestamp<any>;
+    paymentAmount: number;
+    levyPaid: number;
+    kraPin: string;
+    periodFrom: Timestamp<any>;
+    periodTo: Timestamp<any>;
+    entryNumber: string;
+    nameOfFirm: string;
+    location: string;
+    prn: string;
+    monthsLate: number;
+    penaltyApplied: number;
+    levyPenaltyPayable: number;
+    levyPenaltiesPaid: number;
+    overallNetAmt: number;
+    levyPenaltyPaymentDate: Timestamp<any>;
+}
+
 
 

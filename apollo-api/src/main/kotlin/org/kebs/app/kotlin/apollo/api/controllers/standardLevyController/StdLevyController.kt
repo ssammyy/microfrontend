@@ -2139,7 +2139,7 @@ class StdLevyController(
 
     @GetMapping("/getLevyHistoricalPayments")
     @ResponseBody
-    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments>
+    fun getLevyHistoricalPayments(): MutableList<LogKebsLevyPayments>
     {
         return standardLevyService.getLevyHistoricalPayments()
     }
@@ -2150,7 +2150,7 @@ class StdLevyController(
 
     fun getLevyHistoricalPaymentsFilter(
         @RequestBody levyFilterDTO: LevyFilterDTO
-    ): MutableList<StdLevyHistoricalPayments>
+    ): MutableList<LogKebsLevyPayments>
     {
         val startDate= levyFilterDTO.startDate
         val endDate = levyFilterDTO.endDate
