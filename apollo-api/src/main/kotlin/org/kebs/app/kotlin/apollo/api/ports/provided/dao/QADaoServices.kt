@@ -7313,6 +7313,7 @@ class QADaoServices(
                 endOfProductionStatus = s.inactiveStatus
                 commodityDescription = oldPermit.commodityDescription
                 firmName = oldPermit.firmName
+                fmarkGenerateStatus = oldPermit.fmarkGenerateStatus
                 postalAddress = oldPermit.postalAddress
                 telephoneNo = oldPermit.telephoneNo
                 email = oldPermit.email
