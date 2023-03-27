@@ -101,13 +101,15 @@ class QualityAssuranceJSONControllers(
                     invoiceInspectionGenerated = 1
                     paidDate = userPaidDate
                     val validityInYears = selectedRate.validity ?: throw Exception("INVALID NUMBER OF YEARS")
-                    val yearsGotten = commonDaoServices.getCalculatedYearInLong(userPaidDate)
-                    endingDate = when {validityInYears == yearsGotten.toLong() -> { throw NullValueNotAllowedException("Inspection Fee has already reach The validity date for $validityInYears years after payment date") }
-                        yearsGotten.toLong() > validityInYears -> {
+                    val daysGotten = commonDaoServices.getCalculatedDaysInLong(userPaidDate, commonDaoServices.addYearsToWithDate(validityInYears,userPaidDate))
+//                    val yearsGotten = commonDaoServices.getCalculatedYearInLong(userPaidDate)
+                    endingDate = when {
+                        daysGotten == 0L -> { throw NullValueNotAllowedException("Inspection Fee has already reach The validity date for $validityInYears years after payment date") }
+                        daysGotten < 0L -> {
                             throw NullValueNotAllowedException("Inspection Fee has already passed, The validity date for $validityInYears years after payment date")
                         }
                         else -> {
-                            commonDaoServices.addYearsToWithDate(yearsGotten.toLong(), userPaidDate)
+                            commonDaoServices.addYearsToWithDate(validityInYears,userPaidDate)
                         }
                     }
                 }
