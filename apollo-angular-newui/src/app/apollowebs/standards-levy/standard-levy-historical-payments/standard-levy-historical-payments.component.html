@@ -175,7 +175,12 @@
                                             <th class="knw">Period To</th>
                                             <th class="knw">Date Paid</th>
                                             <th class="knw">Amount Paid</th>
-                                            <th class="knw">Location</th>
+                                            <th class="knw">Months late</th>
+                                            <th class="knw">Penalty Applied</th>
+                                            <th class="knw">Penalty Paid</th>
+                                            <th class="knw">Penalty Payment Date</th>
+                                            <th class="knw">Penalty Payment Date</th>
+                                            <th class="knw">Amount Due</th>
                                             <th class="knw">PRN</th>
                                         </tr>
                                         </thead>
@@ -184,11 +189,16 @@
                                             <td >{{i+1}} </td>
                                             <td>{{historicalPayment.entryNumber}}</td>
                                             <td>{{historicalPayment.kraPin }}</td>
-                                            <td>{{historicalPayment.companyName}}</td>
+                                            <td>{{historicalPayment.nameOfFirm}}</td>
                                             <td>{{historicalPayment.periodFrom }}</td>
                                             <td>{{historicalPayment.periodTo}}</td>
                                             <td>{{historicalPayment.paymentDate}}</td>
-                                            <td>KSH {{historicalPayment.amount}}</td>
+                                            <td>KSH {{historicalPayment.levyPaid}}</td>
+                                            <td>{{historicalPayment.monthsLate}}</td>
+                                            <td>{{historicalPayment.levyPenaltyPayable}}</td>
+                                            <td>{{historicalPayment.levyPenaltiesPaid}}</td>
+                                            <td>{{historicalPayment.levyPenaltyPaymentDate | date:"yyyy/mm/dd"}}</td>
+                                            <td>{{historicalPayment.overallNetAmt}}</td>
                                             <td>{{historicalPayment.location}}</td>
                                             <td>{{historicalPayment.prn}}</td>
 

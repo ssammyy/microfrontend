@@ -78,6 +78,7 @@ class StandardLevyService(
     private val rejectedCompanyDetailsRepository: RejectedCompanyDetailsRepository,
     private val stdLevyHistoricalPaymentsRepo: StdLevyHistoricalPaymentsRepository,
     private val permitRepo: IPermitApplicationsRepository,
+    private val paymentsRepository: LogKebsLevyPaymentsRepository
 
 
     ) {
@@ -706,16 +707,16 @@ class StandardLevyService(
 //                val gson = Gson()
 //                 KotlinLogging.logger { }.info { "Save Entity" + gson.toJson(companyProfileEntity) }
 
-        var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
-        userList.forEach { item ->
-            val recipient = item.getUserEmail()
-            val subject = "Schedule Site Visit"
-            val messageBody =
-                "Dear ${item.getFirstName()} ${item.getLastName()}, Company  ${companyProfileEntity.name} has been assigned to you. Kindly Log into the KIMS System to schedule a site visit. NB. Auto Generated E-Mail From KEBS "
-            if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
-            }
-        }
+//        var userList = companyStandardRepository.getUserEmail(companyProfileEntity?.assignedTo)
+//        userList.forEach { item ->
+//            val recipient = item.getUserEmail()
+//            val subject = "Schedule Site Visit"
+//            val messageBody =
+//                "Dear ${item.getFirstName()} ${item.getLastName()}, Company  ${companyProfileEntity.name} has been assigned to you. Kindly Log into the KIMS System to schedule a site visit. NB. Auto Generated E-Mail From KEBS "
+//            if (recipient != null) {
+//                notifications.sendEmail(recipient, subject, messageBody)
+//            }
+//        }
 
         companyProfileRepo.save(companyProfileEntity)
         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
@@ -769,16 +770,16 @@ class StandardLevyService(
                     .processInstanceId(standardLevyFactoryVisitReportEntity.slProcessInstanceId).list()
                     ?.let { l ->
                         val processInstance = l[0]
-                        var userList = companyStandardRepository.getUserEmail(loggedInUser.id)
-                        userList.forEach { item ->
-                            val recipient = item.getUserEmail()
-                            val subject = "Site Visit"
-                            val messageBody =
-                                "Dear ${item.getFirstName()} ${item.getLastName()}, You have scheduled a site visit to ${standardLevyFactoryVisitReportEntity.companyName} for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} . NB. Auto Generated E-Mail From KEBS "
-                            if (recipient != null) {
-                                notifications.sendEmail(recipient, subject, messageBody)
-                            }
-                        }
+//                        var userList = companyStandardRepository.getUserEmail(loggedInUser.id)
+//                        userList.forEach { item ->
+//                            val recipient = item.getUserEmail()
+//                            val subject = "Site Visit"
+//                            val messageBody =
+//                                "Dear ${item.getFirstName()} ${item.getLastName()}, You have scheduled a site visit to ${standardLevyFactoryVisitReportEntity.companyName} for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} . NB. Auto Generated E-Mail From KEBS "
+//                            if (recipient != null) {
+//                                notifications.sendEmail(recipient, subject, messageBody)
+//                            }
+//                        }
                         val firstName = loggedInUser.firstName
                         val secondName = loggedInUser.lastName
                         val emailAddress = loggedInUser.email
@@ -894,16 +895,16 @@ class StandardLevyService(
 
                     val userID =
                         companyProfileRepo.getContactPersonId(standardLevyFactoryVisitReportEntity.manufacturerEntity)
-                    var userList = companyStandardRepository.getUserEmail(loggedInUser.id)
-                    userList.forEach { item ->
-                        val recipient = item.getUserEmail()
-                        val subject = "Site Visit"
-                        val messageBody =
-                            "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${comProfileEntity.name} has been confirmed for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} Kindly make time. NB. Auto Generated E-Mail From KEBS "
-                        if (recipient != null) {
-                            notifications.sendEmail(recipient, subject, messageBody)
-                        }
-                    }
+//                    var userList = companyStandardRepository.getUserEmail(loggedInUser.id)
+//                    userList.forEach { item ->
+//                        val recipient = item.getUserEmail()
+//                        val subject = "Site Visit"
+//                        val messageBody =
+//                            "Dear ${item.getFirstName()} ${item.getLastName()}, A schedule for site visit to ${comProfileEntity.name} has been confirmed for ${standardLevyFactoryVisitReportEntity.scheduledVisitDate} Kindly make time. NB. Auto Generated E-Mail From KEBS "
+//                        if (recipient != null) {
+//                            notifications.sendEmail(recipient, subject, messageBody)
+//                        }
+//                    }
 
                     var manufacturerList = companyStandardRepository.getUserEmail(userID)
                     manufacturerList.forEach { item ->
@@ -1081,17 +1082,17 @@ class StandardLevyService(
                             .debug("Complete standard levy task: ${standardLevyFactoryVisitReportEntity.taskId}")
                         taskService.complete(standardLevyFactoryVisitReportEntity.taskId, variables)
 
-                        var userList =
-                            companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
-                        userList.forEach { item ->
-                            val recipient = item.getUserEmail()
-                            val subject = "Site Visit Report"
-                            val messageBody =
-                                "Dear ${item.getFirstName()} ${item.getLastName()}, A report for site visit to,  ${standardLevyFactoryVisitReportEntity.companyName} has been prepared.Kindly Log into the KIMS to view. NB. Auto Generated E-Mail From KEBS "
-                            if (recipient != null) {
-                                notifications.sendEmail(recipient, subject, messageBody)
-                            }
-                        }
+//                        var userList =
+//                            companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
+//                        userList.forEach { item ->
+//                            val recipient = item.getUserEmail()
+//                            val subject = "Site Visit Report"
+//                            val messageBody =
+//                                "Dear ${item.getFirstName()} ${item.getLastName()}, A report for site visit to,  ${standardLevyFactoryVisitReportEntity.companyName} has been prepared.Kindly Log into the KIMS to view. NB. Auto Generated E-Mail From KEBS "
+//                            if (recipient != null) {
+//                                notifications.sendEmail(recipient, subject, messageBody)
+//                            }
+//                        }
 
                         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId)
                             ?.let { t ->
@@ -1242,16 +1243,16 @@ class StandardLevyService(
         loggedInUser.id?.let { variables["levelOneId"] = it }
         if (variables["Yes"] == true) {
 
-            var userList = companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
-            userList.forEach { item ->
-                val recipient = item.getUserEmail()
-                val subject = "Site Visit Report Approved"
-                val messageBody =
-                    "Dear ${item.getFirstName()} ${item.getLastName()}, Report for site visit to,  ${standardLevyFactoryVisitReportEntity.companyName} has been approved. NB. Auto Generated E-Mail From KEBS "
-                if (recipient != null) {
-                    notifications.sendEmail(recipient, subject, messageBody)
-                }
-            }
+//            var userList = companyStandardRepository.getUserEmail(standardLevyFactoryVisitReportEntity.assigneeId)
+//            userList.forEach { item ->
+//                val recipient = item.getUserEmail()
+//                val subject = "Site Visit Report Approved"
+//                val messageBody =
+//                    "Dear ${item.getFirstName()} ${item.getLastName()}, Report for site visit to,  ${standardLevyFactoryVisitReportEntity.companyName} has been approved. NB. Auto Generated E-Mail From KEBS "
+//                if (recipient != null) {
+//                    notifications.sendEmail(recipient, subject, messageBody)
+//                }
+//            }
 
             variables["approvalStatus"] = "Approved by $approverFname  $approverLname"
             variables["approvalStatusId"] = 1
@@ -1328,13 +1329,13 @@ class StandardLevyService(
                     standardLevySiteVisitRemarksRepository.save(standardLevySiteVisitRemarks)
                 } ?: throw Exception("TASK NOT FOUND")
             //val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val subject = "Site Visit Report Rejected  "
-            val messageBody =
-                "Site visit report has been rejected by  " + commonDaoServices.loggedInUserDetailsEmail().userName + ".Log in to KIMS to make recommended changes."
-            if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
-            }
+//            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+//            val subject = "Site Visit Report Rejected  "
+//            val messageBody =
+//                "Site visit report has been rejected by  " + commonDaoServices.loggedInUserDetailsEmail().userName + ".Log in to KIMS to make recommended changes."
+//            if (recipient != null) {
+//                notifications.sendEmail(recipient, subject, messageBody)
+//            }
 
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
@@ -1417,13 +1418,13 @@ class StandardLevyService(
         standardLevySiteVisitRemarks.remarkBy = approveName
 
         if (variables["Yes"] == true) {
-            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val subject = "Site Visit Report Approved  "
-            val messageBody =
-                "Site visit report has been approved by  " + commonDaoServices.loggedInUserDetailsEmail().userName + "."
-            if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
-            }
+//            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+//            val subject = "Site Visit Report Approved  "
+//            val messageBody =
+//                "Site visit report has been approved by  " + commonDaoServices.loggedInUserDetailsEmail().userName + "."
+//            if (recipient != null) {
+//                notifications.sendEmail(recipient, subject, messageBody)
+//            }
             variables["approvalStatusLevelTwo"] = "Approved by $approverFname  $approverLname"
             variables["approvalStatusId"] = 1
             standardLevyFactoryVisitReportRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.id)
@@ -1496,13 +1497,13 @@ class StandardLevyService(
                 } ?: throw Exception("TASK NOT FOUND")
 
             //val userEmail = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
-            val subject = "Report Rejected  "
-            val messageBody =
-                "Site visit report has been rejected by  " + commonDaoServices.loggedInUserDetailsEmail().userName + ".Log in to KIMS to make recommended changes."
-            if (recipient != null) {
-                notifications.sendEmail(recipient, subject, messageBody)
-            }
+//            val recipient = standardLevyFactoryVisitReportEntity.assigneeId?.let { commonDaoServices.getUserEmail(it) };
+//            val subject = "Report Rejected  "
+//            val messageBody =
+//                "Site visit report has been rejected by  " + commonDaoServices.loggedInUserDetailsEmail().userName + ".Log in to KIMS to make recommended changes."
+//            if (recipient != null) {
+//                notifications.sendEmail(recipient, subject, messageBody)
+//            }
 
             companyProfileRepo.findByIdOrNull(standardLevyFactoryVisitReportEntity.manufacturerEntity)
                 ?.let { companyProfileEntity ->
@@ -2792,8 +2793,8 @@ class StandardLevyService(
         return companyProfileRepo.getRegionList()
     }
 
-    fun getLevyHistoricalPayments(): MutableList<StdLevyHistoricalPayments> {
-        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPayments()
+    fun getLevyHistoricalPayments(): MutableList<LogKebsLevyPayments> {
+        return paymentsRepository.getLevyHistoricalPayments()
     }
 
     fun getLevyHistoricalPaymentsFilter(
@@ -2801,8 +2802,8 @@ class StandardLevyService(
         periodTo: Date?,
         company: String?,
         kraPin: String?
-    ): MutableList<StdLevyHistoricalPayments> {
-        return stdLevyHistoricalPaymentsRepo.getLevyHistoricalPaymentsFilter(periodFrom, periodTo, company, kraPin)
+    ): MutableList<LogKebsLevyPayments> {
+        return paymentsRepository.getLevyHistoricalPaymentsFilter(periodFrom, periodTo, company, kraPin)
     }
 
     fun getLevyPaymentStatus(): Boolean {
@@ -2815,7 +2816,7 @@ class StandardLevyService(
         val exemptionStatus = companyProfileRepo.getExemptionStatus(userId)
         //recordCount= stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin,toCheckYear,prevMonth)
         if (exemptionStatus.equals(0)) {
-            stdLevyHistoricalPaymentsRepo.getPaymentStatus(companyPin, toCheckYear, prevMonth)?.let {
+            paymentsRepository.getPaymentStatus(companyPin, toCheckYear, prevMonth)?.let {
                 return true
             }
                 ?: return false

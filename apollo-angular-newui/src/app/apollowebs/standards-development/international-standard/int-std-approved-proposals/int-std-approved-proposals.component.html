@@ -271,27 +271,25 @@
                                                                                         <thead>
                                                                                         <tr>
                                                                                             <th>#</th>
-                                                                                            <th class="knw">Time</th>
-                                                                                            <th class="knw">Title</th>
-                                                                                            <th class="knw">Name Of Organization</th>
-                                                                                            <th class="knw">Clause</th>
-                                                                                            <th class="knw">Paragraph</th>
-                                                                                            <th class="knw">Scope</th>
-                                                                                            <th class="knw">Observation</th>
                                                                                             <th class="knw">Name of Respondent</th>
+                                                                                            <th class="knw">Name Of Organization</th>
+                                                                                            <th class="knw">Recommendations</th>
+                                                                                            <th class="knw">Reason</th>
+                                                                                            <th class="knw">Time</th>
+                                                                                            <th class="knw">Adoption Acceptable</th>
+
+
                                                                                         </tr>
                                                                                         </thead>
                                                                                         <tbody>
                                                                                         <tr  *ngFor="let comStdCommitteeRemark of comStdCommitteeRemarks let i=index">
                                                                                             <td>{{i+1}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.commentTime | date: 'yyyy-MM-dd'}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.commentTitle}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.nameOfOrganization}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.comClause}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.comParagraph}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.scope}}</td>
-                                                                                            <td>{{comStdCommitteeRemark.observation}}</td>
                                                                                             <td>{{comStdCommitteeRemark.nameOfRespondent}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.nameOfOrganization}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.recommendations}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.reason}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.commentTime | date: 'yyyy-MM-dd'}}</td>
+                                                                                            <td>{{comStdCommitteeRemark.adoptDraft}}</td>
                                                                                         </tr>
                                                                                         </tbody>
                                                                                     </table>
