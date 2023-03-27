@@ -72,6 +72,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   @ViewChild('demoForm') myForm;
   @ViewChild('closebutton') closebutton;
   @ViewChild('standardsInput') standardsInput: ElementRef;
+  @ViewChild('otherRecommendation') otherRecommendation: ElementRef;
 
   // @ViewChild('selectList', { static: false }) selectList: ElementRef;
   selectedDataSheet: DataReportDto;
@@ -118,6 +119,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   finalRemarkHODForm!: FormGroup;
   investInspectReportForm!: FormGroup;
   finalRecommendationDetailsForm!: FormGroup;
+  otherFinalRecommendation!: FormGroup;
   finalRecommendationForm!: FormGroup;
   preliminaryRecommendationForm!: FormGroup;
   chargeSheetForm!: FormGroup;
@@ -2000,6 +2002,9 @@ export class WorkPlanDetailsComponent implements OnInit {
       recommendationId: ['', Validators.required],
       recommendationName: ['', Validators.required],
     });
+    this.otherFinalRecommendation = this.formBuilder.group({
+      otherRecommendationName: ['', Validators.required],
+    });
 
     this.preliminaryReportForm = this.formBuilder.group({
       id : null,
@@ -2506,25 +2511,31 @@ export class WorkPlanDetailsComponent implements OnInit {
 
       this.selectedRecommendationID = this.finalRecommendationDetailsForm?.get('recommendationId')?.value;
       // this.selectedRecommendationName = ;
+      if (this.selectedRecommendationID == 61){
+          this.showOther = true;
+      }
+
       const valueFound = this.recommendationList?.filter(x => Number(this.selectedRecommendationID) === Number(x.id));
-      if (this.selectedRecommendationID == 61) {
-        this.showOther = true;
-      } else {
+
         for (let h = 0; h < valueFound.length; h++) {
           this.selectedRecommendationName = valueFound[h].recommendationName;
           console.log(`selectedRecommendationName set to ${valueFound[h].recommendationName}`);
         }
         console.log(`selectedRecommendationName set to ${this.selectedRecommendationName}`);
-      }
 
+      this.finalRecommendationDetailsForm?.get('recommendationName')?.setValue(this.selectedRecommendationName);
 
   }
 
 
   onClickAddDataRecommendationDetails() {
-    if (this.showOther) {
-      this.selectedRecommendationName = this.finalRecommendationDetailsForm?.get('recommendationName')?.value;
+    if(this.otherFinalRecommendation.valid && this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61){
+      const userRecommendation = this.otherFinalRecommendation?.get('otherRecommendationName')?.value;
+      this.finalRecommendationDetailsForm?.get('recommendationName')?.setValue(userRecommendation);
+    }else if(this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61 && !this.otherFinalRecommendation.valid){
+      this.msService.showWarning("Please type in a recommendation or select another recommendation");
     }
+
     this.dataSaveFinalRecommendationDetails = this.finalRecommendationDetailsForm.value;
     // tslint:disable-next-line:max-line-length
     const  resourceName = this.dataSaveFinalRecommendationList.filter(x => String(this.dataSaveFinalRecommendationDetails.recommendationName) === String(x.recommendationName)).length;
@@ -2534,6 +2545,8 @@ export class WorkPlanDetailsComponent implements OnInit {
       this.dataSaveFinalRecommendationList.push(this.dataSaveFinalRecommendationDetails);
     }
     this.finalRecommendationDetailsForm?.reset();
+    this.otherRecommendation.nativeElement.value = '';
+    this.showOther = false;
   }
 
   private loadData(referenceNumber: string, batchReferenceNumber: string ): any {
@@ -3872,7 +3885,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.saveFilesUploadFinalEndWorkPlanResults();
           });
     } else {
-      this.msService.showError('NO FILE SELECTED FOR UPLOADED');
+      this.msService.showError('NO FILE SELECTED FOR UPLOAD');
     }
 
   }
@@ -3900,7 +3913,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             console.log(data);
             // this.loadStandards();
             this.SpinnerService.hide();
-            this.msService.showSuccess('FINAL REMARKS REAMRKS AND STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('FINAL REMARKS AND STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

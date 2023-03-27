@@ -774,7 +774,7 @@
                                                 <label><b>Average compliance: </b></label>
                                             </div>
                                             <div style="margin-right: 20%;">
-                                                <label><b>{{averageCompliance}}</b></label>
+                                                <label><b>{{workPlanInspection?.overAllCompliance}}</b></label>
                                             </div>
 
                                         </div>
@@ -956,13 +956,13 @@
                                 <div *ngFor="let role of roles">
                                     <div *ngIf="!workPlanInspection?.msProcessEndedStatus">
                                         <div *ngIf="role == 'MS_DIRECTOR_MODIFY'">
-                                            <button  *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false
-                                                && productsCountRecommendationDirector == workPlanInspection?.productList?.length"
-                                                     (click)="onClickEndAddingRecommendationDirector()" mat-raised-button=""
-                                                     class="btn btn-sm btn-primary mr-2"><span
-                                                    class="mat-button-wrapper">END ADDING FINAL REMARKS</span>
-                                                <div class="mat-button-focus-overlay"></div>
-                                            </button>
+<!--                                            <button  *ngIf="workPlanInspection?.hodRecommendationStatus && workPlanInspection?.directorRecommendationRemarksStatus == false-->
+<!--                                                && productsCountRecommendationDirector == workPlanInspection?.productList?.length"-->
+<!--                                                     (click)="onClickEndAddingRecommendationDirector()" mat-raised-button=""-->
+<!--                                                     class="btn btn-sm btn-primary mr-2"><span-->
+<!--                                                    class="mat-button-wrapper">END ADDING FINAL REMARKS</span>-->
+<!--                                                <div class="mat-button-focus-overlay"></div>-->
+<!--                                            </button>-->
                                             <button  *ngIf="workPlanInspection?.finalReportGenerated
                                                 && workPlanInspection?.preliminaryReportFinal?.approvedStatusHofFinal
                                                 && workPlanInspection?.preliminaryReportFinal?.rejectedStatusHofFinal == false
@@ -1983,6 +1983,13 @@
                             <div class="form-body">
                                 <div class="form-group">
                                     <div>
+                                        <label ><b>Please upload the letter/document before ending the process:</b></label>
+                                        <form #demoForm="ngForm">
+                                            <file-upload [(ngModel)]="uploadedFinalRemarksFiles" name="uploadedFinalRemarksFiles"
+                                                         id="uploadedFinalRemarksFiles"
+                                                         accept=".pdf, .png, .jpg, .html, .htm, .doc, .docx, .xls , .xlsx, .ppt, .pptx, .txt">
+                                            </file-upload>
+                                        </form>
                                         <label for="hodFeedBackRemarks"><b>Please write, in detail, your feedback for MS Conducted:</b></label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="hodFeedBackRemarks"
@@ -2326,7 +2333,7 @@
                     >SUBMIT
                     </button>
                     <button *ngIf="(currDiv == 'addFinalRemarksHOD')" mat-raised-button type="button" class="btn btn-success"
-                            (click)="onClickSaveFinalRemarksHOD(finalRemarkHODForm.valid);"
+                            (click)="onClickSaveUploadFinalEndWorkPlanResults();"
                             [disabled]="!finalRemarkHODForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
@@ -4689,11 +4696,19 @@
                                             <option [value]="" selected disabled>Please select</option>
                                             <option *ngFor="let app of recommendationList | filterPipe: {status: true}" [value]="app.id">{{app.recommendationName}}</option>
                                         </select>
-                                        <input *ngIf="showOther" class="form-control two-column-input" type="text"
-                                               formControlName="recommendationName" name="recommendationName" placeholder="Enter other recommendation name">
                                     </div>
                                 </div>
 
+                                <div class="col" *ngIf="showOther">
+                                    <div class="form-group">
+                                        <form [formGroup] = "otherFinalRecommendation">
+                                            <input style="border: 1px solid red" *ngIf="showOther" class="form-control two-column-input" type="text"
+                                                   formControlName="otherRecommendationName" name="recommendationName" placeholder="Enter other recommendation name" #otherRecommendation>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col">
                                     <div class="form-group">
                                         <button *ngIf="finalRecommendationDetailsForm.valid" mat-raised-button
