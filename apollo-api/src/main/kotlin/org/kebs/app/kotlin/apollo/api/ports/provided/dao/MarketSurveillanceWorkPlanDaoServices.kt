@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.ktor.util.*
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.MarketSurveillanceBpmn
@@ -38,14 +37,12 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.lang.reflect.Type
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
-import java.time.Period
 import java.util.*
-import kotlin.time.days
 
 
 @Service
@@ -2370,7 +2367,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         with(workPlanScheduled) {
             hodRecommendationStatus = map.activeStatus
             reportPendingReview = map.activeStatus
-            directorRecommendationRemarksStatus = map.inactiveStatus
+            directorRecommendationRemarksStatus = map.activeStatus
             if (destructionFound) {
                 destructionRecommended = map.activeStatus
             }
@@ -2382,7 +2379,8 @@ class MarketSurveillanceWorkPlanDaoServices(
                     ?.let { daysConvert -> commonDaoServices.localDateToTimestamp(daysConvert) }
             }
             msProcessId = applicationMapProperties.mapMSWorkPlanInspectionRecommendationsADDED
-            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameDirector
+//            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameDirector
+            userTaskId = applicationMapProperties.mapMSCPWorkPlanUserTaskNameIO
         }
 
         val fileSaved = updateWorkPlanInspectionDetails(workPlanScheduled, map, loggedInUser)
@@ -3122,8 +3120,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         var workPlanScheduled = findWorkPlanActivityByReferenceNumber(referenceNo)
         val batchDetails = findCreatedWorkPlanWIthRefNumber(batchReferenceNo)
         val dataFileSaved = workPlanInspectionDetailsAddPreliminaryReport(body, workPlanScheduled, map, loggedInUser)
-        val preliminaryDetailsFound =
-            findPreliminaryReportByWorkPlanGeneratedIDAndFinalReportStatus(workPlanScheduled.id, map.inactiveStatus)
+        val preliminaryDetailsFound = findPreliminaryReportByWorkPlanGeneratedIDAndFinalReportStatus(workPlanScheduled.id, map.inactiveStatus)
 
         if (dataFileSaved.first.status == map.successStatus) {
             when (workPlanScheduled.onsiteEndStatus) {
@@ -6200,20 +6197,20 @@ class MarketSurveillanceWorkPlanDaoServices(
 
 
         val dataReportDtoList = mutableListOf<DataReportDto>()
+        var overAllCompliance = BigDecimal.ZERO
         findDataReportListByWorkPlanInspectionID(workPlanScheduledDetails.id)
             ?.forEach { dataReport ->
                 val dataReportParameters = dataReport.id.let { findDataReportParamsByDataReportID(it) }
                 val dataReportParametersDto = dataReportParameters?.let { mapDataReportParamListDto(it) }
-                val dataReportDto =
-                    dataReport.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
+                val dataReportDto = dataReport.let { dataReportParametersDto?.let { it1 -> mapDataReportDetailsDto(it, it1) } }
                 if (dataReportDto != null) {
                     dataReportDtoList.add(dataReportDto)
                 }
+                overAllCompliance= dataReport.totalComplianceScore?.toBigDecimal()?.let { overAllCompliance.plus(it) }!!
             }
 
 
-        val preliminaryReportList =
-            findPreliminaryReportListByWorkPlanInspectionID(workPlanScheduledDetails.id, map.activeStatus)
+        val preliminaryReportList = findPreliminaryReportListByWorkPlanInspectionID(workPlanScheduledDetails.id, map.activeStatus)
         val preliminaryReportListDto = preliminaryReportList?.let { mapInspectionInvestigationDetailsListDto(it) }
 
         val inspectionInvestigation =
@@ -6345,7 +6342,9 @@ class MarketSurveillanceWorkPlanDaoServices(
             analysisLabCountDoneAndSent,
             workPlanProductsDto?.second,
             workPlanProductsDto?.first,
-            preliminaryReportDtoValuesFinal
+            preliminaryReportDtoValuesFinal,
+            overAllCompliance = when {overAllCompliance != BigDecimal.ZERO -> { overAllCompliance.div(dataReportDtoList.size.toBigDecimal()) }else -> { BigDecimal.ZERO } }
+
         )
     }
 
@@ -6407,6 +6406,7 @@ class MarketSurveillanceWorkPlanDaoServices(
         productListRecommendationAddedCount: Int?,
         productList: List<WorkPlanProductDto>?,
         preliminaryReportFinal: PreliminaryReportDto?,
+        overAllCompliance: BigDecimal,
     ): WorkPlanInspectionDto {
         return WorkPlanInspectionDto(
             wKP.id,
@@ -6550,7 +6550,8 @@ class MarketSurveillanceWorkPlanDaoServices(
             commonDaoServices.getCurrentDate(),
             wKP.latestPreliminaryReport,
             wKP.latestFinalPreliminaryReport,
-            complaintsRepo.findByIdOrNull(wKP.complaintId?: -1L)?.referenceNumber
+            complaintsRepo.findByIdOrNull(wKP.complaintId?: -1L)?.referenceNumber,
+            overAllCompliance
 
         )
     }

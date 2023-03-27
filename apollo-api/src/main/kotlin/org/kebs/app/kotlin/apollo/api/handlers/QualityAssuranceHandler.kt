@@ -218,7 +218,8 @@ class QualityAssuranceHandler(
                         loggedInUser,
                         applicationMapProperties.mapQAPermitTypeIdSmark,
                         map.activeStatus,
-                        map.inactiveStatus
+                        map.inactiveStatus,
+                        map.activeStatus,
                     )
                 }
 
@@ -2106,7 +2107,8 @@ class QualityAssuranceHandler(
                             loggedInUser,
                             permitTypeID,
                             map.activeStatus,
-                            map.inactiveStatus
+                            map.inactiveStatus,
+                            map.activeStatus,
                         ), map
                     )
 //                    permitListAllApplications = qaDaoServices.listPermits(
@@ -2282,9 +2284,10 @@ class QualityAssuranceHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updateCompanyTurnOverDetails(body, loggedInUser, map)
-                        ?.let { ok().body(it) }
+                        ?.let {
+                            ok().body(it)
+                        }
                         ?: onErrors("We could not process your request at the moment")
-
                 }
 
                 else -> {
@@ -4052,8 +4055,7 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
             val pmOldPermitSmark = qaDaoServices.findPermitBYID(permitID)
             if (pmOldPermitSmark.fmarkGenerated == 1) {

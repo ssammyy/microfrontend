@@ -1,7 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
@@ -165,8 +167,10 @@ class MarketSurveillanceComplaintProcessDaoServices(
                 "${body.customerDetails.firstName} ${body.customerDetails.lastName}"
             )
 
-            sendingEmailForNewComplaint(updatedComplaint, customerEmail, map, sr, designationsEntity, regionsEntity, complaint, body)
-
+            GlobalScope.launch(Dispatchers.IO) {
+                delay(100L)
+                sendingEmailForNewComplaint(updatedComplaint, customerEmail, map, sr, designationsEntity, regionsEntity, complaint, body)
+            }
 
             /**
              * TODO: Lets discuss to understand better how to keep track of schedules
@@ -193,7 +197,6 @@ class MarketSurveillanceComplaintProcessDaoServices(
         complaint: Pair<ServiceRequestsEntity, ComplaintEntity>,
         body: NewComplaintDto
     ) {
-        runBlocking {
             val complainantEmailComposed = complaintSubmittedDTOEmailCompose(updatedComplaint)
 
             commonDaoServices.sendEmailWithUserEmailAsync(customerEmail,
@@ -243,7 +246,7 @@ class MarketSurveillanceComplaintProcessDaoServices(
                     }
                 }
             }
-        }
+
     }
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")

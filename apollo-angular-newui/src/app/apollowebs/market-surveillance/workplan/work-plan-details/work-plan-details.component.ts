@@ -232,6 +232,7 @@ export class WorkPlanDetailsComponent implements OnInit {
   uploadedFilesOnly: FileList;
   uploadedSuccessfulAppealFiles: FileList;
   uploadedAppealFiles: FileList;
+  uploadedFinalRemarksFiles: FileList;
   uploadedFilesDestination: FileList;
   uploadDestructionReportFiles: FileList;
   uploadedFiles: FileList;
@@ -3853,6 +3854,53 @@ export class WorkPlanDetailsComponent implements OnInit {
             // this.loadStandards();
             this.SpinnerService.hide();
             this.msService.showSuccess('FINAL REPORT FILE(S) UPLOADED AND SAVED SUCCESSFULLY');
+          },
+          error => {
+            this.SpinnerService.hide();
+            console.log(error);
+            this.msService.showError('AN ERROR OCCURRED');
+          },
+      );
+    }
+  }
+
+  onClickSaveUploadFinalEndWorkPlanResults() {
+    if (this.uploadedFinalRemarksFiles.length > 0) {
+      this.msService.showSuccessWith2Message('Are you sure your want to End MS PROCESS?', 'You won\'t be able to revert back after submission!',
+          // tslint:disable-next-line:max-line-length
+          'You can go back and click the button to update File(s) Before Saving', 'FILE(S) UPLOADED SUCCESSFUL', () => {
+            this.saveFilesUploadFinalEndWorkPlanResults();
+          });
+    } else {
+      this.msService.showError('NO FILE SELECTED FOR UPLOADED');
+    }
+
+  }
+
+
+  saveFilesUploadFinalEndWorkPlanResults() {
+    if (this.uploadedFinalRemarksFiles.length > 0) {
+      this.SpinnerService.show();
+      const file = this.uploadedFinalRemarksFiles;
+      this.dataSaveFinalRemarks = {...this.dataSaveFinalRemarks, ...this.finalRemarkHODForm.value};
+      const formData = new FormData();
+      formData.append('referenceNo', this.workPlanInspection.referenceNumber);
+      formData.append('batchReferenceNo', this.workPlanInspection.batchDetails.referenceNumber );
+      formData.append('data', JSON.stringify(this.dataSaveFinalRemarks));
+      formData.append('docTypeName', 'WORK_PLAN_END_UPLOAD');
+      for (let i = 0; i < file.length; i++) {
+        console.log(file[i]);
+        formData.append('docFile', file[i], file[i].name);
+        // this.uploadedFiles.item(i).slice();
+      }
+      this.msService.saveWorkPlanFilesFinalENDWorkPlan(formData).subscribe(
+          (data: any) => {
+            this.workPlanInspection = data;
+            this.uploadedFinalRemarksFiles = this.uploadedFinalRemarksFiles;
+            console.log(data);
+            // this.loadStandards();
+            this.SpinnerService.hide();
+            this.msService.showSuccess('FINAL REMARKS REAMRKS AND STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();

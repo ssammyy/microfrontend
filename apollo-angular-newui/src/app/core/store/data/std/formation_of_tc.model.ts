@@ -18,7 +18,7 @@ export interface JustificationForTc {
     createdBy: number;
     version: number;
     comments: number;
-    hofId: number;
+    hofId: string;
     spcId: number;
     sacId: string;
     status: string;

@@ -298,6 +298,7 @@ data class WorkPlanInspectionDto(
         var latestPreliminaryReport : Long? = null,
         var latestFinalPreliminaryReport : Long? = null,
         var complaintReferenceNumber : String? = null,
+        var overAllCompliance : BigDecimal? = null,
 )
 
 data class FuelEntityDto(

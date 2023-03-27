@@ -277,7 +277,6 @@ class QADaoServices(
                     ).let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_ASSESSORS_READ" -> {
                     listPermits(
@@ -289,7 +288,6 @@ class QADaoServices(
                     ).let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_HOD_READ" -> {
                     findAllApplicationsQAMHODRMHOFByRegion(
@@ -301,7 +299,6 @@ class QADaoServices(
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_HOF_READ" -> {
                     findAllApplicationsQAMHODRMHOFByRegion(
@@ -313,7 +310,6 @@ class QADaoServices(
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_RM_READ" -> {
                     findAllApplicationsQAMHODRMHOFByRegion(
@@ -325,7 +321,6 @@ class QADaoServices(
                     )?.let { listPermits(it, map) }?.let { permitListMyTasksAddedTogether.addAll(it) }
                 }
             }
-
             when (a.authority) {
                 "QA_MANAGER_READ" -> {
                     findAllApplicationsQAMHODRMHOFByRegion(
@@ -341,7 +336,8 @@ class QADaoServices(
             if (a.authority == "QA_PAC_SECRETARY_READ" || a.authority == "QA_PSC_MEMBERS_READ" || a.authority == "QA_PCM_READ") {
                 findAllFirmsInKenyaPermitsApplicationsWithPermitTypeAndPaidStatus(
                     permitTypeID,
-                    map.initStatus
+                    map.initStatus,
+                    page
                 ).let { listPermits(it, map) }.let { permitListMyTasksAddedTogether.addAll(it) }
             }
 
@@ -1745,15 +1741,11 @@ class QADaoServices(
                                 recommendationApprovalStatus = 1
                                 resubmitApplicationStatus = 0
                                 changesMadeStatus = 0
-                                userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                                permitStatus = applicationMapProperties.mapQaStatusPHodQamApproval
                             }
 
                             else -> {
                                 recommendationApprovalStatus = 0
                                 resubmitApplicationStatus = 1
-                                userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                permitStatus = applicationMapProperties.mapQaStatusDeferredRecommendationQAM
                             }
                         }
                         recommendationApprovalRemarks = body.recommendationApprovalRemarks
@@ -1762,43 +1754,11 @@ class QADaoServices(
                                 resubmitApplicationStatus = 0
                                 changesMadeStatus = 0
                                 factoryInspectionReportApprovedRejectedStatus = 1
-                                when (permitType.id) {
-                                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                                        permitStatus = applicationMapProperties.mapQaStatusPRecommendationApproval
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                    }
-
-                                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                                        permitStatus = applicationMapProperties.mapQaStatusPRecommendationApproval
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                    }
-
-                                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                                        userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                                        permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
-                                    }
-                                }
                             }
 
                             else -> {
                                 resubmitApplicationStatus = 1
                                 factoryInspectionReportApprovedRejectedStatus = 0
-                                when (permitType.id) {
-                                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                    }
-
-                                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                    }
-
-                                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                                        userTaskId = applicationMapProperties.mapUserTaskNameQAO
-                                        permitStatus = applicationMapProperties.mapQaStatusInspectionReportRejected
-                                    }
-                                }
                             }
                         }
                         factoryInspectionReportApprovedRejectedRemarks = body.supervisorComments
@@ -2067,7 +2027,6 @@ class QADaoServices(
                                     }
                                 }
                             }
-
                             else -> {
                                 permit.fmarkGenerated = 0
                             }
@@ -2313,19 +2272,6 @@ class QADaoServices(
         companyProfileRepo.findByIdOrNull(dto.companyProfileID)
             ?.let { entity ->
 //                if(entity.updateFirmType==dto.selectedFirmTypeID){
-                entity.apply {
-                    val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
-                    updateDetailsStatus = null
-                    updateDetailsComment = null
-                    requesterComment = null
-                    updateFirmType = null
-                    requesterId = null
-                    firmCategory = firmTypeDetails.id
-                    yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
-                    modifiedBy = user.userName
-                    modifiedOn = Timestamp.from(Instant.now())
-                }
-
                 when {
                     entity.firmCategory == 1L && dto.selectedFirmTypeID > 1 -> {
                         entity.upgradeType = 1
@@ -2347,6 +2293,20 @@ class QADaoServices(
                         entity.upgradeType = 0
                     }
                 }
+
+                entity.apply {
+                    val firmTypeDetails = findFirmTypeById(dto.selectedFirmTypeID)
+                    updateDetailsStatus = null
+                    updateDetailsComment = null
+                    requesterComment = null
+                    updateFirmType = null
+                    requesterId = null
+                    firmCategory = firmTypeDetails.id
+                    yearlyTurnover = firmTypeDetails.varField1?.toBigDecimal()
+                    modifiedBy = user.userName
+                    modifiedOn = Timestamp.from(Instant.now())
+                }
+
 
                 when (entity.upgradeType) {
                     1 -> {
@@ -2389,7 +2349,9 @@ class QADaoServices(
                         )
                         allPermitDetails?.forEach { pm ->
                             with(pm) {
-                                sendApplication = 1
+                                endOfProductionStatus = map.inactiveStatus
+                                invoiceGenerated = 0
+                                sendApplication = 0
                                 varField8 = 1.toString()
                                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                                 permitStatus = applicationMapProperties.mapQaStatusPManufactureReGenerateInvoice
@@ -3468,14 +3430,15 @@ class QADaoServices(
         user: UsersEntity,
         permitType: Long,
         status: Int,
-        fmarkGeneratedStatus: Int
+        fmarkGeneratedStatus: Int,
+        sendApplication: Int
     ): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
-        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndFmarkGenerated(
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndFmarkGeneratedAndSendApplication(
             userId,
             permitType,
-            status,
-            fmarkGeneratedStatus
+            fmarkGeneratedStatus,
+            sendApplication
         )
             ?.let { permitList ->
                 return permitList

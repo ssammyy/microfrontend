@@ -828,14 +828,6 @@ export class PermitDetailsAdminComponent implements OnInit {
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 // if (applicationType === 'application/pdf') {
                     window.open(downloadURL, '_blank');
-
-                // } else {
-                //     const link = document.createElement('a');
-                //     link.href = downloadURL;
-                //     link.download = fileName;
-                //     link.click();
-                // }
-                // this.pdfUploadsView = dataPdf;
             },
             error => {
                 this.SpinnerService.hide();
@@ -860,6 +852,10 @@ export class PermitDetailsAdminComponent implements OnInit {
             if (divVal === arrHead[h]) {
                 this.currDivLabel = arrHeadSave[h];
             }
+        }
+
+        if(divVal==='viewInspectionInvoiceDetails'){
+            this.viewInspectionInvoiceDetailsForm.patchValue(this.allPermitDetails?.inspectionInvoiceUpload);
         }
 
         this.currDiv = divVal;
@@ -927,15 +923,18 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.sta1 = this.allPermitDetails.sta1DTO;
         this.sta1Form.patchValue(this.sta1);
 
-        this.allSTA10Details = this.allPermitDetails.sta10DTO;
-        this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
-        this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
-        this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
-        this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
-        this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
-        this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
-        this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
-        this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
+        if (this.allPermitDetails?.permitDetails?.permitTypeID === this.SMarkTypeID) {
+            this.allSTA10Details = this.allPermitDetails.sta10DTO;
+            this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
+            this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
+            this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
+            this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
+            this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
+            this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+            this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+            this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
+        }
+
         this.inspectionReportDetailsDto = this.allPermitDetails.inspectionReportDetails;
 
 

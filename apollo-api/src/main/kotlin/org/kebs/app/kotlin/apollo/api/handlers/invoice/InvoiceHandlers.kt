@@ -498,8 +498,7 @@ class InvoiceHandlers(
 
     @PreAuthorize("hasAuthority('PAYMENT')")
     fun processPaymentSageNotification(req: ServerRequest): ServerResponse {
-        var result = CallbackResponses()
-        try {
+        return  try {
             req.body<SageNotificationResponse>()
                 .let { body ->
                     val errors: Errors = BeanPropertyBindingResult(body, SageNotificationResponse::class.java.name)
@@ -515,13 +514,14 @@ class InvoiceHandlers(
                 ?: throw InvalidValueException("No Body found")
 
         } catch (e: Exception) {
+            val result = CallbackResponses()
             KotlinLogging.logger { }.debug(e.message, e)
             KotlinLogging.logger { }.error(e.message)
-//            onErrors(e.message)
             result.message = "Request failed please try again later"
             result.status = ResponseCodes.EXCEPTION_STATUS
+            return ServerResponse.ok().body(result)
         }
-        return ServerResponse.ok().body(result)
+
     }
 
 }

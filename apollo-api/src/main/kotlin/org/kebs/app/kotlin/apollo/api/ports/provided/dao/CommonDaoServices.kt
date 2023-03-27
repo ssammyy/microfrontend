@@ -51,10 +51,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.io.Files
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.apache.commons.text.StringEscapeUtils
 import org.jasypt.encryption.StringEncryptor
@@ -1593,16 +1589,15 @@ class CommonDaoServices(
         return true
     }
 
-    suspend fun sendEmailWithUserEntityAsync(
+    fun sendEmailWithUserEntityAsync(
         user: UsersEntity,
         uuid: String,
         valuesMapped: Any,
         map: ServiceMapsEntity,
         sr: ServiceRequestsEntity,
         attachmentFilePath: String? = null
-    )= coroutineScope {
-        async {
-            withContext(Dispatchers.IO) {
+    ){
+
             KotlinLogging.logger { }.info { "Started Mail process" }
             notificationsUseCase(map, mutableListOf(user.email), uuid, valuesMapped, sr)
                 ?.let { list ->
@@ -1631,11 +1626,10 @@ class CommonDaoServices(
                     sr.processingEndDate = getTimestamp()
                     serviceRequestsRepository.save(sr)
                 }
-            }
-        }
+
     }
 
-    suspend fun sendEmailWithUserEmailAsync(
+     fun sendEmailWithUserEmailAsync(
         userEmail: String,
         uuid: String,
         valuesMapped: Any,
@@ -1643,9 +1637,7 @@ class CommonDaoServices(
         sr: ServiceRequestsEntity,
         attachmentFilePath: String? = null,
         subjectAppendValue: String? = null
-    )= coroutineScope {
-        async {
-            withContext(Dispatchers.IO) {
+    ) {
                 KotlinLogging.logger { }.info { "Started Mail process" }
                 notificationsUseCase(map, mutableListOf(userEmail), uuid, valuesMapped, sr, subjectAppendValue)
                     ?.let { list ->
@@ -1675,8 +1667,6 @@ class CommonDaoServices(
                         sr.processingEndDate = getTimestamp()
                         serviceRequestsRepository.save(sr)
                     }
-            }
-        }
     }
 
     fun sendEmailWithUserEmail(
@@ -1875,8 +1865,12 @@ class CommonDaoServices(
     fun getCalculatedYearInLong(d1: Date): Int {
         val givenLocalDate = d1.toLocalDate()
         val currentDate = LocalDate.now()
-        val yearsBetween = Period.between(givenLocalDate, currentDate).years
-        return yearsBetween
+        return Period.between(givenLocalDate, currentDate).years
+    }
+
+    fun addYearsToWithDate(noOfYears: Long, d1: Date): Date {
+        val givenLocalDate = d1.toLocalDate()
+        return Date.valueOf(givenLocalDate.plusYears(noOfYears))
     }
 
     fun getCalculatedDaysInLong(d1: Date,d2: Date): Long {

@@ -1067,6 +1067,7 @@ export class WorkPlanInspectionDto {
     latestPreliminaryReport: number;
     latestFinalPreliminaryReport: number;
     complaintReferenceNumber: string;
+    overAllCompliance: number;
 }
 
 export class CountryListDto {
