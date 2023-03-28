@@ -35,7 +35,6 @@ type="ball-scale-multiple"
             <th class="requestNumber">Organisation Name</th>
             <th class="knw">Subject</th>
             <th>Department</th>
-            <th>Assigned To</th>
             <th>Date Submitted</th>
             <th class="action">Action</th>
         </tr>
@@ -49,7 +48,6 @@ type="ball-scale-multiple"
             <td>{{nwaRequestList.organisationName}}</td>
             <td>{{nwaRequestList.subject}}</td>
             <td>{{nwaRequestList.departmentName}}</td>
-            <td>{{nwaRequestList.tcSecAssigned}}</td>
             <td>{{nwaRequestList.submissionDate | date: 'dd/MM/yyyy' }}</td>
             <td ><a  (click)="onOpenModal(nwaRequestList,'prepareJustification')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 130px" data-original-title="Approve">Prepare Proposal</a></td>
 
@@ -60,6 +58,9 @@ type="ball-scale-multiple"
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <div class="logo"><a class="simple-text logo-mini">
+                        <div class="logo-img"><img src="/assets/img/white_logo.png" alt="kebs_logo" style="width: 90px;"></div>
+                    </a></div>
                     <h3 class="modal-title" id="prepareJustificationLabel">ADOPTION PROPOSAL FORM</h3>
                     <button type="button" #closeModalUploadJustification class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
