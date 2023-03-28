@@ -1980,7 +1980,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       complianceRemarks: ['', Validators.required],
       totalCompliance: null,
       totalComplianceTest: null,
-      failedParameters: [''],
+      failedParameters: null,
     });
 
     this.ssfSaveFinalComplianceStatusForm = this.formBuilder.group({
@@ -2621,7 +2621,7 @@ export class WorkPlanDetailsComponent implements OnInit {
       , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/REJECT FINAL REPORT', 'KINDLY ADD START AND END DATE YOU WISH TO END ON-SITE ACTIVITIES'];
+      'APPROVE/REJECT FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -4183,7 +4183,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     for (const selectedStandard of this.standardsArray) {
       const valueInControl = standardsArrayControl.value;
       if (!valueInControl.includes(selectedStandard)) {
-        standardsArrayControl.setValue(valueInControl + ' ' + selectedStandard + '; ');
+        standardsArrayControl.setValue( selectedStandard + '; ');
       }
     }
 
@@ -4372,6 +4372,9 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   onClickSaveSSFLabResultsComplianceStatus(valid: boolean) {
     this.submitted = true;
+    if (this.ssfSaveComplianceStatusForm?.get('failedParameters')?.value == null ){
+      this.ssfSaveComplianceStatusForm?.get('failedParameters')?.setValue(" ");
+    }
     if (valid) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
