@@ -1682,8 +1682,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                         <h4 class="card-title">Actions</h4>
                     </div>
                     <div class="card-body ">
-                        <div *ngFor="let role of roles">
-                            <div *ngIf="role == 'QA_RM_MODIFY' || role == 'QA_HOD_MODIFY'||role == 'QA_MANAGER_MODIFY'">
+                            <div *ngIf="roles.includes('QA_RM_MODIFY') || roles.includes('QA_HOD_MODIFY')||roles.includes('QA_MANAGER_MODIFY')">
 
                                 <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.permitAwardStatus"
                                    data-target="#allProcessModel"
@@ -1765,7 +1764,9 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    (click)="openModalAddDetails('approvePermitQAMHODRecommendationInspectionReport')"
                                    class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
                             </div>
-                            <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
+                        <div *ngFor="let role of roles">
+
+                        <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
                                 <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('addStandardsDetails')"

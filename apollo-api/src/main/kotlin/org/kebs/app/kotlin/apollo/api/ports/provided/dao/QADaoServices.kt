@@ -3362,13 +3362,16 @@ class QADaoServices(
     ): List<PermitApplicationsEntity>? {
 
         var permitListAllApplications: List<PermitApplicationsEntity>? = null
-        when {
-            auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
-                permitListAllApplications =
-                    permitRepo.findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitType(taskID, permitTypeID, page)
-                        ?.toList()
-            }
-        }
+//        when {
+//            auth.authorities.stream().anyMatch { authority -> authority.authority == authToCompareWith } -> {
+//                permitListAllApplications =
+//                    permitRepo.findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitType(taskID, permitTypeID, page)
+//                        ?.toList()
+//            }
+//        }
+        permitListAllApplications =
+            permitRepo.findAllByOldPermitStatusIsNullAndUserTaskIdAndPermitType(taskID, permitTypeID, page)
+                ?.toList()
 
         return permitListAllApplications
     }

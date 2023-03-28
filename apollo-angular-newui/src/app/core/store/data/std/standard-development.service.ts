@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {ReviewApplicationTask, StandardRequest, UsersEntity} from "./std.model";
-import {Observable, of, throwError} from "rxjs";
-import {catchError, map, tap} from "rxjs/operators";
+import {Observable, throwError} from "rxjs";
+import {catchError, map} from "rxjs/operators";
 import {
     DecisionFeedback,
     Department,
@@ -492,7 +492,6 @@ export class StandardDevelopmentService {
     public getAllTcsForApplication(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl23}` + 'getAllTcsForApplication')
     }
-
 
 
     public getProductCategories(): any {

@@ -53,7 +53,7 @@ export class PscDmarkTasksComponent implements OnInit {
     this.loading = true
     this.loadingText = "Retrieving My Tasks"
     this.SpinnerService.show();
-    this.internalService.loadMyTasksByPermitType(this.dmarkID).subscribe(
+    this.internalService.loadMyPscTasksByPermitType(this.dmarkID).subscribe(
         (dataResponse: ApiResponseModel) => {
           if (dataResponse.responseCode === '00') {
             // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);

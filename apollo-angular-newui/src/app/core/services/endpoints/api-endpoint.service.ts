@@ -775,7 +775,8 @@ export class ApiEndpointService {
         LOAD_COMPLETE_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-complete`,
         LOAD_ALL_PERMIT_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-all`,
         LOAD_MY_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list`,
-        LOAD_MY_PSC_TASK_LIST: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-psc`,
+
+        LOAD_MY_TASK_LIST_PSC: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permits-list-psc`,
 
         LOAD_PERMIT_DETAIL: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/view/permit-detail`,
         UPDATE_SECTION: `${ApiEndpointService.QA_INTERNAL_USER_CONTEXT}/apply/permit/section`,
