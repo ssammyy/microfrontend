@@ -1095,6 +1095,9 @@ export class StdLevyPendingTasksComponent implements OnInit {
             console.log(error.message);
           }
       );
+    }else{
+        this.getMnPendingTask();
+        this.SpinnerService.hide();
     }
 
   }
