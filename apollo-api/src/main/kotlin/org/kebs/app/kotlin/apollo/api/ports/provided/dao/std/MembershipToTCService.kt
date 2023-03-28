@@ -10,6 +10,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ID
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -27,8 +28,6 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.collections.set
-import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue as ProcessInstanceResponseValue1
 
 @Service
 class MembershipToTCService(
@@ -130,7 +129,7 @@ class MembershipToTCService(
 
     fun getCallForApplications(): List<TechnicalCommittee> {
 
-        return  technicalCommitteeRepository.findAllByAdvertisingStatus("1")
+        return technicalCommitteeRepository.findAllByAdvertisingStatus("1")
 
     }
 
@@ -143,18 +142,69 @@ class MembershipToTCService(
         return taskDetails
     }
 
-    fun submitTCMemberApplication(membershipTCApplication: MembershipTCApplication): ProcessInstanceResponseValue1 {
-        val variable: MutableMap<String, Any> = HashMap()
+    fun submitTCMemberApplication(membershipTCApplication: MembershipTCApplication): ProcessInstanceResponseValue {
         membershipTCApplication.dateOfApplication = Timestamp(System.currentTimeMillis())
+        val u: TechnicalCommittee = technicalCommitteeRepository.findById(membershipTCApplication.tcId!!).orElse(null);
+        val encryptedId = BCryptPasswordEncoder().encode(membershipTCApplication.tcId.toString())
+        membershipTCApplication.varField10 = encryptedId
+        membershipTCApplication.technicalCommittee = u.title
         membershipTCRepository.save(membershipTCApplication)
-        println("Applicant has uploaded application")
 
-        variable["id"] = membershipTCApplication.id
-        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceResponseValue1(
-            membershipTCApplication.id, processInstance.id, processInstance.isEnded,
-            membershipTCApplication.technicalCommittee ?: throw NullValueNotAllowedException("ID is required")
+        notifications.sendEmail(
+            membershipTCApplication.email!!,
+            "Technical Committee",
+            "Hello " + membershipTCApplication.nomineeName!! + ",\n We have received your application For The Following Technical Committee: " + u.title!! + "\n Please Wait for Further Verification."
         )
+
+        val link =
+            "${applicationMapProperties.baseUrlQRValue}authorizerApproveApplication?applicationID=${encryptedId}"
+
+        notifications.sendEmail(
+            membershipTCApplication.authorizingPersonEmail!!,
+            "Technical Committee",
+            "Hello " + membershipTCApplication.authorizingPerson!! + ",\n We have received an application by " + membershipTCApplication.nomineeName + " For The Following Technical Committee: " + u.title!! + "\n" +
+                    " Please Click On The Following Link To Verify That " + membershipTCApplication.nomineeName + " is a member of your organisation. "
+                    + "\n " + link +
+                    "\n\n\n\n\n\n"
+        )
+
+        return ProcessInstanceResponseValue(
+            membershipTCApplication.id,
+            "Complete",
+            true,
+            membershipTCApplication.nomineeName ?: throw NullValueNotAllowedException("ID is required")
+        )
+
+    }
+
+    fun approveUserApplication(
+        applicationID: String
+    ): ResponseEntity<String> {
+
+        val u: MembershipTCApplication? = membershipTCRepository.findByVarField10(applicationID)
+        return if (u != null) {
+            if (u.approvedByOrganization != null) {
+                ResponseEntity.ok("This Link Has Already Been Used");
+
+            } else {
+                u.approvedByOrganization = "APPROVED"
+                membershipTCRepository.save(u)
+                //send email
+                notifications.sendEmail(
+                    u.email!!,
+                    "Technical Committee Application Approved",
+                    "Hello " + u.nomineeName!! + ",\n Your Application Has Been Approved .\n Please Wait for Further Communication."
+                )
+                ResponseEntity.ok("Saved");
+
+            }
+
+        } else {
+            throw ExpectedDataNotFound("This is not approved for approval")
+        }
+
+
+
 
     }
 
@@ -491,7 +541,6 @@ class MembershipToTCService(
 
         return sdNwaUploadsEntityRepository.save(uploads)
     }
-
 
 
 }

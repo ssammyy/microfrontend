@@ -1,5 +1,5 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ReviewApplicationTask} from "../../../../core/store/data/std/request_std.model";
+import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Document, ReviewApplicationTask} from "../../../../core/store/data/std/request_std.model";
 import {MembershipToTcService} from "../../../../core/store/data/std/membership-to-tc.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
@@ -7,13 +7,15 @@ import {NgxSpinnerService} from "ngx-spinner";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {NgForm} from '@angular/forms';
+import {takeUntil} from "rxjs/operators";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-review-application',
     templateUrl: './review-application.component.html',
     styleUrls: ['./review-application.component.css']
 })
-export class ReviewApplicationComponent implements OnInit {
+export class ReviewApplicationComponent implements OnInit, OnDestroy {
     p = 1;
     p2 = 1;
     public tcTasks: ReviewApplicationTask[] = [];
@@ -22,50 +24,63 @@ export class ReviewApplicationComponent implements OnInit {
     public uploadedFiles: FileList;
     dtOptions: DataTables.Settings = {};
     dtTrigger: Subject<any> = new Subject<any>();
-    @ViewChild(DataTableDirective, {static: false})
-    dtElement: DataTableDirective;
+    dtTrigger2: Subject<any> = new Subject<any>();
+
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
     isDtInitialized: boolean = false
     blob: Blob;
     display = 'none'; //default Variable
     loading = false;
+    private _unsubscribeSignal$: Subject<void> = new Subject();
+    displayUsers: boolean = false;
+
+    dtOptionsB: DataTables.Settings = {};
+    docs !: Document[];
 
 
     constructor(private membershipToTcService: MembershipToTcService, private notifyService: NotificationService,
+                private router: Router,
                 private SpinnerService: NgxSpinnerService) {
     }
 
     ngOnInit(): void {
+        this.dtOptions = {
+            destroy: true,
+        };
         this.getApplicationsForReview();
 
     }
 
+    id: any = 'Review Applications';
+
+    tabChange(ids: any) {
+        this.id = ids;
+        if (this.id == "Review Applications") {
+            this.reloadCurrentRoute()
+        }
+    }
 
     public getApplicationsForReview(): void {
         this.loading = true
         this.loadingText = "Retrieving Applications Please Wait ...."
         this.SpinnerService.show();
-        this.membershipToTcService.getApplicationsForReview().subscribe(
-            (response: ReviewApplicationTask[]) => {
-                console.log(response);
-                this.tcTasks = response;
-                this.SpinnerService.hide();
+        this.membershipToTcService.getApplicationsForReview().pipe(takeUntil(this._unsubscribeSignal$.asObservable()))
+            .subscribe(
+                (response: ReviewApplicationTask[]) => {
+                    this.tcTasks = response;
+                    this.rerender()
+                    this.displayUsers = true;
 
+                    this.SpinnerService.hide();
+                },
+                (error: HttpErrorResponse) => {
+                    this.SpinnerService.hide();
+                    this.displayUsers = true;
 
-                if (this.isDtInitialized) {
-                    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                        dtInstance.destroy();
-                        this.dtTrigger.next();
-                    });
-                } else {
-                    this.isDtInitialized = true
-                    this.dtTrigger.next();
+                    alert(error.message);
                 }
-            },
-            (error: HttpErrorResponse) => {
-                this.SpinnerService.hide();
-                alert(error.message);
-            }
-        )
+            )
     }
 
     public onOpenModal(task: ReviewApplicationTask): void {
@@ -139,7 +154,7 @@ export class ReviewApplicationComponent implements OnInit {
                 let downloadURL = window.URL.createObjectURL(this.blob);
                 const link = document.createElement('a');
                 link.href = downloadURL;
-                this.pdfSrc=downloadURL
+                this.pdfSrc = downloadURL
                 console.log(downloadURL)
                 link.download = fileName;
                 link.click();
@@ -147,5 +162,40 @@ export class ReviewApplicationComponent implements OnInit {
             },
         );
     }
+
+
+    rerender(): void {
+        this.dtElements.forEach((dtElement: DataTableDirective) => {
+            if (dtElement.dtInstance)
+                dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                    dtInstance.destroy();
+                });
+        });
+        setTimeout(() => {
+            this.dtTrigger.next();
+            this.dtTrigger2.next();
+
+
+        });
+
+    }
+
+    ngOnDestroy(): void {
+        // Do not forget to unsubscribe the event
+        this.dtTrigger.unsubscribe();
+        this.dtTrigger2.unsubscribe();
+
+        this._unsubscribeSignal$.next();
+        this._unsubscribeSignal$.unsubscribe();
+
+    }
+
+    reloadCurrentRoute() {
+        let currentUrl = this.router.url;
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate([currentUrl]);
+        });
+    }
+
 
 }

@@ -1,13 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
-import {
-    DecisionFeedback,
-    Document,
-    ProposalForTC,
-    ReviewFeedbackFromSPC,
-    ReviewFormationOFTCRequest
-} from "./request_std.model";
+import {Document, ProposalForTC} from "./request_std.model";
 import {Observable, throwError} from "rxjs";
 import {JustificationForTc} from "./formation_of_tc.model";
 import {catchError, map} from "rxjs/operators";
@@ -19,8 +13,10 @@ export class FormationOfTcService {
     protocol = `https://`;
     baseUrl = ApiEndpointService.DOMAIN.LOCAL_DEV
     private formationOfTcUrl = `${this.protocol}${this.baseUrl}/api/v1/migration/formationOfTC/`;
+
     constructor(private http: HttpClient) {
     }
+
     public uploadProposalForTC(proposalForTC: ProposalForTC): Observable<any> {
 
         console.log(proposalForTC);
@@ -32,7 +28,6 @@ export class FormationOfTcService {
         console.log(proposalForTC);
         return this.http.post<ProposalForTC>(`${this.formationOfTcUrl}` + 'editJustification', proposalForTC)
     }
-
 
 
     public getAllHofJustifications(): Observable<JustificationForTc[]> {
@@ -83,9 +78,11 @@ export class FormationOfTcService {
         return this.http.post<JustificationForTc>(`${this.formationOfTcUrl}` + 'rejectJustificationSAC', justificationForTc)
 
     }
+
     public sacGetAllForWebsite(): Observable<JustificationForTc[]> {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'sacGetAllForWebsite')
     }
+
     public sacGetAllRejected(): Observable<JustificationForTc[]> {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'sacGetAllRejected')
     }
@@ -142,6 +139,7 @@ export class FormationOfTcService {
     public getAllApprovedJustifications(): Observable<JustificationForTc[]> {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'getAllApprovedJustifications')
     }
+
     public getAllRejectedJustifications(): Observable<JustificationForTc[]> {
         return this.http.get<JustificationForTc[]>(`${this.formationOfTcUrl}` + 'getAllRejectedJustifications')
     }

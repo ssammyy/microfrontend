@@ -116,6 +116,8 @@ export class RequestForFormationOfTCComponent implements OnInit {
     userLoggedInID: number;
     userProfile: LoggedInUser;
 
+    approvedJustifications: JustificationForTc[] = [];
+
 
     constructor(private formationOfTcService: FormationOfTcService,
                 private notifyService: NotificationService,

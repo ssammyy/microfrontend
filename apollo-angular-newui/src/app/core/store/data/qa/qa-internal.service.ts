@@ -47,6 +47,19 @@ export class QaInternalService {
             }),
         );
     }
+    public loadMyPscTasksByPermitType(permitTypeID: number): Observable<ApiResponseModel> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_MY_PSC_TASK_LIST);
+        const params = new HttpParams()
+            .set('permitTypeID', String(permitTypeID))
+        return this.http.get<ApiResponseModel>(url, {params}).pipe(
+            map(function (response: ApiResponseModel) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            }),
+        );
+    }
 
     public loadMyOngoingByPermitType(permitTypeID: number): Observable<ApiResponseModel> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.LOAD_ONGOING_LIST);
@@ -134,9 +147,11 @@ export class QaInternalService {
         );
     }
 
-    public getFullyFilledInspectionReport(): Observable<any> {
+    public getFullyFilledInspectionReport(permitId:string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.QA_INTERNAL_USER_ENDPOINT.GET_FULLY_FILLED_INSPECTION_REPORT);
-        return this.http.get<any>(url).pipe(
+        const params = new HttpParams().set('permitID', permitId);
+
+        return this.http.get<any>(url,{params}).pipe(
             map(function (response: any) {
                 return response;
             }),

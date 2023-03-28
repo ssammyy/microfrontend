@@ -99,6 +99,9 @@ export class MyTasksPermitEntityDto {
     versionNumber: bigint;
     encryptedPermitId: string;
     encryptedUserId: string;
+
+    assignOfficer:string;
+
 }
 
 export class ReportsPermitEntityDto {
@@ -708,6 +711,9 @@ export class AllInspectionDetailsApplyDto {
     submittedInspectionReportStatus: Date;
 
     permitDetails: PermitEntityDto;
+
+    inspectionReportDocs: FilesListDto[];
+
 }
 
 

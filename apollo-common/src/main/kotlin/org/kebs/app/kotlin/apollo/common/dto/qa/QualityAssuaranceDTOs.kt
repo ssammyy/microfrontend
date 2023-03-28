@@ -724,6 +724,8 @@ data class PermitEntityDto(
     var versionNumber: Long? = null,
     var encryptedPermitId: String? = null,
     var encryptedUserId: String? = null,
+    var assignOfficer: String? = null,
+
 
     )
 

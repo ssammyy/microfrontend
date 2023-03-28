@@ -3,44 +3,41 @@ import {MyTasksPermitEntityDto} from "../../../../core/store/data/qa/qa.model";
 import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {ApiEndpointService} from "../../../../core/services/endpoints/api-endpoint.service";
-import {SchemeMembershipService} from "../../../../core/store/data/std/scheme-membership.service";
-import {Router} from "@angular/router";
-import {QaInternalService} from "../../../../core/store/data/qa/qa-internal.service";
+import {Store} from "@ngrx/store";
 import {NgxSpinnerService} from "ngx-spinner";
+import {QaInternalService} from "../../../../core/store/data/qa/qa-internal.service";
+import {Router} from "@angular/router";
+import {selectUserInfo} from "../../../../core/store";
 import {ApiResponseModel} from "../../../../core/store/data/ms/ms.model";
 import * as CryptoJS from 'crypto-js';
-import {selectUserInfo} from "../../../../core/store";
-import {Store} from "@ngrx/store";
 
 @Component({
-  selector: 'app-fmark-all-applications',
-  templateUrl: './fmark-all-applications.component.html',
-  styleUrls: ['./fmark-all-applications.component.css']
+  selector: 'app-psc-tasks',
+  templateUrl: './psc-tasks.component.html',
+  styleUrls: ['./psc-tasks.component.css']
 })
-export class FmarkAllApplicationsComponent implements OnInit {
-
+export class PscTasksComponent implements OnInit {
   public allPermitTaskData: MyTasksPermitEntityDto[];
-  roles: string[];
 
+  roles: string[];
   dtOptions: DataTables.Settings = {};
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   dtTrigger1: Subject<any> = new Subject<any>();
+  displayUsers: boolean = false;
 
   loading = false;
   loadingText: string;
-  displayUsers: boolean = false;
-  fmarkID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
-
-  public itemId: string = "";
-
-
-  constructor(private schemeMembershipService: SchemeMembershipService,
-              private router: Router,
-              private internalService: QaInternalService,
+  internalUser: boolean;
+  draftID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID);
+  fmarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID);
+  dmarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID);
+  smarkID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
+  isDtInitialized: boolean = false
+  constructor(private store$: Store<any>,
               private SpinnerService: NgxSpinnerService,
-              private store$: Store<any>,
-  ) {
+              private internalService: QaInternalService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -48,19 +45,20 @@ export class FmarkAllApplicationsComponent implements OnInit {
       this.roles = u.roles;
       return this.roles = u.roles;
     });
-    this.getMySmarkComplete();
-
+    this.getMyPscSmarkTasks();
   }
 
-  public getMySmarkComplete(): void {
+  public getMyPscSmarkTasks(): void {
+    this.loading = true
+    this.loadingText = "Retrieving My Tasks"
     this.SpinnerService.show();
-    this.internalService.loadMyAllPermitByPermitType(this.fmarkID).subscribe(
+    this.internalService.loadMyTasksByPermitType(this.smarkID).subscribe(
         (dataResponse: ApiResponseModel) => {
           if (dataResponse.responseCode === '00') {
             // console.log(dataResponse.data as ConsumerComplaintsReportViewEntity[]);
             this.allPermitTaskData = dataResponse?.data as MyTasksPermitEntityDto[];
-            this.rerender();
-            this.SpinnerService.hide();
+            this.rerender()
+            this.SpinnerService.hide()
             this.displayUsers = true;
 
             this.loading = false;
@@ -82,6 +80,18 @@ export class FmarkAllApplicationsComponent implements OnInit {
     );
   }
 
+  gotoPermitDetails(permitId: string) {
+
+    var text = permitId;
+    var key = '11A1764225B11AA1';
+    text = CryptoJS.enc.Utf8.parse(text);
+    key = CryptoJS.enc.Utf8.parse(key);
+    var encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
+    encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+    this.router.navigate(['/permit-details-admin', encrypted])
+
+
+  }
 
   rerender(): void {
     this.dtElements.forEach((dtElement: DataTableDirective) => {
@@ -98,23 +108,6 @@ export class FmarkAllApplicationsComponent implements OnInit {
 
   }
 
-  ngOnDestroy(): void {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger1.unsubscribe();
-
-
-  }
-
-  gotoPermitDetails(permitId: string) {
-    let text = permitId;
-    let key = '11A1764225B11AA1';
-    text = CryptoJS.enc.Utf8.parse(text);
-    key = CryptoJS.enc.Utf8.parse(key);
-    let encrypted = CryptoJS.AES.encrypt(text, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding});
-    encrypted = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
-    this.router.navigate(['/permit-details-admin', encrypted])
-  }
 
 
 }
-

@@ -1,19 +1,18 @@
 <div class="row">
     <div class="col-md-12">
+
         <div class="card">
-            <div class="card-header card-header-primary card-header-icon">
-                <div class="card-icon">
+            <div class="card-header card-header-icon">
+                <div class="card-icon" style="background-color: #1b75bc;">
                     <i class="material-icons">assignment</i>
                 </div>
-                <h4 class="card-title">Awarded Applications
-                </h4>
-
+                <h4 class="card-title">PSC Tasks</h4>
             </div>
             <div class="card-body">
                 <div class="material-datatables">
                     <ng-template #loading class="loaderHolder">
-                        <ngx-spinner type="ball-clip-rotate-multiple" size="medium">
-                            <p class="loading">Loading...</p>
+                        <ngx-spinner type="ball-clip-rotate-multiple"
+                                     size="medium">
                         </ngx-spinner>
                     </ng-template>
                     <div *ngIf="displayUsers; else loading">
@@ -65,5 +64,8 @@
 
             </div>
         </div>
+
+        <!-- end content-->
     </div>
+    <!--  end card  -->
 </div>
