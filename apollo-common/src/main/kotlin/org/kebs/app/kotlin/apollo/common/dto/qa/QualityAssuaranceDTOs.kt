@@ -238,6 +238,20 @@ data class CompletenessApplyDto(
     var hofQamCompletenessRemarks: String? = null
 )
 
+data class AddExtraAmountApplyDto(
+    @NotNull(message = "Required itemDescName")
+    var itemDescName: String,
+    @NotNull(message = "Required itemAmount")
+    var itemAmount: BigDecimal,
+    var description: String? = null
+)
+
+data class ReviewCompletenessApplyDto(
+    @NotNull(message = "Required pcmReviewApprovalStatus Status")
+    var pcmReviewApprovalStatus: Boolean,
+    var pcmReviewApprovalRemarks: String? = null
+)
+
 data class RecommendationApplyDto(
     @NotNull(message = "Required recommendationApprovalStatus Status")
     var recommendationApprovalStatus: Boolean,
