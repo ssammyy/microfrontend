@@ -1049,6 +1049,12 @@ export const ROUTES: RouteInfo[] = [
                 privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
             },
             {
+                path: 'isPropComments',
+                title: 'Comment on Proposal ',
+                ab: 'VP',
+                privilege: ['STANDARDS_DEVELOPMENT_FULL_ADMIN', 'TC_SEC_SD_READ', 'KNW_SEC_SD_READ']
+            },
+            {
                 path: 'isProposals',
                 title: 'View Proposals ',
                 ab: 'VP',

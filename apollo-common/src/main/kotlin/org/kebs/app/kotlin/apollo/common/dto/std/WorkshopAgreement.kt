@@ -371,7 +371,9 @@ data class ISAdoptionProposalDto(
     var uploadedBy: String?=null,
     var stakeholdersList: MutableList<NamesList>?=null,
     //var addStakeholdersList: List<String>?=null,
-    var addStakeholdersList: MutableList<IStakeholderDTO>?=null
+    var addStakeholdersList: MutableList<IStakeholderDTO>?=null,
+    var departmentId: Long?=null,
+    var departmentName: String?=null
 
 ){
 

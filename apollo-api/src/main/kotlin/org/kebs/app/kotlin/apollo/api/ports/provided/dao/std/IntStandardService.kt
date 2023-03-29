@@ -150,6 +150,8 @@ class IntStandardService(
         cs.contactOneTelephone=loggedInUser.cellphone
         cs.status = 0
         cs.uploadDate=datePrepared
+        cs.departmentId=isAdoptionProposalDto.departmentId
+        cs.departmentName=isAdoptionProposalDto.departmentName
         cs.standardType="International Standard"
 
         val draftId=comStdDraftRepository.save(cs)
@@ -184,6 +186,8 @@ class IntStandardService(
         }
 
         val targetUrl2 = "${callUrl}/isProposalComments/$draftNumber";
+//                val gson = Gson()
+//        KotlinLogging.logger { }.info { "WORKSHOP DRAFT DECISION" + gson.toJson(targetUrl2) }
         val stakeholdersTwo = isAdoptionProposalDto.addStakeholdersList
         stakeholdersTwo?.forEach { t ->
             val sub = "New Adoption Proposal Document"+  iSAdoptionProposal.proposalNumber
@@ -201,7 +205,7 @@ class IntStandardService(
 
             val messageBody= "Dear $userN,An adoption document has been uploaded.Click on the Link below to post Comment. $targetUrl2 "
             if (rec != null) {
-               // notifications.sendEmail(rec, sub, messageBody)
+                notifications.sendEmail(rec, sub, messageBody)
             }
 
         }

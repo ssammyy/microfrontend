@@ -716,6 +716,7 @@ export interface ISAdoptionProposal {
     voteFor: number;
     voteAgainst: number;
     requesterName: string;
+    departmentName: string;
 }
 
 export interface ISJustificationProposal {

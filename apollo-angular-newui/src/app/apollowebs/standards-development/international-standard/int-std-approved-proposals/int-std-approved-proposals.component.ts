@@ -38,6 +38,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   internationalStandardsComments: InternationalStandardsComments[] = [];
   comStdCommitteeRemarks: ComStdCommitteeRemarks[] = [];
   loadingText: string;
+  edition: string;
   approve: string;
   reject: string;
   isShowRemarksTab= true;
@@ -66,6 +67,7 @@ export class IntStdApprovedProposalsComponent implements OnInit {
   ngOnInit(): void {
     this.getApprovedProposals();
     this.getDepartments();
+    this.edition='first'
     this.prepareJustificationFormGroup = this.formBuilder.group({
         meetingDate: [],
         department: [],
@@ -191,7 +193,8 @@ export class IntStdApprovedProposalsComponent implements OnInit {
               draftId: this.actionRequest.draftId,
               tcSecName:this.actionRequest.tcSecName,
               standardNumber: this.actionRequest.standardNumber,
-              title: this.actionRequest.title
+              title: this.actionRequest.title,
+              edition: this.edition
 
           }
       );

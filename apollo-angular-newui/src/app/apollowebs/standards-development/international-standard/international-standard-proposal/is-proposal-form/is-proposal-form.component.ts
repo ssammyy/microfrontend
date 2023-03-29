@@ -81,6 +81,8 @@ export class IsProposalFormComponent implements OnInit {
         stakeHolderPhone:null,
         requestId:null,
         adoptionProposalLink:['', [Validators.required, Validators.pattern(this.urlRegex)]],
+        departmentId:null,
+        departmentName:null,
         //addStakeholdersList:['', Validators.required]
         // adoptionAcceptableAsPresented : ['', Validators.required],
         // reasonsForNotAcceptance : ['', Validators.required],
@@ -149,7 +151,9 @@ export class IsProposalFormComponent implements OnInit {
                     title: this.actionRequests.subject,
                     scope: this.actionRequests.description,
                     proposal_doc_name: this.proposal_doc_name,
-                    tcSecName: this.fullname
+                    tcSecName: this.fullname,
+                    departmentId: this.actionRequests.departmentId,
+                    departmentName: this.actionRequests.departmentName
                 }
             );
         }

@@ -474,6 +474,8 @@ interface ProposalDetails{
     fun getVoteFor(): Long?
     fun getVoteAgainst(): Long?
     fun getRequesterName(): String?
+    fun getDepartmentId(): Long?
+    fun getDepartmentName(): String?
 }
 interface PermitsAwarded{
     fun getId(): Long?
