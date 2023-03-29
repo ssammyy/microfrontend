@@ -22,7 +22,7 @@ data class StdLevyNotificationFormDTO(
 
 )
 
-class NotificationForm (val responseMessage: String) {
+class NotificationForm (val responseMessage: String,val responseStatus: String,val responseButton: String,val responseMsg: String) {
 }
 
 class PaymentStatus (val responseStatus: Long) {
