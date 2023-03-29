@@ -24,6 +24,7 @@ import swal from "sweetalert2";
 import {selectUserInfo} from "../../../core/store";
 import {Subject} from "rxjs";
 import {DataTableDirective} from 'angular-datatables';
+import {formatDate} from "@angular/common";
 
 declare const $: any;
 
@@ -59,6 +60,9 @@ export class ViewInspectionReportComponent implements OnInit {
     dtTriggerDOCS: Subject<any> = new Subject<any>();
 
     blob: Blob;
+
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
 
 
     constructor(private formBuilder: FormBuilder,
@@ -244,5 +248,9 @@ export class ViewInspectionReportComponent implements OnInit {
 
     viewSavedFilesSaved(data: FilesListDto) {
         this.viewPdfFile(String(data.id), data.name, data.fileType);
+    }
+
+    formatFormDate(date: string) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 }
