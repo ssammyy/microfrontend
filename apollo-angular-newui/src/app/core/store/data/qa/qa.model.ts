@@ -504,7 +504,7 @@ export class InspectionReportDetailsDto {
     id: bigint;
     refNo: string;
     submittedInspectionReportStatus: string;
-    createdOn: Date;
+    createdOn: String;
 }
 
 export class InspectionInvoiceUploadedDto {

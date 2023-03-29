@@ -93,7 +93,7 @@ export class PermitDetailsAdminComponent implements OnInit {
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
 
-    dateFormat = "yyyy-MM-dd";
+    dateFormat = "MMM dd yyyy";
     language = "en";
     pdfSources: any;
     SelectedSectionId;

@@ -1070,8 +1070,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                             <td>{{row[3]}}</td>
 
                                                             <td class="td-actions text-right">
-                                                                <button mat-raised-button type="button" data-toggle="modal"
-                                                                        (click)="viewPdfFile(row[4], row[0], row[1])" class="btn btn-info {{row[4]}}">
+                                                                <button mat-raised-button type="button"
+                                                                        data-toggle="modal"
+                                                                        (click)="viewPdfFile(row[4], row[0], row[1])"
+                                                                        class="btn btn-info {{row[4]}}">
                                                                     <i class="material-icons">visibility</i>
 
                                                                 </button>
@@ -1158,7 +1160,7 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                             <tr>
 
                                                                                                 <td>{{inspectionReportDetailsDto?.refNo}}</td>
-                                                                                                <td>{{inspectionReportDetailsDto?.createdOn}}</td>
+                                                                                                <td>{{formatFormDate(inspectionReportDetailsDto?.createdOn)}}</td>
                                                                                                 <td style="padding: .75rem;
                                                                                                               vertical-align: top;color: #0082f3;font-size: .875rem;
                                                                                                               font-weight: 400;">
@@ -1229,10 +1231,10 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
                                                                                             <th><strong>File
                                                                                                 Name</strong></th>
-                                                                                            <th><strong>File
-                                                                                                Type</strong></th>
-                                                                                            <th><strong>Document
-                                                                                                Description</strong>
+                                                                                            <th><strong>Created
+                                                                                                By</strong></th>
+                                                                                            <th><strong>Created
+                                                                                                On</strong>
                                                                                             </th>
                                                                                             <th><strong>Version
                                                                                                 Number</strong></th>
@@ -1245,8 +1247,8 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         <tbody>
                                                                                         <tr *ngFor="let scsDetails of allPermitDetails?.schemeOfSuperVisionList">
                                                                                             <td>{{scsDetails?.name}}</td>
-                                                                                            <td>{{scsDetails?.fileType }}</td>
-                                                                                            <td>{{scsDetails?.documentType}}</td>
+                                                                                            <td>{{scsDetails?.createdBy }}</td>
+                                                                                            <td>{{formatFormDate(scsDetails?.createdOn)}}</td>
                                                                                             <td>{{scsDetails?.versionNumber}}</td>
                                                                                             <td class="text-right">
                                                                                                 <a (click)="viewSavedFilesSaved(scsDetails)"
@@ -1410,7 +1412,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                                                                         </thead>
                                                                                         <tbody>
                                                                                         <tr *ngFor="let remarksParam of allPermitDetails?.remarksDetailsList let i=index ">
-                                                                                            <td>{{i + 1}} </td>
                                                                                             <td>{{remarksParam?.processName}}</td>
                                                                                             <td>{{remarksParam?.processBy }}</td>
                                                                                             <td>{{remarksParam?.createdOn}}</td>
@@ -1812,7 +1813,6 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT</a>
                         </div>
                         <div *ngFor="let role of roles">
-
                             <div *ngIf="role == 'QA_OFFICER_MODIFY' && userLoggedInID == allPermitDetails?.permitDetails?.assignOfficerID">
                                 <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.productStandards == null"
                                    data-target="#allProcessModel"
@@ -1943,14 +1943,16 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
                                    && allPermitDetails?.permitDetails?.sendForPcmReview"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('pcmReviewApproval')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT REVIEW</a>
+                                   class="btn btn-kebs mat-raised-button mat-button-base">APPROVE/REJECT PERMIT
+                                    REVIEW</a>
 
                                 <a data-toggle="modal" *ngIf="!allPermitDetails?.permitDetails?.pcmReviewApprove
                                     && allPermitDetails?.permitDetails?.resubmitApplicationStatus && allPermitDetails?.permitDetails?.changesMadeStatus
                                    && allPermitDetails?.permitDetails?.sendForPcmReview"
                                    data-target="#allProcessModel"
                                    (click)="openModalAddDetails('pcmReviewApproval')"
-                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT REVIEW</a>
+                                   class="btn btn-kebs mat-raised-button mat-button-base">RE-APPROVE/REJECT PERMIT
+                                    REVIEW</a>
 
                                 <a data-toggle="modal" *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove
                                  && allPermitDetails?.permitDetails?.branchID ==null && !allPermitDetails?.permitDetails?.paidStatus
