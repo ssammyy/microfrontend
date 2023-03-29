@@ -2527,6 +2527,15 @@ export class WorkPlanDetailsComponent implements OnInit {
 
   }
 
+  onTabClicked(event){
+    const selectedTab = event.tab;
+    //console.log(selectedTab.textLabel);
+    if (selectedTab.textLabel == 16){
+      //console.log("Data Report Tab clicked");
+      this.calculateAverageCompliance();
+    }
+  }
+
 
   onClickAddDataRecommendationDetails() {
     if(this.otherFinalRecommendation.valid && this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61){
@@ -2615,13 +2624,13 @@ export class WorkPlanDetailsComponent implements OnInit {
       'approveFinalPreliminaryDirector', 'startOnsiteActivities'];
 
     // tslint:disable-next-line:max-line-length
-    const arrHeadSave = ['APPROVE/REJECT SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
-      'ADD BS NUMBER', 'APPROVE/REJECT PRELIMINARY REPORT', 'APPROVE/REJECT PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/REJECT FINAL REPORT', 'APPROVE/REJECT FINAL REPORT',
+    const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
+      'ADD BS NUMBER', 'APPROVE/DECLINE PROGRESS REPORT', 'APPROVE/DECLINE PROGRESS REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/DECLINE FINAL REPORT', 'APPROVE/DECLINE FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
-      , 'DID CLIENT APPEAL ?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
+      , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
       'UPDATE WORK-PLAN SCHEDULE DETAILS FILE', 'openSampleSubmitModal', 'updateHOFHODPreliminary', 'createPreliminary', 'updateIOPreliminary', 'UPLOAD FINAL REPORT', 'UPLOAD FINAL REPORT',
-      'APPROVE/REJECT FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES'];
+      'APPROVE/DECLINE FINAL REPORT', 'KINDLY ADD THE TIME RANGE FOR THE ON-SITE ACTIVITIES'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -3136,7 +3145,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -3443,7 +3452,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -5091,7 +5100,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     } else if (file === undefined && this.dataSaveSeizureDeclarationList.length > 0) {
       this.msService.showError('Kindly Add An Attachment');
     } else if (file?.length > 0 && this.dataSaveSeizureDeclarationList.length === 0) {
-      this.msService.showError('Kindly Add Products that have been Seizure');
+      this.msService.showError('Kindly Add Products that have been Seized');
     }
   }
 
@@ -5326,7 +5335,7 @@ export class WorkPlanDetailsComponent implements OnInit {
     if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can click the \'ADD PRELIMINARY REPORT\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+          'You can click the \'ADD PROGRESS REPORT\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.savePreliminaryReport();
           });
     }
@@ -5349,7 +5358,7 @@ export class WorkPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY REPORT DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -5633,8 +5642,10 @@ export class WorkPlanDetailsComponent implements OnInit {
     this.seizureForm.patchValue(selectedClone);
     this.seizureForm?.get('id').setValue(0);
     this.seizureForm?.get('docID').setValue(null);
+    this.uploadedFilesSeizedGoods = new FileList();
     const paramDetails = selectedClone.seizureList;
     this.dataSaveSeizureDeclarationList = [];
+
     for (let i = 0; i < paramDetails.length; i++) {
       this.dataSaveSeizureDeclarationList.push(paramDetails[i]);
     }
@@ -5643,16 +5654,18 @@ export class WorkPlanDetailsComponent implements OnInit {
   }
 
   calculateAverageCompliance() {
-    console.log('Function called');
     const dataReportData = this.workPlanInspection?.dataReportDto;
     let sumOfCompliance = 0;
-    for (let i = 1; i < dataReportData?.length; i++) {
-      sumOfCompliance += dataReportData[i].totalComplianceScore;
+    for (let i = 0; i < dataReportData?.length; i++) {
+      sumOfCompliance += Number(dataReportData[i].totalComplianceScore);
+      //console.log(i + " " + dataReportData[i].totalComplianceScore);
+      //console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
     }
+    //console.log("FInished Sum: "+ sumOfCompliance);
+    //console.log("length "+ dataReportData?.length);
+    //console.log("average before: "+ this.averageCompliance);
     this.averageCompliance = sumOfCompliance / dataReportData?.length;
-    if (isNaN(this.averageCompliance)) {
-      console.log('The average compliance is nan' + this.averageCompliance);
-    }
+    //console.log("average after: "+ this.averageCompliance);
   }
 
   viewFile(fileUploaded: File) {

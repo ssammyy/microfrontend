@@ -2465,6 +2465,15 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.finalRecommendationDetailsForm?.get('recommendationName')?.setValue(this.selectedRecommendationName);
   }
 
+  onTabClicked(event){
+    const selectedTab = event.tab;
+    //console.log(selectedTab.textLabel);
+    if (selectedTab.textLabel == 16){
+      //console.log("Data Report Tab clicked");
+      this.calculateAverageCompliance();
+    }
+  }
+
 
   onClickAddDataRecommendationDetails() {
     if(this.otherFinalRecommendation.valid && this.finalRecommendationDetailsForm?.get('recommendationId')?.value == 61){
@@ -2553,7 +2562,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
 
     // tslint:disable-next-line:max-line-length
     const arrHeadSave = ['APPROVE/DECLINE SCHEDULED WORK-PLAN', 'ATTACH FILE(S) BELOW', 'ADD CHARGE SHEET DETAILS', 'ADD DATA REPORT DETAILS', 'ADD SEIZURE DECLARATION DETAILS', 'FINAL LAB RESULTS COMPLIANCE STATUS',
-      'ADD BS NUMBER', 'APPROVE/DECLINE PRELIMINARY REPORT', 'APPROVE/DECLINE PRELIMINARY REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/DECLINE FINAL REPORT', 'APPROVE/DECLINE FINAL REPORT',
+      'ADD BS NUMBER', 'APPROVE/DECLINE PROGRESS REPORT', 'APPROVE/DECLINE PROGRESS REPORT', 'ADD FINAL REPORT DETAILS', 'APPROVE/DECLINE FINAL REPORT', 'APPROVE/DECLINE FINAL REPORT',
       'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD FINAL RECOMMENDATION FOR THE SURVEILLANCE', 'UPLOAD DESTRUCTION NOTIFICATION TO BE SENT'
       , 'DID CLIENT APPEAL WITHIN 14 DAYS?', 'ADD CLIENT APPEALED STATUS IF SUCCESSFULLY OR NOT', 'UPLOAD DESTRUCTION REPORT', 'ADD FINAL REMARKS FOR THE MS CONDUCTED',
       'ATTACH CHARGE SHEET FILE BELOW', 'ATTACH SAMPLE COLLECTION FILE BELOW', 'ATTACH SAMPLE SUBMISSION FILE BELOW', 'ATTACH SEIZURE FILE BELOW', 'ATTACH DECLARATION FILE BELOW', 'ATTACH DATA REPORT FILE BELOW',
@@ -3070,7 +3079,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -3377,7 +3386,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY STATUS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT STATUS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -5261,7 +5270,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     if (this.preliminaryReportForm.valid && this.dataSavePreliminaryReportParamList.length !== 0) {
       this.msService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
           // tslint:disable-next-line:max-line-length
-          'You can click the \'ADD PRELIMINARY REPORT\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
+          'You can click the \'ADD PROGRESS REPORT\' button to update details Before Saving', 'SEIZURE PRODUCT DETAILS SAVED SUCCESSFUL', () => {
             this.savePreliminaryReport();
           });
     }
@@ -5284,7 +5293,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
             this.workPlanInspection = data;
             console.log(data);
             this.SpinnerService.hide();
-            this.msService.showSuccess('PRELIMINARY REPORT DETAILS SAVED SUCCESSFULLY');
+            this.msService.showSuccess('PROGRESS REPORT DETAILS SAVED SUCCESSFULLY');
           },
           error => {
             this.SpinnerService.hide();
@@ -5559,6 +5568,7 @@ export class ComplaintPlanDetailsComponent implements OnInit {
     this.seizureForm.patchValue(selectedClone);
     this.seizureForm?.get('id').setValue(0);
     this.seizureForm?.get('docID').setValue(null);
+    this.uploadedFilesSeizedGoods = new FileList();
     const paramDetails = selectedClone.seizureList;
     this.dataSaveSeizureDeclarationList = [];
     for (let i = 0; i < paramDetails.length; i++) {
@@ -5569,26 +5579,18 @@ export class ComplaintPlanDetailsComponent implements OnInit {
   }
 
   calculateAverageCompliance() {
-    console.log('Function called');
-    let dataReportDetails = this.workPlanInspection?.dataReportDto;
+    const dataReportData = this.workPlanInspection?.dataReportDto;
     let sumOfCompliance = 0;
-    for (let i = 0; i < dataReportDetails?.length; i++) {
-      let totalComplianceScore = Number(dataReportDetails[i].totalComplianceScore);
-      if (isNaN(totalComplianceScore)) {
-        console.log(`Value of totalComplianceScore at index ${i} is not a number`);
-        continue;
-      }
-      else{
-        console.log('This is a number: ' + totalComplianceScore);
-      }
-      sumOfCompliance += totalComplianceScore;
+    for (let i = 0; i < dataReportData?.length; i++) {
+      sumOfCompliance += Number(dataReportData[i].totalComplianceScore);
+      //console.log(i + " " + dataReportData[i].totalComplianceScore);
+      //console.log("Sum as of iteration "+ i + " " +sumOfCompliance);
     }
-    console.log("Data report Details: "+ dataReportDetails);
-    console.log("Sum: " + sumOfCompliance);
-    this.averageCompliance = sumOfCompliance / dataReportDetails?.length;
-    if (isNaN(this.averageCompliance)) {
-      console.log(`The average compliance is NaN: ${this.averageCompliance}`);
-    }
+    //console.log("FInished Sum: "+ sumOfCompliance);
+    //console.log("length "+ dataReportData?.length);
+    //console.log("average before: "+ this.averageCompliance);
+    this.averageCompliance = sumOfCompliance / dataReportData?.length;
+    //console.log("average after: "+ this.averageCompliance);
   }
 
   viewFile(fileUploaded: File) {
