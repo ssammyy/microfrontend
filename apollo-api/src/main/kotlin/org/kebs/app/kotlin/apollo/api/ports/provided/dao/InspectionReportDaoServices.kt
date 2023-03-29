@@ -96,17 +96,13 @@ class InspectionReportDaoServices(
 
     }
 
-    fun getFullyFilledInspectionReport(): ApiResponseModel {
-        val qaInspectionReportRecommendation =
-            qaInspectionReportRecommendationRepo.findAllBySubmittedInspectionReportStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
+    fun getFullyFilledInspectionReport(permitID: Long): ApiResponseModel {
+        val permit = qaDaoServices.findPermitBYID(permitID)
 
-                )
+        val qaInspectionReportRecommendation =
+            qaInspectionReportRecommendationRepo.getInspectionReportsForCompany(permit.companyId!!)
+
+
         val map = commonDaoServices.serviceMapDetails(appId)
         return if (qaInspectionReportRecommendation != null) {
             val response = listInspectionReports(qaInspectionReportRecommendation, map)
@@ -971,8 +967,12 @@ class InspectionReportDaoServices(
             inspectionReport.permitId?.let { qaDaoServices.findPermitBYID(it) }
                 ?.let { qaDaoServices.permitDetails(it, map) },
 
-            listFilesDto(findByPermitIdAndInspectionReportId(inspectionReport.permitId?: throw Exception("MISSING PERMIT ID"),inspectionReport.id?: throw Exception("MISSING INSPECTION REPORT ID")))
-
+            listFilesDto(
+                findByPermitIdAndInspectionReportId(
+                    inspectionReport.permitId ?: throw Exception("MISSING PERMIT ID"),
+                    inspectionReport.id ?: throw Exception("MISSING INSPECTION REPORT ID")
+                )
+            )
 
 
         )
@@ -1228,7 +1228,11 @@ class InspectionReportDaoServices(
                 i.refNo,
                 i.permitId,
                 permitRefNumber = i.permitRefNumber,
-                tradeMark = i.permitId?.let { qaDaoServices.findPermitBYID(it).tradeMark }
+                tradeMark = i.permitId?.let { qaDaoServices.findPermitBYID(it).commodityDescription } +" "+ i.permitId?.let {
+                    qaDaoServices.findPermitBYID(
+                        it
+                    ).tradeMark
+                }
 
 
             )
@@ -1279,6 +1283,8 @@ class InspectionReportDaoServices(
                 f.fileType,
                 f.documentType,
                 f.versionNumber,
+                f.createdBy,
+                f.createdOn,
                 f.document,
             )
         }

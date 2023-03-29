@@ -852,11 +852,21 @@ import {
 import {
     DisseminateStandardComponent
 } from "./apollowebs/standards-development/sicStdPublication/disseminate-standard/disseminate-standard.component";
-import {StandardLevyHistoricalPaymentsComponent} from "./apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component";
-import {NepUploadedNotificationComponent} from "./apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component";
-import {StandardsLevyQaPermitsComponent} from "./apollowebs/standards-levy/standards-levy-qa-permits/standards-levy-qa-permits.component";
-import {StandardsLevySitesComponent} from "./apollowebs/standards-levy/standards-levy-sites/standards-levy-sites.component";
-import {IntStdApproveChangesComponent} from "./apollowebs/standards-development/international-standard/int-std-approve-changes/int-std-approve-changes.component";
+import {
+    StandardLevyHistoricalPaymentsComponent
+} from "./apollowebs/standards-levy/standard-levy-historical-payments/standard-levy-historical-payments.component";
+import {
+    NepUploadedNotificationComponent
+} from "./apollowebs/standards-development/national-enquiry-point/nep-uploaded-notification/nep-uploaded-notification.component";
+import {
+    StandardsLevyQaPermitsComponent
+} from "./apollowebs/standards-levy/standards-levy-qa-permits/standards-levy-qa-permits.component";
+import {
+    StandardsLevySitesComponent
+} from "./apollowebs/standards-levy/standards-levy-sites/standards-levy-sites.component";
+import {
+    IntStdApproveChangesComponent
+} from "./apollowebs/standards-development/international-standard/int-std-approve-changes/int-std-approve-changes.component";
 
 export const routes: Routes = [
     {
@@ -2091,7 +2101,6 @@ export const routes: Routes = [
     },
 
 
-
     // {
     //     path: 'make_enquiry', component: MakeEnquiryComponent,
     // },
@@ -2332,7 +2341,9 @@ export const routes: Routes = [
     },
     {
         path: 'submitApplication',
-        component: SubmitApplicationComponent,
+        component: StandardRequestComponent,
+        children: [{path: '', component: SubmitApplicationComponent}],
+
     },
     {
         path: 'reviewApplication',

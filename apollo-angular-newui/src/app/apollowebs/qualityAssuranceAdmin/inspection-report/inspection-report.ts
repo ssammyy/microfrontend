@@ -23,6 +23,7 @@ import {
 } from "../../../core/store/data/qa/qa.model";
 import {ApiResponseModel} from "../../../core/store/data/ms/ms.model";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
+import {formatDate} from "@angular/common";
 
 declare const $: any;
 
@@ -37,6 +38,9 @@ export class InspectionReport implements OnInit {
     smarkID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID);
     private permit_id: string;
     permitId: any;
+
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
 
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
@@ -119,7 +123,7 @@ export class InspectionReport implements OnInit {
         });
 
         this.checkIfInspectionReportExists(this.permitId);
-        this.getInspectionReportsFullyFilled()
+        this.getInspectionReportsFullyFilled(this.permitId)
 
         this.technicalForm = this.formBuilder.group({
             id: [''],
@@ -734,8 +738,8 @@ export class InspectionReport implements OnInit {
     }
 
 
-    private getInspectionReportsFullyFilled() {
-        this.internalService.getFullyFilledInspectionReport().subscribe(
+    private getInspectionReportsFullyFilled(permitId: string) {
+        this.internalService.getFullyFilledInspectionReport(permitId).subscribe(
             (data: ApiResponseModel) => {
                 if (data.responseCode === '00') {
                     this.allInspectionReportDetailsToBeCloned = data?.data as InspectionReportToBeClonedDto[];
@@ -857,6 +861,8 @@ export class InspectionReport implements OnInit {
 
     fileListSaveDetails() {
         if (this.uploadedFiles.length > 0) {
+            this.loading = true
+            this.loadingText = "Uploading Documents"
             this.SpinnerService.show();
             const file = this.uploadedFiles;
             const formData = new FormData();
@@ -868,8 +874,8 @@ export class InspectionReport implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
             this.qaService.qaSaveInspectionReport(formData).subscribe(
-                (data: ApiResponseModel) => {
-                    if (data.responseCode === '00') {
+                (data: any) => {
+                    if (data.message=='Document Uploaded successful') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('Additional Documents Uploaded Successfully', () => {
                             // this.loadPermitDetails(data);
@@ -889,5 +895,7 @@ export class InspectionReport implements OnInit {
             this.qaService.showError('NO FILE IS UPLOADED FOR SAVING');
         }
     }
-
+    formatFormDate(date: string) {
+        return formatDate(date, this.dateFormat, this.language);
+    }
 }

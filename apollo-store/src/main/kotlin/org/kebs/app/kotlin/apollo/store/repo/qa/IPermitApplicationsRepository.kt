@@ -1077,6 +1077,21 @@ interface IQaInspectionReportRecommendationRepository :
     ): QaInspectionReportRecommendationEntity?
 
 
+
+    @Query(
+        value = "INSERT INTO DAT_KEBS_QA_PERSONNEL_INCHARGE t1\n" +
+                "(\n" +
+                " t1.PERSONNEL_NAME,t1.QUALIFICATION_INSTITUTION,t1.DATE_OF_EMPLOYMENT,t1.STATUS,t1.STA10_ID\n" +
+                ")\n" +
+                "SELECT   t2.PERSONNEL_NAME,t2.QUALIFICATION_INSTITUTION,t2.DATE_OF_EMPLOYMENT,t2.STATUS,:sta10IdToBeUpdated\n" +
+                "FROM DAT_KEBS_QA_PERSONNEL_INCHARGE t2 WHERE t2.STA10_ID =:sta10Id", nativeQuery = true
+    )
+    fun updatePersonnel(
+        @Param("sta10Id") sta10Id: Long,
+        @Param("sta10IdToBeUpdated") sta10IdToBeUpdated: Long
+    ): String
+
+
     fun findAllBySubmittedInspectionReportStatusAndFilledQpsmsStatusAndFilledInspectionTestingStatusAndFilledStandardizationMarkSchemeStatusAndFilledOpcStatusAndFilledHaccpImplementationStatus(
         submittedInspectionReportStatus: Int,
         filledQpsmsStatus: Int,
@@ -1085,6 +1100,15 @@ interface IQaInspectionReportRecommendationRepository :
         filledOpcStatus: Int,
         filledHaccpImplementationStatus: Int
     ): List<QaInspectionReportRecommendationEntity>?
+
+
+
+    @Query(
+        value = "SELECT a.*, b.COMPANY_ID From DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION a INNER JOIN DAT_KEBS_PERMIT_TRANSACTION b on a.PERMIT_ID = b.id WHERE b.COMPANY_ID=:companyId and a.SUBMITTED_INSPECTION_REPORT_STATUS =1 and a.FILLED_QPSMS_STATUS =1 and a.FILLED_INSPECTION_TESTING_STATUS=1 and a.FILLED_OPC_STATUS =1 and a.FILLED_HACCP_IMPLEMENTATION_STATUS=1", nativeQuery = true
+    )
+    fun getInspectionReportsForCompany(
+        @Param("companyId") companyId: Long,
+    ):  List<QaInspectionReportRecommendationEntity>?
 
     fun findByIdAndPermitId(inspectionRecommendationId: Long, permitID: Long): QaInspectionReportRecommendationEntity?
 

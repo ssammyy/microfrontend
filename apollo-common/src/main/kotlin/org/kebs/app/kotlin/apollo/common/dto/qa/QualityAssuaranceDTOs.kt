@@ -238,6 +238,20 @@ data class CompletenessApplyDto(
     var hofQamCompletenessRemarks: String? = null
 )
 
+data class AddExtraAmountApplyDto(
+    @NotNull(message = "Required itemDescName")
+    var itemDescName: String,
+    @NotNull(message = "Required itemAmount")
+    var itemAmount: BigDecimal,
+    var description: String? = null
+)
+
+data class ReviewCompletenessApplyDto(
+    @NotNull(message = "Required pcmReviewApprovalStatus Status")
+    var pcmReviewApprovalStatus: Boolean,
+    var pcmReviewApprovalRemarks: String? = null
+)
+
 data class RecommendationApplyDto(
     @NotNull(message = "Required recommendationApprovalStatus Status")
     var recommendationApprovalStatus: Boolean,
@@ -666,6 +680,8 @@ data class FilesListDto(
     var fileType: String? = null,
     var documentType: String? = null,
     var versionNumber: Long? = null,
+    var createdBy: String? =null,
+    var createdOn: Timestamp? = null,
     var document: ByteArray? = null
 ) {
     override fun equals(other: Any?): Boolean {
@@ -724,6 +740,8 @@ data class PermitEntityDto(
     var versionNumber: Long? = null,
     var encryptedPermitId: String? = null,
     var encryptedUserId: String? = null,
+    var assignOfficer: String? = null,
+
 
     )
 

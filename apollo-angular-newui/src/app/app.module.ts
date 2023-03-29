@@ -1246,6 +1246,10 @@ import { RejectedWithAmendmentsComponent } from './apollowebs/standards-developm
 import { StandardsLevySitesComponent } from './apollowebs/standards-levy/standards-levy-sites/standards-levy-sites.component';
 import { IntStdApproveChangesComponent } from './apollowebs/standards-development/international-standard/int-std-approve-changes/int-std-approve-changes.component';
 import { OnholdForNwiComponent } from './apollowebs/standards-development/standard-request/standard-task/onhold-for-nwi/onhold-for-nwi.component';
+import { AllApplicationsComponent } from './apollowebs/standards-development/membershipToTc/review-application/all-applications/all-applications.component';
+import { PscTasksComponent } from './apollowebs/qualityAssuranceAdmin/smark-admin/psc-tasks/psc-tasks.component';
+import { PscDmarkTasksComponent } from './apollowebs/qualityAssuranceAdmin/dmark-admin/psc-dmark-tasks/psc-dmark-tasks.component';
+import { PscFmarkTasksComponent } from './apollowebs/qualityAssuranceAdmin/fmark-admin/psc-fmark-tasks/psc-fmark-tasks.component';
 
 // import {NgxDocViewerModule} from "ngx-doc-viewer";
 
@@ -1863,6 +1867,10 @@ import { OnholdForNwiComponent } from './apollowebs/standards-development/standa
         StandardsLevySitesComponent,
         IntStdApproveChangesComponent,
         OnholdForNwiComponent,
+        AllApplicationsComponent,
+        PscTasksComponent,
+        PscDmarkTasksComponent,
+        PscFmarkTasksComponent,
 
     ],
     entryComponents: [LoaderComponent],

@@ -489,6 +489,11 @@ export class StandardDevelopmentService {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllTcs')
     }
 
+    public getAllTcsForApplication(): any {
+        return this.http.get<Department[]>(`${this.apiServerUrl23}` + 'getAllTcsForApplication')
+    }
+
+
     public getProductCategories(): any {
         return this.http.get<Department[]>(`${this.apiServerUrl}` + 'getAllProductCategories')
     }

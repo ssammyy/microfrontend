@@ -152,6 +152,11 @@ class StandardRequestController(
         return standardRequestService.getTechnicalCommitteeName(tcId?.toLong())
     }
 
+    @GetMapping("/anonymous/standard/getAllTcsForApplication")
+    fun getAllTcsForApplication(): List<DataHolder> {
+        return standardRequestService.getAllTcs()
+    }
+
     /*@GetMapping("/getTechnicalCommittee")
     @ResponseBody
     fun getTechnicalCommittee(): ServerResponse

@@ -640,6 +640,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
             "internal-users".nest {
                 "/view".nest {
                     GET("/permits-list", internalUserhandler::getAllMyTaskList)
+                    GET("/permits-list-psc", internalUserhandler::getAllMyTaskPSCList)
+
                     PUT("/permits-list-search", internalUserhandler::putAllPermitSearchList)
                     GET("/permits-list-ongoing", internalUserhandler::getAllOngoingList)
                     GET("/permits-list-complete", internalUserhandler::getAllCompleteList)
@@ -653,6 +655,8 @@ class AngularRoutes(private val daoService: DaoFluxService) {
                         POST("/section", internalUserhandler::updatePermitDetailsSection)
                         POST("/update-brand", internalUserhandler::updatePermitDetailsBrand)
                         POST("/completeness", internalUserhandler::updatePermitDetailsCompleteness)
+                        POST("/permit-review", internalUserhandler::updatePermitDetailsReviewCompleteness)
+                        POST("/add-extra-amount", internalUserhandler::updatePermitDetailsAddExtraAmount)
                         POST("/difference-status-activate", internalUserhandler::updatePermitDetailsDifferenceStatusActivate)
                         POST("/assign-officer", internalUserhandler::updatePermitDetailsAssignOfficer)
                         POST("/assign-assessor", internalUserhandler::updatePermitDetailsAssignAssessor)

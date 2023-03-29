@@ -277,7 +277,7 @@ export class StdTscSecTasksComponentComponent implements OnInit {
 
     tabChange(ids: any) {
         this.id = ids;
-        console.log(this.id);
+        // console.log(this.id);
     }
 
     get formStdRequest(): any {

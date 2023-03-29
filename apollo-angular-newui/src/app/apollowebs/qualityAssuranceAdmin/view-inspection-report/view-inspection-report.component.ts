@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {ApiResponseModel} from "../../../core/store/data/ms/ms.model";
 import {
     AllInspectionDetailsApplyDto,
+    FilesListDto,
     HaccpImplementationDetailsApplyDto,
     InspectionDetailsDto,
     InspectionDetailsDtoB,
@@ -21,6 +22,9 @@ import {QaInternalService} from "../../../core/store/data/qa/qa-internal.service
 import * as CryptoJS from 'crypto-js';
 import swal from "sweetalert2";
 import {selectUserInfo} from "../../../core/store";
+import {Subject} from "rxjs";
+import {DataTableDirective} from 'angular-datatables';
+import {formatDate} from "@angular/common";
 
 declare const $: any;
 
@@ -48,6 +52,18 @@ export class ViewInspectionReportComponent implements OnInit {
     permitEntityDto: PermitEntityDto
 
     allInspectionReportDetails: AllInspectionDetailsApplyDto;
+
+
+    @ViewChildren(DataTableDirective)
+    dtElements: QueryList<DataTableDirective>;
+    dtOptionsDOCS: DataTables.Settings = {};
+    dtTriggerDOCS: Subject<any> = new Subject<any>();
+
+    blob: Blob;
+
+    dateFormat = "yyyy-MM-dd";
+    language = "en";
+
 
     constructor(private formBuilder: FormBuilder,
                 public router: Router,
@@ -127,6 +143,7 @@ export class ViewInspectionReportComponent implements OnInit {
 
                     this.SpinnerService.hide()
                     this.loading = false
+                    this.dtTriggerDOCS.next();
 
 
                 }
@@ -189,5 +206,51 @@ export class ViewInspectionReportComponent implements OnInit {
             },
         );
 
+    }
+
+    viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
+        this.qaService.loadFileDetailsPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                this.SpinnerService.hide();
+                this.blob = new Blob([dataPdf], {type: 'application/pdf'});
+                let newTab = true;
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                // const link = document.createElement('a');
+                // link.href = downloadURL;
+                // link.download = fileName;
+                // link.click();
+
+                window.open(downloadURL, fileName);
+
+
+
+                // let anchor = document.createElement('a');
+                // anchor.href = downloadURL;
+                // if (newTab) {
+                //     anchor.target = '_blank';
+                // }
+                // anchor.click();
+
+
+
+                // this.pdfUploadsView = dataPdf;
+            },
+            error => {
+                this.SpinnerService.hide();
+                console.log(error);
+                // this.msService.showError('AN ERROR OCCURRED');
+            },
+        );
+    }
+
+    viewSavedFilesSaved(data: FilesListDto) {
+        this.viewPdfFile(String(data.id), data.name, data.fileType);
+    }
+
+    formatFormDate(date: string) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 }

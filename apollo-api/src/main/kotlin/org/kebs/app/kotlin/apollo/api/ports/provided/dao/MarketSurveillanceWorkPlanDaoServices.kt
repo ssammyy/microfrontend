@@ -6551,7 +6551,7 @@ class MarketSurveillanceWorkPlanDaoServices(
             wKP.latestPreliminaryReport,
             wKP.latestFinalPreliminaryReport,
             complaintsRepo.findByIdOrNull(wKP.complaintId?: -1L)?.referenceNumber,
-            overAllCompliance
+//            overAllCompliance
 
         )
     }

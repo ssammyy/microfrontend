@@ -39,6 +39,7 @@ import {Store} from '@ngrx/store';
 import {Subject} from 'rxjs';
 import {DataTableDirective} from 'angular-datatables';
 import {StandardsDto} from '../../../core/store/data/master/master.model';
+import {formatDate} from "@angular/common";
 
 
 @Component({
@@ -92,7 +93,8 @@ export class PermitDetailsAdminComponent implements OnInit {
     @ViewChildren(DataTableDirective)
     dtElements: QueryList<DataTableDirective>;
 
-
+    dateFormat = "MMM dd yyyy";
+    language = "en";
     pdfSources: any;
     SelectedSectionId;
     pdfInvoiceBreakDownSources: any;
@@ -127,10 +129,12 @@ export class PermitDetailsAdminComponent implements OnInit {
     assignOfficerForm: FormGroup;
     addStandardsForm: FormGroup;
     scheduleInspectionForm: FormGroup;
+    pcmAddAmountToInvoiceForm: FormGroup;
     ssfDetailsForm: FormGroup;
     recommendationForm: FormGroup;
     recommendationApproveRejectForm: FormGroup;
     approveRejectPermitForm: FormGroup;
+    approveRejectPermitReviewForm: FormGroup;
     approveRejectRecommendationInspectionReportPermitForm: FormGroup;
     approveRejectInspectionReportForm: FormGroup;
     pdfSaveComplianceStatusForm!: FormGroup;
@@ -522,6 +526,12 @@ export class PermitDetailsAdminComponent implements OnInit {
             scheduleRemarks: null,
         });
 
+        this.pcmAddAmountToInvoiceForm = this.formBuilder.group({
+            itemDescName: ['', Validators.required],
+            itemAmount: ['', Validators.required],
+            description: null,
+        });
+
         this.ssfDetailsForm = this.formBuilder.group({
             id: null,
             ssfNo: ['', Validators.required],
@@ -552,6 +562,11 @@ export class PermitDetailsAdminComponent implements OnInit {
         this.approveRejectPermitForm = this.formBuilder.group({
             approvedRejectedStatus: ['', Validators.required],
             approvedRejectedRemarks: null,
+        });
+
+        this.approveRejectPermitReviewForm = this.formBuilder.group({
+            pcmReviewApprovalStatus: ['', Validators.required],
+            pcmReviewApprovalRemarks: null,
         });
 
         this.viewInspectionInvoiceDetailsForm = this.formBuilder.group({
@@ -841,11 +856,11 @@ export class PermitDetailsAdminComponent implements OnInit {
     openModalAddDetails(divVal: string): void {
 
         const arrHead = ['viewInspectionInvoiceDetails', 'updateSection', 'permitCompleteness', 'assignOfficer', 'addStandardsDetails', 'scheduleInspectionDate', 'uploadSSC', 'uploadAttachments',
-            'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'approveRejectRecommendation', 'uploadSSF', 'approveRejectInspectionReport',
+            'pcmAddAmountToInvoice', 'pcmReviewApproval', 'addSSFDetails', 'ssfAddComplianceStatus', 'addRecommendationRemarks', 'approveRejectRecommendation', 'uploadSSF', 'approveRejectInspectionReport',
             'approvePermitQAMHOD', 'approvePermitQAMHODRecommendationInspectionReport', 'approvePermitPSCMember', 'approvePermitPCM', 'updateBrand'];
 
         const arrHeadSave = ['Uploaded Inspection Invoice Details', 'Update Section', 'Is The Permit Complete', 'Select An officer', 'Add Standard details', 'Set The Date of Inspection', 'Upload scheme of supervision', 'UPLOAD ATTACHMENTS',
-            'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'APPROVE/REJECT RECOMMENDATION', 'UPLOAD SSF', 'APPROVE/REJECT GENERATED INSPECTION REPORT',
+            'ADD AMOUNT TO GENERATED INVOICE', 'APPROVE / REJECT PERMIT REVIEW BY PCM', 'Add SSF Details Below', 'ADD SSF LAB RESULTS COMPLIANCE STATUS', 'ADD RECOMMENDATION', 'APPROVE/REJECT RECOMMENDATION', 'UPLOAD SSF', 'APPROVE/REJECT GENERATED INSPECTION REPORT',
             'APPROVE/REJECT PERMIT BY QAM/HOD', 'APPROVE/REJECT (PERMIT,RECOMMENDATION,GENERATED INSPECTION REPORT) BY QAM/HOD', 'APPROVE/REJECT PERMIT BY PSC MEMBER', 'APPROVE/REJECT PERMIT BY PCM', 'UPDATE BRAND'];
 
         for (let h = 0; h < arrHead.length; h++) {
@@ -1333,6 +1348,37 @@ export class PermitDetailsAdminComponent implements OnInit {
         }
     }
 
+    onClickSaveApprovePermitPCMReview(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'APPROVE/REJECT PERMIT REVIEW\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SaveApprovePermitPCMReview(valid);
+            });
+    }
+
+    SaveApprovePermitPCMReview(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaApprovePermitPCMReview(this.approveRejectPermitReviewForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('PERMIT STATUS, SAVED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
 
     onClickSavePermitCompletenessForUpgradeFormResults(valid: boolean) {
         this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
@@ -1593,6 +1639,37 @@ export class PermitDetailsAdminComponent implements OnInit {
                     if (data.responseCode === '00') {
                         this.SpinnerService.hide();
                         this.qaService.showSuccess('INSPECTION DATE ADDED SUCCESSFULLY', () => {
+                            this.loadPermitDetails(data);
+                        });
+                    } else {
+                        this.SpinnerService.hide();
+                        this.qaService.showError(data.message);
+                    }
+                },
+                error => {
+                    this.SpinnerService.hide();
+                    this.qaService.showError('AN ERROR OCCURRED');
+                },
+            );
+        }
+    }
+
+    onClickSavePcmAddAmountToInvoiceForm(valid: boolean) {
+        this.qaService.showSuccessWith2Message('Are you sure your want to Save the Details?', 'You won\'t be able to revert back after submission!',
+            // tslint:disable-next-line:max-line-length
+            'You can click the \'ADD AMOUNT TO INVOICE\' button to update details', 'COMPLAINT ACCEPT/DECLINE SUCCESSFUL', () => {
+                this.SavePcmAddAmountToInvoiceForm(valid);
+            });
+    }
+
+    SavePcmAddAmountToInvoiceForm(valid: boolean) {
+        if (valid) {
+            this.SpinnerService.show();
+            this.qaService.qaPcmAddAmountToInvoice(this.pcmAddAmountToInvoiceForm.value, this.permitID).subscribe(
+                (data: ApiResponseModel) => {
+                    if (data.responseCode === '00') {
+                        this.SpinnerService.hide();
+                        this.qaService.showSuccess('EXTRA AMOUNT ADDED SUCCESSFULLY', () => {
                             this.loadPermitDetails(data);
                         });
                     } else {
@@ -1901,6 +1978,10 @@ export class PermitDetailsAdminComponent implements OnInit {
 
 
 
+    }
+
+    formatFormDate(date: string) {
+        return formatDate(date, this.dateFormat, this.language);
     }
 
 }

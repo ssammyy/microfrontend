@@ -569,7 +569,7 @@ class QaInvoiceCalculationDaoServices(
         permit: PermitApplicationsEntity,
         user: UsersEntity,
         invoiceDetailsOthers: QaInvoiceDetailsEntity
-    ): Pair<QaInvoiceDetailsEntity, QaInvoiceMasterDetailsEntity> {
+    ): Pair<Boolean, Pair<QaInvoiceDetailsEntity, QaInvoiceMasterDetailsEntity>> {
 
         qaInvoiceMasterDetailsRepo.findByPermitIdAndVarField10IsNull(permit.id ?: throw Exception("PERMIT ID MISSING"))
             ?.let { invoiceMaster ->
@@ -584,9 +584,8 @@ class QaInvoiceCalculationDaoServices(
                 }
                 invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
 
-                return Pair(invoiceDetails, invoiceMaster)
+                return Pair(true,Pair(invoiceDetails, invoiceMaster))
             } ?: throw ExpectedDataNotFound("NO INVOICE MASTER FOUND WITH PERMIT REF NUMBER ${permit.permitRefNumber}")
-
 
     }
 

@@ -84,6 +84,20 @@ class QualityAssuranceInternalUserHandler(
             badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
+    fun getAllMyTaskPSCList(req: ServerRequest): ServerResponse {
+        return try {
+            val page = commonDaoServices.extractPageRequest(req)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit Type ID, check config")
+            qaDaoServices.findLoggedInUserTaskPSC(page, permitTypeID)
+                .let {
+                    ok().body(it)
+                }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
 
     fun putAllPermitSearchList(req: ServerRequest): ServerResponse {
         return try {
@@ -261,6 +275,60 @@ class QualityAssuranceInternalUserHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     qaDaoServices.updatePermitCompletenessDetails(permitID, body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsAddExtraAmount(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//
+            val body = req.body<AddExtraAmountApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, AddExtraAmountApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitAddExtraAmount(permitID, body)
+                        .let {
+                            ok().body(it)
+                        }
+                }
+
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    fun updatePermitDetailsReviewCompleteness(req: ServerRequest): ServerResponse {
+        return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//
+            val body = req.body<ReviewCompletenessApplyDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ReviewCompletenessApplyDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    qaDaoServices.updatePermitReviewCompletenessDetails(permitID, body)
                         .let {
                             ok().body(it)
                         }
@@ -461,8 +529,11 @@ class QualityAssuranceInternalUserHandler(
     }
     fun getFullyFilledInspectionReport(req: ServerRequest): ServerResponse {
         return try {
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 
-            inspectionReportDaoServices.getFullyFilledInspectionReport()
+
+            inspectionReportDaoServices.getFullyFilledInspectionReport(permitID)
                 .let {
                     ok().body(it)
                 }
