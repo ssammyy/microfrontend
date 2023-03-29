@@ -906,6 +906,137 @@ class QADaoServices(
         }
     }
 
+    @PreAuthorize("hasAuthority('QA_PCM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitAddExtraAmount(
+        permitID: Long,
+        body: AddExtraAmountApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID IN THE PERMIT VIEWED"))
+
+            val invoiceDetails = QaInvoiceDetailsEntity().apply {
+                itemDescName = body.itemDescName
+                itemAmount = body.itemAmount
+                description = body.description
+            }
+
+            val invoiceGenerated = qaInvoiceCalculation.calculatePaymentOtherDetails(permit, loggedInUser, invoiceDetails)
+
+            if(invoiceGenerated.first){
+                //Calculate total amout to be paid after adding another detail to list
+                qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated.second.second, permitType, loggedInUser)
+
+                with(permit) {
+                    userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                    permitStatus = applicationMapProperties.mapQaStatusPPayment
+                }
+
+                //updating of Details in DB
+                val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+                return when (updateResults.first.status) {
+                    map.successStatus -> {
+                        permit = updateResults.second
+                        permitAddRemarksDetails(
+                            permit.id ?: throw Exception("ID NOT FOUND"),
+                            invoiceDetails.description,
+                            null,
+                            "PCM",
+                            "ADDING EXTRA AMOUNT TO INVOICE",
+                            map,
+                            loggedInUser
+                        )
+                        val batchID: Long? = getBatchID(permit, map, permitID)
+                        val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
+                        val permitAllDetails =
+                            mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                        commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                    }
+
+                    else -> {
+                        commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                    }
+                }
+
+            }else {
+                return commonDaoServices.setErrorResponse("AN ERROR OCCURRED WHILE ADDING EXTRA AMOUNTS TO THE INVOICE GENERATED  ")
+            }
+
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('QA_PCM_MODIFY')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updatePermitReviewCompletenessDetails(
+        permitID: Long,
+        body: ReviewCompletenessApplyDto
+    ): ApiResponseModel {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            var permit = findPermitBYID(permitID)
+
+            with(permit) {
+                when {
+                    body.pcmReviewApprovalStatus -> {
+                        pcmReviewApprovalStatus = 1
+                        resubmitApplicationStatus = 0
+                        changesMadeStatus = 0
+                        permitStatus = applicationMapProperties.mapQaStatusPQAOAssign
+                        userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                    }
+
+                    else -> {
+                        resubmitApplicationStatus = 1
+                        pcmReviewApprovalStatus = 0
+                        userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                        permitStatus = applicationMapProperties.mapQaStatusIncompleteAppl
+                    }
+                }
+                pcmReviewApprovalRemarks = body.pcmReviewApprovalRemarks
+            }
+
+            //updating of Details in DB
+            val updateResults = permitUpdateDetails(permit, map, loggedInUser)
+
+            return when (updateResults.first.status) {
+                map.successStatus -> {
+                    permit = updateResults.second
+                    if(body.pcmReviewApprovalStatus){
+                        pcmGenerateInvoice(map, loggedInUser, permit, null, permit.permitType ?: throw Exception("ID NOT FOUND"))
+                    }
+
+                    permitAddRemarksDetails(
+                        permit.id ?: throw Exception("ID NOT FOUND"),
+                        permit.pcmReviewApprovalRemarks,
+                        permit.pcmReviewApprovalStatus,
+                        "PCM",
+                        "PCM REVIEW COMPLETENESS",
+                        map,
+                        loggedInUser
+                    )
+                    val batchID: Long? = getBatchID(permit, map, permitID)
+                    val batchIDDifference: Long? = getBatchIDDifference(permit, map, permitID)
+                    val permitAllDetails =
+                        mapAllPermitDetailsTogetherForInternalUsers(permit, batchID, batchIDDifference, map)
+                    commonDaoServices.setSuccessResponse(permitAllDetails, null, null, null)
+                }
+
+                else -> {
+                    commonDaoServices.setErrorResponse(updateResults.first.responseMessage ?: "UNKNOWN_ERROR")
+                }
+            }
+        } catch (error: Exception) {
+            return commonDaoServices.setErrorResponse(error.message ?: "UNKNOWN_ERROR")
+        }
+    }
+
     @PreAuthorize("hasAuthority('QA_MANAGER_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_RM_MODIFY') or hasAuthority('QA_HOD_MODIFY')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitDifferenceStatusDetails(

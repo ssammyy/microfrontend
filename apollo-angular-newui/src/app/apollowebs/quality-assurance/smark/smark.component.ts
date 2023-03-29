@@ -679,8 +679,14 @@ export class SmarkComponent implements OnInit {
         this.qaService.generateInspectionFees(branchID).subscribe(
             (data: any) => {
                 this.SpinnerService.hide();
-                this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {this.getSelectedPermit();
-                });
+                this.qaService.loadPermitDetails(String(this.allPermitDetails?.permitDetails?.id)).subscribe(
+                    (data1: AllPermitDetailsDto) => {
+                        // this.SpinnerService.hide();
+                        this.allPermitDetails = new AllPermitDetailsDto();
+                        this.allPermitDetails = data1;
+                        this.qaService.showSuccess('Inspection Fee Invoice Generated Successful', () => {this.getSelectedPermit();
+                        });
+                    });
             },
             error => {
                 this.SpinnerService.hide();
@@ -695,8 +701,6 @@ export class SmarkComponent implements OnInit {
         const companyStatusDetails = this.allPermitDetails.companyStatusDetails;
         if (companyStatusDetails.updateDetailsStatus) {
             this.qaService.showWarning(`YOU ARE  REQUIERD TO UPGRADE FIRM TYPE TO ${companyStatusDetails.updateFirmType} BEFORE YOU GENERATE THE DIFFERENCE`, () => {this.loadCompanyDetails(); });
-        } else if (this.allPermitDetails?.inspectionFeeInvoice == null && this.allPermitDetails?.inspectionNeeded) {
-            this.qaService.showWarning(`YOU ARE  REQUIERD TO GENERATE INSPECTION INVOICE OR UPLOAD PAID INSPECTION INVOICE BEFORE YOU GENERATE THE DIFFERENCE`);
         } else {
             this.SpinnerService.show();
             // tslint:disable-next-line:max-line-length
